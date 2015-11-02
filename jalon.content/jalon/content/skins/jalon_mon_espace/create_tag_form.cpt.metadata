@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=valider_form
+
+[actions]
+action.failure = traverse_to:string:create_tag_form
+
+action.success-tag = traverse_to:string:create_tag

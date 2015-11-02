@@ -1,0 +1,162 @@
+
+/*
+    Foundation
+*/
+
+
+
+// Couleurs : http://www.colorcombos.com/color-schemes/2477/ColorCombo2477.html
+
+//* UNS
+$primary-color: #2a9ccc;
+//*/
+
+/* Campus Pegasus
+$primary-color: #8c82b2;
+//*/
+
+$button_primary-color: #21b6a8; // bleu-vert
+
+$file-color: #e78841;           // orange
+$connect-color: #79a445;        // vert
+$wims-color: #865977;           // mauve
+$link-color: #f1c340;           // jaune
+$glossary-color: #6588a2;       // bleu
+$users-color: #f5ebd0;          // crème
+$bug-color: #d64638;            // rouge
+$other-color: #1e4459;          // marine
+
+$course_title-color: $connect-color;
+$course_space_el-color: $glossary-color;
+$course_activity-color: $wims-color;
+$course_direct-color: $file-color;
+
+$date-color: $users-color;
+
+$input-placeholder-font-color: #555555 !default;
+
+
+// Normalize
+@import "normalize";
+
+// Paramétrage
+@import "settings";
+
+// Tous les composants
+//@import "foundation";
+
+// Sélection de composants
+@import
+    "foundation/components/grid",
+    "foundation/components/accordion",
+    "foundation/components/alert-boxes",
+    "foundation/components/block-grid",
+    "foundation/components/breadcrumbs",
+    "foundation/components/button-groups",
+    "foundation/components/buttons",
+    //"foundation/components/clearing",
+    "foundation/components/dropdown",
+    "foundation/components/dropdown-buttons",
+    "foundation/components/flex-video",
+    "foundation/components/forms",
+    //"foundation/components/icon-bar",
+    "foundation/components/inline-lists",
+    //"foundation/components/joyride",
+    //"foundation/components/keystrokes",
+    "foundation/components/labels",
+    //"foundation/components/magellan",
+    //"foundation/components/orbit",
+    //"foundation/components/pagination",
+    "foundation/components/panels",
+    //"foundation/components/pricing-tables",
+    //"foundation/components/progress-bars",
+    //"foundation/components/range-slider",
+    "foundation/components/reveal",
+    //"foundation/components/side-nav",
+    "foundation/components/split-buttons",
+    //"foundation/components/sub-nav",
+    "foundation/components/switches",
+    "foundation/components/tables",
+    "foundation/components/tabs",
+    //"foundation/components/thumbs",
+    "foundation/components/tooltips",
+    "foundation/components/top-bar",
+    "foundation/components/type",
+    //"foundation/components/offcanvas",
+    "foundation/components/visibility";
+
+
+
+/*
+    Chemins des ressources
+*/
+
+
+// « Racine » du thème
+$themePath: './++resource++jalon.theme.';   // Plone
+//$themePath: '/_theme/';                     // Démo
+
+// Chemin des images
+$imgPath: $themePath + 'images/';
+
+// Chemin des fichiers de fonte
+$fa-font-path: $themePath + 'fonts' !default;
+//$fa-font-path: "./++resource++jalon.theme.fonts" !default;
+//$fa-font-path: "../fonts" !default;
+
+
+
+/*
+    Font-awesome
+*/
+
+
+// Tout par défaut
+//@import "font-awesome";
+
+// Sélection des composants
+@import
+    "variables",
+    "mixins",
+    "path",
+    "core",
+    "larger",
+    "fixed-width",
+    "list",
+//    "bordered-pulled",
+    "animated",
+    "rotated-flipped",
+    "stacked",
+    "icons";
+
+
+
+/*
+    Autres fontes
+*/
+
+
+@font-face {
+    font-family: 'hero_lightlight';
+    src: url('#{$fa-font-path}/hero_light-webfont.eot');
+    src: url('#{$fa-font-path}/hero_light-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fa-font-path}/hero_light-webfont.woff') format('woff'),
+         url('#{$fa-font-path}/hero_light-webfont.ttf') format('truetype'),
+         url('#{$fa-font-path}/hero_light-webfont.svg#hero_lightlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/*
+@font-face {
+    font-family: 'IcoMoon';
+    src: url('#{$fa-font-path}/IcoMoon.eot');
+    src: url('#{$fa-font-path}/IcoMoon.eot?#iefix') format('embedded-opentype'),
+         url('#{$fa-font-path}/IcoMoon.svg#IcoMoon') format('svg'),
+         url('#{$fa-font-path}/IcoMoon.woff') format('woff'),
+         url('#{$fa-font-path}/IcoMoon.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}//*/
+
+

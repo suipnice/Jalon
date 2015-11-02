@@ -1,0 +1,308 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Affichage du plan
+-->
+<metal:macro define-macro="afficher-plan">
+        <tal:replace replace="structure plancours"/>
+</metal:macro>
+
+
+<!--
+        Légende du plan
+-->
+<metal:macro define-macro="legende-plan">
+
+    <h2>
+        <i class="fa fa-info-circle"></i><tal:block i18n:translate="legende">Légende du plan du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <!--div id="course_plan-legend" class="panel bkgrnd radius"
+         tal:define="mode_etudiant request/mode_etudiant | nothing;
+                     personnel python:context.isPersonnel(user, mode_etudiant);
+                     anonymous python:user.has_role('Anonymous');"-->
+
+    <div id="course_plan-legend"
+         tal:define="mode_etudiant request/mode_etudiant | nothing;
+                     personnel python:context.isPersonnel(user, mode_etudiant);
+                     anonymous python:user.has_role('Anonymous');">
+
+        <dl class="typeElement type_Titre">
+            <dt i18n:translate="">Titre</dt>
+        </dl>
+        <dl class="typeElement type_Activite">
+            <dt i18n:translate="">Activité pédagogique</dt>
+                <dd class="type_Examen" i18n:translate="">Examen</dd>
+                <dd class="type_AutoEvaluation" i18n:translate="">Auto-évaluation</dd>
+                <dd class="type_BoiteDepot" i18n:translate="">Boite de dépôt</dd>
+                <dd class="type_SalleVirtuelle" i18n:translate="">Salle virtuelle</dd>
+        </dl>
+        <dl class="typeElement type_Mon_Espace">
+            <dt i18n:translate="">Ressource ou complément</dt>
+                <dd class="type_File" i18n:translate="">Fichier</dd>
+                <dd class="type_Image" i18n:translate="">Image</dd>
+                <dd class="type_Lienweb" i18n:translate="">Ressource externe</dd>
+                <dd class="type_Lecteurexportable" i18n:translate="">Lecteur exportable</dd>
+                <dd class="type_CatalogueBU" i18n:translate="">Catalogue BU</dd>
+                <dd class="type_Presentationssonorisees" i18n:translate="">Présentation sonorisée</dd>
+                <dd class="type_Webconference" i18n:translate="">Webconférence</dd>
+        </dl>
+        <dl>
+            <tal:condition condition="personnel">
+            <dt>
+                <i class="fa fa-eye-slash fa-lg fa-fw"></i><tal:block i18n:translate="">Élément non visible par les étudiants</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-calendar-o success fa-lg fa-fw"></i><tal:block i18n:translate="">Affichage programmé (date au survol de l'icône)</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-calendar-o alert fa-lg fa-fw"></i><tal:block i18n:translate="">Masquage programmé (date au survol de l'icône)</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-hand-o-left fa-lg fa-fw"></i><tal:block i18n:translate="">Élément signalé aux étudiants (indication au survol de l'icône)</tal:block>
+            </dt>
+            </tal:condition>
+            <tal:condition condition="python:not personnel and not anonymous">
+            <dt>
+                <i class="fa fa-check-square-o fa-lg fa-fw"></i><tal:block i18n:translate="">Élément marqué comme "lu"</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-hand-o-left fa-lg fa-fw"></i><tal:block i18n:translate="">Élément signalé par l'enseignant (indication au survol de l'icône)</tal:block>
+            </dt>
+            </tal:condition>
+            <tal:condition condition="not:anonymous">
+            <dt>
+                <i class="fa fa-bell-o fa-lg fa-fw"></i><tal:block i18n:translate="">Nouveauté depuis votre dernière connexion</tal:block>
+            </dt>
+            </tal:condition>
+        </dl>
+    </div>
+</metal:macro>
+
+
+<!--
+
+        Modification d'un titre ou texte libre du plan
+
+
+-->
+<metal:macro define-macro="modifier-plan">
+<tal:define define="typeElement request/typeElement | nothing;
+                    isTitre python:context.test(typeElement == 'Titre', 1, 0)">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier un</tal:block>
+        <tal:condition condition="isTitre">titre</tal:condition>
+        <tal:condition condition="not:isTitre">texte libre</tal:condition>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-titleEditor" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-placeholder string:Saisie obligatoire;
+                          data-success_msg string:L'élément de plan a été modifié."
+          i18n:attributes="data-placeholder">
+
+        <div id="archetypes-fieldname-description"
+             tal:define="error errors/description | nothing;
+                         arch_class string:field ArchetypesRichWidget;
+                         description python:context.getElementCours(request['idElement'])['titreElement']"
+             title='description'
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="description" name="description" size="30" maxlength="255"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/description | description"
+                   i18n:attributes="placeholder"
+                   tal:condition="isTitre" />
+            <textarea id="description" name="description" rows="9"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"
+                      tal:condition="not:isTitre"><tal:block replace="request/description | description" /></textarea>
+
+        </div>
+
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+        <input type="hidden" name="formulaire" tal:attributes="value request/formulaire" />
+        <input type="hidden" name="macro" value="macro_cours_plan" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+<tal:CKeditorActive condition="not:isTitre">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-titleEditor','reveal-main','description')" />
+</tal:CKeditorActive>
+
+<tal:CKeditorInactive condition="isTitre">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-titleEditor','reveal-main')" />
+</tal:CKeditorInactive>
+
+</tal:define>
+</metal:macro>
+
+
+
+<metal:macro define-macro="affichage_biblio">
+    <tal:define define="dicoLettres python:context.getGloBib('bibliographie');
+                        taille python:len(dicoLettres.keys())">
+        <h2>
+            <i class="fa fa-book"></i><tal:block i18n:translate="">Bibliographie</tal:block>
+            <a class="button tiny radius show-for-medium-up" data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+               tal:condition="personnel"
+               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-supports&amp;ajout=Supports&amp;espace=Bibliographie">
+                <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Attacher une ressource externe</tal:block>
+            </a>
+        </h2>
+
+        <div class="panel callout radius"
+             tal:condition="not:taille"
+             i18n:translate="label_bibliographie_vide">
+                La bibliographie de ce cours ne contient aucun élément.
+        </div>
+
+        <dl class="panel callout radius accordion" data-accordion="data-accordion"
+            tal:condition="taille"
+            tal:define="listeLettres python:dicoLettres.keys();
+                        tmp python:listeLettres.sort()">
+
+            <dd class="accordion-navigation"
+                tal:repeat="lettre listeLettres">
+
+                <a tal:attributes="href string:#bib-${lettre}"
+                   tal:define="tailleLettre python:len(dicoLettres[lettre])">
+                    <span class="label round" tal:content="lettre" />
+                    <tal:replace replace="tailleLettre" />
+                    <tal:block tal:condition="python:tailleLettre == 1" i18n:translate="">élément</tal:block>
+                    <tal:block tal:condition="python:tailleLettre > 1" i18n:translate="">éléments</tal:block>
+                </a>
+
+                <div class="content"
+                     tal:define="cours context/getId"
+                     tal:attributes="id string:bib-${lettre}">
+
+                    <ul tal:define="listeTermes python:dicoLettres[lettre];
+                                    tmp python:listeTermes.sort(lambda x,y: cmp(x['titreElement'], y['titreElement']))">
+
+                        <li tal:repeat="element listeTermes">
+
+                        <tal:define define="res_name python:here.getShortText(element['titreElement'], 80)">
+
+                            <a class="right"
+                               title="Détacher la ressource du cours"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main_second"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;menu=bibliographie&amp;idElement=${element/idElement}&amp;repertoire=Externe&amp;resName=${res_name}&amp;retour=cours_plan_view"
+                               tal:condition="python:cours and personnel"
+                               i18n:attributes="title">
+                               <i class="fa fa-chain-broken fa-fw warning"></i>
+                            </a>
+
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="title string:Voir la ressource « ${element/titreElement} »;
+                                               href string:${context/absolute_url}/cours_element_view?typeElement=${element/typeElement}&amp;idElement=${element/idElement}&amp;createurElement=${element/createurElement}&amp;mode_etudiant=${mode_etudiant}">
+                                <tal:replace replace="res_name" />
+                            </a>
+                        </tal:define>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
+        </dl>
+    </tal:define>
+</metal:macro>
+
+<metal:macro define-macro="affichage_glossaire">
+    <tal:define define="dicoLettres python:context.getGloBib('glossaire');
+                        taille python:len(dicoLettres.keys())">
+        <h2>
+            <i class="fa fa-font"></i><tal:block i18n:translate="">Glossaire</tal:block>
+            <a class="button tiny radius show-for-medium-up" data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+               tal:condition="personnel"
+               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-supports&amp;ajout=Supports&amp;espace=Glossaire">
+                <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Attacher un terme de glossaire</tal:block>
+            </a>
+        </h2>
+
+        <div class="panel callout radius"
+             tal:condition="not:taille"
+             i18n:translate="label_glossaire_vide">
+                Le glossaire de ce cours ne contient aucun élément.
+        </div>
+
+        <dl class="panel callout radius accordion" data-accordion="data-accordion"
+            tal:condition="taille"
+            tal:define="listeLettres python:dicoLettres.keys();
+                        tmp python:listeLettres.sort()">
+
+            <dd class="accordion-navigation"
+                tal:repeat="lettre listeLettres">
+
+                <a tal:attributes="href string:#glo-${lettre}"
+                   tal:define="tailleLettre python:len(dicoLettres[lettre])">
+                    <span class="label round" tal:content="lettre" />
+                    <tal:replace replace="tailleLettre" />
+                    <tal:block tal:condition="python:tailleLettre == 1" i18n:translate="">terme</tal:block>
+                    <tal:block tal:condition="python:tailleLettre > 1" i18n:translate="">termes</tal:block>
+                </a>
+
+                <div class="content"
+                     tal:define="cours context/getId"
+                     tal:attributes="id string:glo-${lettre}">
+
+                    <ul tal:define="listeTermes python:dicoLettres[lettre];
+                                    tmp python:listeTermes.sort(lambda x,y: cmp(x['titreElement'], y['titreElement']))">
+
+                        <li tal:repeat="element listeTermes">
+
+                        <tal:define define="res_name python:here.getShortText(element['titreElement'], 80)">
+
+                            <a class="right"
+                               title="Détacher la ressource du cours"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main_second"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;menu=glossaire&amp;idElement=${element/idElement}&amp;repertoire=Externe&amp;resName=${res_name}&amp;retour=cours_plan_view"
+                               tal:condition="python:cours and personnel"
+                               i18n:attributes="title">
+                               <i class="fa fa-chain-broken fa-fw warning"></i>
+                            </a>
+
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="title string:Voir la ressource « ${element/titreElement} »;
+                                               href string:${context/absolute_url}/cours_element_view?typeElement=${element/typeElement}&amp;idElement=${element/idElement}&amp;createurElement=${element/createurElement}&amp;mode_etudiant=${mode_etudiant}">
+                                <tal:replace replace="res_name" />
+                            </a>
+                        </tal:define>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
+        </dl>
+    </tal:define>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

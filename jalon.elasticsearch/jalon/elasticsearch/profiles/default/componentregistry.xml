@@ -1,0 +1,9 @@
+<?xml version="1.1"?>
+<componentregistry>
+ <adapters/>
+ <utilities>
+  <utility
+     interface="jalon.elasticsearch.content.interfaces.IJalonElasticsearch"
+     object="portal_jalon_elasticsearch"/>
+ </utilities>
+</componentregistry>

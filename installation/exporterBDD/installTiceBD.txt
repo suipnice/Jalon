@@ -1,0 +1,30 @@
+dans le .profile avant de lancer le terminal
+
+export ORACLE_HOME='/oracle_home/instantclient_10_2'
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME
+export DYLD_LIBRARY_PATH=$ORACLE_HOME
+export PATH="/opt/local/bin:/opt/local/sbin":$PATH
+test -r /sw/bin/init.sh && . /sw/bin/init.sh
+
+mkdir /pythons
+mkdir /pythons/downloads
+
+cd /pythons/downloads
+wget http://www.python.org/ftp/python/2.6.7/Python-2.6.7.tgz
+tar -xvzf Python-2.6.7.tgz
+cd Python-2.6.7
+./configure --prefix=/pythons/py267
+make
+make install
+cd /pythons/downloads
+wget http://peak.telecommunity.com/dist/ez_setup.py
+/pythons/py267/bin/python ez_setup.py
+/pythons/py267/bin/easy_install virtualenv
+/pythons/py267/bin/virtualenv --no-site-packages –unzip-setuptools /pythons/exportBD
+/pythons/exportBD/bin/easy_install python-ldap=2.3.13
+/pythons/exportBD/bin/easy_install sqlalchemy
+cd /oracle_home/instantclient_10_2/
+ln -s libclntsh.dylib.10.1 libclntsh.dylib
+ln -s libocci.dylib.10.1 libocci.dylib
+/pythons/exportBD/bin/easy_install cx_Oracle
+/pythons/exportBD/bin/easy_install paramiko

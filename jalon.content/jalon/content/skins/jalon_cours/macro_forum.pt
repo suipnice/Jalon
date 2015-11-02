@@ -1,0 +1,461 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+    Ajouter un forum
+-->
+<metal:macro define-macro="ajout-forum">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un forum</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-createForum" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title"
+                   i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/description | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description"
+                   i18n:translate="">Description</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" rows="10"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:block replace="request/description | nothing" /></textarea>
+        </div>
+
+        <input type="hidden" name="type" value="Forum" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_forum" />
+        <input type="hidden" name="formulaire" value="ajout-forum" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description')" />
+
+</metal:macro>
+
+
+<!--
+    Supprimer tous les forums
+-->
+<metal:macro define-macro="supprimer-tous-forum">
+
+    <h2>
+        <tal:block i18n:translate="">Suppression de tous les forums</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive, elle supprimera tous les forums et toutes les conversations de ce cours.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/cours_supprimerForum"
+          method="POST">
+        <input type="hidden" name="macro" value="macro_forum"/>
+        <input type="hidden" name="formulaire" value="supprimer-tous-forum"/>
+        <div class="formControls">
+            <button type="submit" class="button small alert radius">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+       </div>
+    </form>
+</metal:macro>
+
+
+<!--
+    Modifier un forum
+-->
+<metal:macro define-macro="modifier-forum">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier le forum…</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-modForum" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div class="panel callout radius"
+             tal:content="context/Title" />
+
+        <div id="archetypes-fieldname-title" class="field"
+             tal:define="error errors/title | nothing"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" class="formQuestion"
+                   i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value context/Title"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field"
+             tal:define="error errors/description | nothing"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description"
+                   i18n:translate="">Description</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" rows="10"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="structure context/getRawDescription"/></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_forum" />
+        <input type="hidden" name="formulaire" value="modifier-forum" />
+        <input type="hidden" name="parent" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description')" />
+
+</metal:macro>
+
+
+<!--
+    Supprimer un élément de forum
+-->
+<metal:macro define-macro="supprimer-forum">
+<tal:isConversation define="type request/type | nothing;
+                            is_forum python:context.test(type != 'conversation' and type != 'message', 1, 0);
+                            is_conversation python:context.test(type == 'conversation', 1, 0);
+                            is_message python:context.test(type == 'message', 1, 0)">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer</tal:block>
+        <tal:block condition="is_forum" i18n:translate="">le forum</tal:block>
+        <tal:block condition="is_conversation" i18n:translate="">la conversation</tal:block>
+        <tal:block condition="is_message" i18n:translate="">le message</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel warning radius"
+         tal:condition="python:context.test(is_forum or is_conversation, 1, 0)"
+         tal:content="context/Title" />
+
+    <div class="panel warning radius"
+         tal:condition="is_message"
+         tal:content="structure context/getText" />
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_supprimerForum">
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong>
+            <tal:block tal:condition="is_forum" i18n:translate="">vous allez supprimer ce forum et l'ensemble de ses conversations,</tal:block>
+            <tal:block tal:condition="is_conversation" i18n:translate="">vous allez supprimer cette conversation et l'ensemble de ses messages,</tal:block>
+            <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        </div>
+
+        <input type="hidden" name="macro" value="macro_forum"/>
+        <input type="hidden" name="formulaire" value="supprimer-forum"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small alert radius">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</tal:isConversation>
+</metal:macro>
+
+
+<!--
+    Créer une conversation
+-->
+<metal:macro define-macro="ajout-conversation">
+
+    <h2>
+        <tal:block i18n:translate="">Créer une conversation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-createForumConvers" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/getId}">
+
+        <div class="field"
+             id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         Title request/title | nothing"
+             tal:attributes="class python:test(error, 'field error', 'field')">
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value Title"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div class="field"
+             tal:define="error errors/text | nothing;
+                         text quotedBody | string:;
+                         text python:request.get('text', text)"
+             tal:attributes="class python:test(error, 'field error', 'field')">
+            <label for="text" i18n:translate="">Texte</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <textarea id="text" name="text" rows="10"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="structure text|nothing" /></textarea>
+        </div>
+
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_forum" />
+        <input type="hidden" name="formulaire" value="ajout-conversation" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text')" />
+
+</metal:macro>
+
+
+<!--
+    Modifier une conversation
+-->
+<metal:macro define-macro="modifier-conversation">
+<tal:define define="first request/is_first | nothing;
+                    head request/is_head | nothing;
+                    is_first python:context.test(first == 'True', 1, 0);
+                    is_head python:context.test(head == 'True', 1, 0)">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier</tal:block>
+        <tal:block tal:condition="is_head" i18n:translate="">la conversation</tal:block>
+        <tal:block tal:condition="not:is_head" i18n:translate="">le message</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-modForumConvers" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div class="panel callout radius"
+             tal:condition="is_head"
+             tal:content="context/Title" />
+
+        <div class="panel callout radius"
+             tal:condition="not:is_head"
+             tal:content="structure context/getText" />
+
+        <div id="archetypes-fieldname-title" class="field"
+             tal:condition="is_head"
+             tal:define="error errors/title | nothing"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" i18n:translate="">Nouveau titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value context/Title"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field"
+             tal:condition="not:is_head"
+             tal:define="error errors/text | nothing"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <textarea name="text" rows="10"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="context/getText" /></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_forum" />
+        <input type="hidden" name="formulaire" value="modifier-conversation" />
+
+        <input type="hidden" name="title"
+               tal:condition="not:is_head"
+               tal:attributes="value context/Title" />
+
+        <input type="hidden" name="text"
+               tal:condition="is_head"
+               tal:attributes="value context/getText" />
+
+        <input type="hidden" name="parent" value="1"
+               tal:condition="is_head" />
+
+        <div class="panel callout radius"
+             tal:condition="python:not(is_first or is_head)">
+            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître leur contenu en tant que citation.</tal:block>
+            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'text')" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+    Répondre à une conversation
+-->
+<metal:macro define-macro="ajout-reponse">
+<tal:define define="creator context/Creator;
+                    mtool mtool | context/@@plone_tools/membership;
+                    creatorinfo python: mtool.getMemberInfo(creator);
+                    creatorData python:creatorinfo and creatorinfo['fullname'] or creator;
+                    creation_date context/creation_date;">
+
+    <h2>
+        <tal:block i18n:translate="">Répondre à…</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h4>
+        <strong tal:content="creatorData" />
+        (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
+    </h4>
+
+    <div class="panel callout radius">
+        <tal:block tal:content="structure context/getText" />
+    </div>
+
+    <form id="js-answerForumConvers" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-description" class="field"
+             tal:define="error errors/text | nothing;
+                         quote string:<blockquote>${context/getText} (par ${creatorData})</blockquote>"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="text"
+                   i18n:translate="">Votre réponse</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error"
+                 tal:content="error" />
+            <textarea name="text" rows="10"
+                      required="required" placeholder="Saisie obligatoire"
+                      tal:content="structure quote"
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_forum" />
+        <input type="hidden" name="formulaire" value="ajout-reponse" />
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître le message auquel vous répondez en tant que citation.</tal:block>
+            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text')" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+    Rechercher dans les forums / les conversations
+-->
+<metal:macro define-macro="forum-rechercher">
+
+    <h2>
+        <i class="fa fa-search no-pad"></i>
+        <tal:block i18n:translate="">Recherche</tal:block>
+    </h2>
+    <div class="panel radius">
+        <form id="js-forum-search"
+              tal:attributes="action string:${search_url}/jalon_forum_search">
+            <div class="fieldErrorBox hide">Champ obligatoire</div>
+            <input type="text" name="q"
+                   required="required"
+                   placeholder="Texte à rechercher…"
+                   i18n:attributes="placeholder" />
+            <button type="submit" class="button small expand radius">
+                <i class="fa fa-search-plus"></i>
+                <tal:block i18n:translate="">Lancer la recherche</tal:block>
+            </button>
+        </form>
+
+        <tal:define define="script string:setForumSearchReplyForm('js-forum-search')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:define>
+
+    </div>
+
+</metal:macro>
+
+
+</metal:content-core>
+</body>
+</html>

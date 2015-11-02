@@ -1,0 +1,155 @@
+type=datalist
+modele_jalon=ClasserPropriete
+textarea='data'
+:Classer les objets selon leurs propriétés, glisser-déposer.
+On présente une liste d'objets, et il faut les classer selon leurs propriétés, en les tirant vers les cases prévues avec la souris.<br/>
+Pour construire un exercice avec ce modèle, il suffit d'entrer la liste d'objets et leurs propriétés.<br/>
+Avec une petite modification, une variante de ce modèle peut accepter des images comme objets.<br/>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:Nombre d'objets à classer par exercice. Jusqu'à 20.
+\integer{tot=$$tot$$}
+: Le nombre maximal d'objets présentés ayant une même propriété.
+Ce nombre doit être strictement plus grand que 1.
+\integer{max1=$$max1$$}
+:La taille des objets à glisser, en pixels, x fois y.
+Pensez aux gens qui augmentent la taille de polices de leurs navigateurs !
+Ne mettez pas les cases trop petites.
+\text{size1=$$size1$$}
+:Liste de propriétés. Jusqu'à 10, séparées par des virgules.
+\text{prop=$$prop$$}
+:Données principales.
+<p>Définir un objet par ligne, d'abord le nom, ensuite la propriété, séparés par une virgule. </p>
+<p>Il vaut mieux définir des données en quantité abondante pour chaque catégorie. </p>
+<p>Attention à ne pas introduire d'erreurs de frappe dans les propriétés ! Sinon l'objet correspondant peut causer des dysfonctionnements de l'exercice.</p>
+\matrix{data=$$data$$}
+:Mots d'option.
+Ajouter le mot 'shuffle' si on veut que l'ordre des propriétés soit 
+mis en aléatoire.
+\text{option=$$shuffle$$}
+:Texte avant le tableau. Balises html admises.
+\text{pre=$$explain$$}
+:Texte après le tableau. Balises html admises.
+\text{post=$$post$$}
+:Verbe et article à afficher devant la catégorie classée.
+\text{estun=$$estun$$}
+:Comment dire si un objet n'est pas classé ?
+\text{noclass=$$noclass$$}
+:Feedback General
+Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
+\text{feedback_general=$$feedback_general$$}
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\integer{pcnt=items(\prop)}
+\integer{datacnt=rows(\data)}
+\integer{max2=\max1+1}
+\integer{tot=\tot<\pcnt?\pcnt}
+\text{prop=\pcnt>1 and shuffle iswordof \option?shuffle(\prop)}
+\text{first=}
+\text{firsti=}
+\text{second=}
+\text{secondi=}
+\for{i=1 to \pcnt}{
+ \text{t=shuffle(column(1,wims(select \data where column 2 issametext \prop[\i])))}
+ \integer{s=min(\max1,items(\t))}
+ \text{first=wims(append item \t[1] to \first)}
+ \text{firsti=wims(append item \i to \firsti)}
+ \if{\s > 1}{
+  \text{second=wims(append item \t[2..\s] to \second)}
+  \text{secondi=wims(append item wims(makelist \i for x=2 to \s) to \secondi)} }}
+\if{\tot>\pcnt}{
+ \integer{scnt=items(\second)}
+ \integer{secnt=min(\tot-\pcnt,\scnt)}
+ \integer{tot=\pcnt+\secnt}
+ \text{sh2=shuffle(\scnt)}
+ \text{sh2=\sh2[1..\secnt]}
+ \text{second=item(\sh2,\second)}
+ \text{secondi=item(\sh2,\secondi)}
+ \text{all=\first,\second}
+ \text{alli=\firsti,\secondi}}{
+ \text{all=\first}
+ \text{alli=\firsti}}
+\integer{acnt=items(\all)}
+\text{sh=shuffle(\acnt)}
+\text{all=item(\sh,\all)}
+\text{alli=item(\sh,\alli)}
+\text{props=wims(tolower \prop)}
+\text{alls=wims(tolower \all)}
+\text{size=\size1 x \max2}
+\text{rep=item(1..\pcnt,wims(makelist r x for x=1 to 10))}
+\steps{\rep}
+\conditions{wims(makelist x for x=1 to \tot)}
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::La commande pour afficher le champs de réponse numéro 3 par exemple,
+c'est \embed{reply 3,\size} <p>
+Et le nom de la propriété numéro 4, c'est \prop[4] avec la première lettre
+en majuscule, ou \props[4] tout en minuscule.
+\statement{
+<div class='oef_explain'>\pre</div>
+\for{k=1 to \pcnt}{
+<div class='oef_item'>
+<span class='oef_property'> \prop[\k] </span>
+<span class='oef_drop_zone'> \embed{reply \k, \size} </span>
+ </div>}
+\post}
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{\prop[1]}{\r1;\all}{type=dragfill}
+\answer{\prop[2]}{\r2}{type=dragfill}
+\answer{\prop[3]}{\r3}{type=dragfill}
+\answer{\prop[4]}{\r4}{type=dragfill}
+\answer{\prop[5]}{\r5}{type=dragfill}
+\answer{\prop[6]}{\r6}{type=dragfill}
+\answer{\prop[7]}{\r7}{type=dragfill}
+\answer{\prop[8]}{\r8}{type=dragfill}
+\answer{\prop[9]}{\r9}{type=dragfill}
+\answer{\prop[10]}{\r10}{type=dragfill}
+\text{totans=item(1..\pcnt,
+ wims(items2words \r1),
+ wims(items2words \r2),
+ wims(items2words \r3),
+ wims(items2words \r4),
+ wims(items2words \r5),
+ wims(items2words \r6),
+ wims(items2words \r7),
+ wims(items2words \r8),
+ wims(items2words \r9),
+ wims(items2words \r10))}
+text{totans=wims(replace internal ' to ' in \totans)}
+\text{clean=}
+\text{check=}
+\for{t=1 to \tot}{
+ \integer{cat=0}
+ \for{r=1 to \pcnt}{
+  \integer{cat=\all[\t] iswordof \totans[\r]?\r} }
+ \if{\cat > 0}{
+  \text{clean=\clean \estun \props[\cat],}
+  \text{check=\alli[\t]=\cat?\check 1,:\check 0,} }{
+  \text{clean=\clean \noclass,}
+  \text{check=\check 0,} }}
+\condition{\all[1] \clean[1]}{\check[1]=1}
+\condition{\all[2] \clean[2]}{\check[2]=1}
+\condition{\all[3] \clean[3]}{\check[3]=1}
+\condition{\all[4] \clean[4]}{\check[4]=1}
+\condition{\all[5] \clean[5]}{\check[5]=1}
+\condition{\all[6] \clean[6]}{\check[6]=1}
+\condition{\all[7] \clean[7]}{\check[7]=1}
+\condition{\all[8] \clean[8]}{\check[8]=1}
+\condition{\all[9] \clean[9]}{\check[9]=1}
+\condition{\all[10] \clean[10]}{\check[10]=1}
+\condition{\all[11] \clean[11]}{\check[11]=1}
+\condition{\all[12] \clean[12]}{\check[12]=1}
+\condition{\all[13] \clean[13]}{\check[13]=1}
+\condition{\all[14] \clean[14]}{\check[14]=1}
+\condition{\all[15] \clean[15]}{\check[15]=1}
+\condition{\all[16] \clean[16]}{\check[16]=1}
+\condition{\all[17] \clean[17]}{\check[17]=1}
+\condition{\all[18] \clean[18]}{\check[18]=1}
+\condition{\all[19] \clean[19]}{\check[19]=1}
+\condition{\all[20] \clean[20]}{\check[20]=1}
+\feedback{1=1}{<p class='feedback'>\feedback_general</p>}

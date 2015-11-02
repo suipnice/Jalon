@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="dossier python:context.getId();
+                        anonymous python:user.has_role('Anonymous');
+                        is_personnel python:user.has_role(['Personnel', 'Manager', 'Secretaire']);
+                        subjects context/getSelectedTags">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    <tal:block condition="not:anonymous">
+        <tal:block condition="python:dossier == 'etudiants'">
+            <metal:macro use-macro="context/macro_etudiants/macros/etudiants">
+                Macro d'affichage du dossier etudiants
+            </metal:macro>
+        </tal:block>
+        <tal:block condition="python:dossier != 'etudiants'">
+            <tal:block condition="python:'Owner' in user.getRolesInContext(context)">
+                <tal:block condition="python:dossier != user.getId()">
+                    <metal:macro use-macro="python:getattr(context, 'macro_%s' % dossier.lower()).macros[dossier.lower()]">
+                        Macro d'affichage en fonction du dossier
+                    </metal:macro>
+                </tal:block>
+                <tal:block condition="python:dossier == user.getId()">
+                    <tal:block condition="is_personnel">
+                        <metal:macro use-macro="context/macro_mescours/macros/cours">
+                            Macro d'affichage des cours (version prof)
+                        </metal:macro>
+                    </tal:block>
+                    <tal:block condition="not:is_personnel">
+                        <metal:macro use-macro="context/macro_mescours/macros/cours-etudiant">
+                            Page d'affichage des cours (version étudiants)
+                        </metal:macro>
+                    </tal:block>
+                </tal:block>
+            </tal:block>
+        </tal:block>
+    </tal:block>
+</metal:core>
+
+</body>
+
+</html>

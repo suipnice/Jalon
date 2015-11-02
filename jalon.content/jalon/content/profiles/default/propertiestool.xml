@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object name="portal_properties" meta_type="Plone Properties Tool">
+ <object name="jalonimport_properties" meta_type="Plone Property Sheet">
+  <property name="title">Jalon Import properties</property>
+  <property name="chemin_repertoire" type="string">Chemin</property>
+ </object>
+ <object name="jalonmaintenance_properties" meta_type="Plone Property Sheet">
+  <property name="title">Jalon maintenance properties</property>
+  <property name="annoncer_maintenance" type="boolean">False</property>
+  <property name="activer_maintenance" type="boolean">False</property>
+  <property name="date_debut" type="string">01/01/2013 - 00h</property>
+  <property name="date_fin" type="string">01/01/2013 - 00h</property>
+  <property name="texte_maintenance" type="text">Maintenance</property>
+  <property name="activer_information" type="boolean">False</property>
+  <property name="texte_information" type="text">Information</property>
+  <property name="annoncer_vider_cache" type="boolean">False</property>
+ </object>
+ <object name="jalonconfiguration_properties" meta_type="Plone Property Sheet">
+  <property name="title">Jalon Configuration</property>
+  <property name="id_account" type="string">UA-12345678-1</property>
+  <property name="id_domain" type="string">unice.fr</property>
+  <property name="chemin_encodage" type="string"></property>
+  <property name="activer_ldap" type="boolean">False</property>
+  <property name="fiche_ldap" type="string"></property>
+  <property name="schema_ldap" type="string">supann</property>
+  <property name="didacticiel_plan_vide" type="text">didacticiel sur la construction du plan</property>
+  <property name="mail_erreur" type="string">adresse de reception des erreurs</property>
+  <property name="activer_listeDiffusion" type="boolean">activer l'utilisation des listes de diffusion</property>
+  <property name="cible_listeDiffusion" type="text">Liste des elements utilisant les listes de diffusion, une valeur par ligne</property>
+  <property name="mail_listeDiffusion" type="string">fin de l'adresse pour envoyer des messages a une liste de diffusion</property>
+  <property name="lien_sesame" type="string">lien vous n'avez pas de sesame</property>
+  <property name="lien_contact" type="string">lien page de contact</property>
+  <property name="lien_mention" type="string">lien page de mention</property>
+  <property name="lien_credit" type="string">lien page des credits</property>
+  <property name="lien_bug" type="string">lien page des bugs</property>
+  <property name="lien_trombi" type="string">lien page du trombi</property>
+  <property name="categories_itunesu" type="text">Categories iTunesU des cours</property>
+  <property name="etablissement" type="string">Universite</property>
+ </object>
+ <object name="jalonconfig_properties" meta_type="Plone Property Sheet">
+  <property name="title">Jalon Mon espace Configuration</property>
+  <property name="activer_fichiers" type="boolean">True</property>
+  <property name="fichiers" type="lines">
+   <element value="Images:image/bmp,image/x-bmp,image/x-MS-bmp,image/gif,image/jpeg,image/pjpeg,image/png,image/tiff"/>
+   <element value="Textes:application/pdf,application/x-pdf,image/pdf,application/rtf,application/vnd.oasis.opendocument.text,application/vnd.ms-works,application/vnd.wordperfect,application/x-wordperfect,application/wordperfect,application/x-bzpdf,application/msword"/>
+   <element value="Tableurs:application/vnd.ms-excel,application/msexcel,application/x-msexcel,application/vnd.oasis.opendocument.spreadsheet"/>
+   <element value="Presentations:application/vnd.ms-powerpoint,application/powerpoint,application/mspowerpoint,application/x-mspowerpoint,application/vnd.oasis.opendocument.presentation"/>
+   <element value="Archives:application/rar,application/x-bzip,application/x-bzip2,application/x-bzip-compressed-tar,application/zip,application/x-zip-compressed,application/x-tar,application/x-gtar,application/x-tarz"/>
+   <element value="Autres:"/>
+  </property>
+  <property name="activer_sonorisation" type="boolean">False</property>
+  <property name="sonorisation_connecteur" type="string">portal_connect</property>
+  <property name="sonorisation" type="lines">
+   <element value="DateUS"/>
+  </property>
+  <property name="activer_wims" type="boolean">False</property>
+  <property name="wims_connecteur" type="string">portal_wims</property>
+  <property name="wims" type="lines">
+   <element value="Modele"/>
+  </property>
+  <property name="wims_modele" type="lines">
+   <element value="qcmsimple*-*Question simple*-*1 Modeles simples"/>
+   <element value="equation*-*Equation*-*1 Modeles simples"/>
+   <element value="texteatrous*-*Texte a trous*-*1 Modeles simples"/>
+   <element value="marqueruntexte*-*Marquer un texte*-*1 Modeles simples"/>
+   <element value="marquerparpropriete*-*Marquer par propriete*-*1 Modeles simples"/>
+   <element value="questiontextuelletolerante*-*Question textuelle tolerante*-*1 Modeles simples"/>
+   <element value="taperlemotassocie*-*Taper le mot associe*-*1 Modeles simples"/>
+   <element value="reordonner*-*Reordonner*-*2 : Modeles a base de 'glisser/deposer'"/>
+   <element value="correspondance*-*Correspondance*-*2 : Modeles a base de 'glisser/deposer'"/>
+   <element value="classerparpropriete*-*Classer par propriete*-*2 : Modeles a base de 'glisser/deposer'"/>
+   <element value="vraifauxmultiples*-*Vrai / Faux multiples*-*3 : Modeles avances"/>
+   <element value="texteatrousmultiples*-*Textes a trous multiples*-*3 : Modeles avances"/>
+   <element value="exercicelibre*-*Exercice libre (mode brut)*-*3 : Modeles avances"/>
+   <element value="qcmsuite*-*QCM a la suite*-*3 : Modeles avances"/>
+   <element value="externe*-*Exercice de la base WIMS*-*4 : Modeles Tiers"/>
+  </property>
+  <property name="activer_externes" type="boolean">True</property>
+  <property name="externes" type="lines">
+   <element value="Lien web"/>
+   <element value="Lecteur exportable"/>
+   <element value="Ressource bibliographique"/>
+  </property>
+  <property name="activer_cataloguebu" type="boolean">True</property>
+  <property name="activer_glossaire" type="boolean">True</property>
+  <property name="glossaire" type="lines">
+   <element value="A"/>
+   <element value="B"/>
+   <element value="C"/>
+   <element value="D"/>
+   <element value="E"/>
+   <element value="F"/>
+   <element value="G"/>
+   <element value="H"/>
+   <element value="I"/>
+   <element value="J"/>
+   <element value="K"/>
+   <element value="L"/>
+   <element value="M"/>
+   <element value="N"/>
+   <element value="O"/>
+   <element value="P"/>
+   <element value="Q"/>
+   <element value="R"/>
+   <element value="S"/>
+   <element value="T"/>
+   <element value="U"/>
+   <element value="V"/>
+   <element value="W"/>
+   <element value="X"/>
+   <element value="Y"/>
+   <element value="Z"/>
+   <element value="#"/>
+  </property>
+  <property name="activer_webconference" type="boolean">False</property>
+  <property name="webconference_connecteur" type="string">portal_connect</property>
+  <property name="webconference" type="lines">
+   <element value="DateUS"/>
+  </property>
+  <property name="activer_maj" type="boolean">False</property>
+  <property name="url_maj" type="string"></property>
+ </object>
+</object>

@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<rolemap>
+  <roles>
+    <role name="Authenticated"/>
+    <role name="Etudiant"/>
+    <role name="EtudiantJalon"/>
+    <role name="Manager"/>
+    <role name="Owner"/>
+    <role name="Personnel"/>
+    <role name="Secretaire"/>
+  </roles>
+  <permissions>
+    <permission name="Add Jalon Annonce" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Connect" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Cours" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Cours auto-evaluation, examen" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon BoiteDepots" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon ExerciceWims" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon File" acquire="True">
+      <role name="Etudiant"/>
+      <role name="EtudiantJalon"/>
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Folder" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+      <role name="Secretaire"/>
+    </permission>
+    <permission name="Add Jalon Forum" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon RessourceExterne" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon TermeGlossaire" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Review comments" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Reviewer"/>
+    </permission>
+  </permissions>
+</rolemap>

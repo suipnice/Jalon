@@ -1,0 +1,111 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core metal:fill-slot="content"
+            tal:define="isAnon isAnon | context/@@plone_portal_state/anonymous;
+                        mtool mtool | context/@@plone_tools/membership;">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <div id="reveal-main" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+            Messages de session
+        </metal:macro>
+
+        <div class="small-12 columns"
+             tal:define="message request/message | nothing"
+             tal:condition="message">
+            <!--
+                    A FUSIONNER AVEC "portal_message"
+            -->
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+        </div>
+
+
+        <section class="medium-8 small-12 columns">
+
+        <metal:block define-macro="view_comments">
+
+            <h2>
+                <i class="fa fa-comments-o no-pad"></i>
+                <tal:replace replace="here/Title"/>
+            </h2>
+
+            <div class="boardComment"
+                 tal:repeat="comment view/comments">
+
+                <metal:comment metal:use-macro="here/comment_view/macros/comment" />
+
+            </div>
+
+        </metal:block>
+
+        <metal:block define-macro="quickreply">
+
+            <form id="forum-quickreply" method="POST" enctype="multipart/form-data"
+                  tal:define="firstcomment here/getFirstComment"
+                  tal:attributes="action string:${firstcomment/absolute_url}/add_comment_script"
+                  tal:condition="not:isAnon">
+
+                <fieldset>
+                    <legend i18n:translate="label_quickreply">Réponse rapide</legend>
+
+                    <div id="archetypes-fieldname-description" class="field">
+                        <div class="fieldErrorBox hide">Champ obligatoire</div>
+                        <textarea name="text" rows="8" id="rapide"
+                                  required="required" placeholder="Saisie obligatoire"
+                                  i18n:attributes="placeholder" ></textarea>
+                    </div>
+
+                    <input type="hidden" name="form.submitted" value="1" />
+
+                    <div class="formControls">
+                        <button type="submit" class="button small create radius" name="form.button.Post">
+                            <i class="fa fa-paper-plane-o"></i>
+                            <tal:block i18n:translate="">Envoyer</tal:block>
+                        </button>
+                    </div>
+
+                </fieldset>
+            </form>
+
+            <tal:define define="script string:setForumSearchReplyForm('forum-quickreply', 'rapide')">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:define>
+
+        </metal:block>
+
+        </section>
+
+
+        <section class="medium-4 small-12 columns">
+
+            <tal:define define="search_url context/aq_parent/aq_parent/absolute_url">
+                <metal:search metal:use-macro="here/macro_forum/macros/forum-rechercher" />
+            </tal:define>
+
+        </section>
+
+    </main>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+
+</metal:core>
+
+</body>
+
+</html>

@@ -1,0 +1,203 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="ajout">
+
+<tal:block condition="python: not user.has_role('Etudiant')">
+  <div tal:condition="python:ajout == 'JalonTermeGlossaire'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=ajout-glossaire"
+       class="bouton showmore-inform bouton_icone icone_creer"
+       i18n:translate="">
+       Créer un terme de glossaire
+    </a>
+  </div>
+
+  <div tal:attributes="id string:create_${tag}"
+       tal:condition="python:ajout in ['JalonCoursWims', 'JalonBoiteDepot', 'JalonForum']">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=ajout-activite&amp;type=${tag}&amp;section=${section}&amp;idpage=${idpage}"
+       title="Créer"
+       class="bouton showmore-inform bouton_icone icone_creer"
+       target="new">
+		<span tal:condition="python:tag=='Examen'" i18n:translate="">Créer un examen</span>
+     	<span tal:condition="python:tag=='AutoEvaluation'" i18n:translate="">Créer une auto-évaluation</span>
+     	<span tal:condition="python:tag=='BoiteDepot'" i18n:translate="">Créer une boite de dépôts</span>
+      <span tal:condition="python:tag=='Forum'" i18n:translate="">Créer un sujet de discussion</span>
+    </a>
+  </div>
+
+  <div tal:condition="python:ajout == 'JalonExerciceWims'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=ajout-wims"
+       title="Créer un exercice Wims"
+       class="bouton showmore bouton_icone icone_creer"
+       target="new"
+       i18n:translate="">
+       Créer un exercice Wims
+    </a>
+  </div>
+
+  <div tal:condition="python:ajout == 'JalonRessourceExterne'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=ajout-ressource"
+       title="Créer un lien"
+       class="bouton showmore-inform bouton_icone icone_creer"
+       target="new"
+       i18n:translate="">
+       Créer un lien
+    </a>
+  </div>
+
+    <div tal:condition="python:ajout == 'Webconference'">
+        <tal:define define="session python:context.getSessionConnect(user.getId());
+                            reunion python:context.getReunion(user.getId(), request)">
+        <a tal:attributes="href string:${reunion/urlreunion}?session=${session}"
+           title="Se connecter à la réunion"
+           class="bouton lien_actualiser bouton_icone icone_connexion"
+           target="new"
+           i18n:translate="">
+           Se connecter à votre salle virtuelle
+        </a>
+        <br /><br />
+        <p>
+            Communiquez l'url de votre réunion aux participants que vous souhaitez inviter : <tal:replace replace="string:${reunion/urlreunion}"/>
+        </p>
+        </tal:define>
+    </div>
+
+  <div tal:condition="python:ajout == 'Sonorisation'">
+    <a tal:define="session python:context.getSessionConnect(user.getId());
+                   reunion python:context.getReunion(user.getId(), request)"
+       tal:attributes="href string:${reunion/urlreunion}?session=${session}"
+       title="Créer une présentation sonorisée"
+       class="bouton lien_actualiser bouton_icone icone_creer"
+       target="new"
+       i18n:translate="">
+       Créer une présentation sonorisée
+    </a>
+  </div>
+
+  <div tal:attributes="id string:create_${ajout}"
+       tal:condition="python:ajout == 'Supports'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-supports&amp;ajout=${ajout}"
+       title="Attacher un support"
+       class="bouton bouton_icone icone_creer showmore"
+       target="new"
+       i18n:translate="">
+       Attacher un support
+    </a>
+  </div>
+
+  <div tal:attributes="id string:create_${ajout}"
+       tal:condition="python:ajout == 'Complements'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-complements&amp;ajout=${ajout}"
+       title="Attacher un complément"
+       class="bouton bouton_icone icone_creer showmore"
+       target="new"
+       i18n:translate="">
+       Attacher un complément
+    </a>
+  </div>
+
+  <div tal:attributes="id string:create_${ajout}"
+       tal:condition="python:ajout == 'Glossaire'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-glossaire&amp;ajout=${ajout}"
+       title="Attacher un terme de glossaire"
+       class="bouton bouton_icone icone_creer showmore"
+       target="new"
+       i18n:translate="">
+       Attacher un terme de glossaire
+    </a>
+  </div>
+
+  <!-- Ajouts dans les activités du cours -->
+  <div tal:attributes="id string:create_${ajout}"
+       tal:condition="python:ajout in ['AutoEvaluation', 'BoiteDepot', 'Examen']">
+
+    <!-- Ajout d'un sujet -->
+    <tal:condition condition="python:menu == 'sujets'">
+  		<a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-sujets&amp;ajout=${ajout}&amp;menu=${menu}&amp;idpage=${idpage}"
+  		   title="Attacher un sujet"
+  		   class="bouton bouton_icone icone_creer showmore"
+  		   target="new"
+  		   i18n:translate="">
+  			Attacher un élément de « Mon Espace »
+  		</a>
+  	</tal:condition>
+
+    <!-- Ajout d'un exercice -->
+  	<tal:condition condition="python:menu == 'exercices'">
+  		<!-- Je suis le créateur de l'activité, celle-ci est masquée et n'est pas un examen déjà activé -->
+      <tal:condition condition="python:context.Creator()==user.getId() and affElement['val']!=True and context.getIdExam()==''">
+  			<a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-exercices&amp;ajout=${ajout}&amp;menu=${menu}&amp;idpage=${idpage}"
+  			   title="Attacher un exercice wims"
+  			   class="bouton bouton_icone icone_creer showmore"
+  			   target="new"
+  			   i18n:translate="">
+  				Attacher un exercice Wims de « Mon Espace »
+  			</a>
+  		</tal:condition>
+      <!-- Je ne suis pas le créateur de l'activité -->
+  		<tal:condition condition="python:context.Creator()!=user.getId()">
+  			<a title="Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur de le faire."
+           class="bouton bouton_icone icone_creer off"
+           i18n:translate="">
+            Attacher un exercice Wims de « Mon Espace »
+        </a>
+  		</tal:condition>
+      <!-- Je suis le créateur de l'autoévaluation, mais celle-ci n'est pas masquée -->
+  		<tal:condition condition="python:context.Creator()==user.getId() and affElement['val']==True and context.getIdExam()==''">
+  			<a title="Vous ne pouvez attacher un exercice que si l'auto-évaluation est masquée."
+           class="bouton bouton_icone icone_creer off"
+           i18n:translate="">
+            Attacher un exercice Wims de « Mon Espace »
+        </a>
+  		</tal:condition>
+      <!-- Je suis le créateur de l'activité, mais c'est un examen qui a été activé -->
+      <tal:condition condition="python:context.Creator()==user.getId() and context.getIdExam()!=''">
+        <a title="Vous ne pouvez ajouter un exercice a un examen qui a déjà été activé."
+           class="bouton bouton_icone icone_creer off"
+           i18n:translate="">
+            Attacher un exercice Wims de « Mon Espace »
+        </a>
+      </tal:condition>
+  	</tal:condition>
+
+    <!-- Ajout d'une correction -->
+    <tal:condition condition="python:menu == 'corrections'">
+        <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-corrections&amp;ajout=${ajout}&amp;menu=${menu}&amp;idpage=${idpage}"
+           title="Attacher une correction"
+           class="bouton bouton_icone icone_creer showmore"
+           target="new"
+           i18n:translate="">
+            Attacher un élément de « Mon Espace »
+        </a>
+    </tal:condition>
+  </div>
+
+  <!-- Attacher des étudiants -->
+  <div tal:attributes="id string:create_${ajout}"
+       tal:condition="python:ajout == 'ajout-apogee'">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_apogee&amp;formulaire=ajout-apogee"
+       title="Attacher des étudiants"
+       class="bouton bouton_icone icone_creer showmore-inform"
+       target="new"
+       i18n:translate="">
+       Attacher des étudiants
+    </a>
+  </div>
+
+</tal:block>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

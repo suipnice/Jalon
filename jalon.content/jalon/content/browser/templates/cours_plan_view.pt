@@ -1,0 +1,464 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="plan context/getPlan;
+                        page string:cours_plan_view;
+                        section string:plan;
+                        mtool context/@@plone_tools/membership;
+                        mode_etudiant request/mode_etudiant | nothing;
+                        personnel python:context.isPersonnel(user, mode_etudiant);
+                        perso_mode_etu python:personnel or mode_etudiant;
+                        anonymous python:user.has_role('Anonymous');
+                        actualites context/getActualitesCours;
+                        annonces python:context.getAnnonces(user, request, perso_mode_etu);
+                        dicoForums context/getDicoForums;
+                        aidePlan context/getAidePlan;
+                        acces context/getAcces;
+                        is_public python:context.test(acces == 'Public', 'success', 'disabled')">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_second" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main-large" class="reveal-modal large" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main id="mes_cours-plan" class="row" role="main" aria-labelledby="page_title">
+
+        <tal:block
+             tal:define="message request/message | nothing"
+             tal:condition="message">
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+        </tal:block>
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+        <section id="course_plan" class="medium-8 small-12 columns"
+                 tal:define="isLDAP context/isLDAP;
+                             baseAnnuaire context/getBaseAnnuaire">
+
+            <div class="row">
+
+                <nav class="right" tal:condition="personnel">
+                    <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=modifier-titre;
+                                       title string:Modifier le titre"
+                       i18n:attributes="title">
+                        <i class="fa fa-pencil fa-lg no-pad"></i>
+                    </a>
+                    <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-anonyme;
+                                       title string:Accès public"
+                       i18n:attributes="title">
+                        <i tal:attributes="class string:fa fa-globe fa-lg no-pad ${is_public}"></i>
+                    </a>
+                </nav>
+
+                <h1>
+                    <i class="fa fa-book"></i><tal:replace replace="here/Title" />
+                </h1>
+
+            </div>
+
+
+            <div class="row">
+
+                <div id="description_cours"
+                     class="panel bkgrnd radius small-12 medium-6 columns"
+                     tal:define="desc context/getDescriptionCourte">
+
+                        <a class="right"
+                           data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-attribut&amp;attribut=description"
+                           tal:condition="personnel">
+                            <i class="fa fa-pencil fa-lg"></i>
+                        </a>
+                        <h2>
+                            <i class="fa fa-info-circle no-pad"></i>
+                            <tal:block i18n:translate="">Description du cours :</tal:block>
+                        </h2>
+                        <p tal:content="structure desc/desc" />
+                        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=description_complete"
+                           tal:condition="desc/link">
+                           <i>Voir la description complète…</i>
+                        </a>
+
+                </div>
+
+
+                <div class="small-12 medium-6 columns">
+
+                    <div id="panel_auteur" class="panel bkgrnd radius">
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-auteur"
+                           tal:condition="personnel">
+                            <i class="fa fa-pencil fa-lg"></i>
+                        </a>
+                        <dl>
+                            <dt>
+                                <i class="fa fa-user no-pad"></i>
+                                <tal:block i18n:translate="auteur">Auteur :</tal:block>
+                            </dt>
+                            <dd>
+                                <a tal:define="auteurPrincipal context/getAuteur"
+                                   tal:attributes="href python:context.test(isLDAP, context.getFicheAnnuaire(auteurPrincipal, baseAnnuaire), 'mailto:%s' % auteurPrincipal['email'])"
+                                   target="_blank"
+                                   tal:content="auteurPrincipal/fullname" />
+                            </dd>
+                        </dl>
+                    </div>
+
+
+                    <div class="panel bkgrnd radius"
+                         tal:define="coauteurs context/getCoAuteursCours">
+
+                    <tal:personnel condition="python:personnel">
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:condition="coauteurs"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer-coauteurs">
+                            <i class="fa fa-trash fa-lg alert"></i>
+                        </a>
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-coauteurs">
+                            <i class="fa fa-plus-circle fa-lg"></i>
+                        </a>
+                    </tal:personnel>
+
+                        <dl>
+                            <dt>
+                                <i class="fa fa-users no-pad"></i>
+                                <tal:block i18n:translate="coauteurs">Co-auteur(s) :</tal:block>
+                            </dt>
+                    <tal:repeat repeat="auteur coauteurs">
+                        <tal:define define="is_last repeat/auteur/end;
+                                            itemNbr repeat/auteur/length;">
+                            <dd>
+                                <a target="_blank"
+                                   tal:attributes="href python:context.test(isLDAP, context.getFicheAnnuaire(auteur, baseAnnuaire), 'mailto:%s' % auteur['email'])"
+                                   tal:content="auteur/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                            </dd>
+                            <tal:comment replace="nothing"><!--
+                                Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                            --></tal:comment>
+
+                        </tal:define>
+                    </tal:repeat>
+                            <tal:block condition="not:coauteurs"><dd>il n'y a aucun co-auteur pour ce cours.</dd></tal:block>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+              <span class="right" tal:condition="personnel">
+                    <a class="dropdown"
+                       data-options="align:bottom" data-dropdown="course-options">
+                        <i class="fa fa-cog fa-lg"></i>
+                    </a>
+                    <ul id="course-options" data-dropdown-content class="f-dropdown">
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=purger&amp;came_from=cours_plan_view">
+                                <i class="fa fa-filter fa-fw"></i><tal:block i18n:translate="">Purger les travaux étudiants</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=suppr_WIMS&amp;came_from=cours_plan_view">
+                                <i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="">Supprimer les activités WIMS</tal:block>
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+                <h2 id="js-update_title">
+                    <i class="fa fa-sitemap no-pad"></i>
+                    <tal:block i18n:translate="">Plan du cours</tal:block>
+                </h2>
+            </div>
+
+            <div class="row panel callout radius">
+
+        <tal:no_plan condition="not:plan">
+
+                <div class="panel bkgrnd radius show-for-medium-up"
+                     tal:condition="personnel">
+
+                    <h3 class="show-for-medium-up">
+                        <i class="fa fa-plus-circle"></i>
+                        <tal:block i18n:translate="">Ajouter des éléments</tal:block>
+                    </h3>
+
+                    <nav id="item-adder"
+                         tal:condition="personnel">
+                        <ul class="button-group radius"
+                            tal:define="menu_cours context/getMenuCours">
+                            <li>
+                                <a class="button small course-title dropdown" data-options="align:bottom" data-dropdown="add-title-text">
+                                    <i class="fa fa-paragraph"></i><tal:block i18n:translate="">Titre / texte</tal:block>
+                                </a>
+                                <ul id="add-title-text" data-dropdown-content class="f-dropdown">
+                                    <li>
+                                        <a tal:attributes="href string:${context/absolute_url}/cours_plan_form?typeElement=Titre"
+                                           data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                            <i class="fa fa-paragraph fa-fw"></i>
+                                            <tal:block i18n:translate="">Titre</tal:block>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a tal:attributes="href string:${context/absolute_url}/cours_plan_form?typeElement=TexteLibre"
+                                           data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                            <i class="fa fa-align-justify fa-fw"></i>
+                                            <tal:block i18n:translate="">Texte libre</tal:block>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-space_el dropdown" data-options="align:bottom" data-dropdown="add-space_el">
+                                    <i class="fa fa-home"></i><tal:block i18n:translate="">De mon espace</tal:block>
+                                </a>
+                                <ul id="add-space_el" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/espace">
+                                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-supports&amp;ajout=Supports&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Élément de mon espace</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-activity dropdown" data-options="align:bottom" data-dropdown="add-activity">
+                                    <i class="fa fa-random"></i><tal:block i18n:translate="">Activité</tal:block>
+                                </a>
+                                <ul id="add-activity" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/activites">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=creer-activites&amp;ajout=Activites&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Activité pédagogique</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-direct dropdown" data-options="align:bottom" data-dropdown="add-direct">
+                                    <i class="fa fa-cloud-upload"></i><tal:block i18n:translate="">Ajout rapide</tal:block>
+                                </a>
+                                <ul id="add-direct" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/rapide">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-elements&amp;ajout=Rapide&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Ajout rapide</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <ol id="course_plan-plan">
+                    <li class="panel callout radius">
+                        <h4>
+                            <i class="fa fa-info-circle"></i>
+                            <tal:block i18n:translate="legende">Aucune ressource n'est accessible dans ce cours.</tal:block>
+                        </h4>
+                    </li>
+                    <li tal:condition="python:context.test(aidePlan['activer_aide_plan'] and personnel and mode_etudiant != 'true', 1, 0)"
+                        tal:replace="structure aidePlan/lien_aide_plan" />
+                </ol>
+        </tal:no_plan>
+
+        <tal:plan condition="plan">
+
+                <a data-reveal-id="reveal-main" data-reveal-ajax="true" class="button tiny radius expand"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_plan&amp;formulaire=legende-plan&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-info-circle"></i><tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
+                </a>
+
+                <div class="panel bkgrnd radius show-for-medium-up"
+                     tal:condition="personnel">
+
+                    <h3 class="show-for-medium-up">
+                        <i class="fa fa-plus-circle"></i>
+                        <tal:block i18n:translate="">Ajouter des éléments</tal:block>
+                    </h3>
+
+                    <nav id="item-adder"
+                         tal:condition="personnel">
+                        <ul class="button-group radius"
+                            tal:define="menu_cours context/getMenuCours">
+                            <li>
+                                <a class="button small course-title dropdown" data-options="align:bottom" data-dropdown="add-title-text">
+                                    <i class="fa fa-paragraph"></i><tal:block i18n:translate="">Titre / texte</tal:block>
+                                </a>
+                                <ul id="add-title-text" data-dropdown-content class="f-dropdown">
+                                    <li>
+                                        <a tal:attributes="href string:${context/absolute_url}/cours_plan_form?typeElement=Titre"
+                                           data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                            <i class="fa fa-paragraph fa-fw"></i>
+                                            <tal:block i18n:translate="">Titre</tal:block>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a tal:attributes="href string:${context/absolute_url}/cours_plan_form?typeElement=TexteLibre"
+                                           data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                            <i class="fa fa-align-justify fa-fw"></i>
+                                            <tal:block i18n:translate="">Texte libre</tal:block>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-space_el dropdown" data-options="align:bottom" data-dropdown="add-space_el">
+                                    <i class="fa fa-home"></i><tal:block i18n:translate="">De mon espace</tal:block>
+                                </a>
+                                <ul id="add-space_el" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/espace">
+                                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-supports&amp;ajout=Supports&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Élément de mon espace</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-activity dropdown" data-options="align:bottom" data-dropdown="add-activity">
+                                    <i class="fa fa-random"></i><tal:block i18n:translate="">Activité</tal:block>
+                                </a>
+                                <ul id="add-activity" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/activites">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=creer-activites&amp;ajout=Activites&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Activité pédagogique</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="button small course-direct dropdown" data-options="align:bottom" data-dropdown="add-direct">
+                                    <i class="fa fa-cloud-upload"></i><tal:block i18n:translate="">Ajout rapide</tal:block>
+                                </a>
+                                <ul id="add-direct" data-dropdown-content class="f-dropdown">
+                                    <li tal:repeat="menu menu_cours/rapide">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-elements&amp;ajout=Rapide&amp;espace=${menu/rubrique}">
+                                            <i tal:attributes="class menu/icone"></i><tal:replace replace="menu/titre" i18n:translate="">Ajout rapide</tal:replace>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="panel radius show-for-medium-up"
+                      tal:condition="personnel">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="aide_plan">
+                        Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
+                    </tal:block>
+                </div>
+
+                <ol id="course_plan-plan"
+                    tal:define="plancours python:context.getPlanCours(personnel, user.getId(), actualites['listeActu'])">
+                    <metal:macro use-macro="context/macro_cours_plan/macros/afficher-plan">
+                        Affichage du plan du cours
+                    </metal:macro>
+                </ol>
+
+                <div class="panel radius show-for-medium-up"
+                      tal:condition="personnel">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="aide_plan">
+                        Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
+                    </tal:block>
+                </div>
+                <a data-reveal-id="reveal-main" data-reveal-ajax="true" class="button tiny radius expand"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_plan&amp;formulaire=legende-plan&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-info-circle"></i><tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
+                </a>
+
+        </tal:plan>
+            </div>
+
+
+            <div class="row">
+                <div class="small-12 colmuns">
+                    <metal:macro use-macro="context/macro_cours_plan/macros/affichage_biblio">
+                        Affichage de la bibliographie
+                    </metal:macro>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="small-12 colmuns">
+                    <metal:macro use-macro="context/macro_cours_plan/macros/affichage_glossaire">
+                        Affichage du glossaire
+                    </metal:macro>
+                </div>
+            </div>
+
+        </section>
+
+
+        <aside id="course_life" class="medium-4 small-12 columns">
+
+    <tal:condition condition="python:context.test(context.isAuteurs(user.getId()), 1, 0)">
+            <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage">
+                Mode Enseignant / Etudiant
+            </metal:macro>
+    </tal:condition>
+
+            <metal:macro use-macro="context/macro_cours_life/macros/afficher-participants">
+                Affichage des participants au cours
+            </metal:macro>
+
+            <metal:macro use-macro="context/macro_cours_life/macros/course_life">
+                Affichage de la vie du cours
+            </metal:macro>
+
+        </aside>
+
+
+    </main>
+
+
+    <tal:block tal:condition="not:personnel"
+               define="script string:readSwitcher()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+    <tal:block tal:condition="personnel"
+               define="script string:setSortablePlan()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:condition="perso_mode_etu"
+            tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
+            tal:content="jsTranslate/getJsTranslate"></script>
+
+    <tal:comment replace="nothing"><!--
+    <tal:define define="script string:setPlanLegend()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:define>
+    --></tal:comment>
+
+</metal:core>
+</body>
+</html>

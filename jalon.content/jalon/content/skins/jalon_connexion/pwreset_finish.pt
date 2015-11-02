@@ -1,0 +1,48 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      lang="en-US"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="passwordresettool">
+<body>
+
+<metal:main fill-slot="main">
+    <header class="sticky" role="banner" aria-labelledby="page_title">
+            <nav class="top-bar" data-topbar="data-topbar" role="navigation" aria-label="Navigation principale">
+                <ul class="title-area">
+                    <li class="name">
+                        <h1>
+                            <a tal:attributes="href portal_state/portal_url">
+                                <tal:replace replace="portal_state/portal_title" />
+                            </a>
+                        </h1>
+                    </li>
+                </ul>
+            </nav>
+    </header>
+
+    <div class="row">
+        <h1 class="documentFirstHeading"
+            i18n:translate="heading_pwreset_success">Password set</h1>
+
+        <div class="documentDescription" i18n:translate="message_pwreset_success">
+            Your password has been set successfully. You may now log in with your
+            new password.
+        </div>
+
+        <br/>
+        <a class="button"
+           data-reveal-id="reveal-connection" data-reveal-ajax="true"
+           tal:attributes="href string:${here/absolute_url}/connexion_form;
+                           title string:Si vous avez été invité par courriel."
+           i18n:attributes="title">
+            <i class="fa fa-leaf"></i>
+            <tal:block i18n:translate="">Se connecter avec un compte invité</tal:block>
+        </a>
+
+    </div>
+
+    <div id="reveal-connection" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+</metal:main>
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+    <tal:define define="pageCours string:videos_pod">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <style>
+        #elasticsearch h4
+        {
+            overflow:hidden;
+            white-space:nowrap;
+            text-overflow: ellipsis;
+        }
+
+        #elasticsearch .flex-video
+        {
+            padding-top: 0;
+            margin-bottom: 0;
+        }
+        #pagination-page_number input[type="number"]
+        {
+            width:50px;
+        }
+    </style>
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+
+    <main class="row" role="main" aria-labelledby="page_title"
+          tal:define="type_search request/type_search | nothing;
+                      term_search request/term_search | nothing;">
+
+        <h2 class="texte_icone icone_recherche">
+            <tal:block i18n:translate="">Rechercher une vidéo dans</tal:block>
+            <tal:replace replace="context/getNameServeurElasticsearch"/>
+        </h2>
+
+        <form name="recherche_apogee" method="POST"
+              tal:attributes="action string:${context/absolute_url}/videos_pod">
+
+            <div class="field" id="recherche">
+                <label for="type_search" i18n:translate="">Type :</label>
+                <select name="type_search"
+                        id="type_search">
+                    <option value="mes_videos"
+                            i18n:translate=""
+                            tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">Mes vidéos</option>
+                    <option value="toutes_videos"
+                            i18n:translate=""
+                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">Toutes les vidéos</option>
+                </select>
+
+                <label for="term_search" i18n:translate="">Mot clé ou auteur :</label>
+                <input type="text" name="term_search" class="blurrable" id="term_search" 
+                       size="30" maxlength="255"
+                       tal:attributes="value term_search" />
+
+                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+
+                <input class="button expand tiny radius" type="submit" 
+                        name="form.button.save" value="Rechercher" 
+                        i18n:attributes="value label_rechercher" />
+
+            </div>
+        </form>
+
+        <tal:condition condition="type_search">
+        <h2 class="texte_icone icone_resultats"
+            i18n:translate="">
+            Résultats de la recherche
+        </h2>
+        <tal:define define="page python:int(request.get('page', 1));
+                            videos python:context.searchElasticsearch(type_search, term_search, page)">
+        <div>
+            <div tal:condition="not:videos/liste_videos"
+                  i18n:translate="">
+                La recherche n'a donné aucun résultat.
+            </div>
+            <form name="element_add" method="POST"
+                  tal:attributes="action string:${context/absolute_url}/ajouterressource_script"
+                  tal:condition="videos/liste_videos">
+                <h3>
+                    Sélectionnez une ou plusieurs vidéos.
+                </h3>
+                <div class="el_counter show-for-medium-up">
+                    <tal:block i18n:translate="">Vidéos</tal:block>
+                    <tal:replace replace="videos/first"/> 
+                    <tal:block i18n:translate="">à</tal:block>
+                    <tal:replace replace="videos/last"/>
+                    <tal:block i18n:translate="">affichées sur</tal:block>
+                    <tal:replace replace="videos/count"/>.
+                </div>
+                <ul id="elasticsearch" class="small-block-grid-4">
+                    <li tal:repeat="video videos/liste_videos">
+                        <div class="panel radius">
+                            <span>
+                                <div class="noSwitch" style="display:inline-block;"
+                                     title="Action par lot : sélectionner / désélectionner"
+                                     i18n:attributes="title">
+                                    <input type="checkbox" name="video_ids:list"
+                                           tal:attributes="id string:switch-${repeat/video/index};
+                                                           value video/id;"/>
+                                    <label tal:attributes="for string:switch-${repeat/video/index}"/>
+                                </div>
+                            </span>
+                            <h4 data-tooltip aria-haspopup="true" class="has-tip"
+                                tal:attributes="title video/title"
+                                tal:content="video/title"/>
+                            <p>
+                                <strong>Auteur :</strong> <tal:replace replace="video/owner"/>
+                            </p>
+                            <a title="Voir la vidéo"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
+                               i18n:attributes="title"
+                               i18n:translate="">
+                                <div class="flex-video">
+                                    <img tal:attributes="src video/thumbnail"/>
+                                </div>
+                            </a>
+                            <div class="text-center">
+                                <a class="button tiny" title="Voir la vidéo"
+                                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                   tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
+                                   i18n:attributes="title">
+                                    <i class="fa fa-youtube-play"></i>
+                                    <tal:block i18n:translate="">Voir</tal:block>
+                                </a>
+                                <a class="button tiny create" title="Ajouter la vidéo"
+                                   tal:attributes="href string:${context/absolute_url}/ajouterressource_script?formulaire=ajout-elasticsearch&amp;video_id=${video/id}&amp;authMember=${user/getId}"
+                                   i18n:attributes="title">
+                                    <i class="fa fa-plus-circle"></i>
+                                    <tal:block i18n:translate="">Ajouter</tal:block>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <input type="hidden" name="macro" value="macro_creer_mon_espace" />
+                <input type="hidden" name="formulaire" value="ajout-elasticsearch" />
+                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+
+                <div class="formControls"
+                     tal:condition="videos">
+                    <button type="submit" class="button small create"
+                            name="form.button.save">
+                        <i class="fa fa-plus-circle"></i>
+                        <tal:block i18n:translate="">Ajouter</tal:block>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="pagination-container"
+             tal:define="nb_pages videos/nb_pages;">
+
+            <tal:condition condition="python:page-1 > 0">
+                <a id="pagination-prev" class="button tiny"
+                   tal:define="page_prec python:page - 1"
+                   tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_prec}&amp;type_search=${type_search}&amp;term_search=${term_search}"
+                   i18n:translate="">
+                    <span>Précédent</span>
+                </a>
+            </tal:condition>
+
+            <tal:condition condition="python:page < nb_pages">
+                <a id="pagination-next" class="button tiny"
+                   tal:define="page_suiv python:page + 1"
+                   tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_suiv}&amp;type_search=${type_search}&amp;term_search=${term_search}"
+                   i18n:translate="">
+                    <span>Suivant</span>
+                </a>
+            </tal:condition>
+
+            <form id="pagination-page_number" method="post"
+                  tal:attributes="action string:${context/absolute_url}/${template/id}"
+                  tal:condition="python:context.test(nb_pages != 0, 1, 0)">
+                <input type="hidden" name="type_search" 
+                       tal:attributes="value type_search"/>
+                <input type="hidden" name="term_search" 
+                       tal:attributes="value term_search"/>
+                <input type="number" name="page"
+                       min="1" step="1" size="4" maxlenght="4"
+                       tal:attributes="value page;
+                                       max videos/nb_pages" />
+                / <tal:block content="nb_pages" />
+            </form>
+
+        </div>
+        </tal:define>
+        </tal:condition>
+    </main>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setApogeeSearch()">
+    </script>
+
+</metal:core>
+
+</body>
+
+</html>

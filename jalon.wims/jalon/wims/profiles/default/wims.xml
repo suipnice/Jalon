@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object>
+ <layout>
+  <url_connexion value="http://domainname.com/wims/wims.cgi"/>
+  <login value="jalonevo"/>
+  <password value="azerty"/>
+  <classe_locale value="ClassePlone"/>
+  <nom_institution value="Université de Nice Sophia Antipolis"/>
+ </layout>
+ <classe>
+  <donnees_classe>
+   <element value="description=%s"/>
+   <element value="institution=%s"/>
+   <element value="supervisor=%s"/>
+   <element value="email=%s"/>
+   <element value="password=%s"/>
+   <element value="expiration=30100201"/>
+   <element value="level=U1"/>
+   <element value="lang=fr"/>
+   <element value="type=%s"/>
+   <element value="theme=local/jalon"/>
+   <element value="theme_icon=jalon"/>
+   <element value="secure=all"/>
+  </donnees_classe>
+  <donnees_superviseur>
+   <element value="lastname=%s"/>
+   <element value="firstname=%s"/>
+   <element value="password=%s"/>
+  </donnees_superviseur>
+  <donnees_exercice>
+   <element value="module=%s"/>
+   <element value="params=exo=%s&amp;qnum=%s&amp;qcmlevel=%s&amp;intro_qcmpresent=%s&amp;intro_presentsol=%s&amp;intro_check=%s&amp;intro_expert=%s&amp;scoredelay=%s"/>
+   <element value="points=%s"/>
+   <element value="weight=%s"/>
+   <element value="title=%s"/>
+   <element value="description=%s"/>
+  </donnees_exercice>
+ </classe>
+</object>

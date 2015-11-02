@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="main"
+                tal:define="errors options/state/getErrors;">
+      <div id="content-core">
+        <h2 id="cours_edit_form_title" i18n:translate="">Titre</h2>
+        <br />
+        <form name="cours_edit_form" action="./cours_edit" method="post"
+              tal:define="attribut request/attribut">
+          <metal:field use-macro="python:context.widget(attribut, mode='edit')">
+            Body text
+          </metal:field>
+
+            <div class="formControls">
+                <input class="context"    type="submit" name="form.button.save"   value="Save"   i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+            </div>
+        
+        </form>
+      </div>
+    </metal:main>
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="informations_jalon">
+
+<div id="jalon_stats" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+    <h2>
+        <tal:block i18n:translate="">Statistiques d'utilisation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <table>
+        <tr>
+            <td>Cours disponibles</td>
+            <td>2595</td>
+        </tr>
+        <tr>
+            <td>Fichiers et images accessibles</td>
+            <td>30955</td>
+        </tr>
+        <tr>
+            <td>Exercices WIMS accessibles</td>
+            <td>2864</td>
+        </tr>
+        <tr>
+            <td>Ressources externes accessibles</td>
+            <td>3475</td>
+        </tr>
+        <tr>
+            <td>Dépôts valides</td>
+            <td>37693</td>
+        </tr>
+        <tr>
+            <td>Activités Wims</td>
+            <td>1470</td>
+        </tr>
+    </table>
+
+</div>
+
+<div class="row" data-equalizer="data-equalizer">
+
+    <div class="large-4 medium-4 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+        <span class="fa-stack fa-5x">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-magic fa-stack-1x fa-inverse"></i>
+        </span>
+        <h3 i18n:translate="">Ergonomie &amp; Simplicité</h3>
+        <p i18n:translate="">Conçue par un collectif d'enseignants et d'ingénieurs pédagogiques, Jalon offre aux étudiants et enseignants tous les outils d'apprentissage en ligne. Jalon est consultable sur tous types de supports : ordinateurs, smartphones et tablettes.</p>
+    </div>
+
+    <div class="large-4 medium-4 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+        <span class="fa-stack fa-5x">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-rocket fa-stack-1x fa-inverse"></i>
+        </span>
+        <h3 i18n:translate="">Outils professionnels</h3>
+        <p i18n:translate="">Jalon est un « hub pédagogique » permettant d'associer des ressources conçues dans différents dispositifs dans une logique pédagogique. Ainsi, des exercices WIMS, des enregistrements Adobe Connect, des podcasts… peuvent être diffusés comme supports, activités, évaluation en quelques clics.</p>
+    </div>
+
+    <div class="large-4 medium-4 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+        <span class="fa-stack fa-5x">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-map-marker fa-stack-1x fa-inverse"></i>
+        </span>
+        <h3 i18n:translate="">Parcours pédagogiques</h3>
+        <p i18n:translate="">Jalon permet de construire directement en ligne un véritable parcours de formation : plan de cours, révision, test de positionnement, exercices d'entrainement, évaluation, activités diffusées au rythme de votre pédagogie…</p>
+    </div>
+
+</div>
+
+<div class="row" data-equalizer="data-equalizer">
+
+    <div class="large-7 medium-7 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+        <div class="flex-video">
+            <iframe src="http://unspod.unice.fr/video/3008-principes-dutilisation-de-jalon/?is_iframe=true&size=720" width="1280" height="720" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>
+        </div>
+    </div>
+
+    <div class="large-5 medium-5 small-12 columns" data-equalizer-watch="data-equalizer-watch"
+         tal:define="footerData python:context.etudiants.getFooter()">
+        <h3 i18n:translate="">Faites connaissance avec Jalon</h3>
+        <p i18n:translate="">Pourquoi déployer et maintenir une plateforme remplie de dizaines de fonctions et modules sans lien pédagogique ? Jalon est le seul environnement pédagogique utilisable sans réelle formation. Jalon part des usages pédagogiques et intègre des outils plébiscités par les pédagogues et élèves.</p>
+        <p><strong i18n:translate="">Nous avons inventé le concept d'ergonomie pédagogique : savoir utiliser une fonction de Jalon, c'est savoir utiliser tout Jalon.</strong></p>
+        <p i18n:translate="">Jalon est basé sur le solide CMS Plone utilisé par exemple par la NASA, le MIT, l'Université de Fribourg, l'European Institute for E-Learning, la Free Software Foundation, le Gouvernement du Brésil…</p>
+        <a class="button radius"
+           tal:condition="footerData/activer_aide"
+           tal:attributes="href footerData/lien_aide">
+            <i class="fa fa-compass"></i>
+            <tal:block i18n:translate="">Voir l'aide détaillée de Jalon</tal:block>
+        </a>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div id="logo_container" class="small-12 columns">
+
+    <tal:comments replace="nothing"><!--
+        <h4>
+            <tal:block i18n:translate="">Imaginé et développé à l’</tal:block><a
+                tal:attributes="href infos_connexion/url_etablissement;
+                                title string:Visiter le site de l'${infos_connexion/etablissement}."
+                i18n:attributes="title"
+                i18n:translate="">Université de Nice - Sophia Antipolis</a>
+        </h4>
+    --></tal:comments>
+        <h4>
+            <tal:block i18n:translate="">Imaginé et développé à l’</tal:block><a
+                href="//unice.fr/"
+                title="Visiter le site de l'Université de Nice - Sophia Antipolis."
+                i18n:attributes="title"
+                i18n:translate="">Université de Nice - Sophia Antipolis</a>
+        </h4>
+    <tal:comments replace="nothing"><!--
+        <a class="button radius small" href="http://unice.fr/pi/jalon/plaquette" i18n:translate="">
+            <i class="fa fa-download"></i>
+            Plaquette de présentation
+        </a>
+    --></tal:comments>
+        <a class="button radius small"
+           href="http://portail.unice.fr/services-centraux/service_universitaire_innovation_pedagogique/Services_aux_enseignants/Enseigner_avec_le_numerique/plaquette_web.pdf"
+           i18n:translate="">
+            <i class="fa fa-download"></i>
+            Plaquette de présentation
+        </a>
+        <a class="button radius small" data-reveal-id="jalon_stats"
+           href="http://portail.unice.fr/services-centraux/service_universitaire_innovation_pedagogique/Services_aux_enseignants/Enseigner_avec_le_numerique/plaquette_web.pdf"
+           i18n:translate="">
+            <i class="fa fa-calculator"></i>
+            Statistiques
+        </a>
+    <tal:comments replace="nothing"><!--
+        <a class="button radius small" href="http://unice.fr/suip/jalon/support" i18n:translate="">
+            <i class="fa fa-download"></i>
+            Support de formation
+        </a>
+    --></tal:comments>
+        <a class="button radius small"
+           href="http://fr.wikipedia.org/wiki/JALON"
+           i18n:translate="">
+            <i class="fa fa-external-link"></i>
+            Jalon sur Wikipedia
+        </a>
+        <a class="button radius small"
+           href="https://sourcesup.cru.fr/projects/jalonos/"
+           i18n:translate="">
+            <i class="fa fa-sun-o"></i>
+            Participer au projet opensource Jalon
+        </a>
+
+    </div>
+
+</div>
+
+<tal:comments replace="nothing"><!--
+<tal:block define="script string:setFlexVideo()">
+    <tal:jsBuffer define="addJSContent python:jsBuffer.addJS(script)" />
+</tal:block>
+--></tal:comments>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

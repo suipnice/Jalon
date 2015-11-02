@@ -1,0 +1,143 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+    metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!--Marquer un texte -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel">
+            <label for="pre">La question à poser</label>
+            <div class="formHelp texte_icone icone_information">Les balises HTML sont admises.</div>
+            <textarea name="pre" id="pre" rows="3" cols="60" tal:content="QCM_parsed/pre"/>
+        </div>
+
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius" data-reveal-id="reveal_data">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="data">Le texte à marquer</label>
+            <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_data"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Le texte à marquer <a class="close-reveal-modal"></a></h2>
+                <div>
+                    <ul>
+                        <li>Les champs à marquer doivent être mis entre une paire de double-point d'interrogation <code class="indicateur">?? champ à marquer ??</code>.</li>
+                        <li>Chaque champ contient une liste de mots séparés par des virgules.</li>
+                        <li>Ces mots seront tirés au hasard avant l'affichage de la phrase.</li>
+                        <li>Si c'est le premier mot (quand il n'est pas vide), il est à marquer ; sinon on ne doit pas le marquer. <code class="indicateur">?? mot à marquer, mot à ne pas marquer ??</code></li>
+                        <hr/>
+                        <li>Jusqu'à une centaine de points de marquage peuvent être posés dans chaque paragraphe. Chaque paragraphe étant séparé par un point-virgule : <code class="indicateur">;</code>
+                        </li>
+                        <hr/>
+                        <li>Pour placer un champ « marquable », mais qui ne soit jamais une bonne réponse, commencez votre champ par une virgule : <code class="indicateur">??,mot à ne pas marquer??</code>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Tapez directement votre texte, en plaçant les mots à marquer entre des paires de points d'interrogation <code class="indicateur">??</code><br />Les balises HTML sont admises. Un point-virgule sépare votre texte en 2.</div>
+            <textarea name="data" id="data"
+                      rows="15"
+                      tal:content="QCM_parsed/data"
+                      required="required"
+                      placeholder="Tapez votre texte ici."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div class="panel">
+          <label for="post">Pied de page</label>
+          <div class="formHelp texte_icone icone_information"> Balises html admises. </div>
+          <textarea name="post" id="post" rows="3" cols="60" tal:content="QCM_parsed/post"/>
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+                    <div class="row">
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/minmark | nothing;
+                                             arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                    <label for="minmark">Minimum de cases à marquer pour chaque exercice</label>
+                                    <div  class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                                    <div class="formHelp texte_icone icone_information">Au moins 1</div>
+                                    <input type="number" min="1"
+                                           name="minmark" id="minmark"
+                                           class="mini"
+                                           tal:attributes="value QCM_parsed/minmark"
+                                           required="required"
+                                           placeholder="Au moins 1"
+                                           i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/maxmark | nothing;
+                                     arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+                                <label for="maxmark">Maximum de cases à marquer pour chaque exercice</label>
+                                <div  class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                                <div class="formHelp texte_icone icone_information">Au moins 1</div>
+
+                                <input type="number" min="1"
+                                       name="maxmark" id="maxmark"
+                                       class="mini"
+                                       tal:attributes="value QCM_parsed/maxmark"
+                                       required="required"
+                                       placeholder="Au moins 1"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div class="panel">
+                                <label class="input_label" for="option_split">
+                                    <input id="option_split" type="checkbox" name="options:list" value="split"
+                                  tal:define="option QCM_parsed/options_split"
+                                  tal:attributes="checked python:context.test(option==1, 'checked', None)"/>Note partielle</label>
+                                <div class="formHelp texte_icone icone_information">Donner une note partielle aux réponses partiellement correctes.</div>
+                                <br class="visualClear" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+
+            <dd class="accordion-navigation">
+                <a href="#usages_avances" class="icone_options"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <div id="usages_avances" class="content">
+                    <div>Vous pouvez proposez plus d'un texte pioché aléatoirement :
+                        <ul>
+                            <li>séparez chaque texte à proposer par un point-virgule <code class="indicateur">;</code>,</li>
+                            <li>les textes eux-mêmes ne peuvent donc pas contenir de point-virgule.</li>
+                        </ul>
+
+                    </div>
+                    <hr/>
+                    <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
+                    <hr/>
+                    <ul>
+                        <li>Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonne réponses possibles pour un mot marquable. Par exemple :
+                        <ul>
+                            <li><code class="indicateur">Je lui ai montré ??<span class="shuffle">{cept,cette,ces}</span>,cet?? oiseau.</code></li>
+                            <li>Si c'est un des mots <span class="sample">"cept", "cette" ou "ce"</span> qui est tiré au hasard, ce sera une réponse à marquer (ici, une faute d'orthographe), et si le dernier mot (<span class="sample">"cet"</span>) est tiré au hasard, il ne sera pas à marquer. </li>
+                        </ul>
+                        </li>
+                      </ul>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

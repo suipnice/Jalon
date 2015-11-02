@@ -1,0 +1,514 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+
+        Simulation d'affichage du plan vu depuis un compte étudiant
+
+            Plan du cours -> colonne de droite
+
+
+-->
+<metal:macro define-macro="mode_affichage">
+
+    <h2>
+        <i class="fa fa-desktop"></i><tal:block i18n:translate="">Affichage</tal:block>
+    </h2>
+
+    <ul class="button-group radius even-2"
+        tal:define="menu menu | nothing;
+                    menu_aff python:context.test(menu, '&amp;menu=%s' % menu, '')">
+        <li>
+            <a tal:attributes="href string:${context/absolute_url}?mode_etudiant=false${menu_aff};
+                               class python:context.test(mode_etudiant != 'true', 'button small success', 'button small secondary')">
+                <i class="fa fa-university no-pad"></i>
+                <tal:replace i18n:translate="">Enseignant</tal:replace>
+            </a>
+        </li>
+        <li>
+            <a tal:attributes="href string:${context/absolute_url}?mode_etudiant=true${menu_aff};
+                               class python:context.test(mode_etudiant == 'true', 'button small success', 'button small secondary')">
+                <i class="fa fa-graduation-cap no-pad"></i>
+                <tal:replace i18n:translate="">Étudiant</tal:replace>
+            </a>
+        </li>
+
+    </ul>
+
+</metal:macro>
+
+
+
+<!--
+
+        Bloc d'affichage des participants au cours
+
+            Plan du cours -> colonne de droite
+
+
+-->
+<metal:macro define-macro="afficher-participants">
+
+    <h2>
+        <a class="right"
+           data-reveal-ajax="true" data-reveal-id="reveal-main"
+           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=telecharger-participant"
+           tal:condition="personnel">
+            <i class="fa fa-list"></i>
+        </a>
+        <i class="fa fa-child"></i><tal:block i18n:translate="">Participants</tal:block>
+    </h2>
+
+    <div class="panel radius bkgrnd"
+         define="mode_etudiant request/mode_etudiant | string:false;">
+        <dl>
+
+            <dd tal:define="infosFormations context/getAffichageFormation">
+        <tal:personnel condition="personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_apogee&amp;formulaire=supprimer-offre-formations"
+                   tal:condition="infosFormations/nbFormations">
+                    <i class="fa fa-trash fa-lg fa-fw no-pad alert"></i>
+                </a>
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_apogee&amp;formulaire=ajout-offre-formations">
+                    <i class="fa fa-plus-circle fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:personnel>
+
+        <tal:isModeEtudiant condition="not:personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_apogee&amp;formulaire=ajout-offre-formations&amp;mode_etudiant=${mode_etudiant}"
+                   title="Détacher ce cours d'une ou plusieurs formation(s).">
+                    <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:isModeEtudiant>
+
+                <i class="fa fa-university fa-fw"></i>Offre(s) de formation :
+                <tal:replace replace="infosFormations/nbFormations"/>
+            <tal:isFormation condition="infosFormations/nbFormations">
+                (<tal:replace replace="infosFormations/nbEtuFormations"/> étu.)
+            </tal:isFormation>
+
+            </dd>
+
+
+            <dd tal:define="inscrNom python:len(context.getGroupe())">
+        <tal:personnel condition="personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer_inscription_nomminative"
+                   tal:condition="inscrNom">
+                    <i class="fa fa-trash fa-lg fa-fw no-pad alert"></i>
+                </a>
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter_inscription_nominative">
+                    <i class="fa fa-plus-circle fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:personnel>
+
+        <tal:isModeEtudiant condition="not:personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter_inscription_nominative&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:isModeEtudiant>
+
+                <i class="fa fa-users fa-fw"></i>Inscription(s) nominative(s) :
+                <tal:replace replace="inscrNom"/>
+
+            </dd>
+
+
+            <dd tal:define="invitCourriel python:len(context.getInvitations())">
+        <tal:personnel condition="personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer-invitations-email"
+                   tal:condition="invitCourriel">
+                    <i class="fa fa-trash fa-lg fa-fw no-pad alert"></i>
+                </a>
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-invitations-email">
+                    <i class="fa fa-plus-circle fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:personnel>
+
+        <tal:isModeEtudiant condition="not:personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-invitations-email&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:isModeEtudiant>
+
+                <i class="fa fa-envelope-o fa-fw"></i>Invitation(s) par courriel :
+                <tal:replace replace="invitCourriel"/>
+
+            </dd>
+
+            <dd tal:define="inscription_password python:len(context.getInscriptionsLibres())">
+            <tal:personnel condition="personnel">
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer-participants_password"
+                   tal:condition="inscription_password">
+                    <i class="fa fa-trash fa-lg fa-fw no-pad alert"></i>
+                </a>
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-libre">
+                    <i class="fa fa-pencil fa-lg fa-fw no-pad"></i>
+                </a>
+            </tal:personnel>
+        <tal:isModeEtudiant condition="not:personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-libre&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:isModeEtudiant>
+
+                <i tal:attributes="class python:context.test(context.getLibre() and personnel, 'fa fa-key fa-fw success', 'fa fa-key fa-fw')"></i>Accès par mot de passe : <tal:replace replace="inscription_password"/>
+                <div class="panel callout radius"
+                     tal:condition="python:context.test(context.getLibre(), 1, 0) and personnel"
+                     tal:define="motdepasse context/getLienMooc">
+                    <tal:block i18n:translate="">Le mot de passe d'inscription au cours est</tal:block>
+                    « <strong tal:content="motdepasse" /> ».
+                 </div>
+
+            </dd>
+
+            <dd tal:define="coLecteurs python:len(context.getCoLecteurs())">
+        <tal:personnel condition="personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer-lecteurs"
+                   tal:condition="coLecteurs">
+                    <i class="fa fa-trash fa-lg fa-fw  no-pad alert"></i>
+                </a>
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-lecteurs">
+                    <i class="fa fa-plus-circle fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:personnel>
+
+        <tal:isModeEtudiant condition="not:personnel">
+
+                <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-lecteurs&amp;mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                </a>
+
+        </tal:isModeEtudiant>
+
+                <i class="fa fa-users fa-fw"></i>Lecteur(s) enseignant(s) :
+                <tal:replace replace="coLecteurs"/>
+
+            </dd>
+
+        </dl>
+    </div>
+
+</metal:macro>
+
+
+
+<!--
+        Vie du cours (Annonces etc.) / Plan du cours -> colonne de droite
+-->
+<metal:macro define-macro="course_life">
+
+    <h2>
+        <i class="fa fa-leaf"></i><tal:block i18n:translate="">Vie du cours</tal:block>
+    </h2>
+
+    <ul role="tablist" class="tabs" data-tab="data-tab">
+
+        <li class="tab-title">
+            <a href="#course_life-historique">
+                <span tal:content="actualites/nbActu" />
+                <i class="fa fa-bell fa-2x"></i>
+                <tal:replace i18n:translate="">Historique</tal:replace>
+            </a>
+        </li>
+
+        <li class="tab-title show-for-medium-up">
+            <a href="#course_life-annonces">
+                <span tal:content="annonces/nbAnnonces" />
+                <i class="fa fa-bullhorn fa-2x"></i>
+                <tal:replace i18n:translate="">Annonces</tal:replace>
+            </a>
+        </li>
+
+        <li class="tab-title">
+            <a href="#course_life-forum">
+                <span tal:content="dicoForums/nbForums" />
+                <i class="fa fa-comments fa-2x"></i>
+                <tal:replace i18n:translate="">Forum</tal:replace>
+            </a>
+        </li>
+
+    </ul>
+
+    <tal:comment replace="nothing"><!--
+    <tal:block define="script string:setTabMemory('js-tab-course_life')">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+    --></tal:comment>
+
+    <div class="tabs-content">
+
+        <div class="content active" id="no_selec" role="tabpanel">
+            <div class="panel callout radius">
+                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Sélectionnez un des onglets ci-dessus pour afficher les informations correspondantes.</tal:block>
+            </div>
+        </div>
+
+
+        <div class="content" id="course_life-historique" role="tabpanel"
+             tal:define="nbActu actualites/nbActu">
+
+            <h3>
+                <i class="fa fa-bell-o"></i><tal:block i18n:translate="">Historique</tal:block>
+            </h3>
+
+        <tal:isNotActu condition="not:nbActu">
+            <div class="panel callout radius">
+                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">L'historique concernant ce cours est vide.</tal:block>
+            </div>
+        </tal:isNotActu>
+
+        <tal:isActu condition="nbActu">
+            <div class="course_life-actus panel radius">
+
+                <h4 i18n:translate=""
+                    tal:condition="python:context.test(nbActu == 1, 1, 0)">La dernière nouveauté du cours</h4>
+                <h4 i18n:translate=""
+                    tal:condition="python:context.test(nbActu > 1 and nbActu < 4, 1, 0)">Les dernières nouveautés du cours</h4>
+                <h4 i18n:translate=""
+                    tal:condition="python:context.test(nbActu >= 4, 1, 0)">Les 3 dernières nouveautés du cours</h4>
+
+                <dl>
+            <tal:block repeat="actu actualites/listeActu">
+
+                    <dt>
+                        <span class="label bkgrnd"
+                              tal:content="python:context.getLocaleDate(actu['date'])" />
+                    </dt>
+
+                    <dd tal:attributes="class string:typeElement type_${actu/type}">
+                        <tal:condition condition="python:actu['type'] == 'Titre'">
+                            « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 60)" /> »
+                            <i tal:content="actu/description" />
+                        </tal:condition>
+                        <tal:condition condition="python:actu['type'] == 'TexteLibre'">
+                            « <tal:block content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 120)" /> »
+                            <i tal:content="actu/description" />
+                        </tal:condition>
+                        <tal:condition condition="python:not(actu['type'] == 'Titre' or actu['type'] == 'TexteLibre')">
+                            <strong tal:content="python:context.getShortText(actu['titre'], 60)" />
+                            <i tal:content="actu/description" />
+                        </tal:condition>
+                    </dd>
+
+            </tal:block>
+                </dl>
+
+                <a class="button tiny expand radius"
+                   tal:attributes="href string:${context/absolute_url}/cours_lister_actualites?mode_etudiant=${mode_etudiant}"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true">
+                    <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="label_consulter_actualites">Voir toutes les nouveautés</tal:block>
+                </a>
+
+            </div>
+        </tal:isActu>
+
+        </div>
+
+
+        <div class="content" id="course_life-annonces" role="tabpanel">
+
+            <h3>
+                <a class="button tiny radius right show-for-medium-only"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:condition="personnel"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_annonce&amp;formulaire=ajout-annonce">
+                   <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Nouvelle ann.</tal:block>
+                </a>
+                <a class="button tiny radius right show-for-large-up"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:condition="personnel"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_annonce&amp;formulaire=ajout-annonce">
+                   <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Nouvelle annonce</tal:block>
+                </a>
+                <i class="fa fa-bullhorn"></i><tal:block i18n:translate="">Annonces</tal:block>
+            </h3>
+
+        <tal:block condition="not:annonces/nbAnnonces">
+            <div class="panel callout radius">
+                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Il n'y a aucune annonce concernant ce cours.</tal:block>
+            </div>
+        </tal:block>
+
+        <tal:block condition="annonces/nbAnnonces">
+
+            <div class="panel warning radius"
+                 tal:condition="mode_etudiant">
+                 Les étudiants ne verront que les annonces qui leur sont destinées.
+            </div>
+
+            <div class="panel radius"
+                 tal:define="annonce python:annonces['listeAnnonces'][0]">
+                 <h4>La dernière annonce</h4>
+                <span class="label bkgrnd round" tal:content="python:context.getLocaleDate(annonce.modified())" />
+
+            <tal:condition condition="personnel">
+
+                <a class="dropdown right show-for-medium-up" data-dropdown="last_announce" data-options="align:left">
+                    <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                </a>
+
+                <ul id="last_announce" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/annonce/${annonce/getId}/folder_form?macro=macro_annonce&amp;formulaire=modifier-annonce">
+                            <i class="fa fa-pencil fa-fw"></i>
+                            <tal:block i18n:translate="">Modifier</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:define="titre python:context.jalon_quote(annonce['title'])"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_annonce&amp;formulaire=supprimer-annonce&amp;annonce=${annonce/getId}&amp;titre=${titre}">
+                            <i class="fa fa-trash-o fa-fw"></i>
+                            <tal:block i18n:translate="">Supprimer</tal:block>
+                        </a>
+                    </li>
+                </ul>
+
+            </tal:condition>
+
+                <h4 class="typeElementTitre" tal:content="annonce/Title" />
+                <p class="panel radius" tal:content="structure annonce/getDescriptionAff" />
+                <a class="button tiny expand radius"
+                   tal:attributes="href string:${context/absolute_url}/cours_lister_annonces">
+                    <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="label_consulter_annonces">Voir toutes les annonces</tal:block>
+                </a>
+
+            </div>
+
+        </tal:block>
+        </div>
+
+
+        <div class="content" id="course_life-forum" role="tabpanel">
+            <h3 tal:condition="not:anonymous">
+                <a class="button tiny radius right show-for-medium-up"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-forum"
+                   tal:condition="not:personnel">
+                    <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Créer un forum</tal:block>
+                </a>
+                <a class="dropdown right"
+                   data-options="align:bottom" data-dropdown="forum-options"
+                   tal:condition="personnel">
+                    <i class="fa fa-cog fa-lg"></i>
+                </a>
+                <i class="fa fa-comments"></i><tal:block i18n:translate="">Forums</tal:block>
+            </h3>
+            <tal:condition condition="personnel">
+                <ul id="forum-options" data-dropdown-content class="f-dropdown">
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-forum">
+                            <i class="fa fa-plus-circle fa-fw"></i><tal:block i18n:translate="">Créer un forum</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_preference&amp;formulaire=modifier-activerEmailForum&amp;attribut=activerEmailForum">
+                            <i class="fa fa-envelope-o fa-fw"></i><tal:block i18n:translate="">Notification</tal:block>
+                        </a>
+                    </li>
+                </ul>
+            </tal:condition>
+            <h3 tal:condition="anonymous">
+                <i class="fa fa-comments"></i><tal:block i18n:translate="">Forums</tal:block>
+            </h3>
+
+        <tal:block condition="not:dicoForums/listeForums">
+
+            <div class="panel callout radius">
+                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
+            </div>
+
+        </tal:block>
+
+        <tal:block condition="dicoForums/listeForums">
+
+            <div class="panel radius">
+
+                <dl>
+            <tal:repeat repeat="forum dicoForums/listeForums">
+                <tal:define define="author forum/getLastCommentAuthor;">
+
+                    <dt>
+                        <a tal:attributes="href string:${forum/absolute_url}?mode_etudiant=${mode_etudiant}"
+                           tal:content="forum/Title" />
+                    </dt>
+                    <dd class="panel radius">
+                        <i tal:condition="not: author"
+                           i18n:translate="no_conversations_started">
+                            Aucune conversation en cours.
+                        </i>
+                        <i tal:condition="author"
+                           i18n:translate="no_conversations_started">
+                            <tal:replace replace="forum/getNumberOfConversations" /> conversation(s)<br />
+                            <tal:block i18n:translate="label_by_author">dernier message par</tal:block>
+                            <strong><tal:author i18n:name="author"
+                                        define="creator author;
+                                                creatorinfo python: mtool.getMemberInfo(creator);"
+                                        content="python:creatorinfo and creatorinfo['fullname'] or creator" /></strong><br />
+                            le <tal:replace replace="python:context.convertirDate(forum.getLastCommentDate())" />
+                        </i>
+                    </dd>
+
+                </tal:define>
+            </tal:repeat>
+                </dl>
+
+                <a class="button tiny expand radius"
+                   tal:attributes="href string:${context/absolute_url}/forum?mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Voir la liste des forums</tal:block>
+                </a>
+
+            </div>
+
+        </tal:block>
+        </div>
+
+    </div>
+
+</metal:macro>
+</metal:content-core>
+</body>
+</html>

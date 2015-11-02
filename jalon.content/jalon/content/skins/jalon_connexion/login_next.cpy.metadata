@@ -1,0 +1,8 @@
+[default]
+title=Log in
+proxy=Manager
+
+[actions]
+action.success=traverse_to:string:login_success
+action.failure=traverse_to:string:login_failed
+action.external=traverse_to:string:external_login_return

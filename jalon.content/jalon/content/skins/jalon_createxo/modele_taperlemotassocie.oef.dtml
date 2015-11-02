@@ -1,0 +1,67 @@
+type=datalist
+modele_jalon=ProprieteTapee
+textarea="data explain"
+:Taper la propriété d'un objet choisi aléatoirement dans une liste.
+
+<p>On présente un objet tiré au hasard dans une liste, et demande de taper la propriété qui lui est associée.</p>
+<p>Pour construire un exercice avec ce modèle, il suffit de donner la liste d'objets et leurs propriétés.</p>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entête ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:\credits{}
+
+:Taille du champ à taper.
+Il faut prévoir suffisamment de place pour la propriété la plus longue.
+\integer{size=$$size$$}
+
+:Données principales.
+<p>Définir un objet par ligne, d'abord le nom de l'objet à afficher, ensuite sa propriété telle qu'elle doit être tapée, séparés par une virgule.</p>
+<p>Vous pouvez déclarer des synonymes de propriétés à faire reconnaitre, en les séparant par des traits verticaux.</p>
+\matrix{data=$$words$$}
+
+:Type d'analyse de réponse.
+<p>Les types <span class="tt">case</span> et <span class="tt">nocase</span> sont surtout adaptés pour les applications linguistiques.</p>
+<p>Dans les autres cas, préférez <span class="tt">atext</span>.</p>
+\text{atype=$$type_rep$$}
+
+:Mise en aléatoire par des accolades emboitables
+help
+\text{accolade=item(1,1 oui, 2 non)}
+
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\text{accolade=wims(word 1 of \accolade)}
+\text{data=randomrow(\data)}
+\text{name=\data[1]}
+\text{prop=\data[2]}
+\text{atype=wims(word 1 of \atype)}
+
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+
+:Le texte pour expliquer ce qu'il faut faire.
+Pour évoquer l'objet tiré, écrire <span class="tt">\name</span>.
+help
+\text{explain=$$explain$$}
+
+:%% Calculs à ne pas modifier
+\text{explain=\accolade=1 ? wims(embraced randitem \explain)}
+
+::On n'a pas besoin de modifier l'énoncé directement en général.
+\statement{
+    <label for="reply1" class="oef_explain"> \explain </label>
+    <span class="oef_input">
+        \embed{r1,\size
+        autocomplete="off" id="reply1"}
+    </span>}
+
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+
+\answer{La réponse}{\prop}{type=\atype}

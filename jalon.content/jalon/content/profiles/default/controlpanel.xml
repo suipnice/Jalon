@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<object name="portal_controlpanel">
+<configlet title="Jalon Import" 
+            action_id="JalonImport" 
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalonimport-controlpanel"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/import.png"
+            visible="True" >
+    <permission>Manage portal</permission>
+</configlet>
+<configlet title="Jalon Mon espace Configuration" 
+            action_id="JalonConfig" 
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalonconfig-controlpanel"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/config.png"
+            visible="True" >
+    <permission>Manage portal</permission>
+</configlet>
+<configlet title="Jalon Configuration" 
+            action_id="JalonConfiguration" 
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalonconfiguration-controlpanel"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/config.png"
+            visible="True" >
+    <permission>Manage portal</permission>
+</configlet>
+<configlet title="Jalon Configuration (New)"
+            action_id="JalonConfigurationNew"
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalon-configuration"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/config.png"
+            visible="True">
+    <permission>Manage Portal</permission>
+</configlet>
+<configlet title="Jalon Maintenance" 
+            action_id="JalonMaintenance" 
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalonmaintenance-controlpanel"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/hard-hat.png"
+            visible="True" >
+    <permission>Manage portal</permission>
+</configlet>
+<configlet title="Jalon User" 
+            action_id="JalonUser"
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalon-user"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/hard-hat.png"
+            visible="True">
+    <permission>Manage Portal</permission>
+</configlet>
+<configlet title="Jalon Categories" 
+            action_id="JalonCategorie"
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalon-categorie"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/hard-hat.png"
+            visible="True">
+    <permission>Manage Portal</permission>
+</configlet>
+<configlet title="Jalon Podcasts"
+            action_id="JalonPodcast"
+            appId="jalon.content"
+            category="Products"
+            condition_expr=""
+            url_expr="string:${portal_url}/@@jalon-podcast"
+            icon_expr="string:${portal_url}/++resource++jalon.content.images/hard-hat.png"
+            visible="True">
+    <permission>Manage Portal</permission>
+</configlet>
+</object>

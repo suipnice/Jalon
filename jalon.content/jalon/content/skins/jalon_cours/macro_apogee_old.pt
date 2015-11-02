@@ -1,0 +1,308 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="lister-apogee">
+<div tal:define="listeAcces context/getInfosListeAcces">
+
+    <tal:block condition="not:listeAcces">
+        <div class="listing_vide">Le cours n'est encore diffusé à aucun étudiant.</div>
+    </tal:block>
+
+    <tal:block condition="listeAcces">
+        <form name="detacher_etudiants" method="post"
+              tal:attributes="action context/absolute_url">
+
+          <table class="listing">
+
+             <caption class="texte_icone icone_liste">
+                <h3 i18n:translate="">Le cours est actuellement diffusé aux étudiants des formations universitaires ci-dessous :</h3>
+             </caption>
+
+             <thead>
+             <tr>
+                <th class="icone nosort">&#x0041;</th>
+                <th title="Cliquer pour trier selon le type" i18n:attributes="title" i18n:translate="">Type</th>
+                <th title="Cliquer pour trier selon le titre" i18n:attributes="title" i18n:translate="" class="fullwidth">Titre</th>
+                <th title="Cliquer pour trier selon le code" i18n:attributes="title" i18n:translate="">Code</th>
+                <th title="Cliquer pour trier selon le nombre d'étudiants" i18n:attributes="title" i18n:translate="">Nbre d'étudiants</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tal:boucle repeat="acces listeAcces">
+            <tr tal:define="oddrow repeat/acces/odd"
+                tal:attributes="class python:context.test(oddrow, 'even', 'odd');">
+               <td>
+                  <input type="checkbox" name="elements:list"
+                         tal:attributes="value python:'%s*-*%s' % (acces[-1], acces[1])"/></td>
+               <td>
+                 <span class="indicateur couleur4" tal:content="python:acces[-1]"/>
+               </td>
+               <td tal:content="python:acces[0]" class="fullwidth"/>
+               <tal:test condition="python:context.test(acces[-1] != 'groupe', 1, 0)">
+                 <td tal:content="python:acces[1]"/>
+                 <td tal:content="python:acces[2]"/>
+               </tal:test>
+               <tal:test condition="python:context.test(acces[-1] == 'groupe', 1, 0)">
+                 <td tal:content="python:acces[3]"/>
+                 <td tal:content="python:acces[2]"/>
+               </tal:test>
+            </tr>
+            </tal:boucle>
+            </tbody>
+            <tfoot>
+            <tr>
+               <td class="lots icone">&#x0068;</td>
+               <td class="lots" colspan="2">
+                  <span i18n:translate="">Fonctions par lots</span>
+               </td>
+               <td class="lots" colspan="2">
+                  <input type="button" class="context small warning" value="Détacher ces étudiants"
+                         rel="#ov1"
+                         i18n:attributes="value label_detacher_etudiants">
+               </td>
+              </tr>
+            </tfoot>
+          </table>
+          <metal:macro use-macro="context/macro_form/macros/detacher-apogee">
+            Formulaire apogée
+          </metal:macro>
+        </form>
+    </tal:block>
+</div>
+<div class="visualClear"></div>
+</metal:macro>
+
+
+<!--
+        Inscriptions par lots : listes scolarités
+-->
+<metal:macro define-macro="ajout-apogee">
+<tal:define define="recherche request/recherche | string:etape;
+                    termeRecherche request/termeRecherche | nothing">
+    <h2>
+        <tal:block i18n:translate="">Inscriptions listes scolarités</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3 class="texte_icone icone_recherche"
+        i18n:translate="">Rechercher un diplôme / une UE / un groupe dans l'<abbr title="Apogée">offre de formation</abbr></h3>
+
+    <form name="recherche_apogee" id="js-Apogee_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/folder_form">
+
+        <div class="field ArchetypesSelectionWidgetWidget kssattr-atfieldname-recherche" id="archetypes-fieldname-recherche">
+            <label for="recherche" i18n:translate="">Type :</label>
+            <select name="recherche"
+                    id="recherche">
+                <option value="etape"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'etape', 'selected', 0)">Diplôme</option>
+                <option value="ue"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'ue', 'selected', 0)">Unité d'enseignement</option>
+                <option value="uel"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'uel', 'selected', 0)">Unité d'enseignement libre</option>
+                <option value="groupe"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'groupe', 'selected', 0)">Groupe</option>
+           </select>
+
+           <label for="termeRecherche" i18n:translate="">Mot clé ou code :</label>
+           <input type="text" name="termeRecherche" class="blurrable" id="termeRecherche" size="30" maxlength="255"
+                  tal:attributes="value termeRecherche" />
+
+           <input type="hidden" name="formulaire" id="formulaire" value="ajout-apogee" />
+           <input type="hidden" name="macro" id="macro" value="macro_apogee" />
+
+           <input class="button expand tiny radius" type="submit" name="form.button.save" value="Rechercher" i18n:attributes="value label_rechercher" />
+
+        </div>
+
+   </form>
+
+   <form name="element_add" id="js-Apogee_result" method="POST"
+         tal:attributes="action string:${context/absolute_url}/cours_attacher_apogee">
+
+    <tal:block condition="termeRecherche"
+               define="resultatRecherche python:context.rechercheApogee(recherche, termeRecherche)">
+
+        <h3 class="texte_icone icone_resultats"
+            i18n:translate="">Résultats de la recherche</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:resultatRecherche"
+             i18n:translate="">
+            La recherche n'a donné aucun résultat.
+        </div>
+
+        <tal:condition condition="resultatRecherche">
+
+        <table summary="Liste des résultats de la recherche Apogée">
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up"><tal:comment replace="nothing"><!--
+                        <div class="switch tiny round">
+                            <input type="checkbox" id="switch_reveal-all" name="checkall" role="elements:list" />
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title"></label>
+                        </div>--></tal:comment>
+                    </th>
+                    <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="code" title="Trier selon le code" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Code</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="nbre" title="Trier selon le nombre d'étudiants" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Nbre d'étudiants</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+            <tal:repeat repeat="item resultatRecherche">
+
+                <tr>
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="elements:list"
+                                   tal:attributes="id string:switch_reveal-${repeat/item/index};
+                                                   value string:${recherche}*-*${item/COD_ELP}" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/item/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td class="title" tal:content="item/LIB_ELP" />
+                    <td class="code" tal:condition="python:recherche == 'groupe'">
+                        <tal:replace replace="item/COD_GPE" />
+                    </td>
+                    <td class="code" tal:condition="python:recherche != 'groupe'">
+                        <tal:replace replace="item/COD_ELP" />
+                    </td>
+                    <td class="nbre" tal:content="item/nb_etu" />
+                </tr>
+            </tal:repeat>
+
+            </tbody>
+        </table>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-Apogee_result',['title','code','nbre'],'title','asc')" />
+
+        </tal:condition>
+
+    </tal:block>
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Formation(s) inscrite(s) au cours</h3>
+
+    <tal:block define="formations context/getAffichageFormations">
+
+        <div class="panel callout radius"
+             tal:condition="not:formations"
+             i18n:translate="">
+            Le cours n'est diffusé à aucune formation.
+        </div>
+
+        <tal:condition condition="formations">
+
+        <span class="title-legend">
+            <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Décocher pour supprimer</tal:block>
+        </span>
+
+        <table>
+            <tal:repeat repeat="formation formations">
+
+            <tr>
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="elements:list" checked="checked"
+                               tal:attributes="id string:switch_tagada-${repeat/formation/index};
+                                               value python:'%s*-*%s' % (formation[-1], formation[1])" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_tagada-${repeat/formation/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left">
+                    <tal:block content="python:formation[0]" /> (<tal:block replace="python:formation[-1]" i18n:translate=""/> : <tal:block content="python:formation[2]"/> <tal:block i18n:translate="label_etudiant">étudiant(s)</tal:block>)
+                </td>
+            </tr>
+
+            </tal:repeat>
+        </table>
+
+        </tal:condition>
+    </tal:block>
+
+        <input type="hidden" name="formulaire" value="ajout-apogee"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setApogeeSearch()" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Retirer l'accès au cours pour les étudiants sélectionnés
+-->
+<metal:macro define-macro="detacher-apogee">
+
+      <div id="" class="">
+        <div>
+            <h1 i18n:translate="">Détacher des étudiants</h1>
+            <br />
+            <div i18n:translate="">
+              Attention, cette opération va retirer l'accès au cours pour les étudiants sélectionnés, pour confirmer votre choix cliquez sur « Détacher ».
+            </div>
+            <br />
+            <div class="formControls">
+                <input class="context"    type="submit" name="cours_detacher_apogee:method"   value="Save"   i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+            </div>
+        </div>
+      </div>
+
+</metal:macro>
+
+
+</metal:content-core>
+
+</body>
+
+</html>

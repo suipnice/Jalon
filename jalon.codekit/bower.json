@@ -1,0 +1,15 @@
+{
+  "name": "foundation-compass-app",
+  "version": "0.0.1",
+  "private": "true",
+  "dependencies": {
+    "foundation": "~5.5.3",
+    "font-awesome": "~4.4.0",
+    "datetimepicker": "~2.4.5",
+    "fastclick": "~1.0.6"
+  },
+  "resolutions": {
+    "jquery": ">= 2.1.0",
+    "font-awesome": "~4.4.0"
+  }
+}

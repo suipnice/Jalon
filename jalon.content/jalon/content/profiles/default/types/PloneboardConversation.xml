@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<object name="PloneboardConversation"
+   meta_type="Factory-based Type Information with dynamic views"
+   i18n:domain="ploneboard" xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title" i18n:translate="">Conversation</property>
+ <property name="description"
+    i18n:translate="">Conversation contains comments.</property>
+ <property
+    name="icon_expr">string:${portal_url}/ploneboard_conversation_icon.gif</property>
+ <property name="content_meta_type">PloneboardConversation</property>
+ <property name="product">Ploneboard</property>
+ <property name="factory">addPloneboardConversation</property>
+ <property name="add_view_expr"></property>
+ <property name="link_target"></property>
+ <property name="immediate_view">jalon_ploneboardconversation_view</property>
+ <property name="global_allow">False</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types">
+  <element value="PloneboardComment"/>
+ </property>
+ <property name="allow_discussion">False</property>
+ <property name="default_view">jalon_ploneboardconversation_view</property>
+ <property name="view_methods">
+  <element value="jalon_ploneboardconversation_view"/>
+  <element value="conversation_browserview"/>
+  <element value="threaded_conversation_view"/>
+ </property>
+ <property name="default_view_fallback">False</property>
+ <alias from="(Default)" to="(dynamic view)"/>
+ <alias from="edit" to="base_edit"/>
+ <alias from="index.html" to="(dynamic view)"/>
+ <alias from="sharing" to="@@sharing"/>
+ <alias from="view" to="(selected layout)"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    description="" icon_expr="" link_target="" url_expr="string:$object_url"
+    visible="True">
+  <permission value="View"/>
+ </action>
+ <action title="Edit" action_id="edit" category="object" condition_expr=""
+    description="" icon_expr="" link_target=""
+    url_expr="string:$object_url/edit" visible="True">
+  <permission value="Modify portal content"/>
+ </action>
+ <action title="References" action_id="references" category="object"
+    condition_expr="object/archetype_tool/has_graphviz" description=""
+    icon_expr="" link_target=""
+    url_expr="string:${object_url}/reference_graph" visible="True">
+  <permission value="Modify portal content"/>
+  <permission value="Review portal content"/>
+ </action>
+ <action title="Folder Listing" action_id="folderlisting" category="folder"
+    condition_expr="object/isPrincipiaFolderish" description="" icon_expr=""
+    link_target="" url_expr="string:${folder_url}/view" visible="False">
+  <permission value="View"/>
+ </action>
+</object>

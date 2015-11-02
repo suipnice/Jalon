@@ -1,0 +1,11 @@
+[default]
+title=Creation d'un compte
+border=None
+
+[validators]
+validators=creationcompte_form_validate
+ 
+[actions]
+action.success=traverse_to:string:creationcompte_script
+action.failure=traverse_to:string:creationcompte_form
+action.canceled=traverse_to:string:fermeture

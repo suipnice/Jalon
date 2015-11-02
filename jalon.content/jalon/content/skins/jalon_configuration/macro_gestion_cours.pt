@@ -1,0 +1,349 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Catégories de cours
+-->
+<metal:macro define-macro="gestion_categorie">
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div class="panel callout radius"
+         i18n:translate="">
+        Une catégorie de cours est utilisée pour diffuser un cours à tous les étudiants de la plateforme. Elle regroupe les cours ensemble à travers une nouvelle ligne dans le menu "Mes cours" pour les étudiants. Tous les enseignants ou seulement une liste restreinte de ceux-ci sont autorisés à diffuser leur cours dans une catégorie en fonction de la configuration du tableau ci-dessous.
+    </div>
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_categorie&amp;formulaire=creer_categorie"
+       class="button small create right radius"
+       data-reveal-ajax="true" data-reveal-id="reveal-main"
+       title="Créer une catégorie"
+       i18n:attributes="title">
+        <i class="fa fa-plus-circle"></i>
+        <tal:block i18n:translate="">Créer une catégorie</tal:block>
+    </a>
+    <h2>
+        <i class="fa fa-university"></i><tal:block i18n:translate="">Configuration des catégories de cours</tal:block>
+    </h2>
+<tal:define define="categories context/getCategorie;
+                    clefCategories context/getClefCategories">
+<tal:condition condition="not:clefCategories">
+    <div class="panel callout radius"
+         i18n:translate="">
+        Il n'y a actuellement aucune catégorie.
+    </div>
+</tal:condition>
+<tal:condition condition="clefCategories">
+    <table summary="Liste des catégorie de cours">
+    <thead>
+        <tr>
+            <th class="sort has-tip" data-tooltip data-sort="cours" title="Trier selon le titre de la catégorie"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Titre</tal:block>
+                </span>
+            </th>
+            <th class="has-tip" data-tooltip title="Utilisateurs ayant le droit de diffusion dans la catégorie"
+                i18n:attributes="title">
+                <tal:block i18n:translate="">Utilisateurs</tal:block>
+            </th>
+            <th title="Actions"
+                i18n:attributes="title">
+                <tal:block i18n:translate="">Actions</tal:block>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    <tal:entry repeat="clef clefCategories">
+        <tr>
+            <td tal:content="python:categories[clef]['title']"/>
+            <td tal:define="users python:categories[clef]['users'];
+                            all python:context.test(users == ['all'], 1, 0)">
+                <ul>
+                <tal:condition condition="all">
+                    <li i18n:translate="label_all_users">Tous les utilisateurs (rôle Personnel)</li>
+                </tal:condition>
+                <tal:condition condition="not:all">
+                <tal:condition condition="not:users">
+                    <li i18n:translate="label_not_users">Aucun utilisateur (rôle Personnel)</li>
+                </tal:condition>
+                <tal:condition condition="users">
+                    <tal:repeat define="infosUsers python:context.getInfosUsers(users)"
+                                repeat="user infosUsers">
+                    <li tal:content="user/name"/>
+                    </tal:repeat>
+                </tal:condition>
+                </tal:condition>
+                </ul>
+            </td>
+            <td>
+                <a tal:attributes="href string:${context/absolute_url}/portal_jalon_properties/folder_form?macro=macro_categorie&amp;formulaire=renommer_categorie&amp;clef=${clef}"
+                    title="Renommer la catégorie"
+                    class="button small radius"
+                    data-reveal-ajax="true" data-reveal-id="reveal-main"
+                    i18n:attributes="title"
+                    i18n:translate="">
+                    Renommer
+                </a>
+                <a tal:attributes="href string:${context/absolute_url}/portal_jalon_properties/folder_form?macro=macro_categorie&amp;formulaire=gerer_utilisateurs&amp;clef=${clef}"
+                    title="Gérer les accès à la catégorie"
+                    class="button small radius"
+                    data-reveal-ajax="true" data-reveal-id="reveal-main"
+                    i18n:attributes="title"
+                    i18n:translate="">
+                    Gérer les utilisateurs
+                </a>
+            </td>
+        </tr>
+    </tal:entry>
+    </tbody>
+    </table>
+</tal:condition>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Utilisateurs d'iTunesU et des cours associés
+-->
+<metal:macro define-macro="gestion_itunesu">
+    <h2>
+        <i class="fa fa-university"></i><tal:block i18n:translate="">Configuration des accès à iTunesU</tal:block>
+    </h2>
+<tal:define define="useriTunesU request/useriTunesU | nothing">
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/gestion_mes_cours"
+          tal:define="users context/getUsersPodcast">
+        <div class="panel callout radius">
+            <label for="useriTunesU"
+                   i18n:translate="">
+                Sélectionner un utilisateur pour afficher et gérer ses cours
+            </label>
+            <select name="useriTunesU">
+                <option value=""
+                        i18n:translate="">
+                    Sélectionnez un utilisateur
+                </option>
+                <option tal:repeat="user users"
+                        tal:attributes="value user/id;
+                                        selected python:context.test(user['id'] == useriTunesU, 'selected', '')"
+                        tal:content="user/fullname"/>
+            </select>
+            <input type="hidden" name="gestion"
+                   tal:attributes="value gestion"/>
+            <div class="formControls">
+                <input class="button expand radius" type="submit" name="form.button.save" value="Afficher"
+                       i18n:attributes="value"/>
+            </div>
+        </div>
+    </form>
+    <div class="panel callout radius"
+         tal:condition="not:useriTunesU"
+         i18n:translate="">
+            Aucun utilisateur de sélectionné
+    </div>
+    <tal:condition condition="useriTunesU">
+        <tal:define define="listeCours python:context.getCoursUser(useriTunesU)">
+        <div class="panel callout radius"
+             tal:condition="not:listeCours"
+             i18n:translate="">
+                Aucun cours iTunesU pour cet utilisateur
+        </div>
+        <table summary="Liste des cours"
+               tal:condition="listeCours">
+        <thead>
+            <tr>
+                <th class="sort has-tip" data-tooltip data-sort="cours" title="Trier selon le titre des cours"
+                    i18n:attributes="cours">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre des cours</tal:block>
+                    </span>
+                </th>
+                <th class="sort has-tip" data-tooltip data-sort="etat" title="Trier selon l'état des cours'"
+                    i18n:attributes="etat">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">État des cours</tal:block>
+                    </span>
+                </th>
+                <th class="sort has-tip" data-tooltip data-sort="categorie" title="Trier selon les catégories iTunesU'"
+                    i18n:attributes="categorie">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Catégorie iTunesU</tal:block>
+                    </span>
+                </th>
+                <th>
+                    <span>
+                        RSS
+                    </span>
+                </th>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="action" title="Trier selon l'action'"
+                    i18n:attributes="action">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Action</tal:block>
+                </span>
+            </th>
+        </thead>
+        <tbody class="list">
+            <tr tal:repeat="cours listeCours">
+                <td class="cours">
+                    <span class="hide" tal:content="cours/titreCours"/>
+                    <span tal:content="cours/titreCours" />
+                </td>
+                <td class="etat">
+                    <span class="hide" tal:content="cours/etatCours"/>
+                    <tal:condition condition="cours/etatCours">
+                        <tal:block i18n:translate="">
+                            Validé
+                        </tal:block>
+                    </tal:condition>
+                    <tal:condition condition="not:cours/etatCours">
+                        <tal:block i18n:translate="">
+                            En attente
+                        </tal:block>
+                    </tal:condition>
+                </td>
+                <td>
+                    <span class="hide" tal:content="string:${cours/catPrinCours} - ${cours/catSecCours}"/>
+                    <span tal:content="string:${cours/catPrinCours} / ${cours/catSecCours}"/>
+                </td>
+                <td>
+                    <a href="#"
+                       class="button small"
+                       tal:attributes="data-reveal-id string:rssModal-${repeat/cours/index}">
+                       <i class="fa fa-rss fa-fw fa-nopad"></i>
+                       RSS
+                    </a>
+                    <div class="reveal-modal" data-reveal
+                         tal:attributes="id string:rssModal-${repeat/cours/index}">
+                        <h2>
+                            <tal:block i18n:translate="">
+                                RSS du cours
+                            </tal:block>
+                            "<tal:replace replace="cours/titreCours"/>"
+                            <a class="close-reveal-modal"></a>
+                        </h2>
+                        <div class="row">
+                            <label for="rss_cours"
+                                   i18n:translate="">
+                                Copier le RSS du cours à donner à iTunesU Manager.
+                            </label>
+                            <input type="text" READONLY="READONLY" id="rss_cours"
+                                   tal:attributes="value string:${cours/urlCours}/cours_rss_view"/>
+                        </div>
+                    </div>
+                </td>
+                <td class="action">
+                <tal:condition condition="not:cours/etatCours">
+                    <a href="#"
+                       class="button small success"
+                       tal:attributes="data-reveal-id string:validerModal-${repeat/cours/index}">
+                       <i class="fa fa-check fa-fw fa-nopad"></i>
+                       Valider
+                    </a>
+                    <div class="reveal-modal" data-reveal
+                         tal:attributes="id string:validerModal-${repeat/cours/index}">
+                        <h2>
+                            <tal:block i18n:translate="">
+                                Valider la publication du cours
+                            </tal:block>
+                            "<tal:replace replace="cours/titreCours"/>"
+                            <tal:block i18n:translate="">
+                                dans iTunesU
+                            </tal:block>
+                            <a class="close-reveal-modal"></a>
+                        </h2>
+                        <div class="row">
+                            <div class="panel callout radius text-justify"
+                                 i18n:translate="">
+                                Valider la publication du cours dans iTunesU préviendra automatiquement l'auteur du cours par courriel.
+                            </div>
+                            <form method="post"
+                                  tal:attributes="action string:${context/absolute_url}/saveValiderItunesU">
+                                <input type="hidden" name="idCours"
+                                       tal:attributes="value cours/idCours"/>
+                                <input type="hidden" name="auteurCours"
+                                       tal:attributes="value useriTunesU"/>
+                                <input type="hidden" name="gestion"
+                                       tal:attributes="value gestion"/>
+                                <div class="formControls">
+                                    <input type="submit" class="button small" value="Valider"
+                                           i18n:attributes="value"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </tal:condition>
+                    <a href="#"
+                       class="button small warning"
+                       tal:attributes="data-reveal-id string:rejeterModal-${repeat/cours/index}">
+                       <i class="fa fa-times fa-fw fa-nopad"></i>
+                       Rejeter
+                    </a>
+                    <div class="reveal-modal" data-reveal
+                         tal:attributes="id string:rejeterModal-${repeat/cours/index}">
+                        <h2>
+                            <tal:block i18n:translate="">
+                                Rejeter la publication du cours
+                            </tal:block>
+                            "<tal:replace replace="cours/titreCours"/>"
+                            <tal:block i18n:translate="">
+                                dans iTunesU
+                            </tal:block>
+                            <a class="close-reveal-modal"></a>
+                        </h2>
+                        <div class="row">
+                            <div class="panel callout radius text-justify"
+                                 i18n:translate="">
+                                Rejeter la publication du cours dans iTunesU préviendra automatiquement l'auteur du cours par courriel et retirera le cours de cette liste.
+                            </div>
+                            <form method="post"
+                                  tal:attributes="action string:${context/absolute_url}/saveRejeterItunesU">
+                                <input type="hidden" name="idCours"
+                                       tal:attributes="value cours/idCours"/>
+                                <input type="hidden" name="auteurCours"
+                                       tal:attributes="value useriTunesU"/>
+                                <input type="hidden" name="gestion"
+                                       tal:attributes="value gestion"/>
+                                <div class="formControls">
+                                    <input type="submit" class="button small warning" value="Rejeter"
+                                           i18n:attributes="value"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+        </table>
+    </tal:define>
+    </tal:condition>
+</tal:define>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

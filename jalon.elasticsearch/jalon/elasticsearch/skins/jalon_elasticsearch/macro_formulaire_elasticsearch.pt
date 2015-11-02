@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.elasticsearch">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="formulaire_elasticsearch">
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigElasticsearch"
+          tal:condition="elasticsearch">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_connexion" i18n:translate="url_connexion">
+                        Url du serveur Elasticsearch de Pod
+                    </label>
+                    <input type="text" name="url_connexion"
+                           maxlength="255" size="30"
+                           tal:attributes="value elasticsearch/url_connexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="port_connexion" i18n:translate="port_connexion">
+                        Port de consultation Elasticsearch de Pod
+                    </label>
+                    <input type="text" name="port_connexion"
+                           maxlength="255" size="30"
+                           tal:attributes="value elasticsearch/port_connexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="index" i18n:translate="index_elasticsearch">
+                        Index des données Elasticsearch de Pod
+                    </label>
+                    <input type="text" name="index"
+                           maxlength="255" size="30"
+                           tal:attributes="value elasticsearch/index | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="name" i18n:translate="name_serveur">
+                        Nom du serveur Pod
+                    </label>
+                    <input type="text" name="name_serveur"
+                           maxlength="255" size="30"
+                           tal:attributes="value elasticsearch/name_serveur | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Enregistrer"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

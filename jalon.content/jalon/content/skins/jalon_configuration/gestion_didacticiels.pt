@@ -1,0 +1,161 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_didacticiels">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="mon_espace" role="main" aria-labelledby="page_title"
+          class="row">
+        <h2>
+            <i class="fa fa-life-ring"></i><tal:block i18n:translate="">Configuration des didactiels</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigDidacticiels"
+              tal:define="didacticiels context/getPropertiesDidacticiels">
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le lien vers la page "Aide et tutoriels"
+                        </label>
+                        <input type="radio" name="activer_aide" id="activer_aide" value="1"
+                               tal:attributes="checked python:context.test(didacticiels['activer_aide'], 'checked', '')" />
+                        <label for="activer_aide" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_aide" id="desactiver_aide" value="0"
+                               tal:attributes="checked python:context.test(not didacticiels['activer_aide'], 'checked', '')" />
+                        <label for="desactiver_aide" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_aide" i18n:translate="lien_aide">
+                            Lien vers la page "Aide et tutoriels"
+                        </label>
+                        <input type="text" id="lien_aide" name="lien_aide"
+                               maxlength="255" size="30"
+                               tal:attributes="value didacticiels/lien_aide | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer la vidéo d'aide à la création d'un plan de cours
+                        </label>
+                        <input type="radio" name="activer_aide_plan" id="activer_aide_plan" value="1"
+                               tal:attributes="checked python:context.test(didacticiels['activer_aide_plan'], 'checked', '')" />
+                        <label for="activer_aide_plan" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_aide_plan" id="desactiver_aide_plan" value="0"
+                               tal:attributes="checked python:context.test(not didacticiels['activer_aide_plan'], 'checked', '')" />
+                        <label for="desactiver_aide_plan" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_aide_plan" i18n:translate="lien_aide_plan">
+                            Lien vers la vidéo d'aide à la création d'un plan de cours
+                        </label>
+                        <textarea name="lien_aide_plan" rows="5"><tal:replace replace="didacticiels/lien_aide_plan | nothing"/></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le guide expliquant comment éviter de recevoir les mails de Jalon en SPAM
+                        </label>
+                        <input type="radio" name="activer_guide_anti_spam" id="activer_guide_anti_spam" value="1"
+                               tal:attributes="checked python:context.test(didacticiels['activer_guide_anti_spam'], 'checked', '')" />
+                        <label for="activer_guide_anti_spam" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_guide_anti_spam" id="desactiver_guide_anti_spam" value="0"
+                               tal:attributes="checked python:context.test(not didacticiels['activer_guide_anti_spam'], 'checked', '')" />
+                        <label for="desactiver_guide_anti_spam" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="message_guide_anti_spam" i18n:translate="message_guide_anti_spam">
+                            Texte explicatif
+                        </label>
+                        <textarea name="message_guide_anti_spam" rows="5"><tal:replace replace="didacticiels/message_guide_anti_spam | nothing"/></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

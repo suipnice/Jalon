@@ -1,0 +1,2085 @@
+/***************************************************************************************************
+
+        Jalon v4.5
+
+    Version Campus Pegasus :
+        - “_base.css”   ->  commenter le bloc « UNS » / décommenter le bloc « Campus Pegasus »
+        - “app.css”     ->  decommenter le bloc « Campus Pegasus » en fin de fichier
+
+    Correctif bug expand 5.5.3 --> L1031-1035
+*/
+
+
+
+// Variables additionnelles
+$iconPadding: .3em;
+
+
+// Imports
+@import "base";
+@import "jalon/mixins";
+@import "jalon/icons";
+@import "jalon/forms";
+@import "jalon/quickupload";
+@import "jalon/tokeninput";
+//@import "jquery.datetimepicker";
+@import "jalon/jquery.datetimepicker";
+
+
+
+/*
+    Font-Awesome
+*/
+
+i.fa {
+
+    &:not(.no-pad) { margin-right: $iconPadding; }
+
+    &.primary { color: $primary-color; }
+    &.success { color: $success-color; }
+    &.warning { color: $warning-color; }
+    &.alert { color: $alert-color; }
+}
+
+.panel .fa-stack {
+    width: 1em;
+    margin-right: $iconPadding;
+}
+
+
+
+
+/***************************************************************************************************
+
+        Éléments communs
+
+*/
+
+
+$rowLateralPadding: 1%;
+
+main {
+
+    &.row { margin-top: $subheader-bottom-margin + .1rem; }
+
+    section > h1 {
+        margin-top: 0;
+        margin-bottom: .75rem;
+        //font-size: $h1-font-size;
+        line-height: 1.1;
+        color: $primary-color;
+    }
+
+    section > h2 {
+        line-height: 1.1;
+    }
+}
+
+section > h2:first-child { margin-top: 0; }
+
+
+
+/*
+    Liens etc. : carré bleu “accessible”…
+*/
+
+a:focus,
+button:focus { border: 0 none; outline: 0; }
+
+
+
+/*
+    Fil d'ariane
+*/
+
+#breadcrumb {
+
+    @include background( 'stars.svg', 0 0, repeat, #2a9ccc );
+
+    & > div.row {
+        position: relative;
+        padding: rem-calc( 3 5 5 );
+
+        &:after {
+            content: "";
+            display: block;
+            width: 0;
+            height: 0;
+            border: inset rem-calc( 5 );
+            border-color: transparent transparent #fff transparent;
+            border-bottom-style: solid;
+            position: absolute;
+            bottom: 0;
+            left: rem-calc( 8 );
+        }
+
+        & > span {
+            white-space: nowrap;
+
+            span,
+            i, a {
+                line-height: $base-line-height * 1.1;
+                font-size: $base-font-size;
+                word-spacing: rem-calc( -1 );
+                font-weight: bold;
+                color: #fff;
+            }
+
+            a:hover { text-decoration: underline; }
+
+            i.fa-angle-double-right { color: #ddf; }
+        }
+    }
+}
+
+
+
+/*
+    Navigation de gestion des items
+*/
+
+#item-adder {
+
+    ul.button-group {
+        margin-bottom: 0;
+
+        & > li {
+            width: 25%; // souci avec .even
+
+            & .button {
+                width: 100%;
+                margin: 0;
+
+                &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
+                &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
+                &.course-activity { @include button-style( $course_activity-color, false, false, scale-color( $course_activity-color, $lightness: $button-function-factor), $course_activity-color ); }
+                &.course-direct { @include button-style( $course_direct-color, false, false, scale-color( $course_direct-color, $lightness: $button-function-factor), $course_direct-color ); }
+            }
+        }
+    }
+}
+
+
+
+/*
+    Groupe de boutons type "onglets"
+*/
+
+#tab_button-group {
+
+    &.button-group {
+
+        &:not(.even-2):not(.even-4):not(.even-5) > li {
+            width: 33.3333333%;
+        }
+
+        & > li {
+
+            .button {
+                width: 100%;
+                margin-bottom: $button-margin-bottom !important;
+
+                @include filter-button-style( $secondary-color, $primary-color, false );
+            }
+
+            a.selected {
+                cursor: default;
+            }
+        }
+    }
+}
+
+
+
+/*
+    Pied de page
+*/
+
+footer {
+    padding-bottom: rem-calc( 15 );
+
+    &.row { margin-top: rem-calc( 10 ); }
+
+    a.scroll-top {
+        display: none;
+        color: $primary-color;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    p {
+        text-align: center;
+        font-size: rem-calc( 12 );
+        line-height: rem-calc( 16 );
+        margin-bottom: rem-calc( 3 );
+
+        & > span.show-for-medium-up {
+
+            @media #{ $medium-up } {
+                display: inline !important;
+            }
+        }
+
+        a:hover { text-decoration: underline; }
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Éléments “ Foundation ”
+
+*/
+
+
+/*
+    Top bar
+*/
+
+.top-bar {
+
+    .title-area {
+
+        .name h1 a {
+            display: block;
+            height: 45px;
+            width: 100px;
+            color: transparent;
+
+            @include background( 'logo-small.svg', center );
+        }
+    }
+
+    .top-bar-section {
+
+        // Texte de menu « small only »
+        ul.right li a span.show-for-small-only {
+
+            @media #{ $small-only } {
+                display: inline-block !important;
+            }
+        }
+    }
+
+    #language-selector {
+        text-align: center;
+
+        .active > a {
+            color: scale-color( $primary-color, $lightness: 30% );
+            background-color: $topbar-bg-color;
+            font-weight: bold;
+
+            &:hover {
+                background-color: scale-color( $topbar-bg-color, $lightness: -14% );
+            }
+        }
+    }
+}
+
+
+
+/*
+    Panel
+*/
+
+$side-panel-padding: rem-calc( 6 8 8 );
+
+.panel {
+    font-size: .8rem;
+    line-height: 1.1rem;
+
+    .clearfix {
+
+        div.switch {
+            float: left;
+
+            label { margin-bottom: rem-calc( 6 ) !important; }
+        }
+
+        &:last-child div.switch label { margin-bottom: 0 !important; }
+
+        span.label { margin-left: rem-calc( 3 ); }
+    }
+
+    &.callout .f-dropdown li a { color: $f-dropdown-font-color; }
+
+    &.warning {
+
+        @include panel( scale-color( $warning-color, $lightness: 94% ) );
+
+        a:not(.button) { color: $warning-color; }
+        a:not(.button):hover {color: scale-color($warning-color, $lightness: -14%);text-decoration: underline;}
+    }
+
+    &.alert {
+
+        @include panel( scale-color( $alert-color, $lightness: 94% ) );
+
+        a:not(.button) { color: $alert-color; }
+        a:not(.button):hover {color: scale-color($alert-color, $lightness: -14%);text-decoration: underline;}
+    }
+
+    &.bkgrnd { background-color: $body-bg; }
+
+    & .button.expand:last-child { margin-bottom: 0; }
+
+    & .panel {
+        padding: $side-panel-padding;
+        margin-bottom: rem-calc( 6 );
+
+        &:not(.callout):not(.warning) { background-color: $body-bg; }
+
+        &:last-child { margin-bottom: rem-calc( 2 ); }
+    }
+
+    & > #course-legend {
+        margin: 0 -.5rem -.25rem !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-size: .9rem;
+        line-height: 1.2rem;
+        font-style: italic;
+        font-weight: bold;
+        margin-bottom: rem-calc( 4 );
+    }
+
+    p {
+        font-size: .8rem;
+        line-height: 1.1rem;
+        margin-bottom: .5rem;
+    }
+
+    pre { padding-left: rem-calc( 9 ); }
+
+    dl,
+    ul:not(.f-dropdown):not(.button-group) {
+        margin-bottom: rem-calc( 6 );
+
+        dt, dd, li {
+            display: block !important;
+            font-size: .8rem;
+            line-height: 1.1rem;
+        }
+
+        dt, li {
+            font-style: italic;
+        }
+
+        dt, dd {
+            margin-bottom: .2rem;
+        }
+
+        dd.panel { margin-left: 0 !important; }
+    }
+
+    dl,
+    ul:not(.f-dropdown):not(.button-group):not(.simple-list) {
+
+        dt, li {
+            font-weight: bold;
+        }
+    }
+
+    &.options_boite-depot {
+
+        & > ul {
+            margin-left: 0;
+
+            & > li {
+                font-style: normal !important;
+                font-weight: normal !important;
+            }
+        }
+    }
+
+    &.accordion {
+        padding-bottom: .5rem;
+
+        .accordion-navigation {
+
+            a {
+                padding: 0 0 .21rem;
+                font-size: .75rem;
+                font-style: italic;
+                background-color: transparent;
+
+                .label {
+                    padding: rem-calc( 4 8 4 6 );
+                    font-family: courier, monospace;
+                    font-size: 1rem;
+                    font-weight: bold;
+                }
+            }
+
+            .content {
+                padding: .16rem;
+
+                @include radius( 8px );
+
+                ul {
+                    margin-left: .23rem;
+                    margin-bottom: .16rem;
+
+                    li {
+                        clear: both;
+
+                        a { padding: 0 }
+                    }
+                }
+            }
+        }
+    }
+}
+
+aside .panel {
+    padding: $side-panel-padding;
+
+    a.action-button { color: #fff; }
+
+    ul.f-dropdown {
+
+        a {
+            float: none !important;
+            font-size: $f-dropdown-font-size;
+            font-style: normal;
+            font-weight: normal;
+            color: $f-dropdown-font-color;
+        }
+    }
+
+    .label,
+    dt {
+        margin-bottom: 0;
+        font-style: normal;
+    }
+
+    dd {
+        margin-top: .1rem;
+        margin-left: .3rem;
+        line-height: 1rem;
+
+        p {
+            margin: 0;
+            font-size: 80%;
+            font-style: italic;
+            line-height: 95%;
+        }
+    }
+}
+
+
+
+/*
+    Label
+*/
+
+.label {
+
+    @include label-style( $primary-color, $global-rounded );
+
+    &.success { @include label-style( $success-color, $global-rounded ); }
+    &.secondary { @include label-style( $secondary-color, $global-rounded ); }
+    &.warning { @include label-style( $warning-color, $global-rounded ); }
+    &.bkgrnd { @include label-style( $body-bg, $global-rounded ); }
+}
+
+
+
+/*
+    Accordion
+*/
+
+.accordion-navigation {
+
+    div > ul {
+        list-style: none outside none;
+        margin-left: 0;
+    }
+
+    .content {
+        border: 2px solid $accordion-navigation-bg-color;
+        margin-bottom: .5rem;
+    }
+}
+
+
+
+/*
+    Tooltip
+*/
+
+.tooltip {
+
+    &, &.round { @include radius( 8px ); }
+}
+
+
+
+/*
+    Dropdown
+*/
+
+.dropdown.button.small:after,
+button.dropdown.small:after { right: .5rem; }
+
+.f-dropdown {
+
+    &, &.drop-left { max-width: 200px; }
+    /*
+    li.disabled {
+        padding: .5rem;
+        text-decoration: line-through;
+        color: $warning-color;
+        background-color: $secondary-color;
+
+        .fa { color: $warning-color; }
+    }
+    */
+    .fa { color: $primary-color; }
+
+    .fa.fa-eye { color: $success-color; }
+
+    .fa.fa-minus-circle,
+    .fa.fa-filter,
+    .fa.fa-eye-slash,
+    .fa.fa-chain-broken { color: $warning-color; }
+
+    .fa.fa-trash-o { color: $alert-color; }
+}
+
+#js-list-ressource.ressource-wims .f-dropdown,
+#js-list-ressource.ressource-webconf .f-dropdown,
+#item-adder .f-dropdown { max-width: 170px; }
+
+.reveal-modal .f-dropdown.drop-left,
+#js-list-ressource #drop-batch.f-dropdown { max-width: 160px; }
+
+#js-list-ressource:not(.ressource-wims) .f-dropdown:not(#drop-batch),
+#course_plan-plan .f-dropdown.drop-left { max-width: 110px; }
+
+
+/*
+    Reveal / Alert-box etc.
+*/
+
+// Boîtes d'info
+
+.alert-box {
+    line-height: 1.1em;
+
+    h3,
+    a:not(.close),
+    a:not(.close):hover,
+    a:not(.close):active,
+    a:not(.close):visited {
+        color: #fff;
+        font-weight: bold;
+    }
+
+    h3 {
+        margin-top: rem-calc( -4 );
+        margin-bottom: rem-calc( 4 );
+    }
+
+    a:not(.close),
+    a:not(.close):hover,
+    a:not(.close):active,
+    a:not(.close):visited { text-decoration: underline; }
+}
+
+.reveal-modal {
+    padding: 0 0 0 0 !important;
+
+    & > h2:first-child {
+        padding: rem-calc( 6 32 8 12 );
+        margin-bottom: 0;
+        background-color: $primary-color;
+        color: #fff;
+        font-weight: bold;
+
+        i.fa-spin {
+            @include reveal-close;
+            font-size: 1.5rem;
+            top: rem-calc( 8 );
+            cursor: default;
+        }
+
+        .close-reveal-modal {
+            top: rem-calc( -3 );
+        }
+
+        i.fa-spin,
+        .close-reveal-modal {
+            right: rem-calc( 3 );
+        }
+    }
+
+    & h3 {
+        font-style: italic;
+    }
+
+    & > h3,
+    & > h4 {
+        padding-left: rem-calc( 12 );
+        padding-right: rem-calc( 12 );
+        margin-bottom: 0;
+
+        & + div.panel {
+            margin-top: 0 !important;
+        }
+    }
+
+    & > div.discreet {
+        font-size: rem-calc( 12 );
+        font-style: italic;
+        margin: rem-calc( -24 0 -9 0 );
+    }
+
+    & > div:not(.flex-video) {
+        padding: rem-calc( 4 12 );
+
+        &.panel {
+            margin: rem-calc( 6 12 );
+
+            p {
+                font-size: .8rem;
+                line-height: 1.1rem;
+            }
+        }
+
+        &.panel:last-child { margin-bottom: rem-calc( 12 ); }
+
+        ul,
+        p {
+            font-size: $base-font-size * .8;
+            line-height: $base-line-height * .8;
+        }
+
+        ul { list-style: circle outside none; }
+    }
+
+    & > #js-tag_filter,
+    & > div:not(.panel):not(.flex-video) { padding: rem-calc( 8 12 10 ); }
+
+    & > #js-tag_filter {
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    & > div:not(.panel):not(.flex-video) {
+
+        & > .text-center > a.button { font-weight: bold; }
+    }
+
+    & > #js-tag_filter,
+    & > #js-list-ressource { padding-top: 0; }
+
+    & > div:not(.panel):not(:last-child):not(.flex-video) { padding-bottom: 0; }
+
+    & > div.flex-video { margin: rem-calc( 12 ); }
+
+    & > ul {
+        list-style: none outside none;
+
+        li { display: inline !important; }
+    }
+
+    & > table { border: 0 none; }
+
+    & > a.button.expand:last-child,
+    & > a.button.expand.success:last-of-type {
+        margin-top: rem-calc( 12 );
+        margin-bottom: 0;
+    }
+
+    & > div:last-child > table {
+        margin-bottom: 0;
+    }
+
+    .panel + form { padding-top: 0; }
+
+    .panel > blockquote { margin-bottom: rem-calc( 6 ) !important; }
+
+    .panel .panel { margin-top: rem-calc( 8 ); }
+}
+
+// Symbole de fermeture
+
+.alert-box > .close,
+.reveal-modal > .close { font-weight: bold; }
+
+.close:before,
+.close-reveal-modal:before { content: "\00d7"; }
+
+
+
+
+/***************************************************************************************************
+
+        Listes
+
+*/
+
+
+/*
+    Tableaux
+*/
+
+table {
+    width: 100%;
+    vertical-align: middle;
+
+    tr {
+        /*
+        @media #{ $medium-up } {
+            display: table-row !important;
+        }
+
+        Ne fonctionne plus depuis MAJ Foundation 5.4.3 -> 5.5.2.
+            voir https://github.com/zurb/foundation/issues/5766
+
+        Remplacé par ce qui suit pour éviter le bug de non prise en compte
+        de l'attribut « colspan ». */
+        &.show-for-medium-up {
+            display: table-row !important;
+        }
+
+        th, td {
+            text-align: center;
+            word-wrap: break-word;
+
+            div.switch { margin: 0; padding: 0; }
+            div.switch label { margin-bottom: 0 !important; }
+            div.switch input:disabled + label { background-color: scale-color( $secondary-color, $lightness: 30% ); }
+        }
+
+        th {
+
+            &.checkall,
+            &.action {
+                margin: 0;
+                padding: 0;
+            }
+
+            &.checkall { width: 3.6em; }
+            &.action { width: 2.8em; }
+
+            &.sort {
+                padding-left: 1em;
+                padding-right: 1em;
+            }
+
+            &[data-sort="title"],
+            &[data-sort="name"],
+            &[data-sort="email"],
+            &[data-sort="forum-author"],
+            &[data-sort="author"] { text-align: left; }
+
+            &.state,
+            &[data-sort="new"],
+            &[data-sort="visible"] { width: 3.5em; }
+
+            &[data-sort="role"] { width: 5em; }
+
+            &[data-sort="favori"] { width: 5.5em; }
+
+            &[data-sort="etat"],
+            &[data-sort="number"] { width: 6em; }
+
+            &[data-sort="nb_ens"],
+            &[data-sort="nb_etu"],
+            &[data-sort="id"],
+            &[data-sort="date"],
+            &[data-sort="weight"],
+            &[data-sort="filetype"],
+            &[data-sort="acc_etu"],
+            &[data-sort="acc_pass"],
+            &[data-sort="acc_anon"] { width: 7em; }
+
+            &[data-sort="code"] { width: 8em; }
+
+            &.att_number,
+            &[data-sort="forum-author"],
+            &[data-sort="rank"],
+            &[data-sort="type"] { width: 9em; }
+
+            &[data-sort="lastmsg"] { width: 11.5em; }
+
+            &[data-sort="class"],
+            &[data-sort="model"],
+            &[data-sort="author"] { width: 13em; }
+
+            & > span {
+
+                @media #{ $small-only } {
+                    font-size: 75%;
+                }
+            }
+
+            div.switch input:indeterminate + label { background-color: scale-color( $warning-color, $lightness: 50% ); }
+            div.switch input:checked + label { background-color: $warning-color; }
+        }
+
+        td {
+
+            .noSwitch {
+
+                input[type="checkbox"] { margin-bottom: 0; }
+
+                label { display: none; }
+            }
+
+            &.filetype i.fa {
+                color: scale-color( $body-font-color, $lightness: 50% );
+
+                &.fa-file { color: scale-color( $primary-color, $lightness: 33% ) }
+                &.fa-file-archive-o { color: scale-color( $file-color, $lightness: 33% ) }
+                &.fa-file-audio-o { color: scale-color( $other-color, $lightness: 50% ) }
+                &.fa-file-code-o { color: scale-color( $glossary-color, $lightness: 25% ) }
+                &.fa-file-excel-o { color: scale-color( $success-color, $lightness: 33% ) }
+                &.fa-file-image-o { color: scale-color( $connect-color, $lightness: 33% ) }
+                &.fa-file-powerpoint-o { color: scale-color( $warning-color, $lightness: 33% ) }
+                &.fa-file-pdf-o { color: scale-color( $alert-color, $lightness: 33% ) }
+                &.fa-file-text-o { color: scale-color( $link-color, $lightness: 20% ) }
+                &.fa-file-video-o { color: scale-color( $wims-color, $lightness: 33% ) }
+                &.fa-file-word-o { color: scale-color( $primary-color, $lightness: 33% ) }
+            }
+
+            &:first-child:not(.title):not(.name) {
+                margin: 0;
+                padding: 0;
+            }
+
+            &:last-child.dropdown {
+                margin: 0;
+                padding: 0;
+            }
+
+            &:last-child {
+
+                & > ul {
+                    text-align: left;
+                    font-weight: normal;
+                }
+
+                & > ul:not(.f-dropdown) {
+                    margin: 0;
+                    font-size: $base-font-size * .9;
+                    line-height: $base-line-height;
+                    list-style: circle inside none;
+                }
+            }
+
+            &.title,
+            &.name,
+            &.email,
+            &.forum-author,
+            &.author { text-align: left; }
+
+            &.role { padding: 0; }
+
+            &.weight { text-align: right; }
+
+            &.lastmsg div,
+            &.weight,
+            &.date span,
+            &.title span { font-size: $table-row-font-size * .9; }
+
+            &.lastmsg div { font-style: italic; }
+
+            &.title {
+
+                a { font-weight: bolder; }
+
+                span:not(.hide) {
+                    display: inline-block;
+                    font-style: italic;
+                }
+            }
+
+            &.check { width: 3.6em; }
+
+            .fa-star:hover:before,
+            .fa-star-o:hover:before { content: $fa-var-star-half-o; }
+
+            .fa-2x { font-size: $table-row-font-size * 1.4; }
+
+            .fa-lock,
+            .fa-unlock,
+            .fa-eye,
+            .fa-eye-slash,
+            .fa-bell-o { color: $primary-color; }
+
+            .fa-exclamation-triangle {
+                color: $warning-color;
+                cursor: help;
+            }
+        }
+
+        &:nth-child( 2n+1 ) td > .label.bkgrnd { background-color: $table-even-row-bg; }
+    }
+
+    tfoot tr td {
+        font-weight: normal;
+        font-style: italic;
+
+        .fa-hand-o-right { margin-left: .33em; }
+        .f-dropdown { font-style: normal; }
+    }
+}
+
+
+
+/*
+    Filtrage des listes
+*/
+
+#js-tag_filter {
+    list-style: none outside none;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+
+    li { display: inline !important; }
+}
+
+a.filter-button {
+
+    @include button-base;
+    @include button-size( $button-tny );
+    @include filter-button-style( $secondary-color, $primary-color, $button-radius );
+    @include single-transition( background-color );
+
+    &.warning { @include filter-button-style( $secondary-color, $warning-color, $button-radius ); }
+    &.fixed_filter { @include filter-button-style( $secondary-color, $warning-color, $button-radius ); }
+}
+
+#list-forum,
+#js-list-cours {
+    position: relative;
+
+    & > a.filter-button {
+        position: absolute;
+        top: rem-calc( 5 );
+        right: $column-gutter / 2;
+
+        @media #{ $small-only } { top: rem-calc( -1 ); }
+    }
+
+    & > h2 { position: relative; }
+}
+
+
+
+/*
+    Icônes de tri (titres de colonnes)
+*/
+
+.sort {
+    cursor: pointer;
+
+    @media #{ $small-only } { padding-left: rem-calc( 5 ); }
+
+    & > span {
+        position: relative;
+        display: inline-block;
+        padding-left: rem-calc( 10 );
+
+        & > i.fa {
+            position: absolute;
+            top: rem-calc( -1 );
+            left: rem-calc( -5 );
+            font-size: 130%;
+
+            @media #{ $small-only } {
+                top: rem-calc( 0 );
+                left: rem-calc( -2 );
+            }
+
+            &.fa-sort { opacity: 0.3; }
+        }
+    }
+
+    &:not(.asc):not(.desc) {
+
+        & > span > i.fa.fa-sort-asc { display: none; }
+        & > span > i.fa.fa-sort-desc { display: none; }
+    }
+    &.asc {
+
+        & > span > i.fa.fa-sort-asc { display: inline; }
+        & > span > i.fa.fa-sort-desc { display: none; }
+    }
+    &.desc {
+
+        & > span > i.fa.fa-sort-asc { display: none; }
+        & > span > i.fa.fa-sort-desc { display: inline; }
+    }
+}
+
+
+
+/*
+    Boutons
+*/
+
+button, .button {
+
+    &:not(.expand) {
+
+        @include button-style( $primary-color, true, false, scale-color( $primary-color, $lightness: $button-function-factor), $button-border-color );
+
+        &.success { @include button-style( $success-color, true, false, scale-color( $success-color, $lightness: $button-function-factor), $button-border-color ); }
+        &.warning { @include button-style( $warning-color, true, false, scale-color( $warning-color, $lightness: $button-function-factor), $button-border-color ); }
+        &.alert { @include button-style( $alert-color, true, false, scale-color( $alert-color, $lightness: $button-function-factor), $button-border-color ); }
+    }
+
+    &.expand {
+
+        @include button-style( $primary-color, false, false, scale-color( $primary-color, $lightness: $button-function-factor), $button-border-color );
+
+        &.success { @include button-style( $success-color, false, false, scale-color( $success-color, $lightness: $button-function-factor), $button-border-color ); }
+        &.warning { @include button-style( $warning-color, false, false, scale-color( $warning-color, $lightness: $button-function-factor), $button-border-color ); }
+        &.alert { @include button-style( $alert-color, false, false, scale-color( $alert-color, $lightness: $button-function-factor), $button-border-color ); }
+    }
+    // Correctif bug expand 5.5.3 -->
+    &.expand.large { @include button-size( $padding: $button-lrg, $full-width: true ); }
+    &.expand.small { @include button-size( $padding: $button-sml, $full-width: true ); }
+    &.expand.tiny { @include button-size( $padding: $button-tny, $full-width: true ); }
+    // <--
+    &.create { @include button-style( $button_primary-color, true, false, scale-color( $button_primary-color, $lightness: $button-function-factor), $button_primary-color ); }
+    &.secondary { @include button-style( $secondary-color, true, false, scale-color( $secondary-color, $lightness: $button-function-factor), $secondary-color ); }
+    &.round { @include button-style( $primary-color, $button-round, false, scale-color( $primary-color, $lightness: $button-function-factor), $button-border-color ); }
+
+}
+
+section > h2 > .button { float: right; }
+
+table {
+
+    .button { margin-bottom: 0; }
+
+    tfoot > tr > td:last-child > a {
+        color: $warning-color;
+
+        @include single-transition( color );
+
+        &:hover { color: scale-color( $warning-color, $lightness: $button-function-factor ); }
+
+        &.inactive {
+            cursor: default;
+            color: $secondary-color;
+        }
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Mon espace
+
+*/
+
+
+#mon_espace {
+
+    nav {
+        text-align: center;
+
+        &.row {
+
+            @media #{ $medium-up } { padding: 0; }
+        }
+
+
+        /*
+            Boutons
+        */
+
+        .button {
+            @include button-base;
+            @include button-size( $button-med );
+            @include single-transition( background-color );
+
+            @media #{ $small-only } {
+                padding-right: 0;
+                padding-left: 0;
+                width: 100%;
+            }
+
+            @media #{ $medium-up } {
+                font-size: 90%;
+                width: 32.5%;
+                display: inline-block !important;
+
+                i.fa {
+                    display: block;
+                    font-size: 160%;
+                    margin-bottom: .35em;
+                }
+            }
+
+            &.res-fichiers { @include button-style( $file-color, true, false, scale-color( $file-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-connect { @include button-style( $connect-color, true, false, scale-color( $connect-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-wims { @include button-style( $wims-color, true, false, scale-color( $wims-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-liens { @include button-style( $link-color, true, false, scale-color( $link-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-glossaire { @include button-style( $glossary-color, true, false, scale-color( $glossary-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-utilisateurs { @include button-style( $users-color, true, false, scale-color( $users-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-bug { @include button-style( $bug-color, true, false, scale-color( $bug-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-autre { @include button-style( $other-color, true, false, scale-color( $other-color, $lightness: $button-function-factor), $button-border-color ); }
+        }
+    }
+}
+
+// Décompte des éléments
+#js-update_target {
+    position: relative;
+
+    & > div.el_counter {
+        position: absolute;
+        right: 0;
+        top: -2.3em;
+        font-size: 80%;
+        font-style: italic;
+    }
+
+}
+
+
+
+
+/***************************************************************************************************
+
+        WIMS
+
+*/
+
+#insert_wims {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    margin: 0 auto;
+    border: 0 none;
+}
+
+#wims-edit {
+
+    div.field { margin-bottom: rem-calc( 12 ); }
+    a.button.tiny { float: right; }
+    h2 > span.label { vertical-align: rem-calc( 3 ) !important; }
+
+    label {
+        line-height: 1.1em;
+        padding-bottom: rem-calc( 6 );
+    }
+
+    .formHelp {
+        margin-top: rem-calc( -3 );
+        margin-bottom: rem-calc( 3 );
+        font-size: $base-font-size * .8;
+        line-height: $base-line-height * .8;
+        font-style: italic;
+    }
+
+    .panel {
+        /*@include panel( scale-color( $primary-color, $lightness: 94% ) );*/
+        @include radius;
+        /*a:not(.button) { color: $callout-panel-link-color; }*/
+    }
+
+    /* callout est utilisée pour les feedback généraux */
+    .panel.callout { border-left: 5px solid #999;}
+    /* success est utilisée pour les bonnes réponses */
+    .panel.success { border-left: 5px solid $success-color; background-color: scale-color($success-color, $lightness: 88%); }
+    /* warning */
+    .panel.warning { border-left: 5px solid $warning-color; }
+    /* alert est utilisée pour les mauvaises réponses */
+    .panel.alert   { border-left: 5px solid $alert-color; }
+
+    .fieldErrorBox { color: $alert-color; }
+    .error label { font-weight: bold; }
+    .error.panel { border-color: $alert-color; }
+}
+
+.wims-edit_reveal {
+
+    & > ul,
+    & > div { padding: rem-calc( 4 13 16 ); }
+
+    & > ul,
+    & > div,
+    & > div ul {
+        font-size: rem-calc( 14 ) !important;
+        line-height: 1.5em !important;
+    }
+
+    & > div ul { margin-bottom: 0; }
+}
+
+code {
+    font-family: Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
+    font-size: rem-calc( 14 );
+    font-weight: normal;
+    background-color: $primary-color;
+    color: #fff;
+    padding: 0.15em 0.75em 0.20em;
+    text-decoration: none;
+    border-radius: 1em;
+    cursor: text;
+    white-space: nowrap;
+}
+
+
+
+
+/***************************************************************************************************
+
+        Mes cours
+
+*/
+
+
+// Légende (sous-titre)
+#course_plan,
+#course_life {
+
+    .action-button,
+    a.button:not(.expand) { float: right; }
+
+    .action-button { margin-bottom: 0; }
+}
+
+
+
+/*
+    Plan du cours
+*/
+
+#course_plan {
+
+    & > .row {
+
+        &.panel { margin-left: 0; }
+        &:not(.panel) { padding-left: $column-gutter / 2; }
+    }
+
+    & > .row:first-child {
+
+        & > nav { margin-top: rem-calc( 5 ); }
+        & > h1 { margin-top: 0; }
+    }
+
+    & > .row:nth-child( 2 ) {
+
+        .panel {
+            padding-top: 0.1rem;
+
+            a > .fa {
+                vertical-align: bottom;
+                line-height: .6rem;
+            }
+
+            a:first-child > .fa { margin-right: -0.35rem }
+
+            dl {
+                line-height: 1rem;
+                padding-top: .2rem;
+
+                dt, dd { display: inline !important; }
+                dt { padding-right: 0.3rem; }
+                dd { line-height: .6rem; }
+            }
+        }
+
+        & > div:last-child.columns { padding-right: 0; }
+    }
+
+    & > .row:nth-child( 3 ) {
+
+        & > h2 {
+            margin-top: 0;
+        }
+    }
+
+    & > .panel.callout:first-of-type:not(.accordion) {
+        padding-right: rem-calc( 10 );
+        padding-bottom: 0;
+    }
+
+    ol {
+        margin-left: 0;
+        line-height: rem-calc( 18 );
+        list-style: none outside none;
+        font-size: rem-calc( 14 ) !important;
+
+        ol {
+            margin-top: rem-calc( -8 );
+            margin-left: 1.15rem;
+        }
+
+        li,
+        li > ol { padding-top: rem-calc( 8 ); }
+
+        span {
+
+            &:not(.type_TexteLibre) { padding-left: $iconPadding / 2; }
+            &.type_TexteLibre > .typeElementTitre { padding-left: 0; }
+            & > i.fa { margin: 0 -$iconPadding / 2 0 -$iconPadding / 3; }
+            & > i.fa:first-of-type { margin-left: 0; }
+        }
+
+        .f-dropdown li { padding-top: 0; }
+
+        .typeElement {
+            border-left-style: solid;
+            border-left-width: rem-calc( 5 );
+            border-left-color: transparent;
+
+            &.type_Activite { border-left-color: $course_activity-color; }
+            &.type_Mon_Espace { border-left-color: $course_space_el-color; }
+            &.type_Titre { border-left-color: $course_title-color; }
+
+            &.type_Titre {
+
+                .typeElementTitre {
+                    font-weight: bold;
+                    color: scale-color( $header-font-color, $lightness: 25% );
+                }
+            }
+
+            &.type_TexteLibre {
+                border: 0 none;
+                /*
+                .typeElementTitre {
+
+                    p, ul, ol {
+                        margin-top: rem-calc( 2 );
+                        margin-bottom: rem-calc( 2 );
+                        font-size: rem-calc( 13 ) !important;
+                    }
+
+                    ul {
+                        margin-left: rem-calc( 5 ) !important;
+                        //list-style-type: circle !important;
+                        //list-style-position: inside !important;
+                        // Pb de list-style-type, utilisation d'une icône FA en
+                        // remplacement, voir « scss/jalon/_icons.css ».
+                        li:before { margin-right: rem-calc( 3 );}
+                    }
+
+                    ol {
+                        margin-left: rem-calc( 6 );
+                        list-style-type: decimal !important;
+                        list-style-position: inside !important;
+                    }
+
+                    li {
+                        padding-top: 0;
+                        font-weight: normal;
+                        font-style: normal;
+                    }
+                } //*/
+            }
+        }
+
+        a {
+            @include course_plan-button-style( $header-font-color, false, scale-color( $primary-color, $lightness: $button-function-factor) );
+            @include single-transition( color );
+
+            &.dropdown {
+                float: right;
+                font-size: rem-calc( 20 );
+                line-height: rem-calc( 14 );
+
+                @include course_plan-button-style( $primary-color, false, scale-color( $primary-color, $lightness: $button-function-factor) );
+            }
+        }
+    }
+
+    #bibliographie,
+    #glossaire {
+
+        ul, dl { margin-left: 0; }
+    }
+
+    // Icônes
+    .fa-star,
+    .fa-star-o,
+    .fa-bell-o { color: $primary-color; }
+    .fa-hand-o-left { color: $warning-color; }
+    .fa-hand-o-right,
+    .fa-eye-slash { color: $alert-color; }
+    .fa-square-o,
+    .fa-check-square-o { color: $glossary-color; }
+}
+
+#course_plan-plan {
+    margin-bottom: .85rem;
+
+    li {
+
+        &.sortable { cursor: move; }
+
+        & > a.dropdown {
+            margin-left: rem-calc( -2 );
+            margin-right: rem-calc( -6 );
+        }
+
+        & > i.fa { margin-right: rem-calc( -2 ); }
+    }
+
+    .typeElementTitre .title-legend {
+        //display: inline-block;
+        margin-top: rem-calc( -2 );
+        margin-left: rem-calc( 7 );
+        //margin-bottom: rem-calc( -12 );
+        font-weight: normal;
+    }
+
+    .switch { float: right; }
+
+    .lu,
+    .nonLu {
+        float: right;
+        min-width: 4rem;
+    }
+
+    .lu { color: $primary-color; }
+    .nonLu { color: $secondary-color; }
+
+    .fa-lg { line-height: 1; }
+
+    .fa-hand-o-left.jalonner {
+        float: right;
+        font-size: 1.25rem;
+        cursor: help;
+
+    }
+}
+
+//#course_plan-legend.panel {
+#course_plan-legend {
+    margin-top: .5rem;
+    /*
+    dl {
+        margin-left: rem-calc( 1 );
+        line-height: 0;
+
+        dt, dd {
+            margin-bottom: 0;
+            font-size: .7rem;
+        }
+
+        dt {
+            font-style: normal;
+            font-weight: normal;
+
+            .fa { margin-left:  rem-calc( -3 ); }
+        }
+
+        dd {
+            font-style: italic;
+
+            &:hover { cursor: alias; }
+        }
+    }
+    //*/
+    dl.typeElement {
+        //margin-left: .2rem;
+        padding-left: .5rem;
+        border-left-style: solid;
+        border-left-width: rem-calc( 5 );
+        border-left-color: transparent;
+
+        &.type_Activite { border-left-color: $course_activity-color; }
+        &.type_Mon_Espace { border-left-color: $course_space_el-color; }
+        &.type_Titre { border-left-color: $course_title-color; }
+
+
+        dt, dd { display: inline !important; }
+        //dt { font-size: .8rem; }
+
+        dd {
+            margin-left: rem-calc( 5 );
+            white-space: nowrap;
+        }
+    }
+
+    dl { margin: 0 .8rem .8rem; }
+    dt, dd { font-size: .8rem; }
+}
+
+
+
+/*
+    Onglets “Vie du cours”
+*/
+
+#course_life {
+
+    .sup,
+    .tabs span {
+        position: absolute;
+        top: 0;
+        display: inline-block;
+        background-color: $alert-color;
+        color: #fff;
+        font-weight: 500;
+        font-size: rem-calc( 12 );
+        margin-top: -0.33em;
+        vertical-align: top;
+        padding: 0 .5em;
+        text-shadow: none;
+        border: 2px solid #fff;
+        z-index: 10;
+
+        @include radius( 1em );
+    }
+
+    h2 {
+
+        .sup {
+            margin-top: -0.12em;
+            margin-right: rem-calc( -6 );
+        }
+
+        span { right: rem-calc( -22 ); }
+    }
+
+    .tabs-content {
+        margin-bottom: 0;
+
+        & > .content {
+            padding: rem-calc( 6 0 3 );
+
+            & > .button {
+                margin-top: rem-calc( 2 );
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    ul.tabs {
+
+        li.tab-title {
+            width: 33.33%;
+            text-align: center;
+
+            @media #{ $small-only } { width: 50%; }
+
+            &:first-child a { @include side-radius( 'left' ); }
+            &:last-child a { @include side-radius( 'right' ); }
+
+            &.active a {
+                color: #fff;
+                background-color: $primary-color;
+            }
+
+            a {
+                position: relative;
+                padding: .5em .75em .25em;
+                font-size: rem-calc( 11 );
+                background-color: $secondary-color;
+
+                i.fa {
+                    display: block;
+                    margin-right: 0;
+                    margin-bottom: .1em;
+                    text-align: center;
+                }
+
+                span { right: rem-calc( -5 ); }
+            }
+        }
+    }
+
+    & > .panel > dl > dd > .panel { margin-top: rem-calc( 5 ); }
+}
+
+.course_life-actus {
+
+    dl {
+        padding-top: rem-calc( 5 );
+
+        dt {
+            float:left;
+
+            span { padding-bottom: .5em; }
+        }
+
+        dd {
+            float: none;
+            padding-left: 6em;
+            padding-bottom: .5em;
+        }
+    }
+}
+
+
+
+/*
+    Accès et préférences
+
+#mes_cours-acces {
+
+    .panel {
+
+        & > h3 {
+
+            & > a,
+            & > .label { float: right; }
+
+            & > .label {
+                margin-right: rem-calc( 6 );
+                padding-top: $button-sml;
+                padding-bottom: $button-sml;
+                font-style: normal;
+                font-weight: bold;
+            }
+        }
+
+        .panel {
+            clear: both;
+
+            & > h3 > .label { margin-right: 0; }
+        }
+
+        ul.panel { margin-left: 0; }
+    }
+
+}
+*/
+
+
+
+
+/***************************************************************************************************
+
+        Trombinoscope
+
+*/
+
+
+#listingTrombi {
+
+    ul {
+        font-family: "Comic Sans MS";
+        font-size: $base-font-size * .8;
+        line-height: $base-line-height * .9;
+        text-align: center;
+
+        li {
+            display: inline-block;
+            width: 21.5%;
+            padding: 1%;
+            margin: 0.5%;
+            margin-bottom: 5px;
+            box-shadow: 0px 3px 6px rgba( 0, 0, 0, 0.5 );
+            transform-origin: 50% 50%;
+            transform: rotate( 1deg );
+
+            &:nth-child( 3n ) { transform: rotate( -2deg ); }
+
+            img {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+
+            p {
+                margin-bottom: rem-calc( 8 );
+                text-align: center;
+                font-size: inherit;
+                line-height: inherit;
+                font-weight: bold;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                display: block;
+            }
+
+            p:last-of-type { margin-bottom: 0; }
+        }
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Page d'accueil
+
+*/
+
+body.template-firstpage_view.role-anonymous {
+
+    // Repère du retour en haut de page
+    #breadcrumb { margin-bottom: 0; }
+}
+
+#jalon_stats {
+
+    table {
+
+        border-spacing: 0;
+        border: 0 none;
+
+        tr:nth-of-type(even) { background: $table-even-row-bg; }
+
+        td {
+            text-align: right;
+
+            &:last-child {
+                width: 12em;
+                padding-right: 7em;
+                font-weight: bold;
+                color: $primary-color;
+            }
+        }
+    }
+}
+
+#accueil {
+
+    .jumbotron {
+        padding: 2rem .25rem 1.75rem;
+        margin-bottom: rem-calc( 8 );
+        text-align: center;
+
+        @include background( 'stars.svg', 0 0, repeat, #2a9ccc );
+
+        h1, h2 {
+            font-family: 'hero_lightlight', sans-serif;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 4.6rem;
+            line-height: 6rem;
+            letter-spacing: 0.24em;
+            text-shadow: 0px 0px 9px rgba( 0, 0, 0, 0.33 );
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            line-height: 2rem;
+            letter-spacing: 0.12em;
+            text-shadow: 0px 0px 3px rgba( 0, 0, 0, 0.33 );
+
+            span { @media #{ $medium-up } { display: inline !important; } }
+        }
+
+        .connection-button {
+            @include button-base( );
+            @include button-size( $button-med, false );
+            @include connection-button-style( transparent, $primary-color, $button-radius );
+            @include single-transition( background-color );
+
+            margin: 1rem 0 .25rem;
+            border: 1px dotted rgba( 255, 255, 255, .5 );
+
+            &.split { @include split-button( medium, $split-button-pip-color, $secondary-color, true ); }
+        }
+
+        .dropdown {
+            @include connection-button-style( transparent, $primary-color, $button-radius );
+            @include single-transition( background-color );
+
+            margin-top: -1rem;
+            margin-right: $rowLateralPadding * 1.5;
+            border: 1px dotted rgba( 255, 255, 255, .5 );
+
+            &:after { right: .5rem }
+        }
+
+        #language-selector .active > a {
+            color: scale-color( $primary-color, $lightness: 30% );
+            font-weight: bold;
+        }
+    }
+
+    & > .row {
+        margin: 1rem auto 0;
+
+        &:last-child {
+            margin-bottom: 1rem;
+
+            #logo_container {
+                padding-top: 150px;
+                @include background( 'logo_uns.svg', center 20px );
+            }
+        }
+
+        .columns {
+            text-align: center;
+
+            h3,
+            h4,
+            .fa-circle { color: $primary-color; }
+
+            h3 {
+                font-size: 1.3rem;
+                font-style: italic;
+                font-weight: bold;
+            }
+
+            h4 {
+                font-size: 1.1rem;
+                font-style: italic;
+                font-weight: bold;
+            }
+
+            p { text-align: justify; }
+        }
+
+        .flex-video { margin-top: 1rem; }
+    }
+
+    .button,
+    .connection-button {
+
+        @media #{ $small-only } {
+            padding-right: 1%;
+            padding-left: 1%;
+            width: 98%;
+        }
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Forums
+
+*/
+
+
+.discreet {
+    font-size: rem-calc( 12 );
+    font-style: italic;
+}
+
+blockquote {
+    padding: rem-calc( 0 0 0 6 );
+    margin-bottom: rem-calc( 6 );
+    font-style: italic;
+    line-height: 1.3;
+    border-left: 2px solid $primary-color;
+}
+
+.warning blockquote { border-color: $warning-color; }
+
+div.boardComment {
+
+    margin-top: rem-calc( -3 );
+
+    &:first-of-type {
+        margin-top: rem-calc( -9 );
+
+        .panel.callout {
+            border-width: 1px;
+            border-color: $primary-color;
+        }
+    }
+
+    h2, h3 { margin-bottom: rem-calc( -8 ); }
+
+    .panel {
+
+        & > :last-child { margin-bottom: rem-calc( 6 ) !important; }
+
+        a.action-button,
+        a.dropdown {
+            float: right;
+            margin: rem-calc( -6 -12 0 3 );
+        }
+    }
+}
+
+#searchResults {
+
+    dt {
+        margin-bottom: 0;
+        font-size: 90%;
+    }
+
+    dd.panel > .panel.discreet { margin: rem-calc( 6 0 -3 0 ); }
+}
+
+
+
+
+/***************************************************************************************************
+
+        CKEditor : éléments de texte libre & description du cours
+
+*/
+
+#reveal-main .type_TexteLibre,
+#course_plan ol .type_TexteLibre .typeElementTitre {
+
+    p, ul, ol {
+        margin-top: 0;
+        margin-bottom: rem-calc( 3 );
+        font-size: rem-calc( 13 ) !important;
+        line-height: rem-calc( 16 ) !important;
+    }
+
+    ul {
+        margin-left: rem-calc( 5 ) !important;
+        //list-style-type: circle !important;
+        //list-style-position: inside !important;
+        // Pb de list-style-type, utilisation d'une icône FA en
+        // remplacement, voir « scss/jalon/_icons.css ».
+        li:before { margin-right: rem-calc( 3 );}
+    }
+
+    ol {
+        margin-left: rem-calc( 6 );
+        list-style-type: decimal !important;
+        list-style-position: inside !important;
+    }
+
+    li {
+        padding-top: 0;
+        font-weight: normal;
+        font-style: normal;
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Admin
+
+*/
+
+// Pagination
+#pagination-container {
+    text-align: center;
+
+    #pagination-prev { float: left; }
+
+    #pagination-next { float: right; }
+
+    #pagination-page_number {
+        width: 33%;
+        margin: 0 auto;
+        font-size: rem-calc( 13 );
+
+        input[type="text"] {
+            width: 5em;
+            height: auto;
+            text-align: right;
+            font-size: inherit;
+            display: inline-block;
+            padding: rem-calc( 1 2 );
+        }
+    }
+}
+
+
+
+
+/***************************************************************************************************
+
+        Divers
+
+*/
+
+// Switches
+$activatorSwitch-height: 2rem;
+.switch.activator {
+
+    @include radius( 1000px );
+
+    input + label {
+        height: $activatorSwitch-height;
+        width: $activatorSwitch-height * 3.2;
+        background: $warning-color;
+
+        @include radius( $activatorSwitch-height );
+
+        &:after {
+            height: $activatorSwitch-height - .5rem;
+            width: $activatorSwitch-height - .5rem;
+
+            @include radius( $activatorSwitch-height );
+        }
+
+        span {
+            position: absolute;
+            top: 7px;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+
+            &.switch-on {
+                left: -91px;
+                display: none;
+            }
+
+            &.switch-off { left: -69px; }
+        }
+    }
+
+    input:checked + label {
+        background: $success-color;
+
+        span.switch-on { display: block; }
+        span.switch-off { display: none; }
+    }
+
+    input:checked + label:after { left: $activatorSwitch-height * 2.2 + .25rem; }
+}
+
+// Legende de titre
+.title-legend {
+    font-size: 75%;
+    line-height: 1.2;
+    font-style: italic;
+    margin-top: rem-calc( -8 );
+    margin-bottom: rem-calc( 5 );
+    display: block;
+}
+
+// Retour à la ligne forcé
+.break-word { word-wrap: break-word; }
+
+// Lien Adobe Connect
+#connect {
+    target-name: new;
+    target-new: tab;
+}
+
+
+
+
+/***************************************************************************************************
+
+        Campus Pegasus
+
+*/
+
+/*
+.top-bar .title-area .name h1 a {
+    @include background( 'logo_pegasus.png', center );
+}
+
+#accueil .jumbotron {
+    @include background( 'stars.svg', 0 0, repeat, #8c82b2 );
+}
+
+#breadcrumb {
+    @include background( 'stars.svg', 0 0, repeat, #8c82b2 );
+}
+//*/

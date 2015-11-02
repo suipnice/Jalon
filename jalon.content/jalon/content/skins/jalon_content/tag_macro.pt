@@ -1,0 +1,133 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Créer une étiquette
+-->
+<metal:macro define-macro="create-tag">
+                <li class="show-for-medium-up">
+                    <a data-reveal-id="reveal-create_tag" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/create_tag_form"
+                       class="button tiny create">
+                        <i class="fa fa-plus-circle no-pad"></i>
+                        <tal:block i18n:translate="">Créer une étiquette</tal:block>
+                    </a>
+                    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+                    <div id="reveal-create_tag" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+                </li>
+</metal:macro>
+
+
+<!--
+        Affichage des étiquettes
+-->
+<metal:macro define-macro="tag">
+
+    <tal:block tal:define="tags tags | context/getTag">
+                <li>
+                    <a tal:attributes="id string:last;
+                                       class python:context.test('last' in subjects, 'filter-button fixed_filter selected', 'filter-button fixed_filter unselected')">
+                       <i class="fa fa-circle no-pad"></i>
+                       <i class="fa fa-circle-thin no-pad"></i>
+                       <tal:block i18n:translate="">Les 20 derniers</tal:block>
+                    </a>
+                </li>
+        <tal:block repeat="mot tags">
+                <li tal:define="subject python:context.jalon_quote(mot['tag'])">
+                    <a tal:attributes="id mot/tag;
+                                       class python:context.test(mot['titre'] in subjects, 'filter-button selected', 'filter-button unselected')">
+                       <i class="fa fa-circle no-pad"></i>
+                       <i class="fa fa-circle-thin no-pad"></i>
+                       <tal:block tal:content="mot/titre" />
+                    </a>
+                </li>
+        </tal:block>
+    </tal:block>
+
+</metal:macro>
+
+
+<!--
+        macro "Tag-cours" : affichage de la liste des étiquettes associées au type d'objet de l'espace actuel
+-->
+<metal:macro define-macro="tag-cours">
+<tal:define define="authMember user/getId;
+                    espace request/espace | nothing;
+                    tags python:context.getTag(authMember, espace)">
+
+                <li>
+                    <a tal:attributes="id string:last;
+                                       class python:context.test('last' in subjects, 'filter-button fixed_filter selected', 'filter-button fixed_filter unselected')">
+                       <i class="fa fa-circle no-pad"></i>
+                       <i class="fa fa-circle-thin no-pad"></i>
+                       <tal:block i18n:translate="">Les 20 derniers</tal:block>
+                    </a>
+                </li>
+
+    <tal:block repeat="mot tags">
+                <li tal:define="subject python:context.jalon_quote(mot['tag'])">
+                    <a tal:attributes="id mot/tag;
+                                       class python:context.test(mot['titre'] in subjects, 'filter-button selected', 'filter-button unselected')">
+                       <i class="fa fa-circle no-pad"></i>
+                       <i class="fa fa-circle-thin no-pad"></i>
+                       <tal:block tal:content="mot/titre" />
+                    </a>
+                </li>
+    </tal:block>
+
+</tal:define>
+</metal:macro>
+
+
+<!-- macro "Tag-espace" : affichage de la liste des types d'objet pouvant être ajoutés à la page actuelle ("ajout") -->
+<metal:macro define-macro="tag-espace">
+
+    <ul class="arrondis onglets"
+        tal:define="motsClefs python:context.getRubriqueEspace(ajout=ajout);
+                    menu menu | nothing">
+    <tal:block repeat="mot motsClefs">
+        <li tal:attributes="id mot/rubrique"
+            class="arrondi categorie">
+        <tal:condition condition="not:menu">
+            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=${macro}&formulaire=${formulaire}&ajout=${ajout}&espace=${mot/rubrique}"
+               tal:content="mot/titre"/>
+        </tal:condition>
+        <tal:condition condition="menu">
+            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=${macro}&formulaire=${formulaire}&ajout=${ajout}&menu=${menu}&idpage=${idpage}&espace=${mot/rubrique}"
+               tal:content="mot/titre"/>
+        </tal:condition>
+        </li>
+    </tal:block>
+    </ul>
+
+</metal:macro>
+
+
+<metal:macro define-macro="tag-acces">
+
+    <ul id="rubrique_espace" class="arrondis"
+        tal:define="motsClefs python:context.getRubriqueEspace(ajout=ajout)">
+    <tal:block repeat="mot motsClefs">
+        <li class="rubrique_espace unselected"
+            tal:attributes="id mot/rubrique">
+            <a tal:attributes="href string:${context/absolute_url}/cours_acces_ajouter?macro=${macro}&formulaire=${formulaire}&ajout=${ajout}&espace=${mot/rubrique}"
+               tal:content="mot/titre"/>
+        </li>
+    </tal:block>
+    </ul>
+
+</metal:macro>
+
+
+</metal:content-core>
+</body>
+</html>

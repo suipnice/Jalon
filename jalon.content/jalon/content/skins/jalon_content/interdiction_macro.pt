@@ -1,0 +1,31 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="non_permis">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane des jalon_folder
+    </metal:macro>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <section class="small-12 columns">
+            <div class="panel warning radius">
+                <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</tal:block>
+            </div>
+        </section>
+
+    </main>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

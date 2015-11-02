@@ -1,0 +1,167 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+    <body>
+
+<metal:content-core fill-slot="content-core">
+
+    <metal:macro define-macro="maintenance-jalon">
+
+        <!-- Bloc annonce maintenance -->
+            <div class="alert-box alert radius" i18n:translate="">
+                <h3 i18n:translate="">Maintenance en cours</h3>
+                <strong tal:content="infos_connexion/site | infos_mon_espace/site" />
+                <tal:block i18n:translate="">est fermé</tal:block>
+                <tal:block i18n:translate="">pour maintenance du</tal:block>
+                <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
+                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.
+                <tal:block i18n:translate="">Merci pour votre compréhension.</tal:block>
+            </div>
+
+    </metal:macro>
+
+    <metal:macro define-macro="annoncer-maintenance-jalon">
+        <!-- Bloc annonce prévision maintenance -->
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                <h3 i18n:translate="">Maintenance planifiée</h3>
+                <strong tal:content="infos_connexion/site | infos_mon_espace/site" />
+                <tal:block i18n:translate="">sera indisponible</tal:block>
+                <tal:block i18n:translate="">pour maintenance du</tal:block>
+                <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
+                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.
+                <a class="close"></a>
+            </div>
+    </metal:macro>
+
+    <metal:macro define-macro="vider-cache">
+        <!-- Bloc annonce vider cache -->
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                <tal:block i18n:translate="">Suite à une mise à jour, nous vous recommandons de</tal:block>
+                <a class="has-tip" data-tooltip target="_blank"
+                   href="http://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur"
+                   title="Comment faire ?"
+                   i18n:translate=""
+                   i18n:attributes="title">
+                   vider le cache de votre navigateur</a>.
+            <tal:comment replace="nothing"><!--
+                <a tal:attributes="href infos_mon_espace/url_news_maintenance" i18n:translate="">Consulter la note de mise à jour.</a>
+            --></tal:comment>
+                <a class="close"></a>
+            </div>
+    </metal:macro>
+
+    <metal:macro define-macro="connexion_jalon">
+
+        <tal:block define="message request/message | nothing"
+                   condition="message">
+            <div class="row">
+                <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                    <strong i18n:translate="">Connexion requise</strong>
+                    <span i18n:translate="">Vous devez vous authentifier pour accéder à la page que vous demandez.</span>
+                </div>
+            </div>
+        </tal:block>
+
+        <tal:block condition="anonymous">
+            <div class="row" data-equalizer="data-equalizer"
+                 tal:define="isURLInPortal nocall:context/portal_url/isURLInPortal;
+                             login_template_ids python:'login login_success login_password login_failed login_form logged_in logout logged_out registered mail_password mail_password_form register require_login member_search_results pwreset_finish localhost'.split();
+                             came_from request/came_from|request/HTTP_REFERER|nothing;
+                             came_from_template_id python:came_from and context.plone_utils.urlparse(came_from)[2].split('/')[-1];
+                             came_from python:test(came_from is not None and isURLInPortal(came_from) and came_from_template_id not in login_template_ids, came_from, None);">
+
+            <tal:condition condition="infos_connexion/activer_cas">
+
+                <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+                    <a class="connection-button split has-tip"
+                       tal:attributes="href string:${here/absolute_url}/casloginunice;
+                                       title string:Identifiant et mot de passe de votre compte de messagerie de l'${infos_connexion/etablissement}."
+                       i18n:attributes="title">
+                        <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter avec son sésame</tal:block>
+                        <span data-dropdown="no_sesame"></span>
+                    </a>
+                    <ul id="no_sesame" class="f-dropdown" data-dropdown-content="">
+                        <li>
+                            <a class="has-tip" title="Accéder au gestionnaire d'identités numériques" data-tooltip
+                               tal:attributes="href infos_connexion/lien_sesame"
+                               i18n:attributes="title"
+                               i18n:translate="">
+                                Vous avez perdu votre sésame, ou n'en avez pas ?
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+                    <a class="connection-button"
+                       data-reveal-id="reveal-connection" data-reveal-ajax="true"
+                       tal:attributes="href string:${here/absolute_url}/connexion_form?came_from=${came_from};
+                                       title string:Si vous avez été invité par courriel."
+                       tal:condition="came_from"
+                       i18n:attributes="title">
+                        <i class="fa fa-leaf"></i><tal:block i18n:translate="">Se connecter avec un compte invité</tal:block>
+                    </a>
+                    <a class="connection-button"
+                       data-reveal-id="reveal-connection" data-reveal-ajax="true"
+                       tal:attributes="href string:${here/absolute_url}/connexion_form;
+                                       title string:Si vous avez été invité par courriel."
+                       tal:condition="not:came_from"
+                       i18n:attributes="title">
+                        <i class="fa fa-leaf"></i><tal:block i18n:translate="">Se connecter avec un compte invité</tal:block>
+                    </a>
+                </div>
+
+            </tal:condition>
+
+            <tal:condition condition="not:infos_connexion/activer_cas">
+
+                <div tal:attributes="class python:test(infos_connexion['activer_creationcompte'], 'large-6 medium-6 small-12 columns', 'small-12 columns')"
+                     data-equalizer-watch="data-equalizer-watch">
+
+                <tal:condition condition="came_from">
+                    <a class="connection-button"
+                       data-reveal-id="reveal-connection" data-reveal-ajax="true"
+                       tal:attributes="href string:${here/absolute_url}/connexion_form?came_from=${came_from}">
+                        <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter</tal:block>
+                    </a>
+                </tal:condition>
+                <tal:condition condition="not:came_from">
+                    <a class="connection-button"
+                       data-reveal-id="reveal-connection" data-reveal-ajax="true"
+                       tal:attributes="href string:${here/absolute_url}/connexion_form">
+                        <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter</tal:block>
+                    </a>
+                </tal:condition>
+
+                </div>
+
+                <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch"
+                     tal:condition="infos_connexion/activer_creationcompte">
+                    <a class="connection-button"
+                       data-reveal-id="reveal-connection" data-reveal-ajax="true"
+                       tal:attributes="href string:${here/absolute_url}/creationcompte_form">
+                        <i class="fa fa-puzzle-piece"></i><tal:block i18n:translate="">Créer un compte</tal:block>
+                    </a>
+                </div>
+
+            </tal:condition>
+
+            <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+                <div id="reveal-connection" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+                <div id="reveal-connection-2" class="reveal-modal large" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+            </div>
+        </tal:block>
+
+    </metal:macro>
+
+
+</metal:content-core>
+
+    </body>
+
+</html>

@@ -1,0 +1,10 @@
+[default]
+title=Log in
+proxy=Manager
+
+[actions]
+action.success=traverse_to:string:login_next
+action.initial_login=traverse_to:string:login_initial
+action.change_password=traverse_to:string:login_password
+action.failure=traverse_to:string:login_failed
+action.closed=traverse_to:string:login_closed

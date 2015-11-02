@@ -1,0 +1,97 @@
+<metal:macro define-macro="jalon-top-bar">
+<tal:sections tal:define="menu python:context.getTopBar(portal_url, user)"
+              i18n:domain="jalonfoundation.theme">
+
+            <nav class="top-bar" data-topbar="data-topbar" role="navigation" aria-label="Navigation principale">
+
+                <ul class="title-area">
+                    <li class="name">
+                        <h1>
+                            <a tal:attributes="href portal_url">
+                                <tal:replace replace="portal_state/portal_title" />
+                            </a>
+                        </h1>
+                    </li>
+                    <li class="toggle-topbar menu-icon">
+                        <a href="#"><span>Menu</span></a>
+                    </li>
+                </ul>
+
+                <section class="top-bar-section">
+                    <ul class="left"
+                        tal:define="left_menu menu/left_menu">
+    <tal:repeat repeat="left_menu_li left_menu">
+                        <li tal:attributes="class left_menu_li/class"
+                            tal:condition="left_menu_li/is_visible">
+                            <a tal:attributes="href left_menu_li/href">
+                                <i tal:attributes="class left_menu_li/icone"></i>
+                                <tal:replace replace="left_menu_li/title" />
+                            </a>
+                            <ul class="dropdown"
+                                tal:condition="left_menu_li/sub_menu">
+                                <tal:repeat repeat="sub_menu_li left_menu_li/sub_menu">
+                                <li tal:condition="sub_menu_li/activer">
+                                    <a tal:attributes="href sub_menu_li/href">
+                                        <i tal:attributes="class sub_menu_li/icone"></i>
+                                        <tal:replace replace="sub_menu_li/title" />
+                                    </a>
+                                </li>
+                                </tal:repeat>
+                            </ul>
+                        </li>
+    </tal:repeat>
+                    </ul>
+
+                    <ul class="right">
+                        <li class="has-dropdown">
+                            <a>
+                                <i class="fa fa-user"></i>
+                                <tal:replace replace="context/getAuthenticatedName" />
+                            </a>
+                            <ul class="dropdown"
+                                tal:define="right_menu menu/right_menu">
+    <tal:repeat repeat="right_menu_li right_menu">
+                                    <li tal:attributes="class right_menu_li/class">
+                                        <a tal:attributes="href right_menu_li/href">
+                                            <i tal:attributes="class right_menu_li/icone"></i>
+                                            <tal:replace replace="right_menu_li/title" />
+                                        </a>
+                                        <ul id="language-selector" class="dropdown"
+                                            tal:condition="right_menu_li/sub_menu">
+                                            <li tal:attributes="class sub_menu_li/class"
+                                                tal:repeat="sub_menu_li right_menu_li/sub_menu">
+                                                <a tal:attributes="href sub_menu_li/href">
+                                                    <tal:replace replace="sub_menu_li/title" />
+                                                </a>
+                                            </li>
+
+                                        </ul>
+                                    </li>
+    </tal:repeat>
+                            </ul>
+                        </li>
+                    <tal:comments replace="nothing">
+                        <li>
+                            <a class="show-for-medium-up"
+                               tal:attributes="href string:${portal_url}/logout;
+                                               title string:Déconnexion"
+                               i18n:attributes="title">
+                                <i class="fa fa-sign-out no-pad"></i>
+                            </a>
+                            <a class="show-for-small-only"
+                               tal:attributes="href string:${portal_url}/logout">
+                                <i class="fa fa-sign-out"></i><tal:block i18n:translate="">Déconnexion</tal:block>
+                            </a>
+                            <!--a tal:attributes="href string:${portal_state/portal_url}/logout">
+                                <i class="fa fa-sign-out"></i><tal:block i18n:translate="">Déconnexion</tal:block>
+                            </a-->
+                        </li>
+                    </tal:comments>
+                    </ul>
+
+                </section>
+
+            </nav>
+
+</tal:sections>
+</metal:macro>

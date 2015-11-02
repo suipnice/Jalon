@@ -1,0 +1,1165 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!-- Gestion de la connexion à Jalon -->
+<metal:macro define-macro="gestion_connexion">
+    <h2 i18n:translate="">
+        Configuration de la connexion à Jalon
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigConnexion"
+          tal:define="connexion context/getPropertiesConnexion">
+        <div class="panel callout radius">
+            <label for="activer_cas" i18n:translate="activer_cas">
+                Activer la connexion a un CAS (Central Authentification Service)
+            </label>
+            <input type="radio" name="activer_cas" id="activer_cas" value="1"
+                   tal:attributes="checked python:context.test(connexion['activer_cas'], 'checked', '')" />
+            <label for="activer_cas"
+                   class="activer">
+                <i class="fa fa-check"></i>
+                <tal:block i18n:translate="">Activé</tal:block>
+            </label>
+            <input type="radio" name="activer_cas" id="desactiver_cas" value="0"
+                   tal:attributes="checked python:context.test(not connexion['activer_cas'], 'checked', '')" />
+            <label for="desactiver_cas"
+                   class="desactiver">
+                <i class="fa fa-times"></i>
+                <tal:block i18n:translate="">Désactivé</tal:block>
+            </label>
+        </div>
+        <div class="panel callout radius">
+            <label for="serviceUrl" i18n:translate="serviceUrl">
+                Url du service en retour du CAS
+            </label>
+            <input type="text" name="serviceUrl"
+                   maxlength="255" size="30"
+                   tal:attributes="value connexion/serviceUrl | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="casServerUrlPrefix" i18n:translate="casServerUrlPrefix">
+                Url du CAS
+            </label>
+            <input type="text" name="casServerUrlPrefix"
+                   maxlength="255" size="30"
+                   tal:attributes="value connexion/casServerUrlPrefix | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="activer_creationcompte" i18n:translate="activer_creationcompte">
+                Activer la création d'un compte depuis la page de connexion
+            </label>
+            <input type="radio" name="activer_creationcompte" id="activer_creationcompte" value="1"
+                   tal:attributes="checked python:context.test(connexion['activer_creationcompte'], 'checked', '')" />
+            <label for="activer_creationcompte"
+                   class="activer">
+                <i class="fa fa-check"></i>
+                <tal:block i18n:translate="">Activé</tal:block>
+            </label>
+            <input type="radio" name="activer_creationcompte" id="desactiver_creationcompte" value="0"
+                   tal:attributes="checked python:context.test(not connexion['activer_creationcompte'], 'checked', '')" />
+            <label for="desactiver_creationcompte"
+                   class="desactiver">
+                <i class="fa fa-times"></i>
+                <tal:block i18n:translate="">Désactivé</tal:block>
+            </label>
+        </div>
+    <input type="hidden" name="form.submitted" value="1" />
+    <div class="formControls">
+        <input class="button small" type="submit" name="form.button.save" value="Save"
+               i18n:attributes="value label_save;"/>
+    </div>
+</form>
+</metal:macro>
+
+<!-- Gestion des informations de Jalon -->
+<metal:macro define-macro="gestion_infos">
+    <h2 i18n:translate="">
+        Configuration des informations de Jalon
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigInfos"
+          tal:define="infos context/getPropertiesInfos">
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_etablissement">
+                        Activer la propriété établissement
+                    </label>
+                    <input type="radio" name="activer_etablissement" id="activer_etablissement" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_etablissement'], 'checked', '')" />
+                    <label for="activer_etablissement"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_etablissement" id="desactiver_etablissement" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_etablissement'], 'checked', '')" />
+                    <label for="desactiver_etablissement"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="etablissement" i18n:translate="etablissement">
+                        Établissement
+                    </label>
+                    <input type="text" name="etablissement"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/etablissement | nothing" />
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="lien_etablissement" i18n:translate="lien_etablissement">
+                        Lien vers la page de l'établissement
+                    </label>
+                    <input type="text" name="lien_etablissement"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_etablissement | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_sesame">
+                        Activer le lien vers la page "Création des sésames"
+                    </label>
+                    <input type="radio" name="activer_lien_sesame" id="activer_lien_sesame" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_lien_sesame'], 'checked', '')" />
+                    <label for="activer_lien_sesame"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_sesame" id="desactiver_lien_sesame" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_lien_sesame'], 'checked', '')" />
+                    <label for="desactiver_lien_sesame"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_sesame" i18n:translate="lien_sesame">
+                        Lien vers la page "Création des sésames"
+                    </label>
+                    <input type="text" name="lien_sesame"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_sesame | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_contact">
+                        Activer le lien vers la page "Contacts"
+                    </label>
+                    <input type="radio" name="activer_lien_contact" id="activer_lien_contact" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_lien_contact'], 'checked', '')" />
+                    <label for="activer_lien_contact"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_contact" id="desactiver_lien_contact" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_lien_contact'], 'checked', '')" />
+                    <label for="desactiver_lien_contact"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_contact" i18n:translate="lien_contact">
+                        Lien vers la page "Contacts"
+                    </label>
+                    <input type="text" name="lien_contact"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_contact | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_mention">
+                        Activer le lien vers la page "Mentions légales"
+                    </label>
+                    <input type="radio" name="activer_lien_mention" id="activer_lien_mention" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_lien_mention'], 'checked', '')" />
+                    <label for="activer_lien_mention"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_mention" id="desactiver_lien_mention" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_lien_mention'], 'checked', '')" />
+                    <label for="desactiver_lien_mention"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_mention" i18n:translate="lien_mention">
+                        Lien vers la page "Mentions légales"
+                    </label>
+                    <input type="text" name="lien_mention"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_mention | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_credit">
+                        Activer le lien vers la page "Crédits"
+                    </label>
+                    <input type="radio" name="activer_lien_credit" id="activer_lien_credit" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_lien_credit'], 'checked', '')" />
+                    <label for="activer_lien_credit"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_credit" id="desactiver_lien_credit" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_lien_credit'], 'checked', '')" />
+                    <label for="desactiver_lien_credit"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_credit" i18n:translate="lien_credit">
+                        Lien vers la page "Crédits"
+                    </label>
+                    <input type="text" name="lien_credit"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_credit | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_assistance">
+                        Activer la bulle "Signaler un bug"
+                    </label>
+                    <input type="radio" name="activer_lien_assistance" id="activer_lien_assistance" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_lien_assistance'], 'checked', '')" />
+                    <label for="activer_lien_assistance"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_assistance" id="desactiver_lien_assistance" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_lien_assistance'], 'checked', '')" />
+                    <label for="desactiver_lien_assistance"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_assitance" i18n:translate="lien_assitance">
+                        Lien de la bulle "Signaler un bug"
+                    </label>
+                    <input type="text" name="lien_assitance"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_assitance | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_trombinoscope">
+                        Activer les "Trombinoscopes"
+                    </label>
+                    <input type="radio" name="activer_trombinoscope" id="activer_trombinoscope" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_trombinoscope'], 'checked', '')" />
+                    <label for="activer_trombinoscope"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_trombinoscope" id="desactiver_trombinoscope" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_trombinoscope'], 'checked', '')" />
+                    <label for="desactiver_trombinoscope"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_stockage_photo">
+                        Activer le stockage des photos
+                    </label>
+                    <input type="radio" name="activer_stockage_photo" id="activer_stockage_photo" value="1"
+                           tal:attributes="checked python:context.test(infos['activer_stockage_photo'], 'checked', '')" />
+                    <label for="activer_stockage_photo"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_stockage_photo" id="desactiver_stockage_photo" value="0"
+                           tal:attributes="checked python:context.test(not infos['activer_stockage_photo'], 'checked', '')" />
+                    <label for="desactiver_stockage_photo"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="lien_trombinoscope" i18n:translate="lien_trombinoscope">
+                        Lien vers le stockage externe des photos du "Trombinoscopes"
+                    </label>
+                    <input type="text" name="lien_trombinoscope"
+                           maxlength="255" size="30"
+                           tal:attributes="value infos/lien_trombinoscope | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!-- Gestion des didacticiels de Jalon -->
+<metal:macro define-macro="gestion_didacticiels">
+    <h2 i18n:translate="">
+        Configuration des didactiels de Jalon
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigDidacticiels"
+          tal:define="didacticiels context/getPropertiesDidacticiels">
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_aide" i18n:translate="activer_aide">
+                        Activer le lien vers la page "Aide et tutoriels"
+                    </label>
+                    <input type="radio" name="activer_aide" id="activer_aide" value="1"
+                           tal:attributes="checked python:context.test(didacticiels['activer_aide'], 'checked', '')" />
+                    <label for="activer_aide"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_aide" id="desactiver_aide" value="0"
+                           tal:attributes="checked python:context.test(not didacticiels['activer_aide'], 'checked', '')" />
+                    <label for="desactiver_aide"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_aide" i18n:translate="lien_aide">
+                        Lien vers la page "Aide et tutoriels"
+                    </label>
+                    <input type="text" name="lien_aide"
+                           maxlength="255" size="30"
+                           tal:attributes="value didacticiels/lien_aide | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_aide_plan" i18n:translate="activer_aide_plan">
+                        Activer la vidéo d'aide à la création d'un plan de cours
+                    </label>
+                    <input type="radio" name="activer_aide_plan" id="activer_aide_plan" value="1"
+                           tal:attributes="checked python:context.test(didacticiels['activer_aide_plan'], 'checked', '')" />
+                    <label for="activer_aide_plan"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_aide_plan" id="desactiver_aide_plan" value="0"
+                           tal:attributes="checked python:context.test(not didacticiels['activer_aide_plan'], 'checked', '')" />
+                    <label for="activer_aide_plan"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_aide_plan" i18n:translate="lien_aide_plan">
+                        Lien vers la vidéo d'aide à la création d'un plan de cours
+                    </label>
+                    <textarea name="lien_aide_plan" rows="5"><tal:replace replace="didacticiels/lien_aide_plan | nothing"/></textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!-- Gestion du bloc d'information étudiants de Jalon -->
+<metal:macro define-macro="gestion_info_etudiants">
+    <h2 i18n:translate="">
+        Configuration du bloc d'information étudiants
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigBIE"
+          tal:define="bie context/getPropertiesBIE">
+        <div class="panel callout radius">
+            <label for="activer_bie" i18n:translate="activer_bie">
+                Activer le bloc de message d'information des étudiants
+            </label>
+            <input type="radio" name="activer_bie" id="activer_bie" value="1"
+                   tal:attributes="checked python:context.test(bie['activer_bie'], 'checked', '')" />
+            <label for="activer_bie"
+                   class="activer">
+                <i class="fa fa-check"></i>
+                <tal:block i18n:translate="">Activé</tal:block>
+            </label>
+            <input type="radio" name="activer_bie" id="desactiver_bie" value="0"
+                   tal:attributes="checked python:context.test(not bie['activer_bie'], 'checked', '')" />
+            <label for="activer_bie"
+                   class="desactiver">
+                <i class="fa fa-times"></i>
+                <tal:block i18n:translate="">Désactivé</tal:block>
+            </label>
+        </div>
+        <div class="panel callout radius">
+            <label for="bie_message" i18n:translate="bie_message">
+                Contenu du bloc
+            </label>
+            <span class="discreet" i18n:translate="bie_message_help">Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants.</span>
+            <textarea name="bie_message" rows="5"><tal:replace replace="bie/bie_message | nothing" /></textarea>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion de l'envoi des courriels de Jalon -->
+<metal:macro define-macro="gestion_email">
+    <h2 i18n:translate="">
+        Configuration de l'envoi des courriels
+    </h2>
+    <tal:define define="isMailhost context/isMailhost">
+        <div class="panel alert radius"
+             tal:condition="not:isMailhost"
+             i18n:translate="">
+            Avant de poursuivre vous devez configurer l'envoi de courriels :
+            <a href="../@@mail-controlpanel">Envoi de courriels</a>
+        </div>
+        <div class="panel success radius"
+             tal:condition="isMailhost"
+             i18n:translate="">
+            Consulter la configuration de l'envoi de courriels :
+            <a href="../@@mail-controlpanel">Envoi de courriels</a>
+        </div>
+    </tal:define>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigCourriels"
+          tal:define="courriels context/getPropertiesCourriels">
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_erreur" i18n:translate="activer_erreur">
+                        Envoi de courriels lors des erreurs
+                    </label>
+                    <input type="radio" name="activer_erreur" id="activer_erreur" value="1"
+                           tal:attributes="checked python:context.test(courriels['activer_erreur'], 'checked', '')" />
+                    <label for="activer_erreur"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_erreur" id="desactiver_erreur" value="0"
+                           tal:attributes="checked python:context.test(not courriels['activer_erreur'], 'checked', '')" />
+                    <label for="desactiver_erreur"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_email_erreur" i18n:translate="activer_email_erreur">
+                        Spécifier un adresse réception des courriels d'erreur
+                    </label>
+                    <input type="radio" name="activer_email_erreur" id="activer_email_erreur" value="1"
+                           tal:attributes="checked python:context.test(courriels['activer_email_erreur'], 'checked', '')" />
+                    <label for="activer_email_erreur"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_email_erreur" id="desactiver_email_erreur" value="0"
+                           tal:attributes="checked python:context.test(not courriels['activer_email_erreur'], 'checked', '')" />
+                    <label for="desactiver_email_erreur"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                    <p class="discreet"
+                          i18n:translate="">
+                        Si désactivé, utilisation de l'adresse d'envoi pour la réception
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="adresse_email_erreur" i18n:translate="adresse_email_erreur">
+                        Adresse de réception des courriels d'erreur
+                    </label>
+                    <input type="text" name="adresse_email_erreur"
+                           maxlength="255" size="30"
+                           tal:attributes="value courriels/adresse_email_erreur | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_liste_diffusion" i18n:translate="activer_liste_diffusion">
+                        Utilisation de liste de diffusion
+                    </label>
+                    <input type="radio" name="activer_liste_diffusion" id="activer_liste_diffusion" value="1"
+                           tal:attributes="checked python:context.test(courriels['activer_liste_diffusion'], 'checked', '')" />
+                    <label for="activer_liste_diffusion"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_liste_diffusion" id="desactiver_liste_diffusion" value="0"
+                           tal:attributes="checked python:context.test(not courriels['activer_liste_diffusion'], 'checked', '')" />
+                    <label for="desactiver_liste_diffusion"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="type_diffusion" i18n:translate="type_diffusion">
+                        Type d'élément utilisant des listes de diffusion
+                    </label>
+                    <input type="text" name="type_diffusion"
+                           maxlength="255" size="30"
+                           tal:attributes="value courriels/type_diffusion | nothing" />
+                    <p class="discreet"
+                          i18n:translate="">
+                        etape, ue, uel et groupe, séparé par des virgules
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="format_diffusion" i18n:translate="format_diffusion">
+                        Format de la liste de diffusion
+                    </label>
+                    <input type="text" name="format_diffusion"
+                           maxlength="255" size="30"
+                           tal:attributes="value courriels/format_diffusion | nothing" />
+                    <p class="discreet"
+                          i18n:translate="">
+                        Utiliser la variable *-*code*-* exemple: *-*code*-*@jalon.fr
+                    </p>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion des accès aux parties de "Mon Espace" à Jalon -->
+<metal:macro define-macro="gestion_mon_espace">
+    <h2 i18n:translate="">
+        Configuration de la connexion à Jalon
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigMonEspace"
+          tal:define="mon_espace context/getPropertiesMonEspace">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_fichiers" i18n:translate="activer_fichiers">
+                        Activer le dépôt de Fichier
+                    </label>
+                    <input type="radio" name="activer_fichiers" id="activer_fichiers" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_fichiers'], 'checked', '')" />
+                    <label for="activer_fichiers"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_fichiers" id="desactiver_fichiers" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_fichiers'], 'checked', '')" />
+                    <label for="desactiver_fichiers"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_presentations_sonorisees" i18n:translate="activer_presentations_sonorisees">
+                        Activer l'utilisation des Présentations sonorisées (Adobe Connect)
+                    </label>
+                    <input type="radio" name="activer_presentations_sonorisees" id="activer_presentations_sonorisees" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                    <label for="activer_presentations_sonorisees"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_presentations_sonorisees" id="desactiver_presentations_sonorisees" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                    <label for="desactiver_presentations_sonorisees"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_exercices_wims" i18n:translate="activer_exercices_wims">
+                        Activer la création d'exercices intéractifs WIMS
+                    </label>
+                    <input type="radio" name="activer_exercices_wims" id="activer_exercices_wims" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_exercices_wims'], 'checked', '')" />
+                    <label for="activer_exercices_wims"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_exercices_wims" id="desactiver_exercices_wims" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_exercices_wims'], 'checked', '')" />
+                    <label for="desactiver_exercices_wims"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_liens" i18n:translate="activer_liens">
+                        Activer la création de Liens (Url, Lecteurs exportables)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_liens" id="activer_liens" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_liens'], 'checked', '')" />
+                        <label for="activer_liens"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_liens" id="desactiver_liens" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_liens'], 'checked', '')" />
+                        <label for="desactiver_liens"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_liens_catalogue_bu" i18n:translate="activer_liens_catalogue_bu">
+                        Activer la recherche dans le catalogue de la BU (Primo ExLibris)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_liens_catalogue_bu" id="activer_liens_catalogue_bu" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                        <label for="activer_liens_catalogue_bu"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_liens_catalogue_bu" id="desactiver_liens_catalogue_bu" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                        <label for="desactiver_liens_catalogue_bu"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_tags_catalogue_bu" i18n:translate="activer_tags_catalogue_bu">
+                        Activer le taggage dans le catalogue de la BU (Primo ExLibris)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_tags_catalogue_bu" id="activer_tags_catalogue_bu" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                        <label for="activer_tags_catalogue_bu"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_tags_catalogue_bu" id="desactiver_tags_catalogue_bu" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                        <label for="desactiver_tags_catalogue_bu"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_termes_glossaire" i18n:translate="activer_termes_glossaire">
+                        Activer la création de Termes de glossaire
+                    </label>
+                    <input type="radio" name="activer_termes_glossaire" id="activer_termes_glossaire" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                    <label for="activer_termes_glossaire"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_termes_glossaire" id="desactiver_termes_glossaire" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                    <label for="desactiver_termes_glossaire"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_webconferences" i18n:translate="activer_webconferences">
+                        Activer l'utilisation des Webconférences (Adobe Connect)
+                    </label>
+                    <input type="radio" name="activer_webconferences" id="activer_webconferences" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_webconferences'], 'checked', '')" />
+                    <label for="activer_webconferences"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_webconferences" id="desactiver_webconferences" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_webconferences'], 'checked', '')" />
+                    <label for="desactiver_webconferences"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_video" i18n:translate="activer_video">
+                        Activer l'utilisation d'un serveur de Vidéo Externe (Serveur Plone)
+                    </label>
+                    <input type="radio" name="activer_video" id="activer_video" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_video'], 'checked', '')" />
+                    <label for="activer_video"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_video" id="desactiver_video" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_video'], 'checked', '')" />
+                    <label for="desactiver_video"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="url_video" i18n:translate="url_video">
+                        Url du serveur de Vidéo Externe
+                    </label>
+                    <input type="text" name="url_video"
+                           maxlength="255" size="30"
+                           tal:attributes="value mon_espace/url_video | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion de l'accés à Twitter sur Jalon -->
+<metal:macro define-macro="gestion_twitter">
+    <h2 i18n:translate="">
+        Configuration de l'accés à Twitter
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigTwitter"
+          tal:define="twitter context/getPropertiesTwitter">
+        <div class="panel callout radius">
+            <label for="COMPTE_TWITTER" i18n:translate="COMPTE_TWITTER">
+                Compte Twitter
+            </label>
+            <input type="text" name="COMPTE_TWITTER"
+                   maxlength="255" size="30"
+                   tal:attributes="value twitter/COMPTE_TWITTER | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="APP_KEY" i18n:translate="APP_KEY">
+                Clef de l'application (générée par Twitter)
+            </label>
+            <input type="text" name="APP_KEY"
+                   maxlength="255" size="30"
+                   tal:attributes="value twitter/APP_KEY | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="APP_SECRET" i18n:translate="APP_SECRET">
+                Secret de l'application (généré par Twitter)
+            </label>
+            <input type="text" name="APP_SECRET"
+                   maxlength="255" size="30"
+                   tal:attributes="value twitter/APP_SECRET | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="OAUTH_TOKEN" i18n:translate="OAUTH_TOKEN">
+                Clef de l'authentification (générée par Twitter)
+            </label>
+            <input type="text" name="OAUTH_TOKEN"
+                   maxlength="255" size="30"
+                   tal:attributes="value twitter/OAUTH_TOKEN | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="OAUTH_TOKEN_SECRET" i18n:translate="OAUTH_TOKEN_SECRET">
+                Secret de l'authentification (généré par Twitter)
+            </label>
+            <input type="text" name="OAUTH_TOKEN_SECRET"
+                   maxlength="255" size="30"
+                   tal:attributes="value twitter/OAUTH_TOKEN_SECRET | nothing" />
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion de la récupération des données utilisateurs à Jalon -->
+<metal:macro define-macro="gestion_donnees_utilisateurs">
+    <h2 i18n:translate="">
+        Configuration de la récupération des données utilisateurs
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigDonneesUtilisateurs"
+          tal:define="donneesUtilisateurs context/getPropertiesDonneesUtilisateurs">
+        <div class="panel callout radiust">
+            <label for="activer_ldap" i18n:translate="activer_ldap">
+                Activer la connexion a un annuaire LDAP
+            </label>
+            <input type="radio" name="activer_ldap" id="activer_ldap" value="1"
+                   tal:attributes="checked python:context.test(donneesUtilisateurs['activer_ldap'], 'checked', '')" />
+            <label for="activer_ldap"
+                   class="activer">
+                <i class="fa fa-check"></i>
+                <tal:block i18n:translate="">Activé</tal:block>
+            </label>
+            <input type="radio" name="activer_ldap" id="desactiver_ldap" value="0"
+                   tal:attributes="checked python:context.test(not donneesUtilisateurs['activer_ldap'], 'checked', '')" />
+            <label for="desactiver_ldap"
+                   class="desactiver">
+                <i class="fa fa-times"></i>
+                <tal:block i18n:translate="">Désactivé</tal:block>
+            </label>
+        </div>
+        <div class="panel callout radius">
+            <label for="base_ldap" i18n:translate="base_ldap">
+                Url de base de l'annuaire LDAP
+            </label>
+            <input type="text" name="base_ldap"
+                   maxlength="255" size="30"
+                   tal:attributes="value donneesUtilisateurs/base_ldap | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="schema_ldap" i18n:translate="schema_ldap">
+                Schema de l'annuaire LDAP
+            </label>
+            <input type="text" name="schema_ldap"
+                   maxlength="255" size="30"
+                   tal:attributes="value donneesUtilisateurs/schema_ldap | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="fiche_ldap" i18n:translate="fiche_ldap">
+                Chemin vers une fiche de l'annuaire LDAP
+            </label>
+            <span class="discreet">exemple : http://universite.fr/page?variable=valeur&amp;Nom=*-*nom*-* ou uid=*-*id*-*</span>
+            <input type="text" name="fiche_ldap"
+                   maxlength="255" size="30"
+                   tal:attributes="value donneesUtilisateurs/fiche_ldap | nothing" />
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion des statistiques via Google Analytics -->
+<metal:macro define-macro="gestion_ga">
+    <h2 i18n:translate="">
+        Configuration des statistiques via Google Analytics
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigGA"
+          tal:define="ga context/getPropertiesGA">
+        <div class="panel callout radius">
+            <label for="activer_ga" i18n:translate="activer_ga">
+                Activer les statistiques dans Google Analytics
+            </label>
+            <input type="radio" name="activer_ga" id="activer_ga" value="1"
+                   tal:attributes="checked python:context.test(ga['activer_ga'], 'checked', '')" />
+            <label for="activer_ga"
+                   class="activer">
+                <i class="fa fa-check"></i>
+                <tal:block i18n:translate="">Activé</tal:block>
+            </label>
+            <input type="radio" name="activer_ga" id="desactiver_ga" value="0"
+                   tal:attributes="checked python:context.test(not ga['activer_ga'], 'checked', '')" />
+            <label for="desactiver_ga"
+                   class="desactiver">
+                <i class="fa fa-times"></i>
+                <tal:block i18n:translate="">Désactivé</tal:block>
+            </label>
+        </div>
+        <div class="panel callout radius">
+            <label for="ga_id_account" i18n:translate="ga_id_account">
+                Identifiant Google Analytics
+            </label>
+            <span class="discreet">Exemple : UA-12345678-1</span>
+            <input type="text" name="ga_id_account"
+                   maxlength="255" size="30"
+                   tal:attributes="value ga/ga_id_account | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="ga_id_domain" i18n:translate="ga_id_domain">
+                Nom de domaine du site
+            </label>
+            <span class="discreet">Exemple : unice.fr</span>
+            <input type="text" name="ga_id_domain"
+                   maxlength="255" size="30"
+                   tal:attributes="value ga/ga_id_domain | nothing" />
+        </div>
+        <div class="panel callout radius">
+            <label for="ga_cryptage" i18n:translate="ga_cryptage">
+                Clef de cryptage
+            </label>
+            <span class="discreet">Une clé de cryptage des identifiants sera créée. Pensez à sauvegarder le fichier, exemple : /var/secret</span>
+            <input type="text" name="ga_cryptage"
+                   maxlength="255" size="30"
+                   tal:attributes="value ga/ga_cryptage | nothing" />
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<!-- Gestion de la maintenance à Jalon -->
+<metal:macro define-macro="gestion_maintenance">
+    <h2 i18n:translate="">
+        Configuration de la maintenance
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigMaintenance"
+          tal:define="maintenance context/getPropertiesMaintenance">
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="annoncer_maintenance" i18n:translate="annoncer_maintenance">
+                        Annoncer une maintenance
+                    </label>
+                    <input type="radio" name="annoncer_maintenance" id="annoncer_maintenance" value="1"
+                           tal:attributes="checked python:context.test(maintenance['annoncer_maintenance'], 'checked', '')" />
+                    <label for="annoncer_maintenance"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="annoncer_maintenance" id="desannoncer_maintenance" value="0"
+                           tal:attributes="checked python:context.test(not maintenance['annoncer_maintenance'], 'checked', '')" />
+                    <label for="desannoncer_maintenance"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_maintenance" i18n:translate="activer_maintenance">
+                        Mettre le site en maintenance
+                    </label>
+                    <input type="radio" name="activer_maintenance" id="activer_maintenance" value="1"
+                           tal:attributes="checked python:context.test(maintenance['activer_maintenance'], 'checked', '')" />
+                    <label for="activer_maintenance"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_maintenance" id="desactiver_maintenance" value="0"
+                           tal:attributes="checked python:context.test(not maintenance['activer_maintenance'], 'checked', '')" />
+                    <label for="desactiver_maintenance"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="date_debut_maintenance" i18n:translate="date_debut_maintenance">
+                        Date de début de la maintenance
+                    </label>
+                    <tal:define define="formname   string:gestion_maintenance;
+                                        inputname  string:date_debut_maintenance;
+                                        inputvalue maintenance/date_debut_maintenance;">
+                        <metal:macro use-macro="context/calendar_macros/macros/calendarDatePickerBox">
+                            Macro du calendrier
+                        </metal:macro>
+                    </tal:define>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="date_fin_maintenance" i18n:translate="date_fin_maintenance">
+                        Date de fin de la maintenance
+                    </label>
+                    <tal:define define="formname   string:gestion_maintenance;
+                                        inputname  string:date_fin_maintenance;
+                                        inputvalue maintenance/date_fin_maintenance;">
+                        <metal:macro use-macro="context/calendar_macros/macros/calendarDatePickerBox">
+                            Macro du calendrier
+                        </metal:macro>
+                    </tal:define>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="annoncer_vider_cache" i18n:translate="annoncer_vider_cache">
+                        Afficher un message demandant aux utilisateurs de vider le cache de leur navigateur.
+                    </label>
+                    <input type="radio" name="annoncer_vider_cache" id="annoncer_vider_cache" value="1"
+                           tal:attributes="checked python:context.test(maintenance['annoncer_vider_cache'], 'checked', '')" />
+                    <label for="annoncer_vider_cache"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="annoncer_vider_cache" id="desannoncer_vider_cache" value="0"
+                           tal:attributes="checked python:context.test(not maintenance['annoncer_vider_cache'], 'checked', '')" />
+                    <label for="desannoncer_vider_cache"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="url_news_maintenance" i18n:translate="url_news_maintenance">
+                        Url de la page nouveauté de la maintenance
+                    </label>
+                    <span class="discreet">Exemple : http://jalon.unice.fr/public/xau995</span>
+                    <input type="text" name="url_news_maintenance"
+                           maxlength="255" size="30"
+                           tal:attributes="value maintenance/url_news_maintenance | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

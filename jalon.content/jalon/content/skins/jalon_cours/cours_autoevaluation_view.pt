@@ -1,0 +1,206 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!--
+        cours_autoevaluation_view.pt
+            page de visualisation des exercices d'une autoeval WIMS
+-->
+<metal:core fill-slot="content"
+            tal:define="idpage     string:cours_autoevaluation_view;
+                        qclass     context/getClasse;
+                        qsheet     context/idFeuille;
+                        qexam      context/idExam;
+                        mode_etudiant request/mode_etudiant | string:false;
+                        site_lang  portal_state/language;
+                        wims_lang  python:context.getWimsLang(site_lang);
+                        index_exo  request/index_exo | string:0;
+                        qexo       python:int(index_exo);
+                        isCoAuteur python:context.isPersonnel(user,mode_etudiant);
+                        section    python:test(qexam,'examen','auto');
+                        pageCours  section;
+                        affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                        anonymous  python:user.has_role('Anonymous');
+                        page       string:${context/absolute_url}/${idpage};">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d affichage du fil d ariane
+    </metal:macro>
+
+    <div class="row"
+         tal:define="message request/message | nothing"
+         tal:condition="message">
+        <metal:macro use-macro="context/macro_messages/macros/messages">
+            encart d'affichage des messages de feedback
+        </metal:macro>
+    </div>
+
+    <h2 tal:condition="is_ajax">
+        <tal:block i18n:translate="">Exercice</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+    <tal:anonymous condition="anonymous">
+        <metal:macro use-macro="context/macro_messages/macros/must_be_connected">
+            L'utilisateur doit se connecter
+        </metal:macro>
+    </tal:anonymous>
+
+    <tal:connected condition="not:anonymous">
+        <tal:etu condition="not:isCoAuteur">
+
+            <section tal:condition="not:affElement/val" class="small-12 columns">
+                <div class="panel alert radius">
+                     <i class="fa fa-warning"></i><strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette activité est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+                </div>
+            </section>
+
+            <section tal:condition="affElement/val" class="small-12 columns">
+
+                <!-- Version étudiant -->
+                <tal:define define="param_wims python:context.authUser(user.getId(), qclass, request, session_keep=True);">
+                    <tal:condition condition="not:param_wims">
+                        <tal:condition condition="not:qexam">
+                            <metal:macro use-macro="context/macro_messages/macros/wims_activity_unavailable">
+                                feedback "connexion impossible a wims"
+                            </metal:macro>
+                        </tal:condition>
+                        <tal:condition condition="qexam">
+                            <metal:macro use-macro="context/macro_messages/macros/wims_exam_badIP">
+                                feedback de tentative de connexion avec nouvelle IP a un exam
+                            </metal:macro>
+                        </tal:condition>
+                    </tal:condition>
+                    <tal:condition tal:condition="param_wims">
+                        <tal:comment replace="nothing">
+                            <!--
+                            lien vers la feuille : &module=adm/sheet&sh=${qsheet}
+                            Pour un étudiant, si la page est appelée sans index_exo, on affiche automatiquement le premier exo.
+                            -->
+                        </tal:comment>
+                        <tal:condition condition="not:qexam"
+                                       tal:define="qexo python:test(qexo>0,qexo,1)">
+
+                            <metal:macro use-macro="context/macro_cours_activites/macros/navigation_autoeval">
+                                boutons exercice précédent / exercice suivant
+                            </metal:macro>
+
+                            <tal:comment replace="nothing">
+                                <!-- Liste des exos sur WIMS (Lecteur exportable de la feuille WIMS)
+                                    En pratique, cette iframe ne s'affiche pas pour les étudiants  (cf python:test(qexo>0,qexo,1))
+                                 -->
+                            </tal:comment>
+                            <iframe id="insert_wims" tal:condition="python:qexo==0" tal:attributes="src string:${param_wims/home_url}&amp;module=adm/sheet&amp;sh=${qsheet}&amp;lang=${wims_lang}" class="autoeval_wims"></iframe>
+
+
+                            <tal:comment replace="nothing">
+                                <!-- Test sur un exo en particulier -->
+                            </tal:comment>
+                            <iframe class="autoeval_wims" id="insert_wims"
+                                    tal:attributes="src string:${param_wims/home_url}&amp;module=home&amp;directworksheet=${qsheet}.${qexo}&amp;lang=${wims_lang}"
+                                    tal:condition="python:qexo!=0"></iframe>
+                        </tal:condition>
+
+                      <!-- lien vers l'examen -->
+                      <tal:condition condition="qexam"
+                                       tal:define="unlock_key request/unlock_key | string:;
+                                                   verrou context/getVerrou;
+                                                   verrouillage python:context.test(unlock_key!=verrou,1,0)">
+                        <form tal:condition="verrouillage" method="post" >
+                            <div class="formControls small-12 columns">
+                                <h1 class="texte_icone icone_verrou" >
+                                    <i class="fa fa-lock"></i>
+                                    <tal:block i18n:translate="">Cet examen est verrouillé</tal:block>
+                                </h1>
+                                <div class="panel callout radius" i18n:translate="">
+                                    Donnez le mot de passe fourni par votre enseignant pour continuer :
+                                </div>
+                                <p class="fieldErrorBox alert" tal:condition="unlock_key">
+                                    <span i18n:translate="">
+                                        Mauvais mot de passe. Veuillez verifier celui-ci auprès de votre enseignant svp...
+                                    </span>
+                                </p>
+                                <div class="row">
+                                    <div class="small-3 columns">
+                                        <label class="right inline" for="unlock_key" i18n:translate="">
+                                            Mot de passe :
+                                        </label>
+                                    </div>
+                                    <div class="small-9 columns">
+                                        <input type="password" autofocus="autofocus"
+                                               id="unlock_key" name="unlock_key"
+                                               required="required" placeholder="Saisie obligatoire"
+                                               i18n:attributes="placeholder" />
+                                    </div>
+                                </div>
+
+                                <input type="submit" value="Démarrer l'examen" name="form.button.send" class="context button small" i18n:attributes="value"/>
+                                <!--input type="reset" value="Annuler" name="form.button.cancel" class="standalone" i18n:attributes="value"/-->
+                                <a class="button small success radius"
+                                   tal:condition="python:context.test(mode_etudiant == 'true' and context.isAuteurs(user.getId()), 1, 0)"
+                                   tal:attributes="href string:${context/absolute_url}">
+                                    <i class="fa fa-user"></i><tal:block i18n:translate="">Retour au mode enseignant</tal:block>
+                                </a>
+                            </div>
+
+                        </form>
+                        <iframe id="insert_wims" tal:condition="not:verrouillage" tal:attributes="src string:${param_wims/home_url}&amp;module=adm/class/exam&amp;exam=${qexam}&amp;lang=${wims_lang}"  class="examen_wims"></iframe>
+                      </tal:condition>
+                    </tal:condition>
+                </tal:define>
+            </section>
+        </tal:etu>
+
+        <tal:prof condition="isCoAuteur" >
+            <!-- Version Prof -->
+            <tal:define define="param_wims python:context.authUser('supervisor', qclass, request, session_keep=True);">
+                <tal:block tal:condition="python:param_wims['status']== 'ERROR'">
+                    <metal:macro  use-macro="context/macro_messages/macros/wims_activity_unavailable">feedback d'indisponibilité WIMS</metal:macro>
+                </tal:block>
+
+                <tal:OK tal:condition="python:param_wims['status']!= 'ERROR'">
+                    <tal:comment replace="nothing">
+                        <!--lien vers la feuille (autoeval ou examen non activé) : &module=adm/sheet&sh=${qsheet}-->
+                    </tal:comment>
+                    <tal:sheet condition="python:qexam=='' or affElement['val']==0">
+                        <tal:block condition="qsheet">
+                            <metal:macro use-macro="context/macro_cours_activites/macros/navigation_autoeval">
+                                boutons exercice précédent / exercice suivant
+                            </metal:macro>
+
+                            <tal:exo tal:condition="python:qexo!=0">
+                                <!-- Test sur un exo en particulier -->
+                                <iframe id="insert_wims"
+                                        tal:attributes="src string:${param_wims/home_url}&amp;module=home&amp;directworksheet=${qsheet}.${qexo}&amp;lang=${wims_lang}" 
+                                        class="autoeval_wims"></iframe>
+                            </tal:exo>
+
+                            <!-- Liste des exos sur WIMS -->
+                            <iframe id="insert_wims" tal:condition="python:qexo==0" tal:attributes="src string:${param_wims/home_url}&amp;module=adm/sheet&amp;sh=${qsheet}&amp;lang=${wims_lang}" class="autoeval_wims"></iframe>
+                        </tal:block>
+                    </tal:sheet>
+                    <tal:exam condition="qexam">
+                        <tal:comment replace="nothing">
+                            <!--lien vers l'examen (mode simulation)
+                            Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché-->
+                        </tal:comment>
+                        <iframe id="insert_wims" tal:condition="affElement/val" tal:attributes="src string:${param_wims/home_url}&amp;module=adm/class/exam&amp;exam=${qexam}&amp;job=student&amp;lang=${wims_lang}" class="examen_wims"></iframe>
+                    </tal:exam>
+                </tal:OK>
+            </tal:define>
+        </tal:prof>
+    </tal:connected>
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

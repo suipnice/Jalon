@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+  xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+  metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+
+        <!-- Texte à trous -->
+        <metal:macro define-macro="createxo">
+
+            <div tal:define="error errors/donnees | nothing;
+                             arch_class string:panel ArchetypesStringWidget"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <a href="#reveal_donnees" class="button tiny radius" data-reveal-id="reveal_donnees">
+                    <i class="fa fa-question"></i>
+                    <tal:block i18n:translate="">Aide</tal:block>
+                </a>
+                <label for="donnees">Le texte à présenter </label>
+                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                <div id="reveal_donnees"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                    <h2>Le texte à présenter <a class="close-reveal-modal"></a></h2>
+                    <metal:macro use-macro="context/macro_commune/macros/texte_a_trous"/>
+                </div>
+
+                <div class="formHelp texte_icone icone_information">Tapez directement votre texte, en entourant chaque "trou" avec des doubles points d'interrogation : "??".
+                Les balises HTML sont admises.</div>
+                <textarea name="donnees" id="donnees"
+                          rows="15" tal:content="QCM_parsed/donnees"
+                          required="required"
+                          placeholder="Tapez le texte à trous ici."
+                          i18n:attributes="placeholder" />
+            </div>
+
+            <div class="panel">
+              <label for="type_rep">Niveau de tolérance dans l'analyse des réponses libres</label>
+              <div class="formHelp texte_icone icone_information">Choisissez la tolérance avec laquelle WIMS analysera les réponses libres.<br />Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext ».</div>
+              <select name="type_rep" id="type_rep" tal:define="type_rep QCM_parsed/type_rep">
+                <option value="case"
+                  tal:attributes="selected python:context.test(type_rep=='case', 'selected', None)">case (aucune tolérance d'erreur)</option>
+                <option value="nocase"
+                  tal:attributes="selected python:context.test(type_rep=='nocase', 'selected', None)">nocase (tolère le minuscule/majuscule)</option>
+                <option value="atext"
+                  tal:attributes="selected python:context.test(type_rep=='atext', 'selected', None)">atext (ignore le pluriel/singulier et les articles)</option>
+              </select>
+            </div>
+
+            <div class="panel callout">
+                  <label for="feedback_general">Feedback général</label>
+                  <div class="formHelp texte_icone icone_information"> Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse. </div>
+                  <textarea name="feedback_general" id="feedback_general"
+                          rows="4" tal:content="QCM_parsed/feedback_general" />
+            </div>
+
+            <metal:macro use-macro="context/macro_commune/macros/credits"/>
+
+            <dl class="accordion" data-accordion="data-accordion">
+                <dd class="accordion-navigation">
+                    <a href="#usages_avances" class="icone_options"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                    <div id="usages_avances" class="content">
+                        <ul>
+                            <li>Pour accepter plusieurs réponses correctes possibles, séparez chaque bonne réponse par un trait vertical <code class="indicateur">|</code>.</li>
+                            <li>
+                                Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class="indicateur">Napoléon ??Premier|Bonaparte?? est mort à Sainte-Hélène</code>.
+                            </li>
+                        </ul>
+                        <hr/>
+                        <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
+                    </div>
+                </dd>
+
+                <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+            </dl>
+
+        </metal:macro>
+    </metal:content-core>
+  </body>
+</html>

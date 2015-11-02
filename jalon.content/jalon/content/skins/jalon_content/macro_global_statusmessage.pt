@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      i18n:domain="jalon.content">
+
+<!--
+    Display Global status messages from user session
+    to add a portal message, use this function :
+        * if i18n:domain="plone", import : from Products.CMFPlone import PloneMessageFactory as _
+        * if i18n:domain="jalon.content", import : from jalon.content import contentMessageFactory as _)
+
+    and next, call like this :
+        * If in a python object (self) :
+            self.plone_utils.addPortalMessage(message, type='error')
+        * If in another python script :
+            context.plone_utils.addPortalMessage(_(u"Votre message"), mess_type)
+    (attention : "Votre message" doit etre en unicode (faite un .decode("utf-8")))
+    mess_type can be one of theses :
+     * info
+     * error
+     * warning
+     * alert
+     * ... ?
+    See complete doc here : http://docs.plone.org/develop/plone/sessions/statusmessages.html
+
+    To call this macro, just add this in your template :
+    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+-->
+
+<body>
+<tal:block i18n:domain="jalon.content"
+           metal:define-macro="portal_message">
+
+    <tal:statusmsg tal:define="messages python:context.plone_utils.showPortalMessages()"
+                   tal:repeat="message messages">
+
+    <div id="js-alert_box" class="small-12 columns">
+
+        <div data-alert="data-alert"
+             tal:define="mtype message/type | string:info;
+                         css_class string:portalMessage alert-box radius ${mtype}"
+             tal:attributes="class python:test(mtype=='error', '%s alert'%css_class, css_class)">
+
+            <tal:condition condition="python:test(mtype not in ['success','info', ''])">
+                <h3 tal:content="python:mtype.capitalize()"
+                    i18n:translate="" />
+            </tal:condition>
+
+            <tal:block tal:replace="structure message/message | nothing"
+                       i18n:translate="" />
+
+            <a class="close"></a>
+
+        </div>
+    </div>
+
+    <tal:block define="script string:alterAlertBox()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+    </tal:statusmsg>
+</tal:block>
+
+</body>
+</html>

@@ -1,0 +1,289 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<!-- macro_wims_liste : Listing des exercices WIMS de l'utilisateur courant -->
+
+<metal:content-core fill-slot="content">
+<metal:macro define-macro="wims_liste">
+
+    <tal:block define="folderContents python:context.getContents(subject=subjects, typeR='JalonExerciceWims', authMember=user.getId(), repertoire=context.getId());
+                       erreur python:context.erreurWIMS(folderContents);
+                       listeModeles python:context.getTagsWims();
+                       total_elements python:len(context.objectIds());">
+
+        <tal:block define="tagList python:context.tagFormat(subjects)"
+                   condition="python:context.test(tagList, 0, 1)">
+                    <div class="panel callout radius"
+                         tal:condition="not:folderContents"
+                         i18n:translate="">
+                        Aucun élément
+                    </div>
+        </tal:block>
+
+        <tal:listing condition="folderContents">
+
+            <tal:define define="nb_affiche python:len(folderContents)">
+
+                    <div class="el_counter show-for-small-only">
+                        <tal:block replace="nb_affiche" />
+                        <tal:block i18n:translate="">sur</tal:block>
+                        <tal:block replace="total_elements" />
+                    </div>
+                    <div class="el_counter show-for-medium-up">
+                        <tal:block replace="nb_affiche" />
+                        <tal:block i18n:translate="" tal:condition="python:nb_affiche>1">exercices affichés</tal:block>
+                        <tal:block i18n:translate="" tal:condition="python:nb_affiche==1">exercice affiché</tal:block>
+                        <tal:block i18n:translate="">sur</tal:block>
+                        <tal:block replace="total_elements" />
+                    </div>
+
+                <script charset="UTF-8"
+                        tal:content="structure string:var NB_LISTED_ELEMENTS = ${nb_affiche}" />
+
+            </tal:define>
+
+                    <table summary="Liste des exercices WIMS"
+                           tal:define="tags context/getTag">
+                        <thead>
+                            <tr>
+                                <th class="checkall show-for-medium-up">
+                                    <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
+                                         i18n:attributes="title">
+                                        <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                                        <label for="switch-all"></label>
+                                    </div>
+                                </th>
+                                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="date" title="Trier selon la date"
+                                    i18n:attributes="title">
+                                    <span>
+                                        <i class="fa fa-sort"></i>
+                                        <i class="fa fa-sort-asc"></i>
+                                        <i class="fa fa-sort-desc"></i>
+                                        <tal:block i18n:translate="">Date</tal:block>
+                                    </span>
+                                </th>
+                                <th class="sort has-tip" data-tooltip data-sort="model" title="Trier selon le modèle"
+                                    i18n:attributes="title">
+                                    <span>
+                                        <i class="fa fa-sort"></i>
+                                        <i class="fa fa-sort-asc"></i>
+                                        <i class="fa fa-sort-desc"></i>
+                                        <tal:block i18n:translate="">Modèle</tal:block>
+                                    </span>
+                                </th>
+                                <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre"
+                                    i18n:attributes="title">
+                                    <span>
+                                        <i class="fa fa-sort"></i>
+                                        <i class="fa fa-sort-asc"></i>
+                                        <i class="fa fa-sort-desc"></i>
+                                        <tal:block i18n:translate="">Titre</tal:block>
+                                    </span>
+                                </th>
+                                <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
+                                    i18n:attributes="title"><i class="fa fa-cog fa-lg no-pad"></i></th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr class="show-for-medium-up">
+                                <td>
+                                    <i class="fa fa-reply-all fa-rotate-180"></i>
+                                </td>
+                                <td colspan="3">
+                                    <tal:block i18n:translate="">Actions par lots</tal:block>
+                                    <i class="fa fa-hand-o-right"></i>
+                                </td>
+                                <td>
+                                    <a class="dropdown inactive" data-dropdown="drop-batch" data-options="align:left">
+                                        <i class="fa fa-cog fa-lg no-pad"></i>
+                                    </a>
+                                    <ul id="drop-batch" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+                                        <li>
+                                            <a data-reveal-id="group_create"><i class="fa fa-puzzle-piece fa-fw"></i>Créer un groupe</a>
+                                        </li>
+                                        <li tal:condition="tags">
+                                            <a data-reveal-id="tag_sel"><i class="fa fa-tag fa-fw"></i>Étiqueter la sélection</a>
+                                        </li>
+                                        <li tal:condition="python:context.test(subjects and subjects != 'last', 1, 0)">
+                                            <a data-reveal-id="untag_sel"><i class="fa fa-minus-circle fa-fw"></i>Désétiqueter la sélection</a>
+                                        </li>
+                                        <li>
+                                            <a data-reveal-id="del_sel" class="warning"><i class="fa fa-trash-o fa-fw"></i>Supprimer la sélection</a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tfoot>
+                        <tbody class="list">
+                        <tal:entry repeat="item folderContents">
+                            <!-- Pour eviter les erreurs, on affiche un exo que si item n'est pas une string (si WIMS est en erreur, c'est un str) -->
+                            <tr tal:condition="python:context.test(isinstance(item, str), 0, 1)">
+                                <td class="show-for-medium-up">
+                                    <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
+                                         i18n:attributes="title">
+                                        <input type="checkbox" name="paths:list"
+                                               tal:attributes="id string:switch-${repeat/item/index};
+                                                               value python:'%s/%s' % ('/'.join(list(context.getPhysicalPath())), item['getId']);
+                                                               data-res_name python:here.getShortText(item['Title']);
+                                                               data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '');
+                                                               data-no_group python:context.test(item.getModele == 'externe' or item.getModele == 'groupe', '1', '')" />
+                                        <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                                    </div>
+                                </td>
+                                <td class="date show-for-medium-up">
+                                    <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
+                                    <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                                </td>
+                                <td class="model"
+                                    tal:define="exo_model item/getModele">
+                                    <span class="label bkgrnd"
+                                          tal:define="model python:listeModeles[exo_model]"
+                                          tal:content="model | string:modele inconnu"
+                                          i18n:translate="" />
+                                </td>
+                                <td class="title">
+                                    <span class="hide" tal:content="item/Title" />
+                                    <a title="Voir l'exercice"
+                                       data-reveal-id="reveal-main_xlarge" data-reveal-ajax="true"
+                                       tal:attributes="href string:${item/getURL}/view"
+                                       tal:content="python:here.getShortText(item['Title'])"
+                                       i18n:attributes="title" />
+                                </td>
+                                <td class="show-for-medium-up">
+                                    <a class="dropdown" data-options="align:left"
+                                       tal:attributes="data-dropdown string:drop-${repeat/item/index}">
+                                        <i class="fa fa-cog fa-lg no-pad"></i>
+                                    </a>
+                                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                        tal:attributes="id string:drop-${repeat/item/index}">
+                                        <li>
+                                            <a tal:attributes="href string:${item/getURL}">
+                                                <i class="fa fa-eye fa-fw no-pad"></i>
+                                                <tal:block condition="python:item['getModele']!='externe'" i18n:translate="">Voir en Autoévaluation</tal:block>
+                                                <tal:block condition="python:item['getModele']=='externe'" i18n:translate="">Voir</tal:block>
+                                            </a>
+                                        </li>
+                                        <li tal:condition="python:item['getModele']!='externe'">
+                                            <a tal:attributes="href string:${item/getURL}?mode=examen">
+                                                <i class="fa fa-eye fa-fw no-pad"></i>
+                                                <tal:block i18n:translate="">Voir en Examen</tal:block>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a tal:condition="python:item['getModele'] != 'groupe'"
+                                               tal:attributes="href string:${item/getURL}/exercicewims_edit">
+                                                <i class="fa fa-pencil fa-fw no-pad"></i>
+                                                <tal:block i18n:translate=""
+                                                           tal:condition="python:item['getModele'] != 'externe'">
+                                                    Modifier</tal:block>
+                                                <tal:block i18n:translate=""
+                                                           tal:condition="python:item['getModele'] == 'externe'">
+                                                    Changer</tal:block>
+                                            </a>
+                                        </li>
+                                        <li tal:condition="tags">
+                                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                               tal:attributes="href string:${item/getURL}/folder_form?macro=macro_form&amp;formulaire=etiqueter">
+                                                <i class="fa fa-tag fa-fw no-pad"></i>
+                                                <tal:block i18n:translate="">Étiqueter</tal:block>
+                                            </a>
+                                        </li>
+                                        <li tal:condition="python:context.test(len(item.getRawRelatedItems) == 0, 1, 0)">
+                                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                               tal:attributes="href string:${item/getURL}/folder_form?macro=macro_form&amp;formulaire=supprimer">
+                                                <i class="fa fa-trash-o fa-fw no-pad no-pad"></i>
+                                                <tal:block i18n:translate="">Supprimer</tal:block>
+                                            </a>
+                                        </li>
+                                        <li tal:condition="python:context.test(len(item.getRawRelatedItems) != 0, 1, 0)">
+                                            <a data-reveal-id="reveal-no_deletion">
+                                                <i class="fa fa-trash-o fa-fw no-pad"></i>
+                                                <tal:block i18n:translate="">Supprimer</tal:block>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tal:entry>
+                        </tbody>
+                    </table>
+
+            <metal:macro use-macro="context/macro_form/macros/creer-groupe-exercices">
+                Formulaire de création de groupe d'exercices (sélection aléatoire)
+            </metal:macro>
+
+            <metal:macro use-macro="context/macro_form/macros/etiqueter-lots">
+                Formulaire d'etiquetage par lot
+            </metal:macro>
+
+            <metal:macro use-macro="context/macro_form/macros/desetiqueter-lots">
+                Confirmation de désétiquetage par lot
+            </metal:macro>
+
+            <metal:macro use-macro="context/macro_form/macros/supprimer-lots-wims">
+                Confirmation suppression par lot
+            </metal:macro>
+
+
+            <tal:define define="script0 string:setSwitchMarkup();
+                                script1 string:setActionBatch();
+                                script2 string:setBatchSelect('js-update_target');
+                                script3 string:setSortableList('js-list-ressource',['date','model','title'],'date','desc');
+                                script4 string:setWimsGroupCreator()">
+
+                <tal:condition condition="not:is_ajax">
+
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script0)" />
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script3)" />
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script4)" />
+
+                </tal:condition>
+
+                <tal:condition condition="is_ajax">
+
+                    <!-- reflow à surveiller… -->
+                    <script charset="UTF-8"
+                            tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" />
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script4)" />
+
+                    <script charset="UTF-8"
+                            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                            tal:content="structure buffer" />
+
+                </tal:condition>
+
+            </tal:define>
+
+
+        </tal:listing>
+
+        <tal:listing condition="not:folderContents">
+            <metal:macro use-macro="context/macro_form/macros/supprimer-tag">
+                Supprimer un tag
+            </metal:macro>
+        </tal:listing>
+
+    </tal:block>
+
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

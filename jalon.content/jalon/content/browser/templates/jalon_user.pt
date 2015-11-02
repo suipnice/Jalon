@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main"
+            tal:define="donnees_fil python:[{'url' : '%s/plone_control_panel' % context.portal_url(), 'titre' : view.traductions_fil('Configuration du site'), 'icone': 'icone_monespace'}, {'titre' : view.traductions_fil('Utilisateurs'), 'icone': ''}]">
+
+<metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+      Page d'affichage du fil d'ariane des jalon_folder
+</metal:macro>
+
+<h1>Utilisateurs</h1>
+
+<div id="tableau"
+        tal:define="listeUtilisateur view/getListeUtilisateur">
+    <form class="link-overlay" method="post" name="users_add" action="./@@new-user" style="cursor: pointer;">
+        <input class="standalone add" type="submit" value="Ajouter…" name="form.button.AddUser">
+        <input type="hidden" value="1" name="form.submitted">
+    </form>
+    <br />
+    <form tal:attributes="action string:${context/absolute_url}"
+            method="POST">
+        <div id="listingFichiers">
+            <table class="listing">
+            <thead>
+            <tr>
+                <th class="checkall nosort">
+                    <input type="checkbox" name="checkall" title="Tout cocher ou décocher" i18n:attributes="title" role="utilisateurs:list"/>
+                    <label for="checkall" i18n:translate="">Tout cocher ou décocher</label>
+                </th>
+                <th title="Cliquer pour trier selon le nom complet" i18n:attributes="title" i18n:translate="label_fullname" class="fullwidth">Nom complet</th>
+                <th title="Cliquer pour trier selon le rôle « Étudiant »" i18n:attributes="title" i18n:translate="label_etudiant">Étudiant</th>
+                <th title="Cliquer pour trier selon le rôle « Personnel »" i18n:attributes="title" i18n:translate="label_personnel">Personnel</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tal:entry repeat="utilisateur listeUtilisateur">
+                <tr tal:define="oddrow repeat/utilisateur/odd"
+                    tal:attributes="class python:view.test(oddrow, 'even', 'odd')">
+                    <td>
+                        <input type="checkbox" name="utilisateurs:list"/>
+                    </td>
+                    <td tal:content="python:utilisateur.getProperty('fullname', utilisateur.getId())"/>
+                    <tal:define define="roles python:utilisateur.getRoles()">
+                    <td>
+                        <a tal:define="value python:view.test('Etudiant' in roles, 'Oui', 'Non')"
+                            tal:attributes="href string:./setRoleUtilisateur?utilisateur=${utilisateur/getId}&role=Etudiant&value=${value}"
+                            tal:content="value"
+                            i18n:translate=""/>
+                    </td>
+                    <td>
+                        <a tal:define="value python:view.test('Personnel' in roles, 'Oui', 'Non')"
+                            tal:attributes="href string:./setRoleUtilisateur?utilisateur=${utilisateur/getId}&role=Personnel&value=${value}"
+                            tal:content="value"
+                            i18n:translate=""/>
+                    </td>
+                    </tal:define>
+                </tr>
+            </tal:entry>
+            </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+
+</metal:core>
+
+</body>
+
+</html>

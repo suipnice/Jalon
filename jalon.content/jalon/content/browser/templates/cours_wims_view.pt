@@ -1,0 +1,273 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main"
+            tal:define="idpage string:cours_wims_view;
+                        tag context/getTypeWims;
+                        subject request/subject | nothing;
+                        type_subject request/type_subject | nothing;
+                        menu request/menu | string:exercices;
+                        page string:${context/absolute_url}/${idpage}?menu=${menu};
+                        anonymous python:user.has_role('Anonymous');
+                        mode_etudiant request/mode_etudiant | string:false;">
+
+<style type="text/css">
+    /* texte informatif */
+    .note_info{
+        font-style: italic;
+        font-size: .8rem;
+    }
+    /* nom de l'étudiant dans le listing des résultats */
+    .nom_etudiant{
+        font-size: 1rem;
+    }
+    /* rappel du style "sup" présent sur le plan du cours */
+    .sup {
+        position: absolute;
+        top: 0;
+        display: inline-block;
+        background-color: #f04124;
+        color: #fff;
+        font-weight: 500;
+        font-size: .75rem;
+        margin-top: -.33em;
+        vertical-align: top;
+        padding: 2px .5em;
+        text-shadow: none;
+        border: 2px solid #fff;
+        z-index: 10;
+        border-radius: 1em;
+        margin-left: .5em;
+    }
+
+    /* Dégradé 4+2 teintes (pour formatage conditionel des notes)*/
+        /* score nul*/
+        .zero_score{
+            background-color: rgba(255, 99, 88, .5);
+        }
+        /* score inferieur à 25% */
+        .firstQuarter{
+            background-color: rgba(232,147, 69, .75);
+        }
+        /* score entre 25% et 50% */
+        .secondQuarter{
+            background-color: rgba(255,221, 88, .75);
+        }
+        /* score entre 50% et 75% */
+        .thirdQuarter{
+            background-color: rgba(188,232, 80, .75);
+        }
+        /* score >75% */
+        .lastQuarter{
+            background-color: rgba(88 ,255,126, .66);
+        }
+        /* score max */
+        .max_score{
+            background-color: rgba(114,173,255, .5);
+        }
+
+    @media only screen and (min-width: 40.063em) {
+        /* Surcharge de styles "show-for-small-only" pour corriger un bug Foundation sur les TD/TH */
+        td.show-for-small-only, th.show-for-small-only,
+        td.hide-for-medium-up,  th.hide-for-medium-up{
+            display:none !important
+        }
+    }
+
+</style>
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Affichage du fil d'ariane
+    </metal:macro>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+    <div class="row"
+         tal:define="message request/message | nothing"
+         tal:condition="message">
+        <metal:macro use-macro="context/macro_messages/macros/messages">
+            encart d'affichage des messages de feedback
+        </metal:macro>
+    </div>
+
+    <tal:condition condition="anonymous">
+        <metal:macro use-macro="context/macro_messages/macros/must_be_connected">
+            L'utilisateur doit se connecter
+        </metal:macro>
+    </tal:condition>
+
+    <tal:condition condition="not:anonymous">
+
+        <div id="reveal-main" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+        </div>
+
+    <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                        personnel python:context.isPersonnel(user, mode_etudiant);
+                        isAuteurs python:context.test(context.isAuteurs(user.getId()), 1, 0);
+                        nbSujets context/getNbSujets;
+                        nbExercices context/getNbExercices">
+        <section id="activite" class="small-12 medium-8 columns">
+
+            <tal:condition condition="personnel">
+            <a class="button small radius dropdown right" data-options="align:bottom" data-dropdown="activite-options">
+                <i class="fa fa-cogs"></i>
+                <tal:block i18n:translate="">Options</tal:block>
+            </a>
+            <ul id="activite-options" data-dropdown-content="" class="f-dropdown">
+                <li tal:condition="not:affElement/val">
+                    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=${idpage}?menu=${menu}&amp;idElement=${context/getId};"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true">
+                        <i class="fa fa-fw fa-eye"></i> <tal:block i18n:translate="">Afficher</tal:block>
+                    </a>
+                </li>
+                <li tal:condition="affElement/val">
+                    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=${idpage}?menu=${menu}&amp;idElement=${context/getId};"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true">
+                        <i class="fa fa-fw fa-eye-slash"></i> <tal:block i18n:translate="">Masquer</tal:block>
+                    </a>
+                </li>
+                <li>
+                    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_activites&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
+                        title="Modifier"
+                        i18n:attributes="title"
+                        data-reveal-id="reveal-main" data-reveal-ajax="true">
+                        <i class="fa fa-fw fa-pencil"></i> <tal:block i18n:translate="">Modifier</tal:block>
+                    </a>
+                </li>
+
+                <tal:comment replace="nothing">
+                    <!-- Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché-->
+                </tal:comment>
+                <li tal:condition="python:personnel and tag == 'Examen'">
+                    <a tal:define="qexam context/getIdExam;"
+                        tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view">
+                        <i class="fa fa-fw fa-laptop"></i>
+                        <tal:block tal:condition="not:affElement/val" i18n:translate="">Tester les exercices</tal:block>
+                        <tal:block tal:condition="affElement/val" i18n:translate="">Simuler l'examen</tal:block>
+                    </a>
+                </li>
+            </ul>
+            </tal:condition>
+
+            <h1>
+                <i tal:condition="python:tag == 'Examen'" class="fa fa-graduation-cap no-pad"></i>
+                <i tal:condition="python:tag != 'Examen'" class="fa fa-gamepad no-pad"></i>
+                <tal:replace replace="here/Title" />
+            </h1>
+
+
+            <div class="panel alert radius" tal:condition="python:context.test((not personnel) and affElement['val'] == 0, 1, 0)">
+                 <strong i18n:translate=""><i class="fa fa-warning"></i> Attention :</strong> <tal:block i18n:translate="">Cette activité est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+            </div>
+
+            <tal:condition condition="python:affElement['val'] > 0 or personnel">
+                <ul id="tab_button-group" class="button-group radius">
+                    <li>
+                        <a tal:attributes="href string:${context/absolute_url}/${idpage}?menu=exercices&amp;mode_etudiant=${mode_etudiant};
+                                           class python:context.test(menu == 'exercices', 'button small selected', 'button small');">
+                            <i class="fa fa-random"></i>
+                            <tal:block i18n:translate="">Exercices</tal:block>
+                            <span class="sup"
+                                  tal:content="nbExercices"/>
+                        </a>
+                    </li>
+                    <li>
+                        <a tal:attributes="href string:${context/absolute_url}/${idpage}?menu=sujets&amp;mode_etudiant=${mode_etudiant};
+                                           class python:context.test(menu == 'sujets', 'button small selected', 'button small');">
+                            <i class="fa fa-upload"></i>
+                            <tal:block i18n:translate="">Documents</tal:block>
+                            <span class="sup"
+                                  tal:content="nbSujets"/>
+                        </a>
+                    </li>
+                    <li tal:condition="python:tag in ['AutoEvaluation','Examen'] and personnel">
+                        <a tal:attributes="href string:${context/absolute_url}/${idpage}?menu=resultats&amp;mode_etudiant=${mode_etudiant};
+                                           class python:context.test(menu == 'resultats', 'button small selected', 'button small');">
+                            <i class="fa fa-trophy"></i>
+                            <tal:block i18n:translate="">Résultats</tal:block>
+                        </a>
+                    </li>
+                </ul>
+                <tal:define define="ajout tag;
+                                    groupement python:context.getGroupement()" >
+                <tal:condition condition="groupement">
+                    <tal:condition condition="python:menu == 'sujets'">
+                        <metal:macro use-macro="context/macro_cours_activites/macros/liste-sujets">
+                            Page d affichage de la liste des documents enseignants
+                        </metal:macro>
+                    </tal:condition>
+                    <tal:condition condition="python:menu == 'exercices'" >
+                        <metal:macro use-macro="context/macro_cours_activites/macros/liste-exercices">
+                            Page d'affichage de la liste des exercices attachés
+                        </metal:macro>
+                    </tal:condition>
+                    <tal:condition condition="python:menu == 'resultats' and tag=='AutoEvaluation'">
+                        <metal:macro use-macro="context/macro_cours_activites/macros/resultats-auto">
+                            Page d affichage des Resultats d'une autoevaluation
+                        </metal:macro>
+                    </tal:condition>
+                    <tal:condition condition="python:menu == 'resultats' and tag=='Examen'">
+                        <metal:macro use-macro="context/macro_cours_activites/macros/resultats-exam">
+                            Page d affichage des Resultats d'un examen
+                        </metal:macro>
+                    </tal:condition>
+                </tal:condition>
+                <div class="panel warning radius" tal:condition="not:groupement">
+                    <tal:block tal:condition="not:personnel" i18n:translate="">
+                        Votre enseignent n'a pas encore créé d'exercice. Veuillez le contacter.
+                    </tal:block>
+                    <tal:block tal:condition="personnel"
+                               i18n:translate=""
+                               tal:define="member_id user/getId;
+                                           wims_link python:'%s/Members/%s/Wims' % (portal_url, member_id)">
+                        Vous n'avez encore créé aucun exercice.<br/>
+                        Rendez-vous dans <a tal:attributes="href wims_link">Mon Espace" > "Exercices WIMS"</a> pour commencer.
+                    </tal:block>
+                </div>
+                </tal:define>
+            </tal:condition>
+        </section>
+        <section id="activite_info_options" class="small-12 medium-4 columns">
+
+        <tal:condition condition="isAuteurs">
+            <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage">
+                Mode Enseignant / Etudiant
+            </metal:macro>
+        </tal:condition>
+
+            <div id="activite_informations" tal:condition="python:affElement['val'] > 0 or personnel">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_activites&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
+                    tal:condition="personnel"
+                    title="Modifier"
+                    i18n:attributes="title"
+                    data-reveal-id="reveal-main" data-reveal-ajax="true"
+                    class="button radius tiny right">
+                    <i class="fa fa-fw fa-pencil"></i> <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+                <h2>
+                    <i class="fa fa-info-circle"></i>
+                    <tal:block  i18n:translate="">Instructions</tal:block>
+                </h2>
+                <div class="panel bkgrnd radius">
+                    <metal:macro use-macro="context/macro_cours_activites/macros/informations">Affiche les informations de l'activité</metal:macro>
+                </div>
+            </div>
+        </section>
+    </tal:define>
+    </tal:condition>
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

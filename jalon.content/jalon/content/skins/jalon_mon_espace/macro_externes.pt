@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="externes">
+
+    <tal:condition condition="not:is_ajax">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_no_deletion">
+        Macro d'affichage des messages en reveal
+    </metal:macro>
+
+    <main class="row" role="main" aria-labelledby="page_title"
+          tal:define="tags context/getTag;">
+
+        <section class="show-for-medium-up medium-12 columns">
+
+            <div id="item-adder">
+                <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=ajout-ressource">
+                   <i class="fa fa-plus-circle"></i>
+                   <tal:block i18n:translate="">Créer un lien vers une ressource externe</tal:block>
+                </a>
+            </div>
+
+        </section>
+
+        <section class="small-12 columns">
+
+            <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
+            <ul id="js-tag_filter">
+                <metal:macro use-macro="context/tag_macro/macros/create-tag">
+                    Bouton de création des étiquettes
+                </metal:macro>
+                <metal:macro use-macro="context/tag_macro/macros/tag">
+                    Affichage de la liste des étiquettes
+                </metal:macro>
+            </ul>
+
+        </section>
+
+        <section id="js-list-ressource" class="small-12 columns">
+
+            <h2 id="js-update_title">
+                <i class="fa fa fa-external-link"></i><tal:block i18n:translate="">Ressources externes</tal:block>
+            </h2>
+
+            <div id="js-update_target"
+                 tal:attributes="data-href string:${context/absolute_url}">
+                <metal:macro use-macro="context/macro_externes_liste/macros/externes_liste">
+                    Macro d'affichage de la liste des liens
+                </metal:macro>
+            </div>
+
+        </section>
+
+    </main>
+
+    <tal:block define="script string:setTagFilter()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+    </tal:condition>
+
+    <tal:condition condition="is_ajax">
+
+        <metal:macro use-macro="context/macro_externes_liste/macros/externes_liste">
+            Macro d'affichage de la liste des liens
+        </metal:macro>
+
+    </tal:condition>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+</html>

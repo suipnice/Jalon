@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<action-icons>
+ <action-icon category="controlpanel" action_id="connect" title="Connect" priority="0" icon_expr="++resource++connect.images/connect_icon.gif"/>
+</action-icons>

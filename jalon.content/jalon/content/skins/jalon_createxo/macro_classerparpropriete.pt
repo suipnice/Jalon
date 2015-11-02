@@ -1,0 +1,190 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!-- Classer par propriété -->
+    <metal:macro define-macro="createxo">
+
+        <div tal:define="error errors/explain | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="explain">La question à poser.</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div class="formHelp texte_icone icone_information">Les balises HTML sont admises.</div>
+            <textarea name="explain" id="explain"
+                      rows="3" cols="60"
+                      tal:content="QCM_parsed/explain"
+                      required="required"
+                      placeholder="Saisissez ici votre question."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/prop | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="prop">Liste des propriétés</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div class="formHelp texte_icone icone_information">Séparez les propriétés par une virgule.</div>
+            <textarea name="prop" id="prop"
+                      rows="2" cols="60"
+                      tal:content="QCM_parsed/prop"
+                      required="required"
+                      placeholder="Saisissez une liste de propriétés"
+                      i18n:attributes="placeholder" />
+        </div>
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius"
+               data-reveal-id="reveal_data"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="data">La liste des objets avec leur propriété</label>
+            <div  class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <div id="reveal_data"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La liste des objets avec leur propriété <a class="close-reveal-modal"></a></h2>
+                <div>Suivez le modèle suivant :
+                    <ul>
+                        <li><code><span class="indicateur">nom de l'objet 1, propriété 1</span></code></li>
+                        <li><code><span class="indicateur">nom de l'objet 2, propriété 1</span></code></li>
+                        <li><code><span class="indicateur">nom de l'objet 3, propriété 2</span></code></li>
+                        <li><code><span class="indicateur">nom de l'objet 4, propriété 2</span></code></li>
+                    </ul>
+
+                    <div>
+                        Il vaut mieux définir des données en quantité abondante pour chaque propriété (au moins 2 objets par propriété).
+                    </div>
+                    <div>
+                        Attention à ne pas introduire d'erreurs de frappe dans les propriétés !
+                    </div>
+                    <hr/>
+                    <div>Vous pouvez facilement intégrer une image en tant qu'objet à glisser</div>
+                    <div>Utilisez simplement le code HTML suivant : <code class="indicateur">&lt;img src="LIEN_VERS_IMAGE" alt="TITRE_IMAGE"/&gt;</code></div>
+                    Par exemple :
+                    <ul>
+                        <li>pour utiliser cette <a href="http://farm7.staticflickr.com/6128/6027382075_7ded3a4871_q.jpg" target="_blank">image de chat</a></li>
+                        <li>j'écris <code class="indicateur">&lt;img src="http://farm7.staticflickr.com/6128/6027382075_7ded3a4871_q.jpg" alt="photo d'un chat"/&gt;</code></li>
+                    </ul>
+
+                    <p class="texte_icone icone_information">Pensez à choisir des images assez petites pour tenir dans les étiquettes (si besoin modifiez leur taille dans les options avancées).</p>
+                </div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Définir un objet par ligne : d'abord le nom de l'objet, ensuite sa propriété, séparés par une virgule (au moins 2 objets par propriété).
+            </div>
+            <textarea name="data" id="data"
+                      rows="15" cols="60"
+                      tal:content="QCM_parsed/data"
+                      required="required"
+                      placeholder="Saisissez la liste des objets"
+                      i18n:attributes="placeholder" />
+        </div>
+        <div class="panel">
+            <label for="post">Texte après le tableau</label>
+            <div class="formHelp texte_icone icone_information">Balises html admises</div>
+            <textarea name="post" id="post" rows="2" cols="60" tal:content="QCM_parsed/post"/>
+        </div>
+        <div class="panel">
+            <label for="estun">Verbe et article à afficher devant la catégorie classée</label>
+            <div class="formHelp texte_icone icone_information">Balises html admises</div>
+            <input style="width:98%;" type="text" name="estun" id="estun"
+              tal:attributes="value QCM_parsed/estun"/>
+        </div>
+
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+                    <div class="panel">
+                        <label for="noclass">Comment dire si un objet n'est pas classé ?</label>
+                        <div class="formHelp texte_icone icone_information">Balises html admises.</div>
+                        <input type="text" name="noclass" id="noclass" class="mini"
+                          tal:attributes="value QCM_parsed/noclass" />
+                    </div>
+
+                    <div class="row">
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/max1 | nothing;
+                                 arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="max1">Nombre maximal d'objets présentés ayant une même propriété </label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                                <div class="formHelp texte_icone icone_information"> Ce nombre doit être strictement plus grand que 1. </div>
+                                <input type="number" min="1" size="5" maxlength="3"
+                                       name="max1" id="max1" class="mini"
+                                       tal:attributes="value QCM_parsed/max1"
+                                       required="required"
+                                       placeholder="Saisissez un nombre > 1"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/tot | nothing;
+                                             arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="tot">Nombre d'objets à classer par exercice</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Jusqu'à 20.</div>
+                                <input type="number" min="0" max="20"
+                                       name="tot" id="tot" class="mini"
+                                       tal:attributes="value QCM_parsed/tot"
+                                       required="required"
+                                       placeholder="Saisissez un nombre"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+
+                        <div class="medium-4 columns">
+                            <div class="panel">
+                                <label class="input_label" for="shuffle">
+                                    <input id="shuffle" type="checkbox" name="shuffle" value="shuffle"
+                                    tal:define="shuffle QCM_parsed/shuffle | nothing"
+                                    tal:attributes="checked python:context.test(shuffle == 'shuffle', 'checked', None)"
+                                    />Ordre aléatoire des propriétés</label>
+                                <div class="formHelp texte_icone icone_information">Cochez cette option si vous affichez les propriétés dans un ordre aléatoire.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="small-12 columns">
+                            <div tal:define="error errors/size1 | nothing;
+                                 arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="size1">Taille des objets à glisser</label>
+                                <div  class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                                <div class="formHelp texte_icone icone_information"> Taille en pixels : largeur x hauteur (x fois y).<br/>Pensez aux gens qui ont besoin d'augmenter la taille du texte dans leur navigateur ! Évitez les cases trop petites…</div>
+                                <input type="text" maxlength="10" size="10"
+                                       name="size1" id="size1" class="mini"
+                                       tal:attributes="value QCM_parsed/size1"
+                                       required="required"
+                                       placeholder="Saisissez une taille"
+                                       i18n:attributes="placeholder" />
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel callout">
+                        <label for="feedback_general">Feedback général</label>
+                        <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+                        <input type="text" class="mini"
+                               name="feedback_general" id="feedback_general"
+                               tal:attributes="value QCM_parsed/feedback_general" />
+                    </div>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions" />
+        </dl>
+
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

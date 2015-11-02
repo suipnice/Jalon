@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main id="mon_espace" class="row" role="main" aria-labelledby="page_title">
+        <nav class="small-12 columns">
+            <a class="button expand res-glossaire"
+               tal:attributes="href string:${context/absolute_url}/gestion_connexion">
+                <i class="fa fa-key"></i><tal:block i18n:translate="">Connexion à Jalon</tal:block>
+            </a>
+            <a class="button expand res-connect"
+               tal:attributes="href string:${context/absolute_url}/gestion_mon_espace">
+                <i class="fa fa-home"></i><tal:block i18n:translate="">Gestion "Mon Espace"</tal:block>
+            </a>
+            <a class="button expand res-glossaire"
+               tal:attributes="href string:${context/absolute_url}/gestion_mes_cours">
+                <i class="fa fa-university"></i><tal:block i18n:translate="">Gestion des cours</tal:block>
+            </a>
+            <a class="button expand res-connect"
+               tal:attributes="href string:${context/absolute_url}/gestion_infos">
+                <i class="fa fa-external-link-square"></i><tal:block i18n:translate="">Liens d'informations</tal:block>
+            </a>
+            <a class="button expand res-glossaire"
+               tal:attributes="href string:${context/absolute_url}/gestion_didacticiels">
+                <i class="fa fa-life-ring"></i><tal:block i18n:translate="">Didacticiels</tal:block>
+            </a>
+            <a class="button expand res-connect"
+               tal:attributes="href string:${context/absolute_url}/gestion_messages">
+                <i class="fa fa-bullhorn"></i><tal:block i18n:translate="">Diffusion de messages</tal:block>
+            </a>
+            <a class="button expand res-glossaire"
+               tal:attributes="href string:${context/absolute_url}/gestion_email">
+                <i class="fa fa-envelope-o"></i><tal:block i18n:translate="">Courriels</tal:block>
+            </a>
+            <a class="button expand res-connect"
+               tal:attributes="href string:${context/absolute_url}/gestion_donnees_utilisateurs">
+                <i class="fa fa-users"></i><tal:block i18n:translate="">Données utilisateurs</tal:block>
+            </a>
+            <a class="button expand res-glossaire"
+               tal:attributes="href string:${context/absolute_url}/gestion_ga">
+                <i class="fa fa-line-chart"></i><tal:block i18n:translate="">Google Analytics</tal:block>
+            </a>
+            <a class="button expand res-bug"
+               tal:attributes="href string:${context/absolute_url}/gestion_maintenance">
+                <i class="fa fa-umbrella"></i><tal:block i18n:translate="">Maintenance</tal:block>
+            </a>
+        </nav>
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

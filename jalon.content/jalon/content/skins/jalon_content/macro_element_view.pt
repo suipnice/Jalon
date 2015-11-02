@@ -1,0 +1,508 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Page (conservé pour rétro-compatibilité anciennes ressources)
+-->
+<metal:macro define-macro="Page">
+
+   <h3 i18n:translate="">Description</h3>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href element/urlElement">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
+    </a>
+
+</metal:macro>
+
+
+<!--
+        Fichier
+-->
+<metal:macro define-macro="File">
+
+    <h3 tal:content="element/titreElement" />
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <div class="panel warning radius"
+         tal:condition="not:element/urlElement"
+         i18n:translate="">
+        Ce fichier n'est plus disponible. Merci de contacter l'auteur du cours pour obtenir une mise à jour.
+    </div>
+
+    <a class="button expand success"
+       tal:attributes="href string:${element/urlElement}"
+       tal:condition="element/urlElement">
+        <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce fichier</tal:block>
+    </a>
+
+</metal:macro>
+
+
+<!--
+        Image
+-->
+<metal:macro define-macro="Image">
+
+    <h3 tal:content="element/titreElement" />
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         i18n:translate="" tal:content="structure element/descriptionElement" />
+
+<tal:condition condition="element/urlElement">
+
+    <div class="text-center">
+        <a title="Voir l'image dans sa taille originale…"
+           tal:attributes="href element/urlElement"
+           i18n:attributes="title">
+            <img tal:attributes="src string:${element/urlElement}/image_preview;
+                                 alt element/descriptionElement" />
+        </a>
+    </div>
+
+    <a class="button expand success"
+       tal:attributes="href element/urlElement">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Voir l'image dans sa taille originale…</tal:block>
+    </a>
+
+</tal:condition>
+
+    <div class="panel warning radius"
+         tal:condition="not:element/urlElement"
+         i18n:translate="">
+        Cette image n'est plus disponible. Merci de contacter l'auteur du cours pour obtenir une mise à jour.
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Terme de glossaire
+-->
+<metal:macro define-macro="TermeGlossaire">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+</metal:macro>
+
+
+<!--
+        Ressource externe (lien web)
+-->
+<metal:macro define-macro="Lienweb">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href element/urlElement">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
+    </a>
+
+</metal:macro>
+
+
+<!--
+        Lecteur exportable
+-->
+<metal:macro define-macro="Lecteurexportable">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <div class="flex-video"
+         tal:content="structure element/urlElement" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:removePlayerOnClose()" />
+
+<tal:comments replace="nothing"><!--
+    <tal:block define="script1 string:setFlexVideo();
+                       script2 string:removePlayerOnClose()">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+    </tal:block>
+--></tal:comments>
+
+</metal:macro>
+
+
+<!--
+        Lecteur exportable
+-->
+<metal:macro define-macro="Pod">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <div class="flex-video"
+         tal:content="structure element/urlElement" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:removePlayerOnClose()" />
+
+<tal:comments replace="nothing"><!--
+    <tal:block define="script1 string:setFlexVideo();
+                       script2 string:removePlayerOnClose()">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+    </tal:block>
+--></tal:comments>
+
+</metal:macro>
+
+
+<!--
+        Catalogue BU
+-->
+<metal:macro define-macro="CatalogueBU">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <div id="js-primoContainer">
+        <tal:block repeat="image_src element/image">
+            <img class="primo_img"
+                 tal:condition="image_src"
+                 tal:attributes="src image_src" />
+        </tal:block>
+    </div>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <div class="panel radius">
+        <tal:block replace="element/publisher" />
+        <tal:block content="element/creationdate" />
+    </div>
+
+    <a class="button expand success" target="_blank"
+       tal:condition="element/urlcatalogue"
+       tal:attributes="href element/urlcatalogue">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Voir cette ressource sur le catalogue de la BU</tal:block>
+    </a>
+
+    <div class="panel warning radius"
+         tal:condition="not:element/urlcatalogue"
+         i18n:translate="">
+        La ressource n'est plus disponible dans le catalogue de la BU.
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:removeErrorImages('js-primoContainer')" />
+
+</metal:macro>
+
+
+<metal:macro define-macro="Presentationssonorisees">
+    <h3 tal:content="element/titreElement" />
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href element/urlElement">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la présentation sonorisée dans une nouvelle fenêtre…</tal:block>
+    </a>
+</metal:macro>
+
+<metal:macro define-macro="Webconference">
+    <h3 tal:content="element/titreElement" />
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href element/urlElement">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir l'enregistrement de la webconférence dans une nouvelle fenêtre…</tal:block>
+    </a>
+</metal:macro>
+
+<metal:macro define-macro="SalleVirtuelle">
+    <h3 tal:content="element/titreElement" />
+    <a class="button expand success" target="_blank"
+       tal:attributes="href element/urlElement"
+       i18n:translate="">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Accéder à cette salle virtuelle dans une nouvelle fenêtre…</tal:block>
+    </a>
+</metal:macro>
+
+<metal:macro define-macro="Glossaire">
+   <div class="centrer">
+      <a class="bouton" tal:attributes="href element/urlElement"
+         i18n:translate="">Accéder au glossaire</a><br />
+   </div>
+</metal:macro>
+
+
+<!--
+    Fichier déposé par un étudiant dans une boite de dépôts
+-->
+<metal:macro define-macro="JalonFile">
+    <h4 i18n:translate="">Commentaire de l'étudiant</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure element/descriptionElement"/>
+<tal:condition condition="element/correctionElement">
+    <h4 i18n:translate="">Correction</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure element/correctionElement"/>
+</tal:condition>
+<!--tal:condition condition="element/fichierElement">
+    <h4 i18n:translate="">Fichier de correction</h4>
+    <div class="panel bkgrnd radius">
+        <a tal:attributes="href element/fichierElement"
+           target="_blank">
+            <tal:block i18n:translate="">Télécharger le fichier de correction.</tal:block>
+        </a>
+    </div>
+</tal:condition-->
+<tal:condition condition="element/noteElement">
+    <h4>Note :</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure element/noteElement"/>
+</tal:condition>
+<div class="row">
+<tal:condition condition="not:element/fichierElement">
+    <a class="small-12 column button expand radius" tal:attributes="href element/urlElement">
+        <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
+    </a>
+</tal:condition>
+<tal:condition condition="element/fichierElement">
+    <div class="small-12 medium-6 column">
+        <a class="button expand radius"
+           tal:attributes="href element/urlElement">
+            <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
+        </a>
+    </div>
+    <div class="small-12 medium-6 column">
+        <a class="button expand radius success"
+           tal:attributes="href element/fichierElement"
+           target="_blank">
+            <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger le fichier de correction</tal:block>
+        </a>
+    </div>
+</tal:condition>
+</div>
+
+</metal:macro>
+
+
+<!--
+    Apercu d'une boîte de dépôts du cours
+-->
+<metal:macro define-macro="BoiteDepot">
+
+    <h3 tal:content="element/titreElement" />
+    <h4 i18n:translate="" class="texte_icone icone_consignes">Consigne</h4>
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+        Consigne non renseignée…
+    </div>
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <tal:block define="anonyme python:user.has_role('Anonymous');
+                       page element/urlElement">
+    <tal:condition condition="anonyme" >
+        <div class="panel radius warning text-center"><i class="fa fa-warning"></i><strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong></div>
+        <a class="button expand"
+           tal:define="page_quote python:context.jalon_quote(page)"
+           tal:attributes="href string:${portal_url}/acl_users/credentials_cookie_auth/require_login?came_from=${page_quote}">
+            <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter pour accéder à cette boite de dépôts</tal:block>
+        </a>
+    </tal:condition>
+    <tal:condition condition="not:anonyme">
+        <a class="button expand success" tal:attributes="href element/urlElement">
+            <i class="fa fa-eye"></i><tal:block i18n:translate="">Accéder à cette boite de dépôts</tal:block>
+        </a>
+    </tal:condition>
+    </tal:block>
+</metal:macro>
+
+
+<!--
+    Apercu d'une autoevaluation du cours
+-->
+<metal:macro define-macro="AutoEvaluation">
+
+    <h3 tal:content="element/titreElement" />
+    <h4 i18n:translate="" class="texte_icone icone_consignes">Consigne</h4>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+        Consigne non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <tal:block define="anonyme python:user.has_role('Anonymous');
+                       page element/urlElement">
+
+    <tal:condition condition="anonyme" >
+        <div class="panel radius warning">
+            <i class="fa fa-warning"></i><strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong>
+        </div>
+        <a class="button expand"
+           tal:define="page_quote python:context.jalon_quote(page)"
+           tal:attributes="href string:${portal_url}/require_login?came_from=${page_quote}">
+            <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter pour accéder à cette auto-évaluation</tal:block>
+        </a>
+    </tal:condition>
+    <tal:condition condition="not:anonyme">
+        <a class="button expand success" tal:attributes="href element/urlElement">
+            <i class="fa fa-gamepad"></i><tal:block i18n:translate="">Accéder à cette auto-évaluation</tal:block>
+        </a>
+    </tal:condition>
+    </tal:block>
+</metal:macro>
+
+
+<!--
+    Apercu d'un examen du cours
+-->
+<metal:macro define-macro="Examen">
+
+    <h3 tal:content="element/titreElement" />
+    <h4 i18n:translate="" class="texte_icone icone_consignes">Consigne</h4>
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+        Consigne non renseignée…
+    </div>
+    <div class="panel radius callout"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+
+<tal:define define="infosElement python:context.getSousObjet(idElement);">
+    <div class="text-center">
+        <h3 i18n:translate="">
+            <i class="fa fa-dashboard no-pad"></i>
+            Durée :
+            <tal:replace replace="infosElement/duree"/>
+            <tal:block i18n:translate="">min.</tal:block>
+        </h3>
+    </div>
+</tal:define>
+
+    <tal:define
+         tal:define="anonymous python:user.has_role('Anonymous');
+       	             page element/urlElement">
+        <tal:condition condition="anonymous">
+            <div class="panel radius warning text-center"><i class="fa fa-warning"></i><strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong></div>
+            <a class="button expand"
+               tal:define="page_quote python:context.jalon_quote(page)"
+               tal:attributes="href string:${portal_url}/require_login?came_from=${page_quote}">
+                <i class="fa fa-key"></i>
+                <tal:block i18n:translate="">Se connecter pour accéder à cet examen</tal:block>
+            </a>
+        </tal:condition>
+        <a class="button expand success"
+           tal:attributes="href page"
+           tal:condition="not:anonymous">
+            <i class="fa fa-graduation-cap"></i>
+            <tal:block i18n:translate="">Accéder à cet examen</tal:block>
+        </a>
+    </tal:define>
+
+</metal:macro>
+
+
+<metal:macro define-macro="Forum">
+   <h2 i18n:translate="" class="texte_icone icone_forum">Discussion :</h2>
+   <span tal:condition="not:element/descriptionElement" i18n:translate="" class="element_vide">Aucune</span>
+   <p tal:condition="element/descriptionElement" tal:content="structure element/descriptionElement"/>
+   <br /><br />
+   <div class="centrer">
+	   <a class="bouton" tal:attributes="href element/urlElement">
+        <span i18n:translate="">Accéder à ce sujet de discussion</span>
+       </a>
+   </div>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

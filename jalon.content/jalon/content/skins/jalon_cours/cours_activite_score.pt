@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main"
+            tal:define="idpage string:cours_activites_score;
+                        personnel python:context.isPersonnel(user);
+                        menu request/menu | string:exercices;">
+
+  <div tal:define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                   isCoAuteur python:context.isCoAuteurs(user.getId());
+                   infosNotes python:context.getNotes(user.getId(), affElement['val'], isCoAuteur);
+                   parent_url string:./cours_wims_view?menu=exercices;">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">encart d affichage du fil d ariane</metal:macro>
+    <div id="contentBody">
+      <div id="scores_activite" tal:condition="context/getIdExam">
+        <h2 class="texte_icone icone_reussite">
+          <span tal:condition="not:isCoAuteur" i18n:translate="">Mes résultats</span>
+			    <span tal:condition="isCoAuteur" i18n:translate="">Réussite de mes étudiants</span>
+		    </h2>
+        <ul tal:condition="not:isCoAuteur" id="encart_resultats">
+          <li><span i18n:translate="">Ma meilleure note : </span><tal:note replace="infosNotes/note"/> / <tal:sur replace="context/getNoteMax"/></li>
+          <li><span i18n:translate="">Mon pourcentage d'exercices réussi : </span><tal:pourcentage replace="infosNotes/pourcentage"/> %</li>
+          <li><span i18n:translate="">Mon indice de réussite : </span><tal:qualite replace="infosNotes/qualite"/></li>
+        </ul>
+        <ul tal:condition="isCoAuteur" id="encart_resultats">
+          <li><span i18n:translate="">Nombre de participants à cet examen : </span><tal:sur replace="infosNotes/user_cnt"/></li>
+          <li><span i18n:translate="">Meilleure note : </span><tal:note replace="infosNotes/score_max"/> / <tal:sur replace="context/getNoteMax"/></li>
+          <li><span i18n:translate="">Note moyenne : </span><tal:qualite replace="infosNotes/score_mean"/> / <tal:sur replace="context/getNoteMax"/></li>
+        </ul>	
+      </div>
+      <br class="visualClear spacer"/>
+    <h2>Détails des notes :</h2>
+		<div class="listing_vide" tal:condition="not:infosNotes/data_scores">Aucun élément</div>
+		<table class="listing" tal:condition="infosNotes/data_scores">
+        <thead>
+	     <tr>
+            <th title="Cliquer pour trier selon l'identifiant étudiant" i18n:attributes="title" i18n:translate="">ID étudiant</th>
+            <th title="Cliquer pour trier selon le nombre d'essais" i18n:attributes="title" i18n:translate="" class="fullwidth">Nombre d’essais</th>
+            <th title="Cliquer pour trier selon la note obtenue" i18n:attributes="title" i18n:translate="">Note</th>
+	     </tr>
+	     </thead>
+	     <tbody>
+	       <tal:entry repeat="etudiant infosNotes/data_scores">
+	       <tr tal:define="oddrow repeat/etudiant/odd"
+	           tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
+	         <td class="fullwidth" tal:content="etudiant/id"/>
+	         <td tal:content="etudiant/attempts"/>
+	         <td tal:content="etudiant/score"/>
+	       </tr>
+	       </tal:entry>
+	       </tbody>
+	     </table>
+	 </div>
+	 <br class="visualClear" />
+  </div>
+</metal:core>
+</body>
+</html>

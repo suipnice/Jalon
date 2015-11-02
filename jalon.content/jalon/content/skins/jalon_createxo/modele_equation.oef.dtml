@@ -1,0 +1,65 @@
+type=first
+modele_jalon=Equation
+textarea="explain"
+asis="explain"
+random="a b c d"
+computed="ans"
+
+:Une question numérique avec de 1 à n paramètre(s) aléatoire(s).
+
+<p>La réponse numérique est calculée en fonction des valeurs aléatoires des n paramètres, suivant l'equation que vous aurez définie.</p>
+$oef_help
+$math_help
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entête ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:\credits{}
+
+\precision{$$precision$$}
+
+:Premier paramètre \a.
+\real{a=$$param_a$$}
+
+:Deuxième paramètre \b.
+\real{b=$$param_b$$}
+
+:Troisième paramètre \c.
+\real{c=$$param_c$$}
+
+:Quatrième paramètre \d.
+\real{d=$$param_d$$}
+
+:Cinquième paramètre \e.
+\real{e=$$param_e$$}
+
+:La bonne réponse calculée.
+Toutes les fonctions usuelles sont reconnues. On utilise les variables de \a à \e pour désigner les paramètres aléatoires définis en haut.
+\real{ans=$$equation$$}
+
+:Le texte qui explique ce qu'il faut faire.
+Notons que la syntaxe \(...) fait afficher une formule mathématique comme il faut. (mode latec)
+$embraced_randitem
+\text{explain=asis($$enonce$$)}
+
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$,1 oui,2 non)}
+
+:%% Calculs à ne pas modifier
+\text{accolade=wims(word 1 of \accolade)}
+\text{explain=\accolade=1 ?wims(embraced randitem \explain)}
+
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+\statement{\explain}
+
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{$$texte_reponse$$}{\ans}{type=number}

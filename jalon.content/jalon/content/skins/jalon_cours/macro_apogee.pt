@@ -1,0 +1,356 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+
+        Inscriptions au cours par formation
+
+
+-->
+<metal:macro define-macro="ajout-offre-formations"
+             tal:define="recherche request/recherche | string:etape;
+                         termeRecherche request/termeRecherche | nothing;
+                         mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant);">
+    <h2>
+        <tal:block i18n:translate="">Inscription(s) par formation(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:condition condition="personnel">
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">En utilisant l'offre de formation vous donnez directement accès à ce cours à tous les étudiants d'un diplôme, d'une UE ou d'un groupe.</tal:block>
+    </div>
+
+    <h3 class="texte_icone icone_recherche"
+        i18n:translate="">Rechercher un diplôme / une UE / un groupe dans l'offre de formation</h3>
+
+    <form name="recherche_apogee" id="js-Apogee_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/folder_form">
+
+        <div class="field ArchetypesSelectionWidgetWidget kssattr-atfieldname-recherche" id="archetypes-fieldname-recherche">
+            <label for="recherche" i18n:translate="">Type :</label>
+            <select name="recherche"
+                    id="recherche">
+                <option value="etape"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'etape', 'selected', 0)">Diplôme</option>
+                <option value="ue"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'ue', 'selected', 0)">Unité d'enseignement</option>
+                <option value="uel"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'uel', 'selected', 0)">Unité d'enseignement libre</option>
+                <option value="groupe"
+                        i18n:translate=""
+                        tal:attributes="selected python:context.test(recherche == 'groupe', 'selected', 0)">Groupe</option>
+           </select>
+
+           <label for="termeRecherche" i18n:translate="">Mot clé ou code :</label>
+           <input type="text" name="termeRecherche" class="blurrable" id="termeRecherche" size="30" maxlength="255"
+                  tal:attributes="value termeRecherche" />
+
+           <input type="hidden" name="formulaire" id="formulaire" value="ajout-offre-formations" />
+           <input type="hidden" name="macro" id="macro" value="macro_apogee" />
+
+           <input class="button expand tiny radius" type="submit" name="form.button.save" value="Rechercher" i18n:attributes="value label_rechercher" />
+
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setApogeeSearch()" />
+
+   </form>
+
+   <form name="element_add" id="js-Apogee_result" method="POST"
+         tal:attributes="action string:${context/absolute_url}/cours_ajouter_formations"
+         tal:condition="termeRecherche"
+         tal:define="resultatRecherche python:context.rechercheApogee(recherche, termeRecherche)">
+
+        <h3 class="texte_icone icone_resultats"
+            i18n:translate="">Résultats de la recherche</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:resultatRecherche"
+             i18n:translate="">
+            La recherche n'a donné aucun résultat.
+        </div>
+
+        <tal:condition condition="resultatRecherche">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Sélectionnez les éléments de l'offre de formation que vous souhaitez inscrire au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table summary="Liste des résultats de la recherche Apogée">
+            <thead>
+                <tr>
+                    <th class="checkall">
+                    </th>
+                    <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="code" title="Trier selon le code" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Code</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="nbre" title="Trier selon le nombre d'étudiants" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Nbre d'étudiants</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+            <tal:repeat repeat="item resultatRecherche">
+
+                <tr>
+                    <td>
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="elements:list"
+                                   tal:attributes="id string:switch_reveal-${repeat/item/index};
+                                                   value string:${recherche}*-*${item/COD_ELP}" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/item/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td class="title" tal:content="item/LIB_ELP" />
+                    <td class="code" tal:condition="python:recherche == 'groupe'">
+                        <tal:replace replace="item/COD_GPE" />
+                    </td>
+                    <td class="code" tal:condition="python:recherche != 'groupe'">
+                        <tal:replace replace="item/COD_ELP" />
+                    </td>
+                    <td class="nbre" tal:content="item/nb_etu" />
+                </tr>
+            </tal:repeat>
+
+            </tbody>
+        </table>
+
+        <input type="hidden" name="formulaire" value="ajout-apogee"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-Apogee_result',['title','code','nbre'],'title','asc')" />
+
+        </tal:condition>
+
+    </form>
+
+</tal:condition>
+
+<tal:block define="formations context/getAffichageFormations">
+
+    <div class="panel callout radius"
+         tal:condition="not:formations">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucune formation.</tal:block>
+    </div>
+
+    <div id="js-formation-insc_list"
+         tal:condition="formations"
+         tal:define="dicoAff python:{'etape': 'Diplôme', 'ue': 'Unité d\'enseignement', 'uel': 'Unité d\'enseignement libre', 'groupe': 'Groupe'}">
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Ce cours fait partie de la(des) formation(s) suivante(s)</h3>
+
+        <table class="listing">
+
+            <thead>
+                <tr>
+                    <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="type" title="Trier selon le type" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Type</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="number" title="Trier selon l'effectif" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Effectif</tal:block>
+                        </span>
+                    </th>
+                    <th class="action show-for-medium-up" title="Actions"
+                        tal:condition="personnel"
+                        i18n:attributes="title"><i class="fa fa-cog fa-lg no-pad"></i></th>
+                </tr>
+            </thead>
+
+            <tbody class="list">
+                <tr tal:repeat="formation formations">
+                    <td class="title" tal:content="python:formation[0]" />
+                    <td class="type" tal:content="python:dicoAff[formation[-1]]" />
+                    <td class="number" tal:content="python:formation[2]" />
+                    <td class="show-for-medium-up"
+                        tal:condition="personnel">
+                        <a class="dropdown" data-options="align:left"
+                           tal:attributes="data-dropdown string:drop-${repeat/formation/index}">
+                            <i class="fa fa-cog fa-lg no-pad"></i>
+                        </a>
+                        <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                            tal:define="code python:formation[1];
+                                        type python:formation[-1]"
+                            tal:attributes="id string:drop-${repeat/formation/index}">
+                            <li class="show-for-medium-up">
+                                <a data-reveal-id="reveal-main_second" data-reveal-ajax="true"
+                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=listing&amp;code=${code}&amp;type=${type}">
+                                    <i class="fa fa-align-justify fa-fw"></i>
+                                    <tal:block i18n:translate="">Liste</tal:block>
+                                </a>
+                            </li>
+                            <li tal:condition="python:context.getJalonProperty('activer_trombinoscope')">
+                                <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${code}&amp;type=${type}"
+                                   target="_blank">
+                                    <i class="fa fa-camera-retro fa-fw"></i>
+                                    <tal:block i18n:translate="">Trombinoscope</tal:block>
+                                </a>
+                            </li>
+                            <li class="show-for-medium-up">
+                                <a data-reveal-id="reveal-main_second" data-reveal-ajax="true"
+                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=ecrire&amp;code=${code}&amp;type=${type}">
+                                    <i class="fa fa-pencil-square-o fa-fw"></i>
+                                    <tal:block i18n:translate="">Écrire</tal:block>
+                                </a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <script charset="UTF-8"
+                tal:condition="personnel"
+                tal:content="structure string:$$(document).foundation('dropdown', 'reflow')" />
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-formation-insc_list',['title','type','number'],'title','asc')" />
+
+    </div>
+
+
+</tal:block>
+
+</metal:macro>
+
+
+
+<!--
+
+        Détacher un cours d'une offre de formation
+
+
+-->
+<metal:macro define-macro="supprimer-offre-formations">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer des inscriptions par formation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Cette opération va retirer l'accès au cours pour les formations désélectionnées.</tal:block>
+    </div>
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Formation(s) inscrite(s) au cours</h3>
+
+   <form name="element_add" method="POST"
+         tal:attributes="action string:${context/absolute_url}/cours_supprimer_formations"
+         tal:define="formations context/getAffichageFormations">
+
+        <div class="panel callout radius"
+             tal:condition="not:formations"
+             i18n:translate="">
+            Le cours n'est diffusé à aucune formation.
+        </div>
+
+        <tal:condition condition="formations">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les formations ne devant plus avoir accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table tal:define="dicoAff python:{'etape': 'Diplôme', 'ue': 'Unité d\'enseignement', 'uel': 'Unité d\'enseignement libre', 'groupe': 'Groupe'}">
+            <tal:repeat repeat="formation formations">
+            <tr>
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="elements:list" checked="checked"
+                               tal:attributes="id string:switch_tagada-${repeat/formation/index};
+                                               value python:'%s*-*%s' % (formation[-1], formation[1])" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_tagada-${repeat/formation/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left">
+                    <tal:block content="python:formation[0]" /> ; <tal:block replace="python:dicoAff[formation[-1]]" i18n:translate=""/> : <tal:block content="python:formation[2]"/> <tal:block i18n:translate="label_etudiant">étudiant(s)</tal:block>
+                </td>
+            </tr>
+            </tal:repeat>
+        </table>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-trash"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+        </tal:condition>
+
+    </form>
+</metal:macro>
+
+
+</metal:content-core>
+
+</body>
+
+</html>

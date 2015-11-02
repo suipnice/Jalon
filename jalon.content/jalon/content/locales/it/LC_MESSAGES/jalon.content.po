@@ -1,0 +1,1531 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"POT-Creation-Date: 2013-11-15 14:13+0000\n"
+"PO-Revision-Date: 2014-06-04 14:34+0100\n"
+"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
+"Language-Team: Service TICE - Université Nice Sophia Antipolis <tice@unice."
+"fr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: it\n"
+"Language-Name: Italian\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: jalon.content\n"
+"X-Generator: Poedit 1.6.5\n"
+"Language: it\n"
+
+#: ../skins/jalon_content/folder_delete.cpy:102
+msgid "${items} could not be deleted."
+msgstr "${elementi} non potrebbe essere eliminato."
+
+#: ../content/jalonfolder.py:908
+msgid "%s Quick Upload"
+msgstr "%s quick Upload"
+
+#: ../browser/config/jalonconfiguration.py:81
+msgid "@etablissement.com"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:90
+msgid "Absence de sesame"
+msgstr ""
+
+#: ../content/jaloncours.py:295
+msgid ""
+"Accès réservé à : <ul><li>l'offre de formations universitaires Apogée "
+"(Diplôme / UE / Groupe)</li><li>mon groupe personalisé d'étudiants inscrits "
+"à l'Université</li><li>personnes extérieures à l'université (invitations par "
+"courriel)</li></ul>"
+msgstr ""
+
+#: ../content/jaloncours.py:297
+msgid ""
+"Accès à tous les utilisateurs disposant du lien du cours, seuls les "
+"étudiants authentifiés auront accès aux activités"
+msgstr ""
+
+#: ../content/jalonfile.py:26
+msgid "Actif"
+msgstr "Beni"
+
+#: ../skins/jalon_cours/macro_cours_activites.pt:27
+msgid "Actions"
+msgstr "Azioni"
+
+#: ../browser/config/jalonconfig.py:83
+msgid "Activer la section Catalogue BU dans mon espace."
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:59
+msgid "Activer la section Exercices Wims dans mon espace."
+msgstr "Abilitare la sezione di esercizi Wims nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:22
+msgid "Activer la section Fichiers dans mon espace."
+msgstr "Abilitare la sezione file nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:92
+msgid "Activer la section Glossaire dans mon espace."
+msgstr "Abilitare la sezione Glossario nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:34
+msgid "Activer la section Présentation sonorisée dans mon espace."
+msgstr "Attivare il suono nella mia sezione di presentazione di spazio."
+
+#: ../browser/config/jalonconfig.py:77
+msgid "Activer la section Ressources externes dans mon espace."
+msgstr "Abilitare la sezione risorse esterne nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:44
+msgid "Activer la section Webconférence dans mon espace."
+msgstr "Abilitare la sezione sul mio spazio Web."
+
+#: ../browser/config/jalonconfiguration.py:71
+msgid "Activer les listes de diffusions"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:120
+msgid "Activer les notes de mise à jour de Jalon"
+msgstr "Abilitare le note per aggiornare a milestone"
+
+#: ../browser/config/jalonconfiguration.py:68
+msgid "Adresse de reception des erreurs"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:79
+msgid "Adresse des listes de diffusions"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:69
+msgid "Adresse mail de reception des error_log"
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:22
+msgid "Affiche un message d'annonce de la prochaine maintenance du site."
+msgstr ""
+"Viene visualizzato un messaggio per l'annuncio di manutenzione sito "
+"successivo."
+
+#: ../browser/config/jalonmaintenance.py:53
+msgid "Affiche un message demandant de vider son cache suite à une mise à jour"
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:44
+msgid "Affiche une information sur le site"
+msgstr ""
+
+#: ../browser/templates/cours_boite_view.pt:37
+#: ../browser/templates/forum_view.pt:31
+msgid "Afficher"
+msgstr "Visualizzazione"
+
+#: ../skins/jalon_cours/macro_cours_afficher.pt:25
+msgid "Afficher cette ressource"
+msgstr "Guardate questa risorsa"
+
+#: ../browser/config/jalonmaintenance.py:43
+msgid "Afficher une information sur le site"
+msgstr ""
+
+#: ../skins/jalon_cours/macro_cours_activites.pt:40
+msgid "Ajouter cette salle virtuelle"
+msgstr "Aggiungere questa stanza virtuale"
+
+#: ../skins/jalon_cours/macro_cours_activites.pt:19
+msgid "Ajouter ma salle virtuelle"
+msgstr ""
+
+#: ../skins/jalon_content/macro_podcasts.pt:57
+msgid "Ajouter un utilisateur"
+msgstr ""
+
+#: ../content/jaloncourswims.py:122
+msgid "Ajoutez un mot de passe pour s&eacute;curiser votre examen."
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:346
+msgid "Analytics"
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:52
+msgid "Annonce \"Vider son cache\""
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:21
+msgid "Annonce maintenance du site"
+msgstr "Manutenzione del sito annuncio"
+
+#: ../skins/jalon_cours/macro_cours_resume.pt:18
+msgid "Annonces"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:62
+msgid "Année"
+msgstr "Anno"
+
+#: ../browser/config/jalonconfiguration.py:106
+msgid "Assistance / Helpdesk"
+msgstr ""
+
+#: ../skins/jalon_cours/macro_element_view.pt:15
+msgid "Aucune"
+msgstr "Nessuno"
+
+#: ../content/jaloncours.py:34
+msgid "Auteur Principal"
+msgstr "Autore principale"
+
+#: ../content/jalonressourceexterne.py:38
+msgid "Auteurs"
+msgstr "Autori"
+
+#: ../content/jaloncourswims.py:28
+msgid "Auto-évaluation"
+msgstr "Autovalutazione"
+
+#: ../content/jalonboitedepot.py:78
+msgid "Autoriser la visualisation des dépôts entre étudiants"
+msgstr ""
+
+#: ../skins/jalon_cours/macro_cours_preference.pt:17
+msgid "Autoriser les commentaires sur Facebook"
+msgstr ""
+
+#: ../content/jaloncours.py:167
+msgid "Avancement de l'enseignant et des étudiants dans le plan du cours."
+msgstr ""
+
+#: ../content/jaloncourswims.py:53
+msgid "Barême"
+msgstr "Scala"
+
+#: ../skins/jalon_mon_espace/mon_espace.pt:39
+msgid "Bonjour"
+msgstr "Ciao"
+
+#: ../skins/jalon_mon_espace/macro_cataloguebu.pt:14
+msgid "Catalogue BU"
+msgstr ""
+
+#: ../content/jaloncours.py:176
+msgid "Catégorie(s) du cours."
+msgstr ""
+
+#: ../content/jalon_utils.py:484
+msgid "Catégories"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:114
+msgid "Catégories iTunesU"
+msgstr ""
+
+#: ../skins/jalon_content/valider_form.vpy:93
+#: ../skins/jalon_cours/cours_ecrire_script.py:15
+msgid "Champ obligatoire"
+msgstr "Campo obbligatorio"
+
+#: ../browser/config/jalonconfiguration.py:43
+msgid "Chemin vers une fiche de votre annuaire"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:29
+msgid "Clé de cryptage)"
+msgstr ""
+
+#: ../content/jaloncours.py:42
+msgid "Co-auteurs"
+msgstr "Co-autori"
+
+#: ../content/jaloncours.py:51
+msgid "Co-lecteurs"
+msgstr "Co-lecteurs"
+
+#: ../browser/config/jalonconfiguration.py:40
+msgid "Cocher pour activer ce champ générique"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:84
+msgid "Cocher pour activer la section Catalogue BU dans mon espace."
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:60
+msgid ""
+"Cocher pour activer la section Exercices Wims dans mon espace, seulement "
+"possible si le produit jalon.wims est installé."
+msgstr ""
+"Controllare per abilitare il Wims esercita la sezione nel mio spazio, "
+"possibile solo se viene installato il prodotto jalon.wims."
+
+#: ../browser/config/jalonconfig.py:23
+msgid "Cocher pour activer la section Fichiers dans mon espace."
+msgstr "Controllo per abilitare la sezione file nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:93
+msgid "Cocher pour activer la section Glossaire dans mon espace."
+msgstr "Controllo per abilitare la sezione Glossario nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:35
+msgid ""
+"Cocher pour activer la section Présentation sonorisée dans mon espace, "
+"seulement possible si le produit jalon.connect est installé."
+msgstr ""
+"Controllare per consentire la presentazione di sezione perché nel mio "
+"spazio, possibile solo se viene installato il prodotto jalon.connect."
+
+#: ../browser/config/jalonconfig.py:78
+msgid "Cocher pour activer la section Ressources externes dans mon espace."
+msgstr "Controllo per abilitare la sezione risorse esterne nel mio spazio."
+
+#: ../browser/config/jalonconfig.py:121
+msgid "Cocher pour activer les notes de mise à jour depuis la page mon espace"
+msgstr "Controllo per attivare le note per aggiornare dal mio space page"
+
+#: ../browser/config/jalonconfig.py:45
+msgid ""
+"Cocher pour activer section la Webconference dans mon espace, seulement "
+"possible si le produit jalon.connect est installé."
+msgstr ""
+"Controllare per abilitare la sezione Webconference nel mio spazio, possibile "
+"solo se viene installato il prodotto jalon.connect."
+
+#: ../content/jalonressourceexterne.py:74
+msgid "Collection"
+msgstr "Collezione"
+
+#: ../skins/jalon_cours/macro_cours_resume.pt:26
+msgid "Commentaires"
+msgstr ""
+
+#: ../content/jaloncours.py:1995
+msgid "Commentaires sur Facebook"
+msgstr ""
+
+#: ../content/jaloncours.py:185
+msgid "Commentaires sur les réseaux sociaux"
+msgstr ""
+
+#: ../content/jalonfolder.py:47
+msgid "Complement propre a chaque dossier"
+msgstr "Proprio complemento ha ogni cartella"
+
+#: ../browser/config/jalonconfiguration.py:372
+#: ../browser/templates/jalon_configuration.pt:39
+#: ../content/jalon_utils.py:486
+msgid "Configuration de Jalon"
+msgstr "Configurazione di pietra miliare"
+
+#: ../browser/config/jalonconfig.py:389
+msgid "Configuration des contenus de Jalon"
+msgstr "Configurazione del contenuto di pietra miliare"
+
+#: ../skins/jalon_configuration/gestion_ga.pt:12
+msgid "Configuration des statistiques via Google Analytics"
+msgstr ""
+
+#: ../content/jalon_utils.py:482
+msgid "Configuration du site"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:94
+msgid "Contact du service en charge"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:102
+msgid "Crédits"
+msgstr "Crediti"
+
+#: ../content/jalonfolder.py:703
+msgid ""
+"Créer un lien à partir d'un lecteur exportable comme Youtube, Dailymotion, "
+"WIMS"
+msgstr ""
+
+#: ../content/jalonfolder.py:699
+msgid "Créer un lien à partir d'une URL"
+msgstr ""
+
+#: ../content/jaloncourswims.py:98
+msgid "Date a laquelle cette activite s'affiche"
+msgstr ""
+
+#: ../content/jaloncourswims.py:97 ../content/jalonforum.py:22
+msgid "Date d'affichage"
+msgstr "Data display"
+
+#: ../content/jalonboitedepot.py:66
+msgid "Date d'affichage de la boite de dépôts"
+msgstr "Data della casella di deposito di registrazione"
+
+#: ../content/jalonconnect.py:21
+msgid "Date de création sur Adobe Connect"
+msgstr "Data di creazione su Adobe Connect"
+
+#: ../content/jaloncours.py:198
+msgid "Date de dernière modification"
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:31
+msgid "Date de début de maintenance"
+msgstr "Data di inizio di manutenzione"
+
+#: ../browser/config/jalonmaintenance.py:36
+msgid "Date de fin de la maintenance dans le texte informatif"
+msgstr "Data di scadenza di manutenzione nel testo informativo"
+
+#: ../browser/config/jalonmaintenance.py:35
+msgid "Date de fin de maintenance"
+msgstr "Fine di manutenzione data"
+
+#: ../browser/config/jalonmaintenance.py:32
+msgid "Date du début de la maintenance dans le texte informatif"
+msgstr "Data di inizio del mantenimento in testo informativo."
+
+#: ../content/jalonboitedepot.py:33
+msgid "Date limite de dépôts"
+msgstr "Scadenza dei depositi"
+
+#: ../content/jaloncourswims.py:106
+msgid "Date servant &agrave; masquer cette activit&eacute;"
+msgstr ""
+
+#: ../content/jalonforum.py:30
+msgid "Date servant à masquer cette activité"
+msgstr "Data utilizzato per nascondere questa attività"
+
+#: ../content/jaloncourswims.py:105 ../content/jalonforum.py:29
+msgid "Date à laquelle cette activité est masquée"
+msgstr "Data in cui è nascosto questa attività"
+
+#: ../content/jalonboitedepot.py:72
+msgid "Date à laquelle la boite de dépôts est masquée"
+msgstr "Data in cui la casella si depositi nascosti"
+
+#: ../skins/jalon_cours/macro_element_view.pt:14
+msgid "Description :"
+msgstr "Descrizione:"
+
+#: ../content/jaloncourswims.py:45
+msgid "Description de l'identifiant Wims de l'examen"
+msgstr "Descrizione del riesame identificare Wims"
+
+#: ../content/jaloncourswims.py:37
+msgid "Description de l'identifiant Wims de la feuille"
+msgstr "Descrizione della finestra di login Wims"
+
+#: ../content/jalonforum.py:23
+msgid "Description de la date d'affichage"
+msgstr "Descrizione della data di registrazione"
+
+#: ../content/jaloncourswims.py:29
+msgid ""
+"Description du type de l'objet JalonCoursWims (feuille (AutoEvaluation) ou "
+"Examen)"
+msgstr ""
+"Descrizione del tipo dell'oggetto JalonCoursWims (foglio di lavoro "
+"(AutoEvaluation) o recensione)"
+
+#: ../browser/config/jalonconfiguration.py:57
+msgid "Didacticiel du plan interactif "
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:58
+msgid ""
+"Didacticiel à afficher automatiquement lorsque le plan de cours est vide"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:354
+msgid "Didacticiels"
+msgstr ""
+
+#: ../content/jaloncours.py:61
+msgid "Diffusion du cours:"
+msgstr "Diffusione del corso:"
+
+#: ../browser/config/jalonconfiguration.py:26
+msgid "Domaine du site."
+msgstr ""
+
+#: ../content/jalonconnect.py:29
+msgid "Durée"
+msgstr "Durata"
+
+#: ../content/jaloncourswims.py:62
+msgid "Durée de l'examen (en minutes)"
+msgstr "Durata (in minuti)"
+
+#: ../browser/scripts/section.py:46
+msgid "Déconnexion"
+msgstr "Scollegare"
+
+#: ../content/jalon_utils.py:481
+msgid "Définir la position dans le cours"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:56
+msgid "Editeur"
+msgstr "Editor"
+
+#: ../browser/config/jalonmaintenance.py:27
+msgid "Empêche les utilisateurs de se connecter au site"
+msgstr "Impedisce agli utenti di connettersi al sito"
+
+#: ../skins/jalon_content/valider_exercicewims.vpy:64
+msgid "Erreur de syntaxe"
+msgstr "Errore di sintassi"
+
+#: ../browser/templates/jalon_folder.pt:115
+msgid "Étiquettes"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:24
+msgid "Exemple : UA-12345678-1"
+msgstr "Esempio: UA-12345678-1"
+
+#: ../browser/config/jalonconfig.py:41
+msgid "Exemple : le champ de date du portal_connect 'dateUS'"
+msgstr "Esempio: campo Data 'dateUS' portal_connect"
+
+#: ../browser/config/jalonconfig.py:66
+msgid "Exemple : le modèle des exercices Wims 'modele'"
+msgstr "Esempio: modello 'modello' Wims esercizi"
+
+#: ../browser/config/jalonconfig.py:96
+msgid "Exemple : les lettres de l'alphabet, une par case"
+msgstr "Esempio: le lettere dell'alfabeto, uno per ogni casella"
+
+#: ../browser/config/jalonconfig.py:26
+msgid "Exemple : les types de fichiers"
+msgstr "Esempio: tipi di file"
+
+#: ../browser/config/jalonconfig.py:81
+msgid "Exemple : les types de ressources externes"
+msgstr "Esempio: i tipi di risorse esterne"
+
+#: ../browser/config/jalonconfiguration.py:27
+msgid "Exemple : unice.fr"
+msgstr "Esempio: unice.fr"
+
+#: ../browser/config/jalonconfiguration.py:39
+msgid "Exemple de champ générique"
+msgstr ""
+
+#: ../skins/jalon_mon_espace/macro_wims.pt:17
+msgid "Exercices"
+msgstr "Esercizi"
+
+#: ../browser/config/jalonconfig.py:367
+msgid "Exercices WIMS"
+msgstr "WIMS esercizi"
+
+#: ../browser/config/jalonconfig.py:65
+msgid "Exercices Wims : définition des étiquettes par défaut."
+msgstr "WIMS esercizi: definizione delle etichette predefinite."
+
+#: ../browser/config/jalonconfig.py:80
+msgid "Externes : définition des étiquettes par défaut."
+msgstr "Esterno: definizione delle etichette predefinite."
+
+#: ../skins/jalon_content/fermeture.pt:11
+msgid "Fermeture de la page"
+msgstr "Chiusura della pagina"
+
+#: ../browser/config/jalonconfig.py:359 ../content/jalon_utils.py:478
+#: ../skins/jalon_mon_espace/macro_fichiers.pt:16
+msgid "Fichiers"
+msgstr "File"
+
+#: ../browser/config/jalonconfig.py:25
+msgid "Fichiers : définition des étiquettes par défaut."
+msgstr "File: definizione delle etichette predefinite."
+
+#: ../content/jalonfolder.py:905
+msgid "Files Quick Upload"
+msgstr "Quick Upload file"
+
+#: ../browser/templates/cours_forum_view.pt:25
+#: ../skins/jalon_cours/macro_cours_resume.pt:22
+msgid "Forum"
+msgstr "Forum"
+
+#: ../browser/config/jalonconfiguration.py:358
+msgid "Gestion des emails"
+msgstr ""
+
+#: ../browser/templates/jalon_podcast.pt:18
+msgid "Gestion des podcasts"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:95
+msgid "Glossaire : définition des étiquettes par défaut."
+msgstr "Glossario: definizione delle etichette predefinite."
+
+#: ../content/jaloncourswims.py:113
+msgid "Heures de coupure"
+msgstr "Tagliati ore"
+
+#: ../content/jaloncourswims.py:114
+msgid "Heures pendant lesquelles l'examen ne sera pas accessible."
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:80
+msgid "ISBN"
+msgstr "ISBN"
+
+#: ../browser/config/jalonconfiguration.py:23
+msgid "Identifiant Google Analytics."
+msgstr ""
+
+#: ../content/jaloncourswims.py:44
+msgid "Identifiant Wims de l'examen"
+msgstr "Recensione di identificazione Wims"
+
+#: ../content/jaloncourswims.py:36
+msgid "Identifiant Wims de la feuille"
+msgstr "Identificando la foglia Wims"
+
+#: ../browser/config/jalonconfig.py:37
+msgid "Identifiant du connecteur connect."
+msgstr "Identificando il connettore Connetti."
+
+#: ../browser/config/jalonconfig.py:62
+msgid "Identifiant du connecteur wims."
+msgstr "Identificando il connettore wims."
+
+#: ../content/jalonfolder.py:907
+msgid "Images Quick Upload"
+msgstr "Veloce caricare immagini"
+
+#: ../browser/config/jalonimport_settings.py:566
+msgid "Import les contenus de Jalon V2 depuis un dossier du filesystem"
+msgstr ""
+"Importazione di pietra miliare V2 contenuto da una cartella del filesystem"
+
+#: ../browser/config/jalonconfig.py:124
+msgid ""
+"Indiquez ici l'adresse du flux RSS utilisez pour les mises à jour de Jalon"
+msgstr ""
+"Inserire qui l'indirizzo del RSS feed uso per gli aggiornamenti di pietra "
+"miliare"
+
+#: ../skins/jalon_content/inscrire_mooc.pt:15
+msgid "Inscription libre au cours"
+msgstr ""
+
+#: ../content/jaloncours.py:98
+msgid "Inscriptions libres"
+msgstr ""
+
+#: ../skins/jalon_content/folder_delete.cpy:63
+msgid "Item(s) deleted."
+msgstr "Item (s) cancellato."
+
+#: ../content/jaloncours.py:192
+msgid "J'aime sur Facebook"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:371
+msgid "Jalon Configuration"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:388
+msgid "Jalon Content Config"
+msgstr "Pietra miliare contenuto Config"
+
+#: ../browser/config/jalonimport_settings.py:565
+msgid "Jalon Import settings"
+msgstr "Impostazioni di importazione di pietra miliare"
+
+#: ../browser/config/jalonmaintenance.py:152
+msgid "Jalon maintenance settings"
+msgstr "Impostazioni di manutenzione di pietra miliare"
+
+#: ../portlets/navigation.py:86
+msgid "Jalon navigation"
+msgstr "Navigazione di pietra miliare"
+
+#: ../content/jaloncours.py:35
+msgid ""
+"L'auteur principal du cours a accès à celui-ci en modification, son nom est "
+"affiché aux étudiants comme étant l'auteur du cours."
+msgstr ""
+
+#: ../content/jalonexercicewims.py:69
+msgid "L'interface de l'exercice s'adaptera en fonction de la langue choisie."
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:350
+msgid "LDAP"
+msgstr ""
+
+#: ../content/jaloncours.py:265
+msgid "La correction est disponible."
+msgstr ""
+
+#: ../content/jaloncours.py:266
+msgid "La correction n'est plus disponible"
+msgstr ""
+
+#: ../content/jalonconnect.py:37
+msgid "La date US"
+msgstr "La data U.S."
+
+#: ../content/jaloncours.py:136
+msgid "La liste des éléments de la bibliographie."
+msgstr ""
+
+#: ../content/jaloncours.py:128
+msgid "La liste des éléments du glossaire."
+msgstr ""
+
+#: ../content/jalonexercicewims.py:68
+msgid "Langue de l'exercice"
+msgstr ""
+
+#: ../content/jalonfolder.py:48
+msgid "Le complement du dossier"
+msgstr "Il complemento del record"
+
+#: ../content/jaloncours.py:264
+msgid "Le dépôt n'est plus permis"
+msgstr ""
+
+#: ../content/jaloncours.py:91
+msgid "Le lien cours n'existe que pour le cours public"
+msgstr ""
+
+#: ../content/jaloncours.py:90
+msgid "Le lien court d'un cours"
+msgstr "Il link breve di un corso"
+
+#: ../content/jaloncours.py:112
+msgid "Le lien court mooc d'un cours"
+msgstr ""
+
+#: ../content/jaloncours.py:113
+msgid "Le lien court mooc n'existe que pour le cours en accès libre"
+msgstr ""
+
+#: ../content/jalonfolder.py:41
+msgid "Le mot de passe du dossier"
+msgstr "La password per la cartella"
+
+#: ../content/jaloncours.py:120
+msgid "Le plan intéractif."
+msgstr "Il piano interattivo."
+
+#: ../content/jaloncours.py:267
+msgid "Le sujet est disponible."
+msgstr ""
+
+#: ../content/jaloncours.py:268
+msgid "Le sujet n'est plus disponible."
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:92
+msgid "Lecteur exportable"
+msgstr "Giocatore esportabili"
+
+#: ../content/jaloncours.py:160
+msgid "Les actualités du cours."
+msgstr ""
+
+#: ../content/jaloncours.py:144
+msgid "Les classes du cours."
+msgstr "Le classi del corso."
+
+#: ../content/jaloncours.py:152
+msgid "Les webconferences du cours."
+msgstr "Il corso webconferences."
+
+#: ../content/jalonfolder.py:710
+msgid "Lien catalogue"
+msgstr ""
+
+#: ../content/jalonfolder.py:702
+msgid "Lien vidéo"
+msgstr ""
+
+#: ../content/jalonfolder.py:698
+msgid "Lien web"
+msgstr "Collegamento Web"
+
+#: ../browser/config/jalonconfiguration.py:362 ../content/jalon_utils.py:479
+msgid "Liens"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:50
+msgid "Lieu"
+msgstr "Luogo"
+
+#: ../content/jalonexercicewims.py:59
+msgid ""
+"Liste de tous les exercices de la sélection aléatoire. (dans le cas d'un "
+"groupe d'exercices)"
+msgstr ""
+"Elenco di tutti gli esercizi di selezione casuale. (in caso di un gruppo di "
+"esercizi)"
+
+#: ../content/jalonboitedepot.py:59
+msgid "Liste des corrections"
+msgstr "Elenco di fisso"
+
+#: ../content/jalonboitedepot.py:52
+msgid "Liste des devoirs des étudiants"
+msgstr "Elenco dei doveri degli studenti"
+
+#: ../content/jaloncourswims.py:79
+#: ../skins/jalon_cours/macro_cours_exercices.pt:25
+msgid "Liste des exercices"
+msgstr "Elenco di esercizi"
+
+#: ../content/jaloncourswims.py:80
+msgid "Liste des exercices de cet autoevaluation ou examen"
+msgstr ""
+
+#: ../skins/jalon_cours/macro_cours_forum.pt:18
+msgid "Liste des forums"
+msgstr "Elenco dei forum"
+
+#: ../content/jalonboitedepot.py:45 ../content/jaloncourswims.py:88
+msgid "Liste des sujets"
+msgstr "Elenco di argomenti"
+
+#: ../content/jaloncourswims.py:89
+msgid "Liste des sujets de cet autoevaluation ou examen"
+msgstr ""
+
+#: ../browser/templates/cours_forum_view.pt:39
+msgid "Liste des sujets de discussion"
+msgstr "Elenco degli argomenti di discussione"
+
+#: ../content/jaloncours.py:135
+msgid "Liste des éléments de la bibliographie"
+msgstr ""
+
+#: ../content/jaloncours.py:127
+msgid "Liste des éléments du glossaire"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:69
+msgid ""
+"Lister ici les modèles (du Wims Connector) que vous souhaitez utiliser pour "
+"la création d'exercices dans 'Mon espace'. Format : 'id*-*Titre du Modele*-"
+"*Categorie'  . Exemple : qcmsimple*-*Question simple*-*1 Modeles simples"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:115
+msgid ""
+"Listes des identifiants des cours et de leur catégorie iTunesU correspondante"
+msgstr ""
+
+#: ../browser/templates/comments.pt:19
+msgid "Log in to add comments"
+msgstr "Accedi per aggiungere commenti"
+
+#: ../skins/jalon_connexion/login_next.cpy:23
+msgid "Login failed"
+msgstr "Accesso non riuscito"
+
+#: ../skins/jalon_connexion/logged_in.cpy:22
+msgid ""
+"Login failed. Both email address and password are case sensitive, check that "
+"caps lock is not enabled."
+msgstr ""
+"Accesso non riuscito. Entrambi indirizzo email e password sono case "
+"sensitive, controllare che Bloc Maiusc non è abilitato."
+
+#: ../skins/jalon_connexion/logged_in.cpy:24
+msgid ""
+"Login failed. Both login name and password are case sensitive, check that "
+"caps lock is not enabled."
+msgstr ""
+"Accesso non riuscito. Entrambi i nome di login e password sono case "
+"sensitive, controllare che Bloc Maiusc non è abilitato."
+
+#: ../skins/jalon_connexion/connexion.pt:17
+msgid "Maintenance du ${Deb} au ${Fin}."
+msgstr "Manutenzione di ${Deb} $ {fine}."
+
+#: ../browser/templates/cours_boite_view.pt:43
+#: ../browser/templates/forum_view.pt:37
+msgid "Masquer"
+msgstr "Nascondi"
+
+#: ../browser/config/jalonconfiguration.py:98
+msgid "Mentions légales"
+msgstr "Menzioni legali"
+
+#: ../browser/scripts/section.py:34 ../content/jalon_utils.py:474
+msgid "Mes cours"
+msgstr "Mie gare"
+
+#: ../browser/config/jalonproperties.py:215
+msgid "Mes formations"
+msgstr ""
+
+#: ../browser/scripts/section.py:40 ../content/jalon_utils.py:475
+msgid "Mes étudiants"
+msgstr "Miei studenti"
+
+#: ../browser/config/jalonmaintenance.py:153
+msgid "Mise en maintenance de Jalon"
+msgstr "Manutenzione del rilascio di pietra miliare"
+
+#: ../browser/config/jalonmaintenance.py:26
+msgid "Mise en maintenance du site"
+msgstr "Manutenzione dello sviluppo sito"
+
+#: ../browser/config/jalonconfig.py:383
+msgid "Mise à jour"
+msgstr "Aggiornamento"
+
+#: ../content/jaloncours.py:263
+msgid "Modification de la date de dépôts : "
+msgstr ""
+
+#: ../browser/templates/cours_boite_view.pt:52
+#: ../browser/templates/forum_view.pt:44
+msgid "Modifier"
+msgstr "Modificare"
+
+#: ../skins/jalon_content/macro_modifier.pt:15
+msgid "Modifier la ressource externe"
+msgstr "Modificare la risorsa esterna"
+
+#: ../skins/jalon_content/macro_form.pt:22
+msgid "Modifier les informations du cours"
+msgstr ""
+
+#: ../content/jalonexercicewims.py:35
+msgid "Modèle CreateExo de Wims"
+msgstr "Modello CreateExo di Wims"
+
+#: ../browser/config/jalonconfig.py:68
+msgid "Modèle Wims"
+msgstr "Modello Wims"
+
+#: ../browser/scripts/section.py:28 ../content/jalon_utils.py:472
+msgid "Mon espace"
+msgstr "Il mio spazio"
+
+#: ../content/jaloncourswims.py:121 ../content/jalonfolder.py:40
+msgid "Mot de passe"
+msgstr "Password"
+
+#: ../content/jalonexercicewims.py:51
+msgid ""
+"Nombre d'exercices de la sélection aléatoire auxquels l'étudiant doit "
+"répondre. (dans le cas d'un groupe d'exercices)"
+msgstr ""
+"Numero di esercizi di selezione casuale a cui lo studente deve rispondere. "
+"(in caso di un gruppo di esercizi)"
+
+#: ../content/jaloncourswims.py:72
+msgid "Nombre de fois o&ugrave; l'&eacute;tudiant pourra passer cet examen"
+msgstr ""
+
+#: ../content/jaloncourswims.py:71
+msgid "Nombre de passages autorisés"
+msgstr "Numero dei valichi autorizzati"
+
+#: ../content/jaloncours.py:262
+msgid "Nouveau message dans le sujet de discussion."
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:68
+msgid "Pagination"
+msgstr "Paginazione"
+
+#: ../content/jalonfolder.py:722
+msgid "Pas de description"
+msgstr "Descrizione passo"
+
+#: ../content/jalonexercicewims.py:43
+msgid "Permalien d'un exercice wims publié"
+msgstr "Permalink pubblicato wims esercizio"
+
+#: ../skins/jalon_content/valider_exercicewims.vpy:69
+msgid "Permalien mal formé"
+msgstr "Permalink malformati"
+
+#: ../content/jaloncours.py:119
+msgid "Plan intéractif"
+msgstr "Piano interattivo"
+
+#: ../skins/jalon_content/folder_delete.cpy:26
+msgid "Please select one or more items to delete."
+msgstr "Si prega di selezionare uno o più elementi da eliminare."
+
+#: ../content/jalon_utils.py:480
+msgid "Podcast"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:38
+msgid ""
+"Pour la configuration par défaut de jalon.connect laisser portal_connect."
+msgstr ""
+"Per la configurazione di default di jalon.connect lasciate portal_connect."
+
+#: ../browser/config/jalonconfig.py:63
+msgid "Pour la configuration par défaut de jalon.wims laisser portal_wims."
+msgstr "Per la configurazione di default di jalon.wims lasciate portal_wims."
+
+#: ../browser/config/jalonconfig.py:363
+msgid "Présentation sonorisée & Webconférence"
+msgstr "Perché presentazione &amp;amp; amp; Webcast"
+
+#: ../browser/config/jalonconfig.py:40
+msgid "Présentation sonorisée : définition des étiquettes par défaut."
+msgstr "Presentazione audio: definizione delle etichette predefinite."
+
+#: ../content/jalon_utils.py:476
+msgid "Présentations sonorisées"
+msgstr "Presentazioni con"
+
+#: ../content/jaloncours.py:296
+msgid "Public"
+msgstr ""
+
+#: ../content/jalonannonce.py:22
+msgid "Publics cible d'une annonce"
+msgstr ""
+
+#: ../skins/jalon_mon_espace/macro_cataloguebu.pt:17
+msgid "Recherchez dans le catalogue de la BU."
+msgstr ""
+
+#: ../skins/jalon_mon_espace/macro_ressources.pt:16
+msgid "Ressources externes"
+msgstr "Risorse esterne"
+
+#: ../browser/config/jalonconfig.py:371
+msgid "Ressources externes & Catalogue BU"
+msgstr ""
+
+#: ../content/jalonboitedepot.py:39
+msgid "Retard de dépôts autorisé"
+msgstr "Ritardo nei depositi autorizzati"
+
+#: ../content/jaloncours.py:294
+msgid "Réservé à vos étudiants inscrits à l'Université ou invités par courriel"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:46
+msgid "Schema de l'annuaire LDAP"
+msgstr ""
+
+#: ../browser/templates/sections.pt:7
+msgid "Sections"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:23
+msgid "Sous titre"
+msgstr "Sotto titolo"
+
+#: ../browser/templates/cours_boite_view.pt:67
+msgid "Sujets"
+msgstr "Argomenti"
+
+#: ../skins/jalon_cours/cours_retirer_view.pt:14
+msgid "Supprimer le texte libre"
+msgstr ""
+
+#: ../skins/jalon_cours/cours_retirer_view.pt:12
+msgid "Supprimer le titre"
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:375
+#: ../skins/jalon_mon_espace/macro_glossaire.pt:16
+msgid "Termes de glossaire"
+msgstr "Glossario termini"
+
+#: ../browser/config/jalonmaintenance.py:48
+msgid "Texte d'information"
+msgstr ""
+
+#: ../browser/config/jalonmaintenance.py:39
+msgid "Texte de la maintenance"
+msgstr "Testo della manutenzione"
+
+#: ../browser/config/jalonmaintenance.py:40
+msgid "Texte informatif pour la maintenance du site"
+msgstr "Testo informativo per la manutenzione del sito"
+
+#: ../browser/config/jalonmaintenance.py:49
+msgid "Texte informatif pour le site"
+msgstr ""
+
+#: ../skins/jalon_content/folder_delete.cpy:99
+msgid "These items are locked for editing: ${lockeditems}."
+msgstr "Questi elementi sono bloccati per la modifica: ${lockeditems}."
+
+#: ../skins/jalon_cours/cours_edit_form.cpt:12
+#: ../skins/jalon_cours/macro_cours_activites.pt:26
+msgid "Titre"
+msgstr "Titolo"
+
+#: ../browser/config/jalonconfiguration.py:110
+msgid "Trombinoscope"
+msgstr "Chi è chi"
+
+#: ../content/jalonfolder.py:711
+msgid "Trouvez une oeuvre ou une revue dans le catalogue de la BU"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:31
+msgid "Type de la Ressource Externe"
+msgstr "Il tipo di risorsa esterna"
+
+#: ../content/jalonressourceexterne.py:86
+msgid "URL"
+msgstr "URL"
+
+#: ../content/jalonconnect.py:45
+msgid "URL de l'enregistrement Connect"
+msgstr "URL della registrazione Connect"
+
+#: ../content/jaloncours.py:43
+msgid ""
+"Un co-auteur du cours a accès à celui-ci en modification, comme s'il en "
+"était l'auteur."
+msgstr ""
+
+#: ../content/jaloncourswims.py:63
+msgid ""
+"Un compte &agrave; rebours d&eacute;marera d&egrave;s l'affichage de la "
+"premi&egrave;re question. Une fois atteint, l'&eacute;tudiant ne pourra plus "
+"r&eacute;pondre."
+msgstr ""
+
+#: ../content/jaloncours.py:52
+msgid ""
+"Un lecteur du cours a accès à celui-ci en lecture, comme s'il était étudiant."
+msgstr ""
+
+#: ../content/jaloncourswims.py:54
+msgid ""
+"Un quotient sera effectu&eacute; pour calculer la note en fonction de ce "
+"bar&ecirc;me"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:30
+msgid ""
+"Une clé de cryptage des identifants sera créée. Pensez à sauvegarder le "
+"fichier.<br/> Exemple : /var/secret"
+msgstr ""
+
+#: ../skins/jalon_content/valider_exercicewims.vpy:79
+msgid "Une erreur est survenue. Votre exercice n'a pas été modifié."
+msgstr "Si è verificato un errore. L'allenamento non è cambiato."
+
+#: ../browser/config/jalonconfiguration.py:126
+msgid "Université de ..."
+msgstr ""
+
+#: ../browser/config/jalonconfig.py:123
+msgid "Url du RSS des notes de mise à jour de Jalon"
+msgstr "URL note di aggiornamento di pietra miliare del RSS"
+
+#: ../content/jalon_utils.py:483
+msgid "Utilisateurs"
+msgstr ""
+
+#: ../skins/jalon_content/update_version_on_edit.cpy:28
+msgid "Versioning for this file has been disabled because it is too large"
+msgstr ""
+"Controllo delle versioni di questo file è stato disattivato perché è troppo "
+"grande"
+
+#: ../content/jalonressourceexterne.py:44
+msgid "Volume"
+msgstr "Volume"
+
+#: ../skins/jalon_content/valider_exercicewims.vpy:77
+msgid "Votre exercice WIMS a bien été modifié."
+msgstr "Allenamento WIMS è stata modificata."
+
+#: ../skins/jalon_cours/cours_plan_validate.vpy:15
+msgid "Vous devez choisir un type d'élément"
+msgstr "È necessario selezionare un tipo di elemento"
+
+#: ../skins/jalon_cours/cours_plan_validate.vpy:19
+msgid "Vous devez entrer un texte pour l'élément"
+msgstr "È necessario inserire un testo per l'elemento"
+
+#: ../skins/jalon_content/valider_form.vpy:103
+msgid "Vous devez taper un nombre"
+msgstr ""
+
+#: ../skins/jalon_content/valider_exercicewims.vpy:48
+msgid "Vous n'avez pas renseigné ce champ obligatoire."
+msgstr "Non hanno riempito questo campo obbligatorio."
+
+#: ../browser/config/jalonconfig.py:50
+msgid "Webconférence : définition des étiquettes par défaut."
+msgstr "Webcast: definizione delle etichette predefinite."
+
+#: ../content/jalon_utils.py:477
+msgid "Webconférences"
+msgstr "Webconférences"
+
+#: ../skins/jalon_connexion/login_next.cpy:62
+msgid "Welcome! You are now logged in."
+msgstr "Benvenuto! Ti sei ora loggato."
+
+#: ../skins/jalon_content/inscrire_mooc.pt:16
+msgid "\"${DYNAMIC_CONTENT}\""
+msgstr ""
+
+#: ../skins/jalon_cours/macro_cours_resume.pt:30
+msgid "\"J'aime\""
+msgstr ""
+
+#. Default: "Activer l'utilisation des podcasts"
+#: ../skins/jalon_content/macro_podcasts.pt:23
+msgid "activerPodcasts"
+msgstr ""
+
+#. Default: "Activer les statistiques dans Google Analytics"
+#: ../skins/jalon_configuration/gestion_ga.pt:18
+msgid "activer_ga"
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:292
+msgid "addConnect : %s "
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:272
+msgid "addConnect JSON : %s "
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:431
+msgid "addCours : %s "
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:210
+msgid "addFichiers : %s "
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:337
+msgid "addRessourceExterne : %s "
+msgstr ""
+
+#: ../browser/config/jalonimport_settings.py:305
+msgid "addTermeGlossaire : %s "
+msgstr ""
+
+#. Default: "Exemple : /Plone/Members/"
+#: ../browser/config/jalonimport_settings.py:32
+msgid "description_chemin_repertoire"
+msgstr "description_chemin_repertoire"
+
+#. Default: "Nom de domaine du site de download des podcasts"
+#: ../skins/jalon_content/macro_podcasts.pt:37
+msgid "dnsPodcasts"
+msgstr ""
+
+#: ../content/jaloncours.py:260
+msgid "est disponible."
+msgstr ""
+
+#: ../content/jaloncours.py:259
+msgid "et son contenu ne sont plus disponibles."
+msgstr ""
+
+#: ../content/jaloncours.py:258
+msgid "et son contenu sont maintenant disponibles."
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:44
+msgid ""
+"exemple : http://universite.fr/page?variable=valeur&Nom=*-*nom*-* ou uid=*-"
+"*id*-*"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:47
+msgid "exemple : supann ou eduPerson"
+msgstr ""
+
+#. Default: "Clef de cryptage"
+#: ../skins/jalon_configuration/gestion_ga.pt:55
+msgid "ga_cryptage"
+msgstr ""
+
+#. Default: "Identifiant Google Analytics"
+#: ../skins/jalon_configuration/gestion_ga.pt:35
+msgid "ga_id_account"
+msgstr ""
+
+#. Default: "Nom de domaine du site"
+#: ../skins/jalon_configuration/gestion_ga.pt:45
+msgid "ga_id_domain"
+msgstr ""
+
+#: ../content/jaloncours.py:75
+msgid "groupe d'étudiants personnalisé du cours"
+msgstr "gruppo di studenti del corso personalizzato"
+
+#. Default: "Personal tools"
+#: ../browser/templates/personal_bar.pt:4
+msgid "heading_personal_tools"
+msgstr "heading_personal_tools"
+
+#. Default: "If selected, the navigation tree will only show the current folder and its children at all times."
+#: ../portlets/navigation.py:45
+msgid "help_current_folder_only"
+msgstr "help_current_folder_only"
+
+#. Default: "Whether or not to show the top, or 'root', node in the navigation tree. This is affected by the 'Start level' setting."
+#: ../portlets/navigation.py:35
+msgid "help_include_top_node"
+msgstr "help_include_top_node"
+
+#. Default: "You may search for and choose a folder to act as the root of the navigation tree. Leave blank to use the Plone site root."
+#: ../portlets/navigation.py:25
+msgid "help_navigation_root"
+msgstr "help_navigation_root"
+
+#. Default: "An integer value that specifies the number of folder levels below the site root that must be exceeded before the navigation tree will display. 0 means that the navigation tree should be displayed everywhere including pages in the root of the site. 1 means the tree only shows up inside folders located in the root and downwards, never showing at the top level."
+#: ../portlets/navigation.py:54
+msgid "help_navigation_start_level"
+msgstr "help_navigation_start_level"
+
+#. Default: "The title of the navigation tree."
+#: ../portlets/navigation.py:18
+msgid "help_navigation_title"
+msgstr "help_navigation_title"
+
+#. Default: "How many folders should be included before the navigation tree stops. 0 means no limit. 1 only includes the root folder."
+#: ../portlets/navigation.py:69
+msgid "help_navigation_tree_depth"
+msgstr "help_navigation_tree_depth"
+
+#: ../browser/config/jalonconfiguration.py:96
+msgid "http://serveur.univ.fr/contacts"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:100
+msgid "http://serveur.univ.fr/mentions"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:92
+msgid "http://serveur.univ.fr/sesame"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:112
+msgid "http://trombi.univ.fr"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:108
+msgid "https://sourcesup.renater.fr/forum/forum.php?forum_id=2232"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:104
+msgid "https://sourcesup.renater.fr/projects/jalonos/"
+msgstr ""
+
+#: ../content/jaloncours.py:1462
+msgid "la correction est disponible."
+msgstr ""
+
+#. Default: "Cancel"
+#: ../skins/jalon_configuration/gestion_ga.pt:67
+#: ../skins/jalon_content/macro_form.pt:34
+#: ../skins/jalon_content/macro_podcasts.pt:48
+msgid "label_cancel"
+msgstr "label_cancel"
+
+#. Default: "Only show the contents of the current folder."
+#: ../portlets/navigation.py:43
+msgid "label_current_folder_only"
+msgstr "label_current_folder_only"
+
+#. Default: "Fermer"
+#: ../browser/templates/ressource_view.pt:71
+msgid "label_fermer"
+msgstr "label_fermer"
+
+#. Default: "Include top node"
+#: ../portlets/navigation.py:34
+msgid "label_include_top_node"
+msgstr "label_include_top_node"
+
+#. Default: "Root node"
+#: ../portlets/navigation.py:24
+msgid "label_navigation_root_path"
+msgstr "label_navigation_root_path"
+
+#. Default: "Start level"
+#: ../portlets/navigation.py:53
+msgid "label_navigation_startlevel"
+msgstr "label_navigation_startlevel"
+
+#. Default: "Title"
+#: ../portlets/navigation.py:17
+msgid "label_navigation_title"
+msgstr "label_navigation_title"
+
+#. Default: "Navigation tree depth"
+#: ../portlets/navigation.py:67
+msgid "label_navigation_tree_depth"
+msgstr "label_navigation_tree_depth"
+
+#. Default: "Save"
+#: ../skins/jalon_configuration/gestion_ga.pt:66
+#: ../skins/jalon_content/macro_form.pt:33
+#: ../skins/jalon_content/macro_podcasts.pt:47
+msgid "label_save"
+msgstr "label_save"
+
+#: ../content/jaloncours.py:1461
+msgid "le dépôt n'est plus permis"
+msgstr ""
+
+#: ../content/jaloncours.py:1463
+msgid "le sujet est disponible."
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:91
+msgid "lien vers la page ''Vous n'avez pas de sésame ?''"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:95
+msgid "lien vers la page 'Contacts'"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:103
+msgid "lien vers la page 'Crédits'"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:99
+msgid "lien vers la page 'Mentions légales'"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:107
+msgid "lien vers la page 'Signaler un bug'"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:111
+msgid "lien vers le trombinoscope"
+msgstr ""
+
+#: ../content/jaloncours.py:159
+msgid "liste des actualités du cours"
+msgstr ""
+
+#: ../content/jaloncours.py:143
+msgid "liste des classes du cours"
+msgstr "elenco delle classi del corso"
+
+#: ../content/jaloncours.py:82
+msgid "liste des courriels d'invités au cours"
+msgstr ""
+
+#: ../content/jaloncours.py:68
+msgid "liste des diplômes, ue, uel, groupe d'Apogée"
+msgstr ""
+
+#: ../content/jaloncours.py:104
+msgid "liste des inscriptions libres"
+msgstr ""
+
+#: ../content/jaloncours.py:151
+msgid "liste des webconferences du cours"
+msgstr "lista del webconferences di gara"
+
+#: ../content/jaloncours.py:1460
+msgid "modification de la date de dépôt : "
+msgstr ""
+
+#: ../content/jaloncours.py:261
+msgid "n'est plus disponible."
+msgstr ""
+
+#: ../content/jaloncours.py:269
+msgid "nouveau(x) dépôt(s) disponible(s)"
+msgstr ""
+
+#: ../content/jaloncours.py:270
+msgid "nouveau(x) message(s) disponible(s)"
+msgstr ""
+
+#. Default: "Connexion"
+#: ../browser/templates/jalon_configuration.pt:43
+msgid "ongletConnexion"
+msgstr ""
+
+#. Default: "ITunesU"
+#: ../browser/templates/jalon_podcast.pt:34
+msgid "ongletITunesU"
+msgstr ""
+
+#. Default: "Utilisateurs"
+#: ../browser/templates/jalon_podcast.pt:28
+msgid "ongletListeUtilisateurs"
+msgstr ""
+
+#. Default: "Mon Espace"
+#: ../browser/templates/jalon_configuration.pt:55
+msgid "ongletMonEspace"
+msgstr ""
+
+#. Default: "Statistique"
+#: ../browser/templates/jalon_configuration.pt:49
+msgid "ongletStatistique"
+msgstr ""
+
+#. Default: "Twitter"
+#: ../browser/templates/jalon_configuration.pt:61
+msgid "ongletTweeter"
+msgstr ""
+
+#. Default: "Variables"
+#: ../browser/templates/jalon_podcast.pt:22
+msgid "ongletVariables"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:48
+msgid "supann"
+msgstr ""
+
+#. Default: "Home"
+#: ../portlets/templates/navigation.pt:26
+msgid "tabs_home"
+msgstr "tabs_home"
+
+#. Default: "Chemin du répertoire à importer"
+#: ../browser/config/jalonimport_settings.py:31
+msgid "title_chemin_repertoire"
+msgstr "title_chemin_repertoire"
+
+#. Default: "Nom de domaine de l'instance d'upload des podcasts"
+#: ../skins/jalon_content/macro_podcasts.pt:28
+msgid "uploadPodcasts"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:76
+msgid "valeur possible : etape, ue, uel, groupe"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:75
+msgid "Éléments utilisant une liste de diffusions"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:366
+msgid "Établissement"
+msgstr ""
+
+#: ../browser/config/jalonconfiguration.py:125
+msgid "Établissement de la plateforme"
+msgstr ""
+
+#: ../content/jaloncours.py:647
+msgid "Étudiant(s) de l'université"
+msgstr ""
+
+#: ../content/jaloncours.py:654
+msgid "Étudiant(s) extérieur(s)"
+msgstr ""

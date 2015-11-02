@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<object name="portal_controlpanel" meta_type="Plone Control Panel Tool"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="jalon.wims">
+    <configlet title="Wims Connector"
+        action_id="wims" appId="Wims"
+        category="Plone"
+        condition_expr=""
+        icon_expr="string:${portal_url}/++resource++wims.images/wims_icon.gif"
+        url_expr="string:${portal_url}/portal_wims/@@wims-controlpanel"
+        visible="True"
+        i18n:attributes="title">
+        <permission>Plone Site Setup: Wims</permission>
+    </configlet>
+</object>

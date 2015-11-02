@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!-- This file holds the setup configuration for the portal_skins tool -->
+
+<!-- Change the value of these parameters to modify portal_skins behavior:
+     - allow_any: change it to True if you want users to be able to select the
+       skin to use from their personal preferences management page. In the
+       ZMI, this value is known as 'Skin flexibility'.
+     - cookie_persistence: change it to True if you want to make the skin cookie
+       persist indefinitely. In the ZMI, this value is known as 'Skin Cookie
+       persistence'.
+       -->
+<object name="portal_skins" allow_any="False" cookie_persistence="False">
+
+ <!-- This list registers the folders that are stored in the skins directory
+      of your product (on the filesystem) as Filesystem Directory Views within
+      the portal_skins tool, so that they become usable as skin layers.
+      -->
+
+ <object name="jalon_configuration"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_configuration"/>
+
+ <object name="jalon_connexion"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_connexion"/>
+
+ <object name="jalon_content"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_content"/>
+
+ <object name="jalon_cours"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_cours"/>
+
+ <object name="jalon_createxo"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_createxo"/>
+
+ <object name="jalon_mes_etudiants"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_mes_etudiants"/>
+
+ <object name="jalon_mescours"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_mescours"/>
+
+ <object name="jalon_mon_espace"
+    meta_type="Filesystem Directory View"
+    directory="jalon.content:skins/jalon_mon_espace"/>
+
+ <skin-path name="Jalon">
+  <layer name="jalon_content" insert-after="custom"/>
+  <layer name="jalon_connexion" insert-after="jalon_content"/>
+  <layer name="jalon_configuration" insert-after="jalon_connexion"/>
+  <layer name="jalon_cours" insert-after="jalon_configuration"/>
+  <layer name="jalon_createxo" insert-after="jalon_cours"/>
+  <layer name="jalon_mes_etudiants" insert-after="jalon_createxo"/>
+  <layer name="jalon_mescours" insert-after="jalon_mes_etudiants"/>
+  <layer name="jalon_mon_espace" insert-after="jalon_mescours"/>
+ </skin-path>
+
+</object>

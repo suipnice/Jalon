@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:cmf="http://namespaces.zope.org/cmf"
+           i18n_domain="jalon.bdd">
+
+  <!-- File System Directory Views registration -->
+  <cmf:registerDirectory name="jalon_bdd"/>
+  
+  <!-- Note: This could also be done for all folders at once
+       by replacing the previous lines with this one:
+  <cmf:registerDirectory name="skins" directory="skins" recursive="True" />
+  -->
+
+</configure>

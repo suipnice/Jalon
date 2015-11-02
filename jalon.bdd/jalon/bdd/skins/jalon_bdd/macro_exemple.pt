@@ -1,0 +1,252 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+    <!-- Macro exemple -->
+    <metal:macro define-macro="exemple">
+        <h1 i18n:translate="">Un pop-up d'exemple</h1>
+    </metal:macro>
+
+    <!-- Macro exemple-form --><!--
+    <metal:macro define-macro="exemple-form">
+        <h1 i18n:translate="">Un pop-up d'exemple avec un formulaire</h1>
+        <br class="visualClear"/>
+        <form name="exemple-form" 
+              tal:attributes="action string:${context/absolute_url}/script_exemple" method="post">
+
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="title" class="formQuestion"
+                       i18n:translate="">Champ input type string</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <div class="formHelp" i18n:translate="">20 caractères maximum</div>
+                <input type="text" name="title" id="title" class="blurrable firstToFocus" maxlength="20"/>
+            </div>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>-->
+
+    <!-- Macro inscrip-form -->
+    <metal:macro define-macro="inscrip-form">
+        <h1 i18n:translate="">Inscrire des étudiants</h1>
+        <br class="visualClear"/>
+        <form name="inscrip-form" 
+              tal:attributes="action string:${context/absolute_url}/script_exemple" method="post">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Rechercher un étudiant inscrit sur Jalon</h2>
+            <div><input type="text" id="input-groupe" name="username" /></div>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Macro desinscrip-form -->
+    <metal:macro define-macro="desinscrip-form">
+        <h1 i18n:translate="">Désinscrire des étudiants</h1>
+        <br class="visualClear"/>
+        <form name="desinscrip-form" 
+              tal:attributes="action string:${context/absolute_url}/script_exemple" method="post">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Rechercher un étudiant inscrit</h2>
+            <div><input type="text" id="input-groupe" name="username" /></div>
+            <br/><br/>
+            <h2 class="texte_icone icone_users" i18n:translate="">Etudiants inscrits:</h2>
+            <span class="discreet" i18n:translate="">Décocher pour supprimer</span>
+            <a class="bouton small showmore"
+               tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_exemple&macro=desinscrip-form"
+               i18n:translate="">
+                Désinscrire tous les étudiants
+            </a>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Macro creer-elp-debut -->
+    <metal:macro define-macro="creer-elp-debut">
+        <h1 i18n:translate="">Créer un élément pédagogique</h1>
+        <br class="visualClear"/>
+        <form name="creer-elp-debut" 
+              tal:attributes="action string:${context/absolute_url}/page_affichage" method="post"
+              id="inform">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Choisissez le type d'élément pédagogique à créer</h2>
+            <div id="archetypes-fieldname-modele" class="field ArchetypesSelectionWidget">
+                <label for="" class="formQuestion">Choix</label>
+                <br/>
+                <input type="radio" name="macro"
+                       value="creer-elp-diplome"
+                       checked="checked"/>
+                <span i18n:translate="">Diplôme</span>
+                <br/>
+                <input type="radio" name="macro"
+                       value="creer-elp-ue"/>
+                <span i18n:translate="">Unité d'enseignement</span>
+                <br/>
+                <input type="radio" name="macro"
+                       value="creer-elp-groupe"/>
+                <span i18n:translate="">Groupe</span>
+                <br/>
+             </div>
+
+            <input type="hidden" name="fichier_macro" value="macro_exemple"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Macro creer-elp-diplome -->
+    <metal:macro define-macro="creer-elp-diplome">
+        <h1 i18n:translate="">Créer un élément pédagogique</h1>
+        <br class="visualClear"/>
+        <form name="creer-elp-diplome" 
+              tal:attributes="action string:${context/absolute_url}/insertDiplome" method="post"
+              id="inform">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Diplôme</h2>    
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="LIB_ELP" class="formQuestion"
+                       i18n:translate="">Libellé</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="LIB_ELP" id="LIB_ELP" class="blurrable firstToFocus" />
+            </div>
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="COD_ELP" class="formQuestion"
+                       i18n:translate="">Code</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="COD_ELP" id="COD_ELP" />
+            </div>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Macro creer-elp-ue -->
+    <metal:macro define-macro="creer-elp-ue">
+        <h1 i18n:translate="">Créer un élément pédagogique</h1>
+        <br class="visualClear"/>
+        <form name="creer-elp-ue" 
+              tal:attributes="action string:${context/absolute_url}/script_exemple" method="post"
+              id="inform">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Unité d'enseignement</h2>
+            <label i18n:translate="aide_plan">Type de l'unité d'enseignement : </label>
+            <input type="radio" name="macro"
+                   value="creer-elp-ue"/>
+            <span i18n:translate="">UE</span>   
+            <input type="radio" name="macro"
+                   value="creer-elp-ue"/>
+            <span i18n:translate="">UE Libre</span>
+            <br/><br/>  
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="libelle-ue" class="formQuestion"
+                       i18n:translate="">Libellé</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="libelle-ue" id="libelle-ue" class="blurrable firstToFocus" />
+            </div>
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="code-ue" class="formQuestion"
+                       i18n:translate="">Code</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="code-ue" id="code-ue" />
+            </div>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>    
+
+    <!-- Macro creer-elp-groupe -->
+    <metal:macro define-macro="creer-elp-groupe">
+        <h1 i18n:translate="">Créer un élément pédagogique</h1>
+        <br class="visualClear"/>
+        <form name="creer-elp-ue" 
+              tal:attributes="action string:${context/absolute_url}/script_exemple" method="post"
+              id="inform">
+            <h2 class="texte_icone icone_recherche" i18n:translate="">Groupe</h2> 
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="libelle-groupe" class="formQuestion"
+                       i18n:translate="">Libellé</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="libelle-groupe" id="libelle-groupe" class="blurrable firstToFocus" />
+            </div>
+            <div class="field" id="archetypes-fieldname-title">
+                <label for="code-groupe" class="formQuestion"
+                       i18n:translate="">Code</label>
+                <span style="color: #f00;" class="required"> ■ (Obligatoire)</span>
+                <br class="visualClear"/>
+                <input type="text" name="code-groupe" id="code-groupe" />
+            </div>
+
+            <input type="hidden" name="redirection" 
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            <div class="formControls">
+                <input class="context" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+                <input class="standalone" type="submit" name="form.button.cancel" value="Cancel"
+                       i18n:attributes="value label_cancel;"/>
+            </div>
+        </form>
+    </metal:macro>    
+
+
+    <!-- Macro exemple-form -->
+    <metal:macro define-macro="exemple-form-suite2">
+        <h1 i18n:translate="">Un pop-up d'exemple avec un formulaire à étape : étape 3</h1>
+        <br class="visualClear"/>
+    </metal:macro>
+
+
+
+
+</metal:content-core>
+
+</body>
+
+</html>

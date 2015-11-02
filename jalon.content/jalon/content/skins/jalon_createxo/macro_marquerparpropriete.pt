@@ -1,0 +1,172 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!--Marquer par propriété -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel ArchetypesStringWidget">
+            <a href="#reveal_explain" class="button tiny radius" data-reveal-id="reveal_explain" title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="explain">La question à poser</label>
+            <div id="reveal_explain" class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <div>Pour évoquer automatiquement la propriété qui sera choisie, écrire <code class="indicateur">\prop</code>.</div>
+                <div>Par exemple, si vous écrivez <code>marquez ceux qui sont dans l'équipe \prop.</code>, cela affichera aux étudiants l'un des cas suivants : </div>
+                <blockquote>
+                    <ul>
+                        <li>marquez ceux qui sont dans l'équipe française.</li>
+                        <li>marquez ceux qui sont dans l'équipe italienne.</li>
+                        <li>marquez ceux qui sont dans l'équipe allemande.</li>
+                        <li>[...]</li>
+                    </ul>
+                </blockquote>
+            </div>
+            <div class="formHelp texte_icone icone_information">Balises html admises. Écrivez le mot-clé "\prop" là où vous souhaitez afficher la propriété piochée.</div>
+            <textarea name="explain" id="explain" rows="3" cols="60" tal:content="QCM_parsed/explain"/>
+        </div>
+
+        <div tal:define="error errors/prop | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="prop">Liste des propriétés </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div class="formHelp texte_icone icone_information">L'une d'elles sera choisie au hasard (ce sera le "\prop" affiché ci-dessus).</div>
+            <textarea name="prop" id="prop"
+                      rows="4" cols="60"
+                      tal:content="QCM_parsed/prop"
+                      required="required" placeholder="Saisir ici la liste des propriétés"
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius" data-reveal-id="reveal_data" title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="data">La liste des objets avec leur propriété</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_data"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La liste des objets avec leur propriété <a class="close-reveal-modal"></a></h2>
+                <div>
+                    Définissez un objet par ligne.<br/> D'abord le nom de l'objet, ensuite sa propriété, séparés par une virgule, selon l'exemple suivant :
+                </div>
+                <div>
+                    <code class="indicateur">nom de l'objet 1, propriété 1</code><br/>
+                    <code class="indicateur">nom de l'objet 2, propriété 1</code><br/>
+                    <code class="indicateur">nom de l'objet 3, propriété 2</code><br/>
+                    <code class="indicateur">nom de l'objet 4, propriété 2</code><br/>
+                    [...]
+                </div>
+
+                <div class="formHelp texte_icone icone_information">nb : Il vaut mieux définir des données en quantité abondante pour chaque propriété.</div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Définir un objet par ligne : d'abord le nom de l'objet, ensuite sa propriété, séparés par une virgule.</div>
+                <textarea name="data" id="data"
+                    rows="15" cols="60"
+                    tal:content="QCM_parsed/data"
+                    required="required"
+                    placeholder="un objet, une propriété associée"
+                    i18n:attributes="placeholder" />
+            </div>
+
+            <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+
+                    <div class="row" tal:define="field_class string:field panel ArchetypesStringWidget">
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/tot | nothing;"
+                                 tal:attributes="class python:context.test(error, 'error %s' % field_class, 'callout %s' % field_class)">
+                                <label for="tot">Nombre d'objets à marquer par exercice.</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Jusqu'à 100.</div>
+                                <input type="number" min="0" max="100"
+                                       name="tot" id="tot" class="mini"
+                                       tal:attributes="value QCM_parsed/tot"
+                                       required="required" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/mingood | nothing;"
+                                 tal:attributes="class python:context.test(error, 'error %s' % field_class, 'success %s' % field_class)">
+                                <label for="mingood">Minimum de bons objets à marquer.</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Au moins 1.</div>
+                                <input type="number" min="1"
+                                       name="mingood" id="mingood" class="mini"
+                                       tal:attributes="value QCM_parsed/mingood"
+                                       required="required" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/minbad | nothing;"
+                                 tal:attributes="class python:context.test(error, 'error %s' % field_class, 'warning %s' % field_class)">
+                                <label for="minbad">Minimum de mauvais objets à afficher.</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Au moins 1.</div>
+                                <input type="number" min="1"
+                                       name="minbad" id="minbad" class="mini"
+                                       tal:attributes="value QCM_parsed/minbad"
+                                       required="required"/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="small-6 columns">
+                            <div class="panel">
+                                <input id="option" type="checkbox" name="options:list" value="split"
+                                       tal:define="option QCM_parsed/options_split"
+                                       tal:attributes="checked python:context.test(option == 1, 'checked', None)"/><label class="input_label" for="option">Note partielle </label>
+                                <div class="formHelp texte_icone icone_information">
+                                    Cochez pour donner une partie des points aux réponses partiellement correctes.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="small-6 columns">
+                            <div class="panel">
+                                <label class="input_label" for="presentation">
+                                    <input id="presentation" type="checkbox" name="presentation" value="liste"
+                                      tal:define="presentation QCM_parsed/presentation"
+                                      tal:attributes="checked python:context.test(presentation == 'liste', 'checked', None)"
+                                    /> Liste verticale </label>
+                                <div class="formHelp texte_icone icone_information">Cochez pour afficher les mots sous forme de liste verticale.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+
+            <dd class="accordion-navigation">
+                <a href="#usages_avances" class="icone_options"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <div id="usages_avances" class="content">
+                        <p>La question à poser accepte la mise en aléatoire par des accolades emboitables : <code class="indicateur">{ ... }</code>.</p>
+                        <p>Si vous mettez plusieurs mots (ou groupes de mots) séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard.</p>
+                        Par exemple, si vous entrez le texte <code class="indicateur">Je suis allé <span class="strong shuffle">{à l'école,au cinéma}</span> <span class="strong shuffle">{hier,la semaine dernière}</span></code>, Vous aurez comme résultat l'une des phrases suivantes, aléatoirement :
+                        <ul class="list-item sample">
+                          <li>Je suis allé à l'école hier,</li>
+                          <li>Je suis allé au cinéma hier,</li>
+                          <li>Je suis allé à l'école la semaine dernière,</li>
+                          <li>Je suis allé au cinéma la semaine dernière.</li>
+                        </ul>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

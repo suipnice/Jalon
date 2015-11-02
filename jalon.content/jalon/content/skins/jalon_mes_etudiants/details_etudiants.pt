@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="main">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <h1 i18n:translate="label_listing_etudiant">
+        Détails des connexion des étudiants <tal:replace replace="python:context.jalonBDD('getInfosELP', {'COD_ELP': request['COD_ELP']})['LIB_ELP']"/>
+    </h1>
+
+    <tal:define define="detailsConnexion python:context.jalonBDD('getConnexionCouranteByELPByIND', {'COD_ELP': request['COD_ELP']})">
+    <table  class="listing">
+        <thead>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Connexion du mois courant</th>
+            <th>Connexion de l'année en cours</th>
+        </thead>
+        <tbody tal:define="detailsMois detailsConnexion/mois;
+                           detailsAnnee detailsConnexion/annee">
+            <tal:repeat repeat="ind detailsConnexion/etu">
+            <tr>
+                <td tal:content="ind/LIB_NOM_PAT_IND"/>
+                <td tal:content="ind/LIB_PR1_IND"/>
+                <td tal:content="python:detailsMois[ind['SESAME_ETU']] if ind['SESAME_ETU'] in detailsMois else '0'"/>
+                <td tal:content="python:detailsAnnee[ind['SESAME_ETU']] if ind['SESAME_ETU'] in detailsAnnee else '0'"/>
+            </tr>
+            </tal:repeat>
+        </tbody>
+    </table>
+    </tal:define>
+</metal:main>
+
+</body>
+
+</html>

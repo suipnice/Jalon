@@ -1,0 +1,79 @@
+type=datalist
+modele_jalon=VraiFauxM
+textarea='datatrue datafalse explain'
+:Choisir les phrases vraies parmi une liste proposée.
+Un certain nombre de phrases sont proposées dans une liste. Il faut repérer et noter celles qui sont vraies.<br/>
+Les bonnes et les mauvaises phrases sont tirées au hasard parmi des listes respectives. Le nombre de bonnes phrases dans chaque présentation n'est pas forcément fixe.<br/>
+Plus les données (les phrases) sont abondantes, plus l'exercice est aléatoire et répétable.<br/>
+Mais vous pouvez aussi faire des exercices avec juste ce qu'il faut comme phrases, mais pas plus.<br/>
+Ce sera dans ce cas un QCM avec plusieurs bons choix.<br/>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:Nombre de phrases à présenter.
+\integer{tot=$$tot$$}
+:Minimum de phrases vraies dans chaque exercice présenté. Au moins 1.
+\integer{mintrue=$$mintrue$$}
+:Minimum de phrases fausses dans chaque exercice présenté. Au moins 1.
+\integer{minfalse=$$minfalse$$}
+:Les phrases vraies. Une phrase par ligne, point-virgule non-admis.
+Evitez les phrases trop longues !
+\matrix{datatrue=$$datatrue$$}
+:Les phrases fausses. Une phrase par ligne, point-virgule non-admis.
+Evitez les phrases trop longues ! 
+\matrix{datafalse=$$datafalse$$}
+:Mots d'option.
+Ajoutez le mot 'split' à la définition si vous voulez donner une note
+partielle pour des réponses partiellement correctes.
+\text{option=$$options$$}
+:Le texte qui explique ce qu'il faut faire.
+\text{explain=$$explain$$}
+:Feedback General
+\text{feedback_general=$$feedback_general$$}
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\text{datatrue=wims(nonempty rows \datatrue)}
+\text{datafalse=wims(nonempty rows \datafalse)}
+\integer{truecnt=rows(\datatrue)}
+\integer{falsecnt=rows(\datafalse)}
+\integer{tot=min (\tot , (\truecnt + \falsecnt))}
+\integer{mintrue=\mintrue<1?1}
+\integer{minfalse=\minfalse<1?1}
+\integer{mintrue=\mintrue>\tot-1?\tot-1}
+\integer{minfalse=\minfalse>\tot-1?\tot-1}
+\integer{tot<\mintrue+\minfalse?\mintrue+\minfalse}
+\integer{truepick=randint(\mintrue..\tot-\minfalse)}
+\integer{truepick=min(\truepick,\truecnt)}
+\integer{falsepick=randint(\minfalse..\tot-\truepick)}
+\integer{falsepick=min(\falsepick,\falsecnt)}
+\integer{tot=\truepick+\falsepick}
+\text{tsh=shuffle(\truecnt)}
+\text{fsh=shuffle(\falsecnt)}
+\text{true=row(\tsh,\datatrue)}
+\text{false=row(\fsh,\datafalse)}
+\text{pick=row(1..\truepick,\true);row(1..\falsepick,\false)}
+\text{ind=wims(makelist 1 for x=1 to \truepick),wims(makelist 0 for x=1 to \falsepick)}
+\text{sh=shuffle(\tot)}
+\text{ind=item(\sh,\ind)}
+\text{pick=row(\sh,\pick)}
+\text{pick=wims(embraced randitem \pick)}
+\text{ans=positionof(1,\ind)}
+\text{list=wims(values x for x=1 to \tot)}
+\text{explain=wims(embraced randitem \explain)}
+\text{pick=wims(replace internal , by , in \pick)}
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+\statement{<p id='explain'>\explain</p>
+ <ol>
+  \for{i=1 to \tot}{
+   <li><label> \embed{reply 1,\i, \pick[\i;]}
+   </label></li>}
+ </ol>}
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{La réponse}{\ans;\list}{type=checkbox}{option=\option}
+\feedback{1=1}{<p class='feedback general'>\feedback_general</p>}

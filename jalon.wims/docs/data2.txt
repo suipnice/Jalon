@@ -1,0 +1,7 @@
+lastname=%s
+firstname=%s
+password=%s   
+
+email=%s
+comments=
+regnum=

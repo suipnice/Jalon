@@ -1,0 +1,320 @@
+/***************************************************************************************************
+
+        Jalon v4.5 : formulaires
+
+*/
+
+
+form {
+
+    .title-legend {
+        margin-top: rem-calc( -4 );
+        margin-left: rem-calc( 4 );
+    }
+
+    .fieldErrorBox {
+        margin-top: rem-calc( -3 );
+        padding-bottom: rem-calc( 3 );
+        font-size: $base-font-size * .9;
+        font-style: italic;
+        color: $alert-color;
+    }
+
+    & ul {
+        list-style: none outside none;
+
+        &.verticalRadioList {
+            margin-top: rem-calc( 4 );
+            margin-left: rem-calc( 16 ) !important;
+
+            li {
+                margin-top: rem-calc( 4 );
+                font-size: $base-font-size * .8;
+                line-height: $base-line-height * .8;
+
+                ul {
+                    margin-left: rem-calc( 32 );
+                    list-style: circle outside none;
+
+                    li { margin-top: 0; }
+                }
+            }
+        }
+    }
+
+    & > ul {
+
+        li {
+            display: inline !important;
+
+            &.label {
+                margin: rem-calc( 3 );
+
+                label {
+                    font-size: $base-font-size;
+                    line-height: $base-line-height;
+                }
+            }
+        }
+    }
+
+    input {
+
+        &[type="number"] {
+            display: inline-block;
+            margin: rem-calc( 4 ) 0 0 0;
+            padding: 0 0 0 rem-calc( 3 );
+            height: auto;
+        }
+
+        &[type="checkbox"] + label,
+        &[type="radio"] + label { margin-left: .2rem; }
+        /*
+        &:not(:focus):invalid {
+            //border-color: scale-color( $warning-color, $lightness: -20% );
+            background-color: scale-color( $warning-color, $lightness: +40% );
+        }
+        &:focus:invalid {
+            border-color: scale-color( $warning-color, $lightness: -20% );
+        }//*/
+    }
+    /*
+    .required {
+        color: #f00;
+
+        &:before { content: "\00d7"; }
+    } //*/
+
+    & > div.field.error {
+
+        label,
+        label.error {
+            color: $body-font-color;
+        }
+    }
+
+    & > div.field,
+    //& div.field,
+    & > fieldset > div.field {
+        margin-bottom: rem-calc( 6 );
+
+        & > p {
+            margin-bottom: 0;
+            font-size: $base-font-size * .8;
+        }
+
+        .fieldErrorBox { font-size: $base-font-size * .8; }
+
+        //label.formQuestion {
+        label {
+            font-weight: bold;
+            font-size: $base-font-size * .8;
+            line-height: $base-line-height * .8;
+        }
+
+        .formHelp {
+            display: block;
+            font-weight: normal;
+            font-style: italic;
+            //font-size: $base-font-size * .9;
+            //line-height: $base-line-height * .9;
+            font-size: rem-calc( 11 );
+            line-height: rem-calc( 13 );
+            padding-bottom: rem-calc( 4 );
+        }
+
+        input[type="file"],
+        input[type="checkbox"],
+        input[type="radio"],
+        select {
+            margin: rem-calc( 0 0 2 );
+        }
+
+        input[type="checkbox"] + label,
+        input[type="radio"] + label {
+            margin-left: rem-calc( 4 );
+            display: inline;
+        }
+
+        .switch > input[type="checkbox"] + label {
+            margin-left: 0;
+            display: block;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            padding: rem-calc( 3 6 );
+            font-size: $base-font-size * .8;
+            line-height: $base-line-height * .9;
+            height: $base-line-height;
+        }
+
+        input[type="text"],
+        textarea { margin-bottom: 0; }
+
+        //textarea { height: 5em; }
+
+        //select { width: auto; }
+
+        //input[type="radio"] { display: inline-block; }
+
+        &.ArchetypesStringWidget  {
+            label { display: inline; }
+        }
+
+        &.ArchetypesImageWidget,
+        &.ArchetypesFileWidget  {
+            margin-bottom: rem-calc( 10 );
+            font-size: $base-font-size * .8;
+
+            div {
+
+                div.field { padding: rem-calc( 5 0 ); }
+            }
+
+            label {
+                font-size: $base-font-size * .9;
+            }
+        }
+
+        & + .panel { margin-top: rem-calc( 9 ); }
+    }
+
+    &.itemAdder {
+        padding-bottom: 0 !important;
+
+        //& + form { padding-top: 0; }
+
+        & > fieldset {
+            padding: .8rem;
+
+            &.row > .columns {
+                padding-left: ($column-gutter / 3);
+                padding-right: ($column-gutter / 3);
+
+                &:first-child {
+                    padding-left: ($column-gutter / 6);
+                }
+
+                &:last-child {
+                    padding-right: ($column-gutter / 6);
+
+                    & > button {
+                        vertical-align: middle;
+                        margin-bottom: 0;
+                    }
+                }
+            }
+        }
+
+        & > table {
+            border-top: 0 none;
+
+            td:last-child {
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        & > .panel:last-child {
+            margin-top: -.6rem;
+            margin-bottom: 0;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            margin-bottom: 0;
+            padding: 0 .3rem .1rem;
+            height: 1.7rem;
+        }
+    }
+
+    input[type="text"] + .button.expand {
+        margin-top: -.5rem;
+    }
+
+    td select,
+    td input[type="text"],
+    td input[type="checkbox"] {
+        margin: 0;
+        padding: 0 0 0 rem-calc( 3 );
+        height: auto;
+    }
+
+    .formControls {
+        text-align: center;
+
+        label { font-weight: bold; }
+
+        button[type="submit"].button,
+        input[type="submit"].button { margin-top: rem-calc( 12 );  }
+
+        .success { color: $success-color; }
+        .warning { color: $warning-color; }
+        .alert { color: $alert-color; }
+    }
+
+    .panel {
+
+        &.callout,
+        &.warning,
+        &.alert { padding: rem-calc( 4 12 ); }
+
+        input[type="checkbox"],
+        input[type="radio"] { margin: 0; }
+    }
+
+    &#js-BULinkCreator_search {
+
+         input[type="text"] {
+            float: left;
+         }
+
+         [type="submit"] {
+            float: right;
+         }
+    }
+
+    #js-primoContainer { margin-bottom: rem-calc( 6 ); }
+
+    &#forum-quickreply fieldset {
+        margin: 0;
+        padding: rem-calc( 9 );
+    }
+
+    &#cours_edit_form label.formQuestion { display: none; }
+}
+
+#wims-edit form {
+
+    .formControls { margin-top: rem-calc( 20 ); }
+
+    & > fieldset p.formHelp {
+        font-size: $base-font-size * .9;
+        line-height: $base-line-height * .9;
+        font-style: italic;
+    }
+}
+
+.reveal-modal > form {
+    padding: rem-calc( 8 12 10 );
+
+    fieldset { margin-top: 0; }
+
+    ul { margin-left: 0; }
+}
+/*
+.token-input-list input {
+
+    @include form-element;
+}
+
+div.token-input-dropdown ul li {
+
+    &.token-input-dropdown-item, &.token-input-dropdown-item2 {
+        display: block;
+    }
+}
+*/
+

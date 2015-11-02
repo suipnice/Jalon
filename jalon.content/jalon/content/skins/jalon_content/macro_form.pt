@@ -1,0 +1,814 @@
+<!-- macro_form.pt -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+    Modifier un attribut
+-->
+<metal:macro define-macro="modifier-attribut"
+             tal:define="page request/page | nothing;
+                         attribut request/attribut;
+                         errors python:{}">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier la description du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="cours_edit_form" name="cours_edit_form" method="post"
+          tal:attributes="action string:${context/absolute_url}/cours_edit">
+
+        <metal:field use-macro="python:context.widget(attribut, mode='edit')">Body text</metal:field>
+
+        <input type="hidden" name="key" tal:attributes="value attribut" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:instantiateCKEditor('description')" />
+
+</metal:macro>
+
+
+<!--
+        Modifier une autoévaluation ou un examen
+-->
+<metal:macro define-macro="modifier-activite">
+<tal:define define="attributs python:context.test(context.getTypeWims() == 'AutoEvaluation', ['title', 'description', 'note_max', 'wims_lang'], ['title', 'description', 'note_max', 'duree', 'attempts', 'verrou', 'wims_lang']);
+                    page request/page;
+                    menu request/menu | nothing">
+
+    <h2>
+        <tal:block tal:condition="python:context.getTypeWims()=='AutoEvaluation'"
+                   i18n:translate="">Modifier les informations de l'auto-évaluation
+        </tal:block>
+        <tal:block tal:condition="python:context.getTypeWims()=='Examen'"
+                   i18n:translate="">Modifier les informations de l'examen
+        </tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          method="post">
+
+        <tal:repeat repeat="attribut attributs">
+            <metal:field use-macro="python:context.widget(attribut, mode='edit')">Attribute Editor</metal:field>
+        </tal:repeat>
+
+        <input type="hidden" name="page" tal:attributes="value page"/>
+        <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu"/>
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" value="macro_form" name="macro"/>
+        <input type="hidden" value="modifier-activite" name="formulaire"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Modifier un exercice Wims
+-->
+<metal:macro define-macro="modifier-exercice">
+<tal:define define="qexo request/qexo;
+                    page request/page;
+                    menu request/menu;
+                    idElement request/idElement;
+                    sur request/sur;
+                    demandeur user/getId;
+                    element python:context.getElementView(idElement, demandeur, 'ExercicesWims', qexo, 'false');
+                    titreElement element/titreElement | idElement;">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier l'exercice</tal:block>
+        <tal:content content="string:« ${titreElement} »"
+                     i18n:translate="" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form class="row" name="cours_modifier_exercice_form"
+          tal:attributes="action string:${context/absolute_url}/cours_modifier_exercice" method="post">
+
+        <!--div class="panel radius callout">
+            <label for="titreElement">Titre de l'exercice dans cette activité</label>
+            <div class="formHelp texte_icone icone_information">Le titre de l'exercice dans "Mon espace" ne sera pas modifié.</div-->
+            <input type="hidden" name="titreElement" id="titreElement"
+                   tal:attributes="value titreElement" />
+        <!--/div-->
+
+        <div id="archetypes-fieldname-weight" class="panel radius callout">
+            <label for="weight">Coefficient</label>
+            <div class="formHelp texte_icone icone_information">Le coefficient est pris en compte dans les calculs de moyennes.</div>
+            <select name="weight">
+            <tal:repeat repeat="val python:range(11)">
+                <option tal:attributes="value val;
+                                        selected python:context.test(val == int(sur), 'selected', '')"
+                        tal:content="val" />
+            </tal:repeat>
+            </select>
+        </div>
+
+        <input type="hidden" name="page" tal:attributes="value page" />
+        <input type="hidden" name="menu" tal:attributes="value menu" />
+        <input type="hidden" name="qexo" tal:attributes="value qexo" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="idElement" tal:attributes="value idElement" />
+
+        <div class="formControls">
+            <input class="button small radius" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save" />
+        </div>
+
+    </form>
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Supprimer une étiquette
+-->
+<metal:macro define-macro="supprimer-tag">
+
+    <tal:block define="tagList python:context.tagFormat(subjects)"
+               condition="python:context.test(tagList, 1, 0)">
+
+        <tal:block condition="python:len(tagList.split(',')) == 1">
+
+            <div class="panel callout radius"><tal:block i18n:translate="">Il n'y a aucune ressource avec l'étiquette</tal:block> « <strong tal:content="tagList" /> ».</div>
+
+            <form id="js-delTag" method="POST"
+                  tal:attributes="action context/absolute_url;
+                                  data-success_msg_pre string:L'étiquette;
+                                  data-success_msg_post string:a été supprimée."
+                  i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+                <input type="hidden" name="subject" tal:attributes="value tagList" />
+                <!--input type="hidden" name="subject" tal:attributes="value python:context.jalon_quote(tagList)" /-->
+                <button type="submit" class="button expand alert radius"
+                        name="supprimer_tag:method">
+                    <i class="fa fa-trash-o"></i>
+                    <tal:block i18n:translate="">Supprimer l'étiquette</tal:block> « <strong tal:content="python:context.getShortText(tagList, 20)" /> »
+                </button>
+
+            </form>
+
+            <tal:condition condition="is_ajax">
+                <script charset="UTF-8"
+                        tal:content="structure string:delTag()">
+                </script>
+            </tal:condition>
+
+            <tal:condition condition="not:is_ajax">
+                <tal:jsBuffer define="script string:delTag();
+                                      addJsContent python:jsBuffer.addJS(script)" />
+            </tal:condition>
+
+        </tal:block>
+
+        <tal:block condition="python:len(tagList.split(',')) > 1">
+
+            <div class="panel callout radius" i18n:translate="">Il n'y a aucune ressource avec cette association d'étiquettes.</div>
+
+        </tal:block>
+
+    </tal:block>
+
+</metal:macro>
+
+
+<!--
+        Supprimer une ressource / un cours
+-->
+<metal:macro define-macro="supprimer">
+
+<tal:define define="itemName python:context.aq_parent.getShortText(context.Title(), 80)">
+
+    <h2><tal:block i18n:translate="">Supprimer</tal:block>
+        « <tal:block content="itemName" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel alert radius">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+    <form id="js-itemSuppressor" method="POST"
+          tal:attributes="action context/aq_parent/absolute_url;
+                          data-item_name itemName;
+                          data-success_msg string:a été supprimé.";
+                          i18n:attributes="data-success_msg">
+
+        <input type="hidden" name="paths:list" tal:attributes="value python:'/'.join(list(context.getPhysicalPath()))"/>
+        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+
+        <input tal:replace="structure context/@@authenticator/authenticator" />
+
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="folder_delete:method">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</tal:define>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setItemSuppressor()">
+    </script>
+
+</metal:macro>
+
+
+<!--
+        Créer un groupe d'exercices Wims (série, ou selection aléatoire)
+-->
+<metal:macro define-macro="creer-groupe-exercices">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="group_create" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <tal:block i18n:translate="">Créer un groupe d'exercices</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <form id="js-wimsGroupCreator" method="POST"
+              tal:attributes="action string:${context/absolute_url};
+                              data-success_msg string:Le groupe d'exercices Wims a été crée.;
+                              data-all_no_msg string:Création de groupe impossible :;
+                              data-s_all_no_msg string:l'exercice sélectionné est un groupe ou un exercice externe.;
+                              data-p_all_no_msg string:les exercices sélectionnés sont des groupes ou des exercices externes.;
+                              data-s_yes_msg string:L'exercice suivant fera partie du groupe :;
+                              data-p_yes_msg string:Les exercices suivants feront partie du groupe :;
+                              data-s_no_msg string:L'exercice suivant est un groupe ou un exercice externe, et ne peut pas être inclus dans un groupe :;
+                              data-p_no_msg string:Les exercices suivants sont des groupes ou des exercices externes, et ne peuvent pas être inclus dans un groupe :"
+              i18n:attributes="data-success_msg; data-all_no_msg; data-s_all_no_msg; data-p_all_no_msg; data-s_yes_msg; data-s_no_msg; data-p_yes_msg; data-p_no_msg">
+
+            <div id="archetypes-fieldname-title" class="field ArchetypesStringWidget">
+                <label for="title" class="formQuestion">
+                    Titre du groupe d'exercices
+                    <span id="title_wims_help" class="formHelp">
+                        <tal:block i18n:translate="">Un titre de groupe, comme un titre d'exercice, est limité à 40 caractères.</tal:block><br />
+                        <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
+                        <tal:block i18n:translate="">sont interdits.</tal:block>
+                    </span>
+                </label>
+                <div class="fieldErrorBox"></div>
+                <input type="text" maxlength="40"
+                       id="title" name="title"
+                       required="required" placeholder="Saisie obligatoire"
+                       i18n:attributes="placeholder" />
+            </div>
+
+            <div id="archetypes-fieldname-qnum" class="field ArchetypesStringWidget">
+                <label for="qnum" class="formQuestion" i18n:translate="">
+                    Nombre d'exercices de ce groupe auxquels l'étudiant devra répondre
+                </label>
+                <span class="formHelp">Une note ne sera attribuée qu'une fois la totalité des exercices terminés.</span>
+                <div class="fieldErrorBox"></div>
+                <select name="qnum" id="qnum">
+            <tal:block repeat="val python:range(1,10)">
+                    <option tal:attributes="value val" tal:content="val" />
+            </tal:block>
+                </select>
+            </div>
+
+            <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+            <input type="hidden" name="modele" value="groupe" />
+            <input type="hidden" name="macro" value="ajout-groupe-wims" />
+            <input type="hidden" name="form.submitted" value="1" />
+
+            <input type="hidden" name="ajoutergroupewims_script:method" value="Save" />
+
+            <div class="formControls">
+                <button type="submit" class="button small create radius"
+                        name="ajoutergroupewims_script:method">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Créer le groupe</tal:block>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</metal:macro>
+
+
+<!--
+        Étiqueter une ressource
+-->
+<metal:macro define-macro="etiqueter">
+
+<tal:block define="tagCourant context/Subject;
+                   resName python:context.aq_parent.getShortText(context.Title(), 80)">
+
+    <h2>
+        <tal:block i18n:translate="">Étiqueter la ressource</tal:block>
+         « <tal:block content="resName" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-resTagger" method="POST"
+          tal:define="tags context/aq_parent/Subject"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-res_name resName;
+                          data-success_msg_pre string:L'étiquetage de la ressource;
+                          data-success_msg_post string:a été modifié."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+        <div class="panel callout radius"
+             i18n:translate="">
+            Sélectionnez le jeu d'étiquettes à associer à cette ressource.
+        </div>
+        <ul>
+            <li tal:repeat="tag tags">
+                <a tal:define="quotedTag python:context.jalon_quote(tag)"
+                   tal:attributes="id quotedTag;
+                                   class python:context.test(quotedTag in tagCourant, 'filter-button selected', 'filter-button unselected')">
+                   <i class="fa fa-circle no-pad"></i>
+                   <i class="fa fa-circle-thin no-pad"></i>
+                   <tal:block tal:content="tag" />
+                </a>
+            </li>
+        </ul>
+        <!--input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="formulaire" value="etiqueter" /-->
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-tag"></i>
+                <tal:block i18n:translate="">Étiqueter</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setResTagger()">
+    </script>
+
+</tal:block>
+
+</metal:macro>
+
+
+<!--
+        Étiquetage par lot
+-->
+<metal:macro define-macro="etiqueter-lots">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="tag_sel" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <tal:block i18n:translate="">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <form method="POST"
+              tal:attributes="action string:${context/absolute_url};
+                              data-success_msg string:L'ensemble sélectionné a été étiqueté.;
+                              data-s_tag_msg string:Choisissez une ou plusieurs étiquettes à associer à la ressource sélectionnée :;
+                              data-p_tag_msg string:Choisissez une ou plusieurs étiquettes à associer aux ressources sélectionnées :"
+              i18n:attributes="data-success_msg; data-s_tag_msg; data-p_tag_msg">
+
+            <ul>
+                <li tal:repeat="tag context/Subject">
+                    <a class="filter-button unselected"
+                       tal:define="quotedTag python:context.jalon_quote(tag)"
+                       tal:attributes="id quotedTag">
+                        <i class="fa fa-circle no-pad"></i>
+                        <i class="fa fa-circle-thin no-pad"></i>
+                        <tal:block tal:content="tag" />
+                    </a>
+                </li>
+            </ul>
+
+            <!--input type="hidden" name="lots" value="lots" /-->
+            <div class="formControls">
+                <button type="submit" class="button small radius"
+                        name="etiqueter_script:method">
+                    <i class="fa fa-tag"></i>
+                    <tal:block i18n:translate="">Étiqueter</tal:block>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Désétiquetage par lot
+-->
+<metal:macro define-macro="desetiqueter-lots">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="untag_sel" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <form method="POST"
+              tal:attributes="action string:${context/absolute_url};
+                              data-success_msg string:Le désétiquetage demandé a été effectué.;
+                              data-untag_msg string:L'ensemble des étiquettes actives :;
+                              data-s_untag_msg string:… ne sera plus associé à la ressource sélectionnée :;
+                              data-p_untag_msg string:… ne sera plus associé aux ressources sélectionnées :"
+              i18n:attributes="data-success_msg; data-untag_msg; data-s_untag_msg; data-p_untag_msg">
+
+            <div class="formControls">
+                <button type="submit" class="button small warning radius"
+                        name="desetiqueter_script:method">
+                    <i class="fa fa-minus-circle"></i>
+                    <tal:block i18n:translate="">Désétiqueter</tal:block>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Suppression par lot
+-->
+<metal:macro define-macro="supprimer-lots">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="del_sel" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+        <h2>
+            <tal:block i18n:translate="">Supprimer l'ensemble des ressources sélectionnées</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form method="POST"
+              tal:attributes="action string:${context/absolute_url};
+                              data-success_msg string:La suppression demandée a été effectuée.;
+                              data-all_att_msg string:Suppression impossible :;
+                              data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;
+                              data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs cours.;
+                              data-s_supp_msg string:La ressource suivante va être supprimée :;
+                              data-p_supp_msg string:Les ressources suivantes vont être supprimées :;
+                              data-s_att_msg string:La ressource suivante, attachée à un ou plusieurs cours, ne sera pas supprimée :;
+                              data-p_att_msg string:Les ressources suivantes, attachées à un ou plusieurs cours, ne seront pas supprimées :"
+              i18n:attributes="data-success_msg; data-all_att_msg; data-s_all_att_msg; data-p_all_att_msg; data-s_supp_msg; data-s_att_msg; data-p_supp_msg; data-p_att_msg">
+            <div class="panel alert radius"
+                 i18n:translate="">
+                <strong>Attention :</strong> cette opération est définitive.
+            </div>
+            <input type="hidden" name="orig_template" tal:attributes="value context/absolute_url"/>
+            <input tal:replace="structure context/@@authenticator/authenticator" />
+            <div class="formControls">
+                <button type="submit" class="button small alert radius"
+                        name="folder_delete:method">
+                    <i class="fa fa-trash-o"></i>
+                    <tal:block i18n:translate="">Supprimer</tal:block>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Suppression par lot d'exercices Wims
+-->
+<metal:macro define-macro="supprimer-lots-wims">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="del_sel" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <tal:block i18n:translate="">Supprimer l'ensemble des exercices sélectionnés</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <form method="POST"
+              tal:attributes="action string:${context/absolute_url};
+                              data-success_msg string:La suppression demandée a été effectuée.;
+                              data-all_att_msg string:Suppression impossible :;
+                              data-s_all_att_msg string:l'exercice sélectionné est attaché à au moins un cours ou groupe d'exercices.;
+                              data-p_all_att_msg string:les exercices sélectionnés sont attachés à au moins un cours ou groupe d'exercices.;
+                              data-s_supp_msg string:L'exercice suivant va être supprimé :;
+                              data-p_supp_msg string:Les exercices suivants vont être supprimés :;
+                              data-s_att_msg string:L'exercice suivant, attaché à au moins un cours ou groupe d'exercices, ne sera pas supprimé :;
+                              data-p_att_msg string:Les exercices suivants, attachés à au moins un cours ou groupe d'exercices, ne seront pas supprimées :"
+              i18n:attributes="data-success_msg; data-all_att_msg; data-s_all_att_msg; data-p_all_att_msg; data-s_supp_msg; data-s_att_msg; data-p_supp_msg; data-p_att_msg">
+
+            <div class="panel alert radius"
+                 i18n:translate="">
+                <strong>Attention :</strong> cette opération est définitive.
+            </div>
+
+            <input type="hidden" name="orig_template" tal:attributes="value context/absolute_url" />
+            <input tal:replace="structure context/@@authenticator/authenticator" />
+
+            <div class="formControls">
+                <button type="submit" class="button small alert radius"
+                        name="folder_delete:method">
+                    <i class="fa fa-trash-o"></i>
+                    <tal:block i18n:translate="">Supprimer</tal:block>
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Détacher une ressource depuis mon espace
+-->
+<metal:macro define-macro="detacher">
+
+<tal:block define="resName python:context.aq_parent.getShortText(context.Title(), 80)">
+
+    <h2><tal:block i18n:translate="">Détacher la ressource</tal:block>
+        « <tal:content content="resName" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius"
+         i18n:translate="">
+        Sélectionnez les cours / activités desquels vous souhaitez détacher cette ressource.
+    </div>
+
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">les étudiants n'auront plus accès à cette ressource depuis les cours / activités sélectionnés.</tal:block>
+    </div>
+
+    <form id="js-resDetacher" method="POST"
+          tal:attributes="action context/aq_parent/absolute_url;
+                          data-res_name resName;
+                          data-success_msg_pre string:La ressource;
+                          data-success_msg_post string:a été détachée de l'ensemble de cours suivant"
+          i18n:attributes="data-res_name; data-success_msg_pre; data-success_msg_post;">
+
+        <ul>
+            <li tal:repeat="cours context/getRelatedItems">
+                <a class="filter-button warning unselected"
+                   tal:attributes="id python:'/'.join(cours.getPhysicalPath());
+                                   data-course_name cours/Title">
+                    <i class="fa fa-circle no-pad"></i>
+                    <i class="fa fa-circle-thin no-pad"></i>
+                    <tal:block tal:content="cours/Title" />
+                </a>
+            </li>
+        </ul>
+
+        <input type="hidden" name="ressource" tal:attributes="value context/getId"/>
+        <input type="hidden" name="repertoire" tal:attributes="value context/aq_parent/getId"/>
+        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small warning radius"
+                    name="detacher_script:method">
+                <i class="fa fa-chain-broken"></i>
+                <tal:block i18n:translate="">Détacher</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setResDetacher()">
+    </script>
+
+</tal:block>
+
+</metal:macro>
+
+
+<!--
+    Détacher une ressource depuis le cours
+-->
+<metal:macro define-macro="detacher-cours">
+
+<tal:block define="repertoire request/repertoire;
+                   res_name request/resName | python:context.getShortText(context.getElementCours(request['idElement'])['titreElement'], 80)">
+
+    <h2 tal:condition="python:context.test(repertoire == 'BoiteDepot', 0, 1)">
+        <tal:block i18n:translate="">Détacher la ressource</tal:block>
+        <tal:isResName condition="res_name">
+            « <tal:content content="res_name" /> »
+        </tal:isResName>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:block condition="python:context.test(repertoire == 'BoiteDepot', 1, 0)">
+    <h2>
+        <tal:block i18n:translate="">Supprimer la boite de dépôts</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !</tal:block>
+    </div>
+    </tal:block>
+
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">les étudiants n'auront plus accès à cette ressource.</tal:block>
+    </div>
+
+    <div tal:condition="python:repertoire == 'ExercicesWims'" class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">en détachant un exercice d'une activité, vous allez également supprimer toutes les notes obtenues par les étudiants à cette activité.</tal:block>
+    </div>
+
+    <form tal:attributes="action python:context.test(menu == 'vide', '%s/cours_retirerElementPlan' % context.absolute_url(), '%s/cours_retirerElement' % context.absolute_url())"
+          tal:define="menu request/menu | string:vide;
+                      retour request/retour | string:cours_plan_view"
+          method="POST">
+
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+        <input type="hidden" name="ressource" tal:attributes="value request/idElement" />
+        <input type="hidden" name="repertoire" tal:attributes="value repertoire" />
+        <input type="hidden" name="indexElement" tal:attributes="value request/indexElement | nothing" />
+        <input type="hidden" name="menu" tal:attributes="value menu" />
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${retour}?menu=${menu}" />
+
+        <div class="formControls">
+            <button type="submit" class="button small warning"
+                    name="detacher">
+                <i class="fa fa-chain-broken"></i>
+                <tal:block i18n:translate="">Détacher</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</tal:block>
+
+</metal:macro>
+
+
+<metal:macro define-macro="ajout-conversation">
+
+<tal:block define="section request/section;
+                   idpage request/idpage;
+                   idforum request/idforum">
+<div class="documentFirstHeading">
+  <h1 i18n:translate="">Créer un sujet de discussion</h1>
+</div>
+<br />
+<form tal:attributes="action context/absolute_url"
+      method="POST">
+
+<div class="field ArchetypesStringWidget" id="archetypes-fieldname-title">
+    <span></span>
+    <label class="formQuestion" for="title" i18n:translate="">Titre</label>
+    <div class="formHelp" id="title_help"></div>
+
+    <div class="fieldErrorBox"></div>
+    <input type="text" name="title" id="title" value="" size="30" maxlength="255" />
+</div>
+
+<div class="field ArchetypesTextAreaWidget" id="archetypes-fieldname-description">
+    <span></span>
+    <label class="formQuestion" for="description" i18n:translate="">Description</label>
+    <div class="formHelp" id="description_help">Entrez une brève description de cette conversation.</div>
+    <div class="fieldErrorBox"></div>
+    <textarea rows="5" name="description" cols="40" id="description"></textarea>
+</div>
+
+  <input type="hidden" name="forum" value="PloneboardConversation"/>
+  <input type="hidden" name="idforum" tal:attributes="value idforum"/>
+  <input type="hidden" name="section" tal:attributes="value section"/>
+  <input type="hidden" name="page" tal:attributes="value string:${context/absolute_url}/${idpage}?section=${section}&amp;idforum=${idforum}"/>
+  <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+    <div class="formControls">
+        <input class="context"    type="submit" name="cours_element_add:method"   value="Save"   i18n:attributes="value label_save;"/>
+        <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+    </div>
+</form>
+</tal:block>
+
+</metal:macro>
+
+
+
+<metal:macro define-macro="ajout-comment">
+
+<tal:block define="section request/section;
+                   idpage request/idpage;
+                   idforum request/idforum;
+                   idsujet request/idsujet;">
+<div class="documentFirstHeading">
+  <h1 i18n:translate="">Créer une réponse</h1>
+</div>
+<br />
+<form tal:attributes="action context/absolute_url"
+      method="POST">
+
+<div class="field ArchetypesStringWidget" id="archetypes-fieldname-title">
+    <span></span>
+    <label class="formQuestion" for="title" i18n:translate="">Titre</label>
+    <div class="formHelp" id="title_help"></div>
+
+    <div class="fieldErrorBox"></div>
+    <input type="text" name="title" id="title" value="" size="30" maxlength="255" />
+</div>
+
+<div class="field ArchetypesTextAreaWidget" id="archetypes-fieldname-description">
+    <span></span>
+    <label class="formQuestion" for="reponse" i18n:translate="">Réponse</label>
+    <div class="fieldErrorBox"></div>
+    <textarea rows="5" name="description" cols="40" id="description"></textarea>
+</div>
+
+  <input type="hidden" name="forum"   value="PloneboardComment"/>
+  <input type="hidden" name="idforum" tal:attributes="value idforum"/>
+  <input type="hidden" name="idsujet" tal:attributes="value idsujet"/>
+  <input type="hidden" name="section" tal:attributes="value section"/>
+  <input type="hidden" name="page"    tal:attributes="value string:${context/absolute_url}/${idpage}?section=${section}&amp;idforum=${idforum}&amp;idsujet=${idsujet}"/>
+  <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+    <div class="formControls">
+        <input class="context"    type="submit" name="cours_element_add:method"   value="Save"   i18n:attributes="value label_save;"/>
+        <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+    </div>
+</form>
+</tal:block>
+
+</metal:macro>
+
+
+<metal:macro define-macro="activer-webconference">
+
+<div class="documentFirstHeading">
+  <h1 i18n:translate="">Activer votre webconférence</h1>
+</div>
+<br /><br />
+<div i18n:translate="">
+  Vous êtes sur le point de donner accès à votre webconférence.
+</div>
+<br /><br />
+<form tal:attributes="action context/absolute_url" method="POST">
+  <input type="hidden" name="idwebconference" tal:attributes="value request/idwebconference"/>
+    <div class="formControls">
+        <input class="context"    type="submit" name="cours_activer_webconference:method"   value="Save"   i18n:attributes="value label_save;"/>
+        <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+    </div>
+</form>
+
+</metal:macro>
+
+
+<metal:macro define-macro="desactiver-webconference">
+
+<div class="documentFirstHeading">
+  <h1 i18n:translate="">Désactiver votre webconférence</h1>
+</div>
+<br /><br />
+<div i18n:translate="">
+  Vous êtes sur le point de couper l'accès à votre webconférence.
+</div>
+<br /><br />
+<form tal:attributes="action context/absolute_url" method="POST">
+  <input type="hidden" name="idwebconference" tal:attributes="value request/idwebconference"/>
+    <div class="formControls">
+        <input class="context"    type="submit" name="cours_activer_webconference:method"   value="Save"   i18n:attributes="value label_save;"/>
+        <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+    </div>
+</form>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

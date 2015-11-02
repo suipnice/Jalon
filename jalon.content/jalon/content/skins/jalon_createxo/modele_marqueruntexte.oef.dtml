@@ -1,0 +1,100 @@
+type=datalist
+modele_jalon=MarquerTexte
+textarea='data'
+
+:Marquer des mots dans un texte.
+L'exercice présente un texte où certains mots sont 'marquables'. Il faut marquer ceux qui doivent l'être selon la demande de l'exercice.<br/>
+Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.<br/>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+
+:Minimum de cases qu'on doit marquer à chaque exercice. Au moins 1.
+\integer{minmark=$$minmark$$}
+
+:Maximum de cases qu'on doit marquer à chaque exercice.
+\integer{maxmark=$$maxmark$$}
+
+:Données principales.
+<p>Définir une question par ligne, et séparer les lignes par un point-virgule.
+ (Donc les textes eux-memes ne peuvent pas contenir des point-virgules.) </p>
+<p>Les champs à marquer doivent être mis entre une paire de double-point d'interrogation '??'.
+ Chaque champ contient une liste de mots séparés par des virgules.
+ Ces mots seront tirés au hasard avant l'affichage de la phrase.
+ Si c'est le premier mot (quand il n'est pas vide), il est à marquer.
+ Sinon on ne doit pas le marquer.</p>
+<p>Jusqu'à une centaine de points de marquage peuvent être posés dans chaque phrase.</p>
+$embraced_randitem
+\text{data=$$data$$}
+
+:Texte affiché avant la question. Balises html admises. Peut être vide.
+$embraced_randitem 
+\text{pre=$$pre$$}
+
+:Texte affiché après la question. Balises html admises. Peut être vide.
+\text{post=$$post$$}
+
+:Mots d'option.
+Ajoutez le mot 'split' à la définition si vous voulez donner une note
+partielle pour des réponses partiellement correctes.
+\text{option=$$options$$}
+
+
+:%%%%%%%%%%%%%% Rien à modifier jusqu'à l'énoncé %%%%%%%%%%%%%%%%
+\css{<style type="text/css">
+p#oef_pre{
+    border-bottom:1px solid gray;
+    padding:.5em;
+    font-size: 110%;
+}
+.oef_data{
+    border-left:1px dashed;
+    padding-left:1.5em;
+}
+</style>}
+
+\text{data=wims(singlespace \data)}
+\text{data=wims(nonempty rows \data)}
+\text{data=randomrow(\data)}
+\text{data=wims(embraced randitem \data)}
+\text{data=slib(text/cutchoice2 \data)}
+\integer{qs=floor(rows(\data)/2)}
+\text{list=}
+\text{ind=}
+\for{i=1 to \qs} {
+ \text{d=\data[2*\i;]}
+ \text{list=\list \d;}
+ \if{\d[1] issametext }{\text{ind=\ind[]2,}}{\text{ind=\ind[]1,}}}
+\text{can=positionof(1,\ind)}
+\text{cancnt=items(\can)}
+\integer{tomark=randint(min(\minmark,\cancnt)..min(\maxmark,\cancnt))}
+\text{can=\cancnt>1?shuffle(\can)}
+\text{good=item(1..\tomark,\can)}
+\text{good=wims(sort numeric items \good)}
+\text{show=}
+\for{i=1 to \qs}{ 
+ \text{d=\i isitemof \good?\list[\i;1]:\list[\i;2]}
+ \text{show=\show[]\d,}}
+\text{pre=wims(embraced randitem \pre)}
+
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+\statement{
+<p id='oef_pre'>\pre</p>
+<div class="oef_data">
+ \data[1;]
+ \for{k=1 to \qs}
+  {\embed{r1,\k} \data[2*\k+1;]}
+</div>
+<p id='oef_post'>\post</p>}
+
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%
+\answer{Champ 1}{\good;\show}{type=mark}{option=\option}

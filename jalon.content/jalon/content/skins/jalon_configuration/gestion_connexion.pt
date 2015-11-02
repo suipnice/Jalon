@@ -1,0 +1,126 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_connexion">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+
+        <h2>
+            <i class="fa fa-key"></i><tal:block i18n:translate="">Configuration de la connexion</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigConnexion"
+              tal:define="connexion context/getPropertiesConnexion">
+            <div class="panel callout radius">
+                <label i18n:translate="">
+                    Activer la connexion a un CAS (Central Authentification Service)
+                </label>
+                <input type="radio" name="activer_cas" id="activer_cas" value="1"
+                       tal:attributes="checked python:context.test(connexion['activer_cas'], 'checked', '')" />
+                <label for="activer_cas" class="activer">
+                    <i class="fa fa-check"></i>
+                    <tal:block i18n:translate="">Activé</tal:block>
+                </label>
+                <input type="radio" name="activer_cas" id="desactiver_cas" value="0"
+                       tal:attributes="checked python:context.test(not connexion['activer_cas'], 'checked', '')" />
+                <label for="desactiver_cas"
+                       class="desactiver">
+                    <i class="fa fa-times"></i>
+                    <tal:block i18n:translate="">Désactivé</tal:block>
+                </label>
+            </div>
+            <div class="panel callout radius">
+                <label for="serviceUrl" i18n:translate="serviceUrl">
+                    Url du service en retour du CAS
+                </label>
+                <input type="text" id="serviceUrl" name="serviceUrl"
+                       maxlength="255" size="30"
+                       tal:attributes="value connexion/serviceUrl | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label for="casServerUrlPrefix" i18n:translate="casServerUrlPrefix">
+                    Url du CAS
+                </label>
+                <input type="text" id="casServerUrlPrefix" name="casServerUrlPrefix"
+                       maxlength="255" size="30"
+                       tal:attributes="value connexion/casServerUrlPrefix | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label i18n:translate="">
+                    Activer la création d'un compte depuis la page de connexion
+                </label>
+                <input type="radio" name="activer_creationcompte" id="activer_creationcompte" value="1"
+                       tal:attributes="checked python:context.test(connexion['activer_creationcompte'], 'checked', '')" />
+                <label for="activer_creationcompte"
+                       class="activer">
+                    <i class="fa fa-check"></i>
+                    <tal:block i18n:translate="">Activé</tal:block>
+                </label>
+                <input type="radio" name="activer_creationcompte" id="desactiver_creationcompte" value="0"
+                       tal:attributes="checked python:context.test(not connexion['activer_creationcompte'], 'checked', '')" />
+                <label for="desactiver_creationcompte" class="desactiver">
+                    <i class="fa fa-times"></i>
+                    <tal:block i18n:translate="">Désactivé</tal:block>
+                </label>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

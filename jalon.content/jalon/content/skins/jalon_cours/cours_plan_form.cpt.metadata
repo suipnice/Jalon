@@ -1,0 +1,10 @@
+[default]
+title=Ajouter un cours
+border=None
+
+[validators]
+validators=cours_plan_validate
+
+[actions]
+action.success=traverse_to:string:cours_plan_create
+action.failure=traverse_to:string:cours_plan_form

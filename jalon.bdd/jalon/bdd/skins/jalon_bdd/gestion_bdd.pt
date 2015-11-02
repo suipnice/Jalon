@@ -1,0 +1,298 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!-- Gestion des formations accessibles via Jalon -->
+<metal:macro define-macro="gestion_bdd">
+    <tal:define define="isBDD context/isBDD;
+                        typeRecherche request/typeRecherche | nothing;
+                        termeRecherche request/termeRecherche | nothing">
+    <tal:condition condition="isBDD">
+        <br/>
+        <a class="button expand create"
+           data-reveal-id="reveal-main" data-reveal-ajax="true"
+           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=creationELP-form"
+           i18n:translate="">
+            Créer un élément pédagogique
+        </a>
+        <div class="panel callout radius">
+            <h2 class="texte_icone icone_recherche">
+                Recherchez un diplôme, une UE, une UE libre ou un groupe dans l'offre de formation.
+            </h2>
+            <tal:comments replace="nothing">
+                Formulaire de recherche
+            </tal:comments>
+            <form name="recherche_apogee" id="recherche_typeELP" method="post"
+                  tal:attributes="action string:${context/absolute_url}/@@jalon-bdd">
+                <div class="row">
+                    <div class="medium-4 columns">
+                        <div class="field">
+                            <label for="typeRecherche">Type :</label>
+                            <select id="typeRecherche" name="typeRecherche">
+                                <option value=""></option>
+                                <option value="etape"
+                                        tal:attributes="selected python:context.test(typeRecherche=='etape', 'selected', '')">Diplôme</option>
+                                <option value="ue"
+                                        tal:attributes="selected python:context.test(typeRecherche=='ue', 'selected', '')">Unité d'enseignement</option>
+                                <option value="uel"
+                                        tal:attributes="selected python:context.test(typeRecherche=='uel', 'selected', '')">Unité d'enseignement libre</option>
+                                <option value="groupe"
+                                        tal:attributes="selected python:context.test(typeRecherche=='groupe', 'selected', '')">Groupe</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="medium-6 columns">
+                        <div class="field">
+                            <label for="termeRecherche">Mot clé ou code :</label>
+                            <input id="termeRecherche" class="blurrable" type="text"
+                                   maxlength="255" size="30" name="termeRecherche"
+                                   tal:attributes="value termeRecherche"/>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="gestion" id="gestion" value="gestion_bdd"/>
+
+                    <div class="medium-2 columns">
+                        <div class="formControls">
+                            <input class="button tiny" type="submit" value="Rechercher" name="form.button.save"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <tal:define define="page python:int(request.get('page', 1));
+                            listeELPs python:context.getInfosToutesELPorRecherche(page, typeRecherche, termeRecherche)">
+            <table summary="Offre de formations">
+                <thead>
+                    <tr>
+                        <th class="sort has-tip" data-tooltip data-sort="title"
+                            title="Cliquer pour trier selon le libellé"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Libellé</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort has-tip" data-tooltip data-sort="type"
+                            title="Cliquer pour trier selon le type"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Type</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort has-tip" data-tooltip data-sort="code"
+                            title="Cliquer pour trier selon le code"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Code</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="responsable"
+                            title="Cliquer pour trier selon le responsable"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Resp.</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="enseignants"
+                            title="Cliquer pour trier selon le nombre d'enseignants"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Nb ens.</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort has-tip" data-tooltip data-sort="etudiants"
+                            title="Cliquer pour trier selon le nombre d'étudiants"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Nb étu.</tal:block>
+                            </span>
+                        </th>
+                        <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
+                            i18n:attributes="title"><i class="fa fa-cog fa-lg no-pad"></i></th>
+                    </tr>
+                </thead>
+
+                <tbody class="list">
+                    <tr tal:repeat="elp listeELPs">
+                        <td class="title">
+                            <span class="hide"
+                                  tal:content="elp/LIB_ELP" />
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               title="Voir les informations"
+                               tal:content="elp/LIB_ELP"
+                               tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=informationELP&amp;codeELP=${elp/COD_ELP}"/>
+                        </td>
+                        <td class="type" tal:content="elp/TYP_ELP"/>
+                        <td class="code" tal:content="elp/COD_ELP"/>
+                        <td class="responsable show-for-medium-up">
+                            <tal:define define="EnsResp elp/RESPONSABLE | nothing">
+                                <tal:condition condition="not:EnsResp">
+                                    <span class="indicateur couleur7">Aucun</span>
+                                </tal:condition>
+                                <tal:condition condition="EnsResp">
+                                    <span tal:content="EnsResp"/>
+                                </tal:condition>
+                            </tal:define>
+                        </td>
+                        <td class="enseignants show-for-medium-up" tal:content="elp/nb_ens"/>
+                        <td class="etudiants" tal:content="elp/nb_etu"/>
+                        <td class="show-for-medium-up">
+                            <a class="dropdown" data-options="align:left"
+                               tal:attributes="data-dropdown string:drop-${repeat/elp/index}">
+                                <i class="fa fa-cog fa-lg no-pad"></i>
+                            </a>
+                            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                tal:attributes="id string:drop-${repeat/elp/index}">
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modificationELP-form&amp;codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-pencil fa-fw"></i>
+                                        <tal:block i18n:translate="">Informations</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-list fa-fw"></i>
+                                        <tal:block i18n:translate="">Composition</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-enseignantRespELP&amp;codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-graduation-cap fa-fw"></i>
+                                        <tal:block i18n:translate="">Responsable</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-enseignantsELP&amp;codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-user fa-fw"></i>
+                                        <tal:block i18n:translate="">Enseignants</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-etudiantsELP&amp;codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-group fa-fw"></i>
+                                        <tal:block i18n:translate="">Étudiants</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=suppressionELP-form&amp;codeELP=${elp/COD_ELP}">
+                                        <i class="fa fa-trash-o fa-fw"></i>
+                                        <tal:block i18n:translate="">Supprimer</tal:block>
+                                    </a>
+                                </li>
+                            </ul>
+                            </td>
+                        </tr>
+                </tbody>
+            </table>
+
+            <tal:define define="script0 string:setSortableList('jalon_configuration',['title','type','code', 'enseignants', 'etudiants'],'title','title')">
+
+                <tal:condition condition="not:is_ajax">
+
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script0)" />
+
+                </tal:condition>
+
+                <tal:condition condition="is_ajax">
+
+                    <!-- reflow à surveiller… -->
+                    <script charset="UTF-8"
+                            tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+
+                    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
+
+                    <script charset="UTF-8"
+                            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                            tal:content="structure buffer" />
+
+                </tal:condition>
+
+            </tal:define>
+
+            <div id="pagination-container"
+                 tal:define="nbPages python:context.getNbPagesELP()">
+
+                <tal:condition condition="python:page-1 > 0">
+                    <a id="pagination-prev" class="button tiny"
+                       tal:define="pagePrec python:page-1"
+                       tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_bdd&amp;page=${pagePrec}"
+                       i18n:translate="">
+                        <span>Précédent</span>
+                    </a>
+                </tal:condition>
+
+                <tal:condition condition="python:page < nbPages">
+                    <a id="pagination-next" class="button tiny"
+                       tal:define="pageSuiv python:page+1"
+                       tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_bdd&amp;page=${pageSuiv}"
+                       i18n:translate="">
+                        <span>Suivant</span>
+                    </a>
+                </tal:condition>
+
+                <form id="pagination-page_number" method="post"
+                    tal:attributes="action string:${context/absolute_url}/@@jalon-bdd">
+                    <input type="hidden" name="gestion" value="gestion_bdd" />
+                    <input type="text" name="page"
+                           tal:attributes="value page" />
+                    / <tal:condition condition="python:context.test(nbPages == 0, 1, 0)">
+                          <tal:block content="page" />
+                      </tal:condition>
+                      <tal:condition condition="python:context.test(nbPages != 0, 1, 0)">
+                          <tal:block content="nbPages" />
+                      </tal:condition>
+                </form>
+
+            </div>
+
+        </tal:define>
+
+        <script charset="UTF-8"
+                tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
+                tal:content="jsTranslate/getJsTranslate" />
+
+    </tal:condition>
+    <tal:condition condition="not:isBDD">
+        <div class="listing_vide" i18n:translate="">
+            La liaison avec la base de données n'est pas configurée. Utilisez l'onglet Connexion pour configurer la connexion à la base de données.
+        </div>
+    </tal:condition>
+    </tal:define>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

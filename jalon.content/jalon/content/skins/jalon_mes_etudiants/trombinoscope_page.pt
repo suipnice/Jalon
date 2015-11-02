@@ -1,0 +1,137 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+<metal:main fill-slot="main"
+            tal:define="personnel python:user.has_role(['Manager', 'Personnel', 'Secretaire'])">
+
+    <tal:condition condition="personnel">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane des jalon_folder
+    </metal:macro>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <section id="listingTrombi" class="small-12 columns"
+                 tal:define="code COD_ELP | request/code;
+                             type TYP_ELP | request/type">
+
+
+        <tal:condition condition="python:context.getJalonProperty('activer_stockage_photo')">
+            <h2>
+                <i class="fa fa-users"></i>
+                <tal:block i18n:translate="label_listing_etudiant">Liste des étudiants</tal:block>
+                <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]"/>
+                <a class="button tiny radius"
+                   data-reveal-id="reveal-upload_photo" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=maj-photo">
+                    <i class="fa fa-cloud-upload"></i>
+                    <tal:block i18n:translate="">Mettre à jour ma photo</tal:block>
+                </a>
+            </h2>
+            <div id="reveal-upload_photo" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+        </tal:condition>
+        <tal:condition condition="not:python:context.getJalonProperty('activer_stockage_photo')">
+            <h2>
+                <i class="fa fa-users"></i>
+                <tal:block i18n:translate="label_listing_etudiant">Liste des étudiants</tal:block>
+                <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]"/>
+            </h2>
+        </tal:condition>
+
+    <metal:macro define-macro="trombinoscope">
+
+<style>
+    @media print {
+        * {
+            margin: 0;
+            pading: 0;
+        }
+        #listingTrombi h2 {
+            padding-top: .5em;
+            font-size: 90%;
+        }
+        #listingTrombi ul li {
+            display:inline-block;
+            background-color: transparent;
+            box-shadow: none;
+            margin: 0;
+            margin-bottom: 20px;
+            padding: 0.25%;
+            transform: none;
+            width: 23%;
+            font-size: 75%;
+            border: 1px solid #CCC;
+            border-radius: 5px;
+        }
+        #listingTrombi ul li:nth-child( 3n ) {
+            transform: none;
+        }
+        #listingTrombi ul li img {
+            width: 100%;
+            border-radius: 4px;
+        }
+        #listingTrombi ul li p {
+            word-wrap: break-word;
+        }
+        body > header,
+        #breadcrumb,
+        body > footer,
+        #listingTrombi a,
+        #listingTrombi .panel {
+            display:none;
+        }
+    }
+</style>
+
+            <div class="panel callout radius show-for-medium-up"
+                 i18n:translate="">
+                Pour obtenir le trombinoscope des étudiants en version imprimable, utilisez la fonction d’impression de votre navigateur : la mise en page se fera automatiquement.
+            </div>
+
+            <ul>
+                <tal:block repeat="etudiant python:context.getListeEtudiants(code, type)">
+                <li>
+                    <img tal:attributes="src python:context.getJalonPhoto(etudiant['SESAME_ETU']);
+                                         alt string:Photo de ${etudiant/name}"
+                         class="image_trombinoscope"/>
+                    <p>
+                        <span tal:content="etudiant/LIB_NOM_PAT_IND"/><br />
+                        <span tal:content="etudiant/LIB_PR1_IND"/>
+                    </p>
+                    <p>
+                        <a tal:condition="etudiant/EMAIL_ETU"
+                           tal:attributes="href string:mailto:${etudiant/EMAIL_ETU}"
+                           tal:content="etudiant/EMAIL_ETU" class="discreet"/>
+                        <span tal:condition="not:etudiant/EMAIL_ETU"
+                              i18n:translate="" class="discreet">
+                          Sésame non ouvert
+                        </span>
+                    </p>
+                </li>
+                </tal:block>
+            </ul>
+
+    </metal:macro>
+
+        </section>
+    </main>
+
+    </tal:condition>
+
+    <tal:condition condition="not:personnel">
+        <tal:define define="tmp python:context.REQUEST.RESPONSE.redirect('./interdiction_macro')"/>
+    </tal:condition>
+
+</metal:main>
+
+</body>
+
+</html>

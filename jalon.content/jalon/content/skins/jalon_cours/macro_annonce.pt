@@ -1,0 +1,414 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Création d'une annonce
+-->
+<metal:macro define-macro="ajout-annonce">
+
+    <h2>
+        <tal:block i18n:translate="">Nouvelle annonce</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:define define="listeAcces context/getPublicsAnnonce">
+
+    <tal:condition condition="not:listeAcces">
+
+        <div class="panel warning radius"
+             i18n:translate="">
+            <strong>Attention :</strong> votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.
+        </div>
+
+    </tal:condition>
+
+    <tal:condition condition="listeAcces">
+
+    <form id="js-createAnnounce" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" i18n:translate="">Titre :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/description | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description" i18n:translate="">Description :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" rows="5"
+                      required="required" placeholder="Saisie obligatoire"
+                      tal:content="request/description | nothing"
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div class="field">
+            <label i18n:translate="">Annonce visible par :</label>
+
+            <div class="panel callout radius" i18n:translate="">
+                Vous pouvez définir l'audience souhaitée pour cette annonce grâce à la colonne de gauche du tableau ci-dessous.
+            </div>
+
+            <table summary="Liste des filières attachées au cours"
+                   i18n:attributes="summary">
+                <thead>
+
+                    <tr>
+                        <th class="checkall nosort">
+                            <div class="switch tiny round" title="Tout sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" id="switch-all" name="checkall" role="publicsElement:list" checked="checked" />
+                                <label for="switch-all"></label>
+                            </div>
+                        </th>
+                        <th class="sort text-left" data-sort="title" title="Trier selon le type de public"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Public cible</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort" data-sort="rank" title="Trier selon le classement"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Classement</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort" data-sort="code" title="Trier selon le code"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Code</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="number" title="Trier selon l'effectif'"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Eff.</tal:block>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list"
+                       tal:define="publics request/publics | python:[]">
+            <tal:boucle repeat="acces listeAcces">
+                    <tr>
+                        <td>
+                            <div class="switch tiny round" title="Sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" name="publicsElement:list" checked="checked"
+                                       tal:attributes="id string:switch-${repeat/acces/index};
+                                                       value python:'%s*-*%s' % (acces[-1], acces[1])" />
+                                <label tal:attributes="for string:switch-${repeat/acces/index}"></label>
+                            </div>
+                        </td>
+                        <td class="title" tal:content="python:acces[0]" />
+                        <td class="rank">
+                            <span class="label tiny bkgrnd" tal:content="python:acces[-1]" />
+                        </td>
+                <tal:test condition="python:context.test(acces[-1] != 'groupe', 1, 0)">
+                        <td class="code" tal:content="python:acces[1]" />
+                        <td class="number" tal:content="python:acces[2]" />
+                </tal:test>
+                <tal:test condition="python:context.test(acces[-1] == 'groupe', 1, 0)">
+                        <td class="code" tal:content="python:acces[3]" />
+                        <td class="number" tal:content="python:acces[2]" />
+                </tal:test>
+
+                    </tr>
+            </tal:boucle>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel callout radius" i18n:translate="">
+            <tal:block i18n:translate="">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
+            <div class="panel bkgrnd radius text-center">
+                <input type="checkbox" id="mailAnnounce" name="mailAnnonce" checked="checked" />
+                <label for="mailAnnounce" i18n:translate="">Envoyer également cette annonce par courriel.</label>
+            </div>
+        </div>
+
+        <tal:block define="script1 string:setSortableList('js-createAnnounce',['title','rank','code','number'],'title','asc');
+                           script2 string:setBatchSelect('js-createAnnounce',true);
+                           script3 string:setRevealFormNewPage('js-createAnnounce','reveal-main')">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" />
+        </tal:block>
+
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                tal:content="structure buffer" />
+
+        <input type="hidden" name="type" value="Annonce" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_annonce" />
+        <input type="hidden" name="formulaire" value="ajout-annonce" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <input type="submit" class="button small radius" value="Créer cette annonce"
+                   i18n:attributes="value" />
+        </div>
+
+    </form>
+    </tal:condition>
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Modification d'une annonce
+-->
+<metal:macro define-macro="modifier-annonce">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier une annonce</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-mod-annonce" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="listeAcces context/getPublicsAnnonce">
+
+        <div tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" i18n:translate="">Titre :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title" required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value context/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/description | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description" i18n:translate="">Texte :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" rows="4"
+                      required="required" placeholder="Saisie obligatoire"
+                      tal:content="context/Description | nothing"
+                      i18n:attributes="placeholder" />
+        </div>
+
+<tal:condition condition="listeAcces">
+
+        <div class="field">
+            <label i18n:translate="">Annonce visible par :</label>
+            <div class="panel callout radius" i18n:translate="">
+                Vous pouvez définir l'audience souhaitée pour cette annonce grâce à la colonne de gauche du tableau ci-dessous.
+            </div>
+            <table summary="Liste des filières attachées au cours"
+                   i18n:attributes="summary">
+                <thead>
+                    <tr>
+                        <th class="checkall nosort">
+                            <div class="switch tiny round" title="Tout sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" id="switch-all" name="checkall" role="publicsElement:list" />
+                                <label for="switch-all"></label>
+                            </div>
+                        </th>
+                        <th class="sort text-left" data-sort="title" title="Trier selon le type de public"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Public cible</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort" data-sort="rank" title="Trier selon le classement"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Classement</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort" data-sort="code" title="Trier selon le code"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Code</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="number" title="Trier selon l'effectif"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Eff.</tal:block>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list"
+                       tal:define="publics context/getPublics | python:[]">
+    <tal:boucle repeat="acces listeAcces">
+                    <tr>
+                        <td>
+                            <div class="switch tiny round" title="Sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" name="publicsElement:list"
+                                       tal:define="valeur python:'%s*-*%s' % (acces[-1], acces[1])"
+                                       tal:attributes="id string:switch-${repeat/acces/index};
+                                                       value valeur;
+                                                       checked python:context.test(valeur in publics, 1, 0)" />
+                                <label tal:attributes="for string:switch-${repeat/acces/index}"></label>
+                            </div>
+                        </td>
+                        <td class="title" tal:content="python:acces[0]" />
+                        <td class="rank">
+                            <span class="label tiny bkgrnd" tal:content="python:acces[-1]" />
+                        </td>
+        <tal:test condition="python:context.test(acces[-1] != 'groupe', 1, 0)">
+                        <td class="code" tal:content="python:acces[1]" />
+                        <td class="number" tal:content="python:acces[2]" />
+        </tal:test>
+        <tal:test condition="python:context.test(acces[-1] == 'groupe', 1, 0)">
+                        <td class="code" tal:content="python:acces[3]" />
+                        <td class="number" tal:content="python:acces[2]" />
+        </tal:test>
+                    </tr>
+    </tal:boucle>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel callout radius" i18n:translate="">
+            <tal:block i18n:translate="">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
+            <div class="panel bkgrnd radius text-center">
+                <input type="checkbox" id="mailAnnounce" name="mailAnnonce" checked="checked" />
+                <label for="mailAnnounce" i18n:translate="">Envoyer également cette annonce par courriel.</label>
+            </div>
+        </div>
+
+        <tal:block define="script1 string:setSortableList('js-mod-annonce',['title','rank','code','number'],'title','asc');
+                           script2 string:setBatchSelect('js-mod-annonce',true)">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+        </tal:block>
+
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                tal:content="structure buffer" />
+
+</tal:condition>
+
+        <input type="hidden" name="type" value="Annonce" />
+        <input type="hidden" name="redirection"
+               tal:define="redirection request/redirection | nothing"
+               tal:attributes="value redirection" tal:condition="redirection" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_annonce" />
+        <input type="hidden" name="formulaire" value="modifier-annonce" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <input class="button small radius" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save" />
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Suppression d'une annonce
+-->
+<metal:macro define-macro="supprimer-annonce">
+
+    <h2>
+        <i class="fa fa-trash-o"></i>
+        <tal:block i18n:translate="">Supprimer une annonce</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:define define="redirection request/redirection | nothing;
+                    annonce request/annonce">
+
+    <form id="js-supp-annonce" method="POST"
+          tal:attributes="action python:context.test(redirection, context.absolute_url() + '/cours_supprimer_annonce?annonce=' + annonce + '&redirection=annonces', context.absolute_url() + '/cours_supprimer_annonce?annonce=' + annonce)">
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">L'annonce</tal:block>
+            « <strong tal:content="python:context.jalon_unquote(request['titre'])" /> »
+            <tal:block i18n:translate="">va être supprimée.</tal:block>
+        </div>
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong>
+            <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        </div>
+
+        <div class="formControls">
+            <input class="button small warning radius" type="submit" value="Supprimer"
+                   i18n:attributes="value label_delete" />
+        </div>
+
+    </form>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Suppression d'une nouveauté
+-->
+<metal:macro define-macro="supprimer-actualites">
+
+    <h2>
+        <tal:block i18n:translate="">Suppression des nouveautés</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">vous allez supprimer l'ensemble des nouveautés du cours, cette opération est définitive.</tal:block>
+    </div>
+
+    <div class="text-center">
+        <a class="button warning radius"
+           tal:attributes="href string:${context/absolute_url}/cours_supprimer_annonce?annonce=actu">
+            <i class="fa fa-trash-o"></i>
+            <tal:block i18n:translate="">Supprimer toutes les nouveautés</tal:block>
+        </a>
+    </div>
+
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

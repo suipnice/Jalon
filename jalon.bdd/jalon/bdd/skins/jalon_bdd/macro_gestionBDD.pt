@@ -1,0 +1,803 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+    <!-- Créer un élément pédagogique -->
+    <metal:macro define-macro="creationELP-form">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Créer un élément pédagogique</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form name="creation-form"
+              tal:attributes="action string:${context/absolute_url}/creerELP_script" method="post">
+            <div class="field">
+                <label for="TYP_ELP"
+                       i18n:translate="">Type :</label>
+                <select id="TYP_ELP" name="TYP_ELP">
+                    <option value="etape"
+                            i18n:translate="">Diplôme</option>
+                    <option value="ue"
+                            i18n:translate="">Unité d'enseignement</option>
+                    <option value="uel"
+                            i18n:translate="">Unité d'enseignement libre</option>
+                    <option value="groupe"
+                            i18n:translate="">Groupe</option>
+                </select>
+            </div>
+            <div class="field">
+                <label for="LIB_ELP"
+                       i18n:translate="">Libellé :</label>
+                    <input type="text" name="LIB_ELP" id="LIB_ELP"
+                           required="required"
+                           placeholder="Libellé (obligatoire)"/>
+            </div>
+            <div id="COD_ELP">
+                <label for="COD_ELP"
+                       i18n:translate="">Code</label>
+                <input type="text" name="COD_ELP" id="COD_ELP"
+                       required="required"
+                       placeholder="Code (obligatoire)"/>
+            </div>
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Modifier les informations d'un élément pédagogique -->
+    <metal:macro define-macro="modificationELP-form">
+        <tal:define define="codeELP request/codeELP;
+                            infosELP python:context.getInfosELP(codeELP)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Modifications des informations</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form name="modif-form" method="post"
+              tal:attributes="action string:${context/absolute_url}/modifierInfosELP_script">
+            <div id="TYP_ELP" class="field">
+                <label for="recherche">Type :</label>
+                <select id="TYP_ELP" name="TYP_ELP"
+                        tal:define="typeELP infosELP/TYP_ELP">
+                  <option value="etape"
+                          i18n:translate=""
+                          tal:attributes="selected python:context.test(typeELP == 'etape', 'selected', 0)">Diplôme</option>
+                  <option value="ue"
+                          i18n:translate=""
+                          tal:attributes="selected python:context.test(typeELP == 'ue', 'selected', 0)">Unité d'enseignement</option>
+                  <option value="uel"
+                          i18n:translate=""
+                          tal:attributes="selected python:context.test(typeELP == 'uel', 'selected', 0)">Unité d'enseignement libre</option>
+                  <option value="groupe"
+                          i18n:translate=""
+                          tal:attributes="selected python:context.test(typeELP == 'groupe', 'selected', 0)">Groupe</option>
+                </select>
+            </div>
+            <div class="field" id="LIB_ELP">
+                <label for="LIB_ELP" class="formQuestion"
+                       i18n:translate="">Libellé</label>
+                <input type="text" name="LIB_ELP" id="LIB_ELP"
+                       tal:attributes="value infosELP/LIB_ELP"
+                       required="required"
+                       placeholder="Libellé (obligatoire)"/>
+            </div>
+            <div class="field" id="COD_ELP">
+                <label for="COD_ELP" class="formQuestion"
+                       i18n:translate="">Code</label>
+                <input type="text" name="COD_ELP" id="COD_ELP"
+                       tal:attributes="value infosELP/COD_ELP"
+                       disabled="disabled"/>
+                <input type="hidden" name="COD_ELP"
+                       tal:attributes="value infosELP/COD_ELP"/>
+            </div>
+            <input type="hidden" name="codeELP"
+                   tal:attributes="value codeELP"/>
+            <input type="hidden" name="DATE_CREATION"
+                   tal:attributes="value infosELP/DATE_CREATION"/>
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+        </form>
+        </tal:define>
+    </metal:macro>
+
+    <!-- Composition d'un élément pédagogique -->
+    <!--metal:macro define-macro="diplomeELP">
+        <div id="tableau">
+            <tal:define define="codeELP request/codeELP;
+                                TYP_ELP_SELECT request/TYP_ELP_SELECT | nothing;
+                                infosELPSelectionne python:context.getInfosELP(codeELP);
+                                listeTypeAttachementELP python:context.getTypeAttachementELP(infosELPSelectionne['TYP_ELP']);
+                                listeToutesELP python:context.getInfosElpParType(TYP_ELP_SELECT);
+                                TousElpAttach python:context.getElpAttach(codeELP, TYP_ELP_SELECT, infosELPSelectionne['TYP_ELP'])">
+                <h2 class="texte_icone icone_universite position_gauche">
+                    Composition de <tal:block replace="infosELPSelectionne/LIB_ELP"/>
+                </h2>
+                <br class="visualClear"/><br/>
+                <form name="modif-inscripEtudiantsELP"
+                      tal:attributes="action string:${context/absolute_url}/compositionELP" method="post">
+                    <label>Choisir le type d'élément pédagogique : </label><br/><br/>
+                    <div id="typeELP" class="tags">
+                        <ul id="tag" class="arrondis">
+                            <tal:repeat repeat="dico listeTypeAttachementELP">
+                                <li class="tag unselected"
+                                    tal:attributes="id dico/type">
+                                    <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=diplomeELP&amp;codeELP=${codeELP}&amp;TYP_ELP_SELECT=${dico/type}"
+                                        tal:content="dico/libelle"/>
+                                </li>
+                            </tal:repeat>
+                        </ul>
+                    </div>
+
+            <div id="contenantLoadAjax">
+            <div id="contenuLoadAjax">
+                    <div class="listesDoubles">
+                        <div class="cell width-1:3 position-0">
+                            <span class="texte_icone icone_recherche" i18n:translate="">Rechercher un élément pédagogique</span>
+                            <br/><br/>
+                            <input type="text" id="champFiltreListeDouble1" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                            <button type="button" id="clearFiltreListeDouble1" class="clearFiltreListeDouble">X</button>
+
+                            <select name="listeTousELP:list" id="listeDouble1" multiple="multiple" class="listeDouble">
+                                <tal:entry repeat="itemAEncoder listeToutesELP">
+                                    <option tal:attributes="value itemAEncoder/COD_ELP">
+                                        <tal:block content="python:itemAEncoder['LIB_ELP']"/>  (code : <tal:block replace="python:itemAEncoder['COD_ELP']"/>)
+                                    </option>
+                                </tal:entry>
+                            </select>
+
+                            <span id="compteListeDouble1" class="countLabel compteListeDouble"></span>
+
+                            <select id="stockageListeDouble1" class="stockageListeDouble"></select>
+                        </div>
+
+                        <div class="cell width-1:3 position-1:3">
+                            <button id="versListeDouble2" type="button" class="versListeDouble">&nbsp;>&nbsp;</button>
+                            <button id="versListeDouble1" type="button" class="versListeDouble">&nbsp;<&nbsp;</button>
+                        </div>
+
+                        <div class="cell width-1:3 position-2:3">
+                            <span class="texte_icone icone_universite" i18n:translate="">Eléments pédagogiques attachés :</span>
+                            <br/><br/>
+                            <input type="text" id="champFiltreListeDouble2" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                            <button type="button" id="clearFiltreListeDouble2" class="clearFiltreListeDouble">X</button>
+
+                            <select name="listeELPAttach:list" id="listeDouble2" multiple="multiple" class="listeDouble">
+                                <tal:entry repeat="itemAEncoder TousElpAttach">
+                                    <option tal:attributes="value itemAEncoder/COD_ELP">
+                                            <tal:block content="python:itemAEncoder['LIB_ELP']"/>  (code : <tal:block replace="python:itemAEncoder['COD_ELP']"/>)
+                                    </option>
+                                </tal:entry>
+                            </select>
+
+                            <span id="compteListeDouble2" class="countLabel compteListeDouble"></span>
+
+                            <select id="stockageListeDouble2" class="stockageListeDouble"></select>
+
+                        </div>
+                    </div>
+
+                    <div class="visualClear"></div>
+                    <br class="visualClear"/><br/>
+                    <div class="formControls">
+                        <input class="bouton bouton_actualiser" type="button" value="Terminer" />
+                    </div>
+                    <input type="hidden" name="TYP_ELP_SELECT" id="TYP_ELP_SELECT"/>
+                    <input type="hidden" name="COD_ELP" id="COD_ELP"
+                           tal:attributes="value codeELP"/>
+                    <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                           tal:attributes="value infosELPSelectionne/TYP_ELP"/>
+                    <input type="hidden" name="redirection"
+                           tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"/>
+            </div>
+            </div>
+                </form>
+            </tal:define>
+        </div>
+    </metal:macro-->
+
+    <!-- Gestion de l'inscription/désinscription d'un enseignant responsable -->
+    <metal:macro define-macro="modif-enseignantRespELP">
+    <tal:define define="codeELP request/codeELP;
+                        infosELP python:context.getInfosELP(codeELP);
+                        EnsResp python:context.rechercherEnseignantResp(codeELP)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Modifier l'enseignant responsable</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form id="js-authorMod" method="post"
+              tal:attributes="action string:${context/absolute_url}/inscrireEnsResp_script">
+            <h3>
+                <i class="fa fa-search"></i><tal:block i18n:translate="">Recherchez un enseignant</tal:block>
+            </h3>
+
+            <div class="field">
+                <label for="input-auteurs"
+                       i18n:translate="">Nom ou identifiant</label>
+                <input type="text" id="input-auteurs" name="rechercheEns" />
+            </div>
+
+            <div class="field">
+                <label for="EnsResp" i18n:translate="">Responsable</label>
+                <input class="centrer" type="text" name="EnsResp"
+                       tal:attributes="value EnsResp/name | string:Aucun" readonly="readonly" />
+            </div>
+
+            <input type="hidden" name="COD_ELP"
+                   tal:attributes="value codeELP" />
+            <input type="hidden" name="TYP_ELP"
+                   tal:attributes="value infosELP/TYP_ELP" />
+            <input type="hidden" name="auteurs" value="auteur" />
+
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+        </form>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setFormOfferResp()" />
+
+    </tal:define>
+    </metal:macro>
+
+    <!-- Gestion de l'inscription/désinscription d'un ou de plusieurs enseignant(s) -->
+    <metal:macro define-macro="modif-enseignantsELP">
+    <tal:define define="codeELP request/codeELP;
+                        infosELP python:context.getInfosELP(codeELP);
+                        listeEnsInscrits python:context.rechercherUtilisateurs(codeELP, 'Personnel', 1, '', 0)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Inscrire des enseignants</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form id="js-coAuthorMod" method="POST"
+              tal:attributes="action string:${context/absolute_url}/inscrireEnseignant_script">
+            <h3 class="texte_icone icone_recherche"
+                i18n:translate="">Rechercher un enseignant</h3>
+
+            <div class="field">
+                <label for="input-coauteurs"
+                       i18n:translate="">Nom ou identifiant</label>
+                <input type="text" id="input-coauteurs" name="username" />
+            </div>
+
+            <h3 class="texte_icone icone_users"
+                i18n:translate="">Enseignants inscrit à cet élément</h3>
+
+            <div class="panel callout radius"
+                 tal:condition="not:listeEnsInscrits"
+                 i18n:translate="">
+                Aucun
+            </div>
+
+        <tal:condition condition="listeEnsInscrits">
+
+            <span>
+                <i class="fa fa-info-circle"></i>
+                <tal:block i18n:translate="">Décocher pour supprimer</tal:block>
+            </span>
+
+            <table>
+            <tal:repeat repeat="enseignant listeEnsInscrits">
+
+                <tr>
+                    <td class="check">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="enseignants_mod:list" checked="checked"
+                                   tal:attributes="id string:switch_reveal-${repeat/enseignant/index};
+                                                   value enseignant/SESAME_ETU" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/enseignant/index}"
+                                   i18n:attributes="title"></label>
+                            <input type="hidden" name="enseignants_actu:list"
+                                   tal:attributes="value enseignant/SESAME_ETU" />
+                        </div>
+                    </td>
+                    <td class="text-left" tal:content="enseignant/name" />
+                </tr>
+
+            </tal:repeat>
+            </table>
+
+        </tal:condition>
+
+            <input type="hidden" name="COD_ELP" id="COD_ELP"
+                   tal:attributes="value codeELP" />
+            <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                   tal:attributes="value infosELP/TYP_ELP" />
+
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+
+        </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setFormOfferTeacher()" />
+
+    </tal:define>
+    </metal:macro>
+    <!--
+    <metal:macro define-macro="modif-enseignantsELP">
+    <tal:define define="codeELP request/codeELP;
+                        infosELP python:context.getInfosELP(codeELP);
+                        listeEnsInscrits python:context.rechercherUtilisateurs(codeELP, 'Personnel', 1, '', 0);
+                        tousEns python:context.rechercherUtilisateurs(codeELP, 'Personnel', 0, listeEnsInscrits, 0)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Inscrire des enseignants</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form name="modif-inscripEnseignantsELP"
+               tal:attributes="action string:${context/absolute_url}/inscripEnseignant" method="post">
+            <div class="listesDoubles">
+                <div class="cell width-1:3 position-0">
+                    <span class="texte_icone icone_recherche" i18n:translate="">Rechercher un enseignant</span>
+                    <br/><br/>
+                    <input type="text" id="champFiltreListeDouble1" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                    <button type="button" id="clearFiltreListeDouble1" class="clearFiltreListeDouble">X</button>
+
+                    <select name="listeTousEns:list" id="listeDouble1" multiple="multiple" class="listeDouble">
+                    <tal:entry repeat="itemAEncoder tousEns">
+                        <option tal:attributes="value itemAEncoder/SESAME_ETU">
+                            <tal:block content="itemAEncoder/name"/>
+                            (sesame : <tal:block replace="itemAEncoder/SESAME_ETU"/>)
+                        </option>
+                        </tal:entry>
+                    </select>
+
+                    <span id="compteListeDouble1" class="countLabel compteListeDouble"></span>
+
+                    <select id="stockageListeDouble1" class="stockageListeDouble"></select>
+                </div>
+
+                <div class="cell width-1:3 position-1:3">
+                    <button id="versListeDouble2" type="button" class="versListeDouble"> > </button>
+                    <button id="versListeDouble1" type="button" class="versListeDouble"> < </button>
+                </div>
+
+                <div class="cell width-1:3 position-2:3">
+                    <span class="texte_icone icone_users" i18n:translate="">Enseignants inscrits :</span>
+                    <br/><br/>
+                    <input type="text" id="champFiltreListeDouble2" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                    <button type="button" id="clearFiltreListeDouble2" class="clearFiltreListeDouble">X</button>
+
+                    <select name="listeInscrit:list" id="listeDouble2" multiple="multiple" class="listeDouble">
+                    <tal:entry repeat="itemAEncoder listeEnsInscrits">
+                        <option tal:attributes="value itemAEncoder/SESAME_ETU">
+                            <tal:block content="itemAEncoder/name"/>
+                            (sesame : <tal:block replace="itemAEncoder/SESAME_ETU"/>)
+                            </option>
+                        </tal:entry>
+                    </select>
+
+                    <span id="compteListeDouble2" class="countLabel compteListeDouble"></span>
+
+                    <select id="stockageListeDouble2" class="stockageListeDouble"></select>
+
+                </div>
+            </div>
+            <input type="hidden" name="COD_ELP" id="COD_ELP"
+                   tal:attributes="value codeELP"/>
+            <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                   tal:attributes="value infosELP/TYP_ELP"/>
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+        </form>
+    </tal:define>
+    </metal:macro>
+    -->
+
+    <!-- Gestion de l'inscription/désinscription d'un étudiant -->
+    <metal:macro define-macro="modif-etudiantsELP">
+    <tal:define define="codeELP request/codeELP;
+                        infosELP python:context.getInfosELP(codeELP);
+                        listeEtuInscrit python:context.rechercherUtilisateurs(codeELP, 'Etudiant', 1)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Inscrire des étudiants</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form id="js-coAuthorMod" method="POST"
+              tal:attributes="action string:${context/absolute_url}/inscrireEtudiants_script">
+
+            <h3 class="texte_icone icone_recherche"
+                i18n:translate="">Rechercher un étudiant</h3>
+
+            <div class="field">
+                <label for="input-coauteurs"
+                       i18n:translate="">Nom ou identifiant</label>
+                <input type="text" id="input-coauteurs" name="username" />
+            </div>
+
+            <h3 class="texte_icone icone_users"
+                i18n:translate="">Étudiants inscrit à cet élément</h3>
+
+            <div class="panel callout radius"
+                 tal:condition="not:listeEtuInscrit"
+                 i18n:translate="">
+                Aucun
+            </div>
+
+        <tal:condition condition="listeEtuInscrit">
+
+            <span>
+                <i class="fa fa-info-circle"></i>
+                <tal:block i18n:translate="">Décocher pour supprimer</tal:block>
+            </span>
+
+            <table>
+            <tal:repeat repeat="etudiant listeEtuInscrit">
+
+                <tr>
+                    <td class="check">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="etudiants_mod:list" checked="checked"
+                                   tal:attributes="id string:switch_reveal-${repeat/etudiant/index};
+                                                   value etudiant/SESAME_ETU" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/etudiant/index}"
+                                   i18n:attributes="title"></label>
+                            <input type="hidden" name="etudiants_actu:list"
+                                   tal:attributes="value etudiant/SESAME_ETU" />
+                        </div>
+                    </td>
+                    <td class="text-left" tal:content="etudiant/name" />
+                </tr>
+
+            </tal:repeat>
+            </table>
+        </tal:condition>
+            <input type="hidden" name="COD_ELP" id="COD_ELP"
+                   tal:attributes="value codeELP"/>
+            <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                   tal:attributes="value infosELP/TYP_ELP"/>
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+
+        </form>
+    </tal:define>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setFormOfferStudent()" />
+
+    </metal:macro>
+
+    <!--metal:macro define-macro="modif-etudiantsELP">
+    <tal:define define="codeELP request/codeELP;
+                        infosELP python:context.getInfosELP(codeELP);
+                        listeEtuInscrit python:context.rechercherUtilisateurs(codeELP, 'Etudiant', 1);
+                        tousEtu python:context.rechercherUtilisateurs(codeELP, 'Etudiant', 0, listeEtuInscrit)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Inscrire des étudiants</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form name="modif-inscripEtudiantsELP"
+              tal:attributes="action string:${context/absolute_url}/inscripEtudiant" method="post">
+            <div class="listesDoubles">
+                <div class="cell width-1:3 position-0">
+                    <span class="texte_icone icone_recherche" i18n:translate="">Rechercher un étudiant</span>
+                    <br/><br/>
+                    <input type="text" id="champFiltreListeDouble1" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                    <button type="button" id="clearFiltreListeDouble1" class="clearFiltreListeDouble">X</button>
+
+                    <select name="listeTousEtu:list" id="listeDouble1" multiple="multiple" class="listeDouble">
+                        <tal:entry repeat="itemAEncoder tousEtu">
+                            <option tal:attributes="value itemAEncoder/SESAME_ETU">
+                                    <tal:block content="itemAEncoder/name"/>
+                                    (sesame : <tal:block replace="itemAEncoder/SESAME_ETU"/>)
+                            </option>
+                        </tal:entry>
+                    </select>
+
+                    <span id="compteListeDouble1" class="countLabel compteListeDouble"></span>
+
+                    <select id="stockageListeDouble1" class="stockageListeDouble"></select>
+                </div>
+
+                <div class="cell width-1:3 position-1:3">
+                    <button id="versListeDouble2" type="button" class="versListeDouble">&nbsp;>&nbsp;</button>
+                    <button id="versListeDouble1" type="button" class="versListeDouble">&nbsp;<&nbsp;</button>
+                </div>
+
+                <div class="cell width-1:3 position-2:3">
+                    <span class="texte_icone icone_users" i18n:translate="">Etudiants inscrits :</span>
+                    <br/><br/>
+                    <input type="text" id="champFiltreListeDouble2" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                    <button type="button" id="clearFiltreListeDouble2" class="clearFiltreListeDouble">X</button>
+
+                    <select name="listeInscrit:list" id="listeDouble2" multiple="multiple" class="listeDouble">
+                        <tal:entry repeat="itemAEncoder listeEtuInscrit">
+                            <option tal:attributes="value itemAEncoder/SESAME_ETU">
+                                    <tal:block content="itemAEncoder/name"/>
+                                    (sesame : <tal:block replace="itemAEncoder/SESAME_ETU"/>)
+                            </option>
+                        </tal:entry>
+                    </select>
+
+                    <span id="compteListeDouble2" class="countLabel compteListeDouble"></span>
+
+                    <select id="stockageListeDouble2" class="stockageListeDouble"></select>
+
+                </div>
+            </div>
+            <input type="hidden" name="COD_ELP" id="COD_ELP"
+                   tal:attributes="value codeELP"/>
+            <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                   tal:attributes="value infosELP/TYP_ELP"/>
+            <div class="formControls">
+                <button type="submit" class="button small radius">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+        </form>
+    </tal:define>
+    </metal:macro-->
+
+    <!-- Supprimer un élément pédagogique -->
+    <metal:macro define-macro="suppressionELP-form">
+        <tal:block define="codeELP request/codeELP;
+                           infosELP python:context.getInfosELP(codeELP)">
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Supprimer : </tal:block><tal:block replace="infosELP/LIB_ELP"/> <tal:block i18n:translate="">de l'offre de formation</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form name="suppressionELP-form"
+              tal:attributes="action string:${context/absolute_url}/supprimerELP_script" method="post">
+            <div class="panel alert radius">
+                <strong i18n:translate="">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
+            </div>
+            <input type="hidden" name="TYP_ELP" tal:attributes="value infosELP/TYP_ELP"/>
+            <input type="hidden" name="LIB_ELP" tal:attributes="value infosELP/LIB_ELP"/>
+            <input type="hidden" name="COD_ELP" tal:attributes="value infosELP/COD_ELP"/>
+            <div class="formControls">
+                <button type="submit" class="button small alert radius"
+                        name="folder_delete:method">
+                    <i class="fa fa-trash-o"></i>
+                    <tal:block i18n:translate="">Supprimer</tal:block>
+                </button>
+            </div>
+            </form>
+        </tal:block>
+    </metal:macro>
+
+    <!-- Rechercher un élément pédagogique -->
+    <metal:macro define-macro="rechercherELP">
+        <form method="post" name="element_add"
+              tal:attributes="action string:${context/absolute_url}/searchELP"
+              tal:define="typeRecherche request/typeRecherche | string:etape;
+                          termeRecherche request/termeRecherche | nothing;">
+            <div id="listingResultatApogee">
+                <div id="affichageApogee" tal:condition="termeRecherche">
+                      <tal:variable define="resultatRecherche python:context.rechercheApogee(typeRecherche, termeRecherche)">
+                          <tal:block condition="not:resultatRecherche">
+                              <div class="listing_vide">La recherche n'a donné aucun résultat</div>
+                          </tal:block>
+                          <tal:listing condition="resultatRecherche">
+                              <table class="listing">
+                                  <thead>
+                                      <tr>
+                                          <th i18n:translate="" class="fullwidth">Libellé</th>
+                                          <th i18n:translate="">Code</th>
+                                          <th i18n:translate="">Nbr d'étudiants</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tal:entry repeat="itemAEncoder resultatRecherche">
+                                          <tr tal:define="item python:context.encodeUTF8(itemAEncoder);
+                                                          code python:item[1];
+                                                          oddrow repeat/itemAEncoder/odd"
+                                              tal:attributes="class python:context.test(oddrow, 'even', 'odd');">
+                                              <td tal:content="python:item[0]" class="fullwidth"/>
+                                              <td class="tdcenter" tal:content="python:context.test(typeRecherche == 'groupe', item[2], item[1])"/>
+                                              <td class="tdcenter" tal:content="python:item[-1]"/>
+                                          </tr>
+                                      </tal:entry>
+                                  </tbody>
+                              </table>
+                          </tal:listing>
+                      </tal:variable>
+                </div>
+            </div>
+        </form>
+    </metal:macro>
+
+    <!-- Informations d'un élément pédagogique -->
+    <metal:macro define-macro="informationELP">
+        <tal:block define="codeELP request/codeELP;
+                           infosELP python:context.getToutesInfosELP(codeELP)">
+        <h2 i18n:translate="">
+            <tal:replace replace="infosELP/LIB_ELP"/>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Titre : </strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/LIB_ELP"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modificationELP-form&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Type :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/TYP_ELP"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modificationELP-form&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Code :</strong>
+            </div>
+            <div class="small-10 columns">
+                <tal:replace replace="infosELP/COD_ELP"/>
+            </div>
+            <tal:comment replace="nothing">
+            <!--div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modificationELP-form&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div-->
+            </tal:comment>
+        </div>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Responsable :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/RESPONSABLE | string:Aucun"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-enseignantRespELP&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Nb ens. :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/nb_ens"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-enseignantsELP&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="small-2 columns">
+                <strong>Nb etu. :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/nb_etu"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"
+                   data-reveal-id="reveal-second" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionBDD&amp;macro=modif-etudiantsELP&amp;codeELP=${codeELP}">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row"
+             tal:condition="python:infosELP['TYP_ELP'] != 'etape'">
+            <div class="small-2 columns">
+                <strong>Nb Diplômes :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/etape"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${codeELP}&amp;TYP_ELP_SELECT=etape">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row"
+             tal:condition="python:not infosELP['TYP_ELP'] in ['ue', 'uel']">
+            <div class="small-2 columns">
+                <strong>Nb UEs :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/ue"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${codeELP}&amp;TYP_ELP_SELECT=ue">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row"
+             tal:condition="python:not infosELP['TYP_ELP'] in ['ue', 'uel']">
+            <div class="small-2 columns">
+                <strong>Nb UELs :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/uel"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${codeELP}&amp;TYP_ELP_SELECT=uel">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        <div class="row"
+             tal:condition="python:infosELP['TYP_ELP'] != 'groupe'">
+            <div class="small-2 columns">
+                <strong>Nb Groupes :</strong>
+            </div>
+            <div class="small-8 columns">
+                <tal:replace replace="infosELP/groupe"/>
+            </div>
+            <div class="small-2 columns">
+                <a class="button tiny"tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${codeELP}&amp;TYP_ELP_SELECT=groupe">
+                    <i class="fa fa-pencil fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </div>
+        </div>
+        </tal:block>
+    </metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

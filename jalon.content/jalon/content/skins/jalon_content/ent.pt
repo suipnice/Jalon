@@ -1,0 +1,90 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="ent_body">
+
+        <main id="accueil" role="main" aria-labelledby="page_title">
+
+            <div class="jumbotron" role="banner" aria-labelledby="page_title">
+
+                <h1>Jalon</h1>
+                <h2>
+                    Ergonomie<span class="show-for-medium-up">&nbsp;• </span><br class="show-for-small-only">
+                    Simplicité<span class="show-for-medium-up">&nbsp;• </span><br class="show-for-small-only">
+                    Intégration
+                </h2>
+
+<tal:comment replace="nothing"><!--
+
+                <div class="row" data-equalizer="data-equalizer">
+
+                    <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+                        <a class="connection-button" href="http://jalon.unice.fr">
+                            <i class="fa fa-refresh"></i>Continuer dans l'ENT
+                        </a>
+                    </div>
+
+                    <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch">
+                        <a class="connection-button" href="https://login.unice.fr/login?service=http%3A//jalon.unice.fr/logged_in" target="_blank">
+                            <i class="fa fa-paper-plane"></i>Continuer en « pleine page »
+                        </a>
+                    </div>
+
+--></tal:comment>
+
+                <div class="row">
+
+                    <div class="small-12 columns">
+                        <a class="connection-button" href="https://login.unice.fr/login?service=http%3A//jalon.unice.fr/logged_in" target="_blank">
+                            <i class="fa fa-paper-plane"></i>Continuer sur Jalon
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+<tal:comment replace="nothing"><!--
+            <div class="row">
+
+                <div class="medium-6 small-12 columns">
+                    <div class="panel callout radius text-left">
+                        Choisissez "<strong>Continuer dans l'ENT</strong>" pour utiliser Jalon depuis la page « J@lon-Pédagogie » de l'ENT.
+                    </div>
+                </div>
+                <div class="medium-6 small-12 columns text-left">
+                    <div class="panel callout radius">
+                        Choisissez "<strong>Continuer en « pleine page »</strong>" pour utiliser Jalon depuis un nouvel onglet (ou une nouvelle fenêtre, suivant le paramétrage de votre navigateur).
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="small-12 columns">
+                    <div class="panel warning radius">
+                        Quel que soit votre choix, votre authentification sera maintenue.
+                    </div>
+                </div>
+
+            </div>
+
+--></tal:comment>
+
+            <div class="row">
+                <div class="small-12 columns"></div>
+            </div>
+
+        </main>
+
+</metal:core>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<object name="portal_types" meta_type="Plone Types Tool">
+ <property
+    name="title">Controls the available content types in your portal</property>
+ <object name="Plone Site"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonAnnonce"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonBoiteDepot"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonConnect"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonCours"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonCoursWims"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonExerciceWims"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonFile"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonFolder"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonForum"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonRessourceExterne"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="JalonTermeGlossaire"
+    meta_type="Factory-based Type Information with dynamic views"/>
+ <object name="Link"
+    meta_type="Factory-based Type Information with dynamic views"/>
+</object>

@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!-- Gestion des informations de connexion à la base de données des formations de Jalon -->
+<metal:macro define-macro="gestion_connexion_bdd">
+    <br/>
+    <div tal:define="message request/message | nothing"
+         tal:condition="message"
+         class="panel callout radius">
+        <tal:condition condition="python:context.test(message == '1', '1', 0)">
+            Modifications enregistrées.
+        </tal:condition>
+        <div tal:condition="python:context.test(message == '0', '0', 0)">
+            Veuillez renseigner tous les champs.
+        </div>
+        <tal:condition condition="python:context.test(message == '2', '2', 0)">
+            URL de connexion invalide.
+        </tal:condition>
+        <tal:condition condition="python:context.test(message == '3', '3', 0)">
+            Base de données créée avec succès.
+        </tal:condition> 
+    </div>  
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveVariablesBDD"
+          tal:define="bdd context/getVariablesBDD">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="typeBDD" i18n:translate="typeBDD">
+                        Type de la base de données utilisée (sqlite, apogee, mysql ...)
+                    </label>
+                    <input type="text" name="typeBDD"
+                           maxlength="255" size="30"
+                           tal:attributes="value bdd/typeBDD | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="urlConnexion" i18n:translate="urlConnexion">
+                        URL de connexion à la base de données
+                    </label>
+                    <input type="text" name="urlConnexion"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/urlConnexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activerStockageConnexion" i18n:translate="activerStockageConnexion">
+                        Activer le stockage des connexions des utilisateurs
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activerStockageConnexion" id="activerStockageConnexion" value="1"
+                               tal:attributes="checked python:context.test(bdd['activerStockageConnexion'], 'checked', '')" />
+                        <label for="activerStockageConnexion"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activerStockageConnexion" id="desactiverStockageConnexion" value="0"
+                               tal:attributes="checked python:context.test(not bdd['activerStockageConnexion'], 'checked', '')" />
+                        <label for="desactiverStockageConnexion"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activerStockageConsultation" i18n:translate="activerStockageConsultation">
+                        Activer le stockage des consultations des cours par les utilisateurs
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activerStockageConsultation" id="activerStockageConsultation" value="1"
+                               tal:attributes="checked python:context.test(bdd['activerStockageConsultation'], 'checked', '')" />
+                        <label for="activerStockageConsultation"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activerStockageConsultation" id="desactiverStockageConsultation" value="0"
+                               tal:attributes="checked python:context.test(not bdd['activerStockageConsultation'], 'checked', '')" />
+                        <label for="desactiverStockageConsultation"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

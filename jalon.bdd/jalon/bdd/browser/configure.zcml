@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="jalon.bdd">
+
+  <include package="plone.app.contentmenu" />
+
+  <!-- jalon control panel form view -->    
+  <browser:page
+    name="jalon-bdd"
+    for="jalon.bdd.content.interfaces.IJalonBDD"
+    class=".scripts.connecteurbdd.JalonConnecteurBDD"
+    template="templates/jalon_connecteur_bdd.pt"
+    permission="cmf.ManagePortal"/>
+
+  <browser:resourceDirectory
+      name="jalon.bdd.javascripts"
+      directory="javascripts"
+      layer="*"
+      />
+</configure>

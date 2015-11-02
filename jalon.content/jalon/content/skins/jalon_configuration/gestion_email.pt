@@ -1,0 +1,189 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_email">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+        <h2>
+            <i class="fa fa-envelope-o"></i><tal:block i18n:translate="">Configuration de l'envoi des courriels</tal:block>
+        </h2>
+        <tal:define define="isMailhost context/isMailhost">
+            <div class="panel warning radius"
+                 tal:condition="not:isMailhost">
+                <tal:block i18n:translate="">Avant de poursuivre vous devez…</tal:block>
+                <a class="button tiny success right" href="../@@mail-controlpanel" i18n:translate="">Configurer l'envoi de courriels</a>
+            </div>
+            <div class="panel callout radius"
+                 tal:condition="isMailhost"
+                 i18n:translate="">
+                <tal:block i18n:translate="">Envoi de courriels configuré.</tal:block>
+                <a class="button tiny right" href="../@@mail-controlpanel">Voir la configuration pour l'envoi de courriels</a>
+            </div>
+        </tal:define>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigCourriels"
+              tal:define="courriels context/getPropertiesCourriels">
+            <div class="row">
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Envoi de courriels lors des erreurs
+                        </label>
+                        <input type="radio" name="activer_erreur" id="activer_erreur" value="1"
+                               tal:attributes="checked python:context.test(courriels['activer_erreur'], 'checked', '')" />
+                        <label for="activer_erreur" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_erreur" id="desactiver_erreur" value="0"
+                               tal:attributes="checked python:context.test(not courriels['activer_erreur'], 'checked', '')" />
+                        <label for="desactiver_erreur" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Spécifier un adresse réception des courriels d'erreur
+                        </label>
+                        <input type="radio" name="activer_email_erreur" id="activer_email_erreur" value="1"
+                               tal:attributes="checked python:context.test(courriels['activer_email_erreur'], 'checked', '')" />
+                        <label for="activer_email_erreur" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_email_erreur" id="desactiver_email_erreur" value="0"
+                               tal:attributes="checked python:context.test(not courriels['activer_email_erreur'], 'checked', '')" />
+                        <label for="desactiver_email_erreur" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                        <p class="discreet"
+                              i18n:translate="">
+                            Si désactivé, utilisation de l'adresse d'envoi pour la réception
+                        </p>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="adresse_email_erreur" i18n:translate="adresse_email_erreur">
+                            Adresse de réception des courriels d'erreur
+                        </label>
+                        <input type="text" id="adresse_email_erreur" name="adresse_email_erreur"
+                               maxlength="255" size="30"
+                               tal:attributes="value courriels/adresse_email_erreur | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Utilisation de liste de diffusion
+                        </label>
+                        <input type="radio" name="activer_liste_diffusion" id="activer_liste_diffusion" value="1"
+                               tal:attributes="checked python:context.test(courriels['activer_liste_diffusion'], 'checked', '')" />
+                        <label for="activer_liste_diffusion" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_liste_diffusion" id="desactiver_liste_diffusion" value="0"
+                               tal:attributes="checked python:context.test(not courriels['activer_liste_diffusion'], 'checked', '')" />
+                        <label for="desactiver_liste_diffusion" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="type_diffusion" i18n:translate="">
+                            Type d'élément utilisant des listes de diffusion
+                        </label>
+                        <input type="text" id="type_diffusion" name="type_diffusion"
+                               maxlength="255" size="30"
+                               tal:attributes="value courriels/type_diffusion | nothing" />
+                        <p class="discreet"
+                              i18n:translate="">
+                            etape, ue, uel et groupe, séparé par des virgules
+                        </p>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="format_diffusion" i18n:translate="format_diffusion">
+                            Format de la liste de diffusion
+                        </label>
+                        <input type="text" id="format_diffusion" name="format_diffusion"
+                               maxlength="255" size="30"
+                               tal:attributes="value courriels/format_diffusion | nothing" />
+                        <p class="discreet"
+                              i18n:translate="">
+                            Utiliser la variable *-*code*-* exemple: *-*code*-*@jalon.fr
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

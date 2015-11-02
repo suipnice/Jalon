@@ -1,0 +1,25 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="jalon.wims">
+
+    <browser:page
+        for="..interfaces.utility.IWims"
+        name="wims-controlpanel"
+        class=".controlpanel.WimsControlPanelForm"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:pages
+        for="*"
+        class=".browser.WimsBrowserView"
+        permission="cmf.ModifyPortalContent">
+        <browser:page attribute="save" name="wims-save" /> 
+    </browser:pages>
+
+    <browser:resourceDirectory
+        name="wims.images"
+        directory="images"
+        />
+
+</configure>

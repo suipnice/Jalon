@@ -1,0 +1,234 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+    Formulaire d'affichage d'un élément
+        En entrée :
+            request/section : page d'appel
+            request/idElement : id de l'élément à afficher
+-->
+<metal:macro define-macro="afficher-element">
+
+<tal:define define="idElement request/idElement;
+                    typeElement python:context.getTypeSousObjet(idElement);
+                    aff_boutons python:context.autoriserAffichageSousObjet(idElement, typeElement);
+                    parent python:context.getParentPlanElement(idElement, 'racine', '');
+                    isAfficher python:context.isAfficherElement(parent['affElement'], parent['masquerElement'])['val']">
+
+    <h2>
+        <tal:block i18n:translate="">Afficher</tal:block>
+        <tal:condition condition="python:typeElement not in ['AutoEvaluation','BoiteDepot','Examen']">
+            <tal:block tal:content="string:la ressource" i18n:translate="" />
+            « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(idElement)['titreElement']), 80)" /> »
+        </tal:condition>
+        <tal:block tal:condition="python:typeElement == 'AutoEvaluation'" tal:content="string:cette auto-évaluation" i18n:translate="" />
+        <tal:block tal:condition="python:typeElement == 'BoiteDepot'" tal:content="string:cette boîte de dépôt" i18n:translate="" />
+        <tal:block tal:condition="python:typeElement == 'Examen'" tal:content="string:cet examen" i18n:translate="" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel warning radius"
+         tal:condition="python:not parent['idElement'] == 'racine' and not isAfficher">
+         <i class="fa fa-warning"></i><strong i18n:translate="">Attention :</strong>
+         <tal:block i18n:translate="">Le titre du plan : "<strong tal:content="parent/titreElement" />" contenant cet élément est actuellement masqué. Afficher cet élément affichera automatiquement tous les titres le comprenant, jusqu'à la racine du plan.</tal:block>
+    </div>
+
+    <div tal:condition="not:aff_boutons/val" id="message">
+        <div tal:condition="python:aff_boutons['reason'] == 'listeExos'"
+             class="panel warning radius"
+             i18n:translate="">
+             Vous ne pouvez pas afficher une auto-évaluation ou un examen tant que sa liste d'exercices est vide.
+        </div>
+        <div tal:condition="python:aff_boutons['reason'] != 'listeExos'"
+             class="panel warning radius"
+             i18n:translate="">
+            Vous ne pouvez pas afficher cette ressource.
+            <tal:message tal:content="aff_boutons/reason"/>
+        </div>
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="aff_boutons/val"
+         i18n:translate="">
+        Vous êtes sur le point d'afficher cette ressource à vos étudiants.
+    </div>
+
+    <tal:block condition="aff_boutons/val">
+    <div tal:condition="python:typeElement == 'Examen'">
+        <div class="panel warning radius"
+             i18n:translate="">
+             <strong><i class="fa fa-warning"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié.
+        </div>
+    </div>
+
+    <div class="text-center">
+    <tal:condition condition="not:python:request['idElement'].startswith('Titre')">
+        <tal:block i18n:translate="">L'afficher directement…</tal:block>
+    </tal:condition>
+    <tal:condition condition="python:request['idElement'].startswith('Titre')">
+        <tal:block i18n:translate="">Afficher directement le titre / sous titre et son contenu…</tal:block>
+    </tal:condition>
+    </div>
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
+
+        <input type="hidden" name="chapitre" value="contenu"
+               tal:condition="python:typeElement == 'Titre'"/>
+        <input type="hidden" name="date-affichage-now" value="now"/>
+        <input type="hidden" name="attribut" value="affElement"/>
+        <input type="hidden" name="idElement"
+               tal:attributes="value request/idElement"/>
+        <input type="hidden" name="idParent"
+               tal:attributes="value parent/idElement"
+               tal:condition="python:not parent['idElement'] == 'racine' and not isAfficher"/>
+        <input type="hidden" name="orig_template"
+               tal:attributes="value string:${context/absolute_url}/${request/page}"/>
+        <div class="formControls">
+        <input class="button small radius" type="submit"
+               name="cours_afficher_ressource:method" value="Afficher maintenant"
+               i18n:attributes="value label_afficher;"/>
+        </div>
+    </form>
+
+    <div class="panel warning radius" tal:condition="python:typeElement == 'Titre'" i18n:translate="">NB : les autoévaluations et examens vides ne seront pas affichés avec le titre.</div>
+
+    <div class="text-center" i18n:translate="">
+        … ou programmer son affichage.
+    </div>
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource"
+          tal:define="formname string:afficher-element;
+                      inputname string:date-affichage;
+                      inputvalue python:context.getAffElement(request['idElement'], 'affElement')">
+
+        <div class="formControls">
+            <input id="datetime" name="datetime" type="datetime"
+                   required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                   tal:attributes="value python:context.getAffElement(request['idElement'], 'affElement')" />
+        </div>
+
+        <input type="hidden" name="chapitre" value="contenu"
+               tal:condition="python:request['idElement'].startswith('Titre')" />
+        <input type="hidden" name="attribut" value="affElement" />
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
+        <div class="formControls">
+            <input class="button small radius" type="submit"
+                   name="cours_afficher_ressource:method" value="Programmer"
+                   i18n:attributes="value label_programmer;" />
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setDateTimePicker('datetime')" />
+
+    </tal:block>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Formulaire de masquage d'un élément (immédiatement ou en différé)
+-->
+<metal:macro define-macro="masquer-element">
+
+    <h2 tal:define="idElement request/idElement;
+                    typeElement python:context.getTypeSousObjet(idElement)">
+        <tal:block i18n:translate="">Masquer</tal:block>
+        <tal:condition condition="python:typeElement not in ['AutoEvaluation','BoiteDepot','Examen']">
+            <tal:block tal:content="string:la ressource" i18n:translate="" />
+            « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(idElement)['titreElement']), 80)" /> »
+        </tal:condition>
+        <tal:block tal:condition="python:typeElement == 'AutoEvaluation'" tal:content="string:cette auto-évaluation" i18n:translate="" />
+        <tal:block tal:condition="python:typeElement == 'BoiteDepot'" tal:content="string:cette boîte de dépôt" i18n:translate="" />
+        <tal:block tal:condition="python:typeElement == 'Examen'" tal:content="string:cet examen" i18n:translate="" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel warning radius"
+         i18n:translate="">
+        Vous êtes sur le point de masquer cette ressource à vos étudiants.
+    </div>
+
+    <div class="text-center"
+         tal:condition="not:python:request['idElement'].startswith('Titre')"
+         i18n:translate="">
+        La masquer maintenant…
+    </div>
+
+    <div class="text-center"
+         tal:condition="python:request['idElement'].startswith('Titre')"
+         i18n:translate="">
+        Masquer maintenant le titre / sous titre et son contenu…
+    </div>
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
+
+        <input type="hidden" name="chapitre" value="contenu"
+               tal:condition="python:request['idElement'].startswith('Titre')" />
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+        <input type="hidden" name="date-affichage-now" value="now" />
+        <input type="hidden" name="attribut" value="masquerElement" />
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
+
+        <div class="formControls">
+            <input class="button warning small" type="submit"
+                   name="cours_afficher_ressource:method" value="Masquer la ressource maintenant"
+                   i18n:attributes="value" />
+        </div>
+
+    </form>
+
+    <div class="text-center" i18n:translate="">
+        … ou programmer son masquage.
+    </div>
+
+    <form id="js-hideDatetimepickerContainer" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
+
+        <div class="formControls">
+            <input id="datetime" name="datetime" type="datetime"
+                   required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                   tal:attributes="value python:context.getAffElement(request['idElement'], 'masquerElement')" />
+        </div>
+
+        <input type="hidden" name="chapitre" value="contenu"
+               tal:condition="python:request['idElement'].startswith('Titre')" />
+        <input type="hidden" name="attribut" value="masquerElement" />
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
+
+        <div class="formControls">
+            <input class="button warning small" type="submit"
+                   name="cours_afficher_ressource:method" value="Programmer le masquage de la ressource à l'instant choisi"
+                   i18n:attributes="value" />
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setDateTimePicker('datetime')" />
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

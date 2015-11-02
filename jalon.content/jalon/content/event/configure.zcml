@@ -1,0 +1,12 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="jalon.content">
+
+  <subscriber for="Products.Ploneboard.interfaces.IComment
+      zope.lifecycleevent.interfaces.IObjectAddedEvent"
+      handler=".notify.sendMail"
+      zcml:condition="installed jalon.content"/>
+
+</configure>

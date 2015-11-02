@@ -1,0 +1,19 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:cmf="http://namespaces.zope.org/cmf"
+    i18n_domain="jalon.theme">
+
+  <!-- File System Directory Views registration -->
+  <!-- <cmf:registerDirectory name="jalon_theme_custom_images"/> -->
+  <cmf:registerDirectory name="jalon_theme_custom_templates"/>
+  <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
+  <cmf:registerDirectory name="jalon_theme_ckeditor_script"/>
+  <cmf:registerDirectory name="jalon_theme_styles"/>
+
+  <!-- Note: This could also be done for all folders at once
+       by replacing the previous lines with this one:
+  <cmf:registerDirectory name="skins" directory="skins" recursive="True" />
+  -->
+  <cmf:registerDirectory name="jalon_theme_ckeditor_script" directory="skins" recursive="True" />
+
+</configure>

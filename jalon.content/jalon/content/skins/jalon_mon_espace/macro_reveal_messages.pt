@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="reveal_no_deletion">
+
+    <div id="reveal-no_deletion" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <tal:block i18n:translate="">Suppression non autorisée</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <div class="panel warning radius">
+             <i class="fa fa-info-circle no-pad"></i>
+             <strong i18n:translate="">La ressource est attachée à au moins un cours :</strong><br />
+             <tal:block i18n:translate="">vous devez la détacher du(des) cours ou elle est utilisée avant de pouvoir la supprimer.</tal:block>
+             <tal:block i18n:translate="">Pour ce faire, utilisez l'option « Détacher » dans le menu des actions disponibles pour cette ressource.</tal:block>
+        </div>
+
+    </div>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

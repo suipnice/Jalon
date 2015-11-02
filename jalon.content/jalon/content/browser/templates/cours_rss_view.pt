@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<rss xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:creativeCommons="http://backend.userland.com/creativeCommonsRssModule"
+     xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ev="http://purl.org/rss/1.0/modules/event/"
+     xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#"
+     xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+     xmlns:itunesu="http://www.itunesu.com/feed" xmlns:media="http://search.yahoo.com/mrss/"
+     xmlns:s="http://purl.org/steeple" version="2.0"
+     xmlns:tal="http://xml.zope.org/namespaces/tal"
+     xmlns:metal="http://xml.zope.org/namespaces/metal"
+     xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+
+<metal:core tal:define="personnel python:context.isPersonnel(user);
+                        anonymous python:user.has_role('Anonymous');
+                        categorie_itunesu python:context.getCategorieiTunesU();
+                        planRSS python:context.getPlanRSS(personnel);
+                        owner string:Université Nice Sophia Antipolis - Nice Sophia Antipolis University;
+                        owner_mail string:pi@unice.fr">
+
+    <channel tal:condition="not:categorie_itunesu">
+        Une erreur est survenue dans la génération de ce flux, merci de contacter l'administrateur.
+    </channel>
+    <channel tal:condition="categorie_itunesu">
+
+        <language>fr-FR</language>
+        <itunes:author tal:content="owner"></itunes:author>
+        <copyright>© <tal:block content="owner"/></copyright>
+        <itunes:owner>
+            <itunes:name tal:content="owner"/>
+            <itunes:email tal:content="owner_mail"/>
+        </itunes:owner>
+        <itunes:explicit>no</itunes:explicit>
+        <title tal:content="context/Title"/>
+        <link tal:content="python:context.absolute_url()"/>
+        <itunes:summary tal:content="context/Description"/>
+        <description tal:content="context/Description"/>
+        <itunes:image tal:attributes="href categorie_itunesu/icon"/>
+        <image>
+            <url tal:content="categorie_itunesu/icon"/>
+            <title tal:content="context/Title"/>
+            <link tal:content="python:context.absolute_url()"/>
+        </image>
+        <category tal:content="categorie_itunesu/main_category"></category>
+        <itunes:category text="iTunes U">
+            <itunes:category tal:attributes="text categorie_itunesu/main_category">
+                <itunes:category tal:attributes="text categorie_itunesu/sub_category"/>
+            </itunes:category>
+        </itunes:category>
+        <!--
+        <itunes:provider>UNS</itunes:provider>
+        <itunes:subtitle></itunes:subtitle>
+        <itunes:complete>false</itunes:complete>
+        -->
+
+        <tal:block repeat="element planRSS">
+
+            <item>
+                <title tal:content="element/titreElement"/>
+                <itunes:subtitle tal:content="element/descriptionElement"/>
+                <description tal:content="element/descriptionElement"/>
+                <itunes:summary tal:content="element/descriptionElement"/>
+
+                <enclosure tal:attributes="url element/urlElement; length element/poidsElement; type element/mimeElement;"/>
+                <guid isPermaLink="true" tal:content="element/urlElement"/>
+                <pubDate tal:content="python:element['affElement'].ISO8601()"/>
+                <itunes:author tal:content="owner"/>
+                <category tal:content="categorie_itunesu/sub_category"></category>
+                <!-- itunes:provider>UNS</itunes:provider -->
+                <itunes:explicit>no</itunes:explicit>
+                <itunes:order tal:content="repeat/element/index"/>
+            </item>
+
+        </tal:block>
+
+    </channel>
+
+</metal:core>
+
+</rss>

@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <tal:condition condition="request/actif">
+        <h2>
+            <tal:block i18n:translate="">Invalider ce dépot ?</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <div class="panel warning radius"
+             i18n:translate="">
+            Pour signaler ce dépôt comme « invalide » à votre enseignant (qui ne le prendra pas en compte) cliquez sur le bouton « Invalider ».
+        </div>
+        <form tal:attributes="action string:${context/absolute_url}/activer_depot_script"
+              method="post">
+            <input type="hidden" name="idDepot" tal:attributes="value request/idElement"/>
+            <input type="hidden" name="actif" value=""/>
+            <div class="formControls">
+                <input class="button small warning radius" type="submit" name="Ignorer" value="Invalider"
+                       i18n:attributes="value label_ignorer;"/>
+            </div>
+        </form>
+    </tal:condition>
+
+    <tal:condition condition="not:request/actif">
+        <h2>
+            <tal:block i18n:translate="">Valider ce dépôt ?</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+         <div class="panel callout radius"
+             i18n:translate="">
+            Pour signaler ce dépôt comme « valide » à votre enseignant (qui le prendra en compte) cliquez sur le bouton « Valider ».
+         </div>
+         <form tal:attributes="action string:${context/absolute_url}/activer_depot_script"
+               method="post">
+            <input type="hidden" name="idDepot" tal:attributes="value request/idElement"/>
+            <input type="hidden" name="actif" value="actif"/>
+            <div class="formControls">
+                <input class="button small radius" type="submit" name="Valider" value="Valider"
+                       i18n:attributes="value label_revalide;"/>
+            </div>
+        </form>
+    </tal:condition>
+
+</metal:main>
+</body>
+</html>

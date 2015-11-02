@@ -1,0 +1,192 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+<metal:macro define-macro="messages">
+
+    <tal:define define="message request/message | nothing">
+
+        <div id="js-alert_box" class="small-12 columns"
+             tal:condition="message">
+
+    <tal:comment replace="nothing"><!-- FAILURES --></tal:comment>
+
+        <tal:block condition="python:message=='no_exercice_selected'">
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                Vous n'avez sélectionné aucun exercice. Veuillez en sélectionner au moins un pour créer un groupe.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+    	<tal:block condition="python:message=='no_title'">
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                Vous n'avez pas défini de titre pour votre groupe d'exercices. Merci d'en définir un.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+        <tal:block condition="python:message=='wims_unavailable'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+        <tal:block condition="python:message=='wims_unknown_error'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Une erreur est survenue. Merci de contacter l'administrateur.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+        <tal:block condition="python:message=='wims_syntax_error'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Votre exercice « <tal:block tal:content="request/title" i18n:name="title"/> » n'a pas été enregistré, probablement suite à une erreur de syntaxe.<br />Par exemple, lorsque vous utilisez des parenthèses, accolades ou crochets, veillez à les placer par paires correctement fermées.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+    	<tal:block condition="python:message=='wims_bad_conf'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Connexion au serveur WIMS impossible. Veuillez contacter votre administrateur.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+        <tal:block condition="python:message=='unknown_model'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Une erreur est survenue (modèle inexistant ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+        <tal:block condition="python:message=='unknown_error'">
+            <div data-alert="data-alert" class="alert-box alert radius" i18n:translate="">
+                Une erreur inconnue est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+    <tal:comment replace="nothing"><!-- Erreur Wims generique (retour inattendu de WIMS) --></tal:comment>
+        <tal:block condition="python:message=='wims_bad_rep'">
+            <div data-alert="data-alert" class="alert-box alert radius">
+                <span i18n:translate="">Une erreur est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.</span>
+                <div>
+                    <strong 18n:translate="">Information sur l'erreur :</strong>
+                    <pre class="description" tal:content="request/err_desc | nothing"></pre>
+                </div>
+                <a class="close"></a>
+            </div>
+        </tal:block>
+
+
+    <tal:comment replace="nothing"><!-- BOTH --></tal:comment>
+
+        <tal:block condition="python:message=='password-sent'">
+            <div tal:condition="python:infosBoite['verrou']!=password" data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                Code d'accès incorrect.
+            </div>
+            <div tal:condition="python:infosBoite['verrou']==password" data-alert="data-alert" class="alert-box success radius" i18n:translate="">
+                Code d'accès correct. Vous pouvez continuer.
+            </div>
+        </tal:block>
+
+
+            <tal:comment replace="nothing">
+            <!-- SUCCESS -->
+            <!--div tal:condition="python:message=='exercice_added'" data-alert="data-alert" class="alert-box success radius" i18n:translate="">
+                L'exercice « <tal:block tal:content="request/title" i18n:name="title"/> » a été ajouté. Construisez-le ci-dessous.
+            </div-->
+
+            <!--div tal:condition="python:message=='groupe_added'" data-alert="data-alert" class="alert-box success radius" i18n:translate="">
+                Votre groupe d'exercices « <tal:block tal:content="request/title" i18n:name="title"/> » a bien été créé.
+            </div-->
+
+            <!--div tal:condition="python:message=='exercice_modified'" data-alert="data-alert" class="alert-box success radius" i18n:translate="">
+                Votre exercice « <tal:block tal:content="request/title" i18n:name="title"/> » a bien été modifié.
+            </div-->
+
+            <!--
+                NE PAS OUBLIER DE TESTER S'IL FAUT TRANSFERER CE BLOCK DANS "global_statusmessage", SINON LE SUPPRIMER ET REMONTER L'INFO
+            -->
+            </tal:comment>
+
+        </div>
+
+        <tal:block define="script string:alterAlertBox()">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+
+    </tal:define>
+</metal:macro>
+
+
+<!-- WIMS activity unavailable -->
+<metal:macro define-macro="wims_activity_unavailable">
+	<div id="message" >
+		<div class="failure wims_unavailable">
+			<tal:block i18n:translate="">Impossible d'accéder à cette activité :</tal:block>
+				<p i18n:translate="">Le serveur WIMS est actuellement injoignable. Veuillez réessayer ultérieurement svp.</p>
+		</div>
+	</div>
+</metal:macro>
+
+<!-- WIMS exam Bad IP detected -->
+<metal:macro define-macro="wims_exam_badIP">
+  <div id="message" >
+    <div class="failure wims_unavailable">
+      <tal:block i18n:translate="">Impossible d'accéder à cet examen :</tal:block>
+        <p i18n:translate="">Vous tentez de vous connecter à un examen commencé sur une machine différente. Veuillez retourner sur la machine où vous avez commencé votre examen pour pouvoir le finir.</p>
+        <p i18n:translate="">Évitez les connexions sans fil pour vous connecter à un examen : ces dernières ne vous garantissent pas une stabilité suffisante.</p>
+    </div>
+  </div>
+</metal:macro>
+
+<!-- wims limit reached  -->
+<metal:macro define-macro="wims_limit_reached">
+  <div id="message" >
+    <div class="failure wims_limit_reached">
+      <span i18n:translate="">Impossible d'accéder à cet élément :</span>
+      <span i18n:translate="">La ressource que vous tentez d'afficher est trop importante et dépasse la limite autorisée.</span>
+    </div>
+  </div>
+</metal:macro>
+
+<!-- hidden_element - information d'inaccessibilité d'un élément -->
+<metal:macro define-macro="hidden_element">
+	<div class="arrondi couleur5 off">
+		<div class="centrer arrondi">
+			<h1 i18n:translate="">Cet élément n'est plus disponible.</h1>
+			<div class="info arrondi couleur4">
+				<p i18n:translate="">Pour plus d'informations, contactez votre enseignant.</p>
+			</div>
+		</div>
+	</div>
+</metal:macro>
+
+<!-- must_be_connected - information d'inaccessibilité d'une activité 
+    En entrée : 
+    page url de la page courante, avec parametres eventuels;
+-->
+<metal:macro define-macro="must_be_connected">
+        <div class="small-12 columns text-center">
+            <div class="panel radius warning text-center"><i class="fa fa-warning"></i><strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong></div>
+            <a tal:define="page_quote python:context.jalon_quote(page)"
+               tal:attributes="href string:${here/absolute_url}/login_form?came_from=${page_quote}"
+               class="showmore button">
+               <i class="fa fa-key"></i>
+               <tal:block i18n:translate="">Se connecter</tal:block>
+            </a>
+        </div>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

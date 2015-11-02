@@ -1,0 +1,176 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_maintenance">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+
+        <h2>
+            <i class="fa fa-umbrella"></i><tal:block i18n:translate="">Configuration de la maintenance</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigMaintenance"
+              tal:define="maintenance context/getPropertiesMaintenance">
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Annoncer une maintenance
+                        </label>
+                        <input type="radio" name="annoncer_maintenance" id="annoncer_maintenance" value="1"
+                               tal:attributes="checked python:context.test(maintenance['annoncer_maintenance'], 'checked', '')" />
+                        <label for="annoncer_maintenance" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="annoncer_maintenance" id="desannoncer_maintenance" value="0"
+                               tal:attributes="checked python:context.test(not maintenance['annoncer_maintenance'], 'checked', '')" />
+                        <label for="desannoncer_maintenance" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Mettre le site en maintenance
+                        </label>
+                        <input type="radio" name="activer_maintenance" id="activer_maintenance" value="1"
+                               tal:attributes="checked python:context.test(maintenance['activer_maintenance'], 'checked', '')" />
+                        <label for="activer_maintenance" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_maintenance" id="desactiver_maintenance" value="0"
+                               tal:attributes="checked python:context.test(not maintenance['activer_maintenance'], 'checked', '')" />
+                        <label for="desactiver_maintenance" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="date_debut_maintenance" i18n:translate="">
+                            Date de début de la maintenance
+                        </label>
+                        <tal:define define="formname   string:gestion_maintenance;
+                                            inputname  string:date_debut_maintenance;
+                                            inputvalue maintenance/date_debut_maintenance;">
+                            <metal:macro use-macro="context/calendar_macros/macros/calendarDatePickerBox">
+                                Macro du calendrier
+                            </metal:macro>
+                        </tal:define>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="date_fin_maintenance" i18n:translate="">
+                            Date de fin de la maintenance
+                        </label>
+                        <tal:define define="formname   string:gestion_maintenance;
+                                            inputname  string:date_fin_maintenance;
+                                            inputvalue maintenance/date_fin_maintenance;">
+                            <metal:macro use-macro="context/calendar_macros/macros/calendarDatePickerBox">
+                                Macro du calendrier
+                            </metal:macro>
+                        </tal:define>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Afficher un message demandant aux utilisateurs de vider le cache de leur navigateur.
+                        </label>
+                        <input type="radio" name="annoncer_vider_cache" id="annoncer_vider_cache" value="1"
+                               tal:attributes="checked python:context.test(maintenance['annoncer_vider_cache'], 'checked', '')" />
+                        <label for="annoncer_vider_cache" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="annoncer_vider_cache" id="desannoncer_vider_cache" value="0"
+                               tal:attributes="checked python:context.test(not maintenance['annoncer_vider_cache'], 'checked', '')" />
+                        <label for="desannoncer_vider_cache" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="url_news_maintenance" i18n:translate="url_news_maintenance">
+                            Url de la page nouveauté de la maintenance
+                        </label>
+                        <span class="discreet">Exemple : http://jalon.unice.fr/public/xau995</span>
+                        <input type="text" name="url_news_maintenance"
+                               maxlength="255" size="30"
+                               tal:attributes="value maintenance/url_news_maintenance | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

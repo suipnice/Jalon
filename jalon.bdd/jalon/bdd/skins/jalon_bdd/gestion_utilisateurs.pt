@@ -1,0 +1,374 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration ul.button-group > li {
+    width: 33%;
+}
+
+#jalon_configuration ul.button-group > li .button {
+    background-color: #e7e7e7;
+    border-color: #b9b9b9;
+    color: #333;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+#jalon_configuration ul.button-group > li .button.selected, #jalon_configuration ul.button-group > li .button:hover, #jalon_configuration ul.button-group > li .button:focus {
+    color: #fff;
+}
+
+#jalon_configuration ul.button-group > li .button.selected, #jalon_configuration ul.button-group > li .button.selected:focus {
+    background-color: #2a9ccc;
+    border-color: #227da3;
+}
+
+#jalon_configuration ul.button-group > li .button:hover, #jalon_configuration ul.button-group > li .button:focus, #jalon_configuration ul.button-group > li .button.selected:hover {
+    background-color: #227da3;
+    border-color: #227da3;
+}
+
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+
+#jalon_configuration .panel.warning {
+    background: none repeat scroll 0 0 #fef8f2;
+    border-color: #fbddbf;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 0.625rem;
+    padding: 0.5rem 0.75rem 0.625rem;
+}
+
+#jalon_configuration #termeRecherche {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.75);
+    display: inline;
+    font-family: inherit;
+    transition: box-shadow 0.45s ease 0s, border-color 0.45s ease-in-out 0s;
+    display: inline;
+    width: inherit;
+}
+
+#jalon_configuration #labelTypeRecherche, #jalon_configuration #labelTermeRecherche {
+    color: #4d4d4d;
+    cursor: pointer;
+    display: inline;
+    margin-bottom: 0;
+}
+</style>
+
+<metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    Page d'affichage du fil d'ariane
+</metal:macro>
+
+<div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<div id="reveal-second" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
+      tal:define="gestion request/gestion | string:gestion_bdd">
+    <section class="small-12 columns">
+        <!--
+            Gestion des utilsateurs de Jalon
+        -->
+        <metal:macro define-macro="gestion_utilisateurs">
+            <tal:define define="isBDD context/isBDD;
+                                termeRecherche request/termeRecherche | nothing;
+                                typeRecherche request/typeRecherche | nothing;
+                                isRecherche python:termeRecherche or typeRecherche;
+                                isSecretaire python:user.has_role('Secretaire');
+                                page_orig python:context.test(isSecretaire, 'gestion_utilisateurs', '@@jalon-bdd')">
+            <tal:condition condition="isBDD">
+                <br/>
+                <a class="button expand create"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=creationUtilisateur-form"
+                   i18n:translate="">
+                    Créer un utilisateur
+                </a>
+                <div class="panel callout radius">
+                    <h2 class="texte_icone icone_recherche">
+                        Recherchez un étudiant ou un enseignant dans l'offre de formation.
+                    </h2>
+                    <form name="recherche_apogee" id="recherche_typeELP" method="post"
+                          tal:attributes="action string:${context/absolute_url}/${page_orig}">
+                        <div class="row">
+                            <div class="medium-4 columns">
+                                <div class="field">
+                                    <label for="typeRecherche">Type :</label>
+                                    <select id="typeRecherche" class="firstToFocus" name="typeRecherche">
+                                        <option value=""></option>
+                                        <option value="Etudiant"
+                                                tal:attributes="selected python:context.test(typeRecherche == 'Etudiant', 'selected', '')">Étudiant</option>
+                                        <option value="Personnel"
+                                                tal:attributes="selected python:context.test(typeRecherche == 'Personnel', 'selected', '')">Enseignant</option>
+                                        <option value="Secretaire"
+                                                tal:attributes="selected python:context.test(typeRecherche == 'Secretaire', 'selected', '')">Secrétaire</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="medium-6 columns">
+                                <div class="field">
+                                    <label for="termeRecherche">Nom :</label>
+                                    <input type="text" maxlength="255" size="30" name="termeRecherche"
+                                           tal:attributes="value termeRecherche"/>
+                                </div>
+                            </div>
+                            <input type="hidden" name="gestion" value="gestion_utilisateurs"/>
+                            <input type="hidden" name="macro" value="rechercherELP"/>
+                            <input type="hidden" name="fichier_macro" value="macro_gestionBDD"/>
+                            <div class="medium-2 columns">
+                                <div class="formControls">
+                                    <input class="button tiny" type="submit" value="Rechercher" name="form.button.save"/>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            <tal:define define="page python:int(request.get('page', 1));
+                                listeUtil python:context.test(isRecherche, context.rechercherUtilisateursByNameOrType(termeRecherche, typeRecherche, page), context.getTousIndividuLITE(page));">
+                <table summary="Liste des utilisateurs">
+                    <thead>
+                        <tr>
+                            <th class="sort has-tip" data-tooltip data-sort="etat"
+                                title="Cliquer pour trier selon l'état'"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">État</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort has-tip" data-tooltip data-sort="nom"
+                                title="Cliquer pour trier selon le nom"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">NOM Prénom</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort has-tip" data-tooltip data-sort="type"
+                                title="Cliquer pour trier selon le type"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Type</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort has-tip show-for-medium-up" data-tooltip data-sort="identifiant"
+                                title="Cliquer pour trier selon l'identifiant"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Identifiant</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort has-tip show-for-medium-up" data-tooltip data-sort="courriel"
+                                title="Cliquer pour trier selon l'adresse de courriel"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Courriel</tal:block>
+                                </span>
+                            </th>
+                            <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
+                                i18n:attributes="title"><i class="fa fa-cog fa-lg no-pad"></i></th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="list">
+                        <tr tal:repeat="util listeUtil">
+                        <tal:define define="status python:util['STATUS_IND'] == 'closed';
+                                            afftypeInd python:{'Etudiant': 'Étudiant', 'Personnel': 'Enseignant', 'Secretaire': 'Secrétaire'}">
+                            <td class="etat">
+                                <span tal:attributes="class python:context.test(status, 'indicateur couleur7', 'indicateur couleur6')"
+                                      i18n:translate=""><tal:block replace="python:test(status, 'bloqué', 'actif')"/></span>
+                            </td>
+                            <td class="nom">
+                                <tal:block tal:content="python:util['LIB_NOM_PAT_IND']" />
+                                <tal:block tal:content="python:util['LIB_PR1_IND'].capitalize()" />
+                            </td>
+                            <td class="type">
+                                <tal:replace replace="python:afftypeInd[util['TYPE_IND']]"/>
+                            </td>
+                            <td class="identifiant show-for-medium-up" tal:content="python:util['SESAME_ETU']"/>
+                            <td class="courriel show-for-medium-up" tal:content="python:util['EMAIL_ETU']"/>
+                            <td class="show-for-medium-up">
+                                <a class="dropdown" data-options="align:left"
+                                   tal:attributes="data-dropdown string:drop-${repeat/util/index}">
+                                    <i class="fa fa-cog fa-lg no-pad"></i>
+                                </a>
+                                <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                    tal:attributes="id string:drop-${repeat/util/index}">
+                                    <li>
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=modificationUtilisateur-form&amp;sesame=${util/SESAME_ETU}">
+                                            <i class="fa fa-pencil fa-fw"></i>
+                                            <tal:block i18n:translate="">Modifier</tal:block>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a tal:attributes="href string:${context/absolute_url}/page_inscription?SESAME_ETU=${util/SESAME_ETU}"
+                                           tal:condition="python:context.test(util['TYPE_IND'] == 'Etudiant', 1, 0)">
+                                            <i class="fa fa-paste fa-fw"></i>
+                                            <tal:block i18n:translate="">Inscrire</tal:block>
+                                        </a>
+                                    </li>
+                                    <li tal:condition="not:status">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=bloquerUtilisateur-form&amp;sesame=${util/SESAME_ETU}">
+                                            <i class="fa fa-key fa-fw"></i>
+                                            <tal:block i18n:translate="">Bloquer</tal:block>
+                                        </a>
+                                    </li>
+                                    <li tal:condition="status">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=activerUtilisateur-form&amp;sesame=${util/SESAME_ETU}">
+                                            <i class="fa fa-unlock fa-fw"></i>
+                                            <tal:block i18n:translate="">Activer</tal:block>
+                                        </a>
+                                    </li>
+                                    <li tal:condition="not:isSecretaire">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=suppressionUtilisateur-form&amp;sesame=${util/SESAME_ETU}">
+                                            <i class="fa fa-trash-o fa-fw"></i>
+                                            <tal:block i18n:translate="">Supprimer</tal:block>
+                                        </a>
+                                    </li>
+                                    <li tal:condition="isSecretaire">
+                                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=demanderSuppressionUtilisateur-form&amp;sesame=${util/SESAME_ETU}">
+                                            <i class="fa fa-trash-o fa-fw"></i>
+                                            <tal:block i18n:translate="">Supprimer</tal:block>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tal:define>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <tal:define define="script0 string:setSortableList('jalon_configuration',['etat','nom','type','identifiant','courriel'],'nom','nom')">
+
+                    <tal:condition condition="not:is_ajax">
+                        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script0)" />
+                    </tal:condition>
+
+                    <tal:condition condition="is_ajax">
+                        <!-- reflow à surveiller… -->
+                        <script charset="UTF-8"
+                                tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+                        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
+                        <script charset="UTF-8"
+                                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                                tal:content="structure buffer" />
+                    </tal:condition>
+                </tal:define>
+
+                <div id="pagination-container"
+                     tal:define="nbPages python:context.getNbPagesInd()">
+
+                    <tal:condition condition="python:page-1 > 0">
+                        <a id="pagination-prev" class="button tiny"
+                           tal:define="pagePrec python:page-1"
+                           tal:attributes="href string:${context/absolute_url}/${page_orig}?gestion=gestion_utilisateurs&amp;page=${pagePrec}"
+                           i18n:translate="">
+                           <span>Précédent</span>
+                        </a>
+                    </tal:condition>
+
+                    <tal:condition condition="python:nbPages >= page+1">
+                        <a id="pagination-next" class="button tiny"
+                           tal:define="pageSuiv python:page+1"
+                           tal:attributes="href string:${context/absolute_url}/${page_orig}?gestion=gestion_utilisateurs&amp;page=${pageSuiv}"
+                           i18n:translate="">
+                           <span>Suivant</span>
+                        </a>
+                    </tal:condition>
+
+                    <form id="pagination-page_number" method="post"
+                          tal:attributes="action string:${context/absolute_url}/${page_orig}">
+                        <input type="hidden" name="gestion" value="gestion_utilisateurs" />
+                        <input type="text" name="page"
+                               tal:attributes="value page" />
+                        / <tal:condition condition="python:context.test(nbPages == 0, 1, 0)">
+                            <tal:block content="page" />
+                          </tal:condition>
+                          <tal:condition condition="python:context.test(nbPages != 0, 1, 0)">
+                            <tal:block content="nbPages" />
+                          </tal:condition>
+                    </form>
+
+                </div>
+
+            </tal:define>
+            </tal:condition>
+            <tal:condition condition="not:isBDD">
+                <div class="listing_vide" i18n:translate="">
+                    La liaison avec la base de données n'est pas configurée. Utilisez l'onglet Connexion pour configurer la connexion à la base de données.
+                </div>
+            </tal:condition>
+        </tal:define>
+
+        </metal:macro>
+
+    </section>
+</main>
+
+</metal:core>
+
+</body>
+
+</html>

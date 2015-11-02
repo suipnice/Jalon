@@ -1,0 +1,145 @@
+type=first
+modele_jalon=QCMSimple
+textarea='datatrue datafalse explain'
+asis='datatrue datafalse explain feedback_general feedback_bon feedback_mauvais'
+
+:Une question à choix multiples avec permutation aléatoire.
+
+QCM classique, avec un bon choix qui ne dépend pas du texte.
+Mais les choix ainsi que leur ordre peuvent être mis en aléatoire.<br/>
+
+$image_help
+$math_help
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entête ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:\credits{$$credits$$}
+
+:Nombre de choix à présenter. Au plus 10.
+Vous devez définir suffisamment de choix. Sinon l'exercice affichera seulement ce qui est disponible.
+\integer{tot=$$tot$$}
+
+:Le nombre de bons choix dans chaque exercice. Ne doit pas depasser le total.
+\integer{givetrue=$$givetrue$$}
+
+:Nombre de mauvais choix 'obligatoires'.
+Par exemple si ce nombre est 2, les deux premiers mauvais choix dans la liste seront toujours présentés dans les exercices générés.
+<p>Dans le doute, mettez 0.</p>
+\integer{minfalse=$$minfalse$$}
+
+:Le texte qui explique ce qu'il faut faire.
+$embraced_randitem
+\text{explain=asis($$enonce$$)}
+
+:Le(s) bon(s) choix, un par ligne.
+On peut en placer plusieurs (un par ligne) pour tirer au hasard.
+Évitez les phrases trop longues ! Aucun point-virgule dans la phrase.
+$embraced_randitem 
+\matrix{datatrue=asis($$bonnesrep$$)}
+
+:Les mauvais choix, un par ligne.
+Vous pouvez en donner plus que ce qu'il faut tirer au hasard.
+\matrix{datafalse=asis($$mauvaisesrep$$)}
+
+:Mots d'option : 'checkbox', 'split', 'eqweight'
+Ajouter le mot 'checkbox' s'il y a plusieurs bonnes réponses et si l'élève doit choisir toutes les bonnes réponses (au lieu d'une seule).
+Dans ce cas, ajouter aussi le mot 'split' si on autorise une note partielle quand seulement une partie des bonnes réponses sont choisies.
+Vous pouvez alors également ajouter le mot 'eqweight' pour qu'une mauvaise réponse n'annule qu'une bonne réponse (au lieu de 2).
+\text{option=$$options$$}
+
+:Feedback General
+Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
+\text{feedback_general=asis($$feedback_general$$)}
+
+:Feedback en cas de bonne réponse
+Ce texte s'affichera après la réponse de l'apprenant, en cas de bonne réponse ou de réponse partielle.
+\text{feedback_bon=asis($$feedback_bon$$)}
+
+:Feedback en cas de mauvaise réponse
+Ce texte s'affichera après la réponse de l'apprenant, s'il a coche au moins une mauvaise réponse.
+\text{feedback_mauvais=asis($$feedback_mauvais$$)}
+
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$,1 oui,
+2 non)}
+
+:%%%%%%%%%%%%%% Rien à modifier jusqu'à l'énoncé %%%%%%%%%%%%%%%%
+\text{accolade=wims(word 1 of \accolade)}
+
+\text{empty=}
+\if{\feedback_general != \empty}{
+  \text{feedback_general=<p class='feedback'>\feedback_general</p>}
+}
+\if{\feedback_bon != \empty}{
+  \text{feedback_bon=<p class='feedback oef_indgood'>\feedback_bon</p>}
+}
+\if{\feedback_mauvais != \empty}{
+  \text{feedback_mauvais=<p class='feedback oef_indbad'>\feedback_mauvais</p>}
+}
+\text{datatrue=wims(nonempty rows \datatrue)}
+\text{datafalse=wims(nonempty rows \datafalse)}
+\integer{truecnt=rows(\datatrue)}
+\integer{falsecnt=rows(\datafalse)}
+\integer{givetrue=\givetrue<1?1}
+\integer{givetrue=\givetrue>\truecnt?\truecnt}
+\integer{tot=\tot > \falsecnt+\givetrue?\falsecnt+\givetrue}
+\integer{givetrue=\givetrue>\tot-1?\tot-1}
+\integer{minfalse=\minfalse>\tot-\givetrue?\tot-\givetrue}
+\text{tsh=shuffle(\truecnt)}
+\text{true=row(\tsh,\datatrue)}
+\if{\minfalse>0}{
+  \text{false1=row(1..\minfalse,\datafalse);}
+  \text{false2=row(\minfalse+1..\falsecnt,\datafalse)}
+}{
+ \integer{minfalse=0}
+ \text{false1=}
+ \text{false2=\datafalse}
+}
+\text{fsh=shuffle(\falsecnt)}
+\text{false2=row(\fsh,\false2)}
+\text{pick=row(1..\givetrue,\true);\false1 row(1..\tot-\givetrue-\minfalse,\false2)}
+\text{ind=wims(makelist 1 for x=1 to \givetrue),wims(makelist 0 for x=1 to \tot-\givetrue)}
+
+\text{sh=shuffle(\tot)}
+\text{ind=item(\sh,\ind)}
+\text{pick=row(\sh,\pick)}
+
+\text{pick=\accolade=1 ? wims(embraced randitem \pick)}
+\text{explain=\accolade=1 ? wims(embraced randitem \explain)}
+
+\text{ans=positionof(1,\ind)}
+\text{list=item(1..\tot,A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z)}
+\text{anstype=checkbox iswordof \option?checkbox:radio}
+
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+
+\css{<style type="text/css">
+li.check{list-style: none;}
+</style>}
+
+\statement{
+<div class="explain">\explain</div>
+<ul>
+\for{i=1 to \tot}
+{<li class='check oefreply'><label>\embed{reply 1,\i}- \pick[\i;]</label></li>}
+</ul>
+}
+
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+
+\answer{La réponse}{\ans;\list}{type=\anstype}{option=\option}
+
+\feedback{1=1}{\feedback_general}
+\feedback{\reply1 isitemof \list[\ans]}{\feedback_bon}
+\feedback{\reply1 notitemof \list[\ans]}{\feedback_mauvais}
+\feedback{1=1}{<br class='spacer'/>}

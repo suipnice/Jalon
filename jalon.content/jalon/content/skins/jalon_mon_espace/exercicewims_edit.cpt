@@ -1,0 +1,459 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!-- exercicewims_edit.cpt : Page d'edition globale de tout exercice WIMS (equivalent au Createxo de WIMS)-->
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        can_view python:context.checkRoles(user, context, action='view');">
+
+<style type="text/css">
+    /* Reprise du style de la balise "code" (- "no-wrap" + inline-block;) pour l'appliquer sur du multi-ligne */
+    pre{
+        font-family: Consolas, Inconsolata, Menlo, "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Courier New", monospace;
+        font-size: .875rem;
+        font-weight: normal;
+        background-color: #2a9ccc;
+        color: #fff;
+        padding: .15em .75em .20em;
+        text-decoration: none;
+        border-radius: 1em;
+        cursor: text;
+        /*white-space: nowrap;*/
+        display: inline-block;
+    }
+
+    /* Reinitialise la marge négative placée sur ".row .row" */
+    #ajouterSupprimerQuestion{
+        margin-right:0;
+    }
+    #save_and_test{
+        margin-bottom:0;
+    }
+
+    /** important (pour les variables des equations par exemple) */
+    /* en gros, on annule le line-height du  #wims-edit label quand il y a la classe .prefix */
+    #wims-edit label.prefix{
+        line-height: 2.3125rem;
+    }
+
+    /* Citations en italique */
+    blockquote{
+        font-style:italic;
+    }
+    .panel blockquote{
+        border-color:#999;
+    }
+
+    /** Reinitialise certains styles pour affichage cohérent (dans les popups d'aides par exemple)  */
+
+    .reveal-modal>div:not(.flex-video) p{
+        font-size:inherit;
+        line-height:inherit;
+    }
+
+    .reveal-modal > div:not(.flex-video) ul {
+        list-style-type: disc;
+    }
+
+    .panel ul:not(.f-dropdown):not(.button-group) li {
+        display:list-item !important;
+        font-style:  inherit;
+        font-weight: inherit;
+        line-height: inherit;
+    }
+
+    .row.equalize_height {
+      /*justify-content: space-between;*/
+      display: -webkit-flex;
+      display: flex;
+      flex-wrap: wrap;
+      -webkit-flex-wrap: wrap;
+      margin-bottom: 0.625rem;
+    }
+
+    /*CSS for medium and up */
+    @media only screen and (min-width: 40.0625em) {
+        .row.equalize_height>.columns {
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex:1;
+            flex:1;
+        }
+
+        #wims-edit .equalize_height .panel {
+            /*height:100%;*/
+            margin-bottom:0;
+            -webkit-flex:1;
+            flex:1;
+        }
+    }
+
+</style>
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main role="main" class="row" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+        <metal:macro use-macro="context/macro_messages/macros/messages">
+            Encart d'affichage des messages de feedback
+        </metal:macro>
+
+        <!-- id="wims-edit" -->
+        <section id="wims-edit" class="small-12 columns"
+                 tal:define="modele context/getModele;
+                             QCM_parsed python:context.getExoWims(modele, user.getId(), request)";
+                 tal:attributes="data-modele modele"
+                 tal:condition="can_view">
+
+            <div data-alert="data-alert" class="alert-box alert radius"
+                 tal:condition="not:QCM_parsed"
+                 i18n:translate="">
+                <!-- 2 cas possibles : exercice supprimé coté WIMS, ou WIMS inaccessible -->
+                <tal:block i18n:translate="">Une erreur est survenue. Le serveur WIMS est peut-être injoignable. Veuillez réessayer ultérieurement.</tal:block>
+                <a class="close"></a>
+            </div>
+
+        <tal:block condition="python:modele != 'externe'">
+
+            <div data-alert="data-alert" class="alert-box alert radius"
+                 tal:condition="errors">
+                <tal:comment replace="nothing">
+                    <!--tal:block i18n:translate="">Des erreurs se sont glissées dans votre demande : l'exercice n'a pas été sauvegardé.</tal:block><br /-->
+                </tal:comment>
+                <tal:block tal:condition="not:errors/syntax_error|nothing"
+                           i18n:translate="">Veuillez compléter les champs requis svp.</tal:block>
+                <tal:block tal:condition="errors/syntax_error|nothing">
+                    <h3 tal:content="errors/syntax_error"/>
+                    <tal:block i18n:translate="">Il y a une erreur de syntaxe dans votre exercice.</tal:block><br/>
+                    <div i18n:translate="">Merci de prêter attention aux points suivants :</div>
+                    <ul style="margin-bottom:0;">
+                        <li i18n:translate="">Lorsque vous mettez des parenthèses, accolades ou crochets, placez-les par paires correctement fermées.</li>
+                        <li tal:condition="python:modele == 'exercicelibre'">
+                            <tal:block i18n:translate="">Lorsque vous tapez le code source d'un exercice, celui-ci doit au minimum contenir l'instruction suivante :</tal:block> 
+                            <code>\statement{<tal:block i18n:translate="">Ici l'énoncé de l'exercice.</tal:block>}</code>
+                        </li>
+                    </ul>
+                </tal:block>
+                <a class="close"></a>
+
+            </div>
+
+            <form method="POST"
+                  tal:condition="QCM_parsed"
+                  tal:attributes="action string:${context/absolute_url}/${template/id};
+                  class python:context.test(True, 'vrai', 'faux')">
+
+                <div tal:define="error errors/title | nothing;
+                                 arch_class string:panel radius ArchetypesStringWidget kssattr-atfieldname-title;"
+                     tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+                    <label for="title" i18n:translate="">Titre </label>
+                    <div id="title_wims_help" class="formHelp texte_icone icone_information">
+                        <tal:block i18n:translate="">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
+                        <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
+                        <tal:block i18n:translate="">seront supprimés ou remplacés par des espaces.</tal:block>
+                    </div>
+
+                    <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                    <input type="text" maxlength="40"
+                           name="title" id="title"
+                           required="required"
+                           placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                           tal:attributes="value QCM_parsed/title | context/title_or_id"
+                           aria-describedby="title_wims_help"/>
+
+                </div>
+
+                <metal:macro use-macro="python:getattr(context, 'macro_%s' % modele).macros['createxo']" />
+
+                <!--<input type="hidden" name="macro"       value="macro_createxo"/>
+                <input type="hidden" name="formulaire"      value="modifier-exo"/>-->
+                <input type="hidden" name="form.submitted"  value="1" />
+                <input type="hidden" name="option"          value="force_rewrite"/>
+                <input type="hidden" name="idobj"      tal:attributes="value context/getId"/>
+                <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+                <input type="hidden" name="modele"     tal:attributes="value modele"/>
+
+                <div class="row formControls">
+                    <div class="small-12 columns">
+                        <input type="checkbox"
+                               checked="checked"
+                               name="save_and_test"
+                               id="save_and_test"
+                               value="1"/><label for="save_and_test" i18n:translate="">Visualiser l'exercice à l'enregistrement.</label>
+                        <div class="formHelp texte_icone icone_information">permet d'enregistrer et tester l'exercice</div>
+                    </div>
+                    <div class="small-12 columns">
+                        <button type="submit" class="button small"
+                                name="form.button.save">
+                            <i class="fa fa-check-circle"></i>
+                            <tal:block i18n:translate="">Enregistrer</tal:block>
+                        </button>
+                        <!--button type="submit" class="button small success"
+                                name="form.button.save_and_test">
+                            <i class="fa fa-certificate"></i>
+                            <tal:block i18n:translate="">Enregistrer et tester</tal:block>
+                        </button-->
+                        <a class="button small secondary"
+                           tal:attributes="href string:${context/absolute_url}/${template/id}">
+                            <i class="fa fa-close"></i>
+                            <tal:block i18n:translate="">Annuler</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+        </tal:block>
+
+        <tal:block condition="python:modele == 'externe'">
+
+            <tal:condition condition="errors">
+
+                <div class="alert-box warning radius">
+                    <span i18n:translate="">Des erreurs se sont glissées dans votre demande : l'exercice n'a pas été sauvegardé.</span><br />
+                    <tal:block i18n:translate="" tal:condition="not:errors/syntax_error|nothing">Veuillez compléter les champs requis svp.</tal:block>
+                    <a class="close"></a>
+                </div>
+
+            </tal:condition>
+
+            <div id="wims_modules" tal:define="
+                    module_path request/module_path | nothing;
+                    qclass python:'%s_1' % context.getComplement();
+                    param_wims python:context.authUser('supervisor', qclass, request);">
+
+                <div id="message" tal:condition="not:param_wims">
+                    <br class="visualClear" />
+                    <div class="failure wims_unavailable" i18n:translate="">
+                        Le serveur WIMS est actuellement injoignable. Veuillez réessayer ultérieurement.
+                    </div>
+                </div>
+
+                <div class="wims_search_engine" >
+
+                    <h2><span class="label round">1</span> <tal:block i18n:translate="">Chercher un exercice Wims public :</tal:block></h2>
+                    <tal:comment replace="nothing">
+                    <!--a tal:attributes="href string:${param_wims/home_url}&lang=fr&module=adm/light&phtml=search_engine.phtml.fr" class="bouton showmore">Aide à la recherche</a-->
+
+                    <!-- La recherche par mot clé ci-desssous n'est pas encore aboutie. (a combiner avec la nouvelle recherche par taxonomie de WIMS)-->
+                    </tal:comment>
+                    <a tal:condition="module_path"
+                     class="bouton load_in_page"
+                     tal:attributes="href string:${context/id}/${template/id}"
+                     i18n:translate="">Rechercher par mots-clés</a>
+
+                    <form accept-charset="ISO-8859-1" target="_blank"
+                          tal:condition="not:module_path"
+                          id="wims_search" tal:attributes="action string:${param_wims/url_connexion}#searchform" method="get">
+                        <!--input type="hidden" name="session" tal:attributes="value param_wims/wims_session"-->
+                        <input type="hidden" name="lang" value="fr"/>
+                        <input type="hidden" name="search_lang" value="fr"/>
+                        <!--input type="hidden" name="cmd" value="new"-->
+                        <!--input type="hidden" name="module" value="home"-->
+
+
+                        <div class="field">
+
+                            <div class="row collapse">
+                                <!--div class="small-3 medium-1 columns">
+                                    <label class="prefix inline radius" for="search_keywords" i18n:translate="">Mot-clé :</label>
+                                </div-->
+                                <div class="small-6 columns">
+                                    <input type="search" size="20"
+                                           class="prefix round"
+                                           name="search_keywords" id="search_keywords"
+                                           placeholder="Exemple : temps"
+                                           i18n:attributes="placeholder" />
+                                </div>
+                                <div class="small-3 medium-2 columns left">
+                                    <input type="submit" class="button postfix round" i18n:attributes="value" value="Chercher"/>
+                                </div>
+                                <div class="small-12 medium-2 columns right">
+                                     <a href="#reveal_search_keywords" class="button tiny radius"
+                                       data-reveal-id="reveal_search_keywords"
+                                       title="afficher une aide sur cet élément">
+                                        <i class="fa fa-question"></i>
+                                        Aide à la recherche
+                                    </a>
+                                </div>
+
+                            </div>
+
+                            <input type="hidden" name="search_category" id="search_category" value="O"/>
+
+                            <div id="reveal_search_keywords"
+                                 class="reveal-modal large wims-edit_reveal"
+                                 data-reveal="data-reveal"
+                                 data-options="close_on_background_click: true;" >
+                                <h2>Aide à la recherche <a class="close-reveal-modal"></a></h2>
+                                    <h3>Quels mots-clés utiliser ?</h3>
+                                    <div>
+                                    <ul>
+                                        <li i18n:translate="">un thème (exemple <code class="indicateur couleur1">anglais</code>) ou un auteur (exemple <code class="indicateur couleur1">Joachim Yameogo</code>)</li>
+                                        <li>
+                                            <tal:block i18n:translate="">un code de niveau pour une recherche par niveau pédagogique :</tal:block>
+                                            <ul>
+                                                <li i18n:translate="">
+                                                     <code class="indicateur couleur1">levelU1</code> pour L1,
+                                                     <code class="indicateur couleur1">levelU2</code> pour L2,
+                                                     <code class="indicateur couleur1">levelU3</code> pour L3,
+                                                </li>
+                                                <li i18n:translate="">
+                                                     <code class="indicateur couleur1">levelU4</code> pour Master 1,
+                                                     <code class="indicateur couleur1">levelU5</code> pour Master 2,
+                                                </li>
+                                                <li i18n:translate="">
+                                                     <code class="indicateur couleur1">levelG</code> pour 3e cycle / Doctorat,
+                                                     <code class="indicateur couleur1">levelR</code> pour Recherche.
+                                                </li>
+                                            </ul>
+
+                                        </li>
+                                        <li i18n:translate="">une adresse de module (exemple <code class="indicateur couleur1">E4/grammar/oeffonction.fr</code>)</li>
+                                    </ul>
+                                </div>
+                                <hr/>
+                                    <h3 i18n:translate="">Comment publier mes propres exercices ?</h3>
+                                    <div i18n:translate="">Vous souhaitez publier vos propres modules d'exercices, et ainsi les partager avec la communauté WIMS ?<br />N'hésitez pas à nous contacter, nous serons ravis de vous accompagner dans cette démarche.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <h2>
+                    <span class="label round">2</span>
+                    <tal:block i18n:translate="">Puis coller ci-dessous le permalien de cet exercice :</tal:block>
+                    <a class="button tiny radius" data-reveal-id="wims-edit_reveal-ext">
+                        <i class="fa fa-question"></i>
+                        Où trouver le permalien
+                    </a>
+                </h2>
+                <div id="wims-edit_reveal-ext" class="reveal-modal large wims-edit_reveal" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+                    <h2>Les modules d'exercices de la communauté WIMS<a class="close-reveal-modal"></a></h2>
+                    <h3 i18n:translate="">Où trouver le permalien ?</h3>
+                    <ul>
+                        <li i18n:translate="">Dans les résultats de votre recherche, choisissez un module d'exercices qui vous intéresse.</li>
+                        <li i18n:translate="">La première page d'un module vous permet de sélectionner parmi plusieurs exercices :
+                            <ul>
+                                <li i18n:translate="">Choisissez en un, puis cliquez sur « Au travail ».</li>
+                                <li><span i18n:translate="">Si l'exercice vous convient, cliquez sur « À propos de cette ressource » en bas de la fenêtre.</span></li>
+                                <li><span i18n:translate="">Copiez le permalien</span> <code class="indicateur couleur1" i18n:translate="">Lien pour cet exercice</code>.</li>
+                            </ul>
+                        </li>
+                        <li i18n:translate="">La première page vous permet également de personnaliser la configuration des exercices :
+                            <ul>
+                                <li i18n:translate="">Choisissez un exercice, modifiez les paramètres et cliquez sur « Au travail ».</li>
+                                <li i18n:translate="">Cliquez sur « À propos de cette ressource » en bas de la fenêtre.</li>
+                                <li ><span i18n:translate="">Copiez le permalien</span> <code class="indicateur couleur1" i18n:translate="">Lien pour la config actuelle</code>.</li>
+                            </ul>
+                        </li>
+                        <li i18n:translate="">Ne pas copier les autres permaliens !</li>
+
+                    </ul>
+                    <h3 i18n:translate="">Comment publier mes propres exercices ?</h3>
+                    <ul>
+                    <li i18n:translate="">Vous souhaitez publier vos propres modules d'exercices, et ainsi les partager avec la communauté WIMS ?<br />N'hésitez pas à nous contacter, nous vous accompagnerons dans cette démarche.</li>
+                    </ul>
+                </div>
+
+                <form tal:attributes="action python:context.absolute_url()+'/'+template.id"
+                        method="POST">
+                    <fieldset>
+                        <legend i18n:translate="">Propriétés de l'exercice</legend>
+                        <div tal:define="error errors/title | nothing;
+                                     arch_class string:panel radius ArchetypesStringWidget kssattr-atfieldname-title;"
+                             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                          <label for="title" i18n:translate="">Titre </label>
+                          <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                          <div id="title_help" class="formHelp texte_icone icone_information" i18n:translate="">Le titre d'un exercice est limité à 40 caractères. Les caractères spéciaux seront supprimés.</div>
+                          <input style="width:20em;" maxlength="40" type="text"
+                                 name="title" id="title"
+                                 tal:attributes="value context/title_or_id"
+                                 required="required"
+                                 placeholder="Donnez un titre à votre exercice."
+                                 i18n:attributes="placeholder"
+                                 aria-describedby="title_help" />
+                        </div>
+                        <div tal:define="permalink context/permalink | nothing;
+                                         error errors/permalink | nothing;
+                                         arch_class string:panel radius ArchetypesStringWidget kssattr-atfieldname-permalink;"
+                             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                            <label for="permalink" i18n:translate="">Permalien de l'exercice</label>
+                            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                            <div id="permalink_help" class="formHelp texte_icone icone_information" i18n:translate="">Le permalien d'un exercice publié permet de le partager.</div>
+                            <input type="url" name="permalink" id="permalink"
+                                   required="required"
+                                   placeholder="Collez ici le permalien de l'exercice" i18n:attributes="placeholder"
+                                   tal:attributes="value string:${param_wims/url_connexion}?${permalink}&amp;cmd=new"
+                                   aria-describedby="permalink_help" />
+                        </div>
+                        <p class="formHelp" i18n:translate="">NB : si vous avez déja placé cet exercice dans une activité d'un cours, ce dernier ne sera pas affecté par une modification du permalien.</p>
+                    </fieldset>
+
+                    <input type="hidden" name="form.submitted"  value="1" />
+                    <input type="hidden" name="idobj"           tal:attributes="value context/getId" />
+                    <input type="hidden" name="authMember"      tal:attributes="value user/getId" />
+                    <input type="hidden" name="modele"          tal:attributes="value modele" />
+
+                    <div class="row formControls">
+                        <div class="small-12 columns">
+                            <input type="checkbox"
+                                   checked="checked"
+                                   name="save_and_test"
+                                   id="save_and_test"
+                                   value="1"/><label for="save_and_test" i18n:translate="">Visualiser l'exercice à l'enregistrement.</label>
+                            <div class="formHelp texte_icone icone_information">permet d'enregistrer et tester l'exercice</div>
+                        </div>
+                        <div class="small-12 columns">
+                            <button type="submit" class="button small"
+                                    name="form.button.save">
+                                <i class="fa fa-check-circle"></i>
+                                <tal:block i18n:translate="">Enregistrer</tal:block>
+                            </button>
+                            <!--button type="submit" class="button small success"
+                                    name="save_and_test">
+                                <i class="fa fa-certificate"></i>
+                                <tal:block i18n:translate="">Enregistrer et tester</tal:block>
+                            </button-->
+                            <a class="button small secondary"
+                               tal:attributes="href string:${context/absolute_url}/${template/id}">
+                                <i class="fa fa-close"></i>
+                                <tal:block i18n:translate="">Annuler</tal:block>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </tal:block>
+
+        <tal:block define="script string:preventMultipleFormSubmits('wims-edit');">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+
+        </section>
+
+        <section id="wims-edit" class="small-12 columns"
+                 tal:condition="not:can_view">
+            <metal:macro use-macro="context/macro_commune/macros/cannot_view" />
+        </section>
+    </main>
+
+    <tal:comment replace="nothing">
+    <!--tal:block define="script string:setWimsExerciceEditor()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block-->
+    </tal:comment>
+
+</metal:main>
+</body>
+</html>

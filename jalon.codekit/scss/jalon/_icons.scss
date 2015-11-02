@@ -1,0 +1,119 @@
+/***************************************************************************************************
+
+        Jalon v4.5 : icônes
+
+*/
+
+
+
+dl.typeElement > dd:before,
+#course_plan-plan span:before,
+#course_plan-plan .type_TexteLibre .typeElementTitre ul li:before,
+.texte_icone:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    //vertical-align: top;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+dl.typeElement > dd:before,
+.texte_icone:before { margin-right: $iconPadding; }
+
+
+.texte_icone {
+
+    &.icone_cours:before            { content: $fa-var-university; }
+    //&.icone_exercice:before       { content: $fa-var-pencil; }
+    //&.icone_fichier:before        { content: $fa-var-file-o; }
+    //&.icone_fichiers:before       { content: $fa-var-files-o; }
+    &.icone_information:before      { content: $fa-var-info-circle; }
+    //&.icone_lettres:before        { content: $fa-var-font; }
+    &.icone_monespace:before        { content: $fa-var-home; }
+    &.icone_tags:before             { content: $fa-var-tags; }
+    //&.icone_url:before            { content: $fa-var-external-link; }
+    &.icone_user:before             { content: $fa-var-user; }
+    &.icone_users:before            { content: $fa-var-users; }
+    //&.icone_sonorisation:before   { content: $fa-var-bullhorn; }
+    //&.icone_webconference:before  { content: $fa-var-headphones; }
+    //&.icone_wims:before           { content: $fa-var-pencil; }
+    &.icone_recherche:before        { content: $fa-var-search; }
+    &.icone_resultats:before        { content: $fa-var-list-ol; }
+    &.icone_consignes:before        { content: $fa-var-align-justify; }
+}
+
+
+dl.typeElement > dd,
+#course_plan-plan span {
+
+    //&.type_examen:before            { content: $fa-var-graduation-cap; }
+    &.type_Examen:before            { content: $fa-var-graduation-cap; }
+    //&.type_autoeval:before          { content: $fa-var-retweet; }
+    //&.type_autoeval:before          { content: $fa-var-lightbulb-o; }
+    &.type_AutoEvaluation:before    { content: $fa-var-gamepad; }
+    //&.type_boitedepot:before        { content: $fa-var-inbox; }
+    &.type_BoiteDepot:before        { content: $fa-var-inbox; }
+    //&.type_sallevirtuelle:before    { content: $fa-var-comments-o; }
+    //&.type_sallevirtuelle:before    { content: $fa-var-video-camera; }
+    &.type_SalleVirtuelle:before    { content: $fa-var-video-camera; }
+
+    //&.type_fichier:before           { content: $fa-var-file-o; }
+    &.type_File:before              { content: $fa-var-file-o; }
+    //&.type_image:before             { content: $fa-var-file-image-o; }
+    &.type_Image:before             { content: $fa-var-file-image-o; }
+    //&.type_externe:before           { content: $fa-var-external-link; }
+    &.type_Lienweb:before           { content: $fa-var-external-link; }
+    //&.type_lecteur:before           { content: $fa-var-file-video-o; }
+    &.type_Lecteurexportable:before { content: $fa-var-file-video-o; }
+    //&.type_catbu:before             { content: $fa-var-book; }
+    //&.type_Ressourcebibliographique:before { content: $fa-var-book; }
+    &.type_CatalogueBU:before       { content: $fa-var-book; }
+    //&.type_presentation:before      { content: $fa-var-bullhorn; }
+    &.type_Presentationssonorisees:before { content: $fa-var-bullhorn; }
+    //&.type_webconf:before           { content: $fa-var-headphones; }
+    &.type_Webconference:before     { content: $fa-var-headphones; }
+}
+
+
+#course_plan-plan .type_TexteLibre .typeElementTitre ul li:before { content: $fa-var-genderless; }
+
+
+/*
+.texte_icone {
+
+    &.icone_verrou:before         { content: "\0055"; }
+    &.icone_refresh:before        { content: "\002d"; }
+    &.icone_consignes:before      { content: "\0051"; }
+    &.icone_heure:before          { content: "\0053"; }
+    &.icone_retard:before         { content: "\0057"; }
+    &.icone_visible:before        { content: "\003b"; }
+    &.icone_liste:before          { content: "\0050"; }
+    &.icone_reussite:before       { content: "\0058"; }
+    &.icone_forum:before          { content: "\0049"; }
+    &.icone_balance:before        { content: "\004e"; }
+    &.icone_universite:before     { content: "\0059"; }
+    &.icone_plan:before           { content: "\005a"; }
+    &.icone_livre:before          { content: "\0044"; }
+    &.icone_livres:before         { content: "\004f"; }
+    &.icone_contrast:before       { content: "\0052"; }
+    &.icone_nouveautes:before     { content: "\005e"; }
+    &.icone_mail:before           { content: "\005f"; }
+    &.icone_annonce:before        { content: "\0060"; }
+    &.icone_acces:before          { content: "\002e"; }
+    &.icone_favoris:before        { content: "\0061"; }
+    &.icone_modifier:before       { content: "\0064"; }
+    &.icone_reglage:before        { content: "\006c"; }
+    &.icone_examen:before         { content: "\0048"; }
+    &.icone_depot:before          { content: "\0045"; }
+    &.icone_medaille:before       { content: "\0067"; }
+    &.icone_enregistrement:before { content: "\0067"; }
+    &.icone_wizard:before         { content: "\f0d0"; }
+    &.icone_compas:before         { content: "\e000"; }
+    &.icone_carte:before          { content: "\0063"; }
+    &.icone_soleil:before         { content: "\e001"; }
+    &.icone_lunettes:before       { content: "\e003"; }
+} //*/
+

@@ -1,0 +1,204 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="ajout-bibliographie">
+
+    <div class="documentFirstHeading">
+        <h1 i18n:translate="">Attacher un lien de « Mon Espace »</h1>
+    </div>
+
+    <tal:define define="espace request/espace | nothing;
+                        macro request/macro;
+                        formulaire request/formulaire;
+                        ajout request/ajout;
+                        page string:cours_plan_view">
+    <div id="support_ajout">
+        <h2 class="texte_icone icone_tags">Étiquettes</h2>
+        <div class="tags">
+            <span i18n:translate="">Filtrer par étiquette :</span>
+            <metal:macro use-macro="context/tag_macro/macros/tag-cours">
+                Macro d'affichage des tags
+            </metal:macro>
+        </div>
+        <metal:macro use-macro="context/macro_cours_externes/macros/ressources_externes">
+            Macro de listing des termes de glossaire
+        </metal:macro>
+    </div>
+    </tal:define>
+
+</metal:macro>
+
+
+<metal:macro define-macro="externes_liste">
+    <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='');">
+
+        <div class="panel callout radius"
+             tal:condition="not:folderContents"
+             i18n:translate="">
+            Aucun élément ne correspond à la sélection d'étiquettes
+        </div>
+
+        <tal:listing condition="folderContents">
+
+            <table summary="Liste des ressources externes"
+                   tal:define="espace request/espace | nothing;
+                               authMember user/getId;
+                               tags python:context.getTag(authMember, espace);
+                               planPlat context/getPlanPlat | nothing">
+                <thead>
+                    <tr>
+                        <th class="checkall show-for-medium-up">
+                            <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                                <label for="switch-all"></label>
+                            </div>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Date</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort" data-sort="type" title="Trier selon le type"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Type</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Titre / Description</tal:block>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <tal:entry repeat="item folderContents">
+                        <tr>
+                            <td class="show-for-medium-up"
+                                tal:define="attached python:context.isChecked(item['getId'].replace('.', '*-*'), formulaire, planPlat)">
+                                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                                     tal:condition="not:attached"
+                                     i18n:attributes="title">
+                                    <input type="checkbox" name="paths:list"
+                                           tal:attributes="id string:switch-${repeat/item/index};
+                                                           value python:'*-*'.join([item.getId, item.getTypeRessourceExterne, item.Title.decode('utf-8'), user.getId()])" />
+                                    <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                                </div>
+                                <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+                            </td>
+                            <td class="date show-for-medium-up">
+                                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
+                                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                            </td>
+                            <td class="type">
+                                <span class="label bkgrnd" tal:content="item/getTypeRessourceExterne" />
+                            </td>
+                            <td class="title">
+                                <span class="hide" tal:content="item/Title" />
+                                <strong tal:content="python:here.getShortText(item['Title'])"
+                                        i18n:attributes="title" />
+                                <span class="show-for-medium-up"
+                                      tal:condition="item/Description"
+                                      tal:content="python:here.getShortText(item['Description'], 160)" />
+                            </td>
+                        </tr>
+                    </tal:entry>
+                </tbody>
+            </table>
+
+        <tal:condition condition="folderContents">
+            <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+                Macro d'affichage de la liste en fonction de la variable espace
+            </metal:macro>
+        </tal:condition>
+
+            <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                               script2 string:setSortableList('js-list-ressource',['date','type','title'],'date','desc')">
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+            </tal:define>
+
+            <script charset="UTF-8"
+                    tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                    tal:content="structure buffer" />
+
+        </tal:listing>
+
+    </tal:define>
+</metal:macro>
+
+
+<metal:macro define-macro="bibliographie-affichage">
+    <tal:block define="listeLettres context/getLettresGlossaire;
+                       glossaire python:context.getGlossaireCours('biblio');
+                       lettresGlossaire glossaire/keys;
+                       temp lettresGlossaire/sort">
+      <div class="glossaire">
+        <h2 class="texte_icone icone_lettres" i18n:translate="">Index de la bibliographie</h2>
+        <ul class="lettres">
+          <li tal:repeat="lettre listeLettres">
+            <a tal:attributes="href string:${context/absolute_url}/cours_bibliographie_view?section=${section}#${lettre};
+                               class python:context.test(glossaire.has_key(lettre), 'bouton', 'bouton blanc')"
+               tal:content="lettre"/>
+          </li>
+        </ul><br class="visualClear" /><br />
+        <h2 class="texte_icone icone_liste" i18n:translate="">Liste des éléments de la bibliographie</h2>
+        <div class="listing_vide" tal:condition="not:lettresGlossaire" i18n:translate="">Aucun élément</div>
+        <ul class="termes arrondis">
+          <li tal:repeat="lettre lettresGlossaire">
+              <a tal:attributes="name lettre"></a>
+              <h2 tal:content="lettre" class="lettre"></h2>
+              <dl tal:repeat="element python:glossaire[lettre]">
+                  <div class="arrondi">
+                    <tal:block condition="personnel">
+                      <a tal:define="titreElement python:context.jalon_quote(element['titreElement'])"
+                         tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&formulaire=detacher-cours&menu=bibliographie&idElement=${element/idElement}&repertoire=Externe&retour=cours_bibliographie_view&titreElement=${titreElement}"
+                         title="D&eacute;tacher le fichier"
+                         class="bouton small showmore position_droite"
+                         i18n:attributes="title"
+                         i18n:translate="">
+                         D&eacute;tacher
+                      </a>
+                    </tal:block>
+
+                    <dt>
+                      <a class="showmore"
+                       tal:attributes="href string:${context/absolute_url}/cours_element_view?idElement=${element/idElement}&createurElement=${element/createurElement}&typeElement=${element/typeElement}&indexElement=${lettre}${repeat/element/index}&requete_ajax=0"
+                       tal:content="element/titreElement"/>
+                    </dt>
+                    <dd class="contenuElement"
+                        tal:attributes="id string:${lettre}${repeat/element/index}"></dd>
+                    <div class="visualClear"/>
+                  </div>
+              </dl>
+          </li>
+        </ul>
+      </div>
+      <div class="visualClear"></div>
+    </tal:block>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

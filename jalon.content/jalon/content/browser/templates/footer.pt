@@ -1,0 +1,44 @@
+    <div metal:define-macro="portal_footer"
+         i18n:domain="jalon.content"
+         class="row">
+        <div class="cell width-full position-0">
+            <div id="portal-footer"
+                    tal:define="footer view/getFooter">
+                <p>
+                    <span class="cache">
+                        <tal:translate i18n:translate="">Environnement pédagogique</tal:translate> <tal:block replace="footer/site"/>
+                        <tal:condition condition="footer/activer_etablissement">
+                        • © <a class="link"
+                               tal:attributes="href footer/lien_etablissement;
+                                               title footer/etablissement"
+                               tal:content="footer/etablissement">
+                            </a> •
+                        </tal:condition>
+                    </span>
+                    <tal:condition condition="footer/activer_lien_mention">
+                    <a class="link"
+                       tal:attributes="href footer/lien_mention"
+                       i18n:translate="">Mentions légales</a>
+                    </tal:condition>
+                    <tal:condition condition="footer/activer_lien_credit">
+                    -
+                    <a class="link cache"
+                       tal:attributes="href footer/lien_credit"
+                       i18n:translate="">Crédits</a>
+                    </tal:condition>
+                    <tal:condition condition="footer/activer_lien_contact">
+                    -
+                    <a class="link"
+                       tal:attributes="href footer/lien_contact"
+                       i18n:translate="">Contacts</a>
+                    </tal:condition>
+                    <tal:condition condition="footer/activer_aide">
+                    -
+                    <a class="link"
+                       tal:attributes="href footer/lien_aide"
+                       i18n:translate="">Aide et tutoriels</a>
+                    </tal:condition>
+                </p>
+            </div>
+        </div>
+    </div>

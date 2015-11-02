@@ -1,0 +1,82 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=valider_form
+
+[actions]
+action.failure = traverse_to:string:folder_form
+action.canceled = traverse_to:string:fermeture
+action.canceled-from_cours = redirect_to:string:cours_plan_view
+
+action.success-creer-seance = traverse_to:string:creationSeanceIntracursus
+
+action.success-ajout-externe    = traverse_to:string:ajouterressource_script
+action.success-ajout-web        = traverse_to:string:ajouterressource_script
+action.success-ajout-video      = traverse_to:string:ajouterressource_script
+action.success-ajout-cours      = traverse_to:string:ajoutercours_script
+action.success-ajout-activite   = traverse_to:string:cours_element_add
+action.success-ajout-annonce    = traverse_to:string:cours_element_add
+action.success-ajout-forum      = traverse_to:string:cours_element_add
+action.success-ajout-depot      = traverse_to:string:ajouterdepot_script
+action.success-ajout-competence = traverse_to:string:ajouter_competence_script
+action.success-ajout-glossaire  = traverse_to:string:ajouterglossaire_script
+action.success-ajout-conversation  = traverse_to:string:add_conversation_script
+action.success-ajout-reponse  = traverse_to:string:add_comment_script
+
+action.success-modifier-fichier = traverse_to:string:modifier_fichier_script
+action.success-modifier-externe-lien = traverse_to:string:ajouterressource_script
+action.success-modifier-externe-lecteur = traverse_to:string:ajouterressource_script
+action.success-modifier-externe-reference = traverse_to:string:ajouterressource_script
+action.success-modifier-externe-cataloguebu = traverse_to:string:ajouterressource_script
+action.success-modifier-externe-pod = traverse_to:string:ajouterressource_script
+
+action.success-modifier-activite = traverse_to:string:activite_edit
+action.success-modifier-boite-info = traverse_to:string:activite_edit
+action.success-modifier-boite-date = traverse_to:string:activite_edit
+action.success-modifier-correction = traverse_to:string:depot_attribut_edit
+action.success-modifier-competences = traverse_to:string:modifier_competence_script
+action.success-modifier-note = traverse_to:string:depot_attribut_edit
+action.success-modifier-forum = traverse_to:string:forum_edit
+action.success-modifier-conversation = traverse_to:string:forum_edit
+action.success-modifier-glossaire = traverse_to:string:ajouterressource_script
+action.success-modifier-plan = traverse_to:string:cours_modifier_element_plan
+action.success-modifier-annonce = traverse_to:string:cours_modifier_annonce
+action.success-modifier-titre = traverse_to:string:cours_edit
+action.success-ajouter-invitations-email = traverse_to:string:cours_ajouter_invitations
+action.success-modifier-itunesu = traverse_to:string:cours_edit
+
+action.success-supprimer-competences = traverse_to:string:supprimer_competence_script
+
+action.success-modifier-libre = traverse_to:string:cours_edit
+
+action.success-ajout-wims = traverse_to:string:ajouterexercicewims_script
+action.success-importer-exercices = traverse_to:string:importer_hotpotatoes_script
+action.success-qcmsimple = traverse_to:string:ajouterexercicewims_script
+action.success-equation = traverse_to:string:ajouterexercicewims_script
+action.success-texteatrous = traverse_to:string:ajouterexercicewims_script
+action.success-marqueruntexte = traverse_to:string:ajouterexercicewims_script
+action.success-marquerparpropriete = traverse_to:string:ajouterexercicewims_script
+action.success-questiontextuelletolerante = traverse_to:string:ajouterexercicewims_script
+action.success-taperlemotassocie = traverse_to:string:ajouterexercicewims_script
+action.success-reordonner = traverse_to:string:ajouterexercicewims_script
+action.success-correspondance = traverse_to:string:ajouterexercicewims_script
+action.success-classerparpropriete = traverse_to:string:ajouterexercicewims_script
+action.success-vraifauxmultiples = traverse_to:string:ajouterexercicewims_script
+action.success-texteatrousmultiples = traverse_to:string:ajouterexercicewims_script
+action.success-exercicelibre = traverse_to:string:ajouterexercicewims_script
+
+action.success-ecrire = traverse_to:string:ecrire_script
+
+action.success-creer_categorie = traverse_to:string:creer_categorie
+action.success-renommer_categorie = traverse_to:string:renommer_categorie
+action.success-modifier_categorie = traverse_to:string:cours_edit
+action.success-etiqueter = traverse_to:string:etiqueter_script
+
+action.success-inscription-cours = traverse_to:string:inscriptioncours_script
+
+action.success-maj-photo = traverse_to:string:maj_photo_script
+
+action.success-ajout-elements-fichiers = traverse_to:string:creer_fichier_script
+action.success-ajout-elements-ressources-externes = traverse_to:string:creer_lien_script

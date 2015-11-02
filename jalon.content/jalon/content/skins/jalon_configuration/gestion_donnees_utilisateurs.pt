@@ -1,0 +1,167 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_donnees_utilisateurs">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+
+        <h2>
+            <i class="fa fa-users"></i><tal:block i18n:translate="">Configuration de la récupération des données utilisateurs</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigDonneesUtilisateurs"
+              tal:define="donneesUtilisateurs context/getPropertiesDonneesUtilisateurs">
+            <div class="panel callout radiust">
+                <label i18n:translate="">
+                    Activer la connexion a un annuaire LDAP
+                </label>
+                <input type="radio" name="activer_ldap" id="activer_ldap" value="1"
+                       tal:attributes="checked python:context.test(donneesUtilisateurs['activer_ldap'], 'checked', '')" />
+                <label for="activer_ldap" class="activer">
+                    <i class="fa fa-check"></i>
+                    <tal:block i18n:translate="">Activé</tal:block>
+                </label>
+                <input type="radio" name="activer_ldap" id="desactiver_ldap" value="0"
+                       tal:attributes="checked python:context.test(not donneesUtilisateurs['activer_ldap'], 'checked', '')" />
+                <label for="desactiver_ldap" class="desactiver">
+                    <i class="fa fa-times"></i>
+                    <tal:block i18n:translate="">Désactivé</tal:block>
+                </label>
+            </div>
+            <div class="panel callout radius">
+                <label for="base_ldap" i18n:translate="base_ldap">
+                    Url de base de l'annuaire LDAP
+                </label>
+                <input type="text" id="base_ldap" name="base_ldap"
+                       maxlength="255" size="30"
+                       tal:attributes="value donneesUtilisateurs/base_ldap | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label for="schema_ldap" i18n:translate="schema_ldap">
+                    Schema de l'annuaire LDAP
+                </label>
+                <span class="discreet" i18n:translate="">exemple : supann ou eduPerson</span>
+                <input type="text" id="schema_ldap" name="schema_ldap"
+                       maxlength="255" size="30"
+                       tal:attributes="value donneesUtilisateurs/schema_ldap | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label for="fiche_ldap" i18n:translate="fiche_ldap">
+                    Chemin vers une fiche de l'annuaire LDAP
+                </label>
+                <span class="discreet">exemple : http://universite.fr/page?variable=valeur&amp;Nom=*-*nom*-* ou uid=*-*id*-*</span>
+                <input type="text" id="fiche_ldap" name="fiche_ldap"
+                       maxlength="255" size="30"
+                       tal:attributes="value donneesUtilisateurs/fiche_ldap | nothing" />
+            </div>
+            <div class="row">
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="activer_trombinoscope">
+                            Activer les "Trombinoscopes"
+                        </label>
+                        <input type="radio" name="activer_trombinoscope" id="activer_trombinoscope" value="1"
+                               tal:attributes="checked python:context.test(donneesUtilisateurs['activer_trombinoscope'], 'checked', '')" />
+                        <label for="activer_trombinoscope" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_trombinoscope" id="desactiver_trombinoscope" value="0"
+                               tal:attributes="checked python:context.test(not donneesUtilisateurs['activer_trombinoscope'], 'checked', '')" />
+                        <label for="desactiver_trombinoscope" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le stockage des photos
+                        </label>
+                        <input type="radio" name="activer_stockage_photo" id="activer_stockage_photo" value="1"
+                               tal:attributes="checked python:context.test(donneesUtilisateurs['activer_stockage_photo'], 'checked', '')" />
+                        <label for="activer_stockage_photo" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_stockage_photo" id="desactiver_stockage_photo" value="0"
+                               tal:attributes="checked python:context.test(not donneesUtilisateurs['activer_stockage_photo'], 'checked', '')" />
+                        <label for="desactiver_stockage_photo" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_trombinoscope" i18n:translate="lien_trombinoscope">
+                            Lien vers le stockage externe des photos du "Trombinoscopes"
+                        </label>
+                        <input type="text" id="lien_trombinoscope" name="lien_trombinoscope"
+                               maxlength="255" size="30"
+                               tal:attributes="value donneesUtilisateurs/lien_trombinoscope | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;" />
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

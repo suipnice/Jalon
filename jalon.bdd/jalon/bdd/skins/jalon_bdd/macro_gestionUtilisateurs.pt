@@ -1,0 +1,607 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Créer un utilisateur
+-->
+<metal:macro define-macro="creationUtilisateur-form">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Créer un utilisateur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="admin-user_edit-form"
+          tal:define="isSecretaire python:context.test(user.has_role('Secretaire'), 1, 0);
+                      redirection python:context.test(isSecretaire, 'gestion_utilisateurs', '@@jalon-bdd')"
+          tal:attributes="action string:${context/absolute_url}/creerUtilisateur_script" method="post">
+
+        <style type="text/css">
+            #admin-user_create-form > fieldset {
+                margin-bottom: .3rem;
+                padding: .3rem .2rem;
+            }
+            #admin-user_create-form > fieldset:last-of-type {
+                margin-bottom: 0;
+            }
+        </style>
+
+        <fieldset class="row">
+            <legend i18n:translate="">Catégorie d'utilisateur</legend>
+            <div class="columns small-12">
+                <input id="radio-1" name="TYPE_IND" type="radio" value="Etudiant" checked="checked" />
+                <label for="radio-1" i18n:translate="">Étudiant</label>
+                <input id="radio-2" name="TYPE_IND" type="radio" value="Personnel" />
+                <label for="radio-2" i18n:translate="">Enseignant</label>
+                <input id="radio-3" name="TYPE_IND" type="radio" value="Secretaire" />
+                <label for="radio-3" i18n:translate="">Secrétaire</label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend i18n:translate="">Informations personnelles</legend>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="SESAME_ETU"
+                           i18n:translate="">Identifiant</label>
+                    <input type="text" name="SESAME_ETU" id="SESAME_ETU"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+                <div class="columns small-4">
+                    <label for="PASSWORD"
+                           i18n:translate="">Mot de passe</label>
+                    <input type="password" name="PASSWORD" id="PASSWORD" />
+                </div>
+                <div class="columns small-4">
+                    <label for="UNIV_IND"
+                           i18n:translate="">Université d'inscription</label>
+                    <select name="UNIV_IND" id="UNIV_IND">
+                        <option value="UNS">UNS (Université Nice Sophia Antipolis)</option>
+                        <option value="USTV">USTV (Université du Sud Toulon-Var)</option>
+                        <option value="UP13">UP13 (Université Paris 13 ou Paris Nord)</option>
+                        <option value="UHA">UHA (Université de Haute Alsace)</option>
+                        <option value="ULH">ULH (Université Du Havre)</option>
+                        <option value="UL">UL (Université de Lorraine)</option>
+                        <option value="UR">UR (Université de la Réunion)</option>
+                        <option value="UAG">UAG (Université des Antilles et de la Guyane)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="LIB_NOM_PAT_IND"
+                           i18n:translate="">Nom patronymique</label>
+                    <input type="text" name="LIB_NOM_PAT_IND" id="LIB_NOM_PAT_IND"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+                <div class="columns small-4">
+                    <label for="LIB_NOM_USU_IND"
+                           i18n:translate="">Nom usuel</label>
+                    <input type="text" name="LIB_NOM_USU_IND" id="LIB_NOM_USU_IND" />
+                </div>
+                <div class="columns small-4">
+                    <label for="LIB_PR1_IND"
+                           i18n:translate="">Prénom</label>
+                    <input type="text" name="LIB_PR1_IND" id="LIB_PR1_IND"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="DATE_NAI_IND"
+                           i18n:translate="">Date de naissance</label>
+                    <input type="text" name="DATE_NAI_IND" id="DATE_NAI_IND"/>
+                </div>
+                <div class="columns small-4">
+                    <label for="EMAIL_ETU"
+                           i18n:translate="">Courriel</label>
+                    <input type="text" name="EMAIL_ETU" id="EMAIL_ETU"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+                <div class="columns small-4">
+                    <label for="ADR1_IND"
+                           i18n:translate="">Adresse</label>
+                    <input type="text" name="ADR1_IND" id="ADR1_IND"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="ADR2_IND"
+                           i18n:translate="">Adresse 2</label>
+                    <input type="text" name="ADR2_IND" id="ADR2_IND" />
+                </div>
+                <div class="columns small-4">
+                    <label for="COD_POST_IND"
+                           i18n:translate="">Code postal</label>
+                    <input type="text" name="COD_POST_IND" id="COD_POST_IND"/>
+                </div>
+                <div class="columns small-4">
+                    <label for="VIL_IND"
+                           i18n:translate="">Ville</label>
+                    <input type="text" name="VIL_IND" id="VIL_IND"/>
+                </div>
+            </div>
+
+            <div id="js-studentInfo" class="row">
+                <div class="columns small-6">
+                    <label for="COD_ETU" class="formQuestion"
+                           i18n:translate="">Numéro d'étudiant</label>
+                    <input type="text" name="COD_ETU" id="COD_ETU" />
+                </div>
+                <div class="columns small-6">
+                    <label for="PROMO_IND" class="formQuestion"
+                           i18n:translate="">Promotion</label>
+                    <input type="text" name="PROMO_IND" id="PROMO_IND"
+                           placeholder="Saisie obligatoire" />
+                </div>
+            </div>
+
+        </fieldset>
+
+        <input type="hidden" name="redirection"
+               tal:attributes="value redirection"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setFormUserEdition()" />
+
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Modifier les informations d'un utilisateur
+-->
+<metal:macro define-macro="modificationUtilisateur-form">
+
+<tal:block define="sesame request/sesame;
+                   infosUtil python:context.getIndividuLITE(sesame);
+                   typeUtil python:infosUtil['TYPE_IND'];
+                   isSecretaire python:context.test(user.has_role('Secretaire'), 1, 0);
+                   redirection python:context.test(isSecretaire, 'gestion_utilisateurs', '@@jalon-bdd')">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifications des informations</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="admin-user_edit-form"
+          tal:attributes="action string:${context/absolute_url}/modifierInfosUtilisateurs_script" method="post">
+
+        <style type="text/css">
+            #admin-user_mod-form > fieldset {
+                margin-bottom: .3rem;
+                padding: .3rem .2rem;
+            }
+            #admin-user_mod-form > fieldset:last-of-type {
+                margin-bottom: 0;
+            }
+        </style>
+
+        <fieldset class="row">
+            <legend i18n:translate="">Catégorie d'utilisateur</legend>
+            <div class="columns small-12">
+                <input id="radio-1" name="TYPE_IND" type="radio" value="Etudiant"
+                       tal:attributes="checked python:context.test(typeUtil == 'Etudiant', 1, 0)" />
+                <label for="radio-1" i18n:translate="">Étudiant</label>
+                <input id="radio-2" name="TYPE_IND" type="radio" value="Personnel"
+                       tal:attributes="checked python:context.test(typeUtil == 'Personnel', 1, 0)" />
+                <label for="radio-2" i18n:translate="">Enseignant</label>
+                <input id="radio-3" name="TYPE_IND" type="radio" value="Secretaire"
+                       tal:attributes="checked python:context.test(typeUtil == 'Secretaire', 1, 0)" />
+                <label for="radio-3" i18n:translate="">Secrétaire</label>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend i18n:translate="">Informations personnelles</legend>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label i18n:translate="">Identifiant</label>
+                    <input type="text" disabled="disabled"
+                           tal:attributes="value infosUtil/SESAME_ETU" />
+                </div>
+                <div class="columns small-4">
+                    <label i18n:translate="">Mot de passe</label>
+                    <input type="password" name="password"/>
+                </div>
+                <div class="columns small-4">
+                    <label for="UNIV_IND"
+                           i18n:translate="">Université d'inscription</label>
+                    <select name="UNIV_IND" id="UNIV_IND">
+                        <option value="UNS"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UNS', 'selected', '')">
+                            UNS (Université Nice Sophia Antipolis)</option>
+                        <option value="USTV"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'USTV', 'selected', '')">
+                            USTV (Université du Sud Toulon-Var)</option>
+                        <option value="UP13"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UP13', 'selected', '')">
+                            UP13 (Université Paris 13 ou Paris Nord)</option>
+                        <option value="UHA"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UHA', 'selected', '')">
+                            UHA (Université de Haute Alsace)</option>
+                        <option value="ULH"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'ULH', 'selected', '')">
+                            ULH (Université Du Havre)</option>
+                        <option value="UL"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UL', 'selected', '')">
+                            UL (Université de Lorraine)</option>
+                        <option value="UR"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UR', 'selected', '')">
+                            UR (Université de la Réunion)</option>
+                        <option value="UAG"
+                                tal:attributes="selected python:context.test(infosUtil['UNIV_IND'] == 'UAG', 'selected', '')">
+                            UAG (Université des Antilles et de la Guyane)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="LIB_NOM_PAT_IND"
+                           i18n:translate="">Nom patronymique</label>
+                    <input type="text" name="LIB_NOM_PAT_IND" id="LIB_NOM_PAT_IND"
+                           tal:attributes="value infosUtil/LIB_NOM_PAT_IND"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+                <div class="columns small-4">
+                    <label for="LIB_NOM_USU_IND"
+                           i18n:translate="">Nom usuel</label>
+                    <input type="text" name="LIB_NOM_USU_IND" id="LIB_NOM_USU_IND"
+                           tal:attributes="value infosUtil/LIB_NOM_USU_IND" />
+                </div>
+                <div class="columns small-4">
+                    <label for="LIB_PR1_IND"
+                           i18n:translate="">Prénom</label>
+                    <input type="text" name="LIB_PR1_IND" id="LIB_PR1_IND"
+                           tal:attributes="value infosUtil/LIB_PR1_IND"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="DATE_NAI_IND"
+                           i18n:translate="">Date de naissance</label>
+                    <input type="text" name="DATE_NAI_IND" id="DATE_NAI_IND"
+                           tal:attributes="value infosUtil/DATE_NAI_IND"/>
+                </div>
+                <div class="columns small-4">
+                    <label for="EMAIL_ETU"
+                           i18n:translate="">Courriel</label>
+                    <input type="text" name="EMAIL_ETU" id="EMAIL_ETU"
+                           tal:attributes="value infosUtil/EMAIL_ETU"
+                           required="required"
+                           placeholder="Saisie obligatoire" />
+                </div>
+                <div class="columns small-4">
+                    <label for="ADR1_IND"
+                           i18n:translate="">Adresse</label>
+                    <input type="text" name="ADR1_IND" id="ADR1_IND"
+                           tal:attributes="value infosUtil/ADR1_IND"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="columns small-4">
+                    <label for="ADR2_IND"
+                           i18n:translate="">Adresse 2</label>
+                    <input type="text" name="ADR2_IND" id="ADR2_IND"
+                           tal:attributes="value infosUtil/ADR2_IND" />
+                </div>
+                <div class="columns small-4">
+                    <label for="COD_POST_IND"
+                           i18n:translate="">Code postal</label>
+                    <input type="text" name="COD_POST_IND" id="COD_POST_IND"
+                           tal:attributes="value infosUtil/COD_POST_IND"/>
+                </div>
+                <div class="columns small-4">
+                    <label for="VIL_IND"
+                           i18n:translate="">Ville</label>
+                    <input type="text" name="VIL_IND" id="VIL_IND"
+                           tal:attributes="value infosUtil/VIL_IND"/>
+                </div>
+            </div>
+
+            <div id="js-studentInfo" class="row">
+                <div class="columns small-6">
+                    <label for="COD_ETU" class="formQuestion"
+                           i18n:translate="">Numéro d'étudiant</label>
+                    <input type="text" name="COD_ETU" id="COD_ETU"
+                           tal:attributes="value infosUtil/COD_ETU" />
+                </div>
+                <div class="columns small-6">
+                    <label for="PROMO_IND" class="formQuestion"
+                           i18n:translate="">Promotion</label>
+                    <input type="text" name="PROMO_IND" id="PROMO_IND"
+                           tal:attributes="value infosUtil/PROMO_IND"
+                           placeholder="Saisie obligatoire" />
+                </div>
+            </div>
+
+        </fieldset>
+
+        <input type="hidden" name="SESAME_ETU"
+               tal:attributes="value sesame"/>
+        <input type="hidden" name="redirection"
+               tal:attributes="value redirection"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setFormUserEdition()" />
+
+    </form>
+
+</tal:block>
+
+</metal:macro>
+
+
+<!--
+        Supprimer un utilisateur
+-->
+<metal:macro define-macro="suppressionUtilisateur-form"
+             tal:define="sesame request/sesame">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Supprimer l'utilisateur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form name="suppressionUtilisateur-form"
+          tal:attributes="action string:${context/absolute_url}/supprimerUtilisateur_script" method="post">
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
+        </div>
+        <input type="hidden" id="SESAME_ETU" name="SESAME_ETU"
+                tal:attributes="value sesame"/>
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="folder_delete:method">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<metal:macro define-macro="demanderSuppressionUtilisateur-form"
+             tal:define="sesame request/sesame">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Demander la suppression de l'utilisateur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form name="suppressionUtilisateur-form"
+          tal:attributes="action string:${context/absolute_url}/demanderSuppressionUtilisateur_script" method="post">
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong> cette opération n'est possible que par un administrateur. Pour demander la suppression de cet utilisateur à un administrateur, cliquez sur "Demander la suppression".
+        </div>
+        <input type="hidden" name="redirection"
+               tal:attributes="value string:${context/absolute_url}/gestion_utilisateurs"/>
+        <input type="hidden" id="idSuppression" name="idSuppression"
+               tal:attributes="value sesame"/>
+        <input type="hidden" id="idDemande" name="idDemande"
+               tal:attributes="value user/getId"/>
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="folder_delete:method">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Demander la suppression</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Bloquer un utilisateur
+-->
+<metal:macro define-macro="bloquerUtilisateur-form"
+             tal:define="sesame request/sesame;
+                         isSecretaire python:context.test(user.has_role('Secretaire'), 1, 0);
+                         redirection python:context.test(isSecretaire, 'gestion_utilisateurs', '@@jalon-bdd')">
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Bloquer l'utilisateur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form name="bloquerUtilisateur-form"
+          tal:attributes="action string:${context/absolute_url}/bloquerUtilisateur_script" method="post">
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong> vous allez interdire l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Bloquer'.
+        </div>
+        <input type="hidden" name="SESAME_ETU"
+               tal:attributes="value sesame"/>
+        <input type="hidden" name="redirection"
+               tal:attributes="value redirection"/>
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="bloquerUtilisateur">
+                <i class="fa fa-key"></i>
+                <tal:block i18n:translate="">Bloquer</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!--
+        Activer un utilisateur
+-->
+<metal:macro define-macro="activerUtilisateur-form"
+             tal:define="sesame request/sesame;
+                         isSecretaire python:context.test(user.has_role('Secretaire'), 1, 0);
+                         redirection python:context.test(isSecretaire, 'gestion_utilisateurs', '@@jalon-bdd')">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Activer l'utilisateur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form name="activerUtilisateur-form"
+          tal:attributes="action string:${context/absolute_url}/activerUtilisateur_script" method="post">
+        <div class="panel callout radius">
+            <strong i18n:translate="">Attention :</strong> vous allez autoriser l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Activer'.
+        </div>
+        <input type="hidden" id="SESAME_ETU" name="SESAME_ETU"
+               tal:attributes="value sesame"/>
+        <input type="hidden" name="redirection"
+               tal:attributes="value redirection"/>
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="activerUtilisateur">
+                <i class="fa fa-unlock"></i>
+                <tal:block i18n:translate="">Activer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Composition d'un élément pédagogique
+-->
+<metal:macro define-macro="inscrireUtilisateur-form">
+
+    <div id="tableau" class="onglets_contenu">
+        <!-- Si l'ELP n'est pas un diplôme, on affiche les ELP Pere -->
+        <tal:define define="SESAME_ETU request/SESAME_ETU;
+                            infosIndividu python:context.getIndividuLITE(SESAME_ETU);
+                            listeTypeAttachementELP context/getTypeAttachementELP;
+                            TYP_ELP_SELECT request/TYP_ELP_SELECT | nothing;
+                            listeToutesELP python:context.getInfosElpParType(TYP_ELP_SELECT);
+                            TousElpAttach python:context.getInscriptionIND(SESAME_ETU, TYP_ELP_SELECT)">
+            <h2 class="texte_icone icone_universite position_gauche">
+                Inscription de <tal:block replace="infosIndividu/LIB_NOM_PAT_IND"/> <tal:block replace="infosIndividu/LIB_PR1_IND"/>
+            </h2>
+            <br class="visualClear"/><br/>
+            <form name="modif-inscripEtudiantsELP"
+                  tal:attributes="action string:${context/absolute_url}/inscriptionINDELP" method="post">
+                <!-- Boutons radio pour sélectionner les types d'ELP -->
+                <label>Choisir le type d'élément pédagogique : </label><br/><br/>
+                <div id="typeELP" class="tags">
+                    <ul id="tag" class="arrondis">
+                        <tal:repeat repeat="dico listeTypeAttachementELP">
+                            <li class="tag unselected"
+                                tal:attributes="id dico/type">
+                                <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_gestionUtilisateurs&amp;macro=inscrireUtilisateur-form&amp;SESAME_ETU=${SESAME_ETU}&amp;TYP_ELP_SELECT=${dico/type}"
+                                    tal:content="dico/libelle"/>
+                            </li>
+                        </tal:repeat>
+                    </ul>
+                </div>
+
+        <div id="contenantLoadAjax">
+        <div id="contenuLoadAjax">
+                <div class="listesDoubles"
+                     tal:condition="TYP_ELP_SELECT">
+
+                    <div class="columns medium-4">
+                        <span class="texte_icone icone_recherche" i18n:translate="">Rechercher un élément pédagogique</span>
+                        <br/><br/>
+                        <input type="text" id="champFiltreListeDouble1" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                        <button type="button" id="clearFiltreListeDouble1" class="clearFiltreListeDouble">X</button>
+
+                        <select name="listeTousELP:list" id="listeDouble1" multiple="multiple" class="listeDouble">
+                            <tal:entry repeat="elp listeToutesELP">
+                                <option tal:attributes="value elp/COD_ELP">
+                                    <tal:block content="elp/LIB_ELP"/>  (code : <tal:block replace="elp/COD_ELP"/>)
+                                </option>
+                            </tal:entry>
+                        </select>
+
+                        <span id="compteListeDouble1" class="countLabel compteListeDouble"></span>
+
+                        <select id="stockageListeDouble1" class="stockageListeDouble"></select>
+                    </div>
+
+                    <div class="columns medium-4">
+                        <button id="versListeDouble2" type="button" class="versListeDouble"> > </button>
+                        <button id="versListeDouble1" type="button" class="versListeDouble"> < </button>
+                    </div>
+
+                    <div class="columns medium-4">
+                        <span class="texte_icone icone_universite" i18n:translate="">Eléments pédagogiques déjà inscrits :</span>
+                        <br/><br/>
+                        <input type="text" id="champFiltreListeDouble2" class="champFiltreListeDouble" placeholder="Rechercher et valider avec Entrée..."/>
+                        <button type="button" id="clearFiltreListeDouble2" class="clearFiltreListeDouble">X</button>
+
+                        <select name="listeELPAttach:list" id="listeDouble2" multiple="multiple" class="listeDouble">
+                            <tal:entry repeat="elp TousElpAttach">
+                                <option tal:attributes="value elp/COD_ELP">
+                                        <tal:block content="elp/LIB_ELP"/>  (code : <tal:block replace="elp/COD_ELP"/>)
+                                </option>
+                            </tal:entry>
+                        </select>
+
+                        <span id="compteListeDouble2" class="countLabel compteListeDouble"></span>
+
+                        <select id="stockageListeDouble2" class="stockageListeDouble"></select>
+
+                    </div>
+                </div>
+        </div>
+        </div>
+
+                <div class="visualClear"></div>
+                <br class="visualClear"/><br/>
+                <div class="formControls">
+                    <input class="bouton bouton_actualiser" type="button" value="Terminer" />
+                </div>
+                <input type="hidden" name="TYP_ELP_SELECT" id="TYP_ELP_SELECT"/>
+                <input type="hidden" name="SESAME_ETU" id="SESAME_ETU"
+                       tal:attributes="value SESAME_ETU"/>
+                <tal:define define="isSecretaire python:user.has_role('Secretaire')">
+                <input type="hidden" name="redirection"
+                       tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd"
+                       tal:condition="not:isSecretaire"/>
+                <input type="hidden" name="redirection"
+                       tal:attributes="value string:${context/absolute_url}/gestion_utilisateurs"
+                       tal:condition="isSecretaire"/>
+                </tal:define>
+            </form>
+        </tal:define>
+    </div>
+
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

@@ -1,0 +1,14 @@
+:%%%%%%%%%%%%%%%%%      Modèle d'exercice vierge, à modifier en Mode Brut      %%%%%%%%%%%%%%%%%%%%
+
+:%%%%%%%%%%%%% AVANT : on définit les parametres de l'exercice %%%%%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+
+:%%%%%%%%%%%%% PENDANT :  l'énoncé (en code html) %%%%%%%%%%%%%%%%%%%%
+\statement{
+Quelle est la couleur du cheval blanc d'Henri IV ?
+}
+
+:%%%%%%%%%%%%% APRES : La reponse a donner  %%%%%%%%%%%%%%%%%%%
+\answer{La réponse est :}{blanc}

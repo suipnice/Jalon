@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core metal:fill-slot="content"
+            tal:define="results view/results;
+                        pageCours string:jalon_forum_search">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane" />
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+            Messages de session
+        </metal:macro>
+
+        <div class="small-12 columns"
+             tal:define="message request/message | nothing"
+             tal:condition="message">
+            <!--
+                    A FUSIONNER AVEC "portal_message"
+            -->
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+        </div>
+
+
+        <section class="medium-8 small-12 columns">
+
+            <h2>
+                <i class="fa fa-list"></i>
+                <tal:block i18n:translate="">
+                    Résultats de la recherche
+                </tal:block>
+            </h2>
+
+        <tal:noResultFound condition="not:results">
+            <div class="panel callout radius">
+                <tal:block i18n:translate="">Aucun élément ne correspond</tal:block>
+                <tal:block i18n:translate="">à vos critères de recherche.</tal:block>
+            </div>
+        </tal:noResultFound>
+
+        <tal:resultsFound condition="results">
+
+            <div class="panel callout radius"
+                tal:define="nbrRes python:len(results)">
+                <tal:replace replace="nbrRes" />
+                <tal:block tal:condition="python:nbrRes == 1"
+                           i18n:translate="">élément correspond</tal:block>
+                <tal:block tal:condition="python:nbrRes > 1"
+                           i18n:translate="">éléments correspondent</tal:block>
+                <tal:block i18n:translate="">à vos critères de recherche.</tal:block>
+            </div>
+
+            <dl id="searchResults">
+
+                <tal:repeat repeat="result results">
+
+                    <tal:info define="info python:view.info(result);
+                                      is_even repeat/result/even | nothing;
+                                      item_wf_state_class string:state-${info/review_state};">
+
+                        <dt>
+                            <i tal:attributes="class python:context.test(is_even, 'fa fa-comment-o no-pad', 'fa fa-comment no-pad')"></i>
+                            <tal:relevance
+                               i18n:translate="label_relevance_percentage">
+                                Pertinence :
+                                  <span tal:content="info/relevance"
+                                        tal:omit-tag=""
+                                        i18n:name="percentage">23</span>%
+                            </tal:relevance> -
+                            <a tal:attributes="href info/url"
+                               i18n:translate="">Voir le message…</a>
+                        </dt>
+
+                        <dd tal:attributes="class python:context.test(is_even, 'panel radius', 'panel callout radius')">
+                            <span tal:content="info/description">
+                                Description (cropped)
+                            </span>
+                            <!--span tal:replace="info" /-->
+
+                            <div class="panel bkgrnd radius discreet">
+                                <tal:block i18n:translate="">Dans</tal:block>
+                                <a tal:content="info/forum_title"
+                                   tal:attributes="href info/forum_url" />
+                                <i class="fa fa-angle-double-right no-pad"></i>
+                                <a tal:content="info/conv_title"
+                                   tal:attributes="href info/conv_url" />
+                                <tal:block i18n:translate="">par</tal:block>
+                                <strong tal:content="info/author" />
+                            </div>
+
+                        </dd>
+
+                    </tal:info>
+                </tal:repeat>
+
+            </dl>
+
+            <tal:define define="script string:cleanForumSearchResults()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:define>
+
+        </tal:resultsFound>
+        </section>
+
+
+        <section class="medium-4 small-12 columns">
+
+            <tal:define define="search_url context/absolute_url">
+                <metal:search metal:use-macro="here/macro_forum/macros/forum-rechercher" />
+            </tal:define>
+
+        </section>
+
+
+    </main>
+</metal:core>
+
+</body>
+
+</html>

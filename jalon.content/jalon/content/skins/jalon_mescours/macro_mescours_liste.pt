@@ -1,0 +1,239 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="mescours_liste">
+
+<tal:define define="folderContents python:context.getListeCoursEns(subjects, authMember=user);">
+
+            <div class="panel callout radius"
+                 tal:condition="not:folderContents">
+                 <i class="fa fa-info-circle no-pad"></i>
+                 <strong i18n:translate="">Vous n'avez pas encore de cours dans Jalon.</strong><br />
+                 <tal:block i18n:translate="">Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.</tal:block>
+            </div>
+
+    <tal:listing condition="folderContents">
+
+            <table summary="Liste des cours de la catégorie">
+                <thead>
+                    <tr>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="new"
+                            title="Trier selon la nouveauté" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <span class="fa fa-bell-o fa-fw no-pad"></span>
+                            </span>
+                        </th>
+                        <th class="sort has-tip" data-tooltip data-sort="favori"
+                            title="Trier selon les favoris" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Favori</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Titre</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort has-tip" data-tooltip data-sort="role" title="Trier selon le rôle" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Rôle</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_etu" title="Trier selon l'accès étudiant" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Ac. étu.</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_pass" title="Trier selon l'accès par mot de passe" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Ac. pass.</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_anon" title="Trier selon l'accès public" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Ac. pub.</tal:block>
+                            </span>
+                        </th>
+                        <th class="action show-for-medium-up has-tip" data-tooltip title="Actions (auteur uniquement)" i18n:attributes="title">
+                            <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody class="list">
+
+        <tal:entry repeat="cours folderContents">
+
+                    <tr tal:condition="python:context.test(cours['is_auteur'] or cours['is_co_auteur'] or cours['is_lecteur'], 1, 0)">
+                        <td class="new show-for-medium-up">
+                    <tal:isNouveau condition="cours/is_nouveau">
+                                <span class="hide"
+                                      tal:content="cours/modified" />
+                                <i class="fa fa-bell-o fa-fw no-pad"></i>
+                    </tal:isNouveau>
+                    <tal:isNotNouveau condition="not:cours/is_nouveau">
+                                <span class="hide">Z<tal:replace replace="cours/modified"/></span>
+                    </tal:isNotNouveau>
+                        </td>
+                        <td class="favori"
+                            tal:define="is_favori python:context.test(cours['is_favori'] == 'Oui', 'Non', 'Oui')">
+                            <span class="hide" tal:content="cours/is_favori" />
+                            <a class="favorite-selector" title="Permuter l'attribut « favori » de ce cours"
+                               tal:attributes="href string:${cours/url_cours}/setFavori?fav=${is_favori};
+                                               data-to_favori string:${is_favori};
+                                               data-item_name cours/title;
+                                               data-success_msg_pre string:Le cours;
+                                               data-success_msg_post_fav string:est un cours favori.;
+                                               data-success_msg_post_nofav string:n'est plus un cours favori."
+                               i18n:attributes="title; data-success_msg_pre; data-success_msg_post_fav; data-success_msg_post_nofav">
+                                <i tal:attributes="class string:js-fav fa ${cours/favori_icon} no-pad"></i>
+                            </a>
+                        </td>
+                        <td class="title">
+                            <span class="hide" tal:content="cours/title" />
+                            <a title="Ouvrir le cours"
+                               tal:attributes="href string:${cours/url_cours}/view"
+                               tal:content="cours/short_title"
+                               i18n:attributes="title" />
+                            <span class="show-for-medium-up"
+                                  tal:condition="cours/short_description"
+                                  tal:content="cours/short_description" />
+                            <span tal:condition="not:cours/is_auteur">
+                                <tal:block i18n:translate="">par</tal:block>
+                                <strong tal:content="cours/name_auteur_cours" />
+                            </span>
+                        </td>
+                        <td class="role">
+                            <span class="label bkgrnd"
+                                  tal:content="cours/role_affichage"
+                                  i18n:translate="">Auteur</span>
+                        </td>
+                        <td class="acc_etu show-for-medium-up">
+                            <i tal:attributes="class python:context.test(cours['is_etudiants'], 'fa fa-check fa-lg no-pad success', 'fa fa-times fa-lg no-pad warning')"></i>
+                        </td>
+                        <td class="acc_pass show-for-medium-up">
+                            <i tal:attributes="class python:context.test(cours['is_password'], 'fa fa-check fa-lg no-pad success', 'fa fa-times fa-lg no-pad warning')"></i>
+                        </td>
+                        <td class="acc_anon show-for-medium-up">
+                            <i tal:attributes="class python:context.test(cours['is_public'], 'fa fa-check fa-lg no-pad success', 'fa fa-times fa-lg no-pad warning')"></i>
+                        </td>
+                        <td class="show-for-medium-up">
+
+            <tal:block condition="cours/is_creator">
+
+                            <a class="dropdown" data-options="align:left"
+                               tal:attributes="data-dropdown string:drop-${repeat/cours/index}">
+                                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                            </a>
+                            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                tal:attributes="id string:drop-${repeat/cours/index}">
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${cours/url_cours}/folder_form?macro=macro_mescours&amp;formulaire=dupliquer">
+                                        <i class="fa fa-code-fork fa-fw"></i><tal:block i18n:translate="">Dupliquer</tal:block>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${cours/url_cours}/folder_form?macro=macro_mescours&amp;formulaire=purger">
+                                        <i class="fa fa-filter fa-fw"></i><tal:block i18n:translate="">Purger les travaux étudiants</tal:block>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${cours/url_cours}/folder_form?macro=macro_mescours&amp;formulaire=suppr_WIMS">
+                                        <i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="">Supprimer les activités WIMS</tal:block>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${cours/url_cours}/folder_form?macro=macro_form&amp;formulaire=supprimer">
+                                        <i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="">Supprimer</tal:block>
+                                    </a>
+                                </li>
+                            </ul>
+            </tal:block>
+
+                        </td>
+                    </tr>
+        </tal:entry>
+
+                </tbody>
+            </table>
+
+    <tal:condition condition="not:is_ajax">
+
+        <tal:block define="script1 string:setSortableList('js-list-cours',['new','favori','title','role','acc_etu','acc_pass','acc_anon'],'new','desc');
+                           script2 string:setFavoriteState()">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+        </tal:block>
+
+    </tal:condition>
+
+    <tal:condition condition="is_ajax">
+
+            <!--script charset="UTF-8"
+                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')">
+            </script-->
+            <!-- Le reflow échoue parfois… -->
+            <script charset="UTF-8"
+                    tal:content="structure string:$$(document).foundation({dropdown:{align:'left'}})">
+            </script>
+
+        <tal:block define="script1 string:setSortableList('js-list-cours',['new','favori','title','role','acc_etu','acc_pass','acc_anon'],'new','desc');
+                           script2 string:setFavoriteState()">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+        </tal:block>
+
+            <script charset="UTF-8"
+                    tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                    tal:content="structure buffer">
+            </script>
+
+    </tal:condition>
+
+    </tal:listing>
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

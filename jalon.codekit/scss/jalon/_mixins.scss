@@ -1,0 +1,140 @@
+/***************************************************************************************************
+
+        Jalon v4.5 : mixins
+
+*/
+
+
+
+/*
+    Image de fond
+*/
+
+@mixin background( $imgFile, $position: 0 0, $repeat: no-repeat, $color: transparent, $attachment: scroll ) {
+    background: {
+        color: $color;
+        image: url(#{$imgPath}#{$imgFile});
+        repeat: $repeat;
+        attachment: $attachment;
+        position: $position;
+    }
+}
+
+
+/*
+    Boutons de connexion
+*/
+
+@mixin connection-button-style( $bg: transparent, $hover: $primary-color, $radius: $button-radius ) {
+
+    // Détermination de la luminosité de la couleur de fond
+    $bg-lightness: lightness( $hover );
+
+    // Couleurs de fond
+    background-color: $bg;
+    border-color: scale-color( $bg, $lightness: $button-function-factor );
+    &:hover,
+    &:focus {
+        background-color: scale-color( $hover, $lightness: $button-function-factor );
+        border-color: scale-color( $hover, $lightness: $button-function-factor );
+    }
+
+    // Détermination de la couleur du texte selon la couleur de fond
+    @if $bg-lightness > 70% {
+        color: $button-font-color-alt;
+        &:hover,
+        &:focus { color: $button-font-color-alt; }
+    }
+    @else {
+        color: $button-font-color;
+        &:hover,
+        &:focus { color: $button-font-color; }
+    }
+
+    // Coins arrondis
+    @if $radius == true { @include radius( $button-radius ); }
+    @else if $radius { @include radius( $radius ); }
+
+}
+
+
+/*
+    Boutons de filtrage
+*/
+@mixin filter-button-style( $bg: $secondary-color, $selected-bg: $primary-color, $radius: $button-radius ) {
+
+    // Détermination de la luminosité des couleurs de fond
+    $bg-lightness: lightness( $bg );
+    $selected-bg-lightness: lightness( $selected-bg );
+
+    // Couleurs de fond : non sélectionné
+    background-color: $bg;
+    border-color: scale-color( $bg, $lightness: $button-function-factor );
+
+    &:hover,
+    &:focus {
+        background-color: scale-color( $bg, $lightness: $button-function-factor );
+        border-color: scale-color( $bg, $lightness: $button-function-factor );
+    }
+
+    // Couleurs de fond : sélectionné
+    &.selected,
+    &.selected:focus {
+        background-color: $selected-bg;
+        border-color: scale-color( $selected-bg, $lightness: $button-function-factor );
+    }
+
+    &.selected:hover {
+        background-color: scale-color( $selected-bg, $lightness: $button-function-factor );
+        border-color: scale-color( $selected-bg, $lightness: $button-function-factor );
+    }
+
+    // Détermination des couleurs de texte selon les couleurs de fond
+    @if $bg-lightness > 70% {
+        color: $button-font-color-alt;
+    }
+    @else {
+        color: $button-font-color;
+    }
+
+    @if $selected-bg-lightness > 70% {
+        &.selected,
+        &:hover,
+        &:focus { color: $button-font-color-alt; }
+    }
+    @else {
+        &.selected,
+        &:hover,
+        &:focus { color: $button-font-color; }
+    }
+
+    // Icônes
+    &.unselected > i.fa-circle,
+    &.selected > i.fa-circle-thin { display: none; }
+
+    // Coins arrondis
+    @if $radius == true { @include radius( $button-radius ); }
+    @else if $radius { @include radius( $radius ); }
+
+}
+
+
+/*
+    Roues dentées (plan de cours)
+*/
+@mixin course_plan-button-style( $bg:$primary-color, $disabled:false, $bh:$primary-color ) {
+
+    color: $bg;
+    border-color: none;
+    &:hover,
+    &:focus { color: $bh; }
+
+    @if $disabled {
+        color: $secondary-color;
+        cursor: $cursor-default-value;
+        opacity: $button-disabled-opacity;
+        box-shadow: none;
+        &:hover,
+        &:focus { color: $secondary-color; }
+    }
+}

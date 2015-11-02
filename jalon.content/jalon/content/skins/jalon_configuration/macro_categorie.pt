@@ -1,0 +1,193 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+    Créer une catégorie de cours
+-->
+<metal:macro define-macro="creer_categorie">
+
+    <h2>
+        <tal:block i18n:translate="">Créer une catégorie</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          method="POST">
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field;"
+             tal:attributes="class python:test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+
+            <input type="text" maxlength="255" size="30" id="title" name="title" placeholder="Saisie obligatoire"
+                   tal:attributes="value categorie/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="macro" value="macro_categorie"/>
+        <input type="hidden" name="formulaire" value="creer_categorie"/>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+    Renommer une catégorie de cours
+-->
+<metal:macro define-macro="renommer_categorie">
+
+<h2>
+    <tal:block i18n:translate="">Renommer une catégorie</tal:block>
+    <a class="close-reveal-modal"></a>
+</h2>
+<form id="inform"
+        tal:attributes="action string:${context/absolute_url}/${template/id}"
+        tal:define="clef request/clef;
+                    categorie python:context.getCategorie(clef)"
+        method="POST">
+    <div tal:define="error errors/title | nothing;
+                     arch_class string:field;"
+         tal:attributes="class python:test(error, 'error %s' % arch_class, arch_class)">
+        <label for="title">Titre</label>
+
+        <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+
+        <input type="text" maxlength="255" size="30" id="title" name="title" placeholder="Saisie obligatoire"
+               tal:attributes="value categorie/title | nothing"
+               i18n:attributes="placeholder" />
+    </div>
+    <input type="hidden" name="form.submitted" value="1" />
+    <input type="hidden" name="clef" tal:attributes="value clef" />
+    <input type="hidden" name="macro" value="macro_categorie"/>
+    <input type="hidden" name="formulaire" value="renommer_categorie"/>
+    <div class="formControls">
+        <button type="submit" class="button small radius">
+            <i class="fa fa-check-circle"></i>
+            <tal:block i18n:translate="">Enregistrer</tal:block>
+        </button>
+    </div>
+</form>
+
+</metal:macro>
+
+
+<!--
+    Gérer les utilisateurs de la catégorie de cours
+-->
+<metal:macro define-macro="gerer_utilisateurs">
+
+    <h2>
+        <tal:block i18n:translate="">Gérer les utilisateurs de la catégorie</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/gerer_user_categorie" method="POST"
+            tal:define="usersActu python:context.getUsersCategorie(request['clef']);
+                        all python:context.test(usersActu == ['all'], 1, 0)">
+
+        <div>
+            <input type="text" id="input-users" name="username" />
+        </div>
+
+        <input type="checkbox" name="all" value="all"
+                tal:attributes="checked all" /> Tous les utilisateurs (rôle Personnel)
+
+        <h2 class="texte_icone icone_users" i18n:translate="">Utilisateurs publiant dans la catégorie :</h2>
+        <span class="discreet" i18n:translate="">Décocher pour supprimer</span><br />
+        <span tal:condition="all" i18n:translate="" class="element_vide">Aucun</span>
+
+        <tal:condition condition="not:all">
+            <tal:block repeat="user usersActu">
+                <input type="checkbox" name="users-actu:list"
+                        tal:attributes="value user/id"
+                        checked="checked" />
+                <tal:block replace="user/name" />
+                <br />
+            </tal:block>
+        </tal:condition>
+
+        <input type="hidden" name="clef"
+                tal:attributes="value request/clef"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+    Modifier la catégorie du cours
+-->
+<metal:macro define-macro="modifier_categorie">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier une catégorie</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="categories context/getJalonCategories;
+                      clefs python:context.getClefsDico(categories);
+                      categorieCours context/getCategorieCours"
+          method="POST">
+
+        <div class="field">
+            <label for="categories"
+                   i18n:translate="">Catégorie</label>
+
+    <tal:repeat repeat="clef clefs">
+
+        <tal:define define="categorie python:categories[clef]"
+                    condition="python:(user.getId() in categorie['users']) or (categorie['users'] == ['all'])">
+            <input type="radio" name="categorie"
+                   tal:attributes="value clef;
+                                   checked python:context.test(int(categorieCours) == clef, 1, 0)"/>
+            <tal:replace replace="categorie/title"/>
+            <br />
+        </tal:define>
+
+    </tal:repeat>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="page" tal:attributes="value string:cours_acces_view" />
+        <input type="hidden" name="macro" value="macro_categorie" />
+        <input type="hidden" name="formulaire" value="modifier_categorie" />
+        <input type="hidden" name="key" value="categorie" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

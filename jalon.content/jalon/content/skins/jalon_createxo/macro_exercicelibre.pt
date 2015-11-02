@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!--Exercice libre -->
+    <metal:macro define-macro="createxo">
+
+        <div tal:define="error errors/exercicelibre | nothing;
+                     arch_class string:panel ArchetypesStringWidget kssattr-atfieldname-title;"
+         tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="exercicelibre">Code source de l'exercice </label>
+            <div   class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <textarea name="exercicelibre" id="exercicelibre" rows="15" class="big" tal:content="QCM_parsed/exercicelibre"/>
+        </div>
+
+    </metal:macro>
+    </metal:content-core>
+  </body>
+</html>

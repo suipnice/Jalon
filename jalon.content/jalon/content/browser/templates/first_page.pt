@@ -1,0 +1,125 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+    <body>
+
+<metal:core fill-slot="content"
+            tal:define="came_from request/came_from | nothing;
+                        plone_view context/@@plone;
+                        body_class python:plone_view.bodyClass(template, view);
+                        anonymous view/isAnonymous;">
+
+<tal:block condition="anonymous"
+           define="infos_connexion view/getConnexion;">
+
+    <metal:macro define-macro="connexion">
+
+    <div id="breadcrumb"></div>
+
+    <main id="accueil" role="main" aria-labelledby="page_title"
+          tal:define="maintenance infos_connexion/maintenance;">
+
+        <div class="jumbotron" role="banner" aria-labelledby="page_title">
+
+        <tal:comments replace="nothing"><!--
+            <div class="row">
+                <a class="button tiny dropdown right" data-dropdown="language-selector" data-options="align:bottom">
+                    <i class="fa fa-flag fa-fw"></i>
+                    <tal:block i18n:translate="">Langue préférée</tal:block>
+                </a>
+                <ul id="language-selector" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+                    <li>
+                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=en">English</a>
+                    </li>
+                    <li class="active">
+                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=fr">Français</a>
+                    </li>
+                    <li>
+                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=it">Italiano</a>
+                    </li>
+                </ul>
+            </div>
+        --></tal:comments>
+
+            <h1 tal:content="infos_connexion/site"/>
+            <h2>
+                <tal:block i18n:translate="">Ergonomie</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
+                <tal:block i18n:translate="">Simplicité</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
+                <tal:block i18n:translate="">Intégration</tal:block>
+            </h2>
+
+        <tal:block condition="not:maintenance/activer_maintenance">
+            <metal:macro use-macro="context/connexion/macros/connexion_jalon">
+                Connexion
+            </metal:macro>
+        </tal:block>
+
+        </div>
+
+    <noscript>
+        <div class="row">
+            <div class="alert-box alert radius">
+                <tal:block i18n:translate="">Pour fonctionner</tal:block>,
+                <tal:replace replace="infos_connexion/site"/>
+                <tal:block i18n:translate="">nécessite que JavaScript soit activé dans votre logiciel de navigation.</tal:block>
+            </div>
+        </div>
+    </noscript>
+
+        <div class="row"
+             tal:condition="python:maintenance['annoncer_maintenance'] or maintenance['activer_maintenance'] or infos_connexion['activer_message_general']">
+
+            <tal:block condition="maintenance/annoncer_maintenance">
+                <metal:macro use-macro="context/connexion/macros/annoncer-maintenance-jalon">
+                    Annoncer Maintenance
+                </metal:macro>
+            </tal:block>
+
+            <tal:block condition="maintenance/activer_maintenance">
+                <metal:macro use-macro="context/connexion/macros/maintenance-jalon">
+                    Maintenance
+                </metal:macro>
+            </tal:block>
+
+            <div data-alert="data-alert" class="alert-box warning radius"
+                 tal:condition="infos_connexion/activer_message_general">
+                 <tal:replace replace="structure infos_connexion/message_general" />
+                 <a class="close"></a>
+            </div>
+
+        </div>
+
+        <metal:macro use-macro="context/macro_informations_page_connexion/macros/informations_jalon">
+            Page d'informations de Jalon
+        </metal:macro>
+
+    </main>
+    </metal:macro>
+
+</tal:block>
+
+
+<tal:block condition="not:anonymous"
+           define="infos_mon_espace view/getMonEspace;
+                    maintenance infos_mon_espace/maintenance;
+                    messages infos_mon_espace/messages;
+                    vidercache infos_mon_espace/vidercache;
+                    dossier context/getId;
+                    is_personnel python:user.has_role(['Personnel', 'Manager', 'Secretaire']);
+                    titre nothing">
+
+    <metal:macro use-macro="context/mon_espace/macros/mon_espace">
+        Mon espace
+    </metal:macro>
+
+</tal:block>
+
+
+</metal:core>
+    </body>
+</html>

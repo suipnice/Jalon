@@ -1,0 +1,102 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<tal:comments replace="nothing"><!--
+
+
+            TEMPLATE INUTILISÉ
+
+
+--></tal:comments>
+
+
+<metal:content-core fill-slot="content">
+
+    <h2>
+        <tal:block content="context/title_or_id" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <!--
+            Ressource externe (lien web)
+    -->
+   <tal:block condition="python:context.getTypeRessourceExterne() == 'Lien web'">
+
+        <div class="panel radius"
+             tal:condition="not:context/Description"
+             i18n:translate="">
+             Description non renseignée…
+        </div>
+        <div class="panel radius"
+             tal:condition="context/Description"
+             tal:content="context/Description" />
+
+        <a class="button expand success" target="_blank"
+           tal:attributes="href context/getURLLien">
+            <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
+        </a>
+
+   </tal:block>
+
+
+   <tal:block condition="python:context.getTypeRessourceExterne() == 'Lecteur exportable'">
+     <div class="lecteur_exportable"><tal:block content="structure context/getLecteurExportable"/></div>
+     <div tal:content="context/Description"/>
+   </tal:block>
+
+   <tal:block condition="python:context.getTypeRessourceExterne() == 'Ressource bibliographique'">
+      Sous titre <tal:block content="context/getSousTitre"/><br />
+      Description <tal:block content="context/Description"/><br />
+      Auteurs <tal:block content="context/getAuteurs"/><br />
+      Volume <tal:block content="context/getVolume"/><br />
+      Lieu <tal:block content="context/getLieu"/><br />
+      Editeur <tal:block content="context/getEditeur"/><br />
+      Année <tal:block content="context/getAnnee"/><br />
+      Pagination <tal:block content="context/getPagination"/><br />
+      Collection <tal:block content="context/getCollection"/><br />
+      ISBN <tal:block content="context/getISBN"/><br />
+      URL <tal:block content="context/getURLWEB"/>
+   </tal:block>
+
+   <tal:block condition="python:context.getTypeRessourceExterne() == 'Catalogue BU'">
+     <tal:define define="ressource context/getRessourceCatalogueBU">
+     <span class="vignette_primo">
+       <tal:block repeat="image_src ressource/image">
+       <img tal:attributes="src image_src"/>
+       </tal:block>
+     </span>
+     <span>
+       <tal:block replace="python:ressource['title']" />
+       <br />
+       <span tal:content="ressource/creator"/><br />
+       <span class="discreet"><tal:block replace="ressource/publisher"/> <tal:block content="ressource/creationdate"/></span>
+       <br />
+       <a tal:condition="ressource/urlcatalogue"
+          tal:attributes="href ressource/urlcatalogue"
+          target="_new" title="Plus d'informations sur le catalogue de la BU dans une nouvelle fenêtre.">
+         Plus d'informations sur le catalogue de la BU
+       </a>
+       <span tal:condition="not:ressource/urlcatalogue">La ressource n'est plus disponible dans le catalogue de la BU.</span>
+       <br /><br />
+       Annotation(s) personnelle(s) :
+       <br />
+       <span tal:content="ressource/description"/>
+     </span>
+     </tal:define>
+   </tal:block>
+
+    <!--div class="formControls">
+        <input class="standalone" type="submit" name="form.button.cancel" value="Fermer" i18n:attributes="value label_fermer;"/>
+    </div-->
+
+ <!--/div-->
+</metal:content-core>
+</body>
+</html>

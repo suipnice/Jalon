@@ -1,0 +1,124 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+    metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+<metal:content-core fill-slot="content-core">
+<!--Reordonner -->
+<metal:macro define-macro="createxo">
+        <div class="panel">
+            <label for="question">La question à poser</label>
+            <div class="formHelp texte_icone icone_information">Html admis.</div>
+            <textarea name="explain" id="question" rows="5"
+                      tal:content="QCM_parsed/explain"
+                      placeholder="Saisissez simplement votre question."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius"
+               data-reveal-id="reveal_data"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="data">Liste des objets à réordonner</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_data"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Liste des objets à réordonner <a class="close-reveal-modal"></a></h2>
+                <div>Chaque élément de cette liste deviendra une étiquette à replacer dans le bon ordre.</div>
+                <div>Vous pouvez définir 2 étiquettes qui seront synonymes.<br/>
+                    Utilisez une barre verticale <code class="indicateur">|</code> pour séparer chaque synonyme.</div>
+            </div>
+
+            <div class="formHelp texte_icone icone_information">Écrivez les objets dans le bon ordre, séparés par des virgules. Html admis.</div>
+            <textarea name="data" id="data" rows="4"
+                      tal:content="QCM_parsed/data"
+                      required="required"
+                      placeholder="Listez les objets dans le bon ordre."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+
+                    <div class="row" tal:define="arch_class string:ArchetypesStringWidget small-6 columns">
+
+                        <div tal:define="error errors/size | nothing;"
+                             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                             <div class="panel">
+                                <a href="#reveal_size" class="button tiny radius"
+                                   data-reveal-id="reveal_size"
+                                   title="afficher une aide sur cet élément">
+                                    <i class="fa fa-question"></i>
+                                    Aide
+                                </a>
+                                <label for="size">Taille des étiquettes à glisser</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Taille en pixels, Longueur <strong>x</strong> Largeur.</div>
+                                <input type="text" size="10"
+                                       name="size" id="size"
+                                       class="mini" tal:attributes="value QCM_parsed/size"
+                                       required="required"
+                                       placeholder="longueur x largeur"
+                                       i18n:attributes="placeholder" />
+                                <div id="reveal_size"
+                                     class="reveal-modal large wims-edit_reveal"
+                                     data-reveal="data-reveal"
+                                     data-options="close_on_background_click: true;" >
+                                    <h2>Taille des étiquettes à glisser <a class="close-reveal-modal"></a></h2>
+                                    <div>Saisissez 2 nombres, séparés par un "x". Longueur <strong>x</strong> largeur.<br/>
+                                    Exemple : <code>100x80</code></div>
+                                    <div>
+                                        Prévoyez la réponse la plus longue.<br />
+                                        Pensez aussi aux personnes qui augmentent la taille de polices de leur navigateur !<br/>
+                                        Ne mettez pas de cases trop petites.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div tal:define="error errors/tot | nothing;"
+                             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                            <div class="panel">
+                                <a href="#reveal_tot" class="button tiny radius"
+                                   data-reveal-id="reveal_tot"
+                                   title="afficher une aide sur cet élément">
+                                    <i class="fa fa-question"></i>
+                                    Aide
+                                </a>
+                                <label for="tot">Nombre maximum d'objets à trier par exercice</label>
+                                <div id="reveal_tot"
+                                     class="reveal-modal large wims-edit_reveal"
+                                     data-reveal="data-reveal"
+                                     data-options="close_on_background_click: true;" >
+                                    <h2>Nombre maximum d'objets à trier par exercice <a class="close-reveal-modal"></a></h2>
+                                    <div >Si ce nombre est plus petit que les objets disponibles, seulement une partie des objets (tirée au hasard) sera présentée.</div>
+                                    <div>Si ce nombre est plus grand, il sera ramené au nombre d'objets. </div>
+                                </div>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information"> Jusqu'à 20 objets.</div>
+                                <input type="number" size="5" min="1" max="20"
+                                       name="tot" id="tot"
+                                       class="mini" tal:attributes="value QCM_parsed/tot"
+                                       required="required"
+                                       placeholder="Saisissez un nombre entier"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+</metal:macro>
+</metal:content-core>
+    </body>
+</html>

@@ -1,0 +1,45 @@
+<tal:sections tal:define="portal_tabs view/jalon_tabs;
+                          anonymous view/isAnonyme"
+     tal:condition="portal_tabs"
+     i18n:domain="jalon.content">
+    
+    <tal:block condition="not:anonymous">
+    <h5 class="hiddenStructure" i18n:translate="">Sections</h5>
+
+    <ul id="portal-globalnav"
+        tal:define="selected_tab view/getSelectedTabs"
+        ><tal:tabs tal:repeat="tab portal_tabs"
+          ><li tal:define="tid tab/id"
+            tal:attributes="id string:portaltab-${tid};
+                            class python:selected_tab==tid and 'selected' or 'plain'"
+            tal:condition="python:user.has_role(tab['roles'])"
+            ><a href=""
+              tal:attributes="href tab/url;
+                              title tab/description|nothing;"
+              i18n:attributes="title">
+            	<span><strong i18n:translate=""><tal:block replace="tab/name"/></strong></span>
+          </a></li></tal:tabs>
+    </ul>
+    </tal:block>
+
+    <tal:block condition="anonymous">
+    <h5 class="hiddenStructure" i18n:translate="">Sections</h5>
+
+    <ul id="portal-globalnav" class="anonymous"
+        tal:define="selected_tab python:view.selected_portal_tab">
+      <tal:tabs tal:repeat="tab portal_tabs">
+        <li tal:define="tid tab/id"
+            tal:attributes="id string:portaltab-${tid};
+                            class python:selected_tab==tid and 'selected' or 'plain'"
+            tal:condition="tab/visible">
+          <a href=""
+             tal:attributes="href tab/url;
+                             title tab/description|nothing;"
+             i18n:attributes="title">
+            <span><strong i18n:translate=""><tal:block replace="tab/name"/></strong></span>
+          </a>
+        </li>
+      </tal:tabs>
+    </ul>
+    </tal:block>
+</tal:sections>

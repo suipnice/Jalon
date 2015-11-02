@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+    <metal:main fill-slot="main">
+    <div id="content-core">
+        <form tal:attributes="action string:${context/absolute_url}/fermeture"
+              name="confirmation_inscription" method="post" id="inform">
+            <div class="documentFirstHeading">
+                <h1 i18n:translate="">Inscription à Jalon</h1>
+            </div>
+            <div>
+                La procédure d'inscription s'est déroulée avec succés, pour vous connecter à Jalon vous devez valider votre compte en suivant la procédure que vous allez recevoir par email.
+            </div>
+            <div class="formControls">
+                <input class="context" type="submit" name="Fermer" value="Fermer la page"/>
+            </div>
+        </form>
+    </div>
+    </metal:main>
+
+</body>
+
+</html>

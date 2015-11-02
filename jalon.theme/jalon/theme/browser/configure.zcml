@@ -1,0 +1,54 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="jalon.theme">
+
+  <!-- 'Jalon' Zope 3 browser layer
+    Register views, viewlets and resources for this layer to make sure
+    they only apply to the 'Jalon' theme.
+    You can also use this layer to override default Plone browser views
+    and viewlets only within the 'Jalon' theme.
+  -->
+  <interface
+      interface=".interfaces.IThemeSpecific"
+      type="zope.publisher.interfaces.browser.IBrowserSkinType"
+      name="Jalon"
+      />
+
+  <!-- Zope 3 browser resources -->
+
+  <!-- Resource directory for images
+    See jalon/theme/browser/images/README.txt
+    for more information about registering images as Zope 3 browser
+    resources.
+  -->
+  <browser:resourceDirectory
+      name="jalon.theme.images"
+      directory="images"
+      />
+
+  <!-- Resource directory for stylesheets
+    See jalon/theme/browser/stylesheets/README.txt
+    for more information about registering stylesheets as Zope 3 browser
+    resources.
+  -->
+
+  <browser:resourceDirectory
+      name="jalon.theme.stylesheets"
+      directory="css"
+      layer=".interfaces.IThemeSpecific"
+      />
+
+  <browser:resourceDirectory
+      name="jalon.theme.javascript"
+      directory="scripts"
+      layer=".interfaces.IThemeSpecific"
+      />
+
+  <browser:resourceDirectory
+      name="jalon.theme.fonts"
+      directory="fonts"
+      layer=".interfaces.IThemeSpecific"
+      />
+
+</configure>

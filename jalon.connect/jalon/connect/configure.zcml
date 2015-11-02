@@ -1,0 +1,20 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="jalon.connect">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <include package=".browser" />
+  <include file="profiles.zcml" />
+
+  <adapter
+      factory=".exportimport.ConnectSettingsXMLAdapter"
+      provides="Products.GenericSetup.interfaces.IBody"
+      for=".interfaces.utility.IConnect
+           Products.GenericSetup.interfaces.ISetupEnviron"
+      />
+  
+</configure>

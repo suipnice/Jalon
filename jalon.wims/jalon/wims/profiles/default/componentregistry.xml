@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<componentregistry>
+ <adapters/>
+ <utilities>
+  <utility
+     interface="jalon.wims.interfaces.utility.IWims"
+     object="portal_wims"/>
+ </utilities>
+</componentregistry>

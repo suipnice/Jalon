@@ -1,0 +1,76 @@
+type=datalist
+modele_jalon=Correspondance
+textarea='data explain'
+
+:Etablir la correspondance entre paires d'objets.
+<p>On présente des paires d'objets dans un tableau à deux colonnes.<br/>
+Il faut rétablir la bonne correspondance dans les paires en modifiant la colonne à droite, par glisser-déposer avec la souris.</p>
+<p>Pour construire un exercice avec ce modèle, il suffit de taper la liste de paires d'objets.</p>
+<p>Avec une légère modification, une variante de cet exercice peut accepter des objets en image.</p>$image_help
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:\credits{}
+
+:Nombre de (paires) d'objets à faire correspondre.
+\integer{tot=$$tot$$}
+
+:La taille verticale des cases en pixels.
+Pensez aux gens qui augmentent la taille de polices de leurs navigateurs !
+Ne mettez pas les cases trop petites.
+\integer{sizev=$$sizev$$}
+
+:La taille horizontale des cases à gauche en pixels.
+\integer{sizel=$$sizel$$}
+
+:La taille horizontale des cases à droite en pixels.
+\integer{sizer=$$sizer$$}
+
+:Feedback affiché dans tous les cas après la réponse de l'apprenant.
+\text{feedback_general=$$feedback_general$$}
+
+:Données principales.
+Définir une paire d'objets correspondants par ligne, séparés par une virgule.
+\matrix{data=$$data$$}
+
+:Le texte qui explique ce qu'il faut faire.
+$embraced_randitem
+\text{explain=$$explain$$}
+
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$,1 oui,2 non)}
+
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\text{accolade=wims(word 1 of \accolade)}
+\integer{datacnt=rows(\data)}
+\integer{tot=\tot>\datacnt?\datacnt}
+
+\text{shuf=item(1..\tot,shuffle(\datacnt))}
+\text{data=row(\shuf,\data)}
+\text{data=\accolade=1? wims(embraced randitem \data)}
+
+\text{datal=column(1,\data)}
+\text{datar=column(2,\data)}
+\text{size=\sizev[]x\sizel[]x\sizer}
+\text{explain=\accolade=1? wims(embraced randitem \explain)}
+
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+\statement{
+<div class="oef_explain">\explain</div>
+<div class="wimscenter">
+ \embed{reply 1,\size}
+</div>}
+
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{La réponse}{\datal;\datar}{type=correspond}
+\feedback{1=1}{<p class='feedback'>\feedback_general</p>}

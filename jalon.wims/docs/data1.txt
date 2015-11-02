@@ -1,0 +1,33 @@
+description=Classe_test
+institution=UNS
+supervisor=%s
+email=%s
+password=%s   
+   /***************************************
+   Les parametres primaires suivants sont OPTIONNELS
+   ****************************************/
+lang=%s
+expiration=30100101
+limit=100
+topscores=10
+level=U1
+secure=
+superclass=%s
+type=%s
+  
+theme=local/jalon
+css=-theme-
+theme_icon=jalon
+connections=%s
+logo=
+logoside=
+bgcolor=
+bgimg=
+scorecolor=white,red,red,red,orange,orange,orange,yellow,yellow,green,green
+refcolor=
+ref_menucolor=
+ref_button_color=
+ref_button_bgcolor=
+ref_button_help_color=
+ref_button_help_bgcolor=
+creator=%s

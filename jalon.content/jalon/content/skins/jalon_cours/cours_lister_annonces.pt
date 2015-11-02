@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="mode_etudiant request/mode_etudiant | string:false;
+                                personnel python:context.isPersonnel(user, mode_etudiant)">
+
+    <tal:define define="pageCours string:annonces">
+        <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+            Page d'affichage du fil d'ariane
+        </metal:macro>
+    </tal:define>
+
+    <h2 tal:condition="is_ajax">
+        <i class="fa fa-bullhorn"></i>
+        <tal:block i18n:translate="">Liste des annonces</tal:block>
+    </h2>
+
+    <div id="reveal-main" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <div class="small-12 columns"
+             tal:define="annonces python:context.getAnnonces(user, request, personnel, 'all')['listeAnnonces']">
+
+            <h2>
+                <i class="fa fa-bullhorn"></i>
+                <tal:block i18n:translate="">Liste des annonces</tal:block>
+            </h2>
+
+            <div class="panel callout radius"
+                 tal:condition="not:annonces"
+                 i18n:translate="">
+                Il n'y a aucune annonce pour ce cours.
+            </div>
+
+            <table id="js-listAnnonce"
+                   tal:condition="annonces">
+                <thead>
+                    <tr>
+                        <th data-sort="date" class="sort has-tip" data-tooltip title="Trier selon la date de l'annonce"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Date</tal:block>
+                            </span>
+                        </th>
+                        <th data-sort="title" class="sort has-tip" data-tooltip title="Trier selon le titre de l'annonce"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Annonce</tal:block>
+                            </span>
+                        </th>
+                        <th class="show-for-medium-up action has-tip" data-tooltip title="Actions"
+                            tal:condition="personnel"
+                            i18n:attributes="title"
+                            i18n:translate=""><i class="fa fa-cog fa-fw fa-lg no-pad" title="Actions"></i></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+
+    <tal:repeat repeat="annonce annonces">
+
+                    <tr>
+                        <td class="date">
+                            <span class="hide"
+                                  tal:content="python:context.getLocaleDate(annonce.modified(), '%Y%m%d%H%M%S')" />
+                            <span class="label bkgrnd"
+                                  tal:content="python:context.getLocaleDate(annonce.modified())" />
+                        </td>
+                        <td class="title">
+                            <strong tal:content="annonce/title" />
+                            <span tal:content="structure annonce/getDescriptionAff" />
+                        </td>
+                        <td class="dropdown show-for-medium-up"
+                            tal:condition="personnel">
+                            <a class="dropdown"
+                               tal:attributes="data-dropdown string:annonce-${repeat/annonce/index}"
+                               data-options="align:left">
+                                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                            </a>
+                            <ul tal:attributes="id string:annonce-${repeat/annonce/index}" class="f-dropdown"
+                                data-dropdown-content="data-dropdown-content">
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:attributes="href string:${context/absolute_url}/annonce/${annonce/getId}/folder_form?macro=macro_annonce&amp;formulaire=modifier-annonce&amp;redirection=true">
+                                        <i class="fa fa-pencil fa-fw"></i>
+                                        <tal:block i18n:translate="">Modifier</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                       tal:define="titre python:context.jalon_quote(annonce['title'])"
+                                       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_annonce&amp;formulaire=supprimer-annonce&amp;annonce=${annonce/getId}&amp;titre=${titre}&amp;redirection=true">
+                                        <i class="fa fa-trash-o fa-fw"></i>
+                                        <tal:block i18n:translate="">Supprimer</tal:block>
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+
+    </tal:repeat>
+
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <tal:block define="script string:setSortableList('js-listAnnonce',['date','title'],'date','desc')">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+</metal:content-core>
+
+</body>
+
+</html>

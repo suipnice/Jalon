@@ -1,0 +1,79 @@
+type=datalist
+modele_jalon=QuestionTexte
+textarea='data words'
+:Questions à réponses textuelles tolérantes incorporées dans un texte aléatoire.
+<p>Cet exercice présente des textes 'à trous', chacun devant être rempli par un mot (voire une très courte phrase).</p>
+<p>Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.</p>
+<p>Une syntaxe facile permet de spécifier les trous et le bon mot qu'il accepte.</p>
+<p>L'analyseur de réponse sait ignorer les 'petites' différences dans la réponse : absence ou ajout d'un article, majuscule/minuscule, accents, pluriel/singulier.</p>
+<p>Il peut aussi ne pas compter des erreurs de frappe comme une fausse réponse. Des synonymes peuvent aussi être déclarés.</p>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous detruisez les balises pour le modele !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+:%%%%%%%% Parametres d'exemples à redefinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:Longueur des cases à taper. Il faut prévoir les réponses les plus longues.
+\integer{len=$$len$$}
+:Données principales.
+Définir une question par ligne, et séparer les lignes par un point-virgule. (Donc les textes eux-memes ne peuvent pas contenir des point-virgules.) <br />
+La question à poser doit être mise entre une paire de double-point d'interrogation '??'.<br/>
+On peut poser plusieurs questions dans une même phrase (jusqu'à 6).<br/>
+Si une question accepte plusieurs réponses correctes possibles, mettre toutes les bonnes réponses (synonymes) séparées par un trait vertical '|'.<br/>
+L'analyseur ne tient pas compte des petites différences dans la réponse : absence ou ajout d'un article, majuscule/minuscule, accents, pluriel/singulier.
+$embraced_randitem
+\text{data=$$data$$}
+:Type d'analyse de réponse.
+Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les
+applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
+\text{atype=$$atype$$}
+#%%\text{atype=item(3,case (aucune tolérance d'erreur), nocase (tolère le minuscule/manuscule), atext (ignore pluriel/singulier et les articles))}
+:Inclure les bonnes réponses a la liste des mots reconnus.
+\text{include_good=$$include_good$$}
+#%% \text{include_good=item(2,non,oui)}
+:Liste de mots reconnus.
+Mettez les mots reconnus dans la liste. Toute réponse contenant un mot en dehors de cette liste sera considérée comme une erreur de frappe et renvoyée pour retaper. <p>
+Si ce champ est vide, toute réponse non-reconnue est jugée fausse. Ce qui doit être le cas en général pour les applications linguistiques.
+\text{words=$$words$$}
+:Texte affiché avant la question. Balises html admises. Peut être vide.
+ $embraced_randitem
+\text{pre=$$pre$$}
+:Texte affiché après la question. Balises html admises. Peut être vide.
+$embraced_randitem 
+\text{post=$$post$$}
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\text{words=wims(trim \words)}
+\text{atype=wims(word 1 of \atype)}
+\text{pre=wims(embraced randitem \pre)}
+\text{post=wims(embraced randitem \post)}
+\text{data=wims(singlespace \data)}
+\text{data=wims(nonempty rows \data)}
+\text{data=randomrow(\data)}
+\text{data=wims(embraced randitem \data)}
+\text{data=slib(text/cutchoice2 \data)}
+\integer{qs=floor(rows(\data)/2)}
+:%%Quand include_good=1, On ajoute a words la liste des bonnes reponses
+\if{oui iswordof \include_good}{
+ \for{i=1 to \qs}{
+  \text{words=\words \data[2*\i;]} }}
+:%%qlist contient la liste des reponses attendues
+\text{qlist=wims(makelist reply x for x=1 to \qs)}
+\steps{\qlist}
+:%%%%%%%%%%%%% Maintenant l'enonce en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en general.
+\statement{\pre
+\data[1;]
+\for{k=1 to \qs}{
+ \embed{r \k,\len 
+autocomplete='off' id='reply\k'} \data[2*\k+1;]}
+\post}
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{Champ 1}{\data[2;];\words}{type=\atype}
+\answer{Champ 2}{\data[4;];\words}{type=\atype}
+\answer{Champ 3}{\data[6;];\words}{type=\atype}
+\answer{Champ 4}{\data[8;];\words}{type=\atype}
+\answer{Champ 5}{\data[10;];\words}{type=\atype}
+\answer{Champ 6}{\data[12;];\words}{type=\atype}

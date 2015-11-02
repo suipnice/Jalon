@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content fill-slot="content"
+               tal:define="mode_etudiant request/mode_etudiant | string:false;
+                           personnel python:context.isPersonnel(user, mode_etudiant);">
+    <h2>
+        <i class="fa fa-bell-o"></i>
+        <tal:block i18n:translate="">Liste des nouveautés</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="course_life-actus panel radius">
+        <dl>
+    <tal:repeat repeat="actu python:context.getActualitesCours('all')['listeActu']">
+            <dt>
+                <span class="label bkgrnd"
+                      tal:content="python:context.getLocaleDate(actu['date'])" />
+            </dt>
+            <dd tal:attributes="class string:typeElement type_${actu/type}">
+                <tal:condition condition="python:actu['type'] == 'Titre'">
+                    « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 60)" /> »
+                    <i tal:content="actu/description" />
+                </tal:condition>
+                <tal:condition condition="python:actu['type'] == 'TexteLibre'">
+                    « <tal:block content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 120)" /> »
+                    <i tal:content="actu/description" />
+                </tal:condition>
+                <tal:condition condition="python:not(actu['type'] == 'Titre' or actu['type'] == 'TexteLibre')">
+                    <strong tal:content="python:context.getShortText(actu['titre'], 60)" />
+                    <i tal:content="actu/description" />
+                </tal:condition>
+            </dd>
+    </tal:repeat>
+        </dl>
+    </div>
+
+    <a class="button warning expand"
+       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_annonce&amp;formulaire=supprimer-actualites"
+       data-reveal-ajax="true" data-reveal-id="reveal-main_second"
+       tal:condition="personnel">
+        <i class="fa fa-trash-o"></i>
+        <tal:block i18n:translate="">Supprimer toutes les nouveautés</tal:block>
+    </a>
+
+</metal:content>
+
+</body>
+
+</html>

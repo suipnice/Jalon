@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!-- This file holds the setup configuration for the portal_javascripts tool.
+     -->
+
+<object name="portal_javascripts">
+
+ <!-- Javascript files that will be registered with the
+      portal_javascripts tool are defined here. You can also specify values
+      for existing resources if you need to modify some of their properties.
+      Javascript elements accept these parameters:
+      - 'id' (required): same rules as for stylesheets (see
+        'cssregistry.xml').
+      - 'expression' (optional - default: ''): a tal condition.
+      - 'inline' (optional - default: False)
+      - 'enabled' (optional - default: True): boolean
+      - 'cookable' (optional - default: True): boolean (aka 'merging allowed')
+      See registerScript() arguments in ResourceRegistries/tools/JSRegistry.py
+      for the latest list of all available keys and default values.
+      -->
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.ui.touch-punch.min.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.ui.nestedSortable.js"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="True" expression=""  inline="False"/>
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.tokeninput.js"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="True" expression=""  inline="False"/>
+    
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.datepicker.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.datepicker.lang/fr.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>
+    
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.timepicker.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>    
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.timepicker.lang/jquery.ui.timepicker-fr.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>    
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.noty.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>    
+  
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.noty.options.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>      
+
+ <javascript
+    id="++resource++jalon.content.javascripts/jquery.bxslider.min.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>    
+  
+ <javascript
+    id="++resource++jalon.content.javascripts/jalon-folder.js"
+    cacheable="True" compression="safe" cookable="True"
+    enabled="True" expression=""  inline="False"/>
+
+ <javascript
+    id="++resource++jalon.content.javascripts/amcharts/amcharts.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>
+
+ <javascript
+    id="++resource++jalon.content.javascripts/amcharts/serial.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>  
+
+ <javascript
+    id="++resource++jalon.content.javascripts/amcharts/amstock.js"
+    cacheable="False" compression="safe" cookable="False"
+    enabled="True" expression=""  inline="False"/>  </object>

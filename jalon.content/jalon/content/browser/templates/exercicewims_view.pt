@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="qclass python:'%s_1' % context.getComplement();
+                        modele context/getModele;
+                        visual_mode request/mode | nothing;
+                        exo_params request/exo_params | nothing;
+                        param_wims python:context.authUser('supervisor', qclass, request);
+                        can_view python:context.checkRoles(user, context, action='view');">
+
+    <h2 tal:condition="is_ajax">
+        <tal:block i18n:translate="">Visualisation de l'exercice « </tal:block><tal:replace replace="context/Title"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main class="row" role="main" aria-labelledby="page_title"
+          tal:define="portal_lang portal_state/language">
+
+    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+    <metal:macro use-macro="context/macro_messages/macros/messages">
+        encart d'affichage des messages de feedback
+    </metal:macro>
+
+    <tal:owner condition="can_view">
+
+        <section class="small-12 columns"
+                 id="exercicewims_view"
+                 tal:condition="param_wims"
+                 tal:define="wims_lang python:context.convertLangToWIMS(portal_lang);">
+
+            <a class="button small success right"
+               tal:condition="python:modele!='groupe'"
+               tal:attributes="href string:${context/absolute_url}/exercicewims_edit">
+                <i class="fa fa-pencil no-pad"></i>
+                <tal:block tal:condition="python:modele!='externe'" i18n:translate="">Modifier cet exercice</tal:block>
+                <tal:block tal:condition="python:modele=='externe'" i18n:translate="">Changer cet exercice</tal:block>
+            </a>
+            <a class="button small success right disabled"
+               tal:condition="python:modele=='groupe'"
+               title="Un groupe d'exercices ne peut pas être modifié.">
+                <i class="fa fa-pencil no-pad"></i>
+                <tal:block i18n:translate="">Modifier cet exercice</tal:block>
+            </a>
+
+            <ul id="tab_button-group" class="button-group radius expand" tal:condition="python:modele!='externe'">
+
+                <li tal:define="paramAutoeval python:context.getParamListeExos(exo_params, 'autoeval');">
+                    <a tal:attributes="href string:${context/absolute_url}?mode=autoeval;
+                                       class python:context.test(visual_mode != 'examen', 'button small selected', 'button small');
+                                       rel string:${param_wims/home_url}&amp;${paramAutoeval}&amp;cmd=new&amp;lang=${wims_lang}"
+                        onclick="refreshIframe('insert_wims',this.rel, ['mode_autoeval','mode_examen']);return false;"
+                        title="En mode Autoévaluation, les bonnes réponses s'affichent aux apprenants en cas d'erreur. (Dans la plupart des modèles)"
+
+                        id="mode_autoeval">
+                        <i class="fa fa-gamepad no-pad"></i>
+                        <tal:block i18n:translate="">Mode "Autoévaluation"</tal:block>
+                    </a>
+                </li>
+
+                <li tal:define="paramExam python:context.getParamListeExos(exo_params, 'examen');">
+                    <a tal:attributes="href string:${context/absolute_url}?mode=examen;
+                                       class python:context.test(visual_mode == 'examen', 'button small selected', 'button small');
+                                       rel string:${param_wims/home_url}&amp;${paramExam}&amp;cmd=new&amp;lang=${wims_lang}"
+                       onclick="refreshIframe('insert_wims',this.rel, ['mode_examen','mode_autoeval']);return false;"
+                       title="En mode Examen, la bonne réponse ne s'affiche pas aux apprenants en cas d'erreur. (Dans la plupart des modèles)"
+                       id="mode_examen">
+                        <i class="fa fa-graduation-cap no-pad"></i>
+                        <tal:block i18n:translate="">Mode "Examen"</tal:block>
+                    </a>
+                </li>
+
+            </ul>
+
+        <tal:condition condition="python:modele!='externe'">
+            <tal:block define="paramExo python:context.getParamListeExos(exo_params, visual_mode);">
+                <iframe id="insert_wims"
+                        tal:attributes="src string:${param_wims/home_url}&amp;${paramExo}&amp;cmd=new&amp;lang=${wims_lang}">
+                </iframe>
+            </tal:block>
+        </tal:condition>
+
+        <tal:condition condition="python:modele=='externe'"
+                       tal:define="permalink context/permalink">
+
+            <iframe id="insert_wims"
+                    condition="permalink"
+                    tal:attributes="src string:${param_wims/home_url}?${permalink}&amp;cmd=new&amp;lang=${wims_lang}"></iframe>
+
+            <div tal:condition="not:permalink" class="panel warning radius">
+                <p i18n:translate="">
+                    Vous n'avez choisi aucun élément dans la banque d'exercices WIMS.
+                </p>
+            </div>
+
+        </tal:condition>
+
+        </section>
+    </tal:owner>
+
+        <section class="small-12 columns" tal:condition="not:can_view">
+            <metal:macro use-macro="context/macro_commune/macros/cannot_view" />
+        </section>
+
+    </main>
+
+</metal:core>
+</body>
+</html>

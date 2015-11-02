@@ -1,0 +1,26 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="jalon.content">
+
+  <!-- Ensure Plone's portlets ZCML has already been processed;
+       without this, we may get a permission lookup error -->
+  <include package="plone.app.portlets" />
+
+ <!-- jalon config navigation portlet --> 
+    
+ <plone:portlet
+    name="jalon.Navigation"
+    interface=".navigation.INavigationPortlet"
+    assignment=".navigation.Assignment"
+    renderer=".navigation.Renderer"
+    addview=".navigation.AddForm"
+    editview=".navigation.EditForm"
+    />
+    
+ <plone:portletRenderer
+    portlet=".navigation.INavigationPortlet"
+    layer=".interfaces.IThemeSpecific"
+    template="templates/navigation.pt"/>
+        
+</configure>

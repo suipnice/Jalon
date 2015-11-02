@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:block i18n:translate="">Inscription à Jalon</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="errors options/state/getErrors | nothing"
+          name="creationcompte_form" method="post" id="inform">
+        <div tal:define="error errors/login | nothing;"
+             tal:attributes="class python:test(error, 'field error', 'field')">
+            <label for="login">
+                <tal:block i18n:translate="">Nom d'utilisateur</tal:block>
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" name="login" required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/login | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+        <div tal:define="error errors/email | nothing;"
+             tal:attributes="class python:test(error, 'field error', 'field')">
+            <label for="email">
+                <tal:block i18n:translate="">Adresse de courriel</tal:block>
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" name="email" required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/email | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+        <div tal:define="error errors/fullname | nothing;"
+             tal:attributes="class python:test(error, 'field error', 'field')">
+            <label for="fullname">
+                <tal:block i18n:translate="">Nom complet (Nom Prénom)</tal:block>
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" name="fullname" required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/fullname | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+        <metal:macro use-macro="here/captcha_widget/macros/captcha">
+            Macro du formulaire
+        </metal:macro>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input type="submit" class="button small radius" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save" />
+        </div>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content fill-slot="content">
+
+<!--
+        Ajout d'élément dans "Mes cours" : fichiers
+-->
+<metal:macro define-macro="fichiers_liste">
+
+<tal:define define="folderContents python:context.getContents(subject=subjects, typeR='Fichiers', authMember=user.getId(), repertoire='');">
+
+    <div class="panel callout radius"
+         tal:condition="not:folderContents"
+         i18n:translate="">
+        Aucun élément ne correspond à la sélection d'étiquettes
+    </div>
+
+    <tal:listing condition="folderContents">
+
+        <table summary="Liste des fichiers"
+               tal:define="espace request/espace | string:Fichiers;
+                           authMember user/getId;
+                           tags python:context.getTag(authMember, espace);
+                           planPlat context/getPlanPlat | nothing">
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                             i18n:attributes="title">
+                            <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                            <label for="switch-all"></label>
+                        </div>
+                    </th>
+                    <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Date</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="filetype" title="Trier selon le type"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Type</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre / Description</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+            <tal:entry repeat="item folderContents">
+                <tr>
+                    <td class="show-for-medium-up"
+                        tal:define="attached python:context.isChecked(item['getId'].replace('.', '*-*'), formulaire, planPlat)">
+                        <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                             tal:condition="not:attached"
+                             i18n:attributes="title">
+                            <input type="checkbox" name="paths:list"
+                                   tal:attributes="id string:switch-${repeat/item/index};
+                                                   value python:'*-*'.join([item.getId, item.Type, item.Title.decode('utf-8'), user.getId()])"/>
+                            <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                        </div>
+                        <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+                    </td>
+                    <td class="date show-for-medium-up">
+                        <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
+                        <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                    </td>
+                    <td class="filetype">
+                        <i tal:attributes="class python:'fa fa-2x %s' % (context.typefichier_script(item['getIcon']))"></i>
+                    </td>
+                    <td class="title">
+                        <span class="hide" tal:content="item/Title" />
+                        <strong tal:content="python:here.getShortText(item['Title'])"
+                                i18n:attributes="title" />
+                        <span class="show-for-medium-up"
+                              tal:condition="item/Description"
+                              tal:content="python:here.getShortText(item['Description'], 200)" />
+                    </td>
+                </tr>
+            </tal:entry>
+            </tbody>
+        </table>
+
+    <tal:condition condition="folderContents">
+        <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+            Macro d'affichage de la liste en fonction de la variable espace
+        </metal:macro>
+    </tal:condition>
+
+        <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                            script2 string:setSortableList('js-list-ressource',['date','filetype','title'],'date','desc')">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+        </tal:define>
+
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                tal:content="structure buffer" />
+
+    </tal:listing>
+
+</tal:define>
+
+</metal:macro>
+
+</metal:content>
+
+</body>
+
+</html>

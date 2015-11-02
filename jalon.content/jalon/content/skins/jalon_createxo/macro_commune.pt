@@ -1,0 +1,208 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+
+    <!-- embraced_randitem : Message commun concernant la mise en aléatoire par des accolades emboitables. -->
+    <metal:macro define-macro="embraced_randitem">
+        <!--<div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>-->
+        <div>
+            <h2 i18n:translate="">Mise en aléatoire par des accolades emboitables</h2>
+            <div class="embraced_randitem" i18n:translate="label_wims_embraced_randitem">
+                Si vous mettez plusieurs mots séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard, ce qui rendra le texte aléatoire.<br/>
+                Par exemple
+                <code class="indicateur">Je suis allé
+                    <span class="shuffle">{à l'école, au cinéma}</span>
+                    <span class="shuffle">{hier, la semaine dernière}</span></code>,
+                affichera aléatoirement aux participants une de ces phrases :
+                <blockquote>
+                    <ul>
+                        <li>Je suis allé à l'école hier</li>
+                        <li>Je suis allé au cinéma hier</li>
+                        <li>Je suis allé à l'école la semaine dernière</li>
+                        <li>Je suis allé au cinéma la semaine dernière</li>
+                    </ul>
+                </blockquote>
+            </div>
+        </div>
+    </metal:macro>
+
+    <!-- texte_a_trous : Message commun concernant les textes à trous. -->
+    <metal:macro define-macro="texte_a_trous">
+        <div class="texte_a_trous">
+            <div>
+              Les questions à poser doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
+              Par exemple, en tapant
+            </div>
+            <div><code class="indicateur">Napoléon Bonaparte est né à <span class="strong">??Ajaccio??</span> et mort sur l'île <span class="strong">??Sainte-Hélène??</span></code>,</div>
+            <div>
+              Vous obtiendrez ceci: <br/>
+              <blockquote>Napoléon Bonaparte est né à <input class="disabled mini"/> et mort sur l'île <input class="disabled mini"/></blockquote>
+            </div>
+            <hr/>
+            <div>
+              Chaque "trou" peut présenter une liste de choix s'il contient plusieurs éléments séparés par des virgules.<br/>
+              La bonne réponse étant alors toujours la première de la liste.
+            </div>
+
+            <div>
+                Par exemple, en tapant
+                <code class="indicateur">Napoléon Bonaparte est né
+                    à <span class="strong">??Ajaccio,Bastia??</span> et mort sur
+                    l'île <span class="strong">??Sainte-Hélène, d'Elbe??</span>
+                </code>, <br />
+                Vous obtiendrez ceci :<br/>
+                <blockquote>
+                    Napoléon Bonaparte est né à
+                    <select class="inline disabled mini">
+                        <option>Ajaccio</option>
+                        <option>Bastia</option>
+                    </select>
+                    et mort sur l'île
+                    <select class="disabled mini">
+                        <option>Sainte-Hélène</option>
+                        <option>d'Elbe</option>
+                    </select>
+                </blockquote>
+            </div>
+        </div>
+    </metal:macro>
+
+    <!--HTML_allowed : Message commun concernant l'utilisation de code HTML. -->
+    <metal:macro define-macro="html_allowed">
+        <h2 i18n:translate="">Utiliser de l'HTML pour la mise en forme.</h2>
+        <div class="html_allowed" i18n:translate="label_wims_html_allowed">
+            <div>Vous pouvez ici utiliser des balises HTML pour faire de la mise en forme.</div>
+            <div>
+                Tapez par exemple :
+                <code class="indicateur">Ce mot est très &lt;strong&gt;important&lt;/strong&gt; !</code><br />
+                pour que le mot "important" s'affiche en gras, comme ceci :
+            </div>
+            <blockquote>Ce mot est <strong>très</strong> important !</blockquote>
+        </div>
+    </metal:macro>
+
+
+    <!--advanced_actions : Actions avancées (Telécharger le code source, puis d'autres éventuellement plus tard (dupliquer, convertir...) -->
+    <metal:macro define-macro="advanced_actions">
+        <dd class="accordion-navigation">
+            <a href="#wims_source"><i class="fa fa-fw fa-file-text-o"></i> <tal:block i18n:translate="">Code source de l'exercice</tal:block></a>
+            <div id="wims_source" class="content">
+                <div class="panel">
+                    <label for="exercicelibre" class="texte_icone icone_information">
+                        Copiez-collez ce code source dans un exercice WIMS en "Mode Brut" si vous souhaitez le modifier en profondeur.
+                    </label>
+                    <textarea name="exercicelibre"
+                              id="exercicelibre"
+                              rows="15" cols="60"
+                            onclick="this.select();"
+                            tal:content="QCM_parsed/code_source | string:Enregistrez votre exercice pour afficher son code source."
+                            readonly="readonly" />
+                </div>
+            </div>
+        </dd>
+    </metal:macro>
+
+
+    <!--accolade_option : Ajoute l'option "Mode d'affichage" qui permet de choisir entre le mode "accolades emboitables" et le mode "HTML" -->
+    <metal:macro define-macro="accolade_option">
+        <tal:comment replace="nothing"><!--
+        ***    a mettre en remplacement de l'option si on souahite la désactiver ***
+        <input type="hidden" name="accolade" value="2"
+               tal:define="accolade QCM_parsed/accolade  | string:1"
+               tal:attributes="value accolade"/>
+        --></tal:comment>
+
+        <div class="panel" tal:define="accolade QCM_parsed/accolade  | string:1">
+            <a href="#reveal_accolade" class="button tiny radius right" data-reveal-id="reveal_accolade">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="accolade">Accolades aléatoires</label>
+            <div class="formHelp texte_icone icone_information">Les mots placés dans une paire d'accolades seront tirés au hasard.</div>
+            <input type="radio" name="accolade" id="accolade_yes" value="1"
+                   tal:attributes="checked python:context.test(accolade=='1', 'checked', '')"/>
+            <label for="accolade_yes"><i class="fa fa-check"></i><tal:block i18n:translate="">Activées</tal:block></label>
+            <input type="radio" name="accolade" id="accolade_no" value="2"
+                   tal:attributes="checked python:context.test(accolade=='2', 'checked', '')"/>
+            <label for="accolade_no"><i class="fa fa-times"></i><tal:block i18n:translate="">Désactivées</tal:block></label>
+            <div id="reveal_accolade"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Aide sur Les modes d'affichage <a class="close-reveal-modal"></a></h2>
+                <div class="panel">
+                    <h3><i class="fa fa-check success"></i><tal:block i18n:translate="">Mode "accolades aléatoires" activé :</tal:block></h3>
+                    <div i18n:translate="">
+                        <p>Lorsque ce mode est activé, si vous mettez plusieurs mots séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard.</p>
+                        Par exemple,
+                        <code class="indicateur">Je suis allé
+                            <span class="shuffle">{à l'école, au cinéma}</span>
+                            <span class="shuffle">{hier, la semaine dernière}</span>
+                        </code>, affichera aléatoirement aux participants une de ces phrases :
+                        <blockquote>
+                            <ul>
+                                <li>Je suis allé à l'école hier</li>
+                                <li>Je suis allé au cinéma hier</li>
+                                <li>Je suis allé à l'école la semaine dernière</li>
+                                <li>Je suis allé au cinéma la semaine dernière</li>
+                            </ul>
+                        </blockquote>
+                        Attention. Ce mode a quelques inconvénients :
+                        <ul>
+                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML : 
+                                <ul><li><code>&amp;#123;</code> pour l'accolade ouvrante {</li>
+                                <li><code>&amp;#125;</code> pour l'accolade fermante }</li></ul>
+                            </li>
+                            <li>Si vous utiliser du code LaTeX dans ce mode, les accolades ne seront pas fonctionnelles</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr/>
+                <div class="panel">
+                    <h3><i class="fa fa-times alert"></i><tal:block i18n:translate="">Mode "accolades aléatoires" désactivé :</tal:block></h3>
+                    <div i18n:translate="">En désactivant ce mode, les accolades ne sont plus utilisées pour afficher du texte aléatoire.</div>
+                    Vous pourrez alors :
+                    <ul>
+                        <li>Afficher des accolades</li>
+                        <li>Utiliser du code LaTeX avec des accolades, sans souci.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </metal:macro>
+
+    <!-- Credits : Permet d'afficher des "credits" en bas d'un exercice. -->
+    <metal:macro define-macro="credits">
+        <div class="panel">
+          <label for="credits">Crédits</label>
+          <div class="formHelp texte_icone icone_information"> Lorsque vous utilisez un texte ou du contenu multimédia dont vous n'êtes pas l'auteur, vous pouvez placer ici leur références pour citation. (HTML interdit) </div>
+          <textarea name="credits" id="credits"
+                    rows="2" tal:content="QCM_parsed/credits" />
+        </div>
+    </metal:macro>
+
+    <!-- Credits : Permet d'afficher des "credits" en bas d'un exercice. -->
+    <metal:macro define-macro="cannot_view">
+        <div class="panel radius alert">
+            <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
+            <p i18n:translate="">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
+            <p i18n:translate="">N'hésitez-pas à
+                <strong tal:define="admin_email here/email_from_address;
+                                    object_title here/Title;
+                                    site_title python:here.getInfosConnexion()['site'];
+                                    abs_url here/absolute_url;">
+                    <a i18n:translate="contact_site_admin"
+                       tal:attributes="href string:mailto:${admin_email}?subject=[${site_title}] Accès non autorisé&amp;body=%0DDécrivez précisément votre souci : %0D%0DURL : ${abs_url}%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
+                en décrivant au maximum votre souci, si vous pensez que c'est une erreur.
+            </p>
+        </div>
+    </metal:macro>
+
+    </metal:content-core>
+    </body>
+</html>

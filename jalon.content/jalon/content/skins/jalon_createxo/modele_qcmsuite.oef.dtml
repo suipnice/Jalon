@@ -1,0 +1,470 @@
+type=first
+modele_jalon=qcmSuite
+textarea="$$list_id_questions$$"
+asis="$$list_id_questions$$"
+
+:Questions à choix multiples
+
+<p>Cet exercice présente des questions à choix multiples.</p>
+<p>Le nombre de questions est limité à 10. On choisit le nombre de questions
+à présenter à chaque exercice. Ces questions seront pris au hasard ou pas.</p>
+<p>Auteur du modèle : Bernadette Perrin-Riou <bpr@math.u-psud.fr></p>
+
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+
+Enlevez l'en-tête ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:\credits{$$credits$$}
+
+:Instruction Globale
+Tapez ici une instruction commune à toutes les questions de l'exercice
+\text{instruction=$$instruction$$}
+
+:Ordre aléatoire
+Tapez "yes" pour activer le tirage au sort des questions.
+Tapez "no" pour les présenter dans l'ordre où elles sont rentrées
+\text{alea=$$alea$$}
+
+:Nombre maximum de questions par étape
+WIMS divisera automatiquement votre exercice en étapes en fonction du nombre total de questions définies et du nombre de questions par étapes.
+\text{N=$$nb_questions_max$$}
+
+:Nombre maximum d'étapes
+WIMS divisera automatiquement votre exercice en étapes en fonction du nombre total de questions définies et du nombre de questions par étapes.
+\text{MAX=$$nb_etapes$$}
+
+:Texte pour le feedback "Réponse donnée"
+
+\text{qcm_prompt1=Votre réponse :}
+
+:Texte pour le feedback "La bonne réponse"
+
+\text{qcm_prompt2=La(les) bonne(s) réponse(s) étaient :}
+
+:Texte pour le feedback "Réponse correcte"
+
+\text{good_answer_text=Bonne réponse !}
+
+:Texte pour le feedback "Réponse incorrecte"
+
+\text{bad_answer_text=Mauvaise réponse !}
+
+:Texte pour le feedback "Réponse incomplète"
+
+\text{incomplete_answer_text=Réponse incomplète...}
+
+:Style css pour les questions
+
+\text{style_question=}
+
+:Style css pour les réponses
+
+\text{style_reponse=}
+
+:Pourcentage de réussite demandée pour passer à l'étape suivante (si le nombre maximum d'étapes >1)
+
+\text{percent=$$pourcentage_validation$$}
+
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$, oui, non)}
+
+:Affichage des bonnes réponses
+Si oui, la liste des bonnes réponses sera affiché une fois la réponse donnée par l'apprenant.
+\text{answer_given=item(1, oui, non)}
+
+:Mode d'affichage (nombre de colonnes)
+Le mode "2 colonnes" permet d'économiser du papier pour des questions courtes.
+\text{columns=$$columns$$}
+
+:Questions
+<p>Entrez ici la question à poser, selon le format suivant :</p>
+<ol>
+<li>La première ligne contient l'énoncé de la question.</li>
+<li>La seconde ligne représente un feedback, qui sera affiché après validation des réponses
+(elle peut être laissée vide).</li>
+<li>Entrez sur la 3e ligne la liste des numéros des bonnes réponses, séparées par des virgules. (les numéros représentent l'ordre dans lequel sont écrites les propositions ci-dessous)</li>
+<li>Chaque ligne suivante représente les différentes propositions de réponses.</li></ol>
+<div style="border-left:2px solid orange;width:45em;background-color:white;padding:1em .5em;">Exemple : <br/>
+<pre>Énoncé de la Question n°1
+Explication (feedback) affichée en cas de mauvaise réponse à la question n°1
+Numéro(s) de la (des) bonne(s) réponse(s)
+Proposition n°1
+Proposition n°2
+Proposition n°3</pre></div>
+<p class="oef_indbad"><strong>Attention :</strong> les point-virgules sont interdits ici.</p>
+<hr/>
+<p><em>Facultatif :</em> Vous pouvez éventuellement ajouter une premiere ligne qui contiendra des variables permettant d'insérer un titre, une image, du son. (nb : vous devez être dans une classe ou un module pour pouvoir transférer ces fichiers). Dans ce cas, ce sera la seconde ligne qui représentera l'énoncé, et ainsi de suite....</p>
+<div style="border-left:2px solid orange;width:45em;background-color:white;padding:1em .5em;">Exemple : <br/>
+<pre>Qtitle="Titre de la question n°2" Qimage="image.jpg" Qaudio="son.mp3"
+Énoncé de la Question n°2
+Explication (feedback) affichée en cas de mauvaise réponse à la question n°2
+Numéro(s) de la (des) bonne(s) réponse(s)
+Proposition n°1
+Proposition n°2
+Proposition n°3</pre></div>
+$$questions$$
+:
+\language{fr}
+\computeanswer{no}
+\format{html}
+
+\text{format=checkbox}
+
+\text{paste=yes}
+
+\text{option=}
+#####################
+
+$$boucle_data_q$$
+
+\integer{cnt_question=items(\data_q)}
+
+\text{nopaste=\paste issametext no ? slib(utilities/nopaste )}
+
+\if{\style_reponse != \empty}
+  \text{style_reponse = .reponse {\style_reponse} }
+\if{\style_oef != \empty}
+  \text{style_oef = .oefstatement {\style_oef} }
+
+\text{style = <style type="text/css">
+
+  .instructions{margin:1em 0}
+  .panel{
+    border-radius:5px;
+  }
+  .panel.callout{
+    \style_question
+  }
+  .panel, .panel.callout{
+    margin-bottom:.4em;
+    padding:.5em 1.5rem;
+  }
+
+  .q_num, .panel .wims_title{
+    font-size:150%;font-family:Impact, Charcoal, sans-serif;
+    color:#777;
+  }
+  .callout .q_num, .callout .wims_title{color:black;}
+
+  .panel .wims_title, .panel .wimscenter{margin-top:-1.2em;}
+
+  .feedback{
+    /*border:1px dashed #BBB;
+    padding:.5em;*/
+    margin-right:0;
+  }
+
+  \style_reponse
+  \style_oef
+
+  ol.question{margin-top:.2em;}
+
+  .strike{text-decoration:line-through;}
+
+  .oef_modulescore{font-size:120%}
+
+  ol li {list-style: upper-alpha; }
+  input[type='checkbox'] { font-size:150%; }
+
+  .oefanswer{display:none;}
+
+  /** CSS for medium and up **/
+  @media all and (min-width: 40.0625em) {
+      .equalize_height{
+        justify-content: space-between;
+        -webkit-justify-content: space-between;
+        display: -webkit-flex;
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+      }
+
+      .bloc-2-columns>.panel{width:49.66%;}
+  }
+
+  /** CSS for medium only **/
+  @media all and (min-width: 40.0625em) and (max-width: 50.0625em) {
+      .bloc-3-columns>.panel{
+        -webkit-flex-grow: 1;
+        flex-grow: 1;
+      }
+  }
+  /** CSS for large and up **/
+  @media all and (min-width: 50.0625em) {
+      .bloc-3-columns>.panel{width:32.90%;}
+  }
+
+  /** CSS for print only **/
+  @media only print {
+      .bloc-3-columns>.panel{
+        width:32.90%;
+        -webkit-flex-grow: 0;
+        flex-grow: 0;
+      }
+  }
+
+  </style>
+}
+
+\integer{N = min(\cnt_question,\N)}
+\integer{MAX=min(\N*\MAX,\cnt_question)}
+\text{battage=\alea issametext yes ? shuffle(\data_q,,) :
+\data_q}
+\text{battage=wims(nonempty items \battage)}
+
+\text{option=\option noanalyzeprint}
+\matrix{question=}
+\matrix{explication=xxx}
+\matrix{rep=}
+\text{CNT_choix= }
+\matrix{CHOIX=}
+\matrix{PRELIMINAIRE=}
+
+\for{i= 1 to \MAX}{
+  $$boucle_battage$$
+  \text{preliminaire_test=row(1,\QUEST)}
+  \text{inst_audio=wims(getopt Qaudio in \preliminaire_test)}
+  \text{inst_image=wims(getopt Qimage in \preliminaire_test)}
+  \text{inst_title=wims(getopt Qtitle in \preliminaire_test)}
+
+  \text{rab_inst=}
+  \text{rab_inst=\inst_title notsametext ? \rab_inst <h2 class="wims_title">\inst_title</h2>}
+  \text{rab_inst=\inst_image notsametext ? \rab_inst <div class="wimscenter"><img src="\imagedir/\inst_image" alt="" /></div>}
+  \if{\inst_audio notsametext }{
+    \text{rab_inst1= . isin \inst_audio ?
+      <audio controls>
+        <source src="\imagedir/\inst_audio" type="audio/mpeg">
+        Désolé, votre navigateur est incompatible avec la lecture de fichiers audio.
+      </audio>}
+    \text{rab_inst=\rab_inst <div class="wimscenter audio">\rab_inst1[1;1]</div>}
+  }
+
+  \text{test_inst=\inst_audio\inst_image\inst_title  notsametext ? 1 : 0}
+  \text{preliminaire=\test_inst=1 ? \rab_inst:&nbsp;}
+  \text{QUEST=\test_inst=1 ? \QUEST[2..-1;]}
+  \matrix{QUEST=\accolade=1 ? wims(embraced randitem \QUEST):\QUEST}
+  \matrix{question = \question
+\QUEST[1;]}
+  \matrix{PRELIMINAIRE=\PRELIMINAIRE
+\preliminaire}
+  \text{expl=\QUEST[2;]}
+  \text{ligne=wims(upper \expl)}
+  \text{ligne=wims(text select ABCDEFGHIJKLMNOPQRSTUVWXYZ in \ligne)}
+  \if{\ligne issametext and \expl notsametext }{
+    \matrix{explication = \explication;}
+    \integer{debut = 2}
+  }
+  \if{\ligne issametext and \expl issametext }{
+    \matrix{explication = \explication;}
+    \integer{debut = 3}
+  }
+  \if{\ligne notsametext}{
+    \matrix{explication = \explication;\expl}
+    \integer{debut = 3}
+  }
+  \integer{cnt_choix=rows(\QUEST)-\debut}
+  \text{CNT_choix=\CNT_choix,\cnt_choix}
+  \text{Choix=}
+  \text{mix=shuffle(\cnt_choix)}
+  \for{ j=\debut+1 to \cnt_choix + \debut+1}{
+     \text{choix= \QUEST[\j;]}
+     \text{choix=wims(replace internal , by  &#44; in \choix)}
+     \matrix{Choix = \Choix, \choix[1;]}
+  }
+  \text{Choix=wims(nonempty items \Choix)}
+  \text{Choix= \Choix[\mix]}
+  \matrix{CHOIX=\CHOIX
+\Choix}
+  \text{H = wims(nospace \QUEST[\debut;])}
+  \text{cnt_c=items(\H)}
+  \text{Rep = }
+  \for{ k = 1 to \cnt_c}{
+    \text{Rep = \Rep, position(\H[\k],\mix)}
+  }
+  \text{Rep = wims(sort items wims(nonempty items \Rep))}
+  \matrix{rep = \rep
+\Rep}
+}
+
+\text{CNT_choix=wims(nonempty items \CNT_choix)}
+
+\text{U = pari(divrem(\MAX,\N)~)}
+\integer{cnt_step = \U[1] + 1}
+\matrix{STEPS = }
+\matrix{CNT = }
+\text{CONDSTEP=}
+
+\for{ u = 1 to \cnt_step -1}{
+  \matrix{STEPS =\STEPS
+wims(makelist r x for x = \N*\u -\N+1 to \N*\u)}
+  \matrix{CNT =\CNT
+wims(makelist x for x = \N*\u -\N+1 to \N*\u)}
+  \text{condstep= wims(values \u+1 for x = (\u-1)*\N +1 to \u*\N)}
+  \text{CONDSTEP= wims(append item \condstep to \CONDSTEP)}
+}
+
+\matrix{STEPS = \STEPS
+wims(makelist r x  for x = \N*\cnt_step-\N+1 to \MAX)
+}
+\matrix{CNT = \CNT
+wims(makelist x  for x = \N*\cnt_step-\N+1 to \MAX)
+}
+\text{CONDSTEP=\CONDSTEP, wims(values \cnt_step+1  for x = \N*\cnt_step-\N+1 to \MAX)}
+
+\text{nstep=\STEPS[1;]}
+\text{TEST=}
+\text{explication=\explication[2..-1;]}
+
+text{testexp=wims(rows2lines \explication)}
+text{testexp=wims(lines2items \testexp)}
+text{testexp=wims(items2words \testexp)}
+text{testexp=wims(nospace \testexp)}
+\nextstep{\nstep}
+\text{REP=}
+\text{etape=wims(values x * \N for x = 1 to \cnt_step+1)}
+\text{CONDITION = wims(makelist x for x = 1 to 2*\MAX)}
+\text{CONDITION = wims(items2words \CONDITION)}
+\conditions{\CONDITION}
+\integer{cnt_juste=0}
+\real{v = 10}
+
+\if {\columns>1}
+  {\text{css_columns = equalize_height bloc-\columns-columns }}
+
+
+\statement{
+  \nopaste
+  \style
+  <div class="instructions">\instruction</div>
+
+  <div class="questions \css_columns">
+  \for{h=1 to \etape[\step]}{
+
+    \if{\question[\h;] notsametext }
+    {
+      \if{\h <= \etape[\step] - \N}
+        {<div class="panel">}
+        {<div class="panel callout">}
+
+    }
+    \if{(\h <= \etape[\step] - \N or r \h isitemof \nstep) and \question[\h;] notsametext }{
+      <div class="enonce">
+        \if{\cnt_step > 1  and \MAX > 1}{<span class="q_num">\h :</span>}
+          <span class="preliminaire">\PRELIMINAIRE[\h;]</span>
+          <span class="question">\question[\h;]</span>
+      </div>
+    }
+    \if{\h <= \etape[\step] - \N and \question[\h;] notsametext}{
+      <div class="reponse">
+        <span class="prompt">\qcm_prompt1</span>
+        \for{ a in \REP[\h;]}{
+          \if{ \a  isitemof \CHOIX[\h;\rep[\h;]]}{
+            \if{\TEST[\h;2]>0 and \TEST[\h;3]=0}
+              {<span class="oef_indpartial">\a</span>}
+              {<span class="oef_indgood">\a</span>}
+          }
+          {<span class="oef_indbad strike">\a</span>}
+          -
+        }
+
+        \if{\TEST[\h;3]=0 and \TEST[\h;2]>0}{<span class="oef_indpartial">\incomplete_answer_text</span>}
+        \if{\TEST[\h;3]>0}{<span class="oef_indbad">\bad_answer_text</span>}
+        \if{\TEST[\h;3]=0 and \TEST[\h;2]=0}{<span class="oef_indgood">\good_answer_text</span>}
+
+        \if{\answer_given=yes}{
+          \if{\TEST[\h;3]>0 or \TEST[\h;2]>0}{
+            <div class="prompt">\qcm_prompt2</div>
+            <ul class="oef_indgood">
+              \for{s=1 to \CNT_choix[\h]}{
+                \if{\s isitemof \rep[\h;]}{ <li>\CHOIX[\h;\s]</li>}
+              }
+            </ul>
+          }
+        }
+        \if{\explication[\h;] notsametext }{<div class="feedback">\explication[\h;]</div>}
+      </div>
+    }
+    {
+      \if{ r \h isitemof \nstep}{
+        <ol class="question">
+          \for{s=1 to \CNT_choix[\h]}{ <li>\embed{reply \h , \s}</li> }
+        </ol>
+      }
+    }
+    \if{\question[\h;] notsametext }
+    {</div>}
+  }
+  </div>
+
+}
+$$boucle_answer$$
+
+$$boucle_maxtrix_rep$$
+\if{\format=radio}{
+ \text{REP=wims(replace internal , by  &#44; in \REP)}
+}
+\matrix{explication2 = \explication2}
+
+\for{u = 1 to \N}{
+  \text{H = \CNT[\step-1;\u]}
+  \text{test1 = wims(listuniq \REP[\H;],\CHOIX[\H;\rep[\H;]])}
+  \integer{test1 = items(\test1)-items(\CHOIX[\H;\rep[\H;]])}
+  \text{test2 = wims(listcomplement \REP[\H;] in \CHOIX[\H;\rep[\H;]])}
+  \text{test3 = wims(listcomplement \CHOIX[\H;\rep[\H;]] in \REP[\H;])}
+  %%% \integer{test4=items(\REP[\H;]) - items(\CHOIX[\H;])}
+  \text{test_cnt=\test1, items(\test2),items(\test3)}
+  \integer{cnt_juste= \test_cnt[1]+\test_cnt[2]+\test_cnt[3] =0 ? \cnt_juste + 1}
+  \matrix{TEST=\TEST
+\test_cnt}
+}
+
+test1 = 0 rep < juste
+test2  nombre de réponses dites justes et en fait fausses
+test3  nombre de réponses dites fausses et en fait justes
+
+totalement justes : test1=0, test2=0 test3=0
+partiellement justes :
+
+\real{v=\cnt_juste/\CNT[\step-1;\N]}
+
+\text{nstep = \v >= \percent ? \STEPS[\step;]:}
+
+$$boucle_condition_questions$$
+
+\text{test=wims(rows2lines \explication)}
+\text{test=wims(lines2items \test)}
+\text{test=wims(items2words \test)}
+\text{test=wims(nospace \test)}
+feedback{1=1}{\explication
+   \if{\test notsametext}{
+     <div class="reponse"><ol>
+      \for{w = 1 to \MAX}{
+        \if{\explication[\w;] notsametext }
+         {<li style="list-style:decimal;" value="\w">\explication[\w;] </li>}
+     }
+     </ol>
+    </div>
+  }
+}
+{<ol>
+  \for{ t = 1 to \N}{
+    \if{\CNT[\step;\t] != }{
+  <li style="list-style:decimal;" value="\CNT[\step;\t]"> <b>\question[\N*(\step-1) + \t;]</b>
+  <div class="question"><ol>
+   \for{s=1 to \CNT_choix[\N*(\step-1) + \t]}{
+   <li>\embed{\STEPS[\step;\t] , \s }</li>
+    }
+   </ol>
+   </div>
+   </li>}
+ }
+</ol>
+}

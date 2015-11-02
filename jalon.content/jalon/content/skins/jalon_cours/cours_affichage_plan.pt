@@ -1,0 +1,22 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="mode_etudiant request/mode_etudiant | nothing;
+                        personnel python:context.isPersonnel(user, mode_etudiant);
+                        plancours python:context.getPlanCours(personnel, user.getId())">
+    <metal:macro use-macro="context/macro_cours_plan/macros/afficher-plan">
+        Affichage du plan du cours
+    </metal:macro>
+</metal:core>
+
+</body>
+
+</html>

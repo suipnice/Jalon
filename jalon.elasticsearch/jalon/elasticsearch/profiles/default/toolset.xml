@@ -1,0 +1,6 @@
+<?xml version="1.1"?>
+<tool-setup>
+  <required tool_id="portal_jalon_elasticsearch"
+            class="jalon.elasticsearch.content.jalonelasticsearch.JalonElasticsearch"/>
+</tool-setup>
+

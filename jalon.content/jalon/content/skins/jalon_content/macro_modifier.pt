@@ -1,0 +1,139 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Modifier un lien vers une ressource externe
+-->
+<metal:macro define-macro="modifier-externe">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier le lien vers la ressource externe</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="success"
+         tal:define="ajout request/ajout | nothing"
+         tal:condition="ajout"
+         i18n:translate="">
+        La ressource a été créée, veuillez modifier les informations ci-dessous:
+    </div>
+
+    <form id="js-linkEditor" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-placeholder string:Saisie obligatoire;
+                          data-success_msg_pre string:Le lien;
+                          data-success_msg_post string:a été édité."
+          i18n:attributes="data-placeholder; data-success_msg_pre; data-success_msg_post">
+
+        <tal:block condition="python:context.getTypeRessourceExterne() == 'Catalogue BU'">
+            <tal:define define="ressource context/getRessourceCatalogueBU">
+                <h3 tal:content="python:ressource['title']" />
+                <div id="js-primoContainer">
+                    <tal:block repeat="image_src ressource/image">
+                        <img class="primo_img"
+                             tal:attributes="src image_src" />
+                    </tal:block>
+                </div>
+                <div class="panel radius">
+                    <tal:block replace="ressource/publisher" />
+                    <tal:block content="ressource/creationdate" />
+                </div>
+                <a class="button small expand success radius"
+                   title="Voir la ressource sur le catalogue de la BU dans une nouvelle fenêtre"
+                   target="_blank"
+                   tal:condition="ressource/urlcatalogue"
+                   tal:attributes="href ressource/urlcatalogue"
+                   i18n:attributes="title">
+                    <i class="fa fa-external-link-square"></i>
+                    <tal:block i18n:translate="">Voir la ressource sur le catalogue de la BU</tal:block>
+                </a>
+                <div class="panel warning radius"
+                     tal:condition="not:ressource/urlcatalogue"
+                     i18n:translate="">
+                    La ressource n'est plus disponible dans le catalogue de la BU.
+                </div>
+            </tal:define>
+        </tal:block>
+
+        <tal:repeat repeat="attribut context/getAttributsType">
+            <metal:field use-macro="python:context.widget(attribut, mode='edit')" />
+        </tal:repeat>
+
+        <input type="hidden" name="macro" value="macro_modifier" />
+        <input type="hidden" name="formulaire" value="modifier-externe" />
+        <input type="hidden" name="annexe"
+               tal:attributes="value context/getMacroType" />
+        <input type="hidden" name="idobj" value="ok" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:removeErrorImages('js-primoContainer')" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:setLinkEditor()" />
+
+</metal:macro>
+
+
+<!--
+        Modifier un terme de glossaire
+-->
+<metal:macro define-macro="modifier-glossaire">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier le terme de glossaire</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-glossaryEditor" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-placeholder string:Saisie obligatoire;
+                          data-success_msg_pre string:Le terme de glossaire;
+                          data-success_msg_post string:a été édité."
+          i18n:attributes="data-placeholder; data-success_msg_pre; data-success_msg_post">
+
+        <tal:repeat repeat="attribut context/getAttributsType">
+            <metal:field use-macro="python:context.widget(attribut, mode='edit')" />
+        </tal:repeat>
+
+        <input type="hidden" name="macro" value="macro_modifier"/>
+        <input type="hidden" name="formulaire" value="modifier-glossaire"/>
+        <input type="hidden" name="idobj" value="ok"/>
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setGlossaryEditor()" />
+
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

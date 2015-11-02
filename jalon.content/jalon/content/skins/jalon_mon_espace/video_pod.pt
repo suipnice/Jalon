@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <tal:define define="pod request/pod;
+                        video python:context.searchElasticsearch('video', pod);">
+
+    <h2>
+        <tal:replace replace="video/title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div>
+        <strong>Auteur :</strong> <tal:replace replace="video/owner"/>
+    </div>
+    <div>
+        <strong>Description :</strong> <tal:replace replace="structure video/text"/>
+    </div>
+    <div class="flex-video">
+        <tal:replace replace="structure video/iframe"/>
+    </div>
+
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>

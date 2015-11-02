@@ -1,0 +1,9 @@
+<?xml version="1.1"?>
+<componentregistry>
+ <adapters/>
+ <utilities>
+  <utility
+     interface="jalon.content.browser.interfaces.IJalonProperties"
+     object="portal_jalon_properties"/>
+ </utilities>
+</componentregistry>

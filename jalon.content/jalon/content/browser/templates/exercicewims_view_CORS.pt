@@ -1,0 +1,84 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!--
+
+    Alternative à exercicewims_view.pt :
+
+        - chargement Ajax (Cross Origin Resource Sharing) du contenu utile de l'exercice Wims dans <section #wims> ;
+        - fonctionne avec setWimsContent( ), à décommenter dans le fichier static/wims.js (app.js) ;
+        - nécessite une déclaration d'autorisation coté WIMS (vhost Apache : http://enable-cors.org/ ) ;
+        - nécessite une gestion de l'ensemble du déroulement de l'exercice en JS (submit Ajax, etc.)…
+
+-->
+<metal:core fill-slot="main"
+            tal:define="qclass python:'%s_1' % context.getComplement();
+                        param_wims python:context.authUser('supervisor', qclass, request);">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main role="main" class="row" aria-labelledby="page_title"
+          tal:define="modele context/getModele;
+                     portal_lang portal_state/language">
+
+        <div id="js-alert_box" class="small-12 columns"
+             tal:condition="not:param_wims">
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+                Le serveur WIMS est actuellement injoignable. Veuillez réessayer ultérieurement.
+            </div>
+        </div>
+
+        <section id="wims" class="small-12 columns"
+                 tal:condition="param_wims" tal:define="wims_lang python:context.convertLangToWIMS(portal_lang);">
+
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+
+            <tal:condition condition="python:modele!='externe'">
+                <tal:block define="exo_params request/exo_params | nothing;
+                                   paramExo python:context.getParamListeExos(exo_params);">
+                    <div id="insert_wims" class="hide"
+                         tal:attributes="data-src string:${param_wims/home_url}&amp;${paramExo}&amp;cmd=new&amp;lang=${wims_lang}"></div>
+                </tal:block>
+                <tal:block define="script string:setWimsContent()">
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+                </tal:block>
+            </tal:condition>
+
+            <tal:condition condition="python:modele=='externe'"
+                           tal:define="permalink context/permalink">
+
+                <tal:block condition="permalink"
+                           define="script string:setWimsContent()">
+                    <div id="insert_wims" class="hide"
+                         tal:attributes="data-src string:${param_wims/home_url}?${permalink}&amp;cmd=new&amp;lang=${wims_lang}"></div>
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+                </tal:block>
+
+                <div tal:condition="not:permalink" class="panel warning radius">
+                    <p i18n:translate="">
+                        Vous n'avez choisi aucun élément dans la banque d'exercices WIMS.
+                    </p>
+                    <a class="button small radius"
+                       tal:attributes="href string:${context/id}/exercicewims_edit"
+                       i18n:translate="">Modifier</a>
+                </div>
+
+            </tal:condition>
+
+        </section>
+
+    </main>
+
+</metal:core>
+</body>
+</html>

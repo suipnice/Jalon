@@ -1,0 +1,244 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+    #jalon_configuration > section > ul.button-group > li {
+        width: 33%;
+    }
+    #jalon_configuration > section > ul.button-group > li .button {
+        background-color: #e7e7e7;
+        border-color: #b9b9b9;
+        color: #333;
+        margin-bottom: 0;
+        width: 100%;
+    }
+    #jalon_configuration > section > ul.button-group > li .button.selected,
+    #jalon_configuration > section > ul.button-group > li .button:hover,
+    #jalon_configuration > section > ul.button-group > li .button:focus {
+        color: #fff;
+    }
+    #jalon_configuration > section > ul.button-group > li .button.selected,
+    #jalon_configuration > section > ul.button-group > li .button.selected:focus {
+        background-color: #2a9ccc;
+        border-color: #227da3;
+    }
+    #jalon_configuration > section > ul.button-group > li .button:hover,
+    #jalon_configuration > section > ul.button-group > li .button:focus,
+    #jalon_configuration > section > ul.button-group > li .button.selected:hover {
+        background-color: #227da3;
+        border-color: #227da3;
+    }
+    h2 {
+        margin-top: .75rem;
+    }
+    button, .button {
+        margin-bottom: 0;
+    }
+    input[type=text] {
+        height: auto;
+        margin-bottom: .5rem;
+        padding: .12rem .25rem;
+    }
+    select {
+        margin-bottom: 0;
+    }
+    select + p {
+        margin-left: .25rem;
+        margin-bottom: .5rem;
+    }
+    .panel {
+        margin-bottom: 0;
+        padding: .5rem !important;
+    }
+    .panel.callout {
+        margin-bottom: .5rem;
+    }
+    #js-selection_form {
+        line-height: normal;
+    }
+    #js-complete_list select {
+        height: 10.8rem;
+        padding: 0;
+    }
+    #js-selected_list select {
+        height: 5.5rem;
+        padding: 0;
+    }
+    #js-highNumberWarning {
+        display: none;
+    }
+</style>
+
+<tal:define define="codeELP request/codeELP;
+                    TYP_ELP_SELECT request/TYP_ELP_SELECT | nothing;
+                    infosELPSelectionne python:context.getInfosELP(codeELP);
+                    listeTypeAttachementELP python:context.getTypeAttachementELP(infosELPSelectionne['TYP_ELP']);
+                    listeToutesELP python:context.getInfosElpParType(TYP_ELP_SELECT);
+                    TousElpAttach python:context.getElpAttach(codeELP, TYP_ELP_SELECT, infosELPSelectionne['TYP_ELP'])">
+
+<tal:block define="pageCours infosELPSelectionne/LIB_ELP">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Fil d'ariane
+    </metal:macro>
+</tal:block>
+
+<div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
+      tal:define="gestion request/gestion | string:gestion_bdd">
+
+    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+        Message de session
+    </metal:macro>
+
+    <section class="small-12 columns">
+
+        <ul class="button-group radius">
+            <li tal:repeat="dico listeTypeAttachementELP">
+            <a tal:attributes="href string:${context/absolute_url}/page_composition?codeELP=${codeELP}&amp;TYP_ELP_SELECT=${dico/type};
+               class python:context.test(TYP_ELP_SELECT == dico['type'], 'button small selected', 'button small')"
+               tal:content="dico/libelle"/>
+            </li>
+        </ul>
+        <br/>
+        <div class="panel callout radius"
+             tal:condition="not:TYP_ELP_SELECT"
+             i18n:translate="">
+            <tal:block i18n:translate="">Choisir le type d'élément à afficher.</tal:block>
+        </div>
+
+        <form id="js-selection_form" method="POST"
+              tal:attributes="action string:${context/absolute_url}/compositionELP_script"
+              tal:condition="TYP_ELP_SELECT">
+
+            <div id="js-complete_list">
+
+                <h2>
+                    <i class="fa fa-search"></i>
+                    <tal:block i18n:translate="">Recherche d'élément(s) pédagogique(s)</tal:block>
+                </h2>
+
+                <div class="panel">
+
+                    <div class="row">
+
+                        <div class="small-5 columns">
+                            <input placeholder="Entrez un masque de filtrage…" type="text" />
+                        </div>
+
+                        <div class="small-2 columns text-center">
+                            <span class="label alert round">
+                                <i class="fa fa-clock-o"></i>
+                                <span class="show-for-medium-up">En cours…</span>
+                            </span>
+                        </div>
+
+                        <div class="small-5 columns">
+                            <input placeholder="Aucun filtrage n'est actif." type="text" disabled="disabled" />
+                        </div>
+
+                    </div>
+
+                    <ul class="button-group radius even-2">
+
+                        <li>
+                            <button class="button tiny success" disabled="disabled">
+                                <i class="fa fa-search"></i>
+                                <tal:block i18n:translate="">Filtrer</tal:block>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button class="button tiny warning" disabled="disabled">
+                                <i class="fa fa-bars"></i>
+                                <tal:block i18n:translate="">Tout afficher</tal:block>
+                            </button>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <select multiple="multiple">
+                    <tal:options repeat="item listeToutesELP">
+                    <option tal:attributes="value item/COD_ELP">
+                        <tal:block content="python:item['LIB_ELP']" />  (code : <tal:block replace="python:item['COD_ELP']" />)
+                    </option>
+                    </tal:options>
+                </select>
+
+                <p><tal:block i18n:translate="">Élément(s) :</tal:block> <span></span></p>
+
+            </div>
+
+            <div class="panel callout radius">
+                <i class="fa fa-exclamation-circle"></i>
+                <tal:block i18n:translate="">Cliquez sur un élément pour le faire passer d'une liste à l'autre.</tal:block>
+            </div>
+
+            <div id="js-selected_list">
+
+                <h2>
+                    <i class="fa fa-check-square-o"></i>
+                    <tal:block i18n:translate="">Élément(s) pédagogique(s) attaché(s)</tal:block>
+                </h2>
+
+                <select name="listeELP:list" multiple="multiple">
+                    <tal:options repeat="item TousElpAttach">
+                    <option tal:attributes="value item/COD_ELP">
+                        <tal:block content="python:item['LIB_ELP']" />  (code : <tal:block replace="python:item['COD_ELP']" />)
+                    </option>
+                    </tal:options>
+                </select>
+
+                <p><tal:block i18n:translate="">Élément(s) :</tal:block> <span></span></p>
+
+            </div>
+
+            <div id="js-highNumberWarning" class="panel warning radius">
+                <b i18n:translate="">Attention :</b>
+                <tal:block i18n:translate="">le grand nombre d'éléments à manipuler peut ralentir l'interface. Merci de lui laisser le temps de répondre entre chaque action.</tal:block>
+            </div>
+
+            <input type="hidden" name="TYP_ELP_SELECT" id="TYP_ELP_SELECT"
+                   tal:attributes="value TYP_ELP_SELECT"/>
+            <input type="hidden" name="COD_ELP" id="COD_ELP"
+                   tal:attributes="value codeELP" />
+            <input type="hidden" name="TYP_ELP" id="TYP_ELP"
+                   tal:attributes="value infosELPSelectionne/TYP_ELP" />
+            <input type="hidden" name="redirection"
+                   tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd" />
+
+            <div class="text-center">
+                <button type="submit" class="button small radius" disabled="disabled">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+
+        </form>
+
+    <tal:define define="script string:setSelectionForm()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:define>
+
+    </section>
+
+</main>
+
+</tal:define>
+
+</metal:core>
+
+</body>
+
+</html>

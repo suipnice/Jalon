@@ -1,0 +1,25 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="jalon.connect">
+
+    <browser:page
+        for="..interfaces.utility.IConnect"
+        name="connect-controlpanel"
+        class=".controlpanel.ConnectControlPanelForm"
+        permission="cmf.ManagePortal"
+        />
+
+    <browser:pages
+        for="*"
+        class=".browser.ConnectBrowserView"
+        permission="cmf.ModifyPortalContent">
+        <browser:page attribute="save" name="connect-save" /> 
+    </browser:pages>
+
+    <browser:resourceDirectory
+        name="connect.images"
+        directory="images"
+        />
+
+</configure>

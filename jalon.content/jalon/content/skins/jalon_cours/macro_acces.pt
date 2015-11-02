@@ -1,0 +1,1329 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+
+        Téléchargement du listing des participants au cours
+
+
+-->
+<metal:macro define-macro="telecharger-participant">
+
+    <h2>
+        <tal:block i18n:translate="">Télécharger le listing de tous les participants</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <tal:define define="has_participants context/hasParticipants">
+    <tal:condition condition="has_participants">
+    <div class="panel callout">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Cliquez sur le bouton « Télécharger » ci-dessous pour obtenir une copie de la liste de tous les participants au cours sous la forme d'un fichier XLS.</tal:block>
+    </div>
+    <div class="panel warning">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération peut prendre quelques instants, merci de patienter.</tal:block>
+    </div>
+    <form tal:attributes="action string:${context/absolute_url}/cours_telecharger_participants"
+          method="post">
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger</tal:block>
+            </button>
+        </div>
+    </form>
+    </tal:condition>
+    <tal:condition condition="not:has_participants">
+    <div class="panel warning">
+        <tal:block i18n:translate="">Vous n'avez actuellement aucun participant dans votre cours.</tal:block>
+    </div>
+    </tal:condition>
+    </tal:define>
+
+</metal:macro>
+
+
+<!--
+
+        Inscriptions nominatives : ajout / liste
+
+
+-->
+<metal:macro define-macro="ajouter_inscription_nominative"
+             tal:define="listeGroupe context/getInfosGroupe;
+                         mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant);">
+    <h2>
+        <tal:block i18n:translate="">Inscription(s) nominative(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:personnel condition="personnel">
+
+    <form id="js-LDAP_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_ajouter_nomminatives">
+
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Inscrire un(e) étudiant(e) depuis l'annuaire de l'université</h3>
+
+        <div class="panel callout radius">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <input type="text" id="input-groupe" name="username" />
+        <input type="hidden" name="typeGroupe" value="groupe" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setLDAPSearch()" />
+
+</tal:personnel>
+
+    <div id="js-named-insc_list">
+
+        <div class="panel callout radius"
+             tal:condition="not:listeGroupe"
+             i18n:translate="">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) inscrit(e) depuis l'annuaire de l'Université.</tal:block>
+        </div>
+
+<tal:listeGroupe condition="listeGroupe">
+
+         <h3 class="texte_icone icone_users"
+            i18n:translate="">Étudiant(s) inscrit(s) depuis l'annuaire de l'Université</h3>
+
+        <table class="listing">
+
+            <thead>
+                <tr>
+                    <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">ID étu.</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Courriel</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="list">
+                <tr tal:repeat="etudiant listeGroupe">
+                    <td class="name">
+                        <tal:block content="etudiant/nom" />
+                        <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                    </td>
+                    <td class="code" tal:content="etudiant/num_etu" />
+                    <td class="email"
+                        tal:condition="etudiant/email">
+                        <a tal:attributes="href string:mailto:${etudiant/email}"
+                           tal:content="etudiant/email" />
+                    </td>
+                    <td class="email"
+                        tal:condition="not:etudiant/email">
+                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-named-insc_list',['name','code','email'],'name','asc')" />
+
+</tal:listeGroupe>
+    </div>
+
+</metal:macro>
+
+
+
+<!--
+
+        Inscriptions nominatives : suppression
+
+
+-->
+<metal:macro define-macro="supprimer_inscription_nomminative">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Supprimer des inscriptions nominatives</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-LDAP_search" method="POST"
+          tal:define="listeGroupe context/getInfosGroupe"
+          tal:attributes="action string:${context/absolute_url}/cours_supprimer_nomminatives">
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Étudiant(s) inscrit(s) depuis l'annuaire</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:listeGroupe"
+             i18n:translate="">
+            Le cours n'est diffusé à aucun étudiant.
+        </div>
+
+        <tal:condition condition="listeGroupe">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les étudiant(e)s que vous souhaitez désinscrire, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_groupe:list" checked="checked" />
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </th>
+                    <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">ID étu.</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Courriel</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+                <tr tal:repeat="etudiant listeGroupe">
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="etu_groupe:list" checked="checked"
+                                   tal:attributes="id string:switch_reveal-${repeat/etudiant/index};
+                                                   value etudiant/sesame" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/etudiant/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td class="name">
+                        <tal:block content="etudiant/nom" />
+                        <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                    </td>
+                    <td class="code" tal:content="etudiant/num_etu" />
+                    <td class="email"
+                        tal:condition="etudiant/email">
+                        <a tal:attributes="href string:mailto:${etudiant/email}"
+                           tal:content="etudiant/email" />
+                    </td>
+                    <td tal:condition="not:etudiant/email">
+                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-LDAP_search',['name','code','email'],'name','asc')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setBatchSelect('js-LDAP_search',true)" />
+
+        <input type="hidden" name="typeGroupe" value="groupe" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </tal:condition>
+
+    </form>
+
+</metal:macro>
+
+
+
+<!--
+        Inscription par courriel : ajout / liste
+-->
+<metal:macro define-macro="ajouter-invitations-email"
+             tal:define="mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant);
+                         invitations context/getInfosInvitations;">
+    <h2>
+        <tal:block i18n:translate="">Inscription(s) extérieure(s) par courriel</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:isPersonnel condition="personnel">
+
+    <form id="js-mailRegistrationList" class="no_reveal_action itemAdder">
+
+        <h3>
+            <i class="fa fa-envelope-o no-pad"></i>
+            <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
+        </h3>
+
+        <div class="panel callout radius">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Pour constituer la liste des personnes à inscrire, renseignez les champs du formulaire et cliquez sur « Ajouter ».</tal:block>
+        </div>
+
+        <fieldset class="row">
+
+            <!--legend i18n:translate="">Liste des étudiant(e)s extérieur(e)s à inviter</legend-->
+            <div class="medium-3 small-12 columns">
+                <input name="lastname" class="medium-4 small-12 columns"
+                       type="text" required="required"
+                       pattern="^((?:[a-zA-Z]|[\s-'](?![\s-'])|[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]){2,60})$"
+                       placeholder="Nom"
+                       i18n:attributes="placeholder" />
+            </div>
+            <div class="medium-3 small-12 columns">
+                <input name="firstname" class="medium-4 small-12 columns"
+                       type="text" required="required"
+                       pattern="^((?:[a-zA-Z]|[\s-'](?![\s-'])|[áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ]){2,60})$"
+                       placeholder="Prénom"
+                       i18n:attributes="placeholder" />
+            </div>
+            <div class="medium-4 small-12 columns">
+                <input name="email" class="medium-4 small-12 columns"
+                       type="text" required="required"
+                       pattern="^(?![\.\-'_])(?:[a-zA-Z0-9]|[\.\-'_](?![\.\-'_]))+@[\w\.-]+\.[\w]{2,8}$"
+                       placeholder="Adresse de courriel"
+                       i18n:attributes="placeholder" />
+            </div>
+            <div class="medium-2 small-12 columns">
+                <button type="submit" class="button tiny expand radius">
+                    <i class="fa fa-plus-circle"></i>
+                    <tal:block i18n:translate="">Ajouter</tal:block>
+                </button>
+            </div>
+
+        </fieldset>
+
+        <table>
+            <tbody></tbody>
+        </table>
+
+        <div class="panel callout radius hide">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Vous pouvez retirer des élément de la liste en cliquant sur</tal:block> «
+             <i class="fa fa-minus-circle no-pad warning"></i> ».
+        </div>
+
+    </form>
+
+    <form id="js-mailRegistration" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+    <tal:comment replace="nothing"><!-- À garder pour le « Mode avancé »
+        <h3>
+            <i class="fa fa-envelope-o no-pad"></i>
+            <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
+        </h3>
+
+        <div tal:define="error errors/invitation | nothing;
+                         arch_class string:field;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="invitation">Liste des étudiant(e)s extérieur(e)s à inviter</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error"
+                 tal:content="error" />
+            <input type="text" id="invitation" name="invitation"
+                   placeholder="Prénom Nom &lt;compte@domaine.fr&gt;"
+                   tal:attributes="value request/invitation | nothing"/>
+        </div>
+
+        <div class="panel warning radius">
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <strong><tal:block i18n:translate="">Très important :</tal:block></strong><br /><br />
+            Utilisez la syntaxe suivante pour inscrire vos étudiants via le champ ci-dessus :
+            <pre>Prénom Nom &lt;compte@domaine.tld&gt;</pre>
+            Vous pouvez en inscrire plusieurs simultanément en les séparant par une virgule :
+            <pre>Prénom1 Nom1 &lt;compte1@domaine1.tld&gt;, Prénom2 Nom2 &lt;compte2@domaine2.tld&gt;, etc.</pre>
+        </div>
+    --></tal:comment>
+
+        <input type="hidden" name="invitation" />
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="typeGroupe" value="email" />
+        <input type="hidden" name="macro" value="macro_acces" />
+        <input type="hidden" name="formulaire" value="ajouter-invitations-email" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setMailRegistrationForm()" />
+
+</tal:isPersonnel>
+
+    <div class="panel callout radius"
+         tal:condition="not:invitations">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) extérieur(e) invité(e) par courriel.</tal:block>
+    </div>
+
+    <div id="js-courriel-insc_list"
+         tal:condition="invitations">
+
+        <h3 class="texte_icone icone_users"
+            tal:condition="invitations"
+            i18n:translate="">Étudiant(e)s extérieur(e)s inscrit(e)s par courriel</h3>
+
+        <table class="listing">
+
+            <thead>
+                <tr>
+                    <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Nom complet</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel'" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Courriel</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody class="list">
+                <tr tal:repeat="invitation invitations">
+                    <td class="name" tal:content="invitation/nom" />
+                    <td class="email" tal:content="invitation/email" />
+                </tr>
+            </tbody>
+
+        </table>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-courriel-insc_list',['name','email'],'name','asc')" />
+
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Inscription par courriel : suppression
+-->
+<metal:macro define-macro="supprimer-invitations-email">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer des inscriptions extérieures par courriel</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-mailRegistration" method="POST"
+          tal:define="invitations context/getInfosInvitations"
+          tal:attributes="action string:${context/absolute_url}/cours_supprimer_invitations">
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Étudiant(s) extérieur(s) inscrit(s)</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:invitations"
+             i18n:translate="">
+            Le cours n'est diffusé à aucun étudiant.
+        </div>
+
+    <tal:condition condition="invitations">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les étudiant(e)s que vous souhaitez désinscrire, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+        <tal:repeat repeat="invitation invitations">
+
+            <tr>
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="etu_email:list" checked="checked"
+                               tal:attributes="id string:switch_reveal-${repeat/invitation/index};
+                                               value invitation/email" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_reveal-${repeat/invitation/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left">
+                    <tal:block tal:content="invitation/nom" /> <em>&lt;<tal:block content="invitation/email" />&gt;</em>
+                </td>
+            </tr>
+
+        </tal:repeat>
+        </table>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="typeGroupe" value="email" />
+        <input type="hidden" name="macro" value="macro_acces" />
+        <input type="hidden" name="formulaire" value="ajouter-invitations-email" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </tal:condition>
+
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Accès libre
+-->
+<metal:macro define-macro="modifier-anonyme">
+
+    <h2>
+        <tal:block i18n:translate="">Accès libre</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:define define="acces context/getAcces;
+                        is_public python:context.test(acces == 'Public', 1, 0)">
+    <form tal:attributes="action string:${context/absolute_url}/cours_edit" method="POST">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">L'accès libre (public, anonyme…) permet la consultation du cours sans authentification pour toute personne possédant son adresse (URL).</tal:block>
+            <tal:comment replace="nothing"><!--
+            <tal:block i18n:translate="">Il s'agit d'un pré-requis pour une publication du cours sur iTunesU.</tal:block>
+            --></tal:comment>
+        </div>
+
+        <div class="panel warning radius">
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <tal:block i18n:translate="">L'accès public ne permet pas d'accéder aux activités pédagogiques : ces dernières ne sont accessibles qu'après authentification.</tal:block>
+        </div>
+
+        <div id="formControls" class="formControls">
+
+            <tal:comment replace="nothing"><!--
+            <div class="switch activator">
+                <input id="testSwitch" name="testSwitch" type="checkbox"
+                       tal:attributes="checked python:context.test(is_public, 'checked', '')" />
+                <label for="testSwitch">
+                    <span class="switch-on">Activé</span>
+                    <span class="switch-off">Désactivé</span>
+                </label>
+            </div>
+            --></tal:comment>
+
+            <input type="radio" name="acces" id="acces_public" value="Public"
+                   tal:attributes="checked is_public" />
+            <label for="acces_public" class="success"
+                   i18n:translate="">Activer</label>
+
+            <input type="radio" name="acces" id="acces_etudiants" value="Aux étudiants"
+                   tal:attributes="checked not:is_public" />
+            <label for="acces_etudiants" class="warning"
+                   i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" value="cours_acces_view" name="page" />
+        <input type="hidden" name="key" value="acces" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <div class="panel radius callout"
+         tal:condition="is_public">
+        Toute personne possédant l'adresse ci-dessous peut accéder au cours (les activités pédagogiques liées nécessiteront une authentification).
+        <div class="panel radius bkgrnd text-center">
+            <strong tal:content="string:${portal_state/portal_url}/public/${context/getLienCourt}"/>
+        </div>
+    </div>
+
+    </tal:define>
+
+</metal:macro>
+
+
+
+<!--
+        Activer accès par mot de passe
+-->
+<metal:macro define-macro="modifier-libre"
+             tal:define="mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant);">
+
+    <h2>
+        <tal:block i18n:translate="">Accès par mot de passe</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="activer-libre"
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:condition="personnel">
+
+        <div class="panel callout radius"
+            tal:define="motdepasse context/getLienMooc">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">L'accès par mot de passe permet à tous les étudiants possédant le mot de passe du cours de s'y inscrire pour le suivre.</tal:block>
+            <tal:isPassword condition="motdepasse">
+            <tal:block i18n:translate="">Les étudiants peuvent s'inscrire au cours en utilisant le mot de passe</tal:block>
+            « <strong tal:content="motdepasse" /> ».
+            </tal:isPassword>
+        </div>
+
+        <div id="formControls" class="formControls">
+
+            <input type="radio" name="libre" id="acces_public" value="True"
+                   tal:attributes="checked python:context.test(context.getLibre(), 'checked', '')"/>
+            <label for="acces_public" class="success" i18n:translate="">Activer</label>
+
+            <input type="radio" name="libre" id="acces_etudiants" value="False"
+                   tal:attributes="checked python:context.test(context.getLibre(), '', 'checked')"/>
+            <label for="acces_etudiants" class="warning" i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" value="macro_acces" name="macro" />
+        <input type="hidden" value="modifier-libre" name="formulaire" />
+        <input type="hidden" value="cours_acces_view" name="page" />
+        <input type="hidden" name="key" value="libre" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:define define="listeLibre context/getInfosLibre">
+
+    <div class="panel warning radius"
+         tal:condition="not:listeLibre"
+         i18n:translate="">Aucun étudiant ne s'est inscrit à ce cours en utilisant le mot de passe.</div>
+
+    <div id="js-PasswordRegistration"
+         tal:condition="listeLibre">
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Liste des participants inscrits par mot de passe</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="sort text-left" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">ID étu.</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Courriel</tal:block>
+                    </span>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="list">
+
+        <tal:repeat repeat="etudiant listeLibre">
+
+                <tr>
+                    <td class="name">
+                        <tal:block content="etudiant/nom" />
+                        <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                    </td>
+                    <td class="code" tal:content="etudiant/num_etu" />
+                    <td class="email">
+                        <a tal:attributes="href string:mailto:${etudiant/email}" tal:content="etudiant/email" />
+                    </td>
+                </tr>
+
+        </tal:repeat>
+
+            </tbody>
+        </table>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-PasswordRegistration',['name','code','email'],'name','asc')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setBatchSelect('js-PasswordRegistration',true)" />
+
+    </div>
+    </tal:define>
+</metal:macro>
+
+
+<!--
+        Supprimer participants accès par mot de passe
+-->
+<metal:macro define-macro="supprimer-participants_password">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer des participants de l'accès par mot de passe</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius"
+         tal:define="motdepasse context/getLienMooc"
+         tal:condition="motdepasse">
+        <p><tal:block i18n:translate="">Les étudiants peuvent s'inscrire au cours en utilisant le mot de passe</tal:block>
+            « <strong tal:content="motdepasse" /> ».</p>
+    </div>
+
+    <tal:define define="listeLibre context/getInfosLibre">
+
+    <div class="panel warning radius"
+         tal:condition="not:listeLibre"
+         i18n:translate="">Aucun étudiant ne s'est inscrit à ce cours en utilisant le mot de passe.</div>
+
+    <form method="POST" id="js-PasswordRegistration" name="modifier-libre"
+          tal:condition="listeLibre"
+          tal:attributes="action string:${context/absolute_url}/cours_modifier_groupe">
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Liste des participants inscrits par mot de passe</h3>
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les étudiant(e)s que vous souhaitez désincrire du cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="checkall show-for-medium-up">
+                    <div class="switch tiny round">
+                        <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_libre:list" checked="checked" />
+                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                               i18n:attributes="title"></label>
+                    </div>
+                </th>
+                <th class="sort text-left" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">ID étu.</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Courriel</tal:block>
+                    </span>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="list">
+
+        <tal:repeat repeat="etudiant listeLibre">
+
+                <tr>
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="etu_libre:list" checked="checked"
+                                   tal:attributes="id string:switch_reveal-${repeat/etudiant/index};
+                                                   value etudiant/sesame" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/etudiant/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td class="name">
+                        <tal:block content="etudiant/nom" />
+                        <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                    </td>
+                    <td class="code" tal:content="etudiant/num_etu" />
+                    <td class="email">
+                        <a tal:attributes="href string:mailto:${etudiant/email}" tal:content="etudiant/email" />
+                    </td>
+                </tr>
+
+        </tal:repeat>
+
+            </tbody>
+        </table>
+
+        <input type="hidden" name="typeGroupe" value="libre" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-PasswordRegistration',['name','code','email'],'name','asc')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setBatchSelect('js-PasswordRegistration',true)" />
+    </form>
+    </tal:define>
+</metal:macro>
+
+
+<!--
+
+        Inscription par mot de passe
+-->
+<metal:macro define-macro="inscription-cours">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Inscription au cours par mot de passe</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="inscription_cours" id="inform"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+        <div tal:define="error errors/motdepasse | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="motdepasse" class="texte_icone icone_information" i18n:translate="">
+                Mot de passe du cours :
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <input type="text" name="motdepasse" required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/motdepasse | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_acces" />
+        <input type="hidden" name="formulaire" value="inscription-cours" />
+        <input type="hidden" name="idcours" tal:attributes="value request/idcours" />
+        <input type="hidden" name="createur" tal:attributes="value request/createur" />
+        <input type="hidden" name="auteur" tal:attributes="value request/auteur" />
+        <input type="hidden" name="memberid" tal:attributes="value user/getId" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+
+
+<!--
+
+        Gestion de l'auteur
+
+
+-->
+<metal:macro define-macro="modifier-auteur">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier l'auteur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius warning">
+        <tal:block i18n:translate=""></tal:block>
+        <strong><tal:block i18n:translate="">Attention :</tal:block></strong>
+        <tal:block i18n:translate="">vous allez changer l'auteur du cours affiché aux étudiants. Le créateur n'est pas modifiable.</tal:block>
+        <tal:define define="isLDAP context/isLDAP;
+                            auteurPrincipal context/getAuteur;
+                            createur context/getCreateur;
+                            baseAnnuaire context/getBaseAnnuaire">
+            <tal:condition condition="isLDAP">
+            <div>
+                <strong><tal:block i18n:translate="">Auteur actuel :</tal:block></strong>
+                <a tal:attributes="href python:context.getFicheAnnuaire(auteurPrincipal, baseAnnuaire)"
+                   target="_blank"
+                   tal:content="auteurPrincipal/fullname">Fiche</a>
+            </div>
+            <div>
+                <strong><tal:block i18n:translate="">Créateur du cours (non modifiable) :</tal:block></strong>
+                <a tal:attributes="href python:context.getFicheAnnuaire(createur, baseAnnuaire)"
+                   target="_blank"
+                   tal:content="string:${createur/fullname}">Fiche</a>
+            </div>
+            </tal:condition>
+            <tal:condition condition="not:isLDAP">
+            <div>
+                <strong><tal:block i18n:translate="">Auteur actuel :</tal:block></strong>
+                <tal:block tal:content="auteurPrincipal/fullname" />
+            </div>
+            <div>
+                <strong><tal:block i18n:translate="">Créateur du cours (non modifiable) :</tal:block></strong>
+                <tal:block tal:content="string:${createur/fullname}" />
+            </div>
+            </tal:condition>
+        </tal:define>
+    </div>
+
+    <form id="js-authorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_modifier_auteur">
+
+        <h3>
+            <i class="fa fa-search"></i><tal:block i18n:translate="">Recherchez un personnel de l'Université dans l'annuaire</tal:block>
+        </h3>
+        <label for="input-auteurs"
+               i18n:translate="">Nom ou identifiant</label>
+        <input type="text" id="input-auteurs" name="username" />
+
+        <input type="hidden" name="auteurs" value="auteur" />
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">L'auteur actuel sera remplacé.</tal:block>
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setAuthorMod()" />
+
+    </form>
+
+</metal:macro>
+
+
+
+<!--
+
+        Co-auteurs : ajout
+
+
+-->
+<metal:macro define-macro="ajouter-coauteurs">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Ajouter des co-auteurs</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Un co-auteur du cours dispose des droits de modifications sur la totalité de cours.</tal:block>
+    </div>
+    <form id="js-coAuthorMod" method="POST"
+          tal:define="mode_etudiant request/mode_etudiant | nothing;
+                      personnel python:context.isPersonnel(user, mode_etudiant);"
+          tal:attributes="action string:${context/absolute_url}/cours_ajouter_coAuteurs"
+          tal:condition="personnel">
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Recherchez un personnel de l'Université dans l'annuaire</h3>
+        <div class="field">
+            <label for="input-coauteurs"
+                   i18n:translate="">Nom ou identifiant</label>
+            <input type="text" id="input-coauteurs" name="username" />
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setCoAuthorReaderMod()" />
+
+    </form>
+
+<tal:define define="coAuteurs context/getCoAuteursCours">
+
+    <div class="panel callout radius"
+         tal:condition="not:coAuteurs">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Ce cours n'a aucun co-auteur.</tal:block>
+    </div>
+
+    <tal:isCoAuteurs condition="coAuteurs">
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Co-auteurs de ce cours</h3>
+
+    <div class="panel radius bkgrnd"
+         tal:condition="coAuteurs">
+        <tal:repeat repeat="coAuteur coAuteurs">
+            <tal:define define="is_last repeat/coAuteur/end;
+                                itemNbr repeat/coAuteur/length;">
+                <tal:block tal:content="coAuteur/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                <tal:comment replace="nothing"><!--
+                    Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                --></tal:comment>
+
+            </tal:define>
+        </tal:repeat>
+    </div>
+
+    </tal:isCoAuteurs>
+
+</tal:define>
+
+</metal:macro>
+
+
+
+<!--
+
+        Co-auteurs : suppression
+
+
+-->
+<metal:macro define-macro="supprimer-coauteurs">
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Supprimer des co-auteurs</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-coAuthorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_supprimer_coAuteurs"
+          tal:define="coAuteurs context/getCoAuteursCours">
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Co-auteurs</h3>
+        <div class="panel callout radius"
+             tal:condition="not:coAuteurs"
+             i18n:translate="">
+            Aucun
+        </div>
+
+        <tal:condition condition="coAuteurs">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les co-auteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+            <tr tal:repeat="coAuteur coAuteurs">
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="auteur-actu:list" checked="checked"
+                               tal:attributes="id string:switch_reveal-${repeat/coAuteur/index};
+                                               value coAuteur/id" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_reveal-${repeat/coAuteur/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left" tal:content="coAuteur/fullname" />
+            </tr>
+        </table>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+        </tal:condition>
+    </form>
+
+</metal:macro>
+
+
+
+<!--
+
+        Lecteurs enseignants : ajout
+
+
+-->
+<metal:macro define-macro="ajouter-lecteurs"
+             tal:define="mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant);">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Lecteur(s) enseignant(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Un lecteur enseignant est considéré comme un étudiant du cours. Il ne peut pas modifier le cours mais peut répondre aux activités à l'inverse d'un co-auteur.</tal:block>
+    </div>
+
+    <form id="js-coAuthorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_ajouter_lecteurs"
+          tal:condition="personnel">
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Rechercher un personnel de l'Université dans l'annuaire</h3>
+        <div class="field">
+            <label for="input-coauteurs"
+                   i18n:translate="">Nom ou identifiant</label>
+            <input type="text" id="input-coauteurs" name="username" />
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+<tal:define define="lecteurs context/getCoLecteursCours">
+
+    <div class="panel callout radius"
+         tal:condition="not:lecteurs">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Ce cours n'est diffusé auprès d'aucun(e) lecteur(trice) enseignant(e).</tal:block>
+    </div>
+
+    <tal:isLecteurs condition="lecteurs">
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Lecteur(s) enseignant(s) de ce cours</h3>
+
+    <div class="panel radius bkgrnd">
+        <tal:repeat repeat="lecteur lecteurs">
+            <tal:define define="is_last repeat/lecteur/end;
+                                itemNbr repeat/lecteur/length;">
+                <tal:block tal:content="lecteur/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                <tal:comment replace="nothing"><!--
+                    Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                --></tal:comment>
+
+            </tal:define>
+        </tal:repeat>
+    </div>
+
+    </tal:isLecteurs>
+
+</tal:define>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setCoAuthorReaderMod()" />
+
+</metal:macro>
+
+
+
+<!--
+
+        Lecteurs enseignants : suppression
+
+
+-->
+<metal:macro define-macro="supprimer-lecteurs">
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Supprimer des lecteurs enseignants</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-coAuthorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/cours_supprimer_lecteurs"
+          tal:define="lecteurs context/getCoLecteursCours">
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Lecteurs</h3>
+        <div class="panel callout radius"
+             tal:condition="not:lecteurs"
+             i18n:translate="">
+            Aucun
+        </div>
+
+        <tal:condition condition="lecteurs">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les lecteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+            <tr tal:repeat="lecteur lecteurs">
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="auteur-actu:list" checked="checked"
+                               tal:attributes="id string:switch_reveal-${repeat/lecteur/index};
+                                               value lecteur/id" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_reveal-${repeat/lecteur/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left" tal:content="lecteur/fullname" />
+            </tr>
+        </table>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+        </tal:condition>
+    </form>
+
+</metal:macro>
+
+
+
+<!--
+
+        Choix de la catégorie iTunesU
+
+
+-->
+<metal:macro define-macro="modifier-itunesu">
+
+    <h2>
+        <tal:block i18n:translate="">Demander la publication dans iTunesU</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius text-justify"
+         tal:condition="context/isDiffuseriTunesU">
+        <tal:block i18n:translate="">
+            Votre cours est actuellement diffusé sur iTunesU dans la catégorie :
+        </tal:block>
+        <br/><br/><strong tal:content="context/getAffCatiTunesUCours"/><br/><br/>
+        <tal:block i18n:translate="">
+            Pour demander la modification de la catégorie, merci de <a tal:attributes="href string:mailto:${context/email_from_address}">contacter l'administrateur du site.</a>
+        </tal:block>
+    </div>
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};"
+          tal:condition="not:context/isDiffuseriTunesU">
+
+        <div  tal:define="error errors/catiTunesU | nothing;
+                          arch_class string:field;
+                          iTunesU context/getPropertiesCatiTunesU"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <div class="panel callout radius text-justify">
+                Votre cours n'est actuellement pas diffusé sur iTunesU. Choisissez une catégorie iTunesU et cliquez sur "Demander" pour envoyer une demande à l'administrateur du site. Vous serez averti de la publication ou du refus par courriel.
+            </div>
+
+            <label for="catiTunesU" i18n:translate="">Catégorie iTunesU</label>
+
+            <div class="fieldErrorBox"
+                 tal:condition="error"
+                 tal:content="error" />
+
+            <select name="catiTunesU"
+                    tal:define="dicoLibCatITunesU iTunesU/dicoLibCatITunesU;
+                                catITunesU iTunesU/catITunesU;
+                                coursCat context/getCatiTunesU">
+                <option value=""
+                        i18n:translate="">Sélectionner une catégorie iTunesU</option>
+                <tal:repeat repeat="idMainCat iTunesU/ordreCatiTunesU">
+                <optgroup tal:attributes="label python:dicoLibCatITunesU[idMainCat]"
+                          tal:define="subCatiTunesU python:catITunesU[idMainCat]">
+                    <tal:repeat repeat="idSubCat subCatiTunesU">
+                    <option tal:attributes="value idSubCat;
+                                            selected python:context.test(coursCat == idSubCat, 'selected', '')"
+                            tal:content="python:dicoLibCatITunesU[idSubCat]"/>
+                    </tal:repeat>
+                </optgroup>
+                </tal:repeat>
+            </select>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" value="cours_acces_view" name="page" />
+        <input type="hidden" name="key" value="catiTunesU" />
+        <input type="hidden" name="macro" value="macro_acces" />
+        <input type="hidden" name="formulaire" value="modifier-itunesu" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</metal:macro>
+
+
+</metal:content-core>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Blocs de messages sur la page d'accueil des utilisateurs
+-->
+<metal:macro define-macro="gestion_blocs_messages">
+
+    <h2>
+        <i class="fa fa-bullhorn"></i><tal:block i18n:translate="">Configuration des blocs de messages</tal:block>
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigMessages"
+          tal:define="bie context/getPropertiesMessages">
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer le bloc de message d'information pour tous les utilisateurs
+                    </label>
+                    <input type="radio" name="activer_message_general" id="activer_message_general" value="1"
+                           tal:attributes="checked python:context.test(bie['activer_message_general'], 'checked', '')" />
+                    <label for="activer_message_general" class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_message_general" id="desactiver_message_general" value="0"
+                           tal:attributes="checked python:context.test(not bie['activer_message_general'], 'checked', '')" />
+                    <label for="desactiver_message_general" class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="message_general" i18n:translate="">
+                        Message à destination de tous les utilisateurs
+                    </label>
+                    <span class="discreet" i18n:translate="message_general_help">
+                        Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants, de la page "Mon Espace" pour les enseignants.
+                    </span>
+                    <textarea id="message_general" name="message_general" rows="5"><tal:replace replace="bie/message_general | nothing" /></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer le bloc de message d'information pour les étudiants
+                    </label>
+                    <input type="radio" name="activer_bie" id="activer_bie" value="1"
+                           tal:attributes="checked python:context.test(bie['activer_bie'], 'checked', '')" />
+                    <label for="activer_bie" class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_bie" id="desactiver_bie" value="0"
+                           tal:attributes="checked python:context.test(not bie['activer_bie'], 'checked', '')" />
+                    <label for="desactiver_bie" class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="bie_message" i18n:translate="bie_message">
+                        Message à destination des étudiants
+                    </label>
+                    <span class="discreet" i18n:translate="bie_message_help">Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants.</span>
+                    <textarea id="bie_message" name="bie_message" rows="5"><tal:replace replace="bie/bie_message | nothing" /></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer le bloc de message d'information pour les enseignants
+                    </label>
+                    <input type="radio" name="activer_message_enseignant" id="activer_message_enseignant" value="1"
+                           tal:attributes="checked python:context.test(bie['activer_message_enseignant'], 'checked', '')" />
+                    <label for="activer_message_enseignant" class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_message_enseignant" id="desactiver_message_enseignant" value="0"
+                           tal:attributes="checked python:context.test(not bie['activer_message_enseignant'], 'checked', '')" />
+                    <label for="desactiver_message_enseignant" class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="message_enseignant" i18n:translate="message_enseignant">
+                        Message à destination des enseignants
+                    </label>
+                    <span class="discreet" i18n:translate="message_enseignant_help">
+                        Ce contenu HTML sera affiché en bas de la page « Mon espace » des enseignants.
+                    </span>
+                    <textarea id="message_enseignant" name="message_enseignant" rows="5"><tal:replace replace="bie/message_enseignant | nothing" /></textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Connexion au serveur de communication NodeJS
+-->
+<metal:macro define-macro="gestion_communication">
+
+    <h2>
+        <i class="fa fa-sun-o"></i><tal:block i18n:translate="">Configuration du module de connexion au serveur de communication NodeJS</tal:block>
+    </h2>
+    <div class="row"
+         tal:define="communication context/getPropertiesCommunication">
+        <metal:macro use-macro="context/macro_formulaire_communication/macros/formulaire_communication">
+            Macro de gestion
+        </metal:macro>
+    </div>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

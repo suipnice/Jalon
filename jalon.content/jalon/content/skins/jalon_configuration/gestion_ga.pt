@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_ga">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+
+        <h2>
+            <i class="fa fa-line-chart"></i><tal:block i18n:translate="">Configuration des statistiques via Google Analytics</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigGA"
+              tal:define="ga context/getPropertiesGA">
+            <div class="panel callout radius">
+                <label i18n:translate="">
+                    Activer les statistiques dans Google Analytics
+                </label>
+                <input type="radio" name="activer_ga" id="activer_ga" value="1"
+                       tal:attributes="checked python:context.test(ga['activer_ga'], 'checked', '')" />
+                <label for="activer_ga" class="activer">
+                    <i class="fa fa-check"></i>
+                    <tal:block i18n:translate="">Activé</tal:block>
+                </label>
+                <input type="radio" name="activer_ga" id="desactiver_ga" value="0"
+                       tal:attributes="checked python:context.test(not ga['activer_ga'], 'checked', '')" />
+                <label for="desactiver_ga" class="desactiver">
+                    <i class="fa fa-times"></i>
+                    <tal:block i18n:translate="">Désactivé</tal:block>
+                </label>
+            </div>
+            <div class="panel callout radius">
+                <label for="ga_id_account" i18n:translate="ga_id_account">
+                    Identifiant Google Analytics
+                </label>
+                <span class="discreet">Exemple : UA-12345678-1</span>
+                <input type="text" id="ga_id_account" name="ga_id_account"
+                       maxlength="255" size="30"
+                       tal:attributes="value ga/ga_id_account | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label for="ga_id_domain" i18n:translate="ga_id_domain">
+                    Nom de domaine du site
+                </label>
+                <span class="discreet">Exemple : unice.fr</span>
+                <input type="text" id="ga_id_domain" name="ga_id_domain"
+                       maxlength="255" size="30"
+                       tal:attributes="value ga/ga_id_domain | nothing" />
+            </div>
+            <div class="panel callout radius">
+                <label for="ga_cryptage" i18n:translate="ga_cryptage">
+                    Clef de cryptage
+                </label>
+                <span class="discreet">Une clé de cryptage des identifiants sera créée. Pensez à sauvegarder le fichier, exemple : /var/secret</span>
+                <input type="text" id="ga_cryptage" name="ga_cryptage"
+                       maxlength="255" size="30"
+                       tal:attributes="value ga/ga_cryptage | nothing" />
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

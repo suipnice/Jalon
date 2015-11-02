@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="fr"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="plan_li">
+    <div id="archetypes-fieldname-description" class="ArchetypesStringWidget">
+        <label for="position">Positionner dans le plan</label>
+        <tal:define define="elements_titre context/getPlan;
+                            parent_id string:racine;">
+            <ul>
+                <li>
+                    <input type="radio" name="position" value="debut_racine"> Au début du plan
+                </li>
+                <li>
+                    <input type="radio" name="position" value="fin_racine" checked="checked"> À la fin du plan
+                </li>
+                <metal:macro define-macro="affichage_plan_li">
+                <tal:repeat repeat="element elements_titre">
+                    <tal:condition condition="python:element['idElement'].startswith('Titre')">
+                    <li>
+                        <input type="radio" name="position" tal:attributes="value string:${parent_id}*-*${element/idElement}"/>
+                        <tal:replace replace="python:context.getElementCours(element['idElement'])['titreElement']"/>
+                        <tal:condition condition="element/listeElement | nothing">
+                            <tal:define define="elements_titre element/listeElement;
+                                                parent_id string:${parent_id}*-*${element/idElement}">
+                                <ul>
+                                <metal:macro use-macro="context/arbo_plan/macros/affichage_plan_li"/>
+                                </ul>
+                            </tal:define>
+                        </tal:condition>
+                    </li>
+                    </tal:condition>
+                </tal:repeat>
+                </metal:macro>
+            </ul>
+        </tal:define>
+    </div>
+</metal:macro>
+
+<metal:macro define-macro="plan_select">
+
+    <div id="archetypes-fieldname-description" class="field ArchetypesStringWidget">
+
+        <label for="position">Positionner dans le plan</label>
+        <tal:define define="elements_titre context/getPlan;
+                            parent_id string:racine;
+                            position python:0">
+
+            <select id="position" name="position">
+                <option value="debut_racine">
+                    Au début du plan
+                </option>
+                <option value="fin_racine" selected="selected">
+                    À la fin du plan
+                </option>
+                <optgroup label="Dans :">
+                    <metal:macro define-macro="affichage_plan_select">
+                    <tal:repeat repeat="element elements_titre">
+                        <tal:define define="position python:position + 1">
+                        <tal:condition condition="python:element['idElement'].startswith('Titre')">
+                        <option tal:attributes="value string:${parent_id}*-*${element/idElement}">
+                            <tal:repeat repeat="tmp python:range(position - 1)">
+                                &nbsp;&nbsp;
+                            </tal:repeat>
+                            <tal:replace replace="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(element['idElement'])['titreElement']))"/>
+                            <tal:define define="elements_titre element/listeElement;
+                                                parent_id string:${parent_id}*-*${element/idElement}">
+                                <metal:macro use-macro="context/arbo_plan/macros/affichage_plan_select"/>
+                            </tal:define>
+                        </option>
+                        </tal:condition>
+                        </tal:define>
+                    </tal:repeat>
+                    </metal:macro>
+                </optgroup>
+            </select>
+
+        </tal:define>
+
+    </div>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

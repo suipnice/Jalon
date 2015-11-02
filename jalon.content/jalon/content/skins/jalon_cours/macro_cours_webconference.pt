@@ -1,0 +1,184 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="webconferences_liste">
+
+    <tal:define define="espace request/espace | nothing;
+                        folderContents python:context.getContents(subject=subjects, typeR='JalonConnect', authMember=user.getId(), repertoire=espace);">
+
+            <div class="panel callout radius"
+                 tal:condition="not:folderContents"
+                 i18n:translate="">
+                Aucun élément ne correspond à la sélection d'étiquettes
+            </div>
+
+        <tal:listing condition="folderContents">
+
+            <table summary="Liste des conférences"
+                   tal:define="authMember user/getId;
+                               tags python:context.getTag(authMember, espace);
+                               planPlat context/getPlanPlat | nothing">
+                <thead>
+                    <tr>
+                        <th class="checkall show-for-medium-up">
+                            <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                                <label for="switch-all"></label>
+                            </div>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Date</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Titre / Adresse</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="length" title="Trier selon la durée"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Durée</tal:block>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                <tal:entry repeat="item folderContents">
+                    <tr>
+                        <td class="show-for-medium-up"
+                            tal:define="attached python:context.isChecked(item['getId'].replace('.', '*-*'), formulaire, planPlat)">
+                            <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                                 tal:condition="not:attached"
+                                 i18n:attributes="title">
+                                <input type="checkbox" name="paths:list"
+                                       tal:attributes="id string:switch-${repeat/item/index};
+                                                       value python:'*-*'.join([item.getId, espace, item.Title.decode('utf-8'), user.getId()]);
+                                                       data-res_name python:here.getShortText(item['Title']);
+                                                       data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '')" />
+                                <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                            </div>
+                            <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+                        </td>
+                        <td class="date show-for-medium-up">
+                            <span class="hide" tal:content="python:context.getConnectDate(item['getDateAjout'], True)" />
+                            <span tal:content="python:context.getConnectDate(item['getDateAjout'])" />
+                        </td>
+                        <td class="title">
+                            <span class="hide" tal:content="item/Title" />
+                            <strong tal:content="item/Title" />
+                            <span class="show-for-medium-up"
+                                  tal:content="item/getUrlEnr" />
+                        </td>
+                        <td class="length show-for-medium-up" tal:content="item/getDuree" />
+                    </tr>
+                </tal:entry>
+                </tbody>
+            </table>
+
+        <tal:condition condition="folderContents">
+            <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+                Macro d'affichage de la liste en fonction de la variable espace
+            </metal:macro>
+        </tal:condition>
+
+            <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                               script2 string:setSortableList('js-list-ressource',['date','title','length'],'date','desc')">
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+            </tal:define>
+
+            <script charset="UTF-8"
+                    tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                    tal:content="structure buffer" />
+
+        </tal:listing>
+
+    </tal:define>
+
+</metal:macro>
+
+
+<metal:macro define-macro="acces-webconference">
+
+  <div id="listingCoursWebconferences">
+        <h2 class="texte_icone icone_liste" i18n:translate="">Liste des salles virtuelles</h2>
+
+     <tal:block condition="not:webconferences">
+        <div class="listing_vide" i18n:translate="">Aucun élément</div>
+     </tal:block>
+
+        <table class="listing"
+               tal:condition="webconferences">
+        <thead>
+        <tr>
+            <th class="icone"
+                tal:condition="personnel">&#x0041;</th>
+            <th title="Cliquer pour trier selon le titre" i18n:attributes="title" i18n:translate="" class="fullwidth">Titre</th>
+            <th i18n:translate="" class="nosort">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tal:webconferences repeat="webconference webconferences">
+          <tr tal:define="oddrow repeat/webconference/odd"
+              tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
+
+            <td tal:condition="personnel">
+              <tal:activer condition="not:webconference/active">
+              <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&formulaire=activer-webconference&idwebconference=${webconference/id}"
+                 title="Activer la wébconférence"
+                 class="bouton showmore iconeseule icone_invisible">
+                <span i18n:translate="">Afficher</span>
+              </a>
+              </tal:activer>
+              <tal:desactiver condition="webconference/active">
+              <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&formulaire=desactiver-webconference&idwebconference=${webconference/id}"
+                 title="Désactiver la wébconférence"
+                 class="bouton showmore iconeseule icone_visible">
+                <span i18n:translate="">Masquer</span>
+              </a>
+              </tal:desactiver>
+            </td>
+
+            <td tal:content="webconference/title" class="fullwidth"/>
+
+            <td>
+              <a tal:attributes="href webconference/urlSession"
+              	 class="bouton small lien_actualiser bouton_icone icone_connexion"
+              	 i18n:translate=""
+              	 target="_new">
+                Entrer dans la salle virtuelle
+              </a>
+            </td>
+          </tr>
+          </tal:webconferences>
+        </tbody>
+        </table>
+  </div>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

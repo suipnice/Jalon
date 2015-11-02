@@ -1,0 +1,113 @@
+type=datalist
+modele_jalon=Texte_a_Trou_M
+textarea='data'
+:Questions mixtes incorporées dans un texte aléatoire.
+<p>Cet exercice présente des textes où des champs à réponse sont insérés.</p>
+<p>Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.<br/>
+Une syntaxe facile permet d'incorporer les champs de choix multiples et les réponses libres dans les textes.</p>
+<p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+:%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
+Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
+(Ce sont les lignes qui commencent par un ':'.)
+Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
+:\title{$$title$$}
+:\author{$$author$$}
+:\email{$$email$$}
+:Données principales.
+<p>Tapez plusieurs textes à trous, en les séparant par un point-virgule (;).<br/>
+Attention : un paragraphe contenant un point-virgule sera scindé en 2 textes. <br/>
+Les questions à poser (les trous) doivent être mises entre une paire de double-point d'interrogation '??'.<br />
+La question est un choix multiple s'il contient plusieurs objets séparés par des virgules. Sinon c'est une réponse libre, numérique s'il s'agit d'un nombre, ou textuel sinon.<br />
+Dans ce dernier cas, l'analyse se fait par symtext si la réponse donnée contient un trait vertical '|'.</p><p>
+On peut poser plusieurs questions dans une même phrase (jusqu'à 20).<br/>
+Si un choix multiple accepte plusieurs réponses correctes possibles, mettez toutes les bonnes réponses (synonymes) séparées par un trait vertical '|'.</p>
+$embraced_randitem 
+\text{data=$$data$$}
+:Texte affiché avant la question. Balises html admises. Peut être vide.
+$embraced_randitem
+\text{pre=$$pre$$}
+:Texte affiché après la question. Balises html admises. Peut être vide.
+ $embraced_randitem
+\text{post=$$post$$}
+:Feedback General
+Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
+\text{feedback_general=$$feedback_general$$}
+:Type d'analyse des réponses libres.
+Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
+\text{type_rep=$$type_rep$$}
+:%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\precision{10000}
+\text{data=wims(singlespace \data)}
+\text{data=wims(nonempty rows \data)}
+\text{data=randomrow(\data)}
+\text{data=wims(embraced randitem \data)}
+\text{data=slib(text/cutchoice2 \data)}
+\integer{qs=min(20,floor(rows(\data)/2))}
+\text{types=}
+\text{options=}
+\text{lengths=}
+\text{good=}
+\text{field=}
+\for{i=1 to \qs}{
+ \text{f=\data[2*\i;]}
+ \integer{test=items(\f)}
+ \if{\test>1}{
+  \text{g=\f[1]}
+  \text{f=wims(sort items \f)}
+  \text{g=positionof(\g,\f)}
+  \text{good=\good\g;,}
+  \text{field=\field\f;}
+  \text{types=\types[]menu,}
+  \text{lengths=\lengths,}}{
+  \text{good=\good\f,}
+  \integer{c=wims(charcnt \f)}
+  \text{field=\field;}
+  \real{test=\f}
+  \if{\test issametext NaN}{
+   \text{test=wims(translate internal | to , in \f)}
+   \integer{c=wims(charcnt \test[1])}
+   \integer{c=min(50,max(6,\c+6))}
+   \text{lengths=\lengths\c,}
+   \text{types=\types[]\type_rep,}
+   \text{options=| isin \f?\options[]symtext}  }{
+   \integer{c=max(5,\c+2)}
+   \text{lengths=\lengths\c,} 
+   \text{f1=wims(nospace \f)}
+   \text{test=wims(text select -0123456789 in \f)}
+   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}  } }
+ \text{options=\options,}}
+\text{pre=wims(embraced randitem \pre)}
+\text{post=wims(embraced randitem \post)}
+\text{qlist=wims(makelist reply x for x=1 to \qs)}
+\steps{\qlist}
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
+\statement{
+<p>\pre</p>
+\data[1;]
+\for{k=1 to \qs}{
+\embed{r \k,\lengths[\k]} \data[2*\k+1;]}
+<p>\post</p>}
+:%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
+\answer{Champ 1}{\good[1]\field[1;]}{type=\types[1]}{option=\options[1]}
+\answer{Champ 2}{\good[2]\field[2;]}{type=\types[2]}{option=\options[2]}
+\answer{Champ 3}{\good[3]\field[3;]}{type=\types[3]}{option=\options[3]}
+\answer{Champ 4}{\good[4]\field[4;]}{type=\types[4]}{option=\options[4]}
+\answer{Champ 5}{\good[5]\field[5;]}{type=\types[5]}{option=\options[5]}
+\answer{Champ 6}{\good[6]\field[6;]}{type=\types[6]}{option=\options[6]}
+\answer{Champ 7}{\good[7]\field[7;]}{type=\types[7]}{option=\options[7]}
+\answer{Champ 8}{\good[8]\field[8;]}{type=\types[8]}{option=\options[8]}
+\answer{Champ 9}{\good[9]\field[9;]}{type=\types[9]}{option=\options[9]}
+\answer{Champ 10}{\good[10]\field[10;]}{type=\types[10]}{option=\options[10]}
+\answer{Champ 11}{\good[11]\field[11;]}{type=\types[11]}{option=\options[11]}
+\answer{Champ 12}{\good[12]\field[12;]}{type=\types[12]}{option=\options[12]}
+\answer{Champ 13}{\good[13]\field[13;]}{type=\types[13]}{option=\options[13]}
+\answer{Champ 14}{\good[14]\field[14;]}{type=\types[14]}{option=\options[14]}
+\answer{Champ 15}{\good[15]\field[15;]}{type=\types[15]}{option=\options[15]}
+\answer{Champ 16}{\good[16]\field[16;]}{type=\types[16]}{option=\options[16]}
+\answer{Champ 17}{\good[17]\field[17;]}{type=\types[17]}{option=\options[17]}
+\answer{Champ 18}{\good[18]\field[18;]}{type=\types[18]}{option=\options[18]}
+\answer{Champ 19}{\good[19]\field[19;]}{type=\types[19]}{option=\options[19]}
+\answer{Champ 20}{\good[20]\field[20;]}{type=\types[20]}{option=\options[20]}
+\feedback{1=1}{<p class='feedback'>\feedback_general</p>}

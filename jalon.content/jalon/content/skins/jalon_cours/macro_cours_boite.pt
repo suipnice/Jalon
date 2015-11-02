@@ -1,0 +1,1498 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Modifier les infos d'une boite de dépôts
+-->
+<metal:macro define-macro="modifier-boite-info">
+    <tal:define define="menu request/menu | nothing;">
+
+        <h2 i18n:translate="">
+            <tal:block i18n:translate="">Modifier les informations de la boite de dépôt</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <form id="js-modifDepot" method="post"
+              tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+            <div id="archetypes-fieldname-title"
+                    tal:define="error errors/title | nothing;
+                                arch_class string:field ArchetypesStringWidget;"
+                    tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+                <label for="title" i18n:translate="">Titre</label>
+                <div class="fieldErrorBox"
+                       tal:condition="error"
+                       tal:content="error"/>
+                <input type="text" id="title" name="title" required="required" placeholder="Saisie obligatoire" maxlength="255" size="30"
+                       tal:attributes="value request/title | context/Title"
+                       i18n:attributes="placeholder"/>
+            </div>
+
+            <div id="archetypes-fieldname-description"
+                 tal:define="error errors/description | nothing;"
+                 class="field">
+
+                <label for="description" i18n:translate="">Consigne</label>
+                <textarea id="description" name="description" rows="5"><tal:replace replace="request/description | context/Description"/></textarea>
+            </div>
+
+            <input type="hidden" name="form.submitted" value="1"/>
+            <input type="hidden" value="macro_cours_boite" name="macro"/>
+            <input type="hidden" name="formulaire" value="modifier-boite-info"/>
+            <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu"/>
+
+            <div class="formControls">
+                <button type="submit" class="button small"
+                        name="form.button.save">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                </button>
+            </div>
+
+        </form>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setRevealFormNewPage('js-modifDepot','reveal-main')" />
+
+    </tal:define>
+</metal:macro>
+
+
+<!--
+        Modifier les dates d'une boite de dépôts
+-->
+<metal:macro define-macro="modifier-boite-date">
+<tal:define define="menu request/menu | nothing">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier les informations de la boite de dépôt</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-modBoxDate" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="formname string:modifier-boite-date">
+
+        <div class="text-center" i18n:translate="">
+            Date limite de dépôt affichée aux étudiants
+        </div>
+
+        <div id="archetypes-fieldname-dateDepot"
+                tal:define="error errors/dateDepot | nothing;
+                            arch_class string:field ArchetypesStringWidget;
+                            inputname string:dateDepot;
+                            inputvalue request/dateDepot | context/getDateDepot"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+
+            <div class="formControls">
+                <input id="datetime-depot" name="datetime-depot" type="datetime"
+                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                       tal:attributes="value request/dateDepot | context/getDateDepot" />
+            </div>
+
+        </div>
+
+        <div class="text-center" i18n:translate="">
+            Tolérer les dépôts jusqu'au
+        </div>
+
+        <div id="archetypes-fieldname-dateRetard"
+                tal:define="error errors/dateRetard | nothing;
+                            arch_class string:field ArchetypesStringWidget;
+                            inputname string:dateRetard;
+                            inputvalue request/dateRetard | context/getDateRetard"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+
+            <div class="formControls">
+                <input id="datetime-retard" name="datetime-retard" type="datetime"
+                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                       tal:attributes="value request/dateRetard | context/getDateRetard" />
+            </div>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" value="macro_cours_boite" name="macro" />
+        <input type="hidden" name="formulaire" value="modifier-boite-date" />
+        <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu" />
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:block define="script1 string:setDateTimePicker('datetime-depot');
+                       script2 string:setDateTimePicker('datetime-retard');
+                       script3 string:setRevealFormNewPage('js-modBoxDate','reveal-main')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" />
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer">
+    </script>
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Modifier les options avancées d'une boite de dépôts
+-->
+<metal:macro define-macro="modifier-boite-avancees">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Options avancées</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/cours_boite_modifier"
+          tal:define="option context/getOptionsAvancees">
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="correction option/getCorrectionIndividuelle">
+
+            <legend>Corrections des dépôts</legend>
+
+            <tal:comment replace="nothing"><!--
+            <div class="switch tiny round">
+                <input id="exampleRadioSwitch1" type="checkbox" checked="checked">
+                <label for="exampleRadioSwitch1"></label>
+            </div>
+            --></tal:comment>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous aurez la possibilité de remplir une correction textuelle propre à chaque dépôt étudiant que l'étudiant pourra consulter.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="CorrectionIndividuelle"
+                       value="1" id="CorrectionIndividuelle_activer"
+                       tal:attributes="checked python:context.test(correction['actif'], 'checked', '')"/>
+                <label for="CorrectionIndividuelle_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="CorrectionIndividuelle"
+                       value="0" id="CorrectionIndividuelle_desactiver"
+                       tal:attributes="checked python:context.test(correction['actif'], '', 'checked')"/>
+                <label for="CorrectionIndividuelle_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notification option/getNotificationCorrection">
+
+            <legend>Notification des corrections</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, lors de l'ajout de la correction d'un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="NotificationCorrection"
+                       value="1" id="NotificationCorrection_activer"
+                       tal:attributes="checked python:context.test(notification['actif'], 'checked', '')"/>
+                <label for="NotificationCorrection_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="NotificationCorrection"
+                       value="0" id="NotificationCorrection_desactiver"
+                       tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
+                <label for="NotificationCorrection_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notation option/getNotation">
+
+            <legend>Notation des dépôts</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous aurez la possibilité de noter chaque dépôt étudiant à l'aide d'une valeur numérique ou textuelle que l'étudiant pourra consulter (exemples : 12, 12.5/20, 45/100, Très bien, Bien, etc.).
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="Notation"
+                       value="1" id="Notation_activer"
+                       tal:attributes="checked python:context.test(notation['actif'], 'checked', '')"/>
+                <label for="Notation_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="Notation"
+                       value="0" id="Notation_desactiver"
+                       tal:attributes="checked python:context.test(notation['actif'], '', 'checked')"/>
+                <label for="Notation_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notification option/getNotificationNotation">
+
+            <legend>Notification des notations</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, lors de l'ajout d'une note à un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="NotificationNotation"
+                       value="1" id="NotificationNotation_activer"
+                       tal:attributes="checked python:context.test(notification['actif'], 'checked', '')"/>
+                <label for="NotificationNotation_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="NotificationNotation"
+                       value="0" id="NotificationNotation_desactiver"
+                       tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
+                <label for="NotificationNotation_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="acces_depot option/getAccesDepots">
+
+            <legend>Visualisation des dépôts entre étudiants</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, chaque étudiant(e) aura la possibilité de consulter les dépôts de tous les autres étudiants. Si les options avancées « Corrections des dépôts » et « Notation des dépôts » sont activées, chaque étudiant(e) pourra aussi consulter les corrections et les notes de l'ensemble des dépôts.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="AccesDepots"
+                       value="1" id="AccesDepots_activer"
+                       tal:attributes="checked python:context.test(acces_depot['actif'], 'checked', '')"/>
+                <label for="AccesDepots_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="AccesDepots"
+                       value="0" id="AccesDepots_desactiver"
+                       tal:attributes="checked python:context.test(acces_depot['actif'], '', 'checked')"/>
+                <label for="AccesDepots_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+        <tal:comment replace="nothing"><!--
+        <fieldset class="panel bkgrnd radius"
+             tal:define="acces_competences option/getAccesCompetences">
+
+            <legend>Évaluation des étudiants par compétences</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous pourrez mettre en place une liste de compétences pour la boîte de dépôts à partir d'un onglet « Compétences ». L'évaluation des compétences se fait par étudiant. Un étudiant doit avoir déposé au moins un devoir pour être évalué.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="AccesCompetences" value="1"
+                       tal:attributes="checked python:context.test(acces_competences['actif'], 'checked', '')"/>
+                <label for="AccesDepots"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="AccesCompetences" value="0"
+                       tal:attributes="checked python:context.test(acces_competences['actif'], '', 'checked')"/>
+                <label for="AccesDepots"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+        --></tal:comment>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Création d'un fichier de dépot
+-->
+<metal:macro define-macro="ajout-depot">
+
+    <h2>
+        <tal:block i18n:translate="">Déposer votre fichier</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="post"
+          enctype="multipart/form-data"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-title" class="field"
+            tal:define="error errors/title | nothing"
+            tal:attributes="class python:context.test(error, 'field error ', 'field')">
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox"
+                tal:condition="error"
+                tal:content="error" />
+            <input type="text" id="title" name="title"
+                   maxlength="255" size="30" value=""
+                   required="required" placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field">
+            <label for="description">Commentaire</label>
+            <textarea id="description" name="description" rows="5"></textarea>
+        </div>
+
+        <div id="archetypes-fieldname-file"
+            tal:define="error errors/file | nothing;
+                        arch_class string:field;"
+            tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="file_file">Fichier</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="file" id="file_file" name="file_file" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_cours_boite" />
+        <input type="hidden" name="formulaire" value="ajout-depot" />
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+
+</metal:macro>
+
+
+<!--
+        Liste des dépots
+-->
+<metal:macro define-macro="depots">
+
+    <style type="text/css">
+        #js-listeDepots .list .dropdown
+        {
+            margin-top: 0.6rem;
+        }
+
+        #js-listeDepots .list .discreet
+        {
+            font-size: 0.73125rem;
+            font-style: italic;
+        }
+
+        #js-listeDepots .list .activer
+        {
+            color:green;
+        }
+
+        #js-listeDepots .list .desactiver
+        {
+            color:red;
+        }
+    </style>
+
+<tal:define define="dicoDepots python:context.getDepots(user, personnel, request);
+                    listeDepots dicoDepots/listeDepots">
+
+    <tal:condition condition="personnel">
+
+    <a class="dropdown right"
+       data-options="align:left" data-dropdown="drop-action-depots">
+        <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+    </a>
+    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+        id="drop-action-depots">
+        <li>
+            <a tal:attributes="href string:${context/absolute_url}/cours_telecharger_depots">
+                <i class="fa fa-file-archive-o fa-fw"></i>
+                <tal:block i18n:translate="">Télécharger les dépôts (ZIP)</tal:block>
+            </a>
+        </li>
+        <li>
+            <a tal:attributes="href string:${context/absolute_url}/cours_listing_depots">
+                <i class="fa fa-list fa-fw"></i>
+                <tal:block i18n:translate="">Télécharger listing</tal:block>
+            </a>
+        </li>
+        <li>
+            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots"
+               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                <i class="fa fa-filter fa-fw"></i>
+                <tal:block i18n:translate="">Purger les dépôts</tal:block>
+            </a>
+        </li>
+    </ul>
+
+    <h2>
+        <i class="fa fa-download"></i>
+        <tal:block i18n:translate="">Dépôts étudiants</tal:block>
+    </h2>
+
+    </tal:condition>
+
+    <tal:condition condition="not:personnel">
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-depot"
+       title="Déposer un fichier" class="button small radius right"
+       data-reveal-id="reveal-main" data-reveal-ajax="true"
+       tal:condition="isDepotActif"
+       i18n:translate="">
+        <i class="fa fa-download"></i>
+        <tal:block i18n:translate="">Déposer un fichier</tal:block>
+    </a>
+    <h2>
+        <i class="fa fa-download"></i>
+        <tal:condition condition="not:context/getAccesDepots"
+                       i18n:translate="">Mes dépôts</tal:condition>
+        <tal:condition condition="context/getAccesDepots"
+                   i18n:translate="">Dépôts étudiants</tal:condition>
+    </h2>
+    <div class="panel warning radius" tal:condition="not:isDepotActif">
+        <i class="fa fa-warning"></i>
+        <tal:block i18n:translate="">La date limite autorisée a été dépassée. Vous ne pouvez plus déposer.</tal:block>
+    </div>
+    <div class="panel warning radius" tal:condition="python:isDepotActif == 2">
+        <i class="fa fa-warning"></i>
+        <tal:block i18n:translate="">Vous êtes en retard. Dernières minutes avant la fermeture des dépôts.</tal:block>
+    </div>
+    </tal:condition>
+
+    <div class="panel callout radius"
+         tal:condition="python:context.test(personnel and listeDepots, 1, 0)">
+        <tal:block i18n:translate="">Il y a actuellement</tal:block>
+        <tal:isOneD condition="python:context.test(dicoDepots['valides'] == 1, 1, 0)">
+            <strong tal:content="dicoDepots/valides" /> <tal:block i18n:translate="">dépôt valide envoyé par</tal:block>
+        </tal:isOneD>
+        <tal:isMultipleD condition="python:context.test(dicoDepots['valides'] > 1, 1, 0)">
+            <strong tal:content="dicoDepots/valides" /> <tal:block i18n:translate="">dépôts valides envoyés par</tal:block>
+        </tal:isMultipleD>
+        <tal:isOneE condition="python:context.test(dicoDepots['etudiantsValides'] == 1, 1, 0)">
+            <strong tal:content="dicoDepots/etudiantsValides" /> <tal:block i18n:translate="">étudiant.</tal:block>
+        </tal:isOneE>
+        <tal:isMultipleE condition="python:context.test(dicoDepots['etudiantsValides'] > 1, 1, 0)">
+            <strong tal:content="dicoDepots/etudiantsValides" /> <tal:block i18n:translate="">étudiants.</tal:block>
+        </tal:isMultipleE>
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="not:listeDepots"
+         i18n:translate="">
+        Aucun dépôt
+    </div>
+
+    <tal:define define="isCorrigerNoter context/isCorrigerNoter;
+                        isCorrectionIndividuelle context/getCorrectionIndividuelle;
+                        isNotation context/getNotation;
+                        isPersonnelActions python:context.test(personnel and (isCorrectionIndividuelle or isNotation), 1, 0);
+                        isAccesDepot context/getAccesDepots;
+                        dicoDepots python:context.getDepots(user, personnel, request);
+                        listeDepots dicoDepots/listeDepots;
+                        option context/getOptionsAvancees">
+
+    <table id="js-listeDepots"
+           summary="Liste des dépots"
+           tal:condition="listeDepots">
+
+        <thead>
+            <tr>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
+                    i18n:attributes="title"
+                    data-tooltip data-sort="name"
+                    tal:condition="python:personnel or isAccesDepot">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Étudiant</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon la date"
+                    data-tooltip data-sort="title"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Dépôt</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'état"
+                    data-tooltip data-sort="valide"
+                    i18n:attributes="title"
+                    i18n:translate="">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">État</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon la correction"
+                    data-tooltip data-sort="correction"
+                    i18n:attributes="title"
+                    tal:condition="isCorrectionIndividuelle">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Correction</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon la note"
+                    data-tooltip data-sort="note"
+                    i18n:attributes="title"
+                    tal:condition="isNotation">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Note</tal:block>
+                    </span>
+                </th>
+                <th class="nosort"
+                    tal:condition="python: not personnel or isPersonnelActions">
+                    <i class="fa fa-cog"></i></th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        <tal:block repeat="element listeDepots">
+            <tr tal:define="actif element/actif">
+                <td class="name"
+                    tal:condition="python:personnel or isAccesDepot"
+                    tal:content="element/etudiant" />
+                <td class="title"
+                    tal:define="modDate element/date">
+                    <span class="hide" tal:content="python:context.getDepotDate(modDate, 1)" />
+                    <i tal:condition="python:context.test(int(element['size']) < 100, 1, 0)"
+                       class="fa fa-exclamation-triangle right has-tip" data-tooltip
+                       title="Attention ! Ce dépôt est peut être corrompu, merci de vérifier en le téléchargeant."
+                       i18n:attributes="title">
+                    </i>
+                    <a tal:attributes="href string:${context/absolute_url}/cours_element_view?idElement=${element/id}&amp;typeElement=JalonFile&amp;createurElement=${user/getId}&amp;indexElement=0"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:content="element/title" />
+                    <span tal:content="python:context.getDepotDate(modDate)" />
+                </td>
+                <td class="valide">
+                    <span tal:attributes="class python:context.test(actif, 'label success', 'label warning')"
+                          tal:content="python:test(actif, 'Valide', 'Invalide')"
+                          i18n:translate="" />
+                </td>
+                <td class="correction">
+                    <span tal:attributes="class python:context.test(element['correction'], 'label success', 'label secondary')"
+                          tal:content="python:test(element['correction'], 'Corrigé', 'Non corrigé')"
+                          i18n:translate="" />
+                </td>
+                <td class="note"
+                    tal:condition="isNotation">
+                    <span class="hide"
+                          tal:content="python:test(element['note'], element['note'], '')" />
+                    <span tal:attributes="class python:context.test(element['note'], '', 'label secondary')"
+                          tal:content="python:test(element['note'], element['note'], 'Non noté')"
+                          i18n:translate="" />
+                </td>
+                <td tal:condition="python: not personnel or isPersonnelActions">
+            <tal:condition condition="not:isPersonnelActions">
+                <tal:condition condition="python:context.test(not element['correction'] and user.getId() in element['id'], 1, 0)">
+                    <a tal:attributes="title string:Valider ce dépôt;
+                                       href string:${context/absolute_url}/cours_activer_depot?idElement=${element/id}&amp;actif=${actif}"
+                       data-reveal-id="reveal-main-small" data-reveal-ajax="true"
+                       tal:condition="not:actif"
+                       i18n:attributes="title">
+                        <i class="fa fa-check-circle fa-2x fa-fw success"></i>
+                    </a>
+                    <a tal:attributes="title string:Invalider ce dépôt;
+                                       href string:${context/absolute_url}/cours_activer_depot?idElement=${element/id}&amp;actif=${actif}"
+                       data-reveal-id="reveal-main-small" data-reveal-ajax="true"
+                       tal:condition="actif"
+                       i18n:attributes="title">
+                        <i class="fa fa-times-circle fa-2x fa-fw warning"></i>
+                    </a>
+                </tal:condition>
+                <tal:condition condition="element/correction">
+                    <a tal:attributes="title string:Correction;
+                                       href string:${context/absolute_url}/cours_element_view?idElement=${element/id}&amp;typeElement=JalonFile&amp;createurElement=${user/getId}&amp;indexElement=0"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       i18n:attributes="title">
+                        <i class="fa fa-legal fa-2x fa-fw"></i>
+                    </a>
+                </tal:condition>
+            </tal:condition>
+            <tal:condition condition="isPersonnelActions">
+                    <a class="dropdown"
+                       data-options="align:left"
+                       tal:attributes="data-dropdown string:drop-action-depots-${repeat/element/index}">
+                        <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                    </a>
+                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                        tal:attributes="id string:drop-action-depots-${repeat/element/index}">
+                        <li>
+                            <a tal:attributes="href string:${context/absolute_url}/${element/id}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:condition="python:isCorrectionIndividuelle or isNotation">
+                                <i class="fa fa-legal fa-fw"></i>
+                                <tal:block replace="isCorrigerNoter/title"
+                                           i18n:translate=""></tal:block>
+                            </a>
+                        </li>
+                    </ul>
+            </tal:condition>
+                </td>
+            </tr>
+        </tal:block>
+        </tbody>
+    </table>
+
+        <tal:define define="acces_depots option/getAccesDepots">
+
+            <tal:block condition="python: personnel or context.test(acces_depots['actif'], 1, 0)"
+                       define="script string:setSortableList('js-listeDepots',['name','title','valide','correction','note'],'name','desc')">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+            <tal:block condition="python: not personnel and context.test(acces_depots['actif'], 0, 1)"
+                       define="script string:setSortableList('js-listeDepots',['title','valide','correction','note'],'title','desc')">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+        </tal:define>
+
+    </tal:define>
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Suppression de tous les dépôts
+-->
+<metal:macro define-macro="purger_depots">
+    <h2>
+        <tal:block i18n:translate="">Purger tous les dépots</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel alert radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">vous allez supprimer tous les dépôts de cette boite, cette opération est définitive.</tal:block>
+    </div>
+    <div class="panel callout radius"
+         i18n:translate="">
+        Cette opération peut prendre quelques minutes, merci de patienter.
+    </div>
+    <form tal:attributes="action string:${context/absolute_url}/purger_depots"
+          method="post">
+        <div class="formControls">
+            <button type="submit" class="button alert small"
+                    name="purger">
+                <i class="fa fa-filter"></i>
+                <tal:block i18n:translate="">Purger tous les dépôts</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!--
+        Modifier la correction d'un dépôt
+-->
+<metal:macro define-macro="modifier-correction">
+
+    <tal:define define="corriger_noter context/isCorrigerNoter">
+    <h2>
+        <tal:block replace="corriger_noter/title"
+                   i18n:translate=""></tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          enctype="multipart/form-data"
+          id="inform" method="post">
+
+        <div class="field"
+             tal:condition="corriger_noter/corriger">
+            <label for="correction">
+                Correction
+            </label>
+            <textarea id="correction" name="correction" rows="5"><tal:replace replace="context/getCorrectionDepot"/></textarea>
+        </div>
+
+        <div id="archetypes-fieldname-file" class="field row"
+             tal:condition="corriger_noter/corriger">
+            <label for="file_file">Fichier de correction</label>
+            <div class="small-6 column">
+                <input type="file" id="file_file" name="file_file" size="30"/>
+            </div>
+            <tal:define define="fichier context/getFichierCorrection">
+            <div class=" small-6 column"
+                tal:condition="fichier">
+                <a tal:attributes="href fichier"
+                   class="tiny button radius success"
+                   target="_blank">
+                    <i class="fa fa-download"></i>
+                    <tal:block i18n:translate="">Télécharger le fichier de correction</tal:block>
+                </a>
+            </div>
+            </tal:define>
+        </div>
+
+        <tal:condition condition="corriger_noter/noter">
+        <metal:field use-macro="python:context.widget('note', mode='edit')">Attribut Macro</metal:field>
+        </tal:condition>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" value="macro_cours_boite" name="macro"/>
+        <input type="hidden" name="formulaire" value="modifier-correction"/>
+        <input type="hidden" name="correction_text_format" value="text/html">
+
+         <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+    </tal:define>
+
+</metal:macro>
+
+
+<!--
+        Modifier la note d'un dépôt
+-->
+<metal:macro define-macro="modifier-note">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier la note du dépôt</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          id="inform" method="post">
+        <metal:field use-macro="python:context.widget('note', mode='edit')">Attribut Macro</metal:field>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" value="macro_cours_boite" name="macro"/>
+        <input type="hidden" name="formulaire" value="modifier-note"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Liste des compétences
+-->
+<metal:macro define-macro="competences">
+
+    <tal:condition condition="python:personnel or context.getAfficherCompetences()">
+    <tal:condition condition="personnel">
+        <a class="dropdown right"
+           data-options="align:left" data-dropdown="drop-action-depots">
+            <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+        </a>
+        <ul class="f-dropdown" id="drop-action-depots"
+            data-dropdown-content="data-dropdown-content"
+            tal:define="modifier_comp python:context.getPermissionModifierCompetence(personnel, user.getId())">
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-competence"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-plus-circle fa-fw"></i>
+                    <tal:block i18n:translate="">Ajouter</tal:block>
+                </a>
+            </li>
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-edit fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </li>
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                   <i class="fa fa-align-justify fa-fw"></i>
+                   <tal:block i18n:translate="">Description</tal:block>
+                </a>
+            </li>
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/cours_listing_competences">
+                    <i class="fa fa-file-excel-o fa-fw"></i>
+                    <tal:block i18n:translate="">Télécharger (format xls)</tal:block>
+                </a>
+            </li>
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=supprimer-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-trash-o fa-fw"></i>
+                    <tal:block i18n:translate="">Supprimer</tal:block>
+                </a>
+            </li>
+            <tal:comment replace="nothing">
+            <!--li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=permission-competence"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-unlock-alt fa-fw"></i>
+                    <tal:block i18n:translate="">Permissions</tal:block>
+                </a>
+            </li-->
+            </tal:comment>
+        </ul>
+    </tal:condition>
+        <h2 class="texte_icone icone_liste">
+            <i class="fa fa-tasks"></i>
+            <tal:block i18n:translate="">Compétences</tal:block>
+        <tal:condition condition="not:personnel">
+            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
+               title="Voir les descriptions des compétences"
+               class="button tiny radius right"
+               data-reveal-ajax="true" data-reveal-id="reveal-main"
+               i18n:attributes="title">
+               <tal:block i18n:translate="">Description des compétences</tal:block>
+            </a>
+        </tal:condition>
+        </h2>
+
+        <tal:define define="dicoCompetences python:dict(context.getCompetences())">
+            <div class="panel callout radius" tal:condition="not:dicoCompetences"
+                 i18n:translate="">
+                Aucune compétence n'a été définie.
+            </div>
+
+        <tal:condition condition="dicoCompetences">
+            <form id="js-list_competences" method="post"
+                  tal:define="listeEtudiants context/getOrdreEtudiants;"
+                  tal:attributes="action string:${context/absolute_url}/enregistrer_comp_script"
+                  tal:condition="personnel">
+                <table summary="Liste des compétences"
+                       tal:define="ordre context/getOrdreCompetences">
+                    <thead>
+                        <tr>
+                            <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                                title="Cliquer pour trier selon l'étudiant"
+                                i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                                </span>
+                            </th>
+                        <tal:repeat repeat="index ordre">
+                            <th tal:define="competence python:dicoCompetences[index]">
+                                <tal:replace tal:replace="competence/titre">Titre de la compétence</tal:replace>
+                            </th>
+                        </tal:repeat>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody class="list"
+                           tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                        <tr tal:condition="not:listeEtudiants">
+                            <td tal:attributes="colspan python:(len(ordre) + 1)">
+                                <strong i18n:translate="">Aucun étudiant à évaluer</strong>
+                            </td>
+                        </tr>
+                    <tal:repeat repeat="etudiant listeEtudiants">
+                        <tr tal:define="compEtu python:compEtudiants[etudiant['id']]">
+                            <td class="etudiant">
+                                <span class="hide" tal:content="etudiant/nom" />
+                                <tal:replace replace="etudiant/nom" />
+                                <input type="hidden" name="etudiants.id:records"
+                                       tal:attributes="value etudiant/id" />
+                            </td>
+                        <tal:repeat repeat="index ordre">
+                            <td tal:attributes="class string:competence-${index}"
+                                tal:define="competence python:dicoCompetences[index]">
+                                <span class="hide" tal:content="competence/evaluation" />
+                            <tal:condition condition="python:competence['evaluation'] == 'libre'">
+                                <input type="text"
+                                       tal:attributes="name string:etudiants.${index}:records;
+                                                       value python:compEtu[index] if index in compEtu else 'À acquérir'" />
+                            </tal:condition>
+                            <tal:condition condition="python:competence['evaluation'] == 'validation'">
+                                <input type="checkbox"
+                                       tal:attributes="name string:etudiants.${index}:records;
+                                                       checked python:compEtu[index] if index in compEtu else ''"
+                                       value="checked" />
+                            </tal:condition>
+                            <tal:condition condition="python:competence['evaluation'] == 'gradation'">
+                                <select tal:attributes="name string:etudiants.${index}:records">
+                                    <option value="acquerir"
+                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquerir' else ''">
+                                        À acquérir
+                                    </option>
+                                    <option value="encours"
+                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'encours' else ''">
+                                        En cours d'acquisition
+                                    </option>
+                                    <option value="acquise"
+                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquise' else ''">
+                                        Acquis
+                                    </option>
+                                </select>
+                            </tal:condition>
+                            <tal:condition condition="python:competence['evaluation'] == 'note'">
+                                <input type="number"
+                                       min="0" max="100" step="any" style="width:3em;"
+                                       tal:attributes="name string:etudiants.${index}:records;
+                                                       value python:compEtu[index] if index in compEtu else 'Non évalué';
+                                                       max competence/note_max | string:100"/>&nbsp;/&nbsp;<tal:replace replace="competence/note_max" />
+                            </tal:condition>
+                            </td>
+                        </tal:repeat>
+                        </tr>
+                    </tal:repeat>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <button type="submit" class="button small"
+                            tal:condition="listeEtudiants">
+                        <i class="fa fa-check-circle"></i>
+                        <tal:block i18n:translate="">Enregistrer les évaluations</tal:block>
+                    </button>
+                </div>
+
+            <tal:condition condition="listeEtudiants"
+                define="script string:setSortableList('js-list_competences',['etudiant'],'etudiant','desc')">
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:condition>
+
+            </form>
+
+        <tal:condition condition="not:personnel">
+            <div class="panel warning radius"
+                 tal:condition="not:afficher_comp"
+                 i18n:translate="">
+                Vous n'avez pas le droit d'accéder à la liste des compétences.
+            </div>
+        <tal:condition condition="afficher_comp">
+        <tal:define define="compEtu python:context.getAffComEtu(user.getId())">
+            <table class="listing" summary="Liste des compétences"
+                   tal:condition="python:dicoCompetences and compEtu"
+                   tal:define="ordre context/getOrdreCompetences;">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">
+                            Compétence
+                        </th>
+                        <th>
+                            Évaluation
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tal:repeat repeat="index ordre">
+                    <tr tal:define="competence python:dicoCompetences[index]">
+                        <td>
+                            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competence&amp;competence=${index};
+                               title string:Voir la description de la compétence '${competence/titre}'"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main"
+                               tal:content="competence/titre"
+                               i18n:attributes="title"
+                               i18n:translate="" />
+                        </td>
+                        <td>
+                            <tal:replace replace="python:compEtu[index]" />
+                        </td>
+                    </tr>
+                    </tal:repeat>
+                </tbody>
+            </table>
+        </tal:define>
+        </tal:condition>
+        </tal:condition>
+        </tal:condition>
+        </tal:define>
+    </tal:condition>
+    <tal:condition condition="python:not personnel and not context.getAfficherCompetences()">
+        <div class="panel alert radius"
+             i18n:translate="">
+            <strong>Attention :</strong> l'affichage des compétences n'est pas permise aux étudiants sur cette boîte.
+        </div>
+    </tal:condition>
+</metal:macro>
+
+
+<!--
+        Ajout d'une compétence
+-->
+<metal:macro define-macro="ajout-competence">
+
+    <h2>
+        <tal:block  i18n:translate="">Ajouter une compétence</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-addCompetence" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder"
+                   tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="archetypes-fieldname-evaluation"
+             tal:define="error errors/evaluation | nothing;
+                         selection request/evaluation | string:libre;
+                         arch_class string:field ArchetypesSelectionWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title">Méthode d'évaluation</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <ul class="verticalRadioList">
+                <li>
+                    <input type="radio" name="evaluation" value="libre"
+                           required="required"
+                           tal:attributes="checked python:context.test(selection == 'libre', 'checked', '')" />
+                    Libre
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="validation"
+                           tal:attributes="checked python:context.test(selection == 'validation', 'checked', '')" />
+                    Validation
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="gradation"
+                           tal:attributes="checked python:context.test(selection == 'gradation', 'checked', '')" />
+                    Validation avec échelle d'acquisition
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="note"
+                           tal:attributes="checked python:context.test(selection == 'note', 'checked', '')" />
+                    Notation numérique :
+                    <ul>
+                        <li tal:define="error errors/note_max | nothing;">
+                            notation sur&nbsp;
+                            <input type="number" name="note_max" min="0" max="100"
+                                   step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_max | nothing"/>,
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                        <li tal:define="error errors/note_partielle | nothing;">
+                            en cours d'acquisition à partir de&nbsp;
+                            <input type="number" name="note_partielle" min="0" max="100"
+                                   step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_partielle | nothing"/>,
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                        <li tal:define="error errors/note_acquise | nothing;">
+                            acquis à partir de&nbsp;
+                            <input type="number" name="note_acquise" min="0" max="100"
+                                step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_acquise | nothing"/>.
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div id="archetypes-fieldname-description"
+             class="field ArchetypesTextAreaWidget">
+            <label for="description">Description</label>
+            <textarea name="description" rows="5"><tal:replace replace="request/description | nothing" /></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_cours_boite" />
+        <input type="hidden" name="formulaire" value="ajout-competence" />
+
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setRevealFormNewPage('js-addCompetence','reveal-main')" />
+
+    </form>
+</metal:macro>
+
+
+<!--
+        Modification des compétences
+-->
+<metal:macro define-macro="modifier-competences">
+    <h2>
+        <tal:block i18n:translate="">Modifier les compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <style type="text/css">
+        #modifier-competence .bold
+        {
+            font-weight:bold;
+        }
+    </style>
+    <form id="modifier-competence"
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="dicoCompetences python:dict(context.getCompetences());
+                      ordre context/getOrdreCompetences;"
+          method="post">
+    <tal:repeat repeat="index ordre">
+    <tal:define define="competence python:dicoCompetences[index]">
+        <h3 class="texte_icone icone_liste">
+            <i class="fa fa-tasks"></i>
+            Compétence
+        </h3>
+        <div class="panel bkgrnd radius">
+            <div id="archetypes-fieldname-title"
+                 class="field">
+                <label for="title"
+                       class="bold"
+                       i18n:translate="">Titre</label>
+                <input type="hidden" name="competences.id:records"
+                       tal:attributes="value index"/>
+                <input type="text" name="competences.titre:records" maxlength="255" size="30" id="title"
+
+                       tal:attributes="value request/title | competence/titre"/>
+            </div>
+            <div id="archetypes-fieldname-evaluation"
+                 class="field"
+                 tal:condition="python:context.test(competence['evaluation'] == 'note', 1, 0)">
+                    <label for="number"
+                       bold="bold"
+                       i18n:translate="">Méthode d'évaluation</label>
+                    <div>
+                        Notation numérique : Notation sur
+                        <input type="number" name="competences.note_max:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_max"/>,
+                        partiellement acquis à partir de
+                        <input type="number" name="competences.note_partielle:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_partielle"/>
+                        , acquis à partir de
+                        <input type="number" name="competences.note_acquise:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_acquise"/>
+                    </div>
+            </div>
+            <div id="archetypes-fieldname-description"
+                 class="field">
+                <label for="description"
+                       class="bold"
+                       i18n:translate="">Description</label>
+                <textarea name="competences.description:records" rows="5"><tal:replace replace="request/description | competence/description"/></textarea>
+            </div>
+        </div>
+    </tal:define>
+    </tal:repeat>
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_cours_boite"/>
+        <input type="hidden" name="formulaire" value="modifier-competences"/>
+        <div class="formControls">
+            <button type="submit" name="Save" class="button small">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!--
+        Suppression des compétences
+-->
+<metal:macro define-macro="supprimer-competences">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer des compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius"
+         i18n:translate="">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="dicoCompetences python:dict(context.getCompetences());
+                      ordre context/getOrdreCompetences;"
+          id="js-list_comp_supp"
+          method="post">
+
+        <table summary="Liste des compétences">
+
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round"
+                             title="Action par lot : tout sélectionner / désélectionner"
+                             i18n:attributes="title">
+                            <input type="checkbox" id="switch-all" name="checkall" role="competence_id:list" />
+                            <label for="switch-all"></label>
+                        </div>
+                    </th>
+                    <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+
+            <tfoot></tfoot>
+
+            <tbody class="list">
+            <tal:repeat repeat="item ordre">
+
+                <tr TAL:define="competence python:dicoCompetences[item]">
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round"
+                             title="Sélectionner / désélectionner"
+                             i18n:attributes="title">
+                            <input type="checkbox" name="competence_id:list"
+                                   tal:attributes="id string:switch-${repeat/item/index};
+                                                   value item;" />
+                            <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                        </div>
+                    </td>
+                    <td class="title"
+                        tal:content="competence/titre" />
+                </tr>
+
+            </tal:repeat>
+            </tbody>
+
+        </table>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="macro" value="macro_cours_boite" />
+        <input type="hidden" name="formulaire" value="supprimer-competences" />
+
+        <div class="formControls">
+            <button type="submit" class="button alert small"
+                    name="Supprimer">
+                <i class="fa fa-trash"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    <tal:define define="script0 string:setBatchSelect('js-list_comp_supp');
+                        script1 string:setSortableList('js-list_comp_supp',['title'],'title','desc')">
+
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJSDirect(script0)" />
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJSDirect(script1)" />
+
+    </tal:define>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer" />
+
+    </form>
+</metal:macro>
+
+
+<!--
+        Permissions de visualisation et modification des compétences
+-->
+<metal:macro define-macro="permission-competence">
+
+    <h2>
+        <tal:block i18n:translate="">Permissions sur les compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <style type="text/css">
+        .field .activer
+        {
+            color:green;
+        }
+
+        .field .desactiver
+        {
+            color:red;
+        }
+
+        .field .field-lg
+        {
+            font-size:1rem;
+        }
+    </style>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/cours_boite_modifier">
+    <div class="field"
+         tal:define="afficher_comp context/getAfficherCompetences">
+        <label>Afficher l'onglet "Compétences" aux étudiants</label>
+        <p i18n:translate="">
+        Une fois cette option activée, les étudiants auront la possibilité de consulter la liste des compétences et leurs évaluations.
+        </p>
+        <p class="text-center field-lg">
+            <input type="radio" name="AfficherCompetences"
+                   value="1" id="AfficherCompetences_activer"
+                   tal:attributes="checked python:context.test(afficher_comp, 'checked', '')"/>
+            <label for="AfficherCompetences_activer"
+                   class="activer"
+                   i18n:translate="">
+                <i class="fa fa-check"></i> Activé
+            </label>
+            <input type="radio" name="AfficherCompetences"
+                   value="0" id="AfficherCompetences_desactiver"
+                   tal:attributes="checked python:context.test(afficher_comp, '', 'checked')"/>
+            <label for="AfficherCompetences_desactiver"
+                   class="desactiver"
+                   i18n:translate="">
+                <i class="fa fa-times"></i> Désactivé
+            </label>
+        </p>
+    </div>
+    <div class="field"
+         tal:define="modifier_comp context/getModifierCompetences">
+        <label>Restreindre la gestion des compétences</label>
+        <p i18n:translate="">
+            Une fois cette option activée, seul le créateur de la boîte de dépôts aura les permissions de gestion des compétences. Un enseignant pourra seulement évaluer les étudiants et télécharger le listing des compétences.
+        </p>
+        <p class="text-center field-lg">
+            <input type="radio" name="ModifierCompetences"
+                   value="1" id="ModifierCompetences_activer"
+                   tal:attributes="checked python:context.test(modifier_comp, 'checked', '')"/>
+            <label for="ModifierCompetences_activer"
+                   class="activer"
+                   i18n:translate="">
+                <i class="fa fa-check"></i> Activé
+            </label>
+            <input type="radio" name="ModifierCompetences"
+                   value="0" id="ModifierCompetences_desactiver"
+                   tal:attributes="checked python:context.test(modifier_comp, '', 'checked')"/>
+            <label for="ModifierCompetences_desactiver"
+                   class="desactiver"
+                   i18n:translate="">
+                <i class="fa fa-times"></i> Désactivé
+            </label>
+        </p>
+    </div>
+    <div class="formControls">
+        <button type="submit" name="Save" class="button small">
+            <i class="fa fa-check-circle"></i>
+            <tal:block i18n:translate="">Enregistrer</tal:block>
+        </button>
+    </div>
+</form>
+
+</metal:macro>
+
+
+<!--
+        Description des compétences
+-->
+<metal:macro define-macro="detail-competences">
+<tal:define define="dicoCompetences python:dict(context.getCompetences());
+                    ordre context/getOrdreCompetences">
+
+    <h2 class="texte_icone icone_competences">
+        <tal:block i18n:translate="">Description des compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:repeat repeat="index ordre">
+        <tal:define define="competence python:dicoCompetences[index]">
+
+    <h3 tal:content="competence/titre" />
+
+    <div class="panel bkgrnd radius"
+         tal:condition="not:python:competence['description']">
+        Pas de description pour cette compétence.
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="python:competence['description']"
+         tal:content="structure python:competence['description'].replace('\n', '<br />')" />
+
+        </tal:define>
+    </tal:repeat>
+</tal:define>
+</metal:macro>
+
+
+<!-- Détails d'une compétence -->
+<metal:macro define-macro="detail-competence">
+    <tal:define define="dicoCompetences python:dict(context.getCompetences());
+                        ordre context/getOrdreCompetences;
+                        competence python:dicoCompetences[request['competence']]">
+    <h2 class="texte_icone icone_competences">
+        <tal:replace replace="competence/titre">Titre de la compétence</tal:replace>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel bkgrnd radius"
+         tal:content="structure python:competence['description'].replace('\n', '<br/>')">
+        Description de la compétence
+    </div>
+    </tal:define>
+</metal:macro>
+
+
+</metal:content-core>
+
+</body>
+
+</html>

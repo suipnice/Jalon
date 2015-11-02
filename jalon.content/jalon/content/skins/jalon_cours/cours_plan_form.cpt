@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors;">
+<tal:define define="typeElement request/typeElement | nothing;
+                    isTitre python:context.test(typeElement == 'Titre', 1, 0)">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un</tal:block>
+        <tal:condition condition="isTitre">titre</tal:condition>
+        <tal:condition condition="not:isTitre">texte libre</tal:condition>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-planTextCreator" method="POST"
+          tal:define="titreElement request/titreElement | nothing"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg string:L'élément de plan a été crée.">
+
+        <div class="field"
+             tal:define="error python:errors.get('titreElement', None);"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <div class="fieldErrorBox"
+                 tal:condition="error"
+                 tal:content="error" />
+            <input type="text" id="titreElement" name="titreElement" size="30" maxlength="255"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:condition="isTitre"
+                   i18n:attributes="placeholder" />
+            <textarea id="titreElement" name="titreElement" rows="9"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"
+                      tal:condition="not:isTitre"><tal:block replace="titreElement" /></textarea>
+
+        </div>
+
+        <metal:macro use-macro="context/arbo_plan/macros/plan_select" />
+
+        <input type="hidden" name="typeElement"
+               tal:attributes="value typeElement" />
+        <input type="hidden" name="createurElement"
+               tal:attributes="value user/getId" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius"
+                    name="form.button.save">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+<tal:CKeditorActive condition="not:isTitre">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-planTextCreator','reveal-main','titreElement')" />
+</tal:CKeditorActive>
+
+<tal:CKeditorInactive condition="isTitre">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-planTextCreator','reveal-main')" />
+</tal:CKeditorInactive>
+
+</tal:define>
+</metal:main>
+</body>
+
+</html>

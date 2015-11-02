@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="jalon.connect">
+
+    <genericsetup:registerProfile
+        name="Connect"
+        title="Jalon Connect Connector"
+        directory="profiles/default"
+        description="Adds the Connect editor to the site."
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+    <genericsetup:importStep
+        name="connect_settings"
+        title="Connect Settings"
+        description="Import Product.Connect settings"
+        handler="jalon.connect.exportimport.importConnectSettings">
+        <depends name="componentregistry"/>
+    </genericsetup:importStep>
+
+    <genericsetup:exportStep
+        name="connect_settings"
+        title="Connect Settings"
+        description="Export Product.Connect settings"
+        handler="jalon.connect.exportimport.exportConnectSettings">
+    </genericsetup:exportStep>
+
+</configure>

@@ -1,0 +1,171 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+    metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!--Question Textuelle Tolerante -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel">
+            <label for="pre">Texte affiché avant la question</label>
+            <div class="formHelp texte_icone icone_information"> Introduction commune à toutes les questions. Balises html admises.</div>
+            <textarea name="pre" id="pre" rows="2" cols="60" style="height:3em;" tal:content="QCM_parsed/pre"/>
+        </div>
+
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius"
+               data-reveal-id="reveal_data"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="data">La (ou les) question(s)</label>
+            <div class="fieldErrorBox error" tal:condition="error" tal:content="error"/>
+            <div id="reveal_data"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La (ou les) question(s) <a class="close-reveal-modal"></a></h2>
+                <div>Chaque mot à trouver par l'apprenant doit être mise entre une paire de double-point d'interrogation « <code class="indicateur">??</code> ».</div>
+                <div>
+                    Par exemple, en tapant la phrase :<br/>
+                    <code class="indicateur">En astronomie, une année-lumière est une unité de mesure de <span class="strong">??la distance??</span>.</code>,<br/>
+                    voici ce qui s'affichera :<br/>
+                    <blockquote>En astronomie, une année-lumière est une unité de mesure de <input placeholder="..."/></blockquote>
+                    et l'apprenant devra taper « <code class="indicateur">la distance</code> » comme bonne réponse.
+                </div>
+                <hr/>
+                <div>Pour définir des synonymes, séparer chaque synonyme par une barre verticale : <code class="indicateur"> | </code></div>
+                <div>Par exemple, en tapant la phrase :</div>
+                <div><code class="indicateur">En électricité, le volt est une unité de mesure pour <span class="strong">??la tension|la charge??</span>.</code>,</div>
+                <div>l'apprenant pourra indépendamment taper « <code class="indicateur">la tension</code> » ou « <code class="indicateur">la charge</code> » comme bonne réponse.</div>
+                <hr/>
+                <div>
+                    On peut placer jusqu'à 6 mots à trouver par paragraphe.<br/>
+                    Séparez chaque paragraphe par un point-virgule.<br/>
+                    Les textes eux-mêmes ne peuvent pas afficher de point-virgule.
+                </div>
+
+            </div>
+
+            <div class="formHelp texte_icone icone_information">Chaque mot à trouver par l'apprenant doit être mise entre une paire de double-point d'interrogation « <code class="indicateur">??</code> ».</div>
+            <textarea name="data" id="data"
+                      rows="10" cols="60"
+                      tal:content="QCM_parsed/data"
+                      required="required"
+                      placeholder="Saisissez vos phrases ici."
+                      i18n:attributes="placeholder" />
+        </div>
+        <div class="panel">
+            <label for="post">Texte affiché après la question</label>
+            <div class="formHelp texte_icone icone_information">Texte de fin commun à toutes les questions. Balises HTML admises.</div>
+            <textarea name="post" id="post" rows="2" cols="60" tal:content="QCM_parsed/post"/>
+        </div>
+
+        <div class="panel ArchetypesStringWidget alert">
+            <a href="#reveal_words" class="button tiny radius"
+               data-reveal-id="reveal_words"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="words">Liste de mauvaises réponses reconnues</label>
+            <div id="reveal_words"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Liste de mauvaises réponses reconnues <a class="close-reveal-modal"></a></h2>
+                <div>La liste des mauvaises réponses reconnues est ce qui distingue ce modèle de l'habituel "texte à trous".</div>
+                <div> En effet, si un mot n'est pas reconnu, il ne sera pas comptabilisé comme faux, laissant une nouvelle chance à l'apprenant.</div>
+                <div>
+                    Toute réponse en dehors de cette liste (et en dehors des bonnes réponses) sera considérée comme une erreur de frappe, WIMS demandant alors de retaper.
+                </div>
+                <div>Cette liste permet donc de restreindre le champ lexical des mauvaises réponses.</div>
+                <hr/>
+                <div>
+                    Si cette liste est vide, aucune tolérance ne sera appliquée : toute réponse en dehors de la bonne sera comptée fausse (ce qui doit être le cas en général pour les applications linguistiques). On retrouve alors le fonctionnement du texte à trous habituel.
+                </div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Séparez les mauvaises réponses par des espaces.</div>
+            <textarea name="words" id="words" rows="4" cols="60" tal:content="QCM_parsed/words"/>
+
+            <div>
+                <label class="input_label" for="include_good">
+                <input id="include_good" type="checkbox" name="include_good" value="oui"
+                       tal:define="include_good QCM_parsed/include_good"
+                       tal:attributes="checked python:context.test(include_good=='oui', 'checked', None)"/>
+                Inclure automatiquement les bonnes réponses</label>
+                <div class="formHelp texte_icone icone_information">En cochant cette case, les bonnes réponses d'un même paragraphe seront ajoutées à la liste des mauvaises réponses reconnues pour ce paragraphe : elles ne seront pas comptées comme des fautes de frappe.</div>
+            </div>
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+                    <div class="row">
+                        <div class="medium-6 columns">
+                            <div tal:define="error errors/len | nothing;
+                                             arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="len">Longueur des cases à taper. </label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Il faut prévoir les réponses les plus longues.</div>
+                                <input type="number" min="1" size="5"
+                                         name="len" id="len"
+                                         class="mini" tal:attributes="value QCM_parsed/len"
+                                         required="required"/>
+                            </div>
+                        </div>
+                        <div class="medium-6 columns">
+                            <div class="panel">
+                                <label for="atype">Type d'analyse des réponses libres</label>
+                                <div class="formHelp texte_icone icone_information">Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext ».</div>
+                                    <select name="atype" id="atype" class="mini" tal:define="atype QCM_parsed/atype">
+                                        <option value="case"
+                                                tal:attributes="selected python:context.test(atype=='case', 'selected', None)">
+                                            case (aucune tolérance d'erreur)</option>
+                                        <option value="nocase"
+                                                tal:attributes="selected python:context.test(atype=='nocase', 'selected', None)">
+                                            nocase (tolère le minuscule/manuscule)</option>
+                                        <option value="atext"
+                                                tal:attributes="selected python:context.test(atype=='atext', 'selected', None)">
+                                            atext (ignore pluriel/singulier et les articles)</option>
+                                  </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </dd>
+            <dd class="accordion-navigation">
+                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <div id="usages_avances" class="content">
+
+                    <p>La question à poser accepte la mise en aléatoire par des accolades emboitables : <code class="indicateur">{ ... }</code>.</p>
+                    <p>Si vous mettez plusieurs mots (ou groupes de mots) séparés par des virgules dans une paire d'accolades, ces mots seront tirés au
+                      hasard au moment où le texte sera présenté aux élèves ; ce qui rendra le texte aléatoire.</p>
+                    <div>Par exemple, si vous entrez le texte :</div>
+                    <div><code class="indicateur">Je suis allé <span class="strong shuffle">{à l'école,au cinéma}</span> <span class="strong shuffle">{hier,la semaine dernière}</span></code></div>
+                    <div>, vous aurez comme résultat l'une des phrases suivantes, aléatoirement :</div>
+                    <blockquote class="sample">
+                        <ul>
+                            <li>Je suis allé à l'école hier</li>
+                            <li>Je suis allé au cinéma hier</li>
+                            <li>Je suis allé à l'école la semaine dernière</li>
+                            <li>Je suis allé au cinéma la semaine dernière</li>
+                        </ul>
+                    </blockquote>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

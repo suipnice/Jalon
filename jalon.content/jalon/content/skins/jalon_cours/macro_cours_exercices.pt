@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!-- Macro listant les exercices WIMS à attacher -->
+<metal:macro define-macro="exercices">
+
+    <div id="js-load_target"
+         tal:define="espace string:ExercicesWims;
+                     tag request/ajout;
+                     subject request/subject | string:last;
+                     menu menu | nothing;
+                     folderContents python:context.getContents(subject=espace, typeR='JalonExerciceWims', authMember=user.getId(), type_subject=subject);">
+
+    <tal:listing condition="folderContents">
+
+        <h2 class="texte_icone icone_exercice">Exercices</h2>
+        <form tal:attributes="action string:${context/absolute_url}/cours_element_add" method="post" name="element_add">
+            <div id="listingFichier">
+                <table class="listing">
+                    <caption i18n:translate="">Liste des exercices</caption>
+                    <thead>
+                        <tr>
+                            <th class="checkall nosort">
+                                <input type="checkbox" name="checkall" title="Tout cocher ou décocher" i18n:attributes="title" role="elements:list"/>
+                                <label for="checkall" i18n:translate="">Tout cocher ou décocher</label>
+                            </th>
+                            <th title="Trier selon le modèle" i18n:attributes="title" i18n:translate="">Modèle</th>
+                            <th title="Trier selon le titre" i18n:attributes="title" i18n:translate="" class="fullwidth">Titre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tal:entry repeat="item folderContents">
+                        <tr tal:define="checked python:context.isChecked(item['getId'], formulaire);
+                                        oddrow repeat/item/odd"
+                            tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
+                            <td class="debug">HELLO</td>
+                            <td>
+                                <input type="checkbox" name="elements:list"
+                                       tal:attributes="value python:'*-*'.join([item.getId, espace, item.Title.decode('utf-8'), user.getId()])"
+                                       tal:condition="not:checked"/>
+                                <i class="fa fa-check" style="color:green;" tal:condition="checked"></i>
+                            </td>
+                            <td>
+                                <span tal:content="item/getModele" class="indicateur couleur4" />
+                            </td>
+                            <td tal:content="item/Title" class="fullwidth" />
+                        </tr>
+                    </tal:entry>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="lots icone">&#x0068;</td>
+                            <td class="lots" colspan="3">
+                                <input type="hidden" name="page" tal:attributes="value page"/>
+                                <input class="context" type="submit" name="submit" value="Attacher"/>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </form>
+
+    </tal:listing>
+
+    <tal:listing condition="not:folderContents">
+
+        <div i18n:translate="" class="listing_vide" tal:condition="python:subject in ['last', '']">
+            Aucun élément
+        </div>
+        <div i18n:translate="" class="listing_vide" tal:condition="python:subject not in ['last', '']">
+            Il n'y a aucune ressource avec ce mot clef ou cette association de mots clefs.
+        </div>
+
+    </tal:listing>
+
+    </div>
+    
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

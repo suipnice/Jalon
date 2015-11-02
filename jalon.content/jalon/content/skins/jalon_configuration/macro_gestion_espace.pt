@@ -1,0 +1,718 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Accès aux composantes de "Mon Espace"
+-->
+<metal:macro define-macro="gestion_mon_espace">
+    <h2>
+        <i class="fa fa-home"></i><tal:block i18n:translate="">Configuration des outils actifs dans "Mon Espace"</tal:block>
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigMonEspace"
+          tal:define="mon_espace context/getPropertiesMonEspace">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_fichiers" i18n:translate="activer_fichiers">
+                        Activer le dépôt de Fichier
+                    </label>
+                    <input type="radio" name="activer_fichiers" id="activer_fichiers" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_fichiers'], 'checked', '')" />
+                    <label for="activer_fichiers"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_fichiers" id="desactiver_fichiers" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_fichiers'], 'checked', '')" />
+                    <label for="desactiver_fichiers"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns"
+                 tal:define="isConnect context/isAdobeConnect">
+                <div class="panel callout radius">
+                    <label for="activer_presentations_sonorisees" i18n:translate="activer_presentations_sonorisees">
+                        Activer l'utilisation des Présentations sonorisées (Adobe Connect)
+                    </label>
+                <tal:condition condition="not:isConnect/module">
+                    <div class="panel warning radius"
+                         tal:content="isConnect/message"
+                         i18n:translate=""/>
+                </tal:condition>
+                <tal:condition condition="isConnect/module">
+                    <input type="radio" name="activer_presentations_sonorisees" id="activer_presentations_sonorisees" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                    <label for="activer_presentations_sonorisees"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_presentations_sonorisees" id="desactiver_presentations_sonorisees" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                    <label for="desactiver_presentations_sonorisees"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </tal:condition>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns"
+                 tal:define="isWims context/isWims">
+                <div class="panel callout radius">
+                    <label for="activer_exercices_wims" i18n:translate="activer_exercices_wims">
+                        Activer la création d'exercices intéractifs WIMS
+                    </label>
+                <tal:condition condition="not:isWims/module">
+                    <div class="panel warning radius"
+                         tal:content="isWims/message"
+                         i18n:translate=""/>
+                </tal:condition>
+                <tal:condition condition="isWims/module">
+                    <input type="radio" name="activer_exercices_wims" id="activer_exercices_wims" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_exercices_wims'], 'checked', '')" />
+                    <label for="activer_exercices_wims"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_exercices_wims" id="desactiver_exercices_wims" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_exercices_wims'], 'checked', '')" />
+                    <label for="desactiver_exercices_wims"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </tal:condition>
+                </div>
+            </div>
+        </div>
+        <div class="row"
+             tal:define="isPrimo context/isPrimo;
+                         isElasticsearch context/isElasticsearch">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="activer_liens" i18n:translate="activer_liens">
+                        Activer la création de Liens (Url, Lecteurs exportables)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_liens" id="activer_liens" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_liens'], 'checked', '')" />
+                        <label for="activer_liens"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_liens" id="desactiver_liens" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_liens'], 'checked', '')" />
+                        <label for="desactiver_liens"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns"
+                 tal:condition="isPrimo/module">
+                <div class="panel callout radius">
+                    <label for="activer_liens_catalogue_bu" i18n:translate="activer_liens_catalogue_bu">
+                        Activer la recherche dans le catalogue de la BU (Primo ExLibris)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_liens_catalogue_bu" id="activer_liens_catalogue_bu" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                        <label for="activer_liens_catalogue_bu"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_liens_catalogue_bu" id="desactiver_liens_catalogue_bu" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                        <label for="desactiver_liens_catalogue_bu"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="medium-4 columns"
+                 tal:condition="not:isPrimo/module">
+                <div class="panel warning radius"
+                     tal:content="isPrimo/message"
+                     i18n:translate=""/>
+            </div>
+            <div class="medium-4 columns"
+                 tal:condition="isElasticsearch/module">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer la recherche dans le produit Lille1pod
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_lille1pod" id="activer_lille1pod"
+                               value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_lille1pod'], 'checked', '')" />
+                        <label for="activer_lille1pod"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lille1pod" id="desactiver_lille1pod"
+                               value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_lille1pod'], 'checked', '')" />
+                        <label for="desactiver_lille1pod"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <tal:replace replace="nothing">
+            <!--
+            <div class="medium-4 columns"
+                 tal:condition="isPrimo/module">
+                <div class="panel callout radius">
+                    <label for="activer_tags_catalogue_bu" i18n:translate="activer_tags_catalogue_bu">
+                        Activer le taggage dans le catalogue de la BU (Primo ExLibris)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_tags_catalogue_bu" id="activer_tags_catalogue_bu" value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                        <label for="activer_tags_catalogue_bu"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_tags_catalogue_bu" id="desactiver_tags_catalogue_bu" value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                        <label for="desactiver_tags_catalogue_bu"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            -->
+            </tal:replace>
+            <div class="medium-4 columns"
+                 tal:condition="not:isElasticsearch/module">
+                <div class="panel warning radius"
+                     tal:content="isPrimo/message"
+                     i18n:translate=""/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="activer_termes_glossaire" i18n:translate="activer_termes_glossaire">
+                        Activer la création de Termes de glossaire
+                    </label>
+                    <input type="radio" name="activer_termes_glossaire" id="activer_termes_glossaire" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                    <label for="activer_termes_glossaire"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_termes_glossaire" id="desactiver_termes_glossaire" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                    <label for="desactiver_termes_glossaire"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns"
+                 tal:define="isConnect context/isAdobeConnect">
+                <div class="panel callout radius">
+                    <label for="activer_webconferences" i18n:translate="activer_webconferences">
+                        Activer l'utilisation des Webconférences (Adobe Connect)
+                    </label>
+                <tal:condition condition="not:isConnect/module">
+                    <div class="panel warning radius"
+                         tal:content="isConnect/message"
+                         i18n:translate=""/>
+                </tal:condition>
+                <tal:condition condition="isConnect/module">
+                    <input type="radio" name="activer_webconferences" id="activer_webconferences" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_webconferences'], 'checked', '')" />
+                    <label for="activer_webconferences"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_webconferences" id="desactiver_webconferences" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_webconferences'], 'checked', '')" />
+                    <label for="desactiver_webconferences"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </tal:condition>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_lien_intracursus" i18n:translate="activer_lien_intracursus">
+                        Activer la liaison à un serveur Intracursus
+                    </label>
+                    <input type="radio" name="activer_lien_intracursus" id="activer_lien_intracursus" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_lien_intracursus'], 'checked', '')" />
+                    <label for="activer_lien_intracursus"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_intracursus" id="desactiver_lien_intracursus" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_lien_intracursus'], 'checked', '')" />
+                    <label for="desactiver_lien_intracursus"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="lien_intracursus" i18n:translate="lien_intracursus">
+                        Url de la connexion CAS à Intracursus
+                    </label>
+                    <input type="text" name="lien_intracursus"
+                           maxlength="255" size="30"
+                           tal:attributes="value mon_espace/lien_intracursus | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label i18n:translate="activer_lien_assistance">
+                        Activer la bulle "Signaler un bug"
+                    </label>
+                    <input type="radio" name="activer_lien_assistance" id="activer_lien_assistance" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_lien_assistance'], 'checked', '')" />
+                    <label for="activer_lien_assistance"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_lien_assistance" id="desactiver_lien_assistance" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_lien_assistance'], 'checked', '')" />
+                    <label for="desactiver_lien_assistance"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="activer_video" value="0" />
+        <input type="hidden" name="url_video" value="" />
+    <tal:comments replace="nothing">
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="activer_video" i18n:translate="activer_video">
+                        Activer l'utilisation d'un serveur de Vidéo Externe (Serveur Plone)
+                    </label>
+                    <input type="radio" name="activer_video" id="activer_video" value="1"
+                           tal:attributes="checked python:context.test(mon_espace['activer_video'], 'checked', '')" />
+                    <label for="activer_video"
+                           class="activer">
+                        <i class="fa fa-check"></i>
+                        <tal:block i18n:translate="">Activé</tal:block>
+                    </label>
+                    <input type="radio" name="activer_video" id="desactiver_video" value="0"
+                           tal:attributes="checked python:context.test(not mon_espace['activer_video'], 'checked', '')" />
+                    <label for="desactiver_video"
+                           class="desactiver">
+                        <i class="fa fa-times"></i>
+                        <tal:block i18n:translate="">Désactivé</tal:block>
+                    </label>
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="url_video" i18n:translate="url_video">
+                        Url du serveur de Vidéo Externe
+                    </label>
+                    <input type="text" name="url_video"
+                           maxlength="255" size="30"
+                           tal:attributes="value mon_espace/url_video | nothing" />
+                </div>
+            </div>
+        </div>
+    </tal:comments>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion" />
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+
+<!--
+        Connexion à Adobe Connect
+-->
+<metal:macro define-macro="gestion_adobe_connect">
+
+    <h2>
+        <i class="fa fa-microphone"></i><tal:block i18n:translate="">Configuration du module Adobe Connect</tal:block>
+    </h2>
+<tal:define define="adobe_connect context/getPropertiesAdobeConnect">
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigAdobeConnect"
+          tal:condition="adobe_connect">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_connexion" i18n:translate="url_connexion">
+                        Url de la librairie xml-rpc
+                    </label>
+                    <input type="text" name="url_connexion"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/url_connexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="login" i18n:translate="login">
+                        Compte administrateur du serveur
+                    </label>
+                    <input type="text" name="login"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/login | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="password" i18n:translate="password">
+                        Mot de passe du compte administrateur
+                    </label>
+                    <input type="password" name="password"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/password | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="version" i18n:translate="version">
+                        Version d'Adobe Connect
+                    </label>
+                    <input type="text" name="version"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/version | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="num_serveur" i18n:translate="num_serveur">
+                        Numéro du serveur
+                    </label>
+                    <input type="text" name="num_serveur"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/num_serveur | nothing" />
+                    <p class="discreet">
+                        À ne changer que si vous connectez un nouveau serveur connect vierge de tout utilisateur.
+                    </p>
+                </div>
+            </div>
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="etablissement" i18n:translate="etablissement">
+                        Etablissement des utilisateurs
+                    </label>
+                    <input type="text" name="etablissement"
+                           maxlength="255" size="30"
+                           tal:attributes="value adobe_connect/etablissement | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="dossiers" i18n:translate="dossiers">
+                        Modèle des réunions
+                    </label>
+                    <p class="discreet">
+                        Associer un outil de "Mon espace" au modèle de réunion(le 'sco-id' d'une reunion Adobe Connect). Exemple : Webconference:123456
+                    </p>
+                    <textarea name="dossiers" rows="2"><tal:replace replace="adobe_connect/dossiers | nothing"/></textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+    <div class="row"
+          tal:condition="not:adobe_connect">
+        <div class="columns">
+            <div class="panel warning radius">
+                Vous n'avez pas de module Adobe Connect compatible avec Jalon installé.
+            </div>
+        </div>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Connexion à Wims
+-->
+<metal:macro define-macro="gestion_wims">
+
+    <h2>
+        <i class="fa fa-random"></i><tal:block i18n:translate="">Configuration du module Wims</tal:block>
+    </h2>
+<tal:define define="wims context/getPropertiesWims">
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigWims"
+          tal:condition="wims">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_connexion" i18n:translate="url_connexion">
+                        Url de connexion à WIMS
+                    </label>
+                    <input type="text" name="url_connexion"
+                           maxlength="255" size="30"
+                           tal:attributes="value wims/url_connexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="login" i18n:translate="login">
+                        Compte administrateur du serveur
+                    </label>
+                    <input type="text" name="login"
+                           maxlength="255" size="30"
+                           tal:attributes="value wims/login | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="password" i18n:translate="password">
+                        Mot de passe du compte administrateur
+                    </label>
+                    <input type="password" name="password"
+                           maxlength="255" size="30"
+                           tal:attributes="value wims/password | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="classe_locale" i18n:translate="classe_locale">
+                        Identifiant de la classe locale
+                    </label>
+                    <input type="text" name="classe_locale"
+                           maxlength="255" size="30"
+                           tal:attributes="value wims/classe_locale | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="nom_institution" i18n:translate="nom_institution">
+                        Nom de l'institution
+                    </label>
+                    <input type="text" name="nom_institution"
+                           maxlength="255" size="30"
+                           tal:attributes="value wims/nom_institution | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="donnees_classe" i18n:translate="donnees_classe">
+                        Schéma d'une classe
+                    </label>
+                    <p class="discreet">
+                        Plus d'informations dans le répertoire doc de jalon.wims
+                    </p>
+                    <textarea name="donnees_classe" rows="10"><tal:replace replace="wims/donnees_classe"/></textarea>
+                </div>
+            </div>
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="donnees_superviseur" i18n:translate="donnees_superviseur">
+                        Schéma d'un utilisateur
+                    </label>
+                    <p class="discreet">
+                        Plus d'informations dans le répertoire doc de jalon.wims
+                    </p>
+                    <textarea name="donnees_superviseur" rows="10"><tal:replace replace="wims/donnees_superviseur"/></textarea>
+                </div>
+            </div>
+            <div class="columns medium-4">
+                <div class="panel callout radius">
+                    <label for="donnees_exercice" i18n:translate="donnees_exercice">
+                        Schéma d'ajout d'exercices (feuille ou examen)
+                    </label>
+                    <p class="discreet">
+                        Plus d'informations dans le répertoire doc de jalon.wims
+                    </p>
+                    <textarea name="donnees_exercice" rows="10"><tal:replace replace="wims/donnees_exercice"/></textarea>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+    <div class="row"
+         tal:condition="not:wims">
+        <div class="columns">
+            <div class="panel warning radius">
+                Vous n'avez pas de module Wims compatible avec Jalon installé.
+            </div>
+        </div>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Gestion de la connexion à ExLibris Primo
+-->
+<metal:macro define-macro="gestion_primo">
+    <h2>
+        <i class="fa fa-graduation-cap"></i><tal:block i18n:translate="">Configuration du module ExLibris Primo</tal:block>
+    </h2>
+<tal:define define="primo context/getPropertiesPrimo">
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigPrimo"
+          tal:condition="primo">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_connexion" i18n:translate="url_connexion">
+                        Url de la librairie xml-rpc
+                    </label>
+                    <input type="text" name="url_connexion"
+                           maxlength="255" size="30"
+                           tal:attributes="value primo/url_connexion | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_catalogue" i18n:translate="url_catalogue">
+                        Url du catalogue
+                    </label>
+                    <input type="text" name="url_catalogue"
+                           maxlength="255" size="30"
+                           tal:attributes="value primo/url_catalogue | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="url_acquisition" i18n:translate="url_acquisition">
+                        Url pour suggerer de nouvelles acquisitions à votre BU
+                    </label>
+                    <input type="text" name="url_acquisition"
+                           maxlength="255" size="30"
+                           tal:attributes="value primo/url_acquisition | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <input type="hidden" name="login" value="admin"/>
+        <input type="hidden" name="password" value="admin"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Save"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+    <div class="row"
+         tal:condition="not:primo">
+        <div class="columns">
+            <div class="panel warning radius">
+                Vous n'avez pas de module ExLibris Primo compatible avec Jalon installé.
+            </div>
+        </div>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Connexion Elasticsearch (Pod)
+-->
+<metal:macro define-macro="gestion_elasticsearch">
+    <h2>
+        <i class="fa fa-puzzle-piece"></i><tal:block i18n:translate="">Configuration du module Elasticsearch (Pod)</tal:block>
+    </h2>
+<tal:define define="elasticsearch context/getPropertiesElasticsearch">
+    <div class="row"
+         tal:condition="elasticsearch">
+        <metal:macro use-macro="context/macro_formulaire_elasticsearch/macros/formulaire_elasticsearch">
+            Macro de gestion
+        </metal:macro>
+    </div>
+    <div class="row"
+         tal:condition="not:elasticsearch">
+        <div class="columns">
+            <div class="panel warning radius">
+                Vous n'avez pas de module Elasticsearch compatible avec Jalon installé.
+            </div>
+        </div>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

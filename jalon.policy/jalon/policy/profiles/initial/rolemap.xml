@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<rolemap>
+  <roles>
+    <role name="Anonymous"/>
+    <role name="Authenticated"/>
+    <role name="Contributor"/>
+    <role name="Editor"/>
+    <role name="Etudiant"/>
+    <role name="Manager"/>
+    <role name="Member"/>
+    <role name="Owner"/>
+    <role name="Personnel"/>
+    <role name="Reader"/>
+    <role name="Reviewer"/>
+    <role name="Site Administrator"/>
+  </roles>
+  <permissions>
+    <permission name="ATContentTypes: Add File" acquire="True">
+      <role name="Contributor"/>
+      <role name="Manager"/>
+      <role name="Owner"/>
+    </permission>
+    <permission name="ATContentTypes: Add Image" acquire="True">
+      <role name="Contributor"/>
+      <role name="Manager"/>
+      <role name="Owner"/>
+    </permission>
+    <permission name="ATContentTypes: Add Link" acquire="True">
+      <role name="Contributor"/>
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Cours" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon Folder" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon RessourceExterne" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Add Jalon TermeGlossaire" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
+    <permission name="Review comments" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Reviewer"/>
+    </permission>
+  </permissions>
+</rolemap>

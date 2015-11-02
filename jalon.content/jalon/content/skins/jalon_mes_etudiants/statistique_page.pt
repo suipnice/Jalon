@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main role="main" id="jalon_statistiques" class="row" aria-labelledby="page_title">
+        <section id="js-list-etudiants" class="small-12 columns"
+                 tal:define="onglet request/onglet | string:details-graph">
+
+            <h2>
+                <i class="fa fa-tachometer"></i>
+                <tal:block i18n:translate="">Tableau de bord</tal:block> <tal:replace replace="python:context.jalonBDD('getInfosELP', {'COD_ELP': request['COD_ELP']})['LIB_ELP']"/>
+            </h2>
+
+            <ul id="tab_button-group" class="button-group radius even-4">
+                <li>
+                    <a title="Détail des connexions par mois"
+                       tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-graph&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
+                                       class python:context.test(onglet == 'details-graph', 'button small selected', 'button small');"
+                       i18n:translate="">
+                        Connexion
+                    </a>
+                </li>
+                <li>
+                    <a title="Détail par étudiants"
+                       tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-etudiants&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
+                                       class python:context.test(onglet == 'details-etudiants', 'button small selected', 'button small')"
+                       i18n:translate="">
+                        Connexion des étudiants
+                    </a>
+                </li>
+                <li>
+                    <a title="Détail d'un étudiant"
+                       tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-etudiant&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
+                                       class python:context.test(onglet == 'details-etudiant', 'button small selected', 'button small')"
+                       i18n:translate="">
+                        Connexion d'un étudiant
+                    </a>
+                </li>
+                <li>
+                    <a title="Consultation des cours"
+                       tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=cons-tous-cours&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
+                                       class python:context.test(onglet == 'cons-tous-cours', 'button small selected', 'button small')"
+                       i18n:translate="">
+                        Consultation des cours
+                    </a>
+                </li>
+            </ul>
+
+            <metal:macro use-macro="python:context.macro_etudiants.macros[onglet]">
+                Macro de l'onglet
+            </metal:macro>
+        </section>
+    </main>
+
+</metal:main>
+
+</body>
+
+</html>

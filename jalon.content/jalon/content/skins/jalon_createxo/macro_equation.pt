@@ -1,0 +1,275 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+
+    <!-- Équation -->
+      <metal:macro define-macro="createxo">
+        <tal:block define="arch_class string:panel ArchetypesStringWidget;
+                           url_wims context/getUrlServeur">
+            <div tal:define="error errors/enonce | nothing;"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <a href="#reveal_enonce" class="button tiny radius" data-reveal-id="reveal_enonce">
+                    <i class="fa fa-question"></i>
+                    Aide
+                </a>
+                <label for="enonce">La question à poser</label>
+                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                <div id="reveal_enonce"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                    <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                    <div>
+                        Pour afficher la valeur de vos variables, tapez
+                        <code class="indicateur">\a</code> pour la variable a,
+                        <code class="indicateur">\b</code> pour la variable b, etc...
+                    </div>
+                    <hr/>
+                    <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+                </div>
+
+                <div class="formHelp texte_icone icone_information">Tapez simplement votre question, sans oublier d'afficher les variables.</div>
+                <textarea name="enonce" id="enonce"
+                          rows="7" cols="60"
+                          tal:content="QCM_parsed/enonce"
+                          required="required"
+                          placeholder="Posez votre question ici."
+                          i18n:attributes="placeholder" />
+            </div>
+
+            <fieldset class="field radius">
+              <legend>Variables</legend>
+                <a href="#reveal_params" class="button tiny radius" data-reveal-id="reveal_params">
+                    <i class="fa fa-question"></i>
+                    Aide
+                </a>
+                <div id="reveal_params"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                    <h2>Variables <a class="close-reveal-modal"></a></h2>
+                    <div>
+                      Voici quelques exemples que vous pouvez utiliser :
+                      <ul>
+                        <li>Un entier compris entre 10 et 100 (inclus) :
+                          <code class="indicateur">randint(10..100)</code></li>
+                        <li>Un entier multiple de 10 compris entre 10 et 1000 (inclus) :
+                          <code class="indicateur">randint(1..100)*10</code></li>
+                        <li>Un nombre décimal compris entre 0 et 2 :
+                          <code class="indicateur">random(0..2)</code></li>
+                        <li>Un élément tiré au hasard parmi une liste :
+                          <code class="indicateur">randitem(a,b,c,10,100,mot,une phrase)</code></li>
+                      </ul>
+                    </div>
+                  <hr class="spacer"/>
+                  <div>Si vous ne donnez pas de valeur à une variable, elle aura simplement une valeur nulle (0)</div>
+                </div>
+
+                <div class="formHelp texte_icone icone_information">
+                    Définissez ici de 1 à 5 variables ou constantes pour votre équation.<br/>
+                    Tapez simplement un nombre pour définir une constante.
+                </div>
+                <br/>
+                <tal:define define="var_list python:['a','b','c','d']">
+                    <div class="row collapse" tal:repeat="variable var_list" >
+                        <tal:define define="var_name string:param_$variable">
+                            <div class="small-4 columns">
+                                <label tal:attributes="for var_name;"
+                                       class="right prefix">Variable 
+                                       <code class="indicateur" 
+                                             tal:content="string:\$variable">\x</code>
+                                </label>
+                            </div>
+                            <div class="small-8 columns">
+                                <input type="text" 
+                                       tal:attributes="name var_name;
+                                                       id var_name;
+                                                       title string:Variable ${repeat/variable/number};
+                                                       value python:QCM_parsed[var_name]"
+                                        i18n:attributes="title"/>
+                            </div>
+                        </tal:define>
+                    </div>
+                </tal:define>
+                <!--div class="row collapse">
+                    <div class="small-4 columns">
+                      <label for="param_b" class="right prefix">Variable <code class="indicateur">\b</code> :</label>
+                    </div>
+                    <div class="small-8 columns">
+                      <input type="text" name="param_b" id="param_b" title="2e parametre"
+                        tal:attributes="value QCM_parsed/param_b"/>
+                    </div>
+                </div>
+                <div class="row collapse">
+                    <div class="small-4 columns">
+                      <label for="param_c" class="right prefix">Variable <code class="indicateur">\c</code> :</label>
+                    </div>
+                    <div class="small-8 columns">
+                      <input type="text" name="param_c" id="param_c" title="3e parametre"
+                        tal:attributes="value QCM_parsed/param_c"/>
+                    </div>
+                </div>
+                <div class="row collapse">
+                    <div class="small-4 columns">
+                      <label for="param_d" class="right prefix">Variable <code class="indicateur">\d</code> :</label>
+                    </div>
+                    <div class="small-8 columns">
+                      <input type="text" name="param_d" id="param_d" title="4e parametre"
+                        tal:attributes="value QCM_parsed/param_d"/>
+                    </div>
+                </div-->
+
+            </fieldset>
+            <div tal:define="error errors/equation | nothing;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <a href="#reveal_equation" class="button tiny radius" data-reveal-id="reveal_equation">
+                    <i class="fa fa-question"></i>
+                    Aide
+                </a>
+                <label for="equation" i18n:translate="">Équation </label>
+                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                <div id="reveal_equation"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                    <h2>Équation <a class="close-reveal-modal"></a></h2>
+                    <div>
+                        Si vous voulez utiliser un nombre décimal, utilisez le point et non la virgule comme séparateur
+                    </div>
+                    <div>
+                        Si vous glissez une erreur dans votre formule, il se peut qu'à l'exécution de votre exercice, celui-ci affiche "NaN" comme bonne réponse.<br/>
+                        NaN signifie « Not a Number » : autrement dit, WIMS ne comprend pas votre équation. Il faut la corriger.<br/>
+                    </div>
+                    <p style="text-align:center;margin-top:1em;"><a tal:attributes="href python:'%s?lang=fr&amp;module=help/teacher/docexooef.fr&amp;job=read&amp;block=variable' % url_wims" target="_blank" class="button small radius">
+                        <i class="fa fa-external-link"></i>Afficher l'aide sur le langage OEF de WIMS
+                    </a></p>
+                </div>
+
+                <div class="formHelp texte_icone icone_information">Le calcul de la bonne réponse, en fonction des variables ci-dessus.</div>
+              <input type="text"
+                     name="equation" id="equation"
+                     title="Votre equation"
+                     tal:attributes="value QCM_parsed/equation"
+                     required="required"
+                     placeholder="Une formule est requise"
+                     i18n:attributes="placeholder" />
+            </div>
+
+            <div tal:define="error errors/precision | nothing;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <a href="#reveal_precision" class="button tiny radius" data-reveal-id="reveal_precision">
+                    <i class="fa fa-question"></i>
+                    Aide
+                </a>
+                <label for="precision">Précision</label>
+                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                <div id="reveal_precision"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                    <h2>Précision <a class="close-reveal-modal"></a></h2>
+                    <div>
+                        Indique la précision (relative) demandée entre la réponse attendue et la réponse de l'étudiant.<br/>
+                        Au-delà d'un certain écart, la réponse va de « mauvaise précision » à « fausse », et les points accordés diminuent en conséquence.
+                    </div>
+                    <div>
+                        Plus votre chiffre sera grand et plus l'étudiant devra donner une réponse précise.
+                    </div>
+                    <tal:comments replace="nothing">
+                    <!--
+                        Dans le cas d'un exercice où une réponse numérique est demandée :
+                           <ul>
+                               <li>les deux commandes <code class="indicateur">\precision{ }</code> et <code class="indicateur">\computeanswer{ }</code> sont importantes</li>
+                               <li><code class="indicateur">\computeanswer{no}</code> indique que le calcul doit être effectué par l'élève</li>
+                           </ul>
+                    -->
+                    </tal:comments>
+
+                    <div>
+                        <p style="text-align:center;margin-top:1em;">
+                               <a tal:attributes="href string:$url_wims?lang=fr&amp;module=help/teacher/docexooef.fr&amp;job=read&amp;doc=1&amp;block=numeric" target="_blank" class="button small radius"><i class="fa fa-external-link"></i>Voir l'aide détaillée</a>
+                        </p>
+
+                    <tal:comments replace="nothing">
+                        <!--<div class="aide" tal:define="rep_images string:http://tice-devwims.unice.fr/wims/w/instex/109/help/teacher/docexooef.fr/doc/1/travail.def">
+                            <p>La précision sert à accepter le résultat numérique avec un certain écart
+                            par rapport au résultat calculé par le serveur :
+                            Pour une précision relative 1/<i>M</i> ,  la réponse numérique <i>r</i> est acceptée pour la solution demandée <i>s</i> si et seulement si:
+                            </p>
+                            <img tal:attributes="src python:'%s_43.gif' % rep_images" alt=" { \left|s -r\right| \over Max  \left( \left|s +r\right|, { 1 \over M} \right) }  &lt;  { 1 \over M} ">
+                             en d'autres termes,
+                            <ul >
+                                <li>  si
+                                    <img tal:attributes="src python:'%s_47.gif' % rep_images" alt=" \left|s +r\right| &lt;  { 1 \over M} ">, il est vérifié que
+                                    <img tal:attributes="src python:'%s_49.gif' % rep_images" alt=" \left|s -r\right| &lt;  { 1 \over M^2 } "> ;
+                                </li>
+                                <li>  si
+                                    <img tal:attributes="src python:'%s_53.gif' % rep_images" alt=" \left|s +r\right| &gt;  { 1 \over M} ">, il est vérifié que
+                                    <img tal:attributes="src python:'%s_55.gif' % rep_images" alt=" { \left|s -r\right| \over  \left|s +r\right|}  &lt;  { 1 \over M} ">
+                                </li>
+                            </ul>
+                        </div>-->
+                    </tal:comments>
+
+                    </div>
+                </div>
+
+                <div class="formHelp texte_icone icone_information">La précision demandée pour les réponses des étudiants.</div>
+                  <input type="text" name="precision" id="precision"
+                    title="Precision demandée" tal:attributes="value QCM_parsed/precision"/>
+                </div>
+
+                <div tal:define="error errors/texte_reponse | nothing;"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <label for="texte_reponse">Texte de la réponse</label>
+                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <tal:comments replace="nothing">
+                <!--a class="savoirplus_lien bouton small bouton_icone icone_aide blanc" href="#">
+                  Aide
+                </a>
+                <div class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                     <h2>Texte de la réponse <a class="close-reveal-modal"></a></h2>
+                  <ul>
+                    <li>Une aide ici ?</li>
+                  </ul>
+                  <hr/>
+                  <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
+
+                  <hr class="spacer"/>
+
+                </div>
+                -->
+            </tal:comments>
+                <div class="formHelp texte_icone icone_information">Le texte affiché invitant l'apprenant à entrer sa réponse</div>
+                <input type="text" name="texte_reponse" id="texte_reponse"
+                       title="Texte de la réponse" tal:attributes="value QCM_parsed/texte_reponse | nothing"/>
+            </div>
+
+            <metal:macro use-macro="context/macro_commune/macros/accolade_option"/>
+
+        </tal:block>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#reveal_html_allowed">
+                    <i class="fa fa-question"></i>
+                    Puis-je utiliser de l'HTML dans cet exercice ?
+                </a>
+                <div id="reveal_html_allowed"
+                     class="content">
+                    <metal:macro use-macro="context/macro_commune/macros/html_allowed"/>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+      </metal:macro>
+
+    </metal:content-core>
+  </body>
+</html>

@@ -1,0 +1,239 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_infos">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+    <main id="jalon_configuration" role="main" aria-labelledby="page_title"
+          class="row">
+
+        <h2>
+            <i class="fa fa-external-link-square"></i><tal:block i18n:translate="">Configuration des liens d'informations</tal:block>
+        </h2>
+        <form method="post" class="text-center"
+              tal:attributes="action string:${context/absolute_url}/saveConfigInfos"
+              tal:define="infos context/getPropertiesInfos">
+            <div class="row">
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer la propriété établissement
+                        </label>
+                        <input type="radio" name="activer_etablissement" id="activer_etablissement" value="1"
+                               tal:attributes="checked python:context.test(infos['activer_etablissement'], 'checked', '')" />
+                        <label for="activer_etablissement" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_etablissement" id="desactiver_etablissement" value="0"
+                               tal:attributes="checked python:context.test(not infos['activer_etablissement'], 'checked', '')" />
+                        <label for="desactiver_etablissement" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="etablissement" i18n:translate="etablissement">
+                            Établissement
+                        </label>
+                        <input type="text" id="etablissement" name="etablissement"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/etablissement | nothing" />
+                    </div>
+                </div>
+                <div class="medium-4 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_etablissement" i18n:translate="lien_etablissement">
+                            Lien vers la page de l'établissement
+                        </label>
+                        <input type="text" id="lien_etablissement" name="lien_etablissement"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/lien_etablissement | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le lien vers la page "Création des sésames"
+                        </label>
+                        <input type="radio" name="activer_lien_sesame" id="activer_lien_sesame" value="1"
+                               tal:attributes="checked python:context.test(infos['activer_lien_sesame'], 'checked', '')" />
+                        <label for="activer_lien_sesame" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lien_sesame" id="desactiver_lien_sesame" value="0"
+                               tal:attributes="checked python:context.test(not infos['activer_lien_sesame'], 'checked', '')" />
+                        <label for="desactiver_lien_sesame" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_sesame" i18n:translate="">
+                            Lien vers la page "Création des sésames"
+                        </label>
+                        <input type="text" id="lien_sesame" name="lien_sesame"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/lien_sesame | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le lien vers la page "Contacts"
+                        </label>
+                        <input type="radio" name="activer_lien_contact" id="activer_lien_contact" value="1"
+                               tal:attributes="checked python:context.test(infos['activer_lien_contact'], 'checked', '')" />
+                        <label for="activer_lien_contact" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lien_contact" id="desactiver_lien_contact" value="0"
+                               tal:attributes="checked python:context.test(not infos['activer_lien_contact'], 'checked', '')" />
+                        <label for="desactiver_lien_contact" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_contact" i18n:translate="lien_contact">
+                            Lien vers la page "Contacts"
+                        </label>
+                        <input type="text" id="lien_contact" name="lien_contact"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/lien_contact | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le lien vers la page "Mentions légales"
+                        </label>
+                        <input type="radio" name="activer_lien_mention" id="activer_lien_mention" value="1"
+                               tal:attributes="checked python:context.test(infos['activer_lien_mention'], 'checked', '')" />
+                        <label for="activer_lien_mention" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lien_mention" id="desactiver_lien_mention" value="0"
+                               tal:attributes="checked python:context.test(not infos['activer_lien_mention'], 'checked', '')" />
+                        <label for="desactiver_lien_mention" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_mention" i18n:translate="lien_mention">
+                            Lien vers la page "Mentions légales"
+                        </label>
+                        <input type="text" id="lien_mention" name="lien_mention"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/lien_mention | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label i18n:translate="">
+                            Activer le lien vers la page "Crédits"
+                        </label>
+                        <input type="radio" name="activer_lien_credit" id="activer_lien_credit" value="1"
+                               tal:attributes="checked python:context.test(infos['activer_lien_credit'], 'checked', '')" />
+                        <label for="activer_lien_credit" class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lien_credit" id="desactiver_lien_credit" value="0"
+                               tal:attributes="checked python:context.test(not infos['activer_lien_credit'], 'checked', '')" />
+                        <label for="desactiver_lien_credit" class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </div>
+                </div>
+                <div class="medium-6 columns">
+                    <div class="panel callout radius">
+                        <label for="lien_credit" i18n:translate="">
+                            Lien vers la page "Crédits"
+                        </label>
+                        <input type="text" id="lien_credit" name="lien_credit"
+                               maxlength="255" size="30"
+                               tal:attributes="value infos/lien_credit | nothing" />
+                    </div>
+                </div>
+            </div>
+            <div class="formControls">
+                <input class="button small" type="submit" name="form.button.save" value="Save"
+                       i18n:attributes="value label_save;"/>
+            </div>
+        </form>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

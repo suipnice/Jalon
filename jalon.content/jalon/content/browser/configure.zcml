@@ -1,0 +1,178 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="jalon.content">
+
+  <include package="plone.app.contentmenu" />
+
+  <browser:page
+      name="firstpage_view"
+      for="Products.CMFPlone.interfaces.siteroot.IPloneSiteRoot"
+      template="templates/first_page.pt"
+      permission="zope2.View"
+      class=".scripts.first_page.FirstPage"
+   />
+
+  <browser:page
+      name="jalonfolder_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+      template="templates/jalon_folder.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="cours_plan_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonCours"
+      template="templates/cours_plan_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="cours_wims_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
+      template="templates/cours_wims_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="cours_boite_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+      template="templates/cours_boite_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="cours_rss_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonCours"
+      template="templates/cours_rss_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="cours_acces_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonCours"
+      template="templates/cours_acces_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="exercicewims_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonExerciceWims"
+      template="templates/exercicewims_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+      name="ressource_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonRessourceExterne"
+      template="templates/ressource_view.pt"
+      permission="zope2.View"
+   />
+
+  <browser:page
+    name="jalon_ploneboard_view"
+    for="Products.Ploneboard.interfaces.IPloneboard"
+    class="Products.Ploneboard.browser.board.BoardView"
+    template="templates/jalonploneboardview.pt"
+    permission="zope2.View"
+  />
+
+  <browser:page
+    name="jalon_ploneboardforum_view"
+    for="Products.Ploneboard.interfaces.IForum"
+    class="Products.Ploneboard.browser.forum.ForumView"
+    template="templates/jalonploneboardforumview.pt"
+    permission="zope2.View"
+  />
+
+  <browser:page
+     name="jalon_ploneboardconversation_view"
+     for="Products.Ploneboard.interfaces.IConversation"
+     class="Products.Ploneboard.browser.comment.ConversationView"
+     template="templates/jalonploneboardconversationview.pt"
+     permission="zope2.View"
+     />
+
+  <browser:page
+     name="jalon_forum_search"
+     for="Products.Ploneboard.interfaces.IPloneboard"
+     class=".scripts.search.SearchView"
+     permission="zope2.View"/>
+
+  <!-- Viewlets registration -->
+  <browser:viewlet
+      name="jalon.footer"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      template="templates/footer.pt"
+      permission="zope2.View"
+      class=".scripts.footer.Footer"
+      />
+
+  <browser:viewlet
+      name="jalon.analytics"
+      manager="plone.app.layout.viewlets.interfaces.IPortalFooter"
+      template="templates/analytics.pt"
+      class=".scripts.analytics.JalonAnalytics"
+      permission="zope2.View"
+      />
+
+    <!-- Comments viewlet -->
+    <browser:viewlet
+        name="jalon.comments"
+        for="Products.CMFCore.interfaces.IContentish"
+        manager="plone.app.layout.viewlets.interfaces.IBelowContentBody"
+        view="plone.app.layout.globals.interfaces.IViewView"
+        class=".scripts.comments.MyComments"
+        permission="zope2.View"
+        />
+
+  <!-- jalon control panel adapter -->
+  <adapter factory=".config.jalonconfig.JalonConfigControlPanelAdapter" />
+  <adapter factory=".config.jalonconfiguration.JalonConfigurationControlPanelAdapter" />
+  <adapter factory=".config.jalonmaintenance.JalonMaintenanceControlPanelAdapter" />
+  <adapter factory=".config.jalonimport_settings.JalonImportControlPanelAdapter" />
+
+  <!-- jalon control panel form view -->
+  <browser:page
+      name="jalonimport-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".config.jalonimport_settings.JalonImportControlPanel"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="jalonmaintenance-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".config.jalonmaintenance.JalonMaintenanceControlPanel"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="jalonconfig-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".config.jalonconfig.JalonConfigControlPanel"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="jalonconfiguration-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".config.jalonconfiguration.JalonConfigurationControlPanel"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+    name="jalon-user"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    class=".config.jalonuser.JalonUser"
+    template="templates/jalon_user.pt"
+    permission="cmf.ManagePortal"/>
+
+  <browser:page
+    name="jalon-configuration"
+    for="jalon.content.browser.interfaces.IJalonProperties"
+    class=".scripts.config.JalonConfiguration"
+    template="templates/jalon_configuration.pt"
+    permission="cmf.ManagePortal"/>
+
+</configure>

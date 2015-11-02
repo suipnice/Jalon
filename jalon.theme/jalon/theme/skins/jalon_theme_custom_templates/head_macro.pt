@@ -1,0 +1,111 @@
+<metal:macro define-macro="head">
+
+    <head>
+
+        <meta charset="utf-8" />
+        <meta name="language" content="fr-FR" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <!-- Infos génériques -->
+        <meta name="application-name" content="Jalon" />
+        <meta name="description" content="Environnement pédagogique Jalon" />
+        <meta name="author" content="Service Universitaire des Pédagogies Innovantes de l'Université de Nice - Sophia Antipolis" href="http://tice.unice.fr/" />
+        <meta name="copyright" content="Université de Nice - Sophia Antipolis" href="http://unice.fr/" />
+
+        <!-- Apple mobile -->
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <!-- Redondances MS -->
+        <meta name="msapplication-tooltip" content="Environnement pédagogique Jalon" />
+        <meta name="msapplication-starturl"
+              tal:attributes="href string:${navroot}" />
+
+        <!-- Tuile Win8 / IE10 -->
+        <meta name="msapplication-TileColor" content="#fffeee" />
+        <meta name="msapplication-TileImage"
+              tal:attributes="content string:${navroot}/++resource++jalon.theme.images/mstile.png" />
+
+        <!-- Tuiles IE11 -->
+        <meta name="msapplication-square70x70logo"
+              tal:attributes="content string:${navroot}/++resource++jalon.theme.images/tile-tiny.png" />
+        <meta name="msapplication-square150x150logo"
+              tal:attributes="content string:${navroot}/++resource++jalon.theme.images/tile-square.png" />
+        <meta name="msapplication-square310x310logo"
+              tal:attributes="content string:${navroot}/++resource++jalon.theme.images/tile-large.png" />
+        <meta name="msapplication-wide310x150logo"
+              tal:attributes="content string:${navroot}/++resource++jalon.theme.images/tile-wide.png" />
+
+        <!-- Titre de la page -->
+        <title tal:content="context/Title"></title>
+
+        <!-- Divers -->
+        <base tal:attributes="href string:${navroot}/" />
+        <link rel="search" title="Rechercher dans Jalon"
+              tal:attributes="href string:${navroot}/@@search" />
+
+        <!-- Icônes Apple Touch -->
+        <link rel="apple-touch-icon" sizes="60x60"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/icon-iphone.png" />
+        <link rel="apple-touch-icon" sizes="76x76"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/icon-ipad.png" />
+        <link rel="apple-touch-icon" sizes="120x120"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/icon-iphone-retina.png" />
+        <link rel="apple-touch-icon" sizes="152x152"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/icon-ipad-retina.png" />
+
+        <!-- Icônes standard -->
+    <tal:comment replace="nothing"><!--
+        favicon :
+            - retina -> 32x32,
+            - IE >= 10 supporte le png et ne prend plus en compte les commentaires conditionnels,
+            - l'attribut « sizes » n'est pas encore très répandu (actuellement la plupart des navigateurs chargent tout…),
+            - erreur 404, temps de réponse supplémentaire et pollution des logs si « favicon.ico » pas présent à la racine.
+
+        La meilleure solution pour l'instant est de laisser un « favicon.ico » à la « racine »,
+        et de spécifier uniquement un fichier .png (en 32x32 ?) via une balise link.
+
+    --></tal:comment>
+        <link rel="shortcut icon" type="image/x-icon"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/favicon.ico" />
+        <link rel="icon" type="image/png"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-32.png" />
+    <tal:comment replace="nothing"><!--
+        <link rel="icon" type="image/png" sizes="16x16"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-16.png" />
+        <link rel="icon" type="image/png" sizes="24x24"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-24.png" />
+        <link rel="icon" type="image/png" sizes="32x32"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-32.png" />
+        <link rel="icon" type="image/png" sizes="48x48"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-48.png" />
+        <link rel="icon" type="image/png" sizes="128x128"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-128.png" />
+        <link rel="icon" type="image/png" sizes="256x256"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.images/jalon-favicon-256.png" />
+    --></tal:comment>
+
+        <!-- CSS principale -->
+        <link rel="stylesheet"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.stylesheets/app.css" />
+        <!-- CSS dev
+        <link rel="stylesheet"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.stylesheets/dev.css" /> -->
+
+    <tal:comment replace="nothing"><!--
+
+        Scripts
+            - generic libraries & frameworks
+            - specific to “ manager ” &  “ secretaire ” roles
+
+    --></tal:comment>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/pre.min.js"></script>
+    <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/man_sec-pre.min.js"></script>
+    </tal:isManager>
+
+    </head>
+
+</metal:macro>

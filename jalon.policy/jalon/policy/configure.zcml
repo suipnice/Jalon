@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="jalon.policy">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Jalon"
+      directory="profiles/default"
+      description="Installer le LMS Jalon"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="initial"
+      title="Jalon"
+      directory="profiles/initial"
+      description="Installer le LMS Jalon via Buildout"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <!-- -*- extra stuff goes here -*- -->
+  <genericsetup:importStep
+       name="jalon.policy-install" 
+       title="Install step for Jalon"
+       description=""
+       handler=".setuphandlers.installHandler">
+  </genericsetup:importStep>
+
+  <genericsetup:importStep
+       name="jalon.policy-updateCatalog"
+       title="Update catalog"
+       description="After creating content (from profiles/default/structure), the catalog needs to be updated."
+       handler=".setuphandlers.updateCatalog">
+    <depends name="content"/>
+  </genericsetup:importStep>
+
+</configure>

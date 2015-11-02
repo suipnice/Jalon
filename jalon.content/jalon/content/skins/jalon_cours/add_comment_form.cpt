@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en-US"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="ploneboard">
+
+<body>
+
+    <div metal:fill-slot="main"
+        tal:define="errors options/state/getErrors;
+                    view context/@@singlecomment_view;"
+        i18n:domain="ploneboard">
+
+        <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+            Page d'affichage du fil d'ariane
+        </metal:macro>
+
+        <div class="row"
+             tal:define="message request/message | nothing"
+             tal:condition="message">
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+        </div>
+
+        <div id="reveal-main" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+        <main id="forum-liste" class="row" role="main" aria-labelledby="page_title">
+            <div>
+                <p tal:content="here/Description"
+                   tal:condition="here/Description">
+                    Description
+                </p>
+
+                <tal:define define="comment view/comment;
+                                    quotedBody string:<blockquote>${context/getText}</blockquote>">
+                <div class="boardConversation">
+                    <div class="boardComment visualIEFloatFix">
+                        <metal:comment metal:use-macro="context/comment_view/macros/comment" />
+                    </div>
+                </div>
+                </tal:define>
+            </div>
+            <form name="edit_form" method="post"
+                  tal:attributes="action string:$context/absolute_url}/${template/getId}">
+
+                <input type="hidden" name="form.submitted" value="1" />
+
+                <div id="archetypes-fieldname-description" class="field"
+                     tal:define="error errors/text | nothing"
+                     tal:attributes="class python:context.test(error, 'field error', 'field')">
+                    <label for="text">Corps de texte</label>
+                    <div class="fieldErrorBox"
+                         tal:condition="error"
+                         tal:content="error"/>
+                    <textarea name="text" rows="5"
+                              required="required" placeholder="Saisie obligatoire"
+                              i18n:attributes="placeholder"></textarea>
+                </div>
+                <input type="hidden" name="form.submitted" value="1" />
+                <div class="formControls">
+                    <input class="button small radius" name="form.button.Post"
+                           type="submit" value="Post comment"
+                           i18n:attributes="value"/>
+                </div>
+            </form>
+        </main>
+    </div>
+
+</body>
+
+</html>

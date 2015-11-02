@@ -1,0 +1,183 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!-- correspondance -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel">
+            <a href="#reveal_question" class="button tiny radius"
+               data-reveal-id="reveal_question"
+               title="afficher une aide sur cet élément">
+               <i class="fa fa-question"></i>
+               Aide
+            </a>
+            <label for="question">La question à poser</label>
+            <div id="reveal_question"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Html admis.</div>
+            <textarea name="explain" id="question"
+                      rows="5" cols="60"
+                      tal:content="QCM_parsed/explain"/>
+        </div>
+
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_listeObjets" class="button tiny radius"
+               data-reveal-id="reveal_listeObjets"
+               title="afficher une aide sur cet élément">
+               <i class="fa fa-question"></i>
+               Aide
+            </a>
+            <label for="data">Liste des objets à relier</label>
+            <div id="reveal_listeObjets"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Liste des objets à relier <a class="close-reveal-modal"></a></h2>
+                <div>
+                    <p>
+                        Chaque ligne doit correspondre à un couple d'objets.<br/>
+                        Séparez les 2 éléments d'un couple d'objets par une virgule.
+                    </p>
+                    <hr/>
+                    <h3>Exemple :</h3>
+                    <div>couples "verbe à l'infinitf, forme conjuguée" :<br/>
+                        <pre>avoir, j'ai
+être, je suis
+dormir, je dors
+..., ...</pre>
+                    </div>
+                    <hr/>
+                    <div style="font-style:italic;">NB :
+                        <ul>
+                            <li>Attention à ne pas mettre de virgules supplémentaires dans vos objets.</li>
+                            <li>Notez que si vous souhaitez tout de même afficher une virgule dans un de vos couple d'objets, vous pouvez utiliser le code HTML suivant : <code>&amp;#44;</code></li>
+                        </ul>
+                    </div>
+                    <hr/>
+                    <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+                </div>
+            </div>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div class="formHelp texte_icone icone_information">Définir une paire d'objets correspondants par ligne, séparés
+                par une virgule.<br />3 paires minimum. Html admis.</div>
+            <textarea name="data" id="data"
+                      rows="14" cols="60"
+                      required="required"
+                      placeholder="Saisissez 3 paires d'objets minimum."
+                      i18n:attributes="placeholder"
+                      tal:content="QCM_parsed/data"/>
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+                    <fieldset class="radius">
+                        <legend>Dimensions des étiquettes :</legend>
+                        <div class="formHelp texte_icone icone_information">Les tailles sont en pixels : prévoyez la réponse la plus longue.<br />Pensez aussi aux personnes qui ont besoin d'augmenter la taille du texte dans leur navigateur : ne définissez pas des cases trop petites…</div>
+                        <div class="row">
+                            <div class="medium-4 columns">
+                                <div tal:define="error errors/sizel | nothing;
+                                     arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                      <label for="sizel">Largeur de la colonne de gauche </label>
+                                      <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                      <input type="number" max="1900" maxlength="10"
+                                             name="sizel" id="sizel" class="mini"
+                                             tal:attributes="value QCM_parsed/sizel"
+                                             required="required"
+                                             placeholder="Saisissez un nombre"
+                                             i18n:attributes="placeholder" />
+                                </div>
+                            </div>
+                            <div class="medium-4 columns">
+                                <div tal:define="error errors/sizev | nothing;
+                                                 arch_class string:panel ArchetypesStringWidget"
+                                     tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                      <label for="sizev">Hauteur d'une étiquette</label>
+                                      <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                      <input type="number" max="1000" maxlength="10"
+                                             name="sizev" id="sizev" class="mini"
+                                             tal:attributes="value QCM_parsed/sizev"
+                                             required="required"
+                                             placeholder="Saisissez un nombre"
+                                             i18n:attributes="placeholder" />
+                                </div>
+                            </div>
+                            <div class="medium-4 columns">
+                                <div tal:define="error errors/sizer | nothing;
+                                                 arch_class string:panel ArchetypesStringWidget"
+                                     tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                      <label for="sizer">Largeur de la colonne de droite</label>
+                                      <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                      <input type="number" max="1900" maxlength="10"
+                                             name="sizer" id="sizer" class="mini"
+                                             tal:attributes="value QCM_parsed/sizer"
+                                             required="required"
+                                             placeholder="Saisissez un nombre"
+                                             i18n:attributes="placeholder" />
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="row">
+                        <div class="medium-6 columns">
+                            <div tal:define="error errors/tot | nothing;
+                                             arch_class string:panel ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="tot">Nombre maximum de paires d'objets à afficher</label>
+                                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Minimum 3.</div>
+                                <input type="number" min="3" maxlength="5" size="5"
+                                       name="tot" id="tot" class="mini"
+                                       tal:attributes="value QCM_parsed/tot"
+                                       required="required"
+                                       placeholder="Saisissez un nombre"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-6 columns">
+                            <metal:macro use-macro="context/macro_commune/macros/accolade_option"/>
+                        </div>
+                    </div>
+
+                    <div class="panel callout">
+                        <label for="feedback_general">Feedback général</label>
+                        <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+                        <input name="feedback_general" id="feedback_general"
+                               type="text" class="mini"
+                               tal:attributes="value QCM_parsed/feedback_general"/>
+                    </div>
+
+                </div>
+            </dd>
+            <dd class="accordion-navigation">
+                <a href="#reveal_html_allowed">
+                    <i class="fa fa-question"></i>
+                    Puis-je utiliser de l'HTML dans cet exercice ?
+                </a>
+                <div id="reveal_html_allowed"
+                     class="content">
+                    <metal:macro use-macro="context/macro_commune/macros/html_allowed"/>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+
+
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

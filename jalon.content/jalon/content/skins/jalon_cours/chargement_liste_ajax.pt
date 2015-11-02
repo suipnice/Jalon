@@ -1,0 +1,25 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="espace python:request['espace'].replace('%20', ' ');
+                                formulaire request/formulaire;
+                                subjects request/subject | subjects;
+                                page_macro python:context.getPageMacro(espace);">
+
+    <metal:macro use-macro="python:getattr(context, page_macro['page']).macros[page_macro['macro']]">
+        Macro d'affichage de la liste en fonction de la variable espace
+    </metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

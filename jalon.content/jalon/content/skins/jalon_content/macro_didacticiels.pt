@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+<metal:macro define-macro="didacticiels">
+
+  <div id="message"></div>
+
+  <div id="tableau">  
+  <tal:block define="subject request/subject | nothing;
+                     folderContents python:context.getContents(subject=subject, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='');">
+    
+    <tal:block condition="not:folderContents">
+      <div class="listing_vide" i18n:translate="">Aucun élément</div>
+    </tal:block>
+    
+    <tal:listing condition="folderContents">
+      <ul class="arrondis">
+        <tal:entry repeat="item folderContents">
+        <li class="arrondi">
+          <img tal:attributes="src item/getURLWEB"/>
+          <a tal:attributes="href string:${item/getURL}/view" 
+                 title="Voir le fichier"
+                 class="showmore"
+                 tal:content="item/Title"/>
+          <tal:block condition="python:user.has_role('Manager')">
+              <a tal:attributes="href string:${item/getURL}/edit" 
+                 title="Modifier le fichier"
+                 class="bouton small showmore"
+                 i18n:attributes="title"
+                 i18n:translate="">
+                Modifier
+              </a>
+              <a tal:attributes="href string:${item/getURL}/folder_form?formulaire=supprimer" 
+                 title="Supprimer le fichier"
+                 class="bouton small showmore"
+                 i18n:attributes="title"
+                 i18n:translate=""
+                 tal:condition="python:context.test(len(item.getRawRelatedItems) == 0, 1, 0)">
+                Supprimer
+              </a>
+          </tal:block>
+        </li>
+        </tal:entry>
+      </ul>
+    </tal:listing>
+  </tal:block>
+
+  </div>
+
+</metal:macro>
+</metal:content-core>
+</body>
+</html>

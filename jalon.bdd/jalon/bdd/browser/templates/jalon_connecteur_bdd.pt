@@ -1,0 +1,149 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#jalon_configuration ul.button-group > li {
+    width: 33%;
+}
+
+#jalon_configuration ul.button-group > li .button {
+    background-color: #e7e7e7;
+    border-color: #b9b9b9;
+    color: #333;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+#jalon_configuration ul.button-group > li .button.selected, #jalon_configuration ul.button-group > li .button:hover, #jalon_configuration ul.button-group > li .button:focus {
+    color: #fff;
+}
+
+#jalon_configuration ul.button-group > li .button.selected, #jalon_configuration ul.button-group > li .button.selected:focus {
+    background-color: #2a9ccc;
+    border-color: #227da3;
+}
+
+#jalon_configuration ul.button-group > li .button:hover, #jalon_configuration ul.button-group > li .button:focus, #jalon_configuration ul.button-group > li .button.selected:hover {
+    background-color: #227da3;
+    border-color: #227da3;
+}
+
+#jalon_configuration .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#jalon_configuration .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#jalon_configuration .panel.success a {
+    color: #fff;
+}
+
+#jalon_configuration .panel.warning {
+    background: none repeat scroll 0 0 #fef8f2;
+    border-color: #fbddbf;
+    border-style: solid;
+    border-width: 1px;
+    margin-bottom: 0.625rem;
+    padding: 0.5rem 0.75rem 0.625rem;
+}
+
+#jalon_configuration #termeRecherche {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.75);
+    display: inline;
+    font-family: inherit;
+    transition: box-shadow 0.45s ease 0s, border-color 0.45s ease-in-out 0s;
+    display: inline;
+    width: inherit;
+}
+
+#jalon_configuration #labelTypeRecherche, #jalon_configuration #labelTermeRecherche {
+    color: #4d4d4d;
+    cursor: pointer;
+    display: inline;
+    margin-bottom: 0;
+}
+</style>
+
+<metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    Page d'affichage du fil d'ariane
+</metal:macro>
+
+<div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<div id="reveal-second" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
+      tal:define="gestion request/gestion | string:gestion_bdd">
+    <section class="small-12 columns">
+        <ul class="button-group radius">
+            <li>
+                <a class="button small"
+                   tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_bdd;
+                                   class python:context.test(gestion == 'gestion_bdd', 'button small selected', 'button small')"
+                   i18n:translate="ongletBaseDeDonnees">
+                    Offre de formation
+                </a>
+            </li>
+            <li>
+                <a class="button small"
+                   tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_utilisateurs;
+                                   class python:context.test(gestion == 'gestion_utilisateurs', 'button small selected', 'button small')"
+                   i18n:translate="ongletUtilisateurs">
+                    Utilisateurs
+                </a>
+            </li>
+            <li>
+                <a class="button small"
+                   tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_connexion_bdd;
+                                   class python:context.test(gestion == 'gestion_connexion_bdd', 'button small selected', 'button small')"
+                   i18n:translate="ongletConnexion">
+                    Connexion
+                </a>
+            </li>
+        </ul>
+        <metal:macro use-macro="python:getattr(context, gestion).macros[gestion]">
+            Macro de gestion
+        </metal:macro>
+    </section>
+</main>
+
+</metal:core>
+
+</body>
+
+</html>

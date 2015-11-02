@@ -1,0 +1,19 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="content"
+                tal:define="errors options/state/getErrors | nothing;
+                           fichier_macro request/fichier_macro;
+                            macro request/macro">
+        <metal:macro use-macro="python:getattr(context, fichier_macro).macros[macro]">
+          Code de la macro passée en paramètre
+        </metal:macro>
+    </metal:main>
+</body>
+
+</html>

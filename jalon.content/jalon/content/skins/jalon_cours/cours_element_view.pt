@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <tal:define define="dossier context/getId;
+                        titre context/Title;
+                        idElement request/idElement | nothing;
+                        createurElement request/createurElement | nothing;
+                        typeElement python:context.retirerEspace(request['typeElement']);
+                        indexElement request/indexElement | nothing;
+                        mode_etudiant request/mode_etudiant | string:false;
+                        element python:context.getElementView(idElement, createurElement, typeElement, indexElement, mode_etudiant);
+                        cours nothing">
+
+        <h2>
+            <tal:block condition="python:context.test(typeElement == 'JalonFile', 0, 1)"
+                       i18n:translate="">
+                Voir la ressource…
+            </tal:block>
+            <tal:block condition="python:context.test(typeElement == 'JalonFile', 1, 0)"
+                       content="element/titreElement" />
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <tal:define define="no_return python:context.insererConsultation(user.getId(), idElement, typeElement)"/>
+
+        <metal:macro use-macro="python:getattr(context, 'macro_element_view').macros[typeElement]">
+            Macro d'affichage de l'element
+        </metal:macro>
+
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>

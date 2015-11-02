@@ -1,0 +1,500 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Titre du cours
+-->
+<metal:macro define-macro="titre-cours">
+            <div class="row">
+                <nav class="right" tal:condition="personnel">
+                    <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=modifier-titre;
+                                       title string:Modifier le titre"
+                       i18n:attributes="title;">
+                        <i class="fa fa-pencil fa-lg no-pad"></i>
+                    </a>
+                    <a class="dropdown"
+                       data-options="align:bottom" data-dropdown="course-options">
+                        <i class="fa fa-cog fa-lg"></i>
+                    </a>
+                    <ul id="course-options" data-dropdown-content class="f-dropdown">
+                        <li>
+                            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-libre"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main">
+                                <i class="fa fa-key fa-fw"></i><tal:block i18n:translate="">Accès par mot de passe</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-anonyme"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main">
+                                <i class="fa fa-unlock fa-fw"></i><tal:block i18n:translate="">Accès libre</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=purger&amp;came_from=cours_plan_view">
+                                <i class="fa fa-filter fa-fw"></i><tal:block i18n:translate="">Purger les travaux étudiants</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=suppr_WIMS&amp;came_from=cours_plan_view">
+                                <i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="">Supprimer les activités WIMS</tal:block>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <h1>
+                    NEW VERSION : <i class="fa fa-book"></i><tal:replace replace="here/Title" />
+                </h1>
+            </div>
+</metal:macro>
+
+
+<!--
+
+        Affichage de l'entête du cours (Description, Auteur, Co-auteurs)
+-->
+<metal:macro define-macro="entete-cours">
+            <div class="row">
+                <div id="description_cours"
+                     class="panel bkgrnd radius small-12 medium-6 columns"
+                     tal:define="desc context/getDescriptionCourte">
+                        <a class="right"
+                           data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-attribut&amp;attribut=description"
+                           tal:condition="personnel">
+                            <i class="fa fa-pencil fa-lg"></i>
+                        </a>
+                        <h2>
+                            <i class="fa fa-info-circle no-pad"></i>
+                            <tal:block i18n:translate="">Description du cours :</tal:block>
+                        </h2>
+                        <p tal:content="desc/desc" />
+                        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=description_complete"
+                           tal:condition="desc/link">
+                           <i>Voir la description complète…</i>
+                        </a>
+                </div>
+                <div class="small-12 medium-6 columns">
+                    <div id="panel_auteur" class="panel bkgrnd radius">
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=modifier-auteur"
+                           tal:condition="personnel">
+                            <i class="fa fa-pencil fa-lg"></i>
+                        </a>
+                        <dl>
+                            <dt>
+                                <i class="fa fa-user no-pad"></i>
+                                <tal:block i18n:translate="auteur">Auteur :</tal:block>
+                            </dt>
+                            <dd>
+                                <a tal:define="auteurPrincipal context/getAuteur"
+                                   tal:attributes="href python:context.test(isLDAP, context.getFicheAnnuaire(auteurPrincipal, baseAnnuaire), 'mailto:%s' % auteurPrincipal['email'])"
+                                   target="_blank"
+                                   tal:content="auteurPrincipal/fullname" />
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="panel bkgrnd radius"
+                         tal:define="coauteurs context/getCoAuteursCours">
+                    <tal:personnel condition="python:personnel">
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:condition="coauteurs"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=supprimer-coauteurs">
+                            <i class="fa fa-trash fa-lg alert"></i>
+                        </a>
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=ajouter-coauteurs">
+                            <i class="fa fa-plus-circle fa-lg"></i>
+                        </a>
+                    </tal:personnel>
+                        <dl>
+                            <dt>
+                                <i class="fa fa-users no-pad"></i>
+                                <tal:block i18n:translate="coauteurs">Co-auteur(s) :</tal:block>
+                            </dt>
+                    <tal:repeat repeat="auteur coauteurs">
+                        <tal:define define="is_last repeat/auteur/end;
+                                            itemNbr repeat/auteur/length;">
+                            <dd>
+                                <a target="_blank"
+                                   tal:attributes="href python:context.test(isLDAP, context.getFicheAnnuaire(auteur, baseAnnuaire), 'mailto:%s' % auteur['email'])"
+                                   tal:content="auteur/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                            </dd>
+                            <tal:comment replace="nothing"><!--
+                                Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                            --></tal:comment>
+
+                        </tal:define>
+                    </tal:repeat>
+                            <tal:block condition="not:coauteurs"><dd>il n'y a aucun co-auteur pour ce cours.</dd></tal:block>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+</metal:macro>
+
+
+<!--
+
+        Affichage de la description complète du cours
+-->
+<metal:macro define-macro="description_complete">
+    <h2>
+        <tal:block i18n:translate="">Description complète du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="type_TexteLibre" tal:content="structure context/getRawDescription" />
+</metal:macro>
+
+
+
+<!--
+
+        Modification du titre du cours
+
+
+-->
+<metal:macro define-macro="modifier-titre">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier le titre du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-courseTitleMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};">
+
+        <div tal:define="error errors/title | nothing;"
+            tal:attributes="class python:context.test(error, 'error', '')">
+
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | context/Title"
+                   i18n:attributes="placeholder" />
+
+        </div>
+
+        <tal:comment replace="nothing">
+        <!--div>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description"><tal:replace replace="request/description | context/Description"/></textarea>
+        </div-->
+        </tal:comment>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="page" value="" />
+        <input type="hidden" name="key" value="title" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_cours" />
+        <input type="hidden" name="formulaire" value="modifier-titre" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setRevealFormNewPage('js-courseTitleMod','reveal-course_access')" />
+
+    </form>
+
+</metal:macro>
+
+
+
+<!--
+        ajout-supports : attacher un support depuis mon espace
+-->
+<metal:macro define-macro="ajout-supports">
+<tal:define define="subjects context/getSelectedTags;
+                    espace request/espace;">
+
+    <h2>
+        <tal:block i18n:translate="">Attacher un élément de « Mon Espace »</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h3>
+
+    <ul id="js-tag_filter">
+        <metal:macro use-macro="context/tag_macro/macros/tag-cours" />
+    </ul>
+
+    <div id="js-list-ressource"
+             tal:define="espace request/espace;
+                         page_macro python:context.getPageMacro(espace);">
+
+        <h3 id="js-popup-update_title">
+            <i class="fa fa-files-o"></i><tal:block content="espace" i18n:translate="" />
+        </h3>
+
+        <form id="js-attachmentCreator" method="POST"
+              tal:attributes="action string:${context/absolute_url}/cours_element_add;
+                              data-success_msg string:Le plan du cours a été mis à jour.;">
+
+            <div id="js-popup-update_target"
+                 tal:attributes="data-href python:'%s/chargement_liste_ajax?espace=%s&amp;formulaire=%s' % (context.absolute_url(), espace.replace(' ', '%20'), formulaire)">
+                <metal:macro use-macro="python:getattr(context, page_macro['page']).macros[page_macro['macro']]" />
+            </div>
+
+        </form>
+
+        <script charset="UTF-8"
+                tal:condition="python:not espace in ['Glossaire', 'Bibliographie']"
+                tal:content="structure string:setAttachmentCreator()" />
+
+        <script charset="UTF-8"
+                tal:condition="python:espace in ['Glossaire', 'Bibliographie']"
+                tal:content="structure string:setTagFilter(true)" />
+
+    </div>
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Affichage des contrôles plan / dispo / submit (ajout d'él. de mon espace dans le plan d'un cours)
+-->
+<metal:macro define-macro="affichage-bouton-ajout">
+
+    <tal:condition condition="python:context.test(context.portal_type =='JalonCours' and espace not in ['Glossaire', 'Bibliographie'], 1, 0)">
+        <metal:macro use-macro="context/arbo_plan/macros/plan_select" />
+    </tal:condition>
+
+    <div class="field"
+         tal:condition="python:not espace in ['Glossaire', 'Bibliographie', 'Exercices Wims']">
+        <h3><i class="fa fa-eye"></i><tal:block i18n:translate="">Disponibilité</tal:block></h3>
+        <tal:define define="attacher_afficher request/attacher_afficher | string:0;">
+        <input type="radio" name="attacher_afficher" id="attacher_afficher"
+               value="1"
+               tal:attributes="checked python:context.test(int(attacher_afficher), 'checked', '')" />
+        <label for="attacher_afficher" i18n:translate="">Afficher immédiatement</label>
+        <input type="radio" name="attacher_afficher" id="attacher_masquer"
+               value="0"
+               tal:attributes="checked python:context.test(int(attacher_afficher), '', 'checked')" />
+        <label for="attacher_masquer" i18n:translate="">Masquer</label>
+        </tal:define>
+    </div>
+
+    <input type="hidden" name="formulaire"
+           tal:attributes="value formulaire" />
+    <input type="hidden" name="macro" value="macro_cours" />
+    <input type="hidden" name="espace"
+           tal:attributes="value espace" />
+
+    <div class="formControls">
+        <button type="submit"
+                name="attacher"
+                class="button small radius"
+                disabled="disabled">
+            <i class="fa fa-chain"></i>
+            <tal:block i18n:translate="">Attacher</tal:block>
+        </button>
+    </div>
+
+</metal:macro>
+
+
+<!--
+        Créer une activité dans un cours
+-->
+<metal:macro define-macro="creer-activites">
+<tal:define define="espace request/espace | nothing;
+                    macro string:macro_cours_activites;
+                    formulaire string:ajout-activite;">
+
+    <metal:macro use-macro="context/macro_cours_activites/macros/ajout-activite" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Créer un élément dans mon espace depuis un cours
+-->
+<metal:macro define-macro="ajout-elements">
+<tal:define define="espace request/espace | nothing;
+                        macro string:macro_cours_elements;
+                        formulaire string:ajout-elements;
+                        ajout request/ajout| nothing;
+                        section string:activite">
+
+    <h2>
+        <tal:block i18n:translate="">Ajout rapide</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <metal:macro use-macro="context/macro_cours_elements/macros/ajout-elements" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Attacher un sujet à une activité depuis mon espace
+-->
+<metal:macro define-macro="ajout-sujets">
+<tal:define define="subjects context/getSelectedTags;
+                    espace request/espace">
+    <h2>
+        <tal:block i18n:translate="">Attacher un élément de « Mon Espace »</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h3>
+
+    <ul id="js-tag_filter">
+        <metal:macro use-macro="context/tag_macro/macros/tag-cours" />
+    </ul>
+
+    <div id="js-list-ressource"
+             tal:define="espace request/espace;
+                         page_macro python:context.getPageMacro(espace);">
+
+        <h3 id="js-popup-update_title">
+            <i class="fa fa-files-o"></i><tal:block content="espace" i18n:translate="" />
+        </h3>
+
+        <form tal:attributes="action string:${context/absolute_url}/activite_element_add"
+              class="enableAutoFocus">
+
+            <div id="js-popup-update_target"
+                 tal:attributes="data-href python:'%s/chargement_liste_ajax?espace=%s&amp;formulaire=%s' % (context.absolute_url(), espace.replace(' ', '%20'), formulaire)">
+                <metal:macro use-macro="python:getattr(context, page_macro['page']).macros[page_macro['macro']]" />
+            </div>
+
+        </form>
+
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setAttachmentCreator()" />
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Jalonner un élément du plan
+-->
+<metal:macro define-macro="epingler-element">
+
+    <h2>
+        <tal:block i18n:translate="">Jalonner l'élément</tal:block>
+        « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(request['idElement'])['titreElement']), 80)" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Fait apparaître un jalon en face d'un élément du plan, permettant de donner une indication (apparaissant au survol) aux étudiants.</tal:block><br/>
+        <tal:block i18n:translate="">Exemple :</tal:block>
+        <i i18n:translate="">À la prochaine séance nous commencerons ici.</i>
+    </div>
+
+<tal:define define="epinglerPos request/epinglerPos">
+
+    <div class="panel warning radius"
+          tal:condition="python:context.test(epinglerPos == 'non', 1, 0)">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cet élément du plan est actuellement masqué, vous ne pouvez pas le jalonner.</tal:block>
+    </div>
+
+    <tal:condition condition="python:context.test(epinglerPos == 'oui', 1, 0)">
+
+    <form tal:attributes="action string:${context/absolute_url}/epingler_element_script"
+          method="POST">
+
+        <div id="archetypes-fieldname-commentaire" class="field">
+            <label for="commentaire" i18n:translate="">Indication</label>
+            <textarea name="commentaire" id="commentaire" rows="5"
+                      placeholder="Saisissez ici l'indication que vous souhaitez donner aux étudiants."
+                      i18n:attributes="placeholder"><tal:replace replace="python:context.getCommentaireEpingler(request['idElement'])"/></textarea>
+        </div>
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Si vous laissez le champ</tal:block>
+            « <tal:block i18n:translate="">Indication</tal:block> »
+            <tal:block i18n:translate="">vide, le texte affiché sera</tal:block>
+            « <tal:block i18n:translate="">Élément signalé par l'enseignant</tal:block> ».
+        </div>
+
+        <div class="panel warning radius">
+            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Vous ne pouvez jalonner qu'un seul élément du plan. Si un élément du plan est déjà jalonné, vous allez le remplacer.</tal:block>
+        </div>
+
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-hand-o-left"></i>
+                <tal:block i18n:translate="">Jalonner</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    </tal:condition>
+
+</tal:define>
+</metal:macro>
+
+
+<!--
+        Déjalonner un élément du plan
+-->
+<metal:macro define-macro="desepingler-element">
+
+    <h2>
+        <tal:block i18n:translate="">Déjalonner l'élément</tal:block>
+        « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(request['idElement'])['titreElement']), 80)" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+<!--
+    <h2>
+        <tal:block i18n:translate="">Déjalonner cet élément du plan</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+-->
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Vous allez déjalonner cet élément du plan. Il ne sera plus signalé aux étudiants et les indications associées à ce jalon seront supprimées.</tal:block>
+    </div>
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/desepingler_element_script">
+
+        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+
+        <div class="formControls">
+            <button type="submit" class="button small alert">
+                <i class="fa fa-hand-o-right"></i>
+                <tal:block i18n:translate="">Déjalonner</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+</metal:content-core>
+</body>
+</html>

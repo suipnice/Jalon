@@ -1,0 +1,581 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Création d'un lien / sélection du type de lien
+-->
+<metal:macro define-macro="ajout-ressource">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un lien</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3 class="texte_icone icone_recherche" i18n:translate="">Choisissez le type de lien à créer</h3>
+
+    <form id="js-linkCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/folder_form">
+
+        <div id="archetypes-fieldname-modele" class="field ArchetypesSelectionWidget">
+            <div class="fieldErrorBox"></div>
+            <tal:repeat repeat="type context/getTypeLien">
+                <p tal:define="radio_id string:radio-${repeat/type/index}">
+                    <input type="radio" name="formulaire"
+                           tal:attributes="id radio_id;
+                                           value type/macro;
+                                           checked type/checked" />
+                    <label tal:attributes="for radio_id" tal:content="type/aide" i18n:translate="" />
+                </p>
+            </tal:repeat>
+        </div>
+        <input type="hidden" name="macro" value="macro_creer_mon_espace" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="submit">
+                <i class="fa fa-arrow-circle-right"></i>
+                <tal:block i18n:translate="">Étape suivante</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:comment replace="nothing"><!--
+    <a tal:attributes="href string:${context/absolute_url}/videos_pod"
+       i18n:translate="">
+        Trouver une vidéo dans UNSPOD
+    </a>
+    --></tal:comment>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setLinkCreator()" />
+
+</metal:macro>
+
+
+<!--
+        Création de liens à partir du catalogue de la BU
+-->
+<metal:macro define-macro="ajout-catalogue"
+             tal:define="termeRecherche request/termeRecherche | nothing">
+    <h2>
+        <tal:block i18n:translate="">Créer un lien à partir du catalogue de la BU</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form class="js-BULinkSearch" id="js-BULinkCreator_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/folder_form">
+        <div class="field ArchetypesStringWidget" id="archetypes-fieldname-recherche">
+            <label for="termeRecherche" i18n:translate="">Mot clé ou code :</label>
+            <input type="text" size="30" maxlength="255"
+                   name="termeRecherche" id="termeRecherche"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value termeRecherche" />
+            <input type="hidden" name="formulaire" id="formulaire" value="ajout-catalogue" />
+            <input type="hidden" name="macro" id="macro" value="macro_creer_mon_espace" />
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-search"></i>
+                <tal:block i18n:translate="">Rechercher</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <form class="js-BULinkSearch" id="js-BULinkCreator_back2Type" method="POST"
+          tal:attributes="action string:${context/absolute_url}/folder_form">
+        <input type="hidden" name="formulaire" value="ajout-ressource"/>
+        <input type="hidden" name="macro" value="macro_creer_mon_espace"/>
+        <button type="submit" class="button small radius"
+                name="submit">
+            <i class="fa fa-arrow-circle-left"></i>
+            <tal:block i18n:translate="">Étape précédente</tal:block>
+        </button>
+    </form>
+
+    <tal:condition condition="termeRecherche">
+
+    <form name="element_add" id="js-BULinkCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/ajouterressource_script;
+                          data-success_msg string:La sélection a été ajoutée aux ressources externes."
+          tal:define="resultatRecherche python:context.rechercherCatalogueBU(termeRecherche, 'liste')">
+
+        <div class="panel warning radius"
+             tal:condition="not:resultatRecherche"
+             i18n:translate="">
+            La recherche n'a donné aucun résultat.
+        </div>
+
+        <tal:listing condition="resultatRecherche">
+
+        <h2 class="texte_icone icone_liste">Les 10 premiers résultats dans le catalogue de la BU</h2>
+        <table summary="Liste des ressources BU">
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" id="switch_reveal-all" name="checkall" role="recordsid:list" />
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </th>
+                    <th i18n:translate="">Image</th>
+                    <th class="sort text-left" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre / Informations</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+
+            <tal:entry repeat="item resultatRecherche">
+                <tr>
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
+                                   tal:attributes="id string:switch_reveal-${repeat/item/index};
+                                                   value item/recordid"
+                                   i18n:attributes="title" />
+                            <label title="Action par lot : sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/item/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td>
+                <tal:block repeat="image_src item/image">
+                        <img class="primo_img"
+                             tal:attributes="src image_src"/>
+                </tal:block>
+                    </td>
+
+                    <td class="title"
+                        tal:define="resTitle python:here.getShortText(item['title'].encode('utf-8'), 75)">
+                        <span class="hide" tal:content="resTitle" />
+                        <a target="_blank" title="Voir ce document sur le site de la BU (dans une nouvelle page)."
+                           tal:attributes="href item/urlcatalogue"
+                           tal:content="resTitle"
+                           i18n:attributes="title" />
+                        <span>
+                            <strong tal:content="item/creator" /><br />
+                            <tal:block replace="item/publisher"/><br />
+                            <tal:block content="item/creationdate"/>
+                        </span>
+                    </td>
+
+                </tr>
+            </tal:entry>
+
+            </tbody>
+        </table>
+
+        <input type="hidden" name="formulaire" value="ajout-cataloguebu" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+
+        <a class="button tiny expand success radius" target="_blank"
+           tal:attributes="href python:context.rechercherCatalogueBU(termeRecherche, 'BU')">
+            <i class="fa fa-search-plus"></i>
+            <tal:block i18n:translate="">Consulter plus de résultats sur le catalogue de la BU</tal:block>
+        </a>
+        <a class="button tiny expand secondary radius" target="_blank"
+           tal:attributes="href python:context.rechercherCatalogueBU(termeRecherche, 'suggestion')">
+            <i class="fa fa-asterisk"></i>
+            <tal:block i18n:translate="">Suggestions d’acquisitions</tal:block>
+        </a>
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:removeErrorImages('js-BULinkCreator')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-BULinkCreator',['title'],'title','desc')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setBatchSelect('js-BULinkCreator')" />
+        <script charset="UTF-8"
+                tal:content="structure string:setBULinkCreator()" />
+
+        </tal:listing>
+    </form>
+
+    </tal:condition>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setBULinkSearch()" />
+
+</metal:macro>
+
+
+<!--
+        Création d'un lien vers une page web
+-->
+<metal:macro define-macro="ajout-web">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un lien vers une page web</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form name="ajout-lien" id="js-webLinkCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le lien vers la page web;
+                          data-success_msg_post string:a été créé."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" maxlength="255" size="30"
+                   id="title" name="title"
+                   required="required"
+                   placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder"
+                   tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field ArchetypesTextAreaWidget">
+            <label for="description" class="formQuestion" i18n:translate="label_description">
+                Description
+            </label>
+            <div class="fieldErrorBox"></div>
+            <textarea id="description" name="description" cols="40" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format"/>
+        </div>
+
+        <div id="archetypes-fieldname-urlbiblio"
+             tal:define="error errors/urlbiblio | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="urlbiblio" class="formQuestion" i18n:translate="label_url">
+                URL
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="url" maxlength="255" size="30"
+                   id="urlbiblio" name="urlbiblio"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value request/urlbiblio | nothing" />
+        </div>
+
+        <input type="hidden" name="macro" value="macro_creer_mon_espace"/>
+        <input type="hidden" name="formulaire" value="ajout-web"/>
+        <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-webLinkCreator','reveal-main')" />
+
+</metal:macro>
+
+
+<!--
+        Création d'un lien à partir d'un lecteur exportable
+-->
+<metal:macro define-macro="ajout-video">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un lien à partir d'un lecteur exportable</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form name="ajout-lien" id="js-readerLinkCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le lien à partir d'un lecteur exportable;
+                          data-success_msg_post string:a été crée."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" maxlength="255" size="30"
+                   id="title" name="title"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field ArchetypesTextAreaWidget">
+            <label for="description" class="formQuestion">
+                <tal:block i18n:translate="label_description">Description</tal:block>
+            </label>
+            <div class="fieldErrorBox"></div>
+            <textarea id="description" name="description" cols="40" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format" />
+        </div>
+
+        <div id="archetypes-fieldname-lecteur"
+             tal:define="error errors/lecteur | nothing;
+                         arch_class string:field ArchetypesTextAreaWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="lecteur" class="formQuestion" i18n:translate="label_lecteur_exportable">
+                Lecteur exportable
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="lecteur" name="lecteur"
+                      cols="40" rows="5"
+                      required="required"
+                      placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                      tal:content="requet/lecteur | nothing" />
+        </div>
+
+        <input type="hidden" name="macro" value="macro_creer_mon_espace" />
+        <input type="hidden" name="formulaire" value="ajout-video" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-readerLinkCreator','reveal-main')" />
+
+</metal:macro>
+
+<!--
+        Création d'un terme de glossaire
+-->
+<metal:macro define-macro="ajout-glossaire">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un terme de glossaire</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-glossaryCreator" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le terme de glossaire;
+                          data-success_msg_post string:a été crée."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" i18n:translate="">Titre</label>
+              <div class="fieldErrorBox"
+                   tal:condition="error" tal:content="error" />
+              <input type="text" maxlength="255" size="30"
+                     id="title" name="title"
+                     required="required"
+                     placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                     tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="archetypes-fieldname-description"
+             tal:define="error errors/description | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="description" i18n:translate="">Définition</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error"/>
+            <textarea id="description" name="description" required="required" placeholder="Saisie obligatoire" cols="40" rows="5"></textarea>
+        </div>
+
+        <input type="hidden" name="page" tal:attributes="value string:${context/absolute_url}"/>
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+        <input type="hidden" name="macro" value="macro_creer_mon_espace"/>
+        <input type="hidden" name="formulaire" value="ajout-glossaire"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-glossaryCreator','reveal-main')" />
+
+</metal:macro>
+
+
+<!--
+        Popup de création d'un exercice WIMS
+-->
+<metal:macro define-macro="ajout-wims">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-wimsExerciceCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:L'exercice Wims;
+                          data-success_msg_post string:a été crée."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" class="formQuestion">
+                <tal:block i18n:translate="">Titre</tal:block>
+                <span id="title_wims_help" class="formHelp texte_icone icone_information">
+                    <tal:block i18n:translate="">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
+                    <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
+                    <tal:block i18n:translate="">seront supprimés ou remplacés par des espaces.</tal:block>
+                </span>
+            </label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="text" maxlength="40" size="30"
+                   id="title" name="title"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="archetypes-fieldname-modele"
+             tal:define="error errors/modele | nothing;
+                         arch_class string:field ArchetypesSelectionWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <label for="modele" class="formQuestion">
+                <tal:block i18n:translate="">Modèle</tal:block>
+                <span id="modele_help" class="formHelp texte_icone icone_information"
+                      i18n:translate="">Chaque modèle permet de composer un exercice complètement différent.</span>
+            </label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <select id="modele" name="modele"
+                    tal:define="modeles context/getModelesWims">
+                <tal:optgroup define="listCat python:modeles.keys();
+                                      listCatTem python:listCat.sort()"
+                              repeat="group listCat">
+                <optgroup tal:attributes="label group"
+                          i18n:attributes="label">
+                    <tal:option repeat="option python:modeles[group]">
+                    <option tal:attributes="value option/value"
+                            tal:content="option/title"
+                            i18n:translate="" />
+                    </tal:option>
+                </optgroup>
+                </tal:optgroup>
+            </select>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId"/>
+        <input type="hidden" name="macro" value="macro_creer_mon_espace"/>
+        <input type="hidden" name="formulaire" value="ajout-wims"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="submit">
+                <i class="fa fa-arrow-circle-right"></i>
+                <tal:block i18n:translate="">Étape suivante</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-wimsExerciceCreator','reveal-main')" />
+
+</metal:macro>
+
+
+<!--
+        Création d'exercice(s) WIMS par importation HotPotatoes
+-->
+<metal:macro define-macro="importer-exercices">
+
+    <h2>
+        <tal:block i18n:translate="">Importer des exercices HotPotatoes</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius"
+         i18n:translate="">
+        Sélectionnez un fichier « .jqz », généré depuis un HotPotatoes V6 ou supérieur, pour importer son contenu JQuizz.
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          enctype="multipart/form-data" method="POST">
+
+        <div tal:define="error errors/file | nothing;
+                         arch_class string:field"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <label for="file" class="formQuestion" i18n:translate="">Fichier JQuizz à importer</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="file" id="file" name="file"
+                   required="required" />
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="member_auth" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_creer_mon_espace" />
+        <input type="hidden" name="formulaire" value="importer-exercices" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="submit">
+                <i class="fa fa-upload"></i>
+                <tal:block i18n:translate="">Importer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+</metal:content-core>
+
+</body>
+
+</html>

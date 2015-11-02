@@ -1,0 +1,213 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="fr"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<!-- macro_cours_activites.pt  : Macros des activites du cours -->
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Création d'un élément
+-->
+<metal:macro define-macro="ajout-elements">
+
+    <metal:macro use-macro="python:getattr(context, 'macro_cours_elements').macros[request['espace'].lower().replace(' ', '-')]" />
+
+</metal:macro>
+
+
+<!--
+        Ajout rapide d'un fichier
+-->
+<metal:macro define-macro="fichiers">
+
+    <h3>
+        <i class="fa fa-files-o"></i><tal:block i18n:translate="">Ajouter votre fichier</tal:block>
+    </h3>
+
+    <form method="POST" enctype="multipart/form-data"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-file"
+            tal:define="error errors/file_file | nothing;
+                       arch_class string:field ArchetypesFileWidget;"
+            tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="file" i18n:translate="">Fichier</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <input id="file_file" name="file_file" type="file" size="30" required="required" />
+        </div>
+
+        <div id="archetypes-fieldname-title" class="field ArchetypesStringWidget"
+            tal:define="error errors/title | nothing"
+            tal:attributes="class python:context.test(error, 'field error ArchetypesStringWidget', 'field ArchetypesStringWidget')">
+            <label for="title" class="formQuestion" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                tal:condition="error"
+                tal:content="error" />
+            <input type="text" id="title" name="title" value=""
+                   maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="ArchetypesStringWidget">
+            <label for="description" i18n:translate="">Description</label>
+            <textarea name="description" rows="5"></textarea>
+        </div>
+
+        <metal:macro use-macro="context/arbo_plan/macros/plan_select"/>
+
+        <div class="field">
+            <h3><i class="fa fa-eye"></i><tal:block i18n:translate="">Disponibilité</tal:block></h3>
+            <tal:define define="attacher_afficher request/attacher_afficher | string:0;">
+            <input type="radio" name="attacher_afficher" id="attacher_afficher"
+                   value="1"
+                   tal:attributes="checked python:context.test(int(attacher_afficher), 'checked', '')" />
+            <label for="attacher_afficher" i18n:translate="">Afficher immédiatement</label>
+            <input type="radio" name="attacher_afficher" id="attacher_masquer"
+                   value="0"
+                   tal:attributes="checked python:context.test(int(attacher_afficher), '', 'checked')" />
+            <label for="attacher_masquer" i18n:translate="">Masquer</label>
+            </tal:define>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_cours" />
+        <input type="hidden" name="formulaire" value="ajout-elements" />
+        <input type="hidden" name="ajout" value="Rapide" />
+        <input type="hidden" name="ajout_espace" value="fichiers" />
+        <input type="hidden" name="espace" tal:attributes="value espace" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+<!--
+        Ajout rapide d'une ressource externe (hors BU)
+-->
+<metal:macro define-macro="ressources-externes">
+
+    <h3>
+        <i class="fa fa-external-link"></i><tal:block i18n:translate="">Ajouter une ressource externe</tal:block>
+    </h3>
+
+    <form id="js-directExtResCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg string:L'élément de plan a été crée.">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input id="title" name="title" type="text" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field ArchetypesTextAreaWidget">
+            <label for="description" class="formQuestion" i18n:translate="label_description">
+                Description
+            </label>
+            <div class="fieldErrorBox"></div>
+            <textarea id="description" cols="40" name="description" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format" />
+        </div>
+
+        <div id="archetypes-fieldname-lien"
+             tal:define="error errors/lien | nothing;
+                         arch_class string:field ArchetypesTextAreaWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="lien" class="formQuestion" i18n:translate="label_lecteur_exportable">
+                URL ou Lecteur exportable
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="lien" cols="40" name="lien" rows="5"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="requet/lien | nothing" /></textarea>
+        </div>
+
+        <metal:macro use-macro="context/arbo_plan/macros/plan_select" />
+
+        <div class="field">
+            <h3><i class="fa fa-eye"></i><tal:block i18n:translate="">Disponibilité</tal:block></h3>
+            <tal:define define="attacher_afficher request/attacher_afficher | string:0;">
+            <input type="radio" name="attacher_afficher" id="attacher_afficher"
+                   value="1"
+                   tal:attributes="checked python:context.test(int(attacher_afficher), 'checked', '')" />
+            <label for="attacher_afficher" i18n:translate="">Afficher immédiatement</label>
+            <input type="radio" name="attacher_afficher" id="attacher_masquer"
+                   value="0"
+                   tal:attributes="checked python:context.test(int(attacher_afficher), '', 'checked')" />
+            <label for="attacher_masquer" i18n:translate="">Masquer</label>
+            </tal:define>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_cours" />
+        <input type="hidden" name="formulaire" value="ajout-elements" />
+        <input type="hidden" name="ajout" value="Rapide" />
+        <input type="hidden" name="ajout_espace" value="ressources-externes" />
+        <input type="hidden" name="espace" tal:attributes="value espace" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-directExtResCreator','reveal-main')" />
+
+</metal:macro>
+
+
+<!-- Création d'un enregistrement de webconférence -->
+<metal:macro define-macro="webconference">
+
+<tal:define define="session python:context.getSessionConnect(user.getId(), 'Webconference');
+                    reunion python:context.getReunion(user.getId(), request);
+                    idreunion request/SESSION/idreunion | reunion/idreunion">
+    <a tal:attributes="href string:${reunion/urlreunion}?session=${session}"
+       title="Se connecter à la réunion"
+       class="bouton lien_actualiser bouton_icone icone_connexion"
+       target="new"
+       i18n:translate="">
+       Se connecter à votre salle virtuelle
+    </a>
+    <br /><br />
+    <p>
+        Communiquez l'url de votre réunion aux participants que vous souhaitez inviter : <tal:replace replace="string:${reunion/urlreunion}"/>
+    </p>
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

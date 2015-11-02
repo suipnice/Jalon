@@ -1,0 +1,80 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="personnel python:context.isPersonnel(user);
+                        etablissement context/getEtablissement;
+                        cle string:onglet;
+                        pageCours string:pref;
+                        default string:gestion-acces-etu;
+                        onglet python:context.getSelectedTab(cle, default)">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane du cours
+    </metal:macro>
+
+    <div id="reveal-course_access" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-course_access-medium" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-course_access-large" class="reveal-modal large" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main id="mes_cours-acces" class="row" role="main" aria-labelledby="page_title">
+
+        <div class="panel alert radius"
+             tal:condition="not:personnel"
+             i18n:translate="">
+            Vous n'êtes pas autorisé à modifier l'accès au cours en tant que lecteur de ce cours.
+        </div>
+
+        <div class="panel callout radius"
+             tal:condition="not:onglet"
+             i18n:translate="">Veuillez sélectionner un onglet.</div>
+
+        <div class="small-12 columns"
+             condition="personnel"
+             define="onglet python:context.getSelectedTab(cle, default)">
+
+            <ul id="tab_button-group" class="button-group radius">
+                <li>
+                    <a tal:attributes="class python:context.test(onglet == 'gestion-acces-etu', 'button small selected', 'button small');
+                                       href string:${context/absolute_url}/cours_acces_view?onglet=gestion-acces-etu">
+                        <i class="fa fa-users"></i><tal:block i18n:translate="">Accès étudiants</tal:block>
+                    </a>
+                </li>
+                <li>
+                    <a tal:attributes="class python:context.test(onglet == 'gestion-acces-ens', 'button small selected', 'button small');
+                                       href string:${context/absolute_url}/cours_acces_view?onglet=gestion-acces-ens">
+                        <i class="fa fa-user"></i><tal:block i18n:translate="">Partage Enseignants</tal:block>
+                    </a>
+                </li>
+                <li>
+                    <a tal:attributes="class python:context.test(onglet == 'gestion-preferences', 'button small selected', 'button small');
+                                       href string:${context/absolute_url}/cours_acces_view?onglet=gestion-preferences">
+                        <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
+                    </a>
+                </li>
+            </ul>
+
+            <tal:block condition="onglet">
+                <metal:macro use-macro="python:getattr(context, 'macro_acces').macros[onglet]"/>
+            </tal:block>
+
+        <script charset="UTF-8"
+                tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
+                tal:content="jsTranslate/getJsTranslate" />
+
+        </div>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

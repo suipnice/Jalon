@@ -1,0 +1,179 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!--Vrai/faux multiples -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel ArchetypesStringWidget">
+            <a href="#reveal_question" class="button tiny radius"
+               data-reveal-id="reveal_question"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                <tal:block i18n:translate="">Aide</tal:block>
+            </a>
+            <label for="question">La question à poser</label>
+            <div id="reveal_question"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
+                <hr class="spacer"/>
+                <metal:macro use-macro="context/macro_commune/macros/html_allowed"/>
+            </div>
+            <div class="formHelp texte_icone icone_information">Tapez simplement votre question. Les balises HTML sont admises sous conditions (voir aide).</div>
+            <textarea name="explain" id="question" rows="3" tal:content="QCM_parsed/explain"/>
+        </div>
+
+        <div tal:define="error errors/datatrue | nothing;
+                         arch_class string:panel ArchetypesStringWidget success"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_datatrue" class="button tiny radius"
+               data-reveal-id="reveal_datatrue"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="datatrue">Les phrases vraies</label>
+            <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_datatrue"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Les phrases vraies <a class="close-reveal-modal"></a></h2>
+                <div>
+                    N'utilisez pas de point-virgule.<br/>
+                    Évitez les phrases trop longues.<br/>
+                    <hr/>
+                    Ce texte accepte la mise en aléatoire par des accolades emboitables (cf. aide sur la question à poser).
+                </div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Écrire une phrase par ligne. Les balises HTML sont admises.</div>
+            <textarea name="datatrue" id="datatrue"
+                      rows="8" wrap="off"
+                      tal:content="QCM_parsed/datatrue"
+                      required="required"
+                      placeholder="Saisissez au moins une phrase vraie."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div tal:define="error errors/datafalse | nothing;
+                         arch_class string:panel ArchetypesStringWidget alert"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_datafalse" class="button tiny radius"
+               data-reveal-id="reveal_datafalse"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                Aide
+            </a>
+            <label for="datafalse">Les phrases fausses</label>
+            <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_datafalse"
+                 class="reveal-modal large wims-edit_reveal"
+                 data-reveal="data-reveal"
+                 data-options="close_on_background_click: true;" >
+                <h2>Les phrases fausses <a class="close-reveal-modal"></a></h2>
+                <div>
+                    Ne tapez aucun point-virgule.<br/>
+                    Évitez les phrases trop longues.
+                </div>
+                <hr/>
+                <div>
+                    Ce texte accepte la mise en aléatoire par des accolades emboitables (cf. aide sur la question à poser).<br/>
+                    Ceci est particulièrement utile pour générer rapidement plusieurs phrases à partir d'un même modèle.
+                </div>
+                <div>
+                    Par exemple, écrire <code class="indicateur">La puissance dissipée par un condensateur est proportionnelle <span class="strong">{à,au carré de}</span> la tension appliquée.</code>
+                </div>
+                <div>revient au même que d'avoir écrit les 2 phrases :
+                    <ul class="list-item">
+                        <li><code class="indicateur">La puissance dissipée par un condensateur est proportionnelle <span class="strong">à</span> la tension appliquée.</code></li>
+                        <li><code class="indicateur">La puissance dissipée par un condensateur est proportionnelle <span class="strong">au carré de</span> la tension appliquée.</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="formHelp texte_icone icone_information">Écrire une phrase par ligne. Les balises HTML sont admises.</div>
+            <textarea name="datafalse" id="datafalse"
+                      rows="8" wrap="off"
+                      tal:content="QCM_parsed/datafalse"
+                      required="required"
+                      placeholder="Saisissez au moins une phrase fausse."
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="options_avancees" class="content">
+
+                    <div class="row">
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/tot | nothing;
+                                             arch_class string:panel callout ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="tot">Nombre de phrases maximum à présenter</label>
+                                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Définissez suffisamment de phrases, sinon l'exercice affichera seulement ce qui est disponible.
+                                </div>
+                                <input type="number" maxlength="5" size="5"
+                                       name="tot" id="tot" class="mini"
+                                       tal:attributes="value QCM_parsed/tot"
+                                       required="required"
+                                       placeholder="Saisissez un nombre de phrases"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/mintrue | nothing;
+                                             arch_class string:panel success ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="mintrue">Minimum de phrases vraies</label>
+                                <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Au moins 1.</div>
+                                <input type="number" maxlength="5" size="5"
+                                       name="mintrue" id="mintrue" class="mini"
+                                       tal:attributes="value QCM_parsed/mintrue"
+                                       required="required"
+                                       placeholder="Saisissez un nombre de phrases"
+                                       i18n:attributes="placeholder" />
+                            </div>
+                        </div>
+                        <div class="medium-4 columns">
+                            <div tal:define="error errors/minfalse | nothing;
+                                             arch_class string:panel alert ArchetypesStringWidget"
+                                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                                <label for="minfalse">Minimum de phrases fausses</label>
+                                <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+                                <div class="formHelp texte_icone icone_information">Au moins 1.</div>
+                                <input type="number" min="1" maxlength="5" size="5"
+                                       name="minfalse" id="minfalse" class="mini"
+                                       tal:attributes="value QCM_parsed/minfalse"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <input id="option_split" type="checkbox" name="options:list" value="split"
+                               tal:define="options_split QCM_parsed/options_split | nothing"
+                               tal:attributes="checked python:context.test(options_split==1, 'checked', None)"/>
+                        <label class="input_label" for="option_split">Note partielle</label>
+                        <div class="formHelp texte_icone icone_information">Cochez « note partielle » si vous souhaitez donner une note partielle quand seulement une partie des bonnes réponses a été cochée.</div>
+                    </div>
+                    <div class="panel callout">
+                        <label for="feedback_general">Feedback général</label>
+                        <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+                        <input type="text" name="feedback_general" id="feedback_general"
+                               tal:attributes="value QCM_parsed/feedback_general"/>
+                    </div>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+
+    <body>
+    <metal:content-core fill-slot="content-core">
+    <!-- Multiples Textes à Trous  -->
+    <metal:macro define-macro="createxo">
+
+        <div class="panel ArchetypesStringWidget">
+            <label for="pre">Texte affiché avant un texte </label>
+            <div class="formHelp texte_icone icone_information">Ce sera souvent la consigne de l'exercice. Les balises HTML sont admises.</div>
+            <input type="text" name="pre" id="pre"
+                   tal:attributes="value QCM_parsed/pre;"/>
+        </div>
+        <div tal:define="error errors/data | nothing;
+                         arch_class string:panel ArchetypesStringWidget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <a href="#reveal_data" class="button tiny radius"
+               data-reveal-id="reveal_data"
+               title="afficher une aide sur cet élément">
+                <i class="fa fa-question"></i>
+                <tal:block i18n:translate="">Aide</tal:block>
+            </a>
+            <label for="data">Les textes à présenter</label>
+            <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <div id="reveal_data"
+                     class="reveal-modal large wims-edit_reveal"
+                     data-reveal="data-reveal"
+                     data-options="close_on_background_click: true;" >
+                <h2>Les textes à présenter <a class="close-reveal-modal"></a></h2>
+                <div>Vous pouvez taper plusieurs textes à trous, en les séparant avec un point-virgule <code class="indicateur"> ; </code>.</div>
+                <div>Un seul texte sera affiché à l'écran de manière aléatoire.</div>
+                <div>Attention : un paragraphe contenant un point-virgule sera scindé en 2 textes.</div>
+                <hr/>
+                <metal:macro use-macro="context/macro_commune/macros/texte_a_trous"/>
+            </div>
+            <div class="formHelp texte_icone icone_information">Tapez directement vos textes, en entourant chaque « trou » avec des doubles points d'interrogation « ?? ».<br /> Chaque texte peut contenir jusqu'à 20 « trous ».</div>
+            <textarea name="data" id="data"
+                      rows="10"
+                      tal:content="QCM_parsed/data"
+                      required="required"
+                      placeholder="Tapez au moins un texte ici."
+                      i18n:attributes="placeholder" />
+        </div>
+        <div class="panel">
+            <label for="post">Texte affiché après un texte</label>
+            <div class="formHelp texte_icone icone_information">Balises html admises.</div>
+            <input type="text" name="post" id="post"
+                   tal:attributes="value QCM_parsed/post"/>
+        </div>
+        <div class="panel callout">
+            <label for="feedback_general">Feedback général</label>
+            <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+            <input type="text"
+                   name="feedback_general" id="feedback_general"
+                   tal:attributes="value QCM_parsed/feedback_general"/>
+        </div>
+
+        <div class="panel">
+          <label for="type_rep">Niveau de tolérance dans l'analyse des réponses libres.</label>
+          <div class="formHelp texte_icone icone_information">Choisissez la tolérance avec laquelle WIMS analysera les réponses libres.<br/>
+          Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext ».</div>
+          <select name="type_rep" id="type_rep" tal:define="type_rep QCM_parsed/type_rep">
+            <option value="case"
+              tal:attributes="selected python:context.test(type_rep=='case', 'selected', None)">case (aucune tolérance d'erreur)</option>
+            <option value="nocase"
+              tal:attributes="selected python:context.test(type_rep=='nocase', 'selected', None)">nocase (tolère le minuscule/majuscule)</option>
+            <option value="atext"
+              tal:attributes="selected python:context.test(type_rep=='atext', 'selected', None)">atext (ignore pluriel/singulier et les articles)</option>
+          </select>
+
+        </div>
+
+        <dl class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <div id="usages_avances" class="content">
+                    <p>Pour accepter plusieurs réponses correctes possibles, séparez chaque bonne réponse (synonyme) par un trait vertical « <code class="indicateur">|</code> ».</p>
+                    <p>Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class="indicateur">Napoléon <span class="strong">??Premier|Bonaparte??</span> est mort à Sainte-Hélène.</code></p>
+
+                    <hr/>
+                    <p>Les textes de ce modèle acceptent la mise en aléatoire par des accolades emboitables.</p>
+                    <p>Si vous mettez plusieurs mots (ou groupes de mots) séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard au moment où le texte sera présenté aux élèves ; ce qui rendra le texte aléatoire.</p>
+                    <p>Par exemple, si vous entrez le texte :<code class="indicateur">Je suis allé <span class="strong shuffle">{à l'école,au cinéma}</span> <span class="strong shuffle">{hier,la semaine dernière}</span>.</code></p>
+                    <p>vous aurez comme résultat l'une des phrases suivantes, aléatoirement :</p>
+                    <ul class="list-item">
+                      <li>Je suis allé à l'école hier</li>
+                      <li>Je suis allé au cinéma hier</li>
+                      <li>Je suis allé à l'école la semaine dernière</li>
+                      <li>Je suis allé au cinéma la semaine dernière</li>
+                    </ul>
+                </div>
+            </dd>
+            <metal:macro use-macro="context/macro_commune/macros/advanced_actions"/>
+        </dl>
+    </metal:macro>
+    </metal:content-core>
+    </body>
+</html>

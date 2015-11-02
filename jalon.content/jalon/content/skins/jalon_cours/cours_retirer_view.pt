@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<metal:content fill-slot="content">
+
+    <h2>
+        <tal:block tal:condition="python:context.test('Titre' in request['idElement'], 1, 0)"
+                   i18n:translate="">
+            Supprimer un titre
+        </tal:block>
+        <tal:block tal:condition="python:context.test('TexteLibre' in request['idElement'], 1, 0)"
+                   i18n:translate="">
+            Supprimer un texte libre
+        </tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius"
+         i18n:translate="">
+        <tal:block i18n:translate="">Supprimer</tal:block>
+        « <strong tal:content="python:here.getShortText(context.supprimerMarquageHTML(context.getElementCours(request['idElement'])['titreElement']), 120)" /> »
+        <tal:block tal:condition="python:context.test('Titre' in request['idElement'], 1, 0)"
+                   i18n:translate="">
+            et détacher tout son contenu
+        </tal:block> ?
+    </div>
+
+    <div class="panel alert radius"
+         i18n:translate="">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette opération est définitive.</tal:block>
+    </div>
+
+    <div class="text-center">
+        <a class="button small alert"
+           tal:attributes="href string:${context/absolute_url}/cours_retirerElementPlan?idElement=${request/idElement}">
+            <i class="fa fa-trash-o fa-fw"></i>
+            <span tal:condition="python:context.test('Titre' in request['idElement'], 1, 0)"
+                  i18n:translate="">Supprimer ce titre et détacher tout son contenu</span>
+            <span tal:condition="python:context.test('TexteLibre' in request['idElement'], 1, 0)"
+                  i18n:translate="">Supprimer ce texte</span>
+        </a>
+    </div>
+
+</metal:content>
+</body>
+
+</html>

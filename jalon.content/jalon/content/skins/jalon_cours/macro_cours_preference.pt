@@ -1,0 +1,112 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+
+        Notification par courriel d'activité des forums
+
+
+-->
+<metal:macro define-macro="modifier-activerEmailForum">
+
+    <h2>
+        <tal:block i18n:translate="">Notification d'activité des forums</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="modifier-activerEmailForum"
+          tal:attributes="action string:${context/absolute_url}/cours_edit">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Une fois cette option activée, les utilisateurs du cours (auteur, coauteurs, lecteurs et étudiants) recevront automatiquement par courriel chaque message posté dans un forum du cours.</tal:block>
+        </div>
+
+        <div class="formControls">
+
+            <input type="radio" id="activer_email_forum-true" name="activer_email_forum" value="True"
+                   tal:attributes="checked python:context.test(context.getActiverEmailForum(), 'checked', '')" />
+            <label for="activer_email_forum-true" class="success" i18n:translate="">Activer</label>
+
+            <input type="radio" id="activer_email_forum-false" name="activer_email_forum" value="False"
+                   tal:attributes="checked python:context.test(context.getActiverEmailForum(), '', 'checked')" />
+            <label for="activer_email_forum-false" class="warning" i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="key" value="activer_email_forum" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+<!--
+
+        Téléchargement de l'ensemble des fichiers d'un cours
+
+
+-->
+<metal:macro define-macro="activer_dll_fichier">
+
+    <h2>
+        <tal:block i18n:translate="">Télécharger l'ensemble des fichiers du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="activerdllfichier"
+          tal:attributes="action string:${context/absolute_url}/cours_edit">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Active la possibilité de télécharger une archive contenant tous les fichiers accessibles du cours, sous forme de bouton au bas du plan.</tal:block>
+        </div>
+
+        <div class="formControls">
+
+            <input type="radio" name="activer_dll_fichier" id="activer_dll_fichier" value="True"
+                   tal:attributes="checked python:context.test(context.getActiver_dll_fichier(), 'checked', '')" />
+            <label for="activer_dll_fichier" class="success" i18n:translate="">Activé</label>
+
+            <input type="radio" name="activer_dll_fichier" id="desactiver_dll_fichier" value="False"
+                   tal:attributes="checked python:context.test(context.getActiver_dll_fichier(), '', 'checked')" />
+            <label for="desactiver_dll_fichier" class="warning" i18n:translate="">Désactivé</label>
+
+        </div>
+        <input type="hidden" value="cours_acces_view" name="page" />
+        <input type="hidden" name="key" value="activer_dll_fichier" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
+
+</metal:content-core>
+
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!--
+
+        Gabarit de debug, test, etc.
+
+-->
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main role="main" class="row" aria-labelledby="page_title">
+
+        <metal:macro use-macro="context/macro_messages/macros/messages">
+            Encart d'affichage des messages de feedback
+        </metal:macro>
+
+        <style type="text/css">
+            /* Styles additionnels éventuels */
+
+        </style>
+
+    <!--<tal:comment replace="nothing"><!-- -->
+
+        <section class="medium-8 small-12 columns">
+
+            <h2>
+                <i class="fa fa-bomb no-pad"></i>
+                Gabarit d'essai
+            </h2>
+            <div class="panel callout radius">
+                Cette page, générée par un gabarit dédié accessible à "/content/skins/jalon_content/dev.cpt", est utilisée pour réaliser des essais.
+            </div>
+
+        </section>
+
+        <section class="medium-4 small-12 columns">
+
+            <h2>
+                <i class="fa fa-plug no-pad"></i>
+                Utilisation
+            </h2>
+            <div class="panel warning radius">
+                Ajoutez simplement "/dev" après l'URL de l'application pour l'utiliser.
+            </div>
+
+        </section>
+
+    <!--</tal:comment>-->
+
+        <section class="small-12 columns">
+
+        </section>
+
+    </main>
+
+    <tal:comment replace="nothing"><!--
+
+                Placez les javascripts en cours de dev dans le fichier
+
+                        jalon.theme/jalon/theme/skins/jalon_theme_dynamic_script/dev.min.js
+
+                pour pouvoir les tester sur cette page.
+    --></tal:comment>
+
+    <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
+
+</metal:main>
+
+</body>
+
+</html>

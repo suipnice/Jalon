@@ -1,0 +1,86 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main">
+
+<style type="text/css">
+#gestion_messages .discreet
+{
+    font-size:0.73125rem;
+    font-style:italic;
+}
+
+div.panel label{
+    font-weight: bold;
+    line-height: 120%;
+    margin-bottom:0.5rem;
+}
+
+.panel .activer
+{
+    color:green;
+}
+
+.panel .desactiver
+{
+    color:red;
+}
+
+#gestion_messages .panel.success {
+    background-color: #43ac6a;
+    border-color: #227da3;
+    color: #fff;
+}
+
+#gestion_messages .panel.success a {
+    color: #fff;
+}
+</style>
+
+<tal:block define="pageCours string:gestion_messages">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+</tal:block>
+
+<main id="gestion_messages" class="row" role="main" aria-labelledby="page_title"
+      tal:define="gestion request/gestion | string:gestion_blocs_messages">
+
+    <section class="small-12 columns">
+        <ul class="button-group radius even-2">
+            <li>
+                <a class="button small"
+                   tal:attributes="href string:${context/absolute_url}/gestion_messages?gestion=gestion_blocs_messages;
+                                   class python:context.test(gestion == 'gestion_blocs_messages', 'button small', 'button small secondary')"
+                   i18n:translate="ongletBlocsMessages">
+                    Blocs de messages
+                </a>
+            </li>
+            <li>
+                <a class="button small"
+                   tal:attributes="href string:${context/absolute_url}/gestion_messages?gestion=gestion_communication;
+                                   class python:context.test(gestion == 'gestion_communication', 'button small', 'button small secondary')"
+                   i18n:translate="ongletPrimo">
+                    Communication NodeJS
+                </a>
+            </li>
+        </ul>
+        <metal:macro use-macro="python:context.macro_gestion_messages.macros[gestion]">
+            Macro de gestion
+        </metal:macro>
+    </section>
+
+</main>
+
+</metal:core>
+
+</body>
+
+</html>

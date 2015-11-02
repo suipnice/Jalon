@@ -1,0 +1,1409 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="fr"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!-- macro_cours_activites.pt  : Macros des activites du cours -->
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Ajout d'une activité
+-->
+<metal:macro define-macro="ajout-activite">
+<tal:define define="espace request/espace;
+                    isSalleVirtuelle python:context.test(espace == 'Salle virtuelle', 1,0)">
+
+    <h2>
+        <tal:block i18n:translate="">Créer une activité pédagogique</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:condition condition="isSalleVirtuelle">
+
+        <h3><i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Ajouter ma salle virtuelle</tal:block></h3>
+
+        <table class="listing"
+               tal:define="webconferences python:context.getWebconferencesUser(True, user.getId())"
+               tal:condition="webconferences">
+
+            <thead>
+                <tr>
+                    <th i18n:translate="">
+                        Titre
+                    </th>
+                    <th i18n:translate="">
+                        Action / état
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+    <tal:repeat repeat="webconference webconferences">
+
+                <tr tal:define="checked python:context.isChecked(webconference['id'], 'ajout-activite')">
+                    <td tal:content="webconference/title" class="fullwidth" />
+                    <td>
+                        <form name="element_add" method="post"
+                              tal:condition="not:checked"
+                              tal:attributes="action string:${context/absolute_url}/cours_element_add">
+                            <input type="hidden" name="paths:list" tal:attributes="value string:${webconference/id}*-*SalleVirtuelle*-*${webconference/title}*-*${user/getId}" />
+                            <button type="submit" class="button small radius"
+                                    name="form.button.save">
+                                <i class="fa fa-plus-circle"></i>
+                                <tal:block i18n:translate="">Ajouter cette salle virtuelle</tal:block>
+                            </button>
+                        </form>
+                        <i class="fa fa-check fa-lg success" tal:condition="checked"></i>
+                    </td>
+                </tr>
+
+    </tal:repeat>
+
+            </tbody>
+
+        </table>
+
+</tal:condition>
+
+<tal:condition condition="not:isSalleVirtuelle">
+
+        <h3>
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:replace tal:condition="python:espace == 'Auto evaluation'"
+                         i18n:translate="">Créer une auto-évaluation</tal:replace>
+            <tal:replace tal:condition="python:espace == 'Examen'"
+                         i18n:translate="">Créer un examen</tal:replace>
+            <tal:replace tal:condition="python:espace == 'Boite de depots'"
+                         i18n:translate="">Créer une boite de dépôts</tal:replace>
+        </h3>
+
+        <form id="js-activityCreator" method="POST"
+              tal:attributes="action string:${context/absolute_url}/${template/id};
+                              data-success_msg string:L'activité a été créée.">
+
+            <div id="archetypes-fieldname-title"
+                 tal:define="error errors/title | nothing;
+                             arch_class string:field ArchetypesStringWidget;"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <label for="title" i18n:translate="">Titre</label>
+                <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                <input type="text" maxlength="255" size="30" id="title" name="title"
+                     required="required" placeholder="Saisie obligatoire"
+                     tal:attributes="value request/title | nothing"
+                     i18n:attributes="placeholder" />
+            </div>
+
+            <div id="archetypes-fieldname-description"
+                 tal:define="error errors/description | nothing;
+                             arch_class string:field ArchetypesStringWidget;"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <label for="description">Consigne</label>
+                <textarea name="description" id="description"
+                          rows="5"><tal:block replace="request/description | nothing" /></textarea>
+            </div>
+
+            <metal:macro use-macro="context/arbo_plan/macros/plan_select" />
+
+            <input type="hidden" name="espace" tal:attributes="value espace" />
+            <input type="hidden" name="type"
+                   value="AutoEvaluation"
+                   tal:condition="python:espace == 'Auto evaluation'" />
+            <input type="hidden" name="type"
+                   value="Examen"
+                   tal:condition="python:espace == 'Examen'" />
+            <input type="hidden" name="type"
+                   value="BoiteDepot"
+                   tal:condition="python:espace == 'Boite de depots'" />
+            <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+            <input type="hidden" name="form.submitted" value="1" />
+            <input type="hidden" name="macro" tal:attributes="value macro" />
+            <input type="hidden" name="formulaire" tal:attributes="value formulaire" />
+
+            <div class="formControls">
+                <button type="submit" class="button small create"
+                        name="form.button.save">
+                    <i class="fa fa-plus-circle"></i>
+                    <tal:block i18n:translate="">Créer</tal:block>
+                </button>
+            </div>
+        </form>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setRevealFormPlanRefresh('js-activityCreator','reveal-main')" />
+
+</tal:condition>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!-- Affiche les informations d'une activité -->
+<metal:macro define-macro="informations">
+    <h3>
+        <i class="fa fa-align-justify"></i>
+        <tal:block i18n:translate="">Consigne</tal:block>
+    </h3>
+    <div style="margin-left:2em;">
+        <tal:replace replace="structure context/Description"
+                     condition="context/Description"/>
+        <tal:condition condition="not:context/Description"
+                       i18n:translate="">Aucune consigne
+        </tal:condition>
+    </div>
+
+    <h3>
+        <i class="fa fa-caret-square-o-up"></i>
+        <tal:block i18n:translate="">Barême</tal:block>
+    </h3>
+    <div class="text-right">
+        <tal:replace replace="context/getNoteMax"/> <tal:block i18n:translate="">points</tal:block>
+    </div>
+<tal:condition condition="python:tag == 'Examen'">
+    <h3>
+        <i class="fa fa-clock-o"></i>
+        <tal:block i18n:translate="">Durée</tal:block>
+    </h3>
+    <div class="text-right">
+        <tal:replace replace="context/getDuree"/> <tal:block i18n:translate="">min.</tal:block>
+    </div>
+    <h3>
+        <i class="fa fa-refresh"></i>
+        <tal:block i18n:translate="">Nombre de passages autorisés</tal:block>
+    </h3>
+    <div class="text-right"
+         tal:content="context/getAttempts"/>
+
+<tal:condition condition="personnel">
+    <h3>
+        <i class="fa fa-lock"></i>
+        <tal:block i18n:translate="">Mot de passe</tal:block>
+    </h3>
+    <div class="text-right">
+        <p tal:replace="context/getVerrou"
+           tal:condition="context/getVerrou"/>
+        <p tal:condition="not:context/getVerrou"
+           i18n:translate="">
+            Aucun mot de passe
+        </p>
+        <p class="texte_icone icone_information"><em>Visible par les enseignants seulement</em></p>
+    </div>
+</tal:condition>
+
+</tal:condition>
+
+<tal:define define="langue context/getDisplayLang"
+            condition="langue/icone">
+    <h3>
+        <i class="fa fa-flag"></i>
+        <tal:block i18n:translate="">Langue des exercices</tal:block>
+    </h3>
+    <div class="text-right">
+        <img tal:condition="langue/icone"
+             tal:attributes="src string:++resource++country-flags/${langue/icone}.gif;
+                             alt langue/description"/>
+        <tal:replace tal:replace="langue/description"/>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Modification des informations d'une activité Wims
+-->
+<metal:macro define-macro="modifier-activite-wims">
+<tal:define define="page request/page;
+                    menu request/menu | nothing;
+                    isExamen python:context.getTypeWims()=='Examen'">
+    <h2>
+        <tal:block tal:condition="not:isExamen"
+                   i18n:translate="">Modifier les informations de l'auto-évaluation
+        </tal:block>
+        <tal:block tal:condition="isExamen"
+                   i18n:translate="">Modifier les informations de l'examen
+        </tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          method="post">
+
+        <div id="archetypes-fieldname-title"
+                tal:define="error errors/title | nothing;
+                            arch_class string:field;
+                            widget python:context.schema['title'].widget"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="text" id="title" name="title" required="required" placeholder="Saisie obligatoire" maxlength="255" size="30"
+                   tal:attributes="value request/title | context/Title"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description"
+                tal:define="error errors/description | nothing;
+                            arch_class string:field;
+                            widget python:context.schema['description'].widget"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="description" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <textarea id="description" name="description" rows="5"><tal:replace replace="request/description | context/Description"/></textarea>
+        </div>
+
+        <div id="archetypes-fieldname-note_max"
+                tal:define="error errors/note_max | nothing;
+                            arch_class string:field;
+                            widget python:context.schema['note_max'].widget"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="note_max" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="text" id="note_max" name="note_max" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/note_max | context/getNoteMax"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-duree"
+             tal:condition="isExamen"
+             tal:define="error errors/duree | nothing;
+                         arch_class string:field;
+                         widget python:context.schema['duree'].widget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="duree" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="text" id="duree" name="duree" required="required"
+                   placeholder="Saisie obligatoire" maxlength="50"
+                   tal:attributes="value request/duree | context/getDuree"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-attempts"
+             tal:condition="isExamen"
+             tal:define="error errors/attempts | nothing;
+                         arch_class string:field;
+                         widget python:context.schema['attempts'].widget"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <label for="attempts" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="number" max="5" min="1" size="30"
+                   id="attempts" name="attempts"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value request/attempts | context/getAttempts" />
+        </div>
+
+        <div tal:condition="isExamen"
+             tal:define="fieldName string:verrou;
+                         widget python:context.schema[fieldName].widget"
+             tal:attributes="id string:archetypes-fieldname-${fieldName}"
+             class="field">
+            <label tal:attributes="for fieldName" tal:content="structure python:widget.Label(here)"/>
+            <span class="formHelp"
+                  tal:content="structure python:widget.Description(here)"/>
+            <input type="text" maxlength="255" size="30"
+                   id="verrou" name="verrou"
+                   tal:attributes="value request/verrou | context/verrou" />
+        </div>
+
+        <metal:field use-macro="python:here.widget('wims_lang', mode='edit')">
+            wims_lang
+        </metal:field>
+
+        <input type="hidden" name="page" tal:attributes="value page"/>
+        <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu"/>
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" value="macro_form" name="macro" />
+        <input type="hidden" value="modifier-activite" name="formulaire" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</tal:define>
+</metal:macro>
+
+<!-- Ajout d'un sujet à une activité -->
+<metal:macro define-macro="sujets">
+  <div id="support_ajout">
+    <h2 i18n:translate="">Sélectionnez le type d'élément à attacher depuis « Mon espace » :</h2>
+    <br />
+    <div class="tags"
+            tal:define="tag string:${tag}-${menu}">
+      <metal:macro use-macro="context/tag_macro/macros/tag">
+         Page d'affichage des tags
+      </metal:macro>
+    </div>
+    <br />
+    <div id="tableau">
+      <tal:block condition="subject">
+        <h3 i18n:translate="">Filtrer par étiquette du type d'élément à attacher :</h3>
+        <br />
+        <div class="tags">
+          <metal:macro use-macro="context/tag_macro/macros/type_tag">
+           Page d'affichage des tags
+          </metal:macro>
+        </div>
+      </tal:block>
+      <br />
+      <div id="tableauElement">
+        <tal:block condition="python:subject == 'Fichiers'">
+          <metal:macro use-macro="context/macro_cours_fichiers/macros/fichiers">
+            Page d'affichage des fichiers
+          </metal:macro>
+        </tal:block>
+        <tal:block condition="python:subject == 'Ressources Externes'">
+          <metal:macro use-macro="context/macro_cours_externes/macros/ressources_externes">
+            Page d'affichage des ressources externes
+          </metal:macro>
+        </tal:block>
+        <tal:block condition="python:subject in ['Webconference', 'Presentations sonorisees']">
+          <metal:macro use-macro="context/macro_cours_webconference/macros/webconference">
+            Page d'affichage des webconférences
+          </metal:macro>
+        </tal:block>
+        <tal:block condition="python:subject == 'Exercices Wims'">
+          <metal:macro use-macro="context/macro_cours_exercices/macros/exercices">
+            Page d'affichage des exercices
+          </metal:macro>
+        </tal:block>
+      </div>
+    </div>
+  </div>
+  <br class="visualClear" />
+  <br />
+  <tal:block condition="python:menu == 'sujets'">
+    <metal:macro use-macro="context/macro_cours_activites/macros/liste-sujets">
+      Page d'affichage de la liste des sujets
+    </metal:macro>
+  </tal:block>
+  <tal:block condition="python:menu == 'exercices'">
+    <metal:macro use-macro="context/macro_cours_activites/macros/liste-exercices">
+      Page d'affichage de la liste des exercices
+    </metal:macro>
+  </tal:block>
+
+</metal:macro>
+
+<!-- Liste des sujets d'une activité (dépôts enseignants)
+En entrée : infosBoite
+-->
+<metal:macro define-macro="liste-sujets">
+
+<tal:condition condition="personnel">
+    <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
+        <i class="fa fa-plus-circle"></i>
+        <tal:block i18n:translate="">Ajouter</tal:block>
+    </a>
+    <ul id="add-space_el" class="f-dropdown" data-dropdown-content="data-dropdown-content"
+        tal:define="menu_cours context/getMenuCours">
+        <li tal:repeat="menu menu_cours/espace">
+            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-sujets&amp;ajout=Supports&amp;espace=${menu/rubrique}">
+                <i tal:attributes="class menu/icone"></i>
+                <tal:replace replace="menu/titre" i18n:translate="">Élément de mon espace</tal:replace>
+            </a>
+        </li>
+    </ul>
+</tal:condition>
+
+    <h2>
+        <i class="fa fa-upload"></i>
+        <tal:block i18n:translate="">Documents enseignants</tal:block>
+    </h2>
+
+<tal:define define="listeElements python:context.getInfosListeAttribut(menu, personnel)">
+
+    <div class="panel callout radius"
+         tal:condition="not:listeElements"
+         i18n:translate="">
+        Aucun document n'a été déposé.
+    </div>
+
+    <table id="js-listeDocuments"
+           summary="Liste des documents"
+           tal:condition="listeElements">
+
+        <thead>
+            <tr>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="visible" title="Trier selon la visibilité"
+                    tal:condition="personnel"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <span class="fa fa-eye fa-fw no-pad"></span>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre</tal:block>
+                    </span>
+                </th>
+                <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
+                    tal:condition="personnel"
+                    i18n:attributes="title">
+                    <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
+                </th>
+            </tr>
+
+        </thead>
+
+        <tfoot></tfoot>
+
+        <tbody class="list">
+
+        <tal:repeat repeat="element listeElements">
+
+            <tr tal:define="typeElement python:context.jalon_quote(element['typeElement']);
+                            affElement element/affElement">
+                <td class="visible"
+                    tal:condition="personnel">
+                    <i class="fa fa-eye fa-lg"
+                       tal:condition="affElement/val"></i>
+                    <i class="fa fa-eye-slash fa-lg"
+                       tal:condition="not:affElement/val"></i>
+                </td>
+
+                <td class="title">
+                    <a title="Voir le document enseignant"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/cours_element_view?idElement=${element/idElement}&amp;createurElement=${element/createurElement}&amp;typeElement=${typeElement}"
+                       i18n:attributes="title">
+                        <tal:replace replace="python:here.getShortText(element['titreElement'])" />
+                    </a>
+                </td>
+
+                <td class="show-for-medium-up"
+                    tal:condition="personnel">
+                    <a class="dropdown right" data-options="align:left"
+                       tal:attributes="data-dropdown string:drop-${repeat/element/index}">
+                        <i class="fa fa-cog fa-lg no-pad"></i>
+                    </a>
+                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                        tal:attributes="id string:drop-${repeat/element/index}">
+                        <li tal:condition="not:affElement/val">
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                                <i class="fa fa-eye fa-fw"></i>
+                                <tal:block i18n:translate="">Afficher</tal:block>
+                            </a>
+                        </li>
+                        <li tal:condition="affElement/val">
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                                <i class="fa fa-eye-slash fa-fw"></i>
+                                <tal:block i18n:translate="">Masquer</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;retour=${idpage}&amp;menu=${menu}"
+                               title="Détacher le document enseignant"
+                               i18n:attributes="title" i18n:translate="">
+                                <i class="fa fa-chain-broken fa-fw"></i>
+                                <tal:block i18n:translate="">Détacher</tal:block>
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+
+            </tr>
+
+        </tal:repeat>
+
+        </tbody>
+
+        <tal:block condition="personnel"
+                   define="script string:setSortableList('js-listeDocuments',['visible','title'],'title','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+
+        <tal:block condition="not:personnel"
+                   define="script string:setSortableList('js-listeDocuments',['title'],'title','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+
+    </table>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!-- Liste des exercices d'une autoevaluation ou d'un examen
+En entrée :
+    ajout
+    personnel : booleen qui definit si l'utilisateur courant est un prof ou un eleve.
+-->
+<metal:macro define-macro="liste-exercices">
+
+<tal:define define="listeExos  python:context.getInfosListeAttribut(menu, personnel);
+                    site_lang  portal_state/language;
+                    infosNotes python:context.getNotes(quser=user.getId(), actif=affElement['val'], isProf=personnel, site_lang=site_lang, request=request);
+                    qexam context/getIdExam;
+                    isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
+
+    <tal:condition condition="python:infosNotes['status']!='OK'" >
+        <div class="panel warning radius"
+             tal:define="error_type string:wims_bad_conf;
+                         message infosNotes/message;">
+            <tal:block i18n:translate="">
+                Connexion au serveur WIMS impossible. Veuillez contacter votre administrateur.
+            </tal:block>
+            <pre tal:content="message"/>
+        </div>
+    </tal:condition>
+    <tal:condition condition="python:infosNotes['status']=='OK'">
+
+    <tal:condition condition="not:personnel">
+        <tal:comment replace="nothing"><!-- Boutons pour les etudiants --></tal:comment>
+        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
+           tal:condition="not:qexam"
+           class="button small radius right">
+            <span class="inline">
+                <i class="fa fa-gamepad"></i>
+                <span class="show-for-small-only" i18n:translate="">Commencer</span>
+                <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
+            </span>
+        </a>
+        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
+           tal:condition="qexam"
+           class="button small radius right">
+            <i class="fa fa-play"></i>
+            <tal:block i18n:translate="">Démarrer mon examen</tal:block>
+        </a>
+    </tal:condition>
+
+    <tal:condition condition="python:personnel and not affElement['val'] and not context.getIdExam() and context.Creator()==user.getId()">
+    <!-- Boutons pour les enseignants -->
+    <!-- Affichés uniquement pour le créateur de l'activité, qui est masquée et n'est pas un examen déjà activé -->
+        <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="drop-action-activite">
+            <i class="fa fa-plus-circle"></i>
+            <tal:block i18n:translate="">Ajouter</tal:block>
+        </a>
+        <ul id="drop-action-activite" class="f-dropdown"
+            data-dropdown-content="data-dropdown-content">
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-sujets&amp;ajout=ExerciceWims&amp;espace=Exercices Wims"
+                    title="Attacher un exercice wims"
+                    data-reveal-id="reveal-main" data-reveal-ajax="true">
+                    <i class="fa fa-random"></i>
+                    <tal:block i18n:translate="">Exercice Wims</tal:block>
+                </a>
+            </li>
+            <li>
+                <a title="Importer des exercices" target="new"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=importer-exercices"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true">
+                    <i class="fa fa-fw fa-level-down"></i>
+                    <tal:block i18n:translate="">HotPotatoes</tal:block>
+                </a>
+            </li>
+        </ul>
+    </tal:condition>
+
+        <h2>
+            <i class="fa fa-random"></i>
+            <tal:block i18n:translate="">Liste des exercices</tal:block>
+        </h2>
+        <div class="panel warning radius" tal:condition="python:personnel and context.getIdExam()">
+            Cet examen a été affiché au moins une fois. Les exercices ne peuvent donc plus être modifiés.
+        </div>
+        <div class="panel warning radius" tal:condition="python:personnel and affElement['val'] and not context.getIdExam()">
+            <span class="fa-stack no-pad text-center">
+              <i class="fa fa-stack-2x text-danger">\</i>
+              <i class="fa fa-stack-1x fa-pencil"></i>
+            </span>
+            <tal:block i18n:translate="">Les exercices ne peuvent pas être modifiés tant que l'activité est accessible aux étudiants.</tal:block>
+        </div>
+        <div class="panel callout radius" tal:condition="python:personnel and not isExam and not affElement['val'] and listeExos">
+            <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
+        </div>
+        <div class="panel warning radius" tal:condition="python:personnel and context.Creator()!=user.getId() and not affElement['val']">
+            Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur de le faire.
+        </div>
+
+        <div class="panel callout radius"
+             tal:condition="not:listeExos"
+             i18n:translate="">
+            Aucun exercice
+        </div>
+    <tal:condition condition="listeExos">
+        <table id="js-list-exercices"
+               summary="Liste des exercices de cette activité">
+            <thead>
+                <tr>
+                    <th class="sort text-left has-tip" data-tooltip data-sort="order" title="Trier selon l'ordre initial"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Ordre</tal:block>
+                        </span>
+                    </th>
+
+                    <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+
+                    <th class="sort text-left has-tip" data-tooltip data-sort="coef" title="Trier selon le coefficient"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Coefficient</tal:block>
+                        </span>
+                    </th>
+
+            <tal:block condition="not:isExam">
+                <tal:block condition="not:personnel">
+                    <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon la note"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Note (cumul)</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon l'Indice de réussite'"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Indice de réussite</tal:block>
+                        </span>
+                    </th>
+                </tal:block>
+                <tal:block condition="personnel">
+                    <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon le Taux de réussite"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <span class="show-for-small-only" i18n:translate="">Réussite</span>
+                            <span class="show-for-medium-up" i18n:translate="">Taux de réussite</span>
+                        </span>
+                    </th>
+                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon la Qualité moyenne"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <span class="show-for-small-only" i18n:translate="">Qualité</span>
+                            <span class="show-for-medium-up" i18n:translate="">Qualité moyenne</span>
+                        </span>
+                    </th>
+                </tal:block>
+            </tal:block>
+                    <th class="action show-for-medium-up"
+                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()"
+                        i18n:translate="">
+                        <i class="fa fa-cog no-pad"></i>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+        <tal:entry repeat="element listeExos">
+                <tr tal:define="index          repeat/element/index;
+                                order          python:index+1;
+                                infosNotes_exo python:infosNotes['listeNotes'][index];
+                                note           infosNotes_exo/note | string:&#8212;;
+                                sur            infosNotes_exo/sur | string:&#8212;;
+                                qualite        infosNotes_exo/qualite | string:&#8212;;">
+                    <td class="order tdcenter" tal:content="order"/>
+                    <td class="title">
+                        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?index_exo=${order}&amp;mode_etudiant=${mode_etudiant}"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:content="element/titreElement"
+                           tal:condition="not:isExam"/>
+                        <tal:replace tal:condition="isExam"
+                                     tal:replace="element/titreElement"/>
+                    </td>
+                    <td class="coef tdcenter" tal:content="sur"/>
+                <tal:condition condition="not:isExam">
+                    <td class="score" tal:content="string:${note} %"/>
+                    <td class="wims_quality" tal:content="string:${qualite} / 10"/>
+                </tal:condition>
+                <tal:comment tal:replace="nothing">
+                    <!-- Attention, ici la condition devrait etre sur l'id du createur, car un co-auteur ne peut surement pas modifier l'autoeval (a tester ) -->
+                    <!-- Cas des examens pas encore activés et des autoévaluation inactives -->
+                </tal:comment>
+                    <td class="show-for-medium-up"
+                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()">
+                <tal:condition condition="python:not affElement['val'] and not context.getIdExam()">
+                        <a class="dropdown" data-options="align:left"
+                           tal:attributes="data-dropdown string:activite-options-${repeat/element/index}">
+                            <i class="fa fa-cog fa-lg no-pad"></i>
+                        </a>
+                        <ul tal:attributes="id string:activite-options-${repeat/element/index}"
+                            class="f-dropdown" data-dropdown-content="">
+                            <li>
+                                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-exercice&amp;qexo=${index}&amp;page=${idpage}&amp;menu=${menu}&amp;idElement=${element/idElement}&amp;sur=${sur}"
+                                   title="Modifier l'exercice"
+                                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                   i18n:attributes="title">
+                                    <i class="fa fa-plus fa-fw"></i>
+                                    <tal:block i18n:translate="">Coefficient</tal:block>
+                                </a>
+                            </li>
+                            <li>
+                                <a tal:define="typeElement python:context.jalon_quote(element['typeElement'])"
+                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;retour=${idpage}&amp;menu=${menu}&amp;indexElement=${repeat/element/index}"
+                                   title="Détacher l'exercice"
+                                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                   i18n:attributes="title">
+                                    <i class="fa fa-chain-broken fa-fw"></i>
+                                    <tal:block i18n:translate="">Détacher</tal:block>
+                                </a>
+                            </li>
+                            <tal:comment replace="nothing">
+                            <!-- A terme, ce bouton devrait permettre de changer l'ordre des exercices. -->
+                            <!--li>
+                                <a tal:condition="python:index>0"
+                                   title="Déplacer l'exercice vers le haut"
+                                   i18n:attributes="title">
+                                    <i class="fa fa-arrow-up fa-fw"></i>
+                                    <tal:block i18n:translate="">Monter d'un cran</tal:block>
+                                </a>
+                            </li-->
+                            </tal:comment>
+                        </ul>
+                </tal:condition>
+                    </td>
+                </tr>
+        </tal:entry>
+            </tbody>
+            <tfoot tal:condition="not:isExam">
+                <!-- pied de tableau des autoevaluations -->
+            <tal:condition condition="personnel">
+            <tal:comment replace="nothing">
+                <!-- On n'affiche pas les maximums de la feuille ici, car ce sont des maximums globaux, pas détaillés par exercice
+                <th class="fullwidth" colspan="2"><span class="texte_icone icone_reussite">Maximums</span></th>
+                <td ><tal:note replace="infosNotes/sheet_max_percent"/> %</td>
+                <td ><tal:qualite replace="infosNotes/note"/> / <tal:sur replace="context/getNoteMax"/></td-->
+            </tal:comment>
+                <tr>
+                    <th class="show-for-medium-up" />
+                    <th class="fullwidth text-right" colspan="2">
+                        <i class="fa fa-bar-chart-o"></i>
+                        <tal:block i18n:translate="">Moyennes</tal:block>
+                    </th>
+                    <th>
+                        <tal:replace replace="infosNotes/pourcentage"/> %
+                    </th>
+                    <th>
+                        <tal:replace replace="infosNotes/qualite"/> / <tal:replace replace="context/getNoteMax"/>
+                    </th>
+                    <th class="show-for-medium-up"
+                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()"/>
+                </tr>
+            </tal:condition>
+            <tal:condition condition="not:personnel">
+                <tr>
+                    <th class="text-right show-for-medium-up"
+                        colspan="3">
+                        <i class="fa fa-trophy"></i>
+                        <tal:block i18n:translate="">Mon résultat</tal:block>
+                    </th>
+                    <th class="text-right show-for-small-only"
+                        colspan="2">
+                        <i class="fa fa-trophy"></i>
+                        <tal:block i18n:translate="">Mon résultat</tal:block>
+                    </th>
+                    <th>
+                        <tal:replace replace="infosNotes/pourcentage"/> %
+                    </th>
+                    <th>
+                        <tal:replace replace="infosNotes/qualite"/> / <tal:replace replace="context/getNoteMax"/>
+                    </th>
+                </tr>
+            </tal:condition>
+            </tfoot>
+
+            <tfoot tal:condition="python:isExam and not personnel">
+            <tal:comment tal:replace="nothing">
+                <!-- pied de tableau des examens pour les etudiants -->
+            </tal:comment>
+                <tr tal:condition="context/getIdExam">
+                    <th class="text-right" colspan="2">
+                        <i class="fa fa-trophy"></i>
+                        <tal:block i18n:translate="">Mon résultat</tal:block>
+                    </th>
+                    <th>
+                        <tal:replace replace="infosNotes/note"/> / <tal:replace replace="context/getNoteMax"/>
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+    </tal:condition>
+
+    <!-- Formatage conditionel -->
+    <tal:condition tal:condition="not:isExam">
+        <!--Coloration des notes d'autoeval -->
+        <tal:block define="color_score string:setConditionalFormat(4,100);
+                           color_quality string:setConditionalFormat(5,10);">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(color_score)" />
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(color_quality)" />
+        </tal:block>
+    </tal:condition>
+
+    <tal:block define="sort_script string:setSortableList('js-list-exercices',['order', 'title', 'coef', 'score', 'wims_quality'], 'order', 'asc');">
+        <!--tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" /-->
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(sort_script)" />
+    </tal:block>
+
+    </tal:condition>
+</tal:define>
+</metal:macro>
+
+<!-- Resultats d'un Examen WIMS -->
+<metal:macro define-macro="resultats-exam">
+
+    <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                        isCoAuteur personnel;
+                        site_lang  portal_state/language;
+                        infosNotes python:context.getNotes(user.getId(), affElement['val'], isCoAuteur, site_lang=site_lang, request=request);
+                        data_scores infosNotes/data_scores | nothing;">
+
+        <h2>
+            <i class="fa fa-trophy fa-fw"></i>
+        <tal:condition condition="not:isCoAuteur"
+                       i18n:translate="">
+            Mes résultats
+        </tal:condition>
+        <tal:condition condition="isCoAuteur"
+                       i18n:translate="">
+            Réussite de mes étudiants
+        </tal:condition>
+        </h2>
+        <div class="panel callout radius">
+            <p tal:condition="not:isCoAuteur">
+                <tal:block i18n:translate="">Ma meilleure note :</tal:block>
+                <strong><tal:replace replace="infosNotes/note"/> / <tal:replace replace="context/getNoteMax"/></strong>
+
+            </p>
+            <ul tal:condition="isCoAuteur">
+                <li>
+                <tal:condition tal:condition="python:tag=='Examen'"
+                               i18n:translate="">
+                    Nombre de participants à cet examen :
+                </tal:condition>
+                <tal:condition condition="python:tag=='AutoEvaluation'"
+                               i18n:translate="">
+                    Nombre de participants :
+                </tal:condition>
+                    <strong tal:content="infosNotes/user_cnt"/>
+                </li>
+                <li tal:condition="python:tag in ['Examen']">
+                    <tal:block i18n:translate="">Meilleure note : </tal:block>
+                    <tal:replace replace="infosNotes/score_max"/> / <tal:replace replace="context/getNoteMax"/>
+                </li>
+                <li tal:condition="python:tag in ['Examen']">
+                    <tal:block i18n:translate="">Note moyenne : </tal:block>
+                    <tal:replace replace="infosNotes/score_mean"/> / <tal:replace replace="context/getNoteMax"/>
+                </li>
+            </ul>
+        </div>
+        <a class="button small radius right" title="Télécharger au format tableur"
+           tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv"
+           tal:condition="data_scores">
+            <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger (CSV)</tal:block>
+        </a>
+        <tal:block condition="isCoAuteur">
+            <h2>
+                <i class="fa fa-trophy fa-fw"></i>
+                <tal:block i18n:translate="">Détails des notes :</tal:block>
+            </h2>
+            <div class="panel callout radius"
+                 tal:condition="not:data_scores">
+                <tal:block i18n:translate="">Aucun résultat</tal:block>
+            </div>
+        </tal:block>
+
+
+    <tal:condition condition="data_scores">
+
+        <table id="js-list-resultats">
+        <thead>
+            <tr>
+                <th class="sort text-left has-tip" title="Trier selon l'étudiant"
+                    data-tooltip data-sort="title"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Étudiant</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Trier selon le nombre d’essais"
+                    data-tooltip data-sort="nb_essais"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Nombre d’essais</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Trier selon la note"
+                    data-tooltip data-sort="note"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Note (/<tal:sur replace="context/getNoteMax"/>)</tal:block>
+                    </span>
+                </th>
+                <th class="nosort action"
+                    i18n:translate="">
+                    <i class="fa fa-cog fa-lg no-pad"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        <tal:entry repeat="etudiant data_scores">
+            <tr tal:define="oddrow repeat/etudiant/odd;"
+                tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
+                <td class="title">
+                    <span class="hide" tal:content="etudiant/last_name" />
+                    <div class="nom_etudiant" tal:content="string:${etudiant/last_name} ${etudiant/first_name}"/>
+                    <span class="show-for-large-up">
+                        <div>
+                            <tal:block i18n:translate="">Sésame : </tal:block>
+                            <tal:replace replace="etudiant/id"/>
+                        </div>
+                        <div>
+                            <tal:block i18n:translate="">Numéro étudiant : </tal:block>
+                            <tal:replace replace="etudiant/num_etu" />
+                        </div>
+                    </span>
+                </td>
+                <td class="nb_essais"
+                    tal:content="etudiant/attempts"
+                    tal:condition="python:tag in ['Examen']"/>
+                <td class="note" tal:content="etudiant/score"/>
+                <td>
+                    <a class="dropdown"
+                       data-options="align:left"
+                       tal:attributes="data-dropdown string:drop-action-depots-${repeat/etudiant/index}">
+                       <i class="fa fa-cog fa-lg no-pad"></i>
+                    </a>
+                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                        tal:attributes="id string:drop-action-depots-${repeat/etudiant/index}">
+                        <li>
+                            <a tal:attributes="href string:${context/absolute_url}/cours_activites_pageWIMS?pageWIMS=exam_log&amp;quser=${etudiant/id}"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               i18n:translate="">
+                                <i class="fa fa-forward fa-fw"></i>
+                                <tal:block i18n:translate="">Revoir la session</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a title="Voir le détail des connexions de cet étudiant"
+                                i18n:attributes="title"
+                               tal:attributes="href string:${context/absolute_url}/cours_activites_pageWIMS?pageWIMS=user_log&amp;quser=${etudiant/id}"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                <i class="fa fa-th-list fa-fw"></i>
+                                <tal:block i18n:translate="">Logs</tal:block>
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tal:entry>
+        </tbody>
+        </table>
+
+        <!-- Tri du tableau -->
+        <tal:block define="sort_script string:setSortableList('js-list-resultats',['title', 'nb_essais', 'note'],'title','asc');">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
+        </tal:block>
+
+        <!-- Formatage conditionel -->
+        <tal:block define="coloration string:setConditionalFormat(3,${context/getNoteMax});">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(coloration)" />
+        </tal:block>
+
+    </tal:condition>
+
+    </tal:define>
+
+</metal:macro>
+
+
+<!-- Resultats d'une autoévaluation WIMS -->
+<metal:macro define-macro="resultats-auto">
+<tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                    isCoAuteur personnel;
+                    actif python:affElement['val'];
+                    site_lang  portal_state/language;
+                    infosNotes python:context.getNotes(user.getId(), actif, isCoAuteur, detailed=True, site_lang=site_lang, request=request);
+                    data_scores infosNotes/data_scores | nothing;">
+
+    <tal:condition condition="python:infosNotes['status']!='OK'" >
+        <div class="panel alert radius"
+             tal:define="error_type string:wims_bad_conf;
+                         message infosNotes/message;">
+            <tal:block i18n:translate="">
+                Connexion au serveur WIMS impossible. Veuillez contacter votre administrateur.
+            </tal:block>
+            <pre tal:content="message"/>
+        </div>
+    </tal:condition>
+    <tal:condition condition="python:infosNotes['status']=='OK'">
+
+        <a tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv"
+           tal:condition="data_scores"
+           title="Télécharger au format tableur" class="button small radius right"
+           i18n:attributes="title">
+            <small class="fa-stack">
+                <i class="fa fa-file-o fa-stack-2x"></i>
+                <i class="fa fa-bar-chart no-pad fa-stack-1x"></i>
+            </small>
+            <tal:block i18n:translate="">Télécharger</tal:block>
+        </a>
+
+        <h2>
+            <i class="fa fa-trophy"></i>
+            <tal:block i18n:translate="">Résultats</tal:block>
+        </h2>
+        <p class="note_info" tal:condition="python:personnel and infosNotes['user_cnt']!=0">
+            <tal:block i18n:translate="">Il y a actuellement</tal:block>
+            <strong>
+                <tal:replace replace="infosNotes/user_cnt"/> <tal:block i18n:translate="">étudiant(s)</tal:block>
+            </strong>
+            <tal:block i18n:translate="">ayant fait une activité WIMS dans ce cours.</tal:block>
+        </p>
+        <div class="panel callout radius"
+             tal:condition="python: personnel and not data_scores and not affElement['val'] ">
+            <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
+        </div>
+        <div class="panel callout radius"
+             tal:condition="not:data_scores">
+            <tal:block i18n:translate="">Aucun résultat</tal:block>
+        </div>
+
+        <tal:condition condition="data_scores">
+
+        <table id="js-list-resultats">
+        <thead>
+            <tr>
+                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
+                    data-tooltip data-sort="title"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Étudiant</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Trier selon le Taux de réussite"
+                    data-tooltip data-sort="score"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <span class="show-for-small-only" i18n:translate="">Réussite</span>
+                        <span class="show-for-medium-up" i18n:translate="">Taux de réussite</span>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" title="Trier selon la Qualité"
+                    data-tooltip data-sort="wims_quality"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Qualité (/<tal:sur replace="context/getNoteMax"/>)</tal:block>
+                    </span>
+                </th>
+                <th class="action nosort">
+                    <i class="fa fa-cog fa-lg no-pad"></i>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            <tal:comment replace="nothing">
+                <!-- {u'mean_detail': [0, 0, 0, 0, 0], u'remain': [10, 10, 10, 10, 10], u'user_percent': 0, u'user_quality': 0, u'got_detail': [0, 0, 0, 0, 0], u'id': u'userid'} -->
+            </tal:comment>
+            <tal:entry repeat="etudiant data_scores">
+            <tr>
+                <td class="title">
+                    <span class="hide" tal:content="etudiant/last_name" />
+                    <div class="nom_etudiant" tal:content="string:${etudiant/last_name} ${etudiant/first_name}"/>
+                    <span class="show-for-large-up">
+                        <div>
+                            <tal:block i18n:translate="">Sésame : </tal:block>
+                            <tal:replace replace="etudiant/id"/>
+                        </div>
+                        <div>
+                            <tal:block i18n:translate="">Numéro étudiant : </tal:block>
+                            <tal:replace replace="etudiant/num_etu" />
+                        </div>
+                    </span>
+                </td>
+                <td class="score" tal:content="string:${etudiant/user_percent} %"/>
+                <td class="wims_quality" tal:content="etudiant/user_quality"/>
+                <td>
+                    <a title="Voir le log des connexions de cet étudiant"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/cours_activites_pageWIMS?pageWIMS=user_log&amp;quser=${etudiant/id}">
+                       <i class="fa fa-th-list"></i>
+                       <tal:block i18n:translate="">Logs</tal:block>
+                   </a>
+               </td>
+            </tr>
+            </tal:entry>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th class="text-right" i18n:translate="">Maximums</th>
+                <td><tal:replace replace="infosNotes/sheet_max_percent"/> %</td>
+                <td><tal:replace replace="infosNotes/note"/> / <tal:sur replace="context/getNoteMax"/></td>
+                <td/>
+            </tr>
+            <tr>
+                <th class="text-right" i18n:translate="">Moyennes</th>
+                <td><tal:replace replace="infosNotes/pourcentage"/> %</td>
+                <td><tal:replace replace="infosNotes/qualite"/> / <tal:replace replace="context/getNoteMax"/></td>
+                <td/>
+            </tr>
+        </tfoot>
+    </table>
+
+    <!-- Formatage conditionel -->
+    <tal:block define="color_score string:setConditionalFormat(2,100);
+                       color_quality string:setConditionalFormat(3,${context/getNoteMax});">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(color_score)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(color_quality)" />
+    </tal:block>
+
+    <!--Tri du tableau -->
+    <tal:block define="sort_script string:setSortableList('js-list-resultats',['title','score', 'wims_quality'],'title','asc');">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
+    </tal:block>
+
+        </tal:condition>
+
+    </tal:condition>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        Liste des exercices WIMS à attacher dans une activité
+-->
+<metal:macro define-macro="exercices_wims_liste">
+
+<tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonExerciceWims', authMember=user.getId(), repertoire=context.getId());
+                    erreur python:context.erreurWIMS(folderContents);
+                    listeModeles python:context.getTagsWims();">
+
+    <div class="panel callout radius"
+         tal:condition="not:folderContents"
+         i18n:translate="">
+        Aucun élément
+    </div>
+
+<tal:condition condition="folderContents">
+    <table summary="Liste des exercices WIMS"
+           tal:define="tags python:context.getTag(user.getId(), 'ExerciceWims')">
+        <thead>
+            <tr>
+                <th class="checkall show-for-medium-up">
+                    <div class="switch tiny round" title="tout sélectionner / tout désélectionner"
+                         i18n:attributes="title">
+                        <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                        <label for="switch-all"></label>
+                    </div>
+                </th>
+                <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Date</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="model" title="Trier selon le modèle"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Modèle</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+    <tal:entry repeat="item folderContents">
+<tal:comment replace="nothing"><!-- Pour eviter les erreurs, on affiche un exo que si item n'est pas une string (si WIMS est en erreur, c'est un str) --></tal:comment>
+            <tr tal:condition="python:context.test(isinstance(item, str), 0, 1)">
+                <td class="show-for-medium-up"
+                    tal:define="attached python:context.isChecked(item['getId'].replace('.', '*-*'), 'exercices')">
+                    <div class="switch tiny round"  title="sélectionner / désélectionner"
+                         tal:condition="not:attached"
+                         i18n:attributes="title">
+                        <input type="checkbox" name="paths:list"
+                               tal:attributes="id string:switch-${repeat/item/index};
+                                               value python:'*-*'.join([item.getId, item.Type, item.Title.decode('utf-8'), user.getId()])" />
+                        <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                    </div>
+                    <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+                </td>
+                <td class="date show-for-medium-up">
+                    <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
+                    <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                </td>
+                <td class="model"
+                    tal:define="exo_model item/getModele">
+                    <span class="label bkgrnd"
+                          tal:define="model python:listeModeles[exo_model]"
+                          tal:content="model | string:modele inconnu"
+                          i18n:translate="" />
+                </td>
+                <td class="title">
+                    <span style="display:none;" tal:content="item/Title" />
+                    <tal:replace replace="python:here.getShortText(item['Title'])"/>
+                </td>
+            </tr>
+    </tal:entry>
+        </tbody>
+    </table>
+
+    <tal:condition condition="folderContents">
+        <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+            Macro d'affichage de la liste en fonction de la variable espace
+        </metal:macro>
+    </tal:condition>
+
+    <tal:block define="select_script string:setBatchSelect('js-popup-update_target');
+                       sort_script string:setSortableList('js-list-ressource',['date','model', 'title'],'date','asc');">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(select_script)" />
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer">
+    </script>
+
+</tal:condition>
+
+</tal:define>
+
+</metal:macro>
+
+
+<!--
+        navigation_autoeval : affiche des boutons "exercice précédent / exercice suivant"
+        Input:
+            * context : jaloncourswims courant
+            * is_ajax
+            * qexo
+            * param_wims
+            * wims_lang
+            * mode_etudiant
+-->
+<metal:macro define-macro="navigation_autoeval">
+    <tal:comment replace="nothing">
+    <!-- Les boutons "exercice précédent / exercice suivant" s'affichent bien en mode étudiant
+    <div tal:condition="not:is_ajax"
+         tal:define="nb_exos context/getNbExercices;"
+         class="small-12 columns">
+        <a  tal:define="previous python:qexo-1"
+            tal:condition="python:qexo>1"
+            tal:attributes="
+                   href string:${context/absolute_url}/cours_autoevaluation_view?index_exo=${previous}&amp;wims_session=${param_wims/wims_session}&amp;mode_etudiant=${mode_etudiant};
+                   class python:context.test(qexo != 0, 'button small left', 'button small left');">
+            <tal:precedent tal:condition="python:qexo>1" >
+                <i class="fa fa-fw fa-arrow-left"></i>
+                <tal:block i18n:translate="">Exercice précédent</tal:block> (<span tal:content="string:${previous}/${nb_exos}"/>)
+            </tal:precedent>
+            <!-tal:listing tal:condition="python:qexo==1" >
+                <i class="fa fa-fw fa-list"></i>
+                <tal:block i18n:translate="">Liste des exercices</tal:block>
+            </tal:listing->
+        </a>
+        <a  tal:condition="python:qexo<nb_exos"
+            tal:define="next python:qexo+1"
+            tal:attributes="
+                   href string:${context/absolute_url}/cours_autoevaluation_view?index_exo=${next}&amp;wims_session=${param_wims/wims_session}&amp;mode_etudiant=${mode_etudiant};
+                   class python:context.test(qexo != 0, 'button small right', 'button small right');">
+            <tal:block tal:condition="python:qexo==0"
+                       i18n:translate="">Premier exercice</tal:block>
+            <tal:block tal:condition="python:qexo>0">
+                <span i18n:translate="">Exercice suivant</span>
+                (<span tal:content="string:${next}/${nb_exos}"/>)
+            </tal:block>
+            <i class="fa fa-fw fa-arrow-right no-pad"></i></a>
+    </div>
+    -->
+    </tal:comment>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="webconference" i18n:domain="jalon.content">
+
+<tal:define define="session python:context.getSessionConnect(user.getId());
+                    reunion python:context.getReunion(user.getId(), request);
+                    idreunion request/SESSION/idreunion | reunion/idreunion">
+
+    <tal:condition condition="not:is_ajax">
+
+    <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_no_deletion">
+        Macro d'affichage des messages en reveal
+    </metal:macro>
+
+   <main class="row" role="main" aria-labelledby="page_title">
+
+        <section class="show-for-medium-up medium-12 columns">
+
+            <div id="item-adder"
+                 tal:condition="python:dossier == 'Sonorisation'">
+                <a id="connect" class="button expand create" target="_blank"
+                   tal:attributes="href string:${reunion/urlreunion}?session=${session}">
+                   <i class="fa fa-plus-circle"></i>
+                   <tal:block i18n:translate="">Créer une présentation sonorisée</tal:block>
+                </a>
+            </div>
+
+            <div id="item-adder"
+                 tal:condition="python:dossier == 'Webconference'">
+                <a id="connect" class="button expand create" target="_blank"
+                   tal:attributes="href string:${reunion/urlreunion}?session=${session}">
+                   <i class="fa fa-play-circle-o"></i>
+                   <tal:block i18n:translate="">Se connecter à votre salle virtuelle</tal:block>
+                </a>
+                <p class="panel callout radius">
+                    <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
+                    <strong tal:content="string:${reunion/urlreunion}" />
+                </p>
+            </div>
+
+        </section>
+
+        <section class="small-12 columns">
+
+            <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
+            <ul id="js-tag_filter">
+                <metal:macro use-macro="context/tag_macro/macros/create-tag">
+                    Bouton de création des étiquettes
+                </metal:macro>
+                <metal:macro use-macro="context/tag_macro/macros/tag">
+                    Affichage de la liste des étiquettes
+                </metal:macro>
+            </ul>
+
+        </section>
+
+        <section id="js-list-ressource" class="small-12 columns ressource-webconf">
+
+            <h2 id="js-update_title"
+                tal:condition="python:dossier == 'Sonorisation'">
+                <i class="fa fa-microphone"></i><tal:block i18n:translate="">Présentations sonorisées</tal:block>
+            </h2>
+
+            <h2 id="js-update_title"
+                tal:condition="python:dossier == 'Webconference'">
+                <i class="fa fa-headphones"></i><tal:block i18n:translate="">Webconférences</tal:block>
+            </h2>
+
+            <div id="js-update_target"
+                 tal:attributes="data-href string:${context/absolute_url}">
+                <metal:macro use-macro="context/macro_webconference_liste/macros/webconference_liste">
+                    Macro d'affichage de la liste des conferences
+                </metal:macro>
+            </div>
+
+        </section>
+
+        <div id="reveal-connect" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: false;">
+            <h2>
+                <tal:block i18n:translate="">Actualisation</tal:block>
+            </h2>
+            <div class="panel callout radius"
+                 i18n:translate="">
+                <i class="fa fa-info-circle no-pad"></i>
+                <tal:block i18n:translate="">Veuillez cliquer sur le bouton ci-dessous pour prendre en compte vos nouveaux enregistrements.</tal:block>
+            </div>
+            <div class="text-center">
+                <a class="button small radius" i18n:translate="">Prendre en compte les nouveaux enregistrements</a>
+            </div>
+        </div>
+
+    </main>
+
+    <tal:block define="script1 string:setTagFilter();
+                       script2 string:refreshWebconfList()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+    </tal:block>
+
+    </tal:condition>
+
+    <tal:condition condition="is_ajax">
+
+        <metal:macro use-macro="context/macro_webconference_liste/macros/webconference_liste">
+            Macro d'affichage de la liste des conferences
+        </metal:macro>
+
+    </tal:condition>
+
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+</html>
