@@ -26,7 +26,6 @@ def installHandler(self):
 
     portal = self.getSite()
     qi = getToolByName(portal, 'portal_quickinstaller')
-    #a venir jalon.exist
     for mod in listeInstall:
         if not qi.isProductInstalled(mod):
             # there is no GS profile for mod.
