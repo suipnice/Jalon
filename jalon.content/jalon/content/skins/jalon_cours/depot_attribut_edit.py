@@ -31,7 +31,10 @@ if "file_file" in form and form["file_file"]:
     if not corrections:
         boite.invokeFactory(type_name='JalonFolder', id="corrections")
         corrections = getattr(boite, "corrections")
-    idobj = corrections.invokeFactory(type_name='JalonFile', id="Correction_%s" % context.getId())
+    try:
+        idobj = corrections.invokeFactory(type_name='JalonFile', id="Correction_%s" % context.getId())
+    except:
+        idobj = "Correction_%s" % context.getId()
     obj = getattr(corrections, idobj)
     param = {"Title":       "%s (Correction)" % context.Title(),
              "Description": "",
