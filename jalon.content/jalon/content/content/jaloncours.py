@@ -2894,7 +2894,8 @@ class JalonCours(ATFolder):
             feuille.write(3, 0, 'Nom', styleEnTete)
             feuille.write(3, 1, 'Prénom', styleEnTete)
             feuille.write(3, 2, 'Sésame', styleEnTete)
-            feuille.write(3, 3, 'Courriel', styleEnTete)
+            feuille.write(3, 3, 'Numéro', styleEnTete)
+            feuille.write(3, 4, 'Courriel', styleEnTete)
 
             listeEtudiants = bdd.rechercherEtudiantXLS(formation[1])
             i = 4
@@ -2903,11 +2904,12 @@ class JalonCours(ATFolder):
                 ligne.write(0, etudiant["LIB_NOM_PAT_IND"])
                 ligne.write(1, etudiant["LIB_PR1_IND"])
                 ligne.write(2, etudiant["SESAME_ETU"])
-                ligne.write(3, etudiant["EMAIL_ETU"])
+                ligne.write(3, etudiant["COD_ETU"])
+                ligne.write(4, etudiant["EMAIL_ETU"])
                 i = i + 1
 
             # ajustement de la largeur d'une colonne
-            feuille.col(3).width = 8000
+            feuille.col(4).width = 8000
 
         # Ajout des inscriptions nomminatives
         nomminatives = self.getInfosGroupe()
@@ -2924,7 +2926,8 @@ class JalonCours(ATFolder):
             feuille.write(3, 0, 'Nom', styleEnTete)
             feuille.write(3, 1, 'Prénom', styleEnTete)
             feuille.write(3, 2, 'Sésame', styleEnTete)
-            feuille.write(3, 3, 'Courriel', styleEnTete)
+            feuille.write(3, 3, 'Numéro', styleEnTete)
+            feuille.write(3, 4, 'Courriel', styleEnTete)
 
             listeEtudiants = nomminatives
             i = 4
@@ -2933,11 +2936,12 @@ class JalonCours(ATFolder):
                 ligne.write(0, etudiant["nom"])
                 ligne.write(1, etudiant["prenom"])
                 ligne.write(2, etudiant["sesame"])
-                ligne.write(3, etudiant["email"])
+                ligne.write(3, etudiant["num_etu"])
+                ligne.write(4, etudiant["email"])
                 i = i + 1
 
             # ajustement de la largeur d'une colonne
-            feuille.col(3).width = 8000
+            feuille.col(4).width = 8000
 
         # Ajout des invitations par courriel
         invitations = self.getInfosInvitations()
@@ -2954,7 +2958,8 @@ class JalonCours(ATFolder):
             feuille.write(3, 0, 'Nom', styleEnTete)
             feuille.write(3, 1, 'Prénom', styleEnTete)
             feuille.write(3, 2, 'Sésame', styleEnTete)
-            feuille.write(3, 3, 'Courriel', styleEnTete)
+            feuille.write(3, 3, 'Numéro', styleEnTete)
+            feuille.write(3, 4, 'Courriel', styleEnTete)
 
             listeEtudiants = invitations
             i = 4
@@ -2967,12 +2972,13 @@ class JalonCours(ATFolder):
                 ligne.write(0, nom)
                 ligne.write(1, prenom)
                 ligne.write(2, etudiant["email"])
-                ligne.write(3, etudiant["email"])
+                ligne.write(3, "Non défini")
+                ligne.write(4, etudiant["email"])
                 i = i + 1
 
             # ajustement de la largeur d'une colonne
             feuille.col(2).width = 8000
-            feuille.col(3).width = 8000
+            feuille.col(4).width = 8000
 
         # Ajout des lecteurs enseignants
         lecteurs = self.getCoLecteurs()
@@ -2989,7 +2995,8 @@ class JalonCours(ATFolder):
             feuille.write(3, 0, 'Nom', styleEnTete)
             feuille.write(3, 1, 'Prénom', styleEnTete)
             feuille.write(3, 2, 'Sésame', styleEnTete)
-            feuille.write(3, 3, 'Courriel', styleEnTete)
+            feuille.write(3, 3, 'Numéro', styleEnTete)
+            feuille.write(3, 4, 'Courriel', styleEnTete)
 
             listeEtudiants = jalon_utils.getIndividus(list(lecteurs), "listdict")
             i = 4
@@ -2998,11 +3005,12 @@ class JalonCours(ATFolder):
                 ligne.write(0, etudiant["nom"])
                 ligne.write(1, etudiant["prenom"])
                 ligne.write(2, etudiant["sesame"])
-                ligne.write(3, etudiant["email"])
+                ligne.write(3, "Non défini")
+                ligne.write(4, etudiant["email"])
                 i = i + 1
 
             # ajustement de la largeur d'une colonne
-            feuille.col(3).width = 8000
+            feuille.col(4).width = 8000
 
         listing.save(path)
 
