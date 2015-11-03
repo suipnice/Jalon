@@ -915,7 +915,7 @@ class JalonCoursWims(ATDocument):
 
         return retour
 
-    def getNotesTableur(self, format="csv"):
+    def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         separateurs = {"tsv": "\t", "csv": ";"}
         if format not in separateurs:
@@ -936,17 +936,24 @@ class JalonCoursWims(ATDocument):
                 export = [sep.join(entetes)]
 
                 for etudiant in listeEtudiant["data_scores"]:
+                    num_etu = '"%s"' % etudiant["num_etu"]
+                    id_etu  = '"%s"' % etudiant["id"]
                     if self.idExam:
-                        score = str(etudiant["score"])
+                        score = '"%s"' % etudiant["score"]
                         #if sep == ",":
                         #    score = score.replace(",", ".")
-                        ligne = [etudiant["first_name"], etudiant["last_name"], str(etudiant["num_etu"]), etudiant["id"], str(etudiant["attempts"]), score]
+                        if site_lang == "fr":
+                            score = score.replace(".", ",")
+                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, str(etudiant["attempts"]), score]
                     else:
-                        note = "%s %%" % etudiant["user_percent"]
-                        qualite = str(etudiant["user_quality"])
+                        note = '"%s %%"' % etudiant["user_percent"]
+                        qualite = '"%s"' % etudiant["user_quality"]
+                        if site_lang == "fr":
+                            note = note.replace(".", ",")
+                            qualite = qualite.replace(".", ",")
                         #if sep == ",":
                         #    qualite = qualite.replace(",", ".")
-                        ligne = [etudiant["last_name"], etudiant["first_name"], str(etudiant["num_etu"]), etudiant["id"], note, qualite]
+                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
                     export.append(sep.join(ligne))
                 return "\n".join(export)
             else:
