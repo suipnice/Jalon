@@ -221,7 +221,7 @@ function setMailRegistrationForm( ) {
 
 
 /*
-    Instanciation CKEditor
+    Instanciation CKEditor (dupliquée dans APP.js)
 */
 
 function instantiateCKEditor( textareaID ) {
