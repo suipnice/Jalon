@@ -99,6 +99,7 @@ class JalonExerciceWims(ATDocumentBase):
                                  "param_b"      : "randint(1..5)",
                                  "param_c"      : "0",
                                  "param_d"      : "0",
+                                 "param_e"      : "0",
                                  "equation"     : "\\a * \\b",
                                  "enonce"       : "Je vend \\a chaussette(s) au prix de \\b euros chacune. Quel est le montant de ma vente ?",
                                  "texte_reponse": "Ma réponse",
@@ -541,10 +542,6 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                              "credits"         : "credits{",
                                              },
                                "equation": {"precision":     "precision{",
-                                            "param_a":       "real{a",
-                                            "param_b":       "real{b",
-                                            "param_c":       "real{c",
-                                            "param_d":       "real{d",
                                             "equation":      "real{ans",
                                             "enonce":        "text{explain",
                                             "texte_reponse": "answer{",
@@ -635,6 +632,12 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                              "columns"                : "text{columns",
                                              }
                                }
+
+            if modele == "equation":
+                lettres = ["a", "b", "c", "d", "e"]
+                for lettre in lettres:
+                    variables_parse["equation"]["param_%s" % lettre] = "real{%s" % lettre
+
             file = file.replace("\n", "_ENDLINE_")
 
             for key in variables_parse[modele].keys():
@@ -679,6 +682,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                         retour[key] = variable[5:-1]
                     else:
                         retour[key] = variable
+                # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
+                if retour[key] == ("&#36;&#36;%s&#36;&#36;" % key):
+                    retour[key] = self.getVariablesDefaut(modele)[key]
                     #retour[key] = variable.decode("iso-8859-1").encode("utf-8")
 
             if modele == "qcmsuite":
