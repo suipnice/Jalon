@@ -74,18 +74,18 @@
                     Tapez simplement un nombre pour définir une constante.
                 </div>
                 <br/>
-                <tal:define define="var_list python:['a','b','c','d']">
+                <tal:define define="var_list python:['a','b','c','d','e']">
                     <div class="row collapse" tal:repeat="variable var_list" >
                         <tal:define define="var_name string:param_$variable">
                             <div class="small-4 columns">
                                 <label tal:attributes="for var_name;"
-                                       class="right prefix">Variable 
-                                       <code class="indicateur" 
+                                       class="right prefix">Variable
+                                       <code class="indicateur"
                                              tal:content="string:\$variable">\x</code>
                                 </label>
                             </div>
                             <div class="small-8 columns">
-                                <input type="text" 
+                                <input type="text"
                                        tal:attributes="name var_name;
                                                        id var_name;
                                                        title string:Variable ${repeat/variable/number};
