@@ -780,8 +780,9 @@ class JalonCoursWims(ATDocument):
                                 # cas des comptes enseignants et invités
                                 else:
                                     # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon
-                                    # (user_id wims ayant pu etre tronqué par validerUserID + modurle raw transforme automatiquement . en @)
+                                    # (user_id wims ayant pu etre tronqué par validerUserID + module raw transforme automatiquement . en @)
                                     # Si user["id"] n'est pas trouvé, on gardera simplement les infos données par WIMS.
+                                    #pour debug : user["first_name"] = "%s [direct from WIMS]" % user["first_name"]
                                     user["num_etu"] = "Non disp."
                                 user["user_quality"] = "%.2f" % ((float(user["user_quality"]) * float(self.getNoteMax())) / 10)
                                 user["user_percent"] = "%.2f" % user["user_percent"]
