@@ -147,11 +147,11 @@
                 <div class="row">
                     <div class="panel callout radius text-justify"
                          i18n:translate="">
-                        Intracursus est un site permettant de gérer les absences et les notes de vos étudiants à travers différentes séances (TD, TP, etc). Intracursus est une création de <strong>Yves Callejas</strong> installé et géré à la <strong>DSI de l'UNS</strong>.
+                        Intracursus est un site permettant de gérer les absences et les notes de vos étudiants à travers différentes séances (TD, TP, etc)</strong>.
                     </div>
                     <div class="panel warning radius text-justify"
                          i18n:translate="">
-                        <strong>Attention :</strong> Une fois connecté à Intracursus, si vous n'avez pas de formations associées, vous devez demander au responsable de votre formation de contacter <a href="mailto:intracursus@unice.fr">intracursus@unice.fr</a> afin de configurer l'accès à votre formation par Intracursus.
+                        <strong>Attention :</strong> Une fois connecté à Intracursus, si vous n'avez pas de formations associées, vous devez demander au responsable de votre formation de contacter <a href="mailto:intracursus@unice.fr">intracursus@unice.fr</a> afin de configurer l'accès à votre formation dans Intracursus.
                     </div>
                     <div class="text-center">
                         <a class="button small radius" target="_blank"
