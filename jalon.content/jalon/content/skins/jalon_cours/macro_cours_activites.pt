@@ -950,7 +950,7 @@ En entrée :
             </ul>
         </div>
         <a class="button small radius right" title="Télécharger au format tableur"
-           tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv"
+           tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv&amp;lang=${site_lang}"
            tal:condition="data_scores">
             <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger (CSV)</tal:block>
         </a>
@@ -1099,7 +1099,7 @@ En entrée :
     </tal:condition>
     <tal:condition condition="python:infosNotes['status']=='OK'">
 
-        <a tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv"
+        <a tal:attributes="href string:${context/absolute_url}/listingTableur_wims?format=csv&amp;lang=${site_lang}"
            tal:condition="data_scores"
            title="Télécharger au format tableur" class="button small radius right"
            i18n:attributes="title">
