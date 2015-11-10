@@ -419,6 +419,8 @@ class JalonBoiteDepot(ATFolder):
                     correction = 0
                     if depot.getCorrection() not in ["", None, " "]:
                         correction = 1
+                    if depot.getFichierCorrection:
+                        correction = 1
                     listeDepots.append({"etudiant":   authMember,
                                         "id":         depot.getId(),
                                         "title":      depot.title_or_id(),
