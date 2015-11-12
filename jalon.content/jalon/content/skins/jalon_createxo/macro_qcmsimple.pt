@@ -253,6 +253,7 @@
                                tal:define="feedback_mauvais QCM_parsed/feedback_mauvais"
                                tal:attributes="value feedback_mauvais"/>
                     </div>
+                    <metal:macro use-macro="context/macro_commune/macros/hint_and_help"/>
                     <metal:macro use-macro="context/macro_commune/macros/credits"/>
                 </div>
             </dd>

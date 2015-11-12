@@ -22,6 +22,8 @@ Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
 :\author{$$author$$}
 :\email{$$email$$}
 :\credits{$$credits$$}
+:\hint{$$hint$$}
+:\help{$$help$$}
 
 :Nombre de choix à présenter. Au plus 10.
 Vous devez définir suffisamment de choix. Sinon l'exercice affichera seulement ce qui est disponible.
@@ -42,7 +44,7 @@ $embraced_randitem
 :Le(s) bon(s) choix, un par ligne.
 On peut en placer plusieurs (un par ligne) pour tirer au hasard.
 Évitez les phrases trop longues ! Aucun point-virgule dans la phrase.
-$embraced_randitem 
+$embraced_randitem
 \matrix{datatrue=asis($$bonnesrep$$)}
 
 :Les mauvais choix, un par ligne.
