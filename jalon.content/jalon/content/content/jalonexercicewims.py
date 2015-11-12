@@ -464,6 +464,11 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/lister_modules_wims", "message": "demande une Liste de modules wims publiés ", "requete": dico})
 
+    def getExoXML(self, formatXML="OLX"):
+        """Appelle la fonction getExoXML de jalonexportswims."""
+        import jalonexportswims
+        return jalonexportswims.getExoXML(context=self, formatXML=formatXML)
+
     def getModule(self, authMember, module_path):
         """retourne toutes les infos disponibles pour le module "module_path"."""
         dico = {"job": "getmodule", "option": module_path, "code": authMember}
