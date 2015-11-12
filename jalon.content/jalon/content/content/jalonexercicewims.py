@@ -92,6 +92,8 @@ class JalonExerciceWims(ATDocumentBase):
                                  "options"         : "checkbox split",
                                  "accolade"        : "1",
                                  "credits"         : "",
+                                 "hint"            : "",
+                                 "help"            : "",
                                  },
                             "equation":
                                 {"precision"    : "1000",
@@ -488,7 +490,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
         return input_data
 
-    def getExoWims(self, modele, authMember, requete):
+    def getExoWims(self, modele, authMember, requete={}):
         """permet de parser le code source d'un exercice WIMS."""
         #LOG.info("[getExoWims] modele = %s" % modele)
         #Il faudra faire un traitement specifique aux exercices externes ici
@@ -518,7 +520,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
             self.aq_parent.wims("verifierRetourWims", {"rep": file,
                                                        "fonction": "jalonexercicewims.py/getExoWims",
-                                                       "message": "Impossible d'obtenir un exo WIMS de l'utilisateur %s" % authMember,
+                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
                                                        "jalon_request": requete
                                                        })
             return None
@@ -539,7 +541,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                              "feedback_mauvais": "text{feedback_mauvais",
                                              "options":          "text{option",
                                              "accolade":         "text{accolade=item\(",
-                                             "credits"         : "credits{",
+                                             "credits":          "credits{",
+                                             "hint":             "hint{",
+                                             "help":             "help{",
                                              },
                                "equation": {"precision":     "precision{",
                                             "equation":      "real{ans",
@@ -642,10 +646,10 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
-                if key not in ["precision", "texte_reponse", "accolade", "credits"]:
+                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
-                    if key in ["precision", "credits"]:
+                    if key in ["precision", "credits", "hint", "help"]:
                         #exemple : \precision{100}
                         pattern = "%s(.*?)}_ENDLINE_" % variables_parse[modele][key]
                     if key == "texte_reponse":
