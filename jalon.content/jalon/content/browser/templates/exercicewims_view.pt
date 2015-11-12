@@ -42,18 +42,24 @@
                  tal:define="wims_lang python:context.convertLangToWIMS(portal_lang);">
 
             <a class="button small success right"
+               tal:condition="python:modele=='qcmsimple'"
+               tal:attributes="href string:${context/absolute_url}/getExoWIMS_XML?format=QTI">
+                <i class="fa fa-pencil no-pad"></i>
+                <tal:block  i18n:translate="">GET XML (QTI)</tal:block>
+            </a>
+
+            <a class="button small success right"
                tal:condition="python:modele!='groupe'"
                tal:attributes="href string:${context/absolute_url}/exercicewims_edit">
                 <i class="fa fa-pencil no-pad"></i>
                 <tal:block tal:condition="python:modele!='externe'" i18n:translate="">Modifier cet exercice</tal:block>
                 <tal:block tal:condition="python:modele=='externe'" i18n:translate="">Changer cet exercice</tal:block>
             </a>
-            <a class="button small success right disabled"
-               tal:condition="python:modele=='groupe'"
-               title="Un groupe d'exercices ne peut pas être modifié.">
+            <!--span class="right"
+                  tal:condition="python:modele=='groupe'">
                 <i class="fa fa-pencil no-pad"></i>
-                <tal:block i18n:translate="">Modifier cet exercice</tal:block>
-            </a>
+                <tal:block i18n:translate="">Un groupe d'exercices ne peut pas être modifié.</tal:block>
+            </span-->
 
             <ul id="tab_button-group" class="button-group radius expand" tal:condition="python:modele!='externe'">
 
