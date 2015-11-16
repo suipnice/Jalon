@@ -186,7 +186,23 @@
         </div>
     </metal:macro>
 
-    <!-- Credits : Permet d'afficher des "credits" en bas d'un exercice. -->
+    <!-- Hint : Permet d'afficher des "indications" sur un exercice. -->
+    <metal:macro define-macro="hint_and_help">
+        <div class="panel">
+          <label for="hint">Indication pour l'apprenant</label>
+          <div class="formHelp texte_icone icone_information"> Donne une petite indication aux apprenant pour les aider à répondre à un exercice. L'indication s'affiche sur l'exercice. (HTML autorisé) </div>
+          <textarea name="hint" id="hint"
+                    rows="2" tal:content="QCM_parsed/hint" />
+        </div>
+        <div class="panel">
+          <label for="help">Aide pour l'apprenant</label>
+          <div class="formHelp texte_icone icone_information"> Vous pouvez donner une aide aux apprenant pour leur permettre de répondre plus facilement à un exercice. L'aide s'affiche dans une nouvelle fenêtre. (HTML autorisé)</div>
+          <textarea name="help" id="help"
+                    rows="2" tal:content="QCM_parsed/help" />
+        </div>
+    </metal:macro>
+
+    <!-- cannot_view : affichage d'un avertissement dans le cas ou l'utilisateur connecté n'as pas de droits d'acces à la page. -->
     <metal:macro define-macro="cannot_view">
         <div class="panel radius alert">
             <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
