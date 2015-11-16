@@ -189,13 +189,13 @@
     <!-- Hint : Permet d'afficher des "indications" sur un exercice. -->
     <metal:macro define-macro="hint_and_help">
         <div class="panel">
-          <label for="credits">Indication pour l'apprenant</label>
+          <label for="hint">Indication pour l'apprenant</label>
           <div class="formHelp texte_icone icone_information"> Donne une petite indication aux apprenant pour les aider à répondre à un exercice. L'indication s'affiche sur l'exercice. (HTML autorisé) </div>
           <textarea name="hint" id="hint"
                     rows="2" tal:content="QCM_parsed/hint" />
         </div>
         <div class="panel">
-          <label for="credits">Aide pour l'apprenant</label>
+          <label for="help">Aide pour l'apprenant</label>
           <div class="formHelp texte_icone icone_information"> Vous pouvez donner une aide aux apprenant pour leur permettre de répondre plus facilement à un exercice. L'aide s'affiche dans une nouvelle fenêtre. (HTML autorisé)</div>
           <textarea name="help" id="help"
                     rows="2" tal:content="QCM_parsed/help" />
