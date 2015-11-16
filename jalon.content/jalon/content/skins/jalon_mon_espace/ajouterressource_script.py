@@ -58,7 +58,7 @@ if not REQUEST.form.has_key("recordsid"):
         obj.setProperties(param)
 else:
     for recordid in REQUEST.form["recordsid"]:
-        idobj = "Externe-%s-%s-%s" % (REQUEST["authMember"], recordid)
+        idobj = "Externe-%s-%s" % (REQUEST["authMember"], recordid)
         obj = getattr(context, idobj)
         if not obj:
             context.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
