@@ -24,6 +24,10 @@ import ldap
 import os
 import copy
 
+# Messages de debug :
+#from logging import getLogger
+#LOG = getLogger( '[JalonBoiteDepot]' )
+
 ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8"), u"Ressource bibliographie".encode("utf-8")]
 
 JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
@@ -264,17 +268,18 @@ class JalonBoiteDepot(ATFolder):
         infos_element = self.getInfosElement()
         for idElement in listeElement:
             infos = infos_element.get(idElement, '')
-            affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
-            if personnel or not affElement['val'] == 0:
-                new = {"idElement":       idElement,
-                       "titreElement":    infos["titreElement"],
-                       "typeElement":     infos["typeElement"].replace(" ", ""),
-                       "createurElement": infos["createurElement"],
-                       "affElement":      affElement,
-                       "iconElement":     affElement["icon"],
-                       "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
-                       }
-                retour.append(new)
+            if infos:
+                affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
+                if personnel or not affElement['val'] == 0:
+                    new = {"idElement":       idElement,
+                           "titreElement":    infos["titreElement"],
+                           "typeElement":     infos["typeElement"].replace(" ", ""),
+                           "createurElement": infos["createurElement"],
+                           "affElement":      affElement,
+                           "iconElement":     affElement["icon"],
+                           "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
+                           }
+                    retour.append(new)
         if retour:
             retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
