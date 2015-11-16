@@ -493,7 +493,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
         return input_data
 
-    def getExoWims(self, modele, authMember, requete):
+    def getExoWims(self, modele, authMember, requete={}):
         """permet de parser le code source d'un exercice WIMS."""
         #LOG.info("[getExoWims] modele = %s" % modele)
         #Il faudra faire un traitement specifique aux exercices externes ici
@@ -687,10 +687,10 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                         retour[key] = variable[5:-1]
                     else:
                         retour[key] = variable
-                # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
-                if retour[key] == ("&#36;&#36;%s&#36;&#36;" % key):
-                    retour[key] = self.getVariablesDefaut(modele)[key]
-                    #retour[key] = variable.decode("iso-8859-1").encode("utf-8")
+                    # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
+                    if retour[key] == ("&#36;&#36;%s&#36;&#36;" % key):
+                        retour[key] = self.getVariablesDefaut(modele)[key]
+                        #retour[key] = variable.decode("iso-8859-1").encode("utf-8")
 
             if modele == "qcmsuite":
                 i = 0
