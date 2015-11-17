@@ -32,7 +32,7 @@ import os
 import copy
 
 from logging import getLogger
-LOG = getLogger('jalonfolder')
+LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
 LOG.debug('debug message')
