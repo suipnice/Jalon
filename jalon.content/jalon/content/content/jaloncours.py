@@ -2968,7 +2968,7 @@ class JalonCours(ATFolder):
                 try:
                     nom, prenom = etudiant["nom"].split(" ")
                 except:
-                    nom, prenom = etudiant["nom"]
+                    nom = prenom = etudiant["nom"]
                 ligne.write(0, nom)
                 ligne.write(1, prenom)
                 ligne.write(2, etudiant["email"])
