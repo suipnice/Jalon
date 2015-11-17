@@ -17,7 +17,7 @@ downloads/
 eggs/
 fake-eggs/
 parts/
-dist/
+#dist/
 var/
 
 
@@ -134,3 +134,4 @@ Temporary Items
 
 # sftp configuration file
 sftp-config.json
+z3c.recipe.staticlxml
