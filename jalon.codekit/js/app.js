@@ -16,6 +16,7 @@
 //@codekit-prepend "static/tool.js";    // Utilitaires
 
 
+
 /*
     Forums : gestion des formulaires de recherche / de reponse rapide
 
@@ -48,40 +49,7 @@ function setForumSearchReplyForm( formID, ckEditorInstanceName ) {
     } );
 }
 
-/*
-    Instanciation CKEditor (dupliquée depuis staff.js)
-*/
 
-function instantiateCKEditor( textareaID ) {
-
-    if ( window.CKEDITOR && window.CKEDITOR.dom ) {
-
-        CKEDITOR.replace( textareaID, {
-            customConfig: '',
-            language: 'fr',
-            // Define the toolbar groups as it is a more accessible solution.
-            toolbarGroups: [
-                { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
-                //{ 'name': "links",       'groups': [ "links" ] },
-                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
-                { 'name': "paragraph",   'groups': [ "list" ] },
-                { 'name': "insert",      'groups': [ "insert" ] },
-                //{ 'name': "document",    'groups': [ "mode" ] },
-            ],
-            // Remove unwanted plug-ins.
-            removePlugins: 'image,elementspath',
-            // Remove the redundant buttons from toolbar groups defined above.
-            removeButtons: 'Strike,Subscript,Superscript,Anchor',
-        } );
-
-        return textareaID;
-
-    } else {
-
-        return false;
-    }
-
-}
 
 /*
     Forums : suppression des citations dans l'affichage des resultats de recherche
@@ -158,53 +126,6 @@ function setForumUnansweredConversationsFilter( ) {
             }
         }
     } );
-}
-*/
-
-
-
-/*
-    Legende du plan du cours
-
-function setPlanLegend( ) {
-
-    var $courseElements = Foundation.utils.S( '#course_plan-plan span' );
-    var $courseElements2Fade = '';
-    var elementTypes = [
-        "type_File",
-        "type_Image",
-        "type_Lienweb",
-        "type_Lecteurexportable",
-        "type_CatalogueBU",
-        "type_Presentationssonorisees",
-        "type_Webconference",
-        "type_Examen",
-        "type_AutoEvaluation",
-        "type_BoiteDepot",
-        "type_SalleVirtuelle",
-    ];
-    var courseElementTypes = [ ];
-    var hoveredElementType = '';
-
-    for ( var i = 0; i < 11; i++ ) {
-
-        if ( !$courseElements.hasClass( elementTypes[ i ] ) ) {
-            Foundation.utils.S( '#course_plan-legend dl.typeElement dd.' + elementTypes[ i ] ).remove( );
-            //Foundation.utils.S( '#course_plan-legend dl.typeElement dd.' + elementTypes[ i ] ).hide( );
-        }
-    }
-
-    Foundation.utils.S( '#course_plan-legend dl.typeElement dd:not(.hide)' ).hover(
-
-        function( event ) {
-            hoveredElementType = $( this ).attr( 'class' );
-            $courseElements2Fade = Foundation.utils.S( '#course_plan-plan span:not(.' + hoveredElementType + ')' );
-            $courseElements2Fade.fadeTo( 200, 0.33 );
-        },
-        function( event ) {
-            $courseElements2Fade.fadeTo( 200, 1 );
-        }
-    );
 }
 */
 
