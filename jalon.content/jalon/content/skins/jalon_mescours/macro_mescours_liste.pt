@@ -16,9 +16,9 @@
 
             <div class="panel callout radius"
                  tal:condition="not:folderContents">
-                 <i class="fa fa-info-circle no-pad"></i>
-                 <strong i18n:translate="">Vous n'avez pas encore de cours dans Jalon.</strong><br />
-                 <tal:block i18n:translate="">Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.</tal:block>
+                <i class="fa fa-info-circle no-pad"></i>
+                <strong i18n:translate="">Vous n'avez pas encore de cours dans Jalon.</strong><br />
+                <tal:block i18n:translate="">Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.</tal:block>
             </div>
 
     <tal:listing condition="folderContents">

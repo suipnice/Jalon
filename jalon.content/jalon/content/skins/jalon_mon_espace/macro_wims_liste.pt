@@ -21,9 +21,10 @@
         <tal:block define="tagList python:context.tagFormat(subjects)"
                    condition="python:context.test(tagList, 0, 1)">
                     <div class="panel callout radius"
-                         tal:condition="not:folderContents"
-                         i18n:translate="">
-                        Aucun élément
+                         tal:condition="not:folderContents">
+                        <i class="fa fa-info-circle no-pad"></i>
+                        <strong i18n:translate="">Il n'y a aucun exercice Wims dans votre espace.</strong><br />
+                        <tal:block i18n:translate="">Pour en ajouter, cliquez sur la barre « Créer un exercice Wims » ci-dessus.</tal:block>
                     </div>
         </tal:block>
 

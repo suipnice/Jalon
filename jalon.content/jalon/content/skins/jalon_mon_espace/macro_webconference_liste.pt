@@ -20,9 +20,16 @@
         <tal:block define="tagList python:context.tagFormat(subjects)"
                    condition="python:context.test(tagList, 0, 1)">
                     <div class="panel callout radius"
-                         tal:condition="not:folderContents"
-                         i18n:translate="">
-                        Aucun élément
+                         tal:condition="not:folderContents">
+                        <i class="fa fa-info-circle no-pad"></i>
+                    <tal:isSonorisation condition="python:dossier == 'Sonorisation'">
+                        <strong i18n:translate="">Il n'y a aucune présentation sonorisée dans votre espace.</strong><br />
+                        <tal:block i18n:translate="">Pour en ajouter, cliquez sur la barre « Créer une présentation sonorisée » ci-dessus.</tal:block>
+                    </tal:isSonorisation>
+                    <tal:isSonorisation condition="python:dossier == 'Webconference'">
+                        <strong i18n:translate="">Il n'y a aucune webconférence dans votre espace.</strong><br />
+                        <tal:block i18n:translate="">Pour en ajouter, connectez vous à votre salle virtuelle en cliquant sur la barre ci-dessus.</tal:block>
+                    </tal:isSonorisation>
                     </div>
         </tal:block>
 
