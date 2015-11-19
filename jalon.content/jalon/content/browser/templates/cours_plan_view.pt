@@ -444,13 +444,20 @@
     <tal:block tal:condition="personnel"
                define="script string:setSortablePlan()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-        <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
     </tal:block>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
 
     <script charset="UTF-8"
             tal:condition="perso_mode_etu"
             tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
             tal:content="jsTranslate/getJsTranslate"></script>
+
+    <tal:comment replace="nothing"><!--
+    <tal:define define="script string:setPlanLegend()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:define>
+    --></tal:comment>
 
 </metal:core>
 </body>
