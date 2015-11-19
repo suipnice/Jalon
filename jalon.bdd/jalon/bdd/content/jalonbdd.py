@@ -16,6 +16,7 @@ from interfaces import IJalonBDD
 from jalon.bdd import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 
+import tables
 import jalonsqlite
 import os
 import os.path
@@ -38,9 +39,9 @@ class JalonBDD(SimpleItem):
 
     #mysql+mysqldb://<user>:<password>@<host>[:<port>]/<dbname>
     _use_mysql      = 1   
-    _host_mysql     = "192.168.56.30"
+    _host_mysql     = "127.0.0.1"
     _user_mysql     = "zope"
-    _password_mysql = "azerty"
+    _password_mysql = "zope"
     _port_mysql     = 3306
     _db_name_mysql   = "jalon"
 
@@ -127,16 +128,14 @@ class JalonBDD(SimpleItem):
         conn.commit()
 
         if self._use_mysql:
-            import MySQLdb
-            db = MySQLdb.connect(host=self._host_mysql, port=self._port_mysql, passwd=self._password_mysql, db=self._db_name_mysql)
-            c = db.cursor()
-            c.execute('''CREATE TABLE individu
-                            (SESAME_ETU TEXT PRIMARY KEY, LIB_NOM_PAT_IND TEXT, LIB_NOM_USU_IND TEXT, LIB_PR1_IND TEXT, TYPE_IND TEXT, COD_ETU INTEGER, EMAIL_ETU TEXT)''')
-            c.execute('''CREATE TABLE connexion
-                            (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONN TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu(SESAME_ETU))''')
-            c.execute('''CREATE TABLE consultationCours
-                            (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONS TEXT, ID_COURS TEXT, TYPE_CONS TEXT, ID_CONS TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu(SESAME_ETU))''')
-            c.commit()
+            self.creerTablesMySQL()
+
+    def creerTablesMySQL(self):
+            connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
+            engine = create_engine(connexion, echo=True)
+            tables.IndividuMySQL.__table__.create(bind=engine)
+            tables.ConnexionINDMySQL.__table__.create(bind=engine)
+            tables.ConsultationCoursMySQL.__table__.create(bind=engine)
 
     #----------------------------#
     # Utilitaire base de données #

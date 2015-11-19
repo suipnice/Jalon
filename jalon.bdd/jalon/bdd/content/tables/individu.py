@@ -62,3 +62,29 @@ class IndividuSQLITE(Base):
 
     def __repr__(self):
         return "<Individu SESAME_ETU=%s COD_ETU=%s DATE_NAI_IND=%s LIB_NOM_USU_IND=%s LIB_NOM_PAT_IND=%s LIB_PR1_IND=%s TYPE_IND=%s EMAIL_ETU=%s>" % (self.SESAME_ETU, str(self.COD_ETU), self.DATE_NAI_IND, self.LIB_NOM_USU_IND, self.LIB_NOM_PAT_IND, self.LIB_PR1_IND, self.TYPE_IND, self.EMAIL_ETU)
+
+
+class IndividuMySQL(Base):
+    __tablename__ = "individu_mysql"
+
+    SESAME_ETU = Column(String(50), primary_key=True)
+    COD_ETU = Column(Integer)
+    DATE_NAI_IND = Column(String(10))
+    LIB_NOM_PAT_IND = Column(String(100))
+    LIB_NOM_USU_IND = Column(String(100))
+    LIB_PR1_IND = Column(String(100))
+    TYPE_IND = Column(String(50))
+    EMAIL_ETU = Column(String(50))
+
+    def __init__(self, SESAME_ETU=None, COD_ETU=0, DATE_NAI_IND=None, LIB_NOM_USU_IND=None, LIB_NOM_PAT_IND=None, LIB_PR1_IND=None, TYPE_IND=None, EMAIL_ETU=None):
+        self.SESAME_ETU = SESAME_ETU
+        self.COD_ETU = COD_ETU
+        self.DATE_NAI_IND = DATE_NAI_IND
+        self.LIB_NOM_USU_IND = LIB_NOM_USU_IND
+        self.LIB_NOM_PAT_IND = LIB_NOM_PAT_IND
+        self.LIB_PR1_IND = LIB_PR1_IND
+        self.TYPE_IND = TYPE_IND
+        self.EMAIL_ETU = EMAIL_ETU
+
+    def __repr__(self):
+        return "<Individu SESAME_ETU=%s COD_ETU=%s DATE_NAI_IND=%s LIB_NOM_USU_IND=%s LIB_NOM_PAT_IND=%s LIB_PR1_IND=%s TYPE_IND=%s EMAIL_ETU=%s>" % (self.SESAME_ETU, str(self.COD_ETU), self.DATE_NAI_IND, self.LIB_NOM_USU_IND, self.LIB_NOM_PAT_IND, self.LIB_PR1_IND, self.TYPE_IND, self.EMAIL_ETU)
