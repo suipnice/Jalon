@@ -51,10 +51,14 @@ function instantiateCKEditor( textareaID ) {
 */
 
 // Validation et chargement d'une nouvelle page
-function setRevealFormNewPage( formID, revealID, ckEditorInstanceName ) {
+function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum ) {
 
     if ( typeof ckEditorInstanceName !== 'undefined' ) {
-        ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
+        if ( typeof isForum !== 'undefined' && Boolean( isForum ) ) {
+            ckEditorInstanceName = instantiateForumCKEditor( ckEditorInstanceName );
+        } else {
+            ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
+        }
     } else {
         ckEditorInstanceName = false;
     }

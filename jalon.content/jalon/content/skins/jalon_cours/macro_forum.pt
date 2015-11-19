@@ -63,7 +63,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description')" />
+            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description', true)" />
 
 </metal:macro>
 
@@ -153,7 +153,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description')" />
+            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description', true)" />
 
 </metal:macro>
 
@@ -264,7 +264,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text')" />
+            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text', true)" />
 
 </metal:macro>
 
@@ -351,7 +351,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'text')" />
+            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'text', true)" />
 
 </tal:define>
 </metal:macro>
@@ -372,6 +372,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <tal:comment replace="nothing"><!--
     <h4>
         <strong tal:content="creatorData" />
         (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
@@ -380,20 +381,26 @@
     <div class="panel callout radius">
         <tal:block tal:content="structure context/getText" />
     </div>
+    --></tal:comment>
+
+    <div class="panel callout radius">
+        <tal:block tal:content="creatorData" />
+        (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
+    </div>
 
     <form id="js-answerForumConvers" method="POST"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
         <div id="archetypes-fieldname-description" class="field"
              tal:define="error errors/text | nothing;
-                         quote string:<blockquote>${context/getText} (par ${creatorData})</blockquote>"
+                         quote string:<u><i>${creatorData} a dit :</i></u><blockquote>${context/getText}</blockquote>"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
             <label for="text"
                    i18n:translate="">Votre réponse</label>
             <div class="fieldErrorBox"
                  tal:condition="error"
                  tal:content="error" />
-            <textarea name="text" rows="10"
+            <textarea id="text" name="text" rows="10"
                       required="required" placeholder="Saisie obligatoire"
                       tal:content="structure quote"
                       i18n:attributes="placeholder" />
@@ -402,11 +409,6 @@
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="macro" value="macro_forum" />
         <input type="hidden" name="formulaire" value="ajout-reponse" />
-
-        <div class="panel callout radius">
-            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître le message auquel vous répondez en tant que citation.</tal:block>
-            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
-        </div>
 
         <div class="formControls">
             <button type="submit" class="button small radius">
@@ -418,7 +420,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text')" />
+            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text', true)" />
 
 </tal:define>
 </metal:macro>

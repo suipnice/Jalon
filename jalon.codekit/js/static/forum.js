@@ -21,12 +21,13 @@ function instantiateForumCKEditor( textareaID ) {
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
                 { 'name': "links",       'groups': [ "links" ] },
                 //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
-                { 'name': "paragraph",   'groups': [ "list" ] },
+                { 'name': "paragraph",   'groups': [ "blocks" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
                 //{ 'name': "document",    'groups': [ "mode" ] },
             ],
             removePlugins: 'image,elementspath',
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
+            removeDialogTabs: 'link:advanced',
         } );
 
         return textareaID;
