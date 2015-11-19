@@ -24,15 +24,25 @@ import json
 
 from DateTime import DateTime
 
+
 class JalonBDD(SimpleItem):
 
     implements(IJalonBDD)
     _urlConnexion = "/home/zope/sites/bdd_jalon/"
     _typeBDD = "sqlite"
     _typeBDDActif = ""
-    _activerStockageConnexion = 1
-    _activerStockageConsultation = 1
     Session = sessionmaker()
+
+    _activer_stockage_connexion = 1
+    _activer_stockage_consultation = 1
+
+    #mysql+mysqldb://<user>:<password>@<host>[:<port>]/<dbname>
+    _use_mysql      = 1   
+    _host_mysql     = "192.168.56.30"
+    _user_mysql     = "zope"
+    _password_mysql = "azerty"
+    _port_mysql     = 3306
+    _db_name_mysql   = "jalon"
 
     def __init__(self, *args, **kwargs):
         super(JalonBDD, self).__init__(*args, **kwargs)
@@ -53,10 +63,15 @@ class JalonBDD(SimpleItem):
         self._typeBDD = typeBDD
 
     def getVariablesBDD(self):
-        return {"typeBDD"                     : self._typeBDD,
-                "urlConnexion"                : self._urlConnexion,
-                "activerStockageConnexion"    : self._activerStockageConnexion,
-                "activerStockageConsultation" : self._activerStockageConsultation}
+        return {"typeBDD"                      : self._typeBDD,
+                "urlConnexion"                 : self._urlConnexion,
+                "activerStockageConnexion"     : self._activer_stockage_connexion,
+                "activerStockageConsultation"  : self._activer_stockage_consultation,
+                "host_mysql"                   : self._host_mysql,
+                "user_mysql"                   : self._user_mysql,
+                "password_mysql"               : self._password_mysql,
+                "port_mysql"                   : self._port_mysql,
+                "db_name_mysql"                : self._db_name_mysql}
 
     def setVariablesBDD(self, variablesBDD):
         # s'il n'y a aucun type renseigné ou alors aucune url de connexion
@@ -110,6 +125,18 @@ class JalonBDD(SimpleItem):
         c.execute('''CREATE TABLE consultationCours
                         (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONS TEXT, ID_COURS TEXT, TYPE_CONS TEXT, ID_CONS TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu_lite(SESAME_ETU))''')
         conn.commit()
+
+        if self._use_mysql:
+            import MySQLdb
+            db = MySQLdb.connect(host=self._host_mysql, port=self._port_mysql, passwd=self._password_mysql, db=self._db_name_mysql)
+            c = db.cursor()
+            c.execute('''CREATE TABLE individu
+                            (SESAME_ETU TEXT PRIMARY KEY, LIB_NOM_PAT_IND TEXT, LIB_NOM_USU_IND TEXT, LIB_PR1_IND TEXT, TYPE_IND TEXT, COD_ETU INTEGER, EMAIL_ETU TEXT)''')
+            c.execute('''CREATE TABLE connexion
+                            (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONN TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu(SESAME_ETU))''')
+            c.execute('''CREATE TABLE consultationCours
+                            (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONS TEXT, ID_COURS TEXT, TYPE_CONS TEXT, ID_CONS TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu(SESAME_ETU))''')
+            c.commit()
 
     #----------------------------#
     # Utilitaire base de données #
