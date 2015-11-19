@@ -22,8 +22,14 @@ if request.has_key("format"):
 else:
     #par défaut, on exporte en QTI
     formatXML = "OLX"
+
+if request.has_key("version"):
+    version = request["version"]
+else:
+    #par défaut, on exporte en QTI
+    version = "latest"
 request.RESPONSE.setHeader('content-type', "application/xml")
 request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=exo_WIMS_%s.xml' % formatXML)
 
 # Ici, context doit etre un jalonexercicewims
-return context.getExoXML(formatXML)
+return context.getExoXML(formatXML, version)

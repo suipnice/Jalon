@@ -178,6 +178,33 @@
     </div>
 </metal:macro>
 
+
+<!--exporter_exo : choisis sous quel format exporter un exercice WIMS -->
+<metal:macro define-macro="exporter_exo">
+
+    <h2>
+        <tal:block i18n:translate="">Exporter l'exercice</tal:block>
+         « <tal:block content="context/Title" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+      tal:attributes="action string:${context/absolute_url}/${template/id};">
+
+<ul>
+    <li><input type="radio"/><label for="radio1">QTI</label></li>
+    <li><input type="radio"/><label for="radio2">EDX</label></li>
+</ul>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-tag"></i>
+                <tal:block i18n:translate="">Exporter</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
 </metal:content-core>
 
 </body>

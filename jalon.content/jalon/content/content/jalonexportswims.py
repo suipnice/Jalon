@@ -81,15 +81,33 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                 if version == "1.1":
                     #Format QTI v1.1
                     exoXML = ET.Element("assessmentItem",
-                             attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
+                             attrib={"xmlns"             : "http://www.imsproject.org/xsd/ims_qti_rootv1p1",
                                      "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                     "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
+                                     "xsi:schemaLocation": "http://www.imsproject.org/xsd/ims_qti_rootv1p1 http://www.imsglobal.org/sites/default/files/xsd/ims_qti_rootv1p1.xsd",
                                      "identifier"        : parsed_exo["id"],
-                                     "title"             : parsed_exo["titre"],
-                                     "adaptive"          : "false",
-                                     "timeDependent"     : "false"})
+                                     "title"             : parsed_exo["titre"]})
                     if modele == "qcmsimple":
                         exoXML = __qcmsimple_to_qti_11(exoXML, parsed_exo)
+                elif version == "1.2.1":
+                    #Format QTI v1.2.1
+                    exoXML = ET.Element("questestinterop",
+                             attrib={"xmlns"             : "http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1",
+                                     "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                     "xsi:schemaLocation": "http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd"
+                                     })
+                    elementXML = ET.SubElement(exoXML,
+                                               "assessment",
+                                               attrib={"ident" : parsed_exo["id"],
+                                                       "title" : parsed_exo["titre"]
+                                                       })
+                    elementXML = ET.SubElement(elementXML, "section", attrib={"ident" : parsed_exo["id"]})
+                    elementXML = ET.SubElement(elementXML, "item",
+                                                           attrib={"ident" : parsed_exo["id"],
+                                                                   "title" : parsed_exo["titre"]
+                                                                   })
+
+                    if modele == "qcmsimple":
+                        __qcmsimple_to_qti_121(elementXML, parsed_exo)
                 else:
                     #Format QTI v2.1
                     exoXML = ET.Element("assessmentItem",
@@ -255,7 +273,64 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
 
 
 def __qcmsimple_to_qti_11(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers QTI:
+    ### Modele "QCM Simple" vers QTI 1.1:
+
+    ### TODO !!
+
+    ###
+    elementXML = ET.SubElement(exoXML,
+                           "responseDeclaration",
+                           attrib={"identifier":  "RESPONSE",
+                                   "cardinality": "multiple",
+                                   "baseType":    "identifier"})
+
+    correctResponse = ET.SubElement(elementXML, "correctResponse")
+
+    elementXML = ET.SubElement(exoXML,
+                               "outcomeDeclaration",
+                               attrib={"identifier":  "SCORE",
+                                       "cardinality": "single",
+                                       "baseType":    "float"})
+
+    elementXML = ET.SubElement(exoXML, "itemBody")
+    choiceInteraction = ET.SubElement(elementXML,
+                                      "choiceInteraction",
+                                      attrib={"responseIdentifier": "RESPONSE",
+                                              "shuffle":            "true",
+                                              "maxChoices":         "0"})
+
+    elementXML = ET.SubElement(choiceInteraction, "prompt")
+    elementXML.text = parsed_exo["enonce"].decode("utf-8")
+
+    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
+    nb_rep = 0
+    for ligne in liste_bons:
+        nb_rep = nb_rep + 1
+        rep_id = "rep_%s" % nb_rep
+        elementXML = ET.SubElement(correctResponse, "value")
+        elementXML.text = rep_id
+        elementXML = ET.SubElement(choiceInteraction,
+                                   "simpleChoice",
+                                   attrib={"identifier": rep_id,
+                                           "fixed":      "false"})
+        elementXML.text = ligne
+
+    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
+    for ligne in liste_mauvais:
+        nb_rep = nb_rep + 1
+        rep_id = "rep_%s" % nb_rep
+        elementXML = ET.SubElement(choiceInteraction,
+                                   "simpleChoice",
+                                   attrib={"identifier": rep_id,
+                                           "fixed":      "false"})
+        elementXML.text = ligne
+    return exoXML
+
+
+def __qcmsimple_to_qti_121(exoXML, parsed_exo):
+    ### Modele "QCM Simple" vers QTI 1.2.1:
+    ### Plus d'infos sur le format QTI 1.2.1 :
+    ### http://www.imsglobal.org/question/qtiv1p2/imsqti_litev1p2.html
 
     ### TODO !!
 
