@@ -436,7 +436,6 @@
     <div class="panel radius">
         <form id="js-forum-search"
               tal:attributes="action string:${search_url}/jalon_forum_search">
-            <div class="fieldErrorBox hide">Champ obligatoire</div>
             <input type="text" name="q"
                    required="required"
                    placeholder="Texte à rechercher…"
@@ -447,7 +446,7 @@
             </button>
         </form>
 
-        <tal:define define="script string:setForumSearchReplyForm('js-forum-search')">
+        <tal:define define="script string:setForumSearchForm()">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:define>
 

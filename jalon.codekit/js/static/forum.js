@@ -7,33 +7,65 @@
 
 
 /*
-    Forums : gestion des formulaires de recherche / de reponse rapide
+    Instanciation CKEditor specifique
+*/
 
-        - ckEditorInstanceName est un ID de textarea utilisant CKEditor.
+function instantiateForumCKEditor( textareaID ) {
+
+    if ( window.CKEDITOR && window.CKEDITOR.dom ) {
+
+        CKEDITOR.replace( textareaID, {
+            customConfig: '',
+            language: 'fr',
+            toolbarGroups: [
+                { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
+                { 'name': "links",       'groups': [ "links" ] },
+                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
+                { 'name': "paragraph",   'groups': [ "list" ] },
+                { 'name': "insert",      'groups': [ "insert" ] },
+                //{ 'name': "document",    'groups': [ "mode" ] },
+            ],
+            removePlugins: 'image,elementspath',
+            removeButtons: 'Strike,Subscript,Superscript,Anchor',
+        } );
+
+        return textareaID;
+
+    } else {
+
+        return false;
+    }
+
+}
+
+
+
+/*
+    Formulaire de reponse rapide
 
 */
 
-function setForumSearchReplyForm( formID, ckEditorInstanceName ) {
+function setForumQuickReplyForm( ) {
 
-    if ( typeof ckEditorInstanceName !== 'undefined' ) {
-        ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
-    } else {
-        ckEditorInstanceName = false;
-    }
+    var $inputReply = Foundation.utils.S( '#js-forum-quickreply' );
+    instantiateForumCKEditor( 'js-forum-quickreply' );
 
-    Foundation.utils.S( '#' + formID ).submit( function( event ) {
-
-        if ( ckEditorInstanceName ) {
-            CKEDITOR.instances[ ckEditorInstanceName ].updateElement( );
-        }
+    $inputReply.closest( 'form' ).submit( function( event ) {
 
         var $form = $( this );
 
-        if ( $form.find( 'input[type="text"]' ).first( ).val( ) === ""
-                || $form.find( 'textarea' ).first( ).val( ) === "" ) {
+        CKEDITOR.instances[ 'js-forum-quickreply' ].updateElement( );
+        buffer = $inputReply.val( );
+
+        if ( $( buffer ).text( ).trim( ) === '' ) {
 
             event.preventDefault( );
-            $form.find( 'div.fieldErrorBox' ).fadeIn( );
+            $field = $inputReply.parent( '.field' );
+            if ( ! $field.children( '.fieldErrorBox' ).length ) {
+                $( '<div class="fieldErrorBox hide">Champ obligatoire</div>' )
+                        .prependTo( $field )
+                        .show( 'slow' );
+            }
         }
     } );
 }
@@ -41,7 +73,32 @@ function setForumSearchReplyForm( formID, ckEditorInstanceName ) {
 
 
 /*
-    Forums : suppression des citations dans l'affichage des resultats de recherche
+    Formulaire de recherche
+
+*/
+
+function setForumSearchForm( ) {
+
+    Foundation.utils.S( '#js-forum-search' ).submit( function( event ) {
+
+        var $form = $( this );
+
+        if ( ! Boolean( $form.find( 'input[type="text"]' ).first( ).val( ).trim( ) ) ) {
+
+            event.preventDefault( );
+            if ( ! $form.children( '.fieldErrorBox' ).length ) {
+                $( '<div class="fieldErrorBox hide">Champ obligatoire</div>' )
+                        .prependTo( $form )
+                        .show( 'slow' );
+            }
+        }
+    } );
+}
+
+
+
+/*
+    Suppression des citations dans l'affichage des resultats de recherche
 
 */
 
