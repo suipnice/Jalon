@@ -51,6 +51,9 @@ class JalonBDD(SimpleItem):
     #-------------------------------------#
     # Gestion des variables du connecteur #
     #-------------------------------------#
+    def getBDDProperty(self, key):
+        return getattr(self, "_%s" % key)
+
     def getUrlConnexion(self):
         return self._urlConnexion
 
@@ -158,7 +161,7 @@ class JalonBDD(SimpleItem):
                 #print "sqlite:///%s/jalonBDD.db" % self._urlConnexion
                 engine = create_engine("sqlite:///%s/jalonBDD.db" % self._urlConnexion, module=sqlite, echo=False, poolclass=NullPool)
             if self._typeBDD == "apogee":
-                engine = create_engine("apogee:///%s/jalonBDD.db" % self._urlConnexion, echo=False, poolclass=NullPool)
+                engine = create_engine("apogee:///%s" % self._urlConnexion, echo=False, poolclass=NullPool)
             #print "ouverture connexion"
             self.Session.configure(bind=engine)
             self._typeBDDActif = self._typeBDD
@@ -424,10 +427,9 @@ class JalonBDD(SimpleItem):
     # Modification de la base de données  #
     #-------------------------------------#
     def addConnexionUtilisateur(self, SESAME_ETU, DATE_CONN):
-        if self._activerStockageConnexion:
+        if not self._use_mysql:
             session = self.getSession()
-            if self._typeBDD == "sqlite":
-                return jalonsqlite.addConnexionIND(session, SESAME_ETU, DATE_CONN)
+        jalonsqlite.addConnexionIND(session, SESAME_ETU, DATE_CONN)
 
     def setInfosELP(self, param):
         session = self.getSession()

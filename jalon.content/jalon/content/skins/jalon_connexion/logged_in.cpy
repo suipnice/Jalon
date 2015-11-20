@@ -68,10 +68,12 @@ if not hasattr(context.cours, memberid):
 membership_tool.loginUser(REQUEST)
 
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
-portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
-if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
+
+if portal_jalon_bdd.getBDDProperty("activer_stockage_connexion"):
     portal_jalon_bdd.addConnexionUtilisateur(memberid, str(DateTime()))
 
+portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
+if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
     infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     if not infos_user:
         acl_users = getattr(context.acl_users, "ldap-plugin").acl_users
