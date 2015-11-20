@@ -444,9 +444,8 @@
     <tal:block tal:condition="personnel"
                define="script string:setSortablePlan()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
     </tal:block>
-
-    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
 
     <script charset="UTF-8"
             tal:condition="perso_mode_etu"

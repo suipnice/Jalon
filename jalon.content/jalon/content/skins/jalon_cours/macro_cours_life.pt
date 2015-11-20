@@ -424,7 +424,7 @@
             <h3 tal:condition="not:anonymous">
                 <a class="button tiny radius right show-for-medium-up"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-forum"
+                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-forum&amp;mode_etudiant=${mode_etudiant}"
                    tal:condition="not:personnel">
                     <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Créer un forum</tal:block>
                 </a>

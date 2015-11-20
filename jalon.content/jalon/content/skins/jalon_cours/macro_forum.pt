@@ -17,7 +17,9 @@
 
 
 -->
-<metal:macro define-macro="ajout-forum">
+<metal:macro define-macro="ajout-forum"
+             tal:define="mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant)">
 
     <h2>
         <tal:block i18n:translate="">Créer un forum</tal:block>
@@ -64,6 +66,10 @@
         </div>
 
     </form>
+
+    <script charset="UTF-8"
+            tal:condition="not:personnel"
+            tal:attributes="src string:${portal_state/navigation_root_url}/++resource++jalon.theme.javascript/ckeditor/ckeditor.min.js"></script>
 
     <script charset="UTF-8"
             tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description', true)" />
