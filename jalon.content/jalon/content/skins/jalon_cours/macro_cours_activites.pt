@@ -562,6 +562,17 @@ En entrée : infosBoite
 
 </metal:macro>
 
+<metal:macro define-macro="liste-depots">
+    <metal:macro use-macro="context/macro_cours_boite/macros/depots">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>
+
+<metal:macro define-macro="liste-competences">
+    <metal:macro use-macro="context/macro_cours_boite/macros/competences">
+        Page d'affichage de la liste des compétences
+    </metal:macro>
+</metal:macro>
 
 <!-- Liste des exercices d'une autoevaluation ou d'un examen
 En entrée :

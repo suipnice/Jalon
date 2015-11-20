@@ -182,7 +182,6 @@
         <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
         <input type="hidden" name="date-affichage-now" value="now" />
         <input type="hidden" name="attribut" value="masquerElement" />
-        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
 
         <div class="formControls">
             <input class="button warning small" type="submit"
@@ -209,7 +208,6 @@
                tal:condition="python:request['idElement'].startswith('Titre')" />
         <input type="hidden" name="attribut" value="masquerElement" />
         <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
-        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
 
         <div class="formControls">
             <input class="button warning small" type="submit"

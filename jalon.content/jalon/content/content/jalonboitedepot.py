@@ -397,6 +397,110 @@ class JalonBoiteDepot(ATFolder):
                     pass
                 objet.reindexObject()
 
+    def getTemplateView(self, user, mode_etudiant, menu):
+        is_anonymous = user.has_role('Anonymous')
+        if is_anonymous:
+            return {"is_anonymous": True}
+
+        personnel = self.isPersonnel(user, mode_etudiant)
+        affElement = self.isAfficherElement(self.getDateAff(), self.getDateMasq())
+
+        id_boite = self.getId()
+        url_boite = self.absolute_url()
+
+        menu_options = []
+        if affElement["val"]:
+            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=%s" % (url_boite, id_boite),
+                                 "icon": "fa-eye-slash",
+                                 "text": "Masquer"})
+        else:
+            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=%s" % (url_boite, id_boite),
+                                 "icon": "fa-eye",
+                                 "text": "Afficher"})
+        menu_options.append({"href": "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon": "fa-align-justify",
+                             "text": "Titre et consigne"})
+
+        onglets = []
+        is_onglet_depots = True if menu == "depots" else False
+        onglets.append({"href":      "%s?menu=depots&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                        "css_class": " selected" if is_onglet_depots else "",
+                        "icon":      "fa-download",
+                        "text":      "Mes dépôts" if not personnel and not context.getAccesDepots() else "Dépôts étudiants",
+                        "nb":        self.getNbDepots(personnel)})
+        menu_option_depots = []
+        if is_onglet_depots:
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getCorrectionIndividuelle() else "fa-toggle-off",
+                                       "text": "Correction des dépôts"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationCorrection() else "fa-toggle-off",
+                                       "text": "Notification des corrections"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotation() else "fa-toggle-off",
+                                       "text": "Notation des dépôts"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationNotation() else "fa-toggle-off",
+                                       "text": "Notification des notations"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getAccesDepots() else "fa-toggle-off",
+                                       "text": "Visualisation des dépôts entre étudiants"})
+
+        onglets.append({"href":      "%s?menu=sujets&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                        "css_class": " selected" if menu == "sujets" else "",
+                        "icon":      "fa-upload",
+                        "text":      "Documents enseignants",
+                        "nb":        self.getNbSujets()})
+
+        is_onglet_competences = True if menu == "competences" else False
+        if personnel or self.getAfficherCompetences():
+            onglets.append({"href":      "%s?menu=competences&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                            "css_class": " selected" if is_onglet_competences else "",
+                            "icon":      "fa-tasks",
+                            "text":      "Compétences",
+                            "nb":        self.getNbCompetences()})
+        menu_option_competences = []
+        if is_onglet_competences:
+            menu_option_competences.append({"icon": "fa-toggle-on success" if self.getAfficherCompetences() else "fa-toggle-off",
+                                            "text": "Affichage de l'onglet \"Compétences\" aux étudiants"})
+            if self.getPermissionModifierCompetence(personnel, user.getId()):
+                menu_option_competences.append({"icon": "fa-toggle-on success" if self.getModifierCompetences() else "fa-toggle-off",
+                                                "text": "Restriction de la gestion des compétences"})
+
+        instructions = []
+        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon":      "fa-calendar",
+                             "text":      "Date"})
+        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon":      "fa-align-justify",
+                             "text":      "Titre et consigne"})
+
+        is_depot_actif = self.isDepotActif()
+        if is_depot_actif == 2:
+            is_retard = True
+            class_limit_date = "callout"
+        else:
+            is_retard = False
+            class_limit_date = "warning"
+
+        return {"id_boite":                      id_boite,
+                "url_boite":                     url_boite,
+                "is_anonymous":                  False,
+                "is_personnel":                  personnel,
+                "is_etu_and_boite_hidden":       True if (not personnel) and affElement['val'] == 0 else False,
+                "is_personnel_or_boite_visible": True if personnel or affElement['val'] != 0 else False,
+                "is_auteur":                     self.isAuteurs(user.getId()),
+                "is_depot_actif":                is_depot_actif,
+                "is_retard":                     is_retard,
+                "is_afficher_comp":              self.getAfficherCompetences(),
+                "menu_options":                  menu_options,
+                "affElement":                    affElement,
+                "came_from":                     "%s/login_form?came_from=%s" % (url_boite, self.jalon_quote(url_boite)),
+                "class_limit_date":              class_limit_date,
+                "date_depot_aff":                self.getAffDate('DateDepot'),
+                "onglets":                       onglets,
+                "instructions":                  instructions,
+                "description":                   self.Description(),
+                "is_onglet_depots":              is_onglet_depots,
+                "menu_option_depots":            menu_option_depots,
+                "is_onglet_competences":         is_onglet_competences,
+                "menu_option_competences":       menu_option_competences}
+
     ##-----------------------##
     # Fonctions onglet Dépots #
     ##-----------------------##
