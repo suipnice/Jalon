@@ -58,7 +58,6 @@
                             personnel python:context.isPersonnel(user,mode_etudiant);">
 
             <tal:condition condition="python:context.test((not personnel) and affElement['val'] == 0, 1, 0)">
-
             <section id="boite" class="medium-8 small-12 columns">
                 <h1>
                     <i class="fa fa-inbox no-pad"></i>
@@ -75,17 +74,15 @@
                     </metal:macro>
                 </tal:condition>
             </section>
-
             </tal:condition>
 
-            <tal:block define="nbDepots python:context.getNbDepots(personnel);
-                               nbSujets context/getNbSujets;
-                               afficher_comp context/getAfficherCompetences;
-                               nbCompetences context/getNbCompetences"
-                       tal:condition="python:context.test(personnel or affElement['val'] != 0, 1, 0)">
-
-            <section id="boite" class="medium-8 small-12 columns">
-            <tal:condition condition="personnel">
+            <tal:condition condition="python:context.test(personnel or affElement['val'] != 0, 1, 0)">
+            <section id="boite" class="medium-8 small-12 columns"
+                     tal:define="nbDepots python:context.getNbDepots(personnel);
+                                 nbSujets context/getNbSujets;
+                                 afficher_comp context/getAfficherCompetences;
+                                 nbCompetences context/getNbCompetences">
+                <tal:condition condition="personnel">
                 <a class="button small radius dropdown right" data-options="align:bottom" data-dropdown="boite-options">
                     <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
                 </a>
@@ -109,7 +106,7 @@
                         </a>
                     </li>
                 </ul>
-            </tal:condition>
+                </tal:condition>
                 <h1>
                     <i class="fa fa-inbox no-pad"></i>
                     <tal:replace replace="here/Title" />
@@ -283,7 +280,7 @@
                 </div>
                 </tal:condition>
             </aside>
-            </tal:block>
+            </tal:condition>
         </tal:define>
         </tal:condition>
     </main>

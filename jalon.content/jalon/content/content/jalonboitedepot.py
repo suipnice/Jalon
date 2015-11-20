@@ -20,7 +20,6 @@ from os import close
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import jalon_utils
-import ldap
 import os
 import copy
 
@@ -127,6 +126,9 @@ class JalonBoiteDepot(ATFolder):
     _competences = {}
     _comp_etudiants = {}
 
+    ##-------------------##
+    # Fonctions générales #
+    ##-------------------##
     def getElementCours(self, key):
         return self.getInfosElement(key)
 
@@ -144,123 +146,18 @@ class JalonBoiteDepot(ATFolder):
         else:
             self._infos_element = infos_element
 
-    def getOrdreCompetences(self):
-        ordre = self._competences.keys()
-        ordre.sort(lambda x, y: cmp(int(x), int(y)))
-        return ordre
-
-    def getCompetences(self, key=None):
-        if key:
-            return self._competences.get(key, None)
-        return self._competences
-
-    def setCompetences(self, competences):
-        if type(self._competences).__name__ != "PersistentMapping":
-            self._competences = PersistentDict(competences)
-        else:
-            self._competences = competences
-
-    def getOrdreEtudiants(self):
-        ordre = []
-        for SESAME_ETU in self._comp_etudiants.keys():
-            ordre.append({"id"  : SESAME_ETU,
-                          "nom" : self.getNomEtudiant(SESAME_ETU)})
-        ordre.sort(lambda x, y: cmp(x["nom"], y["nom"]))
-        return ordre
-
-    def getCompEtudiants(self, key=None):
-        if key:
-            return self._comp_etudiants.get(key, None)
-        return self._comp_etudiants
-
-    def getAffComEtu(self, SESAME_ETU):
-        dicoCompEtudiants = self._comp_etudiants
-        if not SESAME_ETU in dicoCompEtudiants:
-            return {}
-
-        dicoCompEtudiant = {}
-        compEtu = dicoCompEtudiants[SESAME_ETU]
-        dicoGradation = {"acquerir" : "À acquérir",
-                         "encours"  : "En cours d'acquisition",
-                         "partielle": "Partiellement acquis",
-                         "acquise"  : "Acquis"}
-        dicoCompetences = self._competences
-        listeIdCompetences = self._competences.keys()
-        listeIdCompetences.sort(lambda x, y: cmp(int(x), int(y)))
-        for idcompetence in listeIdCompetences:
-            competence = dicoCompetences[idcompetence]
-            if idcompetence in compEtu:
-                if competence["evaluation"] == "libre":
-                    dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
-                if competence["evaluation"] == "validation":
-                    dicoCompEtudiant[idcompetence] = "Acquis"
-                if competence["evaluation"] == "gradation":
-                    dicoCompEtudiant[idcompetence] = dicoGradation[compEtu[idcompetence]]
-                if competence["evaluation"] == "note":
-                    if "." in compEtu[idcompetence] or "," in compEtu[idcompetence]:
-                        if competence["note_partielle"]:
-                            note_partielle = float(competence["note_partielle"])
-                        if competence["note_acquise"]:
-                            note_acquise = float(competence["note_acquise"])
-                        note = float(compEtu[idcompetence])
-                    else:
-                        if competence["note_partielle"]:
-                            note_partielle = int(competence["note_partielle"])
-                        if competence["note_acquise"]:
-                            note_acquise = int(competence["note_acquise"])
-                        try:
-                            note = int(compEtu[idcompetence])
-                        except:
-                            note = "Pas de note"
-                    if note_acquise and note >= note_acquise:
-                        dicoCompEtudiant[idcompetence] = "Acquis"
-                        #dicoCompEtudiant[idcompetence] = "%s / %s (Acquis)" % (compEtu[idcompetence], competence["note_max"])
-                    elif note_partielle and note >= note_partielle:
-                        dicoCompEtudiant[idcompetence] = "Partiellement acquis"
-                        #dicoCompEtudiant[idcompetence] = "%s / %s (Partiellement acquis)" % (compEtu[idcompetence], competence["note_max"])
-                    else:
-                        dicoCompEtudiant[idcompetence] = "À acquérir"
-                        #dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
-            else:
-                dicoCompEtudiant[idcompetence] = 'À acquérir'
-        return dicoCompEtudiant
-
-    def getNomEtudiant(self, SESAME_ETU):
-        if self.isLDAP() or "@" in SESAME_ETU:
-            #Cas du ldap actif ou de l'etudiant EtudiantJalon
-            portal_membership = getToolByName(self, "portal_membership")
-            member = portal_membership.getMemberById(SESAME_ETU)
-            if member:
-                etudiantName = str(member.getProperty("fullname"))
-                if not etudiantName:
-                    etudiantName = str(member.getProperty("cn"))
-            else:
-                etudiantName = SESAME_ETU
-        else:
-            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-            etudiant = portal_jalon_bdd.getIndividuLITE(SESAME_ETU)
-            if etudiant:
-                etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-            else:
-                etudiantName = SESAME_ETU
-        return etudiantName
-
-    def setCompEtudiants(self, comp_etudiants):
-        if type(self._comp_etudiants).__name__ != "PersistentMapping":
-            self._comp_etudiants = PersistentDict(comp_etudiants)
-        else:
-            self._comp_etudiants = comp_etudiants
-
-    def ajouterTag(self, tag):
-        return jalon_utils.setTag(self, tag)
-
-    def getTagDefaut(self):
-        return jalon_utils.getTagDefaut(self)
-
     def getAttributsMod(self, info):
         dico = {"info":  ['title', 'description'],
                 "date":  ['dateDepot', 'dateRetard']}
         return dico[info]
+
+    def setProperties(self, dico):
+        for key in dico.keys():
+            self.__getattribute__("set%s" % key)(dico[key])
+        self.reindexObject()
+
+    def getListeAttribut(self, attribut):
+        return self.__getattribute__("liste%s" % attribut.capitalize())
 
     def getInfosListeAttribut(self, attribut, personnel=False):
         retour = []
@@ -284,8 +181,15 @@ class JalonBoiteDepot(ATFolder):
             retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
 
-    def getListeAttribut(self, attribut):
-        return self.__getattribute__("liste%s" % attribut.capitalize())
+    def setAttributActivite(self, form):
+        if "DateDepot" in form and form["DateDepot"] != self.getDateDepot():
+            self.aq_parent.setActuCours({"reference": self.getId(),
+                                         "code":      "datedepot",
+                                         "dateDepot": form["DateDepot"]})
+        self.setProperties(form)
+        if "Title" in form:
+            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
+        self.reindexObject()
 
     def getAffDate(self, attribut):
         if attribut == "DateDepot":
@@ -297,171 +201,20 @@ class JalonBoiteDepot(ATFolder):
         else:
             return jalon_utils.getLocaleDate(date, '%d %B %Y - %Hh%M')
 
-    def getDateDepot(self):
-        if not self.dateDepot:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
-        else:
-            return self.dateDepot.strftime("%Y/%m/%d %H:%M")
-
-    def getDateRetard(self):
-        if not self.dateRetard:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
-        else:
-            return self.dateRetard.strftime("%Y/%m/%d %H:%M")
-
-    def getNbDepots(self, personnel):
-        if not personnel:
-            nbDepots = 0
-            authMember = self.portal_membership.getAuthenticatedMember().getId()
-            for iddepot in self.objectIds():
-                if authMember in iddepot:
-                    nbDepots = nbDepots + 1
-            return nbDepots
-        depots = self.objectIds()
-        if "corrections" in depots:
-            return len(depots) - 1
-        else:
-            return len(depots)
-
     def getNbSujets(self):
         return len(self.getInfosListeAttribut("sujets", True))
-
-    def getNbCompetences(self):
-        return len(self._competences.keys())
-
-    def getDepots(self, authMember, personnel, request):
-        retour = {"total":              0,
-                  "etudiantsTotal":     0,
-                  "valides":            0,
-                  "etudiantsValides":   0,
-                  "invalides":          0,
-                  "etudiantsInvalides": 0,
-                  "listeDepots":  []}
-        listeDepots = []
-        valides = 0
-        listeEtudiantsValides = []
-        invalides = 0
-        listeEtudiantsInvalides = []
-        listeEtudiantsTotal = []
-        if personnel or self.getAccesDepots():
-            depots = self.getFolderContents(contentFilter={"portal_type": "JalonFile"})
-            if not depots:
-                return retour
-            portal = self.portal_url.getPortalObject()
-            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-            #if not self.isLDAP():
-            #    portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-
-            for depot in depots:
-                #etudiant = créateur du dépôt
-                auteurDepot = str(depot.Creator)
-                member = portal.portal_membership.getMemberById(auteurDepot)
-                """
-                if self.isLDAP() or member.has_role("EtudiantJalon"):
-                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
-                    if member:
-                        etudiantName = str(member.getProperty("fullname"))
-                        if not etudiantName:
-                            etudiantName = str(member.getProperty("cn"))
-                    else:
-                        etudiantName = auteurDepot
-                else:
-                    etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
-                    if etudiant:
-                        etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-                    else:
-                        etudiantName = auteurDepot
-                """
-                etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
-                if etudiant:
-                    etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-                elif self.isLDAP() or member.has_role("EtudiantJalon"):
-                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
-                    if member:
-                        etudiantName = str(member.getProperty("fullname"))
-                        if not etudiantName:
-                            etudiantName = str(member.getProperty("cn"))
-                    else:
-                        etudiantName = auteurDepot
-                else:
-                    etudiantName = auteurDepot
-
-                if not etudiantName in listeEtudiantsTotal:
-                    listeEtudiantsTotal.append(etudiantName)
-                if depot.getActif:
-                    valides = valides + 1
-                    if not etudiantName in listeEtudiantsValides:
-                        listeEtudiantsValides.append(etudiantName)
-                else:
-                    invalides = invalides + 1
-                    if not etudiantName in listeEtudiantsInvalides:
-                        listeEtudiantsInvalides.append(etudiantName)
-                correction = 0
-                if not depot.getCorrection in ["", None, " ", "\n"]:
-                    correction = 1
-                if depot.getFichierCorrection:
-                    correction = 1
-                listeDepots.append({"etudiant":   ' '.join([item.capitalize() for item in etudiantName.split()]),
-                                    "id":         depot.getId,
-                                    "title":      depot.Title,
-                                    "date":       self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M'),
-                                    "url":        depot.getURL,
-                                    "actif":      depot.getActif,
-                                    "correction": correction,
-                                    "note":       depot.getNote,
-                                    "size":       1000})
-            retour = {"total":              len(listeDepots),
-                      "etudiantsTotal":     len(listeEtudiantsTotal),
-                      "valides":            valides,
-                      "etudiantsValides":   len(listeEtudiantsValides),
-                      "invalides":          invalides,
-                      "etudiantsInvalides": len(listeEtudiantsInvalides),
-                      "listeDepots":        listeDepots}
-        else:
-            for iddepot in self.objectIds():
-                if authMember.getId() in iddepot:
-                    depot = getattr(self, iddepot)
-                    correction = 0
-                    if depot.getCorrection() not in ["", None, " "]:
-                        correction = 1
-                    if depot.getFichierCorrection():
-                        correction = 1
-                    listeDepots.append({"etudiant":   authMember,
-                                        "id":         depot.getId(),
-                                        "title":      depot.title_or_id(),
-                                        "date":       self.getLocaleDate(depot.created(), '%d/%m/%Y - %Hh%M'),
-                                        "url":        depot.absolute_url(),
-                                        "actif":      depot.getActif(),
-                                        "correction": correction,
-                                        "note":       depot.getNote(),
-                                        "size":       depot.getSize()})
-            retour = {"listeDepots": listeDepots}
-        return retour
-
-    def getLocaleDate(self, date, format="%d/%m/%Y"):
-        return jalon_utils.getLocaleDate(date, format)
 
     def getOptionsAvancees(self):
         options = {}
         for option in ["getCorrectionIndividuelle", "getNotificationCorrection", "getNotation", "getNotificationNotation", "getAccesDepots", "getAccesCompetences"]:
             if self.__getattribute__(option)():
-                options[option] = {"actif" : 1, "texte": _(u"Activée")}
+                options[option] = {"actif": 1, "texte": _(u"Activée")}
             else:
                 options[option] = {"actif": 0, "texte": _(u"Désactivée")}
         return options
 
     def getRubriqueEspace(self, ajout=None):
         return self.aq_parent.getRubriqueEspace(ajout)
-
-    def getPermissionModifierCompetence(self, personnel, user_id):
-        if not personnel:
-            return False
-        elif user_id == self.Creator():
-            return True
-        elif self.getModifierCompetences():
-            return False
-        else:
-            return True
 
     def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant=None):
         if typeElement == "JalonFile":
@@ -481,27 +234,6 @@ class JalonBoiteDepot(ATFolder):
         else:
             return self.aq_parent.getElementView(idElement, createurElement, typeElement, indexElement, mode_etudiant)
 
-    def getDepotDate(self, data, sortable=False):
-        return jalon_utils.getDepotDate(data, sortable)
-
-    def setProperties(self, dico):
-        for key in dico.keys():
-            self.__getattribute__("set%s" % key)(dico[key])
-        self.reindexObject()
-
-    def setAttributActivite(self, form):
-        if "DateDepot" in form and form["DateDepot"] != self.getDateDepot():
-            self.aq_parent.setActuCours({"reference": self.getId(),
-                                         "code":      "datedepot",
-                                         "dateDepot": form["DateDepot"]})
-        self.setProperties(form)
-        if "Title" in form:
-            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
-        self.reindexObject()
-
-    def isAfficherElement(self, affElement, masquerElement):
-        return jalon_utils.isAfficherElement(affElement, masquerElement)
-
     def getParentPlanElement(self, idElement, idParent, listeElement):
         if idElement == self.getId():
             return self.aq_parent.getParentPlanElement(idElement, idParent, listeElement)
@@ -516,47 +248,6 @@ class JalonBoiteDepot(ATFolder):
             if idElement in list(self.getListeCorrections()):
                 return 1
             return 0
-
-    """
-    isDepotActif renvoit :
-        1 si les étudiants ont le droit de déposer.
-        2 s'ils sont en retard.
-        0 s'ils n'ont plus le droit.
-    """
-    def isDepotActif(self):
-        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
-        date_depot = DateTime(self.getDateDepot())
-        date_retard = DateTime(self.getDateRetard())
-        # La date de dépot n'est pas encore passée.
-        if now <= date_depot:
-            return 1
-        # La date de retard n'est pas encore passée.
-        if date_retard > date_depot and now < date_retard:
-            return 2
-        return 0
-
-    def isCorrigerNoter(self):
-        corriger = self.getCorrectionIndividuelle()
-        noter = self.getNotation()
-        if corriger and noter:
-            return {"title"    : "Corriger et Noter",
-                    "corriger" : 1,
-                    "noter"    : 1}
-        if corriger:
-            return {"title"    : "Corriger",
-                    "corriger" : 1,
-                    "noter"    : 0}
-        if noter:
-            return {"title"    : "Noter",
-                    "corriger" : 0,
-                    "noter"    : 1}
-
-    def isLDAP(self):
-        return jalon_utils.isLDAP()
-
-    def activerDepot(self, idDepot, actif):
-        depot = getattr(self, idDepot)
-        depot.setProperties({"Actif": actif})
 
     def afficherRessource(self, idElement, dateAffichage, attribut):
         if idElement == self.getId():
@@ -643,12 +334,6 @@ class JalonBoiteDepot(ATFolder):
             #self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
-    def purgerDepots(self):
-        self.manage_delObjects(self.objectIds())
-        self.setListeDevoirs(())
-        self.setCompEtudiants({})
-        self.reindexObject()
-
     def retirerElement(self, idElement, menu):
         infos_element = self.getInfosElement()
         infosElement = infos_element[idElement]
@@ -711,6 +396,172 @@ class JalonBoiteDepot(ATFolder):
                 except:
                     pass
                 objet.reindexObject()
+
+    ##-----------------------##
+    # Fonctions onglet Dépots #
+    ##-----------------------##
+    def getDepots(self, authMember, personnel, request):
+        retour = {"total":              0,
+                  "etudiantsTotal":     0,
+                  "valides":            0,
+                  "etudiantsValides":   0,
+                  "invalides":          0,
+                  "etudiantsInvalides": 0,
+                  "listeDepots":  []}
+        listeDepots = []
+        valides = 0
+        listeEtudiantsValides = []
+        invalides = 0
+        listeEtudiantsInvalides = []
+        listeEtudiantsTotal = []
+        if personnel or self.getAccesDepots():
+            depots = self.getFolderContents(contentFilter={"portal_type": "JalonFile"})
+            if not depots:
+                return retour
+            portal = self.portal_url.getPortalObject()
+            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+            for depot in depots:
+                #etudiant = créateur du dépôt
+                auteurDepot = str(depot.Creator)
+                member = portal.portal_membership.getMemberById(auteurDepot)
+                etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
+                if etudiant:
+                    etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
+                elif self.isLDAP() or member.has_role("EtudiantJalon"):
+                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
+                    if member:
+                        etudiantName = str(member.getProperty("fullname"))
+                        if not etudiantName:
+                            etudiantName = str(member.getProperty("cn"))
+                    else:
+                        etudiantName = auteurDepot
+                else:
+                    etudiantName = auteurDepot
+
+                if not etudiantName in listeEtudiantsTotal:
+                    listeEtudiantsTotal.append(etudiantName)
+                if depot.getActif:
+                    valides = valides + 1
+                    if not etudiantName in listeEtudiantsValides:
+                        listeEtudiantsValides.append(etudiantName)
+                else:
+                    invalides = invalides + 1
+                    if not etudiantName in listeEtudiantsInvalides:
+                        listeEtudiantsInvalides.append(etudiantName)
+                correction = 0
+                if not depot.getCorrection in ["", None, " ", "\n"]:
+                    correction = 1
+                if depot.getFichierCorrection:
+                    correction = 1
+                listeDepots.append({"etudiant":   ' '.join([item.capitalize() for item in etudiantName.split()]),
+                                    "id":         depot.getId,
+                                    "title":      depot.Title,
+                                    "date":       self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M'),
+                                    "url":        depot.getURL,
+                                    "actif":      depot.getActif,
+                                    "correction": correction,
+                                    "note":       depot.getNote,
+                                    "size":       1000})
+            retour = {"total":              len(listeDepots),
+                      "etudiantsTotal":     len(listeEtudiantsTotal),
+                      "valides":            valides,
+                      "etudiantsValides":   len(listeEtudiantsValides),
+                      "invalides":          invalides,
+                      "etudiantsInvalides": len(listeEtudiantsInvalides),
+                      "listeDepots":        listeDepots}
+        else:
+            for iddepot in self.objectIds():
+                if authMember.getId() in iddepot:
+                    depot = getattr(self, iddepot)
+                    correction = 0
+                    if depot.getCorrection() not in ["", None, " "]:
+                        correction = 1
+                    if depot.getFichierCorrection():
+                        correction = 1
+                    listeDepots.append({"etudiant":   authMember,
+                                        "id":         depot.getId(),
+                                        "title":      depot.title_or_id(),
+                                        "date":       self.getLocaleDate(depot.created(), '%d/%m/%Y - %Hh%M'),
+                                        "url":        depot.absolute_url(),
+                                        "actif":      depot.getActif(),
+                                        "correction": correction,
+                                        "note":       depot.getNote(),
+                                        "size":       depot.getSize()})
+            retour = {"listeDepots": listeDepots}
+        return retour
+
+    def getDepotDate(self, data, sortable=False):
+        return jalon_utils.getDepotDate(data, sortable)
+
+    def getDateDepot(self):
+        if not self.dateDepot:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateDepot.strftime("%Y/%m/%d %H:%M")
+
+    def getDateRetard(self):
+        if not self.dateRetard:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateRetard.strftime("%Y/%m/%d %H:%M")
+
+    def getNbDepots(self, personnel):
+        if not personnel:
+            nbDepots = 0
+            authMember = self.portal_membership.getAuthenticatedMember().getId()
+            for iddepot in self.objectIds():
+                if authMember in iddepot:
+                    nbDepots = nbDepots + 1
+            return nbDepots
+        depots = self.objectIds()
+        if "corrections" in depots:
+            return len(depots) - 1
+        else:
+            return len(depots)
+
+    """
+    isDepotActif renvoit :
+        1 si les étudiants ont le droit de déposer.
+        2 s'ils sont en retard.
+        0 s'ils n'ont plus le droit.
+    """
+    def isDepotActif(self):
+        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
+        date_depot = DateTime(self.getDateDepot())
+        date_retard = DateTime(self.getDateRetard())
+        # La date de dépot n'est pas encore passée.
+        if now <= date_depot:
+            return 1
+        # La date de retard n'est pas encore passée.
+        if date_retard > date_depot and now < date_retard:
+            return 2
+        return 0
+
+    def isCorrigerNoter(self):
+        corriger = self.getCorrectionIndividuelle()
+        noter = self.getNotation()
+        if corriger and noter:
+            return {"title"    : "Corriger et Noter",
+                    "corriger" : 1,
+                    "noter"    : 1}
+        if corriger:
+            return {"title"    : "Corriger",
+                    "corriger" : 1,
+                    "noter"    : 0}
+        if noter:
+            return {"title"    : "Noter",
+                    "corriger" : 0,
+                    "noter"    : 1}
+
+    def activerDepot(self, idDepot, actif):
+        depot = getattr(self, idDepot)
+        depot.setProperties({"Actif": actif})
+
+    def purgerDepots(self):
+        self.manage_delObjects(self.objectIds())
+        self.setListeDevoirs(())
+        self.setCompEtudiants({})
+        self.reindexObject()
 
     def telechargerDepots(self, HTTP_USER_AGENT):
         import tempfile
@@ -844,6 +695,129 @@ class JalonBoiteDepot(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
+    ##----------------------------##
+    # Fonctions onglet Compétences #
+    ##----------------------------##
+    def getOrdreCompetences(self):
+        ordre = self._competences.keys()
+        ordre.sort(lambda x, y: cmp(int(x), int(y)))
+        return ordre
+
+    def getCompetences(self, key=None):
+        if key:
+            return self._competences.get(key, None)
+        return self._competences
+
+    def setCompetences(self, competences):
+        if type(self._competences).__name__ != "PersistentMapping":
+            self._competences = PersistentDict(competences)
+        else:
+            self._competences = competences
+
+    def getOrdreEtudiants(self):
+        ordre = []
+        for SESAME_ETU in self._comp_etudiants.keys():
+            ordre.append({"id"  : SESAME_ETU,
+                          "nom" : self.getNomEtudiant(SESAME_ETU)})
+        ordre.sort(lambda x, y: cmp(x["nom"], y["nom"]))
+        return ordre
+
+    def getCompEtudiants(self, key=None):
+        if key:
+            return self._comp_etudiants.get(key, None)
+        return self._comp_etudiants
+
+    def getAffComEtu(self, SESAME_ETU):
+        dicoCompEtudiants = self._comp_etudiants
+        if not SESAME_ETU in dicoCompEtudiants:
+            return {}
+
+        dicoCompEtudiant = {}
+        compEtu = dicoCompEtudiants[SESAME_ETU]
+        dicoGradation = {"acquerir" : "À acquérir",
+                         "encours"  : "En cours d'acquisition",
+                         "partielle": "Partiellement acquis",
+                         "acquise"  : "Acquis"}
+        dicoCompetences = self._competences
+        listeIdCompetences = self._competences.keys()
+        listeIdCompetences.sort(lambda x, y: cmp(int(x), int(y)))
+        for idcompetence in listeIdCompetences:
+            competence = dicoCompetences[idcompetence]
+            if idcompetence in compEtu:
+                if competence["evaluation"] == "libre":
+                    dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
+                if competence["evaluation"] == "validation":
+                    dicoCompEtudiant[idcompetence] = "Acquis"
+                if competence["evaluation"] == "gradation":
+                    dicoCompEtudiant[idcompetence] = dicoGradation[compEtu[idcompetence]]
+                if competence["evaluation"] == "note":
+                    if "." in compEtu[idcompetence] or "," in compEtu[idcompetence]:
+                        if competence["note_partielle"]:
+                            note_partielle = float(competence["note_partielle"])
+                        if competence["note_acquise"]:
+                            note_acquise = float(competence["note_acquise"])
+                        note = float(compEtu[idcompetence])
+                    else:
+                        if competence["note_partielle"]:
+                            note_partielle = int(competence["note_partielle"])
+                        if competence["note_acquise"]:
+                            note_acquise = int(competence["note_acquise"])
+                        try:
+                            note = int(compEtu[idcompetence])
+                        except:
+                            note = "Pas de note"
+                    if note_acquise and note >= note_acquise:
+                        dicoCompEtudiant[idcompetence] = "Acquis"
+                        #dicoCompEtudiant[idcompetence] = "%s / %s (Acquis)" % (compEtu[idcompetence], competence["note_max"])
+                    elif note_partielle and note >= note_partielle:
+                        dicoCompEtudiant[idcompetence] = "Partiellement acquis"
+                        #dicoCompEtudiant[idcompetence] = "%s / %s (Partiellement acquis)" % (compEtu[idcompetence], competence["note_max"])
+                    else:
+                        dicoCompEtudiant[idcompetence] = "À acquérir"
+                        #dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
+            else:
+                dicoCompEtudiant[idcompetence] = 'À acquérir'
+        return dicoCompEtudiant
+
+    def getNomEtudiant(self, SESAME_ETU):
+        if self.isLDAP() or "@" in SESAME_ETU:
+            #Cas du ldap actif ou de l'etudiant EtudiantJalon
+            portal_membership = getToolByName(self, "portal_membership")
+            member = portal_membership.getMemberById(SESAME_ETU)
+            if member:
+                etudiantName = str(member.getProperty("fullname"))
+                if not etudiantName:
+                    etudiantName = str(member.getProperty("cn"))
+            else:
+                etudiantName = SESAME_ETU
+        else:
+            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+            etudiant = portal_jalon_bdd.getIndividuLITE(SESAME_ETU)
+            if etudiant:
+                etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
+            else:
+                etudiantName = SESAME_ETU
+        return etudiantName
+
+    def setCompEtudiants(self, comp_etudiants):
+        if type(self._comp_etudiants).__name__ != "PersistentMapping":
+            self._comp_etudiants = PersistentDict(comp_etudiants)
+        else:
+            self._comp_etudiants = comp_etudiants
+
+    def getNbCompetences(self):
+        return len(self._competences.keys())
+
+    def getPermissionModifierCompetence(self, personnel, user_id):
+        if not personnel:
+            return False
+        elif user_id == self.Creator():
+            return True
+        elif self.getModifierCompetences():
+            return False
+        else:
+            return True
+
     def telechargerListingCompetences(self):
         import tempfile
         from xlwt import Workbook, XFStyle, Style, Pattern, Font
@@ -976,7 +950,7 @@ class JalonBoiteDepot(ATFolder):
 
                             ligne1.write(index_comp, note, style)
                     else:
-                        ligne1.write(index_comp, 'À acquérir',styleAcquerir)
+                        ligne1.write(index_comp, 'À acquérir', styleAcquerir)
                     index_comp = index_comp + 1
             i = i + 1
 
@@ -987,8 +961,26 @@ class JalonBoiteDepot(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
+    ##-----------------------------##
+    # Fonctions appel à jalon_utils #
+    ##-----------------------------##
     def test(self, condition, valeurVrai, valeurFaux):
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
+
+    def ajouterTag(self, tag):
+        return jalon_utils.setTag(self, tag)
+
+    def getTagDefaut(self):
+        return jalon_utils.getTagDefaut(self)
+
+    def isLDAP(self):
+        return jalon_utils.isLDAP()
+
+    def isAfficherElement(self, affElement, masquerElement):
+        return jalon_utils.isAfficherElement(affElement, masquerElement)
+
+    def getLocaleDate(self, date, format="%d/%m/%Y"):
+        return jalon_utils.getLocaleDate(date, format)
 
     def jalon_quote(self, encode):
         return jalon_utils.jalon_quote(encode)
@@ -999,35 +991,11 @@ class JalonBoiteDepot(ATFolder):
     def retirerEspace(self, mot):
         return jalon_utils.retirerEspace(mot)
 
-    def getShortText( self, text, limit = 75 ):
-        return jalon_utils.getShortText( text, limit )
+    def getShortText(self, text, limit=75):
+        return jalon_utils.getShortText(text, limit)
 
     #   Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
-
-    def majBoite(self):
-        """ Pour utiliser cette fonction :
-                1 - décommenter import ATExtensions puis RecordField infos_element
-                2 - mettre getInfosElement en commentaire
-                3 - appeler cette fonction depuis un script en ZMI"""
-        listeSujets = list(self.getListeSujets())
-        listeDevoirs = list(self.getListeDevoirs())
-        listeCorrections = list(self.getListeCorrections())
-        listeSujets.extend(listeDevoirs)
-        listeSujets.extend(listeCorrections)
-
-        infos_element = self.getInfosElement()
-        if infos_element:
-            dico = {}
-            dicoElements = copy.deepcopy(infos_element)
-            for idElement in listeSujets:
-                if idElement in dicoElements:
-                    dico[idElement] = {"titreElement":     dicoElements[idElement]["titreElement"],
-                                        "typeElement":     dicoElements[idElement]["typeElement"],
-                                        "createurElement": dicoElements[idElement]["createurElement"],
-                                        "affElement":      dicoElements[idElement]["affElement"],
-                                        "masquerElement":  dicoElements[idElement]["masquerElement"]}
-            self.setInfosElement(dico)
 
 registerATCT(JalonBoiteDepot, PROJECTNAME)
