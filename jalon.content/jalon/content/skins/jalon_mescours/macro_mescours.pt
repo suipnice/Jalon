@@ -688,7 +688,7 @@
 
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
 
-        <div class="formControls">
+        <div class="formControls confirm_check">
 
             <input id="confirm-suppr_WIMS" type="checkbox" />
             <label for="confirm-suppr_WIMS"

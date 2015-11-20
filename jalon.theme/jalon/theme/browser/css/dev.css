@@ -13,4 +13,19 @@
           « theme/skins/jalon_theme_custom_templates/head_macro.pt ».
 */
 
+/* Permet d'avoir un affichage similaire sur Firefox et Safari,
+     avec un checkbox et le label qui le suit sur la même ligne.
+     J'appelle la classe "confirm_button" dans l'idée de la génériser
+      à d'éventuels futurs checkbox de confirmation d'actions de formulaire.
+     C'est pour le moment utilisé dans jalon/content/skins/jalon_mescours/macro_mescours.pt :
+     ligne 693 : "confirm-suppr_WIMS"
+*/
 
+.confirm_check input[type="checkbox"]{
+    /* permet d'éviter un espace indésirable dans le cas ou le label suivant se retrouve sur 2 lignes*/
+    margin-bottom:0;
+}
+.confirm_check input[type="checkbox"]+label{
+    /* important pour WebKit (Safari) */
+    display:inline;
+}
