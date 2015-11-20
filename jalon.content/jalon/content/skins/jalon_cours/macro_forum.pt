@@ -12,9 +12,14 @@
 
 
 <!--
-    Ajouter un forum
+
+        Ajouter un forum
+
+
 -->
-<metal:macro define-macro="ajout-forum">
+<metal:macro define-macro="ajout-forum"
+             tal:define="mode_etudiant request/mode_etudiant | nothing;
+                         personnel python:context.isPersonnel(user, mode_etudiant)">
 
     <h2>
         <tal:block i18n:translate="">Créer un forum</tal:block>
@@ -63,13 +68,20 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description')" />
+            tal:condition="not:personnel"
+            tal:attributes="src string:${portal_state/navigation_root_url}/++resource++jalon.theme.javascript/ckeditor/ckeditor.min.js"></script>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description', true)" />
 
 </metal:macro>
 
 
 <!--
-    Supprimer tous les forums
+
+        Supprimer tous les forums
+
+
 -->
 <metal:macro define-macro="supprimer-tous-forum">
 
@@ -98,7 +110,10 @@
 
 
 <!--
-    Modifier un forum
+
+        Modifier un forum
+
+
 -->
 <metal:macro define-macro="modifier-forum">
 
@@ -153,13 +168,16 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description')" />
+            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description', true)" />
 
 </metal:macro>
 
 
 <!--
-    Supprimer un élément de forum
+
+        Supprimer un élément de forum
+
+
 -->
 <metal:macro define-macro="supprimer-forum">
 <tal:isConversation define="type request/type | nothing;
@@ -210,7 +228,10 @@
 
 
 <!--
-    Créer une conversation
+
+        Créer une conversation
+
+
 -->
 <metal:macro define-macro="ajout-conversation">
 
@@ -264,13 +285,16 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text')" />
+            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text', true)" />
 
 </metal:macro>
 
 
 <!--
-    Modifier une conversation
+
+        Modifier une conversation
+
+
 -->
 <metal:macro define-macro="modifier-conversation">
 <tal:define define="first request/is_first | nothing;
@@ -315,7 +339,7 @@
              tal:attributes="class python:context.test(error, 'field error', 'field')">
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error" />
-            <textarea name="text" rows="10"
+            <textarea id="js-forum-message" name="text" rows="10"
                       required="required" placeholder="Saisie obligatoire"
                       i18n:attributes="placeholder"><tal:replace replace="context/getText" /></textarea>
         </div>
@@ -335,12 +359,6 @@
         <input type="hidden" name="parent" value="1"
                tal:condition="is_head" />
 
-        <div class="panel callout radius"
-             tal:condition="python:not(is_first or is_head)">
-            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître leur contenu en tant que citation.</tal:block>
-            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
-        </div>
-
         <div class="formControls">
             <button type="submit" class="button small radius">
                 <i class="fa fa-check-circle"></i>
@@ -351,14 +369,18 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'text')" />
+            tal:condition="not:is_head"
+            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'js-forum-message', true)" />
 
 </tal:define>
 </metal:macro>
 
 
 <!--
-    Répondre à une conversation
+
+        Répondre à une conversation
+
+
 -->
 <metal:macro define-macro="ajout-reponse">
 <tal:define define="creator context/Creator;
@@ -372,13 +394,9 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <h4>
-        <strong tal:content="creatorData" />
-        (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
-    </h4>
-
     <div class="panel callout radius">
-        <tal:block tal:content="structure context/getText" />
+        <tal:block tal:content="creatorData" />
+        (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
     </div>
 
     <form id="js-answerForumConvers" method="POST"
@@ -386,14 +404,14 @@
 
         <div id="archetypes-fieldname-description" class="field"
              tal:define="error errors/text | nothing;
-                         quote string:<blockquote>${context/getText} (par ${creatorData})</blockquote>"
+                         quote string:<u><i>${creatorData} a dit :</i></u><blockquote>${context/getText}</blockquote>"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
             <label for="text"
                    i18n:translate="">Votre réponse</label>
             <div class="fieldErrorBox"
                  tal:condition="error"
                  tal:content="error" />
-            <textarea name="text" rows="10"
+            <textarea id="text" name="text" rows="10"
                       required="required" placeholder="Saisie obligatoire"
                       tal:content="structure quote"
                       i18n:attributes="placeholder" />
@@ -402,11 +420,6 @@
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="macro" value="macro_forum" />
         <input type="hidden" name="formulaire" value="ajout-reponse" />
-
-        <div class="panel callout radius">
-            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître le message auquel vous répondez en tant que citation.</tal:block>
-            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
-        </div>
 
         <div class="formControls">
             <button type="submit" class="button small radius">
@@ -418,14 +431,17 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text')" />
+            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text', true)" />
 
 </tal:define>
 </metal:macro>
 
 
 <!--
-    Rechercher dans les forums / les conversations
+
+        Rechercher dans les forums / les conversations
+
+
 -->
 <metal:macro define-macro="forum-rechercher">
 
@@ -436,7 +452,6 @@
     <div class="panel radius">
         <form id="js-forum-search"
               tal:attributes="action string:${search_url}/jalon_forum_search">
-            <div class="fieldErrorBox hide">Champ obligatoire</div>
             <input type="text" name="q"
                    required="required"
                    placeholder="Texte à rechercher…"
@@ -447,7 +462,7 @@
             </button>
         </form>
 
-        <tal:define define="script string:setForumSearchReplyForm('js-forum-search')">
+        <tal:define define="script string:setForumSearchForm()">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:define>
 
