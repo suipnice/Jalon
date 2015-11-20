@@ -315,7 +315,7 @@
              tal:attributes="class python:context.test(error, 'field error', 'field')">
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error" />
-            <textarea name="text" rows="10"
+            <textarea id="js-forum-message" name="text" rows="10"
                       required="required" placeholder="Saisie obligatoire"
                       i18n:attributes="placeholder"><tal:replace replace="context/getText" /></textarea>
         </div>
@@ -345,7 +345,8 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'text', true)" />
+            tal:condition="not:is_head"
+            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'js-forum-message', true)" />
 
 </tal:define>
 </metal:macro>
