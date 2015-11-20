@@ -335,12 +335,6 @@
         <input type="hidden" name="parent" value="1"
                tal:condition="is_head" />
 
-        <div class="panel callout radius"
-             tal:condition="python:not(is_first or is_head)">
-            <tal:block i18n:translate="">Les balises &lt;blockquote&gt;…&lt;/blockquote&gt; permettent de faire apparaître leur contenu en tant que citation.</tal:block>
-            <tal:block i18n:translate="">Vous pouvez les imbriquer pour en obtenir plusieurs niveaux.</tal:block>
-        </div>
-
         <div class="formControls">
             <button type="submit" class="button small radius">
                 <i class="fa fa-check-circle"></i>
