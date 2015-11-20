@@ -9,40 +9,11 @@
 <body>
 
 <metal:core fill-slot="main"
-            tal:define="tag string:BoiteDepot;
-                        idpage string:cours_boite_view;
+            tal:define="anonymous python:user.has_role('Anonymous');
                         subject request/subject | nothing;
-                        type_subject request/type_subject | nothing;
                         mode_etudiant request/mode_etudiant | string:false;
-                        ajout string:JalonBoiteDepot;
                         menu request/menu | string:depots;
-                        page string:${context/absolute_url}/${idpage}?menu=${menu};
-                        ajout tag;
-                        anonymous python:user.has_role('Anonymous');
-                        dossier context/getId;
-                        titre context/title;
                         isDepotActif context/isDepotActif">
-
-<style type="text/css">
-    /* rappel du style "sup" présent sur le plan du cours */
-    .sup {
-        position: absolute;
-        top: 0;
-        display: inline-block;
-        background-color: #f04124;
-        color: #fff;
-        font-weight: 500;
-        font-size: 0.75rem;
-        margin-top: -0.33em;
-        vertical-align: top;
-        padding: 2px .5em;
-        text-shadow: none;
-        border: 2px solid #fff;
-        z-index: 10;
-        border-radius: 1em;
-        margin-left: .5em;
-    }
-</style>
 
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         Page d'affichage du fil d'ariane
@@ -50,7 +21,10 @@
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+            Message de session
+        </metal:macro>
+
         <div class="row"
              tal:define="message request/message | nothing"
              tal:condition="message">
@@ -61,8 +35,11 @@
 
         <tal:condition condition="anonymous">
         <div class="small-12 columns text-center">
-            <div class="panel radius warning text-center"><i class="fa fa-warning"></i><strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong></div>
-            <a tal:define="page_quote python:context.jalon_quote(page)"
+            <div class="panel radius warning text-center">
+                <i class="fa fa-warning"></i>
+                <strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong>
+            </div>
+            <a tal:define="page_quote python:context.jalon_quote(here/absolute_url)"
                tal:attributes="href string:${here/absolute_url}/login_form?came_from=${page_quote}"
                class="showmore button">
                <i class="fa fa-key"></i>
@@ -72,8 +49,10 @@
         </tal:condition>
 
         <tal:condition condition="not:anonymous">
-        <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
-        <div id="reveal-main-small" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+        <div id="reveal-main" 
+             class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+        <div id="reveal-main-small" 
+             class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
         <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
                             personnel python:context.isPersonnel(user,mode_etudiant);">
@@ -113,12 +92,12 @@
                 <ul id="boite-options" data-dropdown-content class="f-dropdown">
                     <li>
                         <a tal:condition="not:affElement/val"
-                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=${idpage}&amp;idElement=${context/getId};"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=${context/getId};"
                            data-reveal-id="reveal-main" data-reveal-ajax="true">
                             <i class="fa fa-eye fa-fw"></i> <tal:block i18n:translate="">Afficher</tal:block>
                         </a>
                         <a tal:condition="affElement/val"
-                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=${idpage}&amp;idElement=${context/getId};"
+                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=${context/getId};"
                            data-reveal-id="reveal-main" data-reveal-ajax="true">
                             <i class="fa fa-eye-slash fa-fw"></i> <tal:block i18n:translate="">Masquer</tal:block>
                         </a>
@@ -129,25 +108,6 @@
                            <i class="fa fa-align-justify"></i> <tal:block i18n:translate="">Titre et consigne</tal:block>
                         </a>
                     </li>
-                    <tal:comment replace="nothing"><!--
-                    <li>
-                        <a tal:attributes="href string:${context/absolute_url}/${context/getId}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;menu=${menu}"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true">
-                           <i class="fa fa-calendar fa-fw"></i> <tal:block i18n:translate="">Date</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a tal:attributes="href string:${context/absolute_url}/${context/getId}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-avancees&amp;menu=${menu}"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true">
-                           <i class="fa fa-cogs fa-fw"></i> <tal:block i18n:translate="">Avancées</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a tal:attributes="href string:${context/absolute_url}/${idpage}?menu=${menu}&amp;mode_etudiant=true">
-                            <i class="fa fa-child fw"></i><tal:block i18n:translate="">Mode étudiant</tal:block>
-                        </a>
-                    </li>
-                    --></tal:comment>
                 </ul>
             </tal:condition>
                 <h1>
@@ -187,36 +147,25 @@
                     </li>
                 </ul>
 
-                <tal:define define="ajout tag">
-
-                    <tal:block condition="python:menu == 'sujets'">
-                        <metal:macro use-macro="context/macro_cours_activites/macros/liste-sujets">
-                            Page d affichage de la liste des sujets
-                        </metal:macro>
-                    </tal:block>
-                    <tal:block condition="python:menu != 'sujets'">
-                        <metal:macro use-macro="python:context.macro_cours_boite.macros.get(menu)">
-                            Page d affichage de la liste des dépôts ou des compétences
-                        </metal:macro>
-                    </tal:block>
-
-                </tal:define>
+                <tal:block condition="python:menu == 'sujets'">
+                    <metal:macro use-macro="context/macro_cours_activites/macros/liste-sujets">
+                        Page d affichage de la liste des sujets
+                    </metal:macro>
+                </tal:block>
+                <tal:block condition="python:menu != 'sujets'">
+                    <metal:macro use-macro="python:context.macro_cours_boite.macros.get(menu)">
+                        Page d affichage de la liste des dépôts ou des compétences
+                    </metal:macro>
+                </tal:block>
 
             </section>
 
             <aside class="medium-4 small-12 columns">
-                <tal:comment replace="nothing"><!--
-                <a class="button expand small success radius"
-                   tal:attributes="href string:${context/absolute_url}/${idpage}?menu=${menu}"
-                   tal:condition="python:context.test(mode_etudiant == 'true' and context.isAuteurs(user.getId()), 1, 0)">
-                    <i class="fa fa-user"></i><tal:block i18n:translate="">Retour au mode enseignant</tal:block>
-                </a>
-                --></tal:comment>
-            <tal:condition condition="python:context.test(context.isAuteurs(user.getId()), 1, 0)">
+                <tal:condition condition="python:context.test(context.isAuteurs(user.getId()), 1, 0)">
                 <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage">
                     Mode Enseignant / Etudiant
                 </metal:macro>
-            </tal:condition>
+                </tal:condition>
                 <h2>
                     <a class="button tiny radius dropdown right"
                        data-options="align:bottom" data-dropdown="instruction-options"
@@ -301,12 +250,6 @@
                             <i tal:attributes="class python:context.test(acces_depots['actif'], 'fa fa-toggle-on success', 'fa fa-toggle-off')"></i>
                             Visualisation des dépôts entre étudiants
                         </li>
-                        <tal:comment replace="nothing"><!--
-                        <li tal:define="acces_competences option/getAccesCompetences">
-                            <i tal:attributes="class python:context.test(acces_competences['actif'], 'fa fa-toggle-on success', 'fa fa-toggle-off')"></i>
-                            Évaluation par compétences
-                        </li>
-                        --></tal:comment>
                     </ul>
                 </div>
                 </tal:condition>
@@ -339,72 +282,6 @@
                     </ul>
                 </div>
                 </tal:condition>
-                <tal:comment replace="nothing"><!--
-                <dl class="accordion" data-accordion>
-                    <dd class="accordion-navigation">
-                        <a href="#panel1">
-                            <i class="fa fa-align-justify"></i>
-                            <tal:block  i18n:translate="">Instructions</tal:block>
-                        </a>
-                        <div id="panel1" class="content active">
-                            <h3>
-                                <i class="fa fa-calendar"></i>
-                                <tal:block i18n:translate="">À rendre avant le :</tal:block>
-                            </h3>
-                            <div tal:define="css_class string:panel radius"
-                                 tal:attributes="class python:context.test(isDepotActif == 2, 'warning %s' % css_class, 'bkgrnd %s' % css_class)">
-                                <tal:block content="python:context.getAffDate('DateDepot')"/>
-                                <div tal:condition="python:isDepotActif == 2">
-                                    <i class="fa fa-warning"></i>
-                                    <tal:block i18n:translate="">Dernières minutes !</tal:block>
-                                </div>
-                            </div>
-                            <h3>
-                                <i class="fa fa-align-justify"></i>
-                                <tal:block i18n:translate="">Consigne</tal:block>
-                            </h3>
-                            <div class="panel bkgrnd radius text-justify">
-                                <tal:replace replace="structure context/Description"
-                                             condition="context/Description"/>
-                            <tal:condition condition="not:context/Description"
-                                           i18n:translate="">
-                                Aucune consigne
-                            </tal:condition>
-                            </div>
-                        </div>
-                    </dd>
-                    <dd class="accordion-navigation">
-                        <a href="#panel3">
-                            <i class="fa fa-cogs"></i>
-                            <tal:block  i18n:translate="">Options avancées</tal:block>
-                        </a>
-                        <div id="panel3" class="content active">
-                            <ul class="options_boite" tal:define="option context/getOptionsAvancees">
-                                <li tal:define="correction option/getCorrectionIndividuelle"
-                                    tal:attributes="style python:context.test(correction['actif'], 'color:green', 'color:red')">
-                                    <i tal:attributes="class python:context.test(correction['actif'], 'fa fa-check', 'fa fa-times')"></i>
-                                    Correction des dépôts
-                                </li>
-                                <li tal:define="notation option/getNotation"
-                                    tal:attributes="style python:context.test(notation['actif'], 'color:green', 'color:red')">
-                                    <i tal:attributes="class python:context.test(notation['actif'], 'fa fa-check', 'fa fa-times')"></i>
-                                    Notation des dépôts
-                                </li>
-                                <li tal:define="acces_depots option/getAccesDepots"
-                                    tal:attributes="style python:context.test(acces_depots['actif'], 'color:green', 'color:red')">
-                                    <i tal:attributes="class python:context.test(acces_depots['actif'], 'fa fa-check', 'fa fa-times')"></i>
-                                    Visualisation des dépôts entre étudiants
-                                </li>
-                                <li tal:define="acces_competences option/getAccesCompetences"
-                                    tal:attributes="style python:context.test(acces_competences['actif'], 'color:green', 'color:red')">
-                                    <i tal:attributes="class python:context.test(acces_competences['actif'], 'fa fa-check', 'fa fa-times')"></i>
-                                    Évaluation par compétences
-                                </li>
-                            </ul>
-                        </div>
-                    </dd>
-                </dl>
-                --></tal:comment>
             </aside>
             </tal:block>
         </tal:define>

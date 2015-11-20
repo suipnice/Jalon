@@ -27,8 +27,8 @@ else:
 if request.form.has_key("idParent"):
     context.afficherChapitresParent(request["idParent"], dateAffichage)
 
-redirection = request["orig_template"]
-if "boite" in redirection:
-    redirection = "%s?menu=sujets" % redirection
+redirection = context.absolute_url()
+#if request["idElement"].startswith("BoiteDepot"):
+#    redirection = "%s?menu=%s" % (redirection, menu)
 
 return context.REQUEST.RESPONSE.redirect(redirection)

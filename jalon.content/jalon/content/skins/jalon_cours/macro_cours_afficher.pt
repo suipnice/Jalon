@@ -92,8 +92,6 @@
         <input type="hidden" name="idParent"
                tal:attributes="value parent/idElement"
                tal:condition="python:not parent['idElement'] == 'racine' and not isAfficher"/>
-        <input type="hidden" name="orig_template"
-               tal:attributes="value string:${context/absolute_url}/${request/page}"/>
         <div class="formControls">
         <input class="button small radius" type="submit"
                name="cours_afficher_ressource:method" value="Afficher maintenant"
@@ -123,7 +121,6 @@
                tal:condition="python:request['idElement'].startswith('Titre')" />
         <input type="hidden" name="attribut" value="affElement" />
         <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
-        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${request/page}" />
         <div class="formControls">
             <input class="button small radius" type="submit"
                    name="cours_afficher_ressource:method" value="Programmer"
