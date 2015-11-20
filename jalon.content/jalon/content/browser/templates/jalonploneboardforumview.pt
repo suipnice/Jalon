@@ -61,8 +61,7 @@
 
     <tal:condition condition="not:numConversations">
 
-            <div class="panel callout radius"
-                  i18n:translate="">
+            <div class="panel callout radius">
                 <i class="fa fa-info-circle"></i>
                 <tal:block i18n:translate="">Aucune conversation n'a été lancée dans ce forum.</tal:block>
             </div>
@@ -175,7 +174,7 @@
                                 <a title="Voir le message…"
                                    tal:attributes="href string:${conversation/absolute_url}/${conversation/getLastCommentId}"
                                    i18n:attributes="title">
-                                    <tal:block i18n:translate="">Par</tal:block>
+                                    <tal:block i18n:translate="">par</tal:block>
                                     <tal:content define="creator conversation/getLastCommentAuthor;
                                                          creatorinfo python: mtool.getMemberInfo(creator)"
                                                  content="python:creatorinfo and creatorinfo['fullname'] or creator" />
