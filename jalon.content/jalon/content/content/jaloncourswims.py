@@ -674,7 +674,13 @@ class JalonCoursWims(ATDocument):
                     liste_except = []
                     liste_erreurs = []
                     for score in rep["got_points"]:
-                        sur = rep["weights"][index]
+
+                        try:
+                            sur = rep["weights"][index]
+                        except:
+                            #Dans le cas ou l'exercice n'a pas encore de poid défini dans WIMS, on le place à 1
+                            sur = 1
+
                         try:
                             note = ((float(score) / rep["require_points"][index]) * sur) * 100
                         except Exception as e:
