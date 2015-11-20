@@ -472,6 +472,13 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/getModule", "message": "demande les infos d'un module", "requete": dico})
 
+    def getTypeWims(self):
+        """ retourne le type d'element (exercice / groupe)."""
+        if self.modele == "groupe":
+            return "Groupe"
+        else:
+            return "Exercice"
+
     def cleanData(self, input_data):
         """cleanData."""
         # Il faut verifier quelques points à l'interieur des parametres :
