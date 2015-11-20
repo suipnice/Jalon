@@ -12,7 +12,10 @@
 
 
 <!--
-    Ajouter un forum
+
+        Ajouter un forum
+
+
 -->
 <metal:macro define-macro="ajout-forum">
 
@@ -69,7 +72,10 @@
 
 
 <!--
-    Supprimer tous les forums
+
+        Supprimer tous les forums
+
+
 -->
 <metal:macro define-macro="supprimer-tous-forum">
 
@@ -98,7 +104,10 @@
 
 
 <!--
-    Modifier un forum
+
+        Modifier un forum
+
+
 -->
 <metal:macro define-macro="modifier-forum">
 
@@ -159,7 +168,10 @@
 
 
 <!--
-    Supprimer un élément de forum
+
+        Supprimer un élément de forum
+
+
 -->
 <metal:macro define-macro="supprimer-forum">
 <tal:isConversation define="type request/type | nothing;
@@ -210,7 +222,10 @@
 
 
 <!--
-    Créer une conversation
+
+        Créer une conversation
+
+
 -->
 <metal:macro define-macro="ajout-conversation">
 
@@ -270,7 +285,10 @@
 
 
 <!--
-    Modifier une conversation
+
+        Modifier une conversation
+
+
 -->
 <metal:macro define-macro="modifier-conversation">
 <tal:define define="first request/is_first | nothing;
@@ -353,7 +371,10 @@
 
 
 <!--
-    Répondre à une conversation
+
+        Répondre à une conversation
+
+
 -->
 <metal:macro define-macro="ajout-reponse">
 <tal:define define="creator context/Creator;
@@ -366,17 +387,6 @@
         <tal:block i18n:translate="">Répondre à…</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
-
-    <tal:comment replace="nothing"><!--
-    <h4>
-        <strong tal:content="creatorData" />
-        (<tal:block content="python:context.toPloneboardTime(context, request, creation_date)" />)
-    </h4>
-
-    <div class="panel callout radius">
-        <tal:block tal:content="structure context/getText" />
-    </div>
-    --></tal:comment>
 
     <div class="panel callout radius">
         <tal:block tal:content="creatorData" />
@@ -422,7 +432,10 @@
 
 
 <!--
-    Rechercher dans les forums / les conversations
+
+        Rechercher dans les forums / les conversations
+
+
 -->
 <metal:macro define-macro="forum-rechercher">
 
