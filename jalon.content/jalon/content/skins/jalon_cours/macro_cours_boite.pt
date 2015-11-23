@@ -463,76 +463,25 @@
         Aucun dépôt
     </div>
 
-    <tal:define define="isCorrigerNoter context/isCorrigerNoter;
-                        isCorrectionIndividuelle context/getCorrectionIndividuelle;
-                        isNotation context/getNotation;
-                        isPersonnelActions python:context.test(is_personnel and (isCorrectionIndividuelle or isNotation), 1, 0);
-                        isAccesDepot context/getAccesDepots;
-                        option context/getOptionsAvancees">
-
     <table id="js-listeDepots"
            summary="Liste des dépots"
+           tal:define="infos_tableau python:context.getInfosTableau(is_personnel)"
            tal:condition="listeDepots">
 
-        <thead>
-            <tr>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
-                    i18n:attributes="title"
-                    data-tooltip data-sort="name"
-                    tal:condition="python:is_personnel or isAccesDepot">
+        <thead tal:define="head_table infos_tableau/head_table">
+            <tr tal:repeat="tr head_table">
+                <th tal:condition="not:repeat/tr/last"
+                    tal:attributes="class tr/css_class; 
+                                    title tr/attr_title;
+                                    data-sort tr/data-sort"
+                    data-tooltip>
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Étudiant</tal:block>
+                        <tal:block content="tr/column_title" i18n:translate=""/>
                     </span>
                 </th>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon la date"
-                    data-tooltip data-sort="title"
-                    i18n:attributes="title">
-                    <span>
-                        <i class="fa fa-sort"></i>
-                        <i class="fa fa-sort-asc"></i>
-                        <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Dépôt</tal:block>
-                    </span>
-                </th>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'état"
-                    data-tooltip data-sort="valide"
-                    i18n:attributes="title"
-                    i18n:translate="">
-                    <span>
-                        <i class="fa fa-sort"></i>
-                        <i class="fa fa-sort-asc"></i>
-                        <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">État</tal:block>
-                    </span>
-                </th>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon la correction"
-                    data-tooltip data-sort="correction"
-                    i18n:attributes="title"
-                    tal:condition="isCorrectionIndividuelle">
-                    <span>
-                        <i class="fa fa-sort"></i>
-                        <i class="fa fa-sort-asc"></i>
-                        <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Correction</tal:block>
-                    </span>
-                </th>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon la note"
-                    data-tooltip data-sort="note"
-                    i18n:attributes="title"
-                    tal:condition="isNotation">
-                    <span>
-                        <i class="fa fa-sort"></i>
-                        <i class="fa fa-sort-asc"></i>
-                        <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Note</tal:block>
-                    </span>
-                </th>
-                <th class="nosort"
-                    tal:condition="python: not is_personnel or isPersonnelActions">
-                    <i class="fa fa-cog"></i></th>
             </tr>
         </thead>
         <tbody class="list">
@@ -624,21 +573,17 @@
         </tbody>
     </table>
 
-        <tal:define define="acces_depots option/getAccesDepots">
-
-            <tal:block condition="python:is_personnel or context.test(acces_depots['actif'], 1, 0)"
-                       define="script string:setSortableList('js-listeDepots',['name','title','valide','correction','note'],'name','desc')">
-                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-            </tal:block>
-
-            <tal:block condition="python:not is_personnel and context.test(acces_depots['actif'], 0, 1)"
-                       define="script string:setSortableList('js-listeDepots',['title','valide','correction','note'],'title','desc')">
-                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-            </tal:block>
-
-        </tal:define>
-
+    <tal:define define="acces_depots option/getAccesDepots">
+        <tal:block condition="python:is_personnel or context.test(acces_depots['actif'], 1, 0)"
+                   define="script string:setSortableList('js-listeDepots',['name','title','valide','correction','note'],'name','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+        <tal:block condition="python:not is_personnel and context.test(acces_depots['actif'], 0, 1)"
+                   define="script string:setSortableList('js-listeDepots',['title','valide','correction','note'],'title','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
     </tal:define>
+
 </tal:define>
 </metal:macro>
 

@@ -629,6 +629,47 @@ class JalonBoiteDepot(ATFolder):
                       "listeDepots":     listeDepots}
         return retour
 
+    def getInfosTableau(self, is_personnel):
+        is_correction = self.getCorrectionIndividuelle()
+        is_notation = self.getNotation()
+        is_personnel_and_is_actions = True if is_personnel and (is_correction or is_notation) else False
+
+        head_table = []
+        is_colmun_etudiant = True if is_personnel or isAccesDepot else False
+        if is_colmun_etudiant:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon l'étudiant",
+                               "data-sort":    "name",
+                               "column_title": "Étudiant"})
+        head_table.append({"css_class":    "sort text-left has-tip",
+                           "attr_title":   "Cliquer pour trier selon la date",
+                           "data-sort":    "title",
+                           "column_title": "Dépôt"})
+        head_table.append({"css_class":    "sort text-left has-tip",
+                           "attr_title":   "Cliquer pour trier selon l'état",
+                           "data-sort":    "valide",
+                           "column_title": "État"})
+        if is_correction:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon la correction",
+                               "data-sort":    "correction",
+                               "column_title": "Correction"})
+        if is_notation:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon la note",
+                               "data-sort":    "note",
+                               "column_title": "Note"})
+        if is_personnel_and_is_actions:
+            head_table.append({"css_class":    "nosort",
+                               "column_title": "<i class=\"fa fa-cog\"></i>"})
+        return {"head_table":         head_table,
+                "isAccesDepot":       self.getAccesDepots(),
+                "isCorrigerNoter":    self.isCorrigerNoter(),
+                "is_correction":      is_correction,
+                "is_notation":        is_notation,
+                "is_personnel_and_is_actions": is_personnel_and_is_actions,
+                "option":             self.getOptionsAvancees()}
+
     def getDepotDate(self, data, sortable=False):
         return jalon_utils.getDepotDate(data, sortable)
 
