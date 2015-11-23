@@ -4,10 +4,9 @@ textarea="data, feedback_general"
 asis="feedback_general"
 
 :Questions mixtes incorporées dans un texte fixe.
-<p>Cet exercice présente un texte où des Trous (champs à réponse) sont insérés.</p><p>
-Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.<br/>
-Une syntaxe facile permet d'incorporer les champs de choix multiples et les réponses libres dans les textes.<br/>
-</p>
+<p>Cet exercice présente un texte où des Trous (champs à réponse) sont insérés.</p>
+<p>Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.<br/>
+Une syntaxe facile permet d'incorporer les champs de choix multiples et les réponses libres dans les textes.</p>
 <p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
 :%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
 Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
@@ -40,7 +39,7 @@ Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fa
 \text{feedback_general=asis($$feedback_general$$)}
 
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
-\if{\feedback_general != \empty}{
+\if{\feedback_general notsametext }{
   \text{feedback_general=<div class='feedback'>\feedback_general</div>}
 }
 \precision{10000}
@@ -90,8 +89,14 @@ Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fa
 \statement{
     \data[1;]
     \for{k=1 to \qs}{
-        \embed{r \k,\lengths[\k]
-            autocomplete='off'}
+
+        \if{\types[\k] notsametext menu}{
+            \embed{r \k,\lengths[\k]
+                autocomplete='off'}
+        }
+        {
+            \embed{r \k,\lengths[\k]}
+        }
         \data[2*\k+1;]
     }
 }
@@ -119,4 +124,3 @@ Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fa
 \answer{Champ 20}{\good[20]\field[20;]}{type=\types[20]}{option=\options[20]}
 
 \feedback{1=1}{\feedback_general}
-\feedback{1=1}{<br class='spacer'/>}
