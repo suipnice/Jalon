@@ -12,10 +12,8 @@
             tal:define="subject request/subject | nothing;
                         mode_etudiant request/mode_etudiant | string:false;
                         menu request/menu | string:depots;
-                        isDepotActif context/isDepotActif;
                         boite_view python:context.getTemplateView(user, mode_etudiant, menu);
-                        personnel boite_view/is_personnel;
-                        affElement boite_view/affElement">
+                        is_personnel boite_view/is_personnel;">
 
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         Page d'affichage du fil d'ariane
@@ -157,7 +155,7 @@
             <a class="button radius tiny right"
                 tal:attributes="href string:${context/absolute_url}/${context/getId}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-avancees&amp;menu=${menu}"
                 data-reveal-id="reveal-main" data-reveal-ajax="true"
-                tal:condition="personnel">
+                tal:condition="is_personnel">
                 <i class="fa fa-pencil"></i>
                 <tal:block  i18n:translate="">Modifier</tal:block>
             </a>
@@ -179,7 +177,7 @@
             <a class="button radius tiny right"
                 tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=permission-competence"
                 data-reveal-id="reveal-main" data-reveal-ajax="true"
-                tal:condition="personnel">
+                tal:condition="is_personnel">
                 <i class="fa fa-pencil"></i>
                 <tal:block  i18n:translate="">Modifier</tal:block>
             </a>

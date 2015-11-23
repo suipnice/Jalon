@@ -418,7 +418,7 @@ En entrée : infosBoite
 -->
 <metal:macro define-macro="liste-sujets">
 
-<tal:condition condition="personnel">
+<tal:condition condition="is_personnel">
     <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
         <i class="fa fa-plus-circle"></i>
         <tal:block i18n:translate="">Ajouter</tal:block>
@@ -440,7 +440,7 @@ En entrée : infosBoite
         <tal:block i18n:translate="">Documents enseignants</tal:block>
     </h2>
 
-<tal:define define="listeElements python:context.getInfosListeAttribut(menu, personnel)">
+<tal:define define="listeElements python:context.getInfosListeAttribut(menu, is_personnel)">
 
     <div class="panel callout radius"
          tal:condition="not:listeElements"
@@ -455,7 +455,7 @@ En entrée : infosBoite
         <thead>
             <tr>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="visible" title="Trier selon la visibilité"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -473,7 +473,7 @@ En entrée : infosBoite
                     </span>
                 </th>
                 <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
                 </th>
@@ -490,7 +490,7 @@ En entrée : infosBoite
             <tr tal:define="typeElement python:context.jalon_quote(element['typeElement']);
                             affElement element/affElement">
                 <td class="visible"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <i class="fa fa-eye fa-lg"
                        tal:condition="affElement/val"></i>
                     <i class="fa fa-eye-slash fa-lg"
@@ -507,7 +507,7 @@ En entrée : infosBoite
                 </td>
 
                 <td class="show-for-medium-up"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <a class="dropdown right" data-options="align:left"
                        tal:attributes="data-dropdown string:drop-${repeat/element/index}">
                         <i class="fa fa-cog fa-lg no-pad"></i>
@@ -546,12 +546,12 @@ En entrée : infosBoite
 
         </tbody>
 
-        <tal:block condition="personnel"
+        <tal:block condition="is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['visible','title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>
 
-        <tal:block condition="not:personnel"
+        <tal:block condition="not:is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>

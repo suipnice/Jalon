@@ -421,110 +421,41 @@
 -->
 <metal:macro define-macro="depots">
 
-    <style type="text/css">
-        #js-listeDepots .list .dropdown
-        {
-            margin-top: 0.6rem;
-        }
-
-        #js-listeDepots .list .discreet
-        {
-            font-size: 0.73125rem;
-            font-style: italic;
-        }
-
-        #js-listeDepots .list .activer
-        {
-            color:green;
-        }
-
-        #js-listeDepots .list .desactiver
-        {
-            color:red;
-        }
-    </style>
-
-<tal:define define="dicoDepots python:context.getDepots(user, personnel, request);
+<tal:define define="dicoDepots python:context.getDepots(user, boite_view['is_personnel'], boite_view['is_depot_actif'], boite_view['is_retard']);
                     listeDepots dicoDepots/listeDepots">
 
-    <tal:condition condition="personnel">
-
+    <tal:condition condition="is_personnel">
     <a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-depots">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
     </a>
     <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
         id="drop-action-depots">
-        <li>
-            <a tal:attributes="href string:${context/absolute_url}/cours_telecharger_depots">
-                <i class="fa fa-file-archive-o fa-fw"></i>
-                <tal:block i18n:translate="">Télécharger les dépôts (ZIP)</tal:block>
-            </a>
-        </li>
-        <li>
-            <a tal:attributes="href string:${context/absolute_url}/cours_listing_depots">
-                <i class="fa fa-list fa-fw"></i>
-                <tal:block i18n:translate="">Télécharger listing</tal:block>
-            </a>
-        </li>
-        <li>
-            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots"
-               data-reveal-id="reveal-main" data-reveal-ajax="true">
-                <i class="fa fa-filter fa-fw"></i>
-                <tal:block i18n:translate="">Purger les dépôts</tal:block>
+        <li tal:repeat="menu dicoDepots/menus">
+            <a tal:attributes="href menu/href">
+                <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i><tal:block replace="menu/text"
+                                                                                    i18n:translate=""/>
             </a>
         </li>
     </ul>
-
-    <h2>
-        <i class="fa fa-download"></i>
-        <tal:block i18n:translate="">Dépôts étudiants</tal:block>
-    </h2>
-
     </tal:condition>
-
-    <tal:condition condition="not:personnel">
     <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-depot"
        title="Déposer un fichier" class="button small radius right"
        data-reveal-id="reveal-main" data-reveal-ajax="true"
-       tal:condition="isDepotActif"
+       tal:condition="python:not is_personnel and boite_view['is_depot_actif']"
        i18n:translate="">
         <i class="fa fa-download"></i>
         <tal:block i18n:translate="">Déposer un fichier</tal:block>
     </a>
     <h2>
-        <i class="fa fa-download"></i>
-        <tal:condition condition="not:context/getAccesDepots"
-                       i18n:translate="">Mes dépôts</tal:condition>
-        <tal:condition condition="context/getAccesDepots"
-                   i18n:translate="">Dépôts étudiants</tal:condition>
+        <i class="fa fa-download"></i><tal:block replace="dicoDepots/title"
+                                                 i18n:translate=""/>
     </h2>
-    <div class="panel warning radius" tal:condition="not:isDepotActif">
-        <i class="fa fa-warning"></i>
-        <tal:block i18n:translate="">La date limite autorisée a été dépassée. Vous ne pouvez plus déposer.</tal:block>
-    </div>
-    <div class="panel warning radius" tal:condition="python:isDepotActif == 2">
-        <i class="fa fa-warning"></i>
-        <tal:block i18n:translate="">Vous êtes en retard. Dernières minutes avant la fermeture des dépôts.</tal:block>
-    </div>
-    </tal:condition>
 
-    <div class="panel callout radius"
-         tal:condition="python:context.test(personnel and listeDepots, 1, 0)">
-        <tal:block i18n:translate="">Il y a actuellement</tal:block>
-        <tal:isOneD condition="python:context.test(dicoDepots['valides'] == 1, 1, 0)">
-            <strong tal:content="dicoDepots/valides" /> <tal:block i18n:translate="">dépôt valide envoyé par</tal:block>
-        </tal:isOneD>
-        <tal:isMultipleD condition="python:context.test(dicoDepots['valides'] > 1, 1, 0)">
-            <strong tal:content="dicoDepots/valides" /> <tal:block i18n:translate="">dépôts valides envoyés par</tal:block>
-        </tal:isMultipleD>
-        <tal:isOneE condition="python:context.test(dicoDepots['etudiantsValides'] == 1, 1, 0)">
-            <strong tal:content="dicoDepots/etudiantsValides" /> <tal:block i18n:translate="">étudiant.</tal:block>
-        </tal:isOneE>
-        <tal:isMultipleE condition="python:context.test(dicoDepots['etudiantsValides'] > 1, 1, 0)">
-            <strong tal:content="dicoDepots/etudiantsValides" /> <tal:block i18n:translate="">étudiants.</tal:block>
-        </tal:isMultipleE>
-    </div>
+    <div tal:define="infos_depots dicoDepots/infos_depots"
+         tal:attributes="class string:panel ${infos_depots/css_class} radius"
+         tal:content="structure infos_depots/text"
+         tal:condition="dicoDepots/is_infos_depots"/>
 
     <div class="panel callout radius"
          tal:condition="not:listeDepots"
@@ -535,10 +466,8 @@
     <tal:define define="isCorrigerNoter context/isCorrigerNoter;
                         isCorrectionIndividuelle context/getCorrectionIndividuelle;
                         isNotation context/getNotation;
-                        isPersonnelActions python:context.test(personnel and (isCorrectionIndividuelle or isNotation), 1, 0);
+                        isPersonnelActions python:context.test(is_personnel and (isCorrectionIndividuelle or isNotation), 1, 0);
                         isAccesDepot context/getAccesDepots;
-                        dicoDepots python:context.getDepots(user, personnel, request);
-                        listeDepots dicoDepots/listeDepots;
                         option context/getOptionsAvancees">
 
     <table id="js-listeDepots"
@@ -550,7 +479,7 @@
                 <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
                     i18n:attributes="title"
                     data-tooltip data-sort="name"
-                    tal:condition="python:personnel or isAccesDepot">
+                    tal:condition="python:is_personnel or isAccesDepot">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
@@ -602,7 +531,7 @@
                     </span>
                 </th>
                 <th class="nosort"
-                    tal:condition="python: not personnel or isPersonnelActions">
+                    tal:condition="python: not is_personnel or isPersonnelActions">
                     <i class="fa fa-cog"></i></th>
             </tr>
         </thead>
@@ -610,7 +539,7 @@
         <tal:block repeat="element listeDepots">
             <tr tal:define="actif element/actif">
                 <td class="name"
-                    tal:condition="python:personnel or isAccesDepot"
+                    tal:condition="python:is_personnel or isAccesDepot"
                     tal:content="element/etudiant" />
                 <td class="title"
                     tal:define="modDate element/date">
@@ -643,7 +572,7 @@
                           tal:content="python:test(element['note'], element['note'], 'Non noté')"
                           i18n:translate="" />
                 </td>
-                <td tal:condition="python: not personnel or isPersonnelActions">
+                <td tal:condition="python:not is_personnel or isPersonnelActions">
             <tal:condition condition="not:isPersonnelActions">
                 <tal:condition condition="python:context.test(not element['correction'] and user.getId() in element['id'], 1, 0)">
                     <a tal:attributes="title string:Valider ce dépôt;
@@ -697,12 +626,12 @@
 
         <tal:define define="acces_depots option/getAccesDepots">
 
-            <tal:block condition="python: personnel or context.test(acces_depots['actif'], 1, 0)"
+            <tal:block condition="python:is_personnel or context.test(acces_depots['actif'], 1, 0)"
                        define="script string:setSortableList('js-listeDepots',['name','title','valide','correction','note'],'name','desc')">
                 <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
             </tal:block>
 
-            <tal:block condition="python: not personnel and context.test(acces_depots['actif'], 0, 1)"
+            <tal:block condition="python:not is_personnel and context.test(acces_depots['actif'], 0, 1)"
                        define="script string:setSortableList('js-listeDepots',['title','valide','correction','note'],'title','desc')">
                 <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
             </tal:block>
@@ -841,15 +770,15 @@
 -->
 <metal:macro define-macro="competences">
 
-    <tal:condition condition="python:personnel or context.getAfficherCompetences()">
-    <tal:condition condition="personnel">
+    <tal:condition condition="python:is_personnel or context.getAfficherCompetences()">
+    <tal:condition condition="is_personnel">
         <a class="dropdown right"
            data-options="align:left" data-dropdown="drop-action-depots">
             <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
         </a>
         <ul class="f-dropdown" id="drop-action-depots"
             data-dropdown-content="data-dropdown-content"
-            tal:define="modifier_comp python:context.getPermissionModifierCompetence(personnel, user.getId())">
+            tal:define="modifier_comp python:context.getPermissionModifierCompetence(is_personnel, user.getId())">
             <li tal:condition="modifier_comp">
                 <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-competence"
                    data-reveal-ajax="true" data-reveal-id="reveal-main">
@@ -898,7 +827,7 @@
         <h2 class="texte_icone icone_liste">
             <i class="fa fa-tasks"></i>
             <tal:block i18n:translate="">Compétences</tal:block>
-        <tal:condition condition="not:personnel">
+        <tal:condition condition="not:is_personnel">
             <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
                title="Voir les descriptions des compétences"
                class="button tiny radius right"
@@ -919,7 +848,7 @@
             <form id="js-list_competences" method="post"
                   tal:define="listeEtudiants context/getOrdreEtudiants;"
                   tal:attributes="action string:${context/absolute_url}/enregistrer_comp_script"
-                  tal:condition="personnel">
+                  tal:condition="is_personnel">
                 <table summary="Liste des compétences"
                        tal:define="ordre context/getOrdreCompetences">
                     <thead>
@@ -1016,7 +945,7 @@
 
             </form>
 
-        <tal:condition condition="not:personnel">
+        <tal:condition condition="not:is_personnel">
             <div class="panel warning radius"
                  tal:condition="not:afficher_comp"
                  i18n:translate="">
@@ -1061,7 +990,7 @@
         </tal:condition>
         </tal:define>
     </tal:condition>
-    <tal:condition condition="python:not personnel and not context.getAfficherCompetences()">
+    <tal:condition condition="python:not is_personnel and not context.getAfficherCompetences()">
         <div class="panel alert radius"
              i18n:translate="">
             <strong>Attention :</strong> l'affichage des compétences n'est pas permise aux étudiants sur cette boîte.

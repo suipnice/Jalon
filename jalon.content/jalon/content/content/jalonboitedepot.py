@@ -426,7 +426,7 @@ class JalonBoiteDepot(ATFolder):
         onglets.append({"href":      "%s?menu=depots&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
                         "css_class": " selected" if is_onglet_depots else "",
                         "icon":      "fa-download",
-                        "text":      "Mes dépôts" if not personnel and not context.getAccesDepots() else "Dépôts étudiants",
+                        "text":      "Mes dépôts" if not personnel and not self.getAccesDepots() else "Dépôts étudiants",
                         "nb":        self.getNbDepots(personnel)})
         menu_option_depots = []
         if is_onglet_depots:
@@ -504,19 +504,12 @@ class JalonBoiteDepot(ATFolder):
     ##-----------------------##
     # Fonctions onglet Dépots #
     ##-----------------------##
-    def getDepots(self, authMember, personnel, request):
-        retour = {"total":              0,
-                  "etudiantsTotal":     0,
-                  "valides":            0,
-                  "etudiantsValides":   0,
-                  "invalides":          0,
-                  "etudiantsInvalides": 0,
-                  "listeDepots":  []}
-        listeDepots = []
+    def getDepots(self, authMember, personnel, is_depot_actif, is_retard):
         valides = 0
+        #invalides = 0
+        listeDepots = []
         listeEtudiantsValides = []
-        invalides = 0
-        listeEtudiantsInvalides = []
+        #listeEtudiantsInvalides = []
         listeEtudiantsTotal = []
         if personnel or self.getAccesDepots():
             depots = self.getFolderContents(contentFilter={"portal_type": "JalonFile"})
@@ -548,10 +541,10 @@ class JalonBoiteDepot(ATFolder):
                     valides = valides + 1
                     if not etudiantName in listeEtudiantsValides:
                         listeEtudiantsValides.append(etudiantName)
-                else:
-                    invalides = invalides + 1
-                    if not etudiantName in listeEtudiantsInvalides:
-                        listeEtudiantsInvalides.append(etudiantName)
+                #else:
+                #    invalides = invalides + 1
+                #    if not etudiantName in listeEtudiantsInvalides:
+                #        listeEtudiantsInvalides.append(etudiantName)
                 correction = 0
                 if not depot.getCorrection in ["", None, " ", "\n"]:
                     correction = 1
@@ -566,13 +559,40 @@ class JalonBoiteDepot(ATFolder):
                                     "correction": correction,
                                     "note":       depot.getNote,
                                     "size":       1000})
-            retour = {"total":              len(listeDepots),
-                      "etudiantsTotal":     len(listeEtudiantsTotal),
-                      "valides":            valides,
-                      "etudiantsValides":   len(listeEtudiantsValides),
-                      "invalides":          invalides,
-                      "etudiantsInvalides": len(listeEtudiantsInvalides),
+
+            infos_depots = {}
+            is_infos_depots = False
+            if len(listeDepots):
+                is_infos_depots = True
+                infos_depots["css_class"] = "callout"
+                text_infos_depots = ["Il y a actuellement"]
+                if valides == 1:
+                    text_infos_depots.append("<strong>%s</strong> dépôt valide envoyé par" % valides)
+                else:
+                    text_infos_depots.append("<strong>%s</strong> dépôts valides envoyés par" % valides)
+                if len(listeEtudiantsValides) == 1:
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % len(listeEtudiantsValides))
+                else:
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % len(listeEtudiantsValides))
+                infos_depots["text"] = " ".join(text_infos_depots)
+
+            retour = {"title":              "Dépôts étudiants",
+                      "is_infos_depots":    is_infos_depots,
+                      "infos_depots":       infos_depots,
                       "listeDepots":        listeDepots}
+
+            if personnel:
+                menus = []
+                menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
+                             "icon": "fa-file-archive-o",
+                             "text": "Télécharger les dépôts (ZIP)"})
+                menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
+                             "icon": "fa-list",
+                             "text": "Télécharger listing"})
+                menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
+                             "icon": "fa-filter",
+                             "text": "Purger les dépôts"})
+                retour["menus"] = menus
         else:
             for iddepot in self.objectIds():
                 if authMember.getId() in iddepot:
@@ -591,7 +611,22 @@ class JalonBoiteDepot(ATFolder):
                                         "correction": correction,
                                         "note":       depot.getNote(),
                                         "size":       depot.getSize()})
-            retour = {"listeDepots": listeDepots}
+
+            infos_depots = {}
+            is_infos_depots = False
+            if not is_depot_actif:
+                is_infos_depots = True
+                infos_depots = {"css_class": "warning",
+                                "text":      "<i class=\"fa fa-warning\"></i>La date limite autorisée a été dépassée. Vous ne pouvez plus déposer."}
+            if is_retard:
+                is_infos_depots = True
+                infos_depots = {"css_class": "warning",
+                                "text":      "<i class=\"fa fa-warning\"></i>Vous êtes en retard. Dernières minutes avant la fermeture des dépôts."}
+
+            retour = {"title":           "Mes dépôts",
+                      "is_infos_depots": is_infos_depots,
+                      "infos_depots":    infos_depots,
+                      "listeDepots":     listeDepots}
         return retour
 
     def getDepotDate(self, data, sortable=False):
