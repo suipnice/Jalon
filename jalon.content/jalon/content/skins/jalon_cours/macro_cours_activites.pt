@@ -418,7 +418,7 @@ En entrée : infosBoite
 -->
 <metal:macro define-macro="liste-sujets">
 
-<tal:condition condition="personnel">
+<tal:condition condition="is_personnel">
     <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
         <i class="fa fa-plus-circle"></i>
         <tal:block i18n:translate="">Ajouter</tal:block>
@@ -440,7 +440,7 @@ En entrée : infosBoite
         <tal:block i18n:translate="">Documents enseignants</tal:block>
     </h2>
 
-<tal:define define="listeElements python:context.getInfosListeAttribut(menu, personnel)">
+<tal:define define="listeElements python:context.getInfosListeAttribut(menu, is_personnel)">
 
     <div class="panel callout radius"
          tal:condition="not:listeElements"
@@ -455,7 +455,7 @@ En entrée : infosBoite
         <thead>
             <tr>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="visible" title="Trier selon la visibilité"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -473,7 +473,7 @@ En entrée : infosBoite
                     </span>
                 </th>
                 <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
                 </th>
@@ -490,7 +490,7 @@ En entrée : infosBoite
             <tr tal:define="typeElement python:context.jalon_quote(element['typeElement']);
                             affElement element/affElement">
                 <td class="visible"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <i class="fa fa-eye fa-lg"
                        tal:condition="affElement/val"></i>
                     <i class="fa fa-eye-slash fa-lg"
@@ -507,7 +507,7 @@ En entrée : infosBoite
                 </td>
 
                 <td class="show-for-medium-up"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <a class="dropdown right" data-options="align:left"
                        tal:attributes="data-dropdown string:drop-${repeat/element/index}">
                         <i class="fa fa-cog fa-lg no-pad"></i>
@@ -516,21 +516,21 @@ En entrée : infosBoite
                         tal:attributes="id string:drop-${repeat/element/index}">
                         <li tal:condition="not:affElement/val">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=${element/idElement}&amp;tag=activite">
                                 <i class="fa fa-eye fa-fw"></i>
                                 <tal:block i18n:translate="">Afficher</tal:block>
                             </a>
                         </li>
                         <li tal:condition="affElement/val">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=${element/idElement}&amp;tag=activite">
                                 <i class="fa fa-eye-slash fa-fw"></i>
                                 <tal:block i18n:translate="">Masquer</tal:block>
                             </a>
                         </li>
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;retour=${idpage}&amp;menu=${menu}"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;menu=${menu}"
                                title="Détacher le document enseignant"
                                i18n:attributes="title" i18n:translate="">
                                 <i class="fa fa-chain-broken fa-fw"></i>
@@ -546,12 +546,12 @@ En entrée : infosBoite
 
         </tbody>
 
-        <tal:block condition="personnel"
+        <tal:block condition="is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['visible','title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>
 
-        <tal:block condition="not:personnel"
+        <tal:block condition="not:is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>
@@ -562,6 +562,17 @@ En entrée : infosBoite
 
 </metal:macro>
 
+<metal:macro define-macro="liste-depots">
+    <metal:macro use-macro="context/macro_cours_boite/macros/depots">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>
+
+<metal:macro define-macro="liste-competences">
+    <metal:macro use-macro="context/macro_cours_boite/macros/competences">
+        Page d'affichage de la liste des compétences
+    </metal:macro>
+</metal:macro>
 
 <!-- Liste des exercices d'une autoevaluation ou d'un examen
 En entrée :

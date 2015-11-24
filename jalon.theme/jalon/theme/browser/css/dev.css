@@ -14,3 +14,50 @@
 */
 
 
+/* 
+    rappel du style "sup" présent sur le plan du cours  sur la barres d'onglets de la doite de dépots
+    fichier cours_boite_view
+*/
+#boite .sup {
+    position: absolute;
+    top: 0;
+    display: inline-block;
+    background-color: #f04124;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.75rem;
+    margin-top: -0.33em;
+    vertical-align: top;
+    padding: 2px .5em;
+    text-shadow: none;
+    border: 2px solid #fff;
+    z-index: 10;
+    border-radius: 1em;
+    margin-left: .5em;
+}
+
+/*
+    css utilsé dans la liste des dépôts
+    fichier : macro_cours_boite
+    macro   : boite;
+*/
+#js-listeDepots .list .dropdown
+{
+    margin-top: 0.6rem;
+}
+
+#js-listeDepots .list .discreet
+{
+    font-size: 0.73125rem;
+    font-style: italic;
+}
+
+#js-listeDepots .list .activer
+{
+    color:green;
+}
+
+#js-listeDepots .list .desactiver
+{
+    color:red;
+}
