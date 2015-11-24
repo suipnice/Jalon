@@ -504,65 +504,107 @@ class JalonBoiteDepot(ATFolder):
     ##-----------------------##
     # Fonctions onglet Dépots #
     ##-----------------------##
-    def getDepots(self, authMember, personnel, is_depot_actif, is_retard):
+    def getDepots(self, auth_member, is_personnel, is_depot_actif, is_retard):
         valides = 0
-        #invalides = 0
-        listeDepots = []
-        listeEtudiantsValides = []
-        #listeEtudiantsInvalides = []
-        listeEtudiantsTotal = []
-        if personnel or self.getAccesDepots():
-            depots = self.getFolderContents(contentFilter={"portal_type": "JalonFile"})
-            if not depots:
-                return retour
-            portal = self.portal_url.getPortalObject()
-            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-            for depot in depots:
-                #etudiant = créateur du dépôt
-                auteurDepot = str(depot.Creator)
-                member = portal.portal_membership.getMemberById(auteurDepot)
-                etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
-                if etudiant:
-                    etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-                elif self.isLDAP() or member.has_role("EtudiantJalon"):
-                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
-                    if member:
-                        etudiantName = str(member.getProperty("fullname"))
-                        if not etudiantName:
-                            etudiantName = str(member.getProperty("cn"))
-                    else:
-                        etudiantName = auteurDepot
+        liste_depots = []
+        liste_etudiants = []
+        liste_etudiants_valides = []
+        dico_name_etudiants = {}
+
+        is_etudiant_only = False
+        table_title = "Dépôts étudiants"
+        content_filter = {"portal_type": "JalonFile"}
+        acces_depots = self.getAccesDepots()
+        if not is_personnel and not acces_depots:
+            table_title = "Mes dépôts"
+            is_etudiant_only = True
+            content_filter["creator"] = auth_member.getId()
+        depots = self.getFolderContents(contentFilter=content_filter)
+        if not depots:
+            return retour
+
+        is_corriger_noter = self.isCorrigerNoter()
+        for depot in depots:
+            # créateur du dépôt = etudiant
+            depot_id = depot.getId
+            etudiant_id = str(depot.Creator)
+            if not etudiant_id in liste_etudiants:
+                liste_etudiants.append(etudiant_id)
+                etudiant_infos = jalon_utils.getInfosMembre(etudiant_id)
+                if etudiant_infos:
+                    etudiant_name = "%s %s" % (etudiant_infos["nom"], etudiant_infos["prenom"])
                 else:
-                    etudiantName = auteurDepot
+                    etudiant_name = etudiant_id
+                dico_name_etudiants[etudiant_id] = etudiant_name
+            else:
+                etudiant_name = dico_name_etudiants[etudiant_id]
 
-                if not etudiantName in listeEtudiantsTotal:
-                    listeEtudiantsTotal.append(etudiantName)
-                if depot.getActif:
-                    valides = valides + 1
-                    if not etudiantName in listeEtudiantsValides:
-                        listeEtudiantsValides.append(etudiantName)
-                #else:
-                #    invalides = invalides + 1
-                #    if not etudiantName in listeEtudiantsInvalides:
-                #        listeEtudiantsInvalides.append(etudiantName)
-                correction = 0
-                if not depot.getCorrection in ["", None, " ", "\n"]:
-                    correction = 1
-                if depot.getFichierCorrection:
-                    correction = 1
-                listeDepots.append({"etudiant":   ' '.join([item.capitalize() for item in etudiantName.split()]),
-                                    "id":         depot.getId,
-                                    "title":      depot.Title,
-                                    "date":       self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M'),
-                                    "url":        depot.getURL,
-                                    "actif":      depot.getActif,
-                                    "correction": correction,
-                                    "note":       depot.getNote,
-                                    "size":       1000})
+            columns_etat_correction_notation = []
 
-            infos_depots = {}
-            is_infos_depots = False
-            if len(listeDepots):
+            is_actif = {"value": False, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label warning", "text": "Invalide"}
+            if depot.getActif:
+                is_actif = {"value": True, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label success", "text": "Valide"}
+                valides = valides + 1
+                if not etudiant_id in liste_etudiants_valides:
+                    liste_etudiants_valides.append(etudiant_id)
+            columns_etat_correction_notation.append(is_actif)
+
+            is_correction = {"value": False, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label secondary", "text": "Non corrigé"}
+            if depot.getCorrection not in ["", None, " "]:
+                is_correction = {"value": True, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label success", "text": "Corrigé"}
+            if depot.getFichierCorrection:
+                is_correction = {"value": True, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label success", "text": "Corrigé"}
+            columns_etat_correction_notation.append(is_correction)
+
+            note = depot.getNote
+            is_note = {"test": "is_column_notation", "css_class": "note", "span_css_class": "label secondary", "text": "Non noté"}
+            if note:
+                is_note = {"test": "is_column_notation", "css_class": "note", "span_css_class": "", "text": note}
+            columns_etat_correction_notation.append(is_note)
+
+            is_corrupt = False
+            depot_action = {}
+            if is_etudiant_only:
+                if depot.getObject().getSize() < 100:
+                    is_corrupt = True
+                if not is_actif["value"]:
+                    depot_action = {"action_title": "Valider ce dépôt",
+                                    "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=" % (self.absolute_url(), depot_id),
+                                    "action_icon":  "fa-check-circle success",
+                                    "action_text":  "Valider"}
+                else:
+                    depot_action = {"action_title": "Ignorer ce dépôt",
+                                    "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=actif" % (self.absolute_url(), depot_id),
+                                    "action_icon":  "fa-times-circle warning",
+                                    "action_text":  "Ignorer"}
+                if is_correction["value"]:
+                    depot_action = {"action_title": "Correction",
+                                    "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
+                                    "action_icon":  "fa-legal",
+                                    "action_text":  "Correction"}
+            if is_personnel:
+                depot_action = {"action_title": is_corriger_noter["title"],
+                                "action_url":   "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction" % (self.absolute_url(), depot_id),
+                                "action_icon":  "fa-legal",
+                                "action_text":  is_corriger_noter["title"]}
+
+            creation_date = self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M')
+
+            liste_depots.append({"etudiant_name":                    etudiant_name,
+                                 "depot_id":                         depot_id,
+                                 "depot_title":                      depot.Title,
+                                 "depot_date":                       creation_date,
+                                 "depot_url":                        depot.getURL(),
+                                 "date_sort":                        self.getDepotDate(creation_date, 1),
+                                 "date_aff":                         self.getDepotDate(creation_date),
+                                 "is_corrupt":                       is_corrupt,
+                                 "columns_etat_correction_notation": columns_etat_correction_notation,
+                                 "depot_action":                     depot_action})
+
+        infos_depots = {}
+        is_infos_depots = False
+        if is_personnel:
+            if len(liste_depots):
                 is_infos_depots = True
                 infos_depots["css_class"] = "callout"
                 text_infos_depots = ["Il y a actuellement"]
@@ -570,50 +612,13 @@ class JalonBoiteDepot(ATFolder):
                     text_infos_depots.append("<strong>%s</strong> dépôt valide envoyé par" % valides)
                 else:
                     text_infos_depots.append("<strong>%s</strong> dépôts valides envoyés par" % valides)
-                if len(listeEtudiantsValides) == 1:
-                    text_infos_depots.append("<strong>%s</strong> étudiant." % len(listeEtudiantsValides))
+                taille_liste_etudiants_valides = len(liste_etudiants_valides)
+                if taille_liste_etudiants_valides == 1:
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % taille_liste_etudiants_valides)
                 else:
-                    text_infos_depots.append("<strong>%s</strong> étudiant." % len(listeEtudiantsValides))
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % taille_liste_etudiants_valides)
                 infos_depots["text"] = " ".join(text_infos_depots)
-
-            retour = {"title":              "Dépôts étudiants",
-                      "is_infos_depots":    is_infos_depots,
-                      "infos_depots":       infos_depots,
-                      "listeDepots":        listeDepots}
-
-            if personnel:
-                menus = []
-                menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
-                             "icon": "fa-file-archive-o",
-                             "text": "Télécharger les dépôts (ZIP)"})
-                menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
-                             "icon": "fa-list",
-                             "text": "Télécharger listing"})
-                menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
-                             "icon": "fa-filter",
-                             "text": "Purger les dépôts"})
-                retour["menus"] = menus
         else:
-            for iddepot in self.objectIds():
-                if authMember.getId() in iddepot:
-                    depot = getattr(self, iddepot)
-                    correction = 0
-                    if depot.getCorrection() not in ["", None, " "]:
-                        correction = 1
-                    if depot.getFichierCorrection():
-                        correction = 1
-                    listeDepots.append({"etudiant":   authMember,
-                                        "id":         depot.getId(),
-                                        "title":      depot.title_or_id(),
-                                        "date":       self.getLocaleDate(depot.created(), '%d/%m/%Y - %Hh%M'),
-                                        "url":        depot.absolute_url(),
-                                        "actif":      depot.getActif(),
-                                        "correction": correction,
-                                        "note":       depot.getNote(),
-                                        "size":       depot.getSize()})
-
-            infos_depots = {}
-            is_infos_depots = False
             if not is_depot_actif:
                 is_infos_depots = True
                 infos_depots = {"css_class": "warning",
@@ -623,19 +628,33 @@ class JalonBoiteDepot(ATFolder):
                 infos_depots = {"css_class": "warning",
                                 "text":      "<i class=\"fa fa-warning\"></i>Vous êtes en retard. Dernières minutes avant la fermeture des dépôts."}
 
-            retour = {"title":           "Mes dépôts",
-                      "is_infos_depots": is_infos_depots,
-                      "infos_depots":    infos_depots,
-                      "listeDepots":     listeDepots}
+        retour = {"table_title":     table_title,
+                  "is_infos_depots": is_infos_depots,
+                  "infos_depots":    infos_depots,
+                  "liste_depots":    liste_depots,
+                  "acces_depots":    acces_depots}
+        menus = []
+        if is_personnel:
+            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
+                         "icon": "fa-file-archive-o",
+                         "text": "Télécharger les dépôts (ZIP)"})
+            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
+                         "icon": "fa-list",
+                         "text": "Télécharger listing"})
+            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
+                         "icon": "fa-filter",
+                         "text": "Purger les dépôts"})
+            retour["menus"] = menus
+        else:
+            retour["menus"] = menus
         return retour
 
-    def getInfosTableau(self, is_personnel):
-        is_correction = self.getCorrectionIndividuelle()
-        is_notation = self.getNotation()
-        is_personnel_and_is_actions = True if is_personnel and (is_correction or is_notation) else False
-
+    def getInfosTableau(self, is_personnel, is_depot_actif):
         head_table = []
-        is_colmun_etudiant = True if is_personnel or isAccesDepot else False
+        is_column_correction = self.getCorrectionIndividuelle()
+        is_column_notation = self.getNotation()
+        #is_personnel_and_is_actions = True if is_personnel and (is_colmun_correction or is_colmun_notation) else False
+        is_colmun_etudiant = True if is_personnel or self.getAccesDepots() else False
         if is_colmun_etudiant:
             head_table.append({"css_class":    "sort text-left has-tip",
                                "attr_title":   "Cliquer pour trier selon l'étudiant",
@@ -649,26 +668,44 @@ class JalonBoiteDepot(ATFolder):
                            "attr_title":   "Cliquer pour trier selon l'état",
                            "data-sort":    "valide",
                            "column_title": "État"})
-        if is_correction:
+        if is_column_correction:
             head_table.append({"css_class":    "sort text-left has-tip",
                                "attr_title":   "Cliquer pour trier selon la correction",
                                "data-sort":    "correction",
                                "column_title": "Correction"})
-        if is_notation:
+        if is_column_notation:
             head_table.append({"css_class":    "sort text-left has-tip",
                                "attr_title":   "Cliquer pour trier selon la note",
                                "data-sort":    "note",
                                "column_title": "Note"})
-        if is_personnel_and_is_actions:
+        #if is_personnel_and_is_actions:
+        #    head_table.append({"css_class":    "nosort",
+        #                       "attr_title":   "",
+        #                       "data-sort":    "",
+        #                       "column_title": "<i class=\"fa fa-cog\"></i>"})
+
+        is_column_actions = False
+        if is_personnel:
+            if is_column_correction or is_column_notation:
+                is_column_actions = True
+        else:
+            if is_depot_actif:
+                is_column_actions = True
+            if is_column_correction:
+                is_column_actions = True
+        if is_column_actions:
             head_table.append({"css_class":    "nosort",
+                               "attr_title":   "",
+                               "data-sort":    "",
                                "column_title": "<i class=\"fa fa-cog\"></i>"})
-        return {"head_table":         head_table,
-                "isAccesDepot":       self.getAccesDepots(),
-                "isCorrigerNoter":    self.isCorrigerNoter(),
-                "is_correction":      is_correction,
-                "is_notation":        is_notation,
-                "is_personnel_and_is_actions": is_personnel_and_is_actions,
-                "option":             self.getOptionsAvancees()}
+        return {"head_table":           head_table,
+                "is_column_etudiant":   is_colmun_etudiant,
+                "is_column_etat":       True,
+                "is_column_correction": is_column_correction,
+                "is_column_notation":   is_column_notation,
+                "is_column_actions":    is_column_actions,
+                "option":               self.getOptionsAvancees()}
+        #        "is_personnel_and_is_actions": is_personnel_and_is_actions,
 
     def getDepotDate(self, data, sortable=False):
         return jalon_utils.getDepotDate(data, sortable)
