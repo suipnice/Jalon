@@ -511,6 +511,18 @@ class JalonBoiteDepot(ATFolder):
         liste_etudiants_valides = []
         dico_name_etudiants = {}
 
+        menus = []
+        if is_personnel:
+            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
+                         "icon": "fa-file-archive-o",
+                         "text": "Télécharger les dépôts (ZIP)"})
+            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
+                         "icon": "fa-list",
+                         "text": "Télécharger listing"})
+            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
+                         "icon": "fa-filter",
+                         "text": "Purger les dépôts"})
+
         is_etudiant_only = False
         table_title = "Dépôts étudiants"
         content_filter = {"portal_type": "JalonFile"}
@@ -518,10 +530,16 @@ class JalonBoiteDepot(ATFolder):
         if not is_personnel and not acces_depots:
             table_title = "Mes dépôts"
             is_etudiant_only = True
-            content_filter["creator"] = auth_member.getId()
+            content_filter["Creator"] = auth_member.getId()
         depots = self.getFolderContents(contentFilter=content_filter)
+
         if not depots:
-            return retour
+            return {"table_title":     table_title,
+                    "is_infos_depots": False,
+                    "infos_depots":    "",
+                    "liste_depots":    [],
+                    "acces_depots":    acces_depots,
+                    "menus":           menus}
 
         is_corriger_noter = self.isCorrigerNoter()
         for depot in depots:
@@ -557,9 +575,9 @@ class JalonBoiteDepot(ATFolder):
             columns_etat_correction_notation.append(is_correction)
 
             note = depot.getNote
-            is_note = {"test": "is_column_notation", "css_class": "note", "span_css_class": "label secondary", "text": "Non noté"}
+            is_note = {"value": False, "test": "is_column_notation", "css_class": "note", "span_css_class": "label secondary", "text": "Non noté"}
             if note:
-                is_note = {"test": "is_column_notation", "css_class": "note", "span_css_class": "", "text": note}
+                is_note = {"value": True, "test": "is_column_notation", "css_class": "note", "span_css_class": "", "text": note}
             columns_etat_correction_notation.append(is_note)
 
             is_corrupt = False
@@ -577,12 +595,12 @@ class JalonBoiteDepot(ATFolder):
                                     "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=actif" % (self.absolute_url(), depot_id),
                                     "action_icon":  "fa-times-circle warning",
                                     "action_text":  "Ignorer"}
-                if is_correction["value"]:
-                    depot_action = {"action_title": "Correction",
-                                    "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
-                                    "action_icon":  "fa-legal",
-                                    "action_text":  "Correction"}
-            if is_personnel:
+            if is_etudiant_only or acces_depots:
+                depot_action = {"action_title": "Consulter",
+                                "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
+                                "action_icon":  "fa-eye",
+                                "action_text":  "Consulter"}
+            if is_personnel and is_corriger_noter:
                 depot_action = {"action_title": is_corriger_noter["title"],
                                 "action_url":   "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction" % (self.absolute_url(), depot_id),
                                 "action_icon":  "fa-legal",
@@ -632,21 +650,8 @@ class JalonBoiteDepot(ATFolder):
                   "is_infos_depots": is_infos_depots,
                   "infos_depots":    infos_depots,
                   "liste_depots":    liste_depots,
-                  "acces_depots":    acces_depots}
-        menus = []
-        if is_personnel:
-            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
-                         "icon": "fa-file-archive-o",
-                         "text": "Télécharger les dépôts (ZIP)"})
-            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
-                         "icon": "fa-list",
-                         "text": "Télécharger listing"})
-            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
-                         "icon": "fa-filter",
-                         "text": "Purger les dépôts"})
-            retour["menus"] = menus
-        else:
-            retour["menus"] = menus
+                  "acces_depots":    acces_depots,
+                  "menus":           menus}
         return retour
 
     def getInfosTableau(self, is_personnel, is_depot_actif):
@@ -722,8 +727,8 @@ class JalonBoiteDepot(ATFolder):
         else:
             return self.dateRetard.strftime("%Y/%m/%d %H:%M")
 
-    def getNbDepots(self, personnel):
-        if not personnel:
+    def getNbDepots(self, is_personnel):
+        if not is_personnel and not self.getAccesDepots():
             nbDepots = 0
             authMember = self.portal_membership.getAuthenticatedMember().getId()
             for iddepot in self.objectIds():

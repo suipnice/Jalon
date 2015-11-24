@@ -102,10 +102,11 @@
 
         <aside class="medium-4 small-12 columns"
                tal:condition="boite_view/is_personnel_or_boite_visible">
-            <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage"
-                         tal:condition="boite_view/is_auteur">
+            <tal:condition tal:condition="boite_view/is_auteur">
+            <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage">
                 Mode Enseignant / Etudiant
             </metal:macro>
+            </tal:condition>
             <h2>
                 <a class="button tiny radius dropdown right"
                    data-options="align:bottom" data-dropdown="instruction-options"
