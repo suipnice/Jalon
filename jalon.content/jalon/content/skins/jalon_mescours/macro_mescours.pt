@@ -694,7 +694,7 @@
             <label for="confirm-suppr_WIMS"
                    i18n:translate="">Je confirme vouloir supprimer toutes les activités WIMS créées par le ou les auteurs selectionné(s).
             </label>
-
+            <br/>
             <button class="button small alert" type="submit" disabled="true">
                 <i class="fa fa-trash-o"></i>
                 <tal:block i18n:translate="">Tout supprimer</tal:block>
@@ -745,10 +745,10 @@
 
 <tal:isNotPersonnel condition="not:personnel">
 
-        <div class="panel alert radius">
-            <i class="fa fa-exclamation-triangle no-pad"></i>
-            <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
-        </div>
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
+    </div>
 
 </tal:isNotPersonnel>
 

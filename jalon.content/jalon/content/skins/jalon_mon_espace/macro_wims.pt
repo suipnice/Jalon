@@ -173,7 +173,7 @@
 -->
 <metal:macro define-macro="no_deletion">
 
-    <h2 style="background-color:#CF6E0E;">
+    <h2 class="warning">
         <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Suppression non autorisée</tal:block>
         <a class="close-reveal-modal" aria-label="Close"></a>
