@@ -33,7 +33,7 @@ import copy
 
 # Messages de debug :
 from logging import getLogger
-LOG = getLogger( '[jalon.content.jalon_utils]' )
+LOG = getLogger('[jalon_utils]')
 """
 # Log examples :
 LOG.debug('debug message')
@@ -976,7 +976,7 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                 redirection = "gestion_utilisateurs"
             liste.append({"titre": _(u"Gestion pédagogique"),
                           "icone": "fa fa-database",
-                          "url"  : "%s/%s" % (folder.absolute_url(), redirection)})
+                          "url":   "%s/%s" % (folder.absolute_url(), redirection)})
             liste.append({"titre": page.encode("utf-8"),
                           "icone": "fa fa-database"})
         if not page:
@@ -1020,21 +1020,20 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                               "icone": "fa fa-home",
                               "url":   url_portal},
                              {"titre": _(u"Vidéos"),
-                              "icone": "icone_video"}],
-            authMemberId:   [{"titre": _(u"Mes cours"),
-                              "icone": "fa fa-university"}],
-            "etudiants":    [{"titre": _(u"Mes étudiants"),
-                              "icone": "fa fa-users"}],
-            "portal_jalon_properties": [{"titre": _(u"Configuration du site"),
-                                         "icone": "fa fa-wrench"}]
-          }
+                              "icone": "fa fa-youtube-play"}],
+           authMemberId:   [{"titre": _(u"Mes cours"),
+                             "icone": "fa fa-university"}],
+           "etudiants":    [{"titre": _(u"Mes étudiants"),
+                             "icone": "fa fa-users"}],
+           "portal_jalon_properties": [{"titre": _(u"Configuration du site"),
+                                        "icone": "fa fa-wrench"}]}
 
     if page == "videos_pod":
         return [{"titre": _(u"Mon espace"),
                  "icone": "fa fa-home",
                  "url":   url_portal},
-                {"titre": _(u"Ressources externes"),
-                 "icone": "fa fa-external-link",
+                {"titre": _(u"Vidéos"),
+                 "icone": "fa fa-youtube-play",
                  "url": folder.absolute_url()},
                 {"titre": _(u"Rechercher une vidéo"),
                  "icone": "fa fa-search"}]
@@ -1130,6 +1129,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                 retour["urlElement"] = "cours_autoevaluation_view?qexo=%s" % (int(indexElement) + 1)
             if typeElement in ["Lecteurexportable", "Pod"]:
                 retour["urlElement"] = element.getLecteurExportable()
+                retour["auteurVideoElement"] = element.getVideoauteur()
             if typeElement == "Lienweb":
                 urlWEB = element.getURLWEB()
                 if not "://" in urlWEB:
@@ -1161,52 +1161,55 @@ def getJalonMenu(context, portal_url, user, request):
     sub_menu_mes_cours = []
     if is_etudiant:
         for id_categorie in liste_id_categorie:
-            sub_menu_mes_cours.append({"id"   : "cat%s" % id_categorie,
-                                       "icone": "fa fa-book",
-                                       "title": jalon_categories[id_categorie]['title'],
-                                       "href" : "%s/cours/%s?categorie=%s" % (portal_url, member_id, id_categorie),
-                                       "activer": True,
-                                      })
+            sub_menu_mes_cours.append({"id":      "cat%s" % id_categorie,
+                                       "icone":   "fa fa-book",
+                                       "title":   jalon_categories[id_categorie]['title'],
+                                       "href":    "%s/cours/%s?categorie=%s" % (portal_url, member_id, id_categorie),
+                                       "activer": True})
         if sub_menu_mes_cours:
             class_cours = "has-dropdown not-click"
 
     activer = jalon_properties.getPropertiesMonEspace()
-    menu = {"left_menu": [{"id"      : "mon_espace",
-                           "class"   : "has-dropdown not-click",
-                           "icone"   : "fa fa-home",
-                           "title"   : _(u"Mon espace"),
-                           "href"    : portal_url,
-                           "sub_menu": [{"id"     : "fichiers",
-                                         "icone"  : "fa fa-files-o",
-                                         "title"  : _(u"Fichiers"),
-                                         "href"   : "%s/Members/%s/Fichiers" % (portal_url, member_id),
-                                         "activer": activer["activer_fichiers"]},
-                                        {"id"   : "sonorisation",
-                                         "icone": "fa fa-microphone",
-                                         "title": _(u"Présentations sonorisées"),
-                                         "href" : "%s/Members/%s/Sonorisation" % (portal_url, member_id),
-                                         "activer": activer["activer_presentations_sonorisees"]},
-                                        {"id"   : "wims",
-                                         "icone": "fa fa-random",
-                                         "title": _(u"Exercices Wims"),
-                                         "href" : "%s/Members/%s/Wims" % (portal_url, member_id),
-                                         "activer": activer["activer_exercices_wims"]},
-                                        {"id"   : "liens",
-                                         "icone": "fa fa-external-link",
-                                         "title": _(u"Ressources externes"),
-                                         "href" : "%s/Members/%s/Externes" % (portal_url, member_id),
-                                         "activer": activer["activer_liens"]},
-                                        {"id"   : "glossaire",
-                                         "icone": "fa fa-font",
-                                         "title": _(u"Termes de glossaire"),
-                                         "href" : "%s/Members/%s/Glossaire" % (portal_url, member_id),
-                                         "activer": activer["activer_termes_glossaire"]},
-                                        {"id"   : "connect",
-                                         "icone": "fa fa-headphones",
-                                         "title": _(u"Webconférences"),
-                                         "href" : "%s/Members/%s/Webconference" % (portal_url, member_id),
-                                         "activer": activer["activer_webconferences"]}
-                                       ],
+    menu = {"left_menu": [{"id":        "mon_espace",
+                           "class":     "has-dropdown not-click",
+                           "icone":     "fa fa-home",
+                           "title":     _(u"Mon espace"),
+                           "href":      portal_url,
+                           "sub_menu":  [{"id":      "fichiers",
+                                          "icone":   "fa fa-files-o",
+                                          "title":   _(u"Fichiers"),
+                                          "href":    "%s/Members/%s/Fichiers" % (portal_url, member_id),
+                                          "activer": activer["activer_fichiers"]},
+                                         {"id":      "sonorisation",
+                                          "icone":   "fa fa-microphone",
+                                          "title":   _(u"Présentations sonorisées"),
+                                          "href":    "%s/Members/%s/Sonorisation" % (portal_url, member_id),
+                                          "activer": activer["activer_presentations_sonorisees"]},
+                                         {"id":      "wims",
+                                          "icone":   "fa fa-random",
+                                          "title":   _(u"Exercices Wims"),
+                                          "href":    "%s/Members/%s/Wims" % (portal_url, member_id),
+                                          "activer": activer["activer_exercices_wims"]},
+                                         {"id":      "liens",
+                                          "icone":   "fa fa-external-link",
+                                          "title":   _(u"Ressources externes"),
+                                          "href":    "%s/Members/%s/Externes" % (portal_url, member_id),
+                                          "activer": activer["activer_liens"]},
+                                         {"id":      "glossaire",
+                                          "icone":   "fa fa-font",
+                                          "title":   _(u"Termes de glossaire"),
+                                          "href":    "%s/Members/%s/Glossaire" % (portal_url, member_id),
+                                          "activer": activer["activer_termes_glossaire"]},
+                                         {"id":      "connect",
+                                          "icone":   "fa fa-headphones",
+                                          "title":   _(u"Webconférences"),
+                                          "href":    "%s/Members/%s/Webconference" % (portal_url, member_id),
+                                          "activer": activer["activer_webconferences"]},
+                                         {"id":      "video",
+                                          "icone":   "fa fa-youtube-play",
+                                          "title":   _(u"Vidéos"),
+                                          "href":    "%s/Members/%s/Video" % (portal_url, member_id),
+                                          "activer": True}],
                            "is_visible": is_personnel},
                           {"id"      : "mes-cours",
                            "class"   : class_cours,

@@ -9,6 +9,10 @@ from interfaces import IJalonElasticsearch
 from math import ceil
 from elasticsearch import Elasticsearch
 
+# Messages de debug :
+from logging import getLogger
+LOG = getLogger('[JalonElasticsearch]')
+
 
 class JalonElasticsearch(SimpleItem):
 
@@ -33,8 +37,8 @@ class JalonElasticsearch(SimpleItem):
             setattr(self, "_%s" % key, val)
 
     def searchElasticsearch(self, type_search=None, term_search=None, page=1):
-        print term_search
         start = (page - 1) * 12
+        LOG.info("%s:%s/%s" % (self._url_connexion, self._port_connexion, self._index))
         elasticsearch = Elasticsearch(hosts=["%s:%s/%s" % (self._url_connexion, self._port_connexion, self._index)])
         if not type_search or type_search == "mes_videos":
             portal_membership = getToolByName(self, 'portal_membership')
@@ -55,6 +59,7 @@ class JalonElasticsearch(SimpleItem):
                         "title":  fiche["_source"]["title"].encode("utf-8"),
                         "owner":  fiche["_source"]["owner_full_name"].encode("utf-8"),
                         "iframe": '<iframe src="%s?is_iframe=true&size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % fiche["_source"]["full_url"].encode("utf-8"),
+                        "thumbnail": fiche["_source"]["thumbnail"].encode("utf-8"),
                         "text":   fiche["_source"]["description"].encode("utf-8")}
             return None
         resultat = {"count": 0, "first": 0, "last": 0, "nb_pages": 0, "liste_videos": []}

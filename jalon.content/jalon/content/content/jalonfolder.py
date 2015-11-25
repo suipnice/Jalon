@@ -120,115 +120,19 @@ class JalonFolder(ATFolder):
         dico = {"portal_type": typeR}
         if typeR == "Fichiers":
             dico["portal_type"] = ["File", "Image", "Document"]
-        if typeR == "JalonExerciceWims" and subject in ["", None, "last"]:
-            classe = self.getComplement()
-            if not classe:
-                #1er  cas : Aucune classe n'existe pour cet utilisateur
-
-                #member = self.portal_membership.getMemberById(authMember)
-                member = self.getInfosMembre(authMember)
-                auth_email = member["email"]
-                fullname = member["fullname"]
-                #if not fullname:
-                #    fullname = member.getProperty("displayName")
-                #if not auth_email:
-                #    auth_email = str(member.getProperty("mail"))
-                groupement = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
-                if groupement["status"] == "OK":
-                    idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
-                    if idClasse:
-                        self.complement = str(groupement["class_id"])
-                        return []
-                else:
-                    #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-                    #print "[jalonfolder.py/getContents] Creation du groupement impossible"
-                    #print " Reponse WIMS : %s" % groupement
-                    #print "*****                                                 *****"
-                    return {"erreur": "wims_bad_conf"}
-            else:
-                #2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
-                #print "Classe %s" % self.getComplement()
-                #exercices={}
-                #try:
-                exercices = self.wims("getExercicesWims",
-                                      {"authMember": authMember,
-                                       "qclass": "%s_1" % self.getComplement(),
-                                       "jalon_URL": self.absolute_url()
-                                       })
-                if exercices["status"] == "ERROR":
-                    #en cas d'indisponibilite, le code retour de WIMS donne un type "HTTPError"
-                    if "type" in exercices:
-                        return {"erreur": "wims_unavailable"}
-                    else:
-                        return {"erreur": "wims_bad_conf"}
-                #except:
-                #   mail_body = "*****    WIMS indisponible ou Mauvais parametrage de La connexion WIMS  *****\n"
-                #   mail_body += "[jalonfolder.py/getContents] getExercicesWims\n"
-                #   mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
-                #   mail_body += " authMember : %s \n" % authMember
-                #   mail_body += " qclass : %s_1 \n" % self.getComplement()
-                #   mail_body += "*****                                                                   *****\n"
-                #   print mail_body
-                #   mail_erreur["message"] = mail_body
-                #   self.envoyerMailErreur(mail_erreur)
-                #   Si getExercicesWIMS plante, c'est :
-                #   soit une mauvaise configuration de WIMS  par l'admin (elle a du etre changee entre temps, puisqu'il dispose d'une classe ici)
-                #   soit que wims est actuellement indisponible. (cas un peu plus probable que le 1er)
-                #   return {"erreur" : "wims_unavailable" }
-
-                exercices_jalon = self.objectIds()
-                if "exocount" in exercices:
-                    if exercices["exocount"] == 0:
-                        exercices_wims = []
-                    else:
-                        exercices_wims = exercices["exotitlelist"]
-                    if len(exercices_jalon) < len(exercices_wims):
-                        liste_modeles = self.getListeModelesWims()
-                        #On recupere les exos de wims pour les créer sur jalon
-                        for exo_wims in exercices_wims:
-                            exo_ok = False
-                            for exo_jalon in exercices_jalon:
-                                if exo_wims["id"] == exo_jalon:
-                                    exo_ok = True
-                            if not exo_ok:
-                                modele = exo_wims["id"].split("-")[0]
-                                if modele not in liste_modeles:
-                                    modele = "exercicelibre"
-                                #CREATION de l'exercice %s sur Jalon " % exo_wims["id"]
-                                idobj = self.invokeFactory(type_name='JalonExerciceWims', id=exo_wims["id"])
-                                obj = getattr(self, idobj)
-                                obj.setProperties({"Title": exo_wims["title"],
-                                                   "Modele": modele})
-                else:
-                    #*****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
-                    # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
-                    #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-                    #print "[jalonfolder.py] getExercicesWims : %s" % exercices
-                    #print "*****                                                *****"
-                    return "wims_unavailable"
 
         idreunion = None
         if "-" in repertoire:
             repertoire, idreunion = repertoire.split("-")
         if repertoire in ["Webconference", "Sonorisation"] and subject in ["", None, "last"]:
-            if not idreunion:
-                idreunion = self.getReunion(authMember, None)["idreunion"]
-            enregistrements_connect = self.connect('rechercherEnregistrements', {'id': idreunion})
-            setConnect = set([o["id"] for o in enregistrements_connect])
-            enregistrements_jalon = self.getFolderContents(contentFilter=dico)
-            listeIdJalon = [o.getId for o in enregistrements_jalon]
-            for enregistrement in enregistrements_connect:
-                if not enregistrement["id"] in listeIdJalon:
-                    idobj = self.invokeFactory(type_name='JalonConnect', id=enregistrement["id"])
-                    obj = getattr(self, idobj)
-                    obj.setProperties({"Title":     enregistrement["title"],
-                                       "DateAjout": str(enregistrement["created"]),
-                                       "DateUS":    enregistrement["dateUS"],
-                                       "Duree":     enregistrement["duration"],
-                                       "UrlEnr":    enregistrement["url"]})
-                    obj.reindexObject()
-                self.reindexObject()
-            return self.getFolderContents(contentFilter=dico)
+            self.getContentsConnect(authMember, idreunion, dico)
+
+        if typeR == "JalonExerciceWims" and subject in ["", None, "last"]:
+            self.getContentsWims(authMember)
+
+        if self.getId() == "Video":
+            maj_video = True if subject == "last" else False
+            self.getContentsVideo(authMember, maj_video)
 
         if subject not in ["", None, "last"]:
             last = False
@@ -257,6 +161,167 @@ class JalonFolder(ATFolder):
             dico["sort_on"] = "modified"
             dico["sort_order"] = "descending"
             return self.getFolderContents(contentFilter=dico)
+
+    def getContentsConnect(self, authMember, idreunion, dico):
+        if not idreunion:
+            idreunion = self.getReunion(authMember, None)["idreunion"]
+        enregistrements_connect = self.connect('rechercherEnregistrements', {'id': idreunion})
+        #setConnect = set([o["id"] for o in enregistrements_connect])
+        #enregistrements_jalon = self.getFolderContents(contentFilter=dico)
+        reindex = False
+        listeIdJalon = self.objectIds()
+        #listeIdJalon = [o.getId for o in enregistrements_jalon]
+        for enregistrement in enregistrements_connect:
+            if not enregistrement["id"] in listeIdJalon:
+                idobj = self.invokeFactory(type_name='JalonConnect', id=enregistrement["id"])
+                obj = getattr(self, idobj)
+                obj.setProperties({"Title":     enregistrement["title"],
+                                   "DateAjout": str(enregistrement["created"]),
+                                   "DateUS":    enregistrement["dateUS"],
+                                   "Duree":     enregistrement["duration"],
+                                   "UrlEnr":    enregistrement["url"]})
+                obj.reindexObject()
+                reindex = True
+        if reindex:
+            self.reindexObject()
+        #return self.getFolderContents(contentFilter=dico)
+
+    def getContentsWims(self, authMember):
+        classe = self.getComplement()
+        if not classe:
+            #1er  cas : Aucune classe n'existe pour cet utilisateur
+
+            #member = self.portal_membership.getMemberById(authMember)
+            member = self.getInfosMembre(authMember)
+            auth_email = member["email"]
+            fullname = member["fullname"]
+            #if not fullname:
+            #    fullname = member.getProperty("displayName")
+            #if not auth_email:
+            #    auth_email = str(member.getProperty("mail"))
+            groupement = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
+            if groupement["status"] == "OK":
+                idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
+                if idClasse:
+                    self.complement = str(groupement["class_id"])
+                    return []
+            else:
+                #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
+                #print "[jalonfolder.py/getContents] Creation du groupement impossible"
+                #print " Reponse WIMS : %s" % groupement
+                #print "*****                                                 *****"
+                return {"erreur": "wims_bad_conf"}
+        else:
+            #2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
+            #print "Classe %s" % self.getComplement()
+            #exercices={}
+            #try:
+            exercices = self.wims("getExercicesWims",
+                                  {"authMember": authMember,
+                                   "qclass": "%s_1" % self.getComplement(),
+                                   "jalon_URL": self.absolute_url()
+                                   })
+            if exercices["status"] == "ERROR":
+                #en cas d'indisponibilite, le code retour de WIMS donne un type "HTTPError"
+                if "type" in exercices:
+                    return {"erreur": "wims_unavailable"}
+                else:
+                    return {"erreur": "wims_bad_conf"}
+            #except:
+            #   mail_body = "*****    WIMS indisponible ou Mauvais parametrage de La connexion WIMS  *****\n"
+            #   mail_body += "[jalonfolder.py/getContents] getExercicesWims\n"
+            #   mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
+            #   mail_body += " authMember : %s \n" % authMember
+            #   mail_body += " qclass : %s_1 \n" % self.getComplement()
+            #   mail_body += "*****                                                                   *****\n"
+            #   print mail_body
+            #   mail_erreur["message"] = mail_body
+            #   self.envoyerMailErreur(mail_erreur)
+            #   Si getExercicesWIMS plante, c'est :
+            #   soit une mauvaise configuration de WIMS  par l'admin (elle a du etre changee entre temps, puisqu'il dispose d'une classe ici)
+            #   soit que wims est actuellement indisponible. (cas un peu plus probable que le 1er)
+            #   return {"erreur" : "wims_unavailable" }
+
+            exercices_jalon = self.objectIds()
+            if "exocount" in exercices:
+                if exercices["exocount"] == 0:
+                    exercices_wims = []
+                else:
+                    exercices_wims = exercices["exotitlelist"]
+                if len(exercices_jalon) < len(exercices_wims):
+                    liste_modeles = self.getListeModelesWims()
+                    #On recupere les exos de wims pour les créer sur jalon
+                    for exo_wims in exercices_wims:
+                        exo_ok = False
+                        for exo_jalon in exercices_jalon:
+                            if exo_wims["id"] == exo_jalon:
+                                exo_ok = True
+                        if not exo_ok:
+                            modele = exo_wims["id"].split("-")[0]
+                            if modele not in liste_modeles:
+                                modele = "exercicelibre"
+                            #CREATION de l'exercice %s sur Jalon " % exo_wims["id"]
+                            idobj = self.invokeFactory(type_name='JalonExerciceWims', id=exo_wims["id"])
+                            obj = getattr(self, idobj)
+                            obj.setProperties({"Title": exo_wims["title"],
+                                               "Modele": modele})
+            else:
+                #*****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
+                # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
+                #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
+                #print "[jalonfolder.py] getExercicesWims : %s" % exercices
+                #print "*****                                                *****"
+                return "wims_unavailable"
+
+    def getContentsVideo(self, member_id, maj_video):
+        if maj_video:
+            jalon_videos_id = set([object_id.split("-")[-1] for object_id in self.objectIds()])
+            response_elasticsearch = self.searchElasticsearch("mes_videos", "", 1)
+            nb_pages = response_elasticsearch["nb_pages"]
+            if nb_pages:
+                dico_videos_pod = {}
+                videos_ids = []
+                for video in response_elasticsearch["liste_videos"]:
+                    videos_ids.append(video["id"])
+                    dico_videos_pod[video["id"]] = video
+
+                if nb_pages > 1:
+                    for page in range(2, nb_pages):
+                        response_elasticsearch = self.searchElasticsearch("mes_videos", "", page)
+                        for video in response_elasticsearch["liste_videos"]:
+                            videos_ids.append(video["id"])
+                            dico_videos_pod[video["id"]] = video
+
+                videos_ids = set(videos_ids)
+                #videos_del = jalon_videos_id.difference(videos_ids)
+
+                videos_add = videos_ids.difference(jalon_videos_id)
+                for video_id in videos_add:
+                    video = dico_videos_pod[video_id]
+                    idobj = "Externe-%s-%s" % (member_id, video_id)
+                    obj = getattr(self, idobj, None)
+                    if not obj:
+                        self.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
+                        obj = getattr(self, idobj)
+                        video = self.searchElasticsearch(type_search="video", term_search=video_id)
+                        LOG.info(video)
+                        param = {"Title":                 video["title"],
+                                 "TypeRessourceExterne": "Pod",
+                                 "Description":           video["text"],
+                                 "Lecteur":               video["iframe"],
+                                 "Videoauteur":           video["owner"],
+                                 "Videothumbnail":        video["thumbnail"]}
+                        obj.setProperties(param)
+            elif jalon_videos_id:
+                #Supprimer toutes les vidéos
+                pass
+
+    def DEBUG(self):
+        a = set([1, 2, 3, 4])
+        b = set([3, 4, 5, 6])
+
+        c = a.difference(b)
+        return c
 
     def getListeCoursEns(self, subject, authMember):
         """ Renvoi la liste des cours pour authMember."""

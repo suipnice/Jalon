@@ -202,6 +202,10 @@
         <tal:replace replace="element/titreElement" />
     </h3>
 
+    <h4>
+        <strong>Auteur :</strong> <tal:block replace="element/auteurVideoElement"/>
+    </h4>
+
     <div class="panel radius"
          tal:condition="not:element/descriptionElement"
          i18n:translate="">

@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="video_liste">
+
+    <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='')">
+
+        <tal:block define="tagList python:context.tagFormat(subjects)"
+                   condition="python:context.test(tagList, 0, 1)">
+                    <div class="panel callout radius"
+                         tal:condition="not:folderContents">
+                        <i class="fa fa-info-circle no-pad"></i>
+                        <strong i18n:translate="">Vous n'avez aucune vidéo sur UNSPod.</strong><br />
+                        <tal:block i18n:translate="">Pour en ajouter, rendez vous sur UNSPod.</tal:block>
+                    </div>
+        </tal:block>
+
+        <tal:listing condition="folderContents">
+        
+        <tal:define define="nb_affiche python:len(folderContents);
+                            total_elements python:len(context.objectIds())">
+        <div class="el_counter show-for-small-only">
+            <tal:block replace="nb_affiche" />
+            <tal:block i18n:translate="">sur</tal:block>
+            <tal:block replace="total_elements" />
+        </div>
+        <div class="el_counter show-for-medium-up">
+            <tal:block replace="nb_affiche" />
+            <tal:block i18n:translate="" tal:condition="python:nb_affiche>1">ressources affichées</tal:block>
+            <tal:block i18n:translate="" tal:condition="python:nb_affiche==1">ressource affichée</tal:block>
+            <tal:block i18n:translate="">sur</tal:block>
+            <tal:block replace="total_elements" />
+        </div>
+        <script charset="UTF-8"
+                tal:content="structure string:var NB_LISTED_ELEMENTS = ${nb_affiche}" />
+        </tal:define>
+
+        <ul id="elasticsearch" class="small-block-grid-4">
+            <li tal:repeat="video folderContents">
+                <div class="panel radius">
+                    <h4 data-tooltip aria-haspopup="true" class="has-tip"
+                        tal:attributes="title video/Title"
+                        tal:content="video/Title"/>
+                    <p>
+                        <strong>Auteur :</strong> <tal:replace replace="video/getVideoauteur"/>
+                    </p>
+                    <a title="Voir la vidéo"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                       i18n:attributes="title"
+                       i18n:translate="">
+                        <div class="flex-video">
+                            <img tal:attributes="src video/getVideothumbnail"/>
+                        </div>
+                    </a>
+                    <div class="text-center">
+                        <a class="button tiny" title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                           i18n:attributes="title">
+                            <i class="fa fa-youtube-play"></i>
+                            <tal:block i18n:translate="">Voir</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        </tal:listing>
+
+    </tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>
