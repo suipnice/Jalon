@@ -1093,7 +1093,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                    "Pod"                      : "Externes",
                    "Presentationssonorisees"  : "Sonorisation",
                    "TermeGlossaire"           : "Glossaire",
-                  }
+                   }
 
         if typeElement in dicoRep:
             rep = dicoRep[typeElement]

@@ -26,6 +26,10 @@ import string
 import jalon_utils
 import random
 import os
+import copy
+
+from logging import getLogger
+LOG = getLogger('[JalonCours]')
 
 JalonCoursSchema = ATFolderSchema.copy() + Schema((
     StringField("auteurPrincipal",
@@ -2377,32 +2381,33 @@ class JalonCours(ATFolder):
 
         # Ici on utilise getElementCours() plutot que getPlanPlat,
         # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
-        dicoElements = self.getElementCours()
+        dicoElements = copy.deepcopy(self.getElementCours())
 
         liste_activitesWIMS = []
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
-        for element in dicoElements:
-            infosElement = dicoElements[element]
+        for idElement in dicoElements:
+            infosElement = dicoElements[idElement]
             if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
                 # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
                 if utilisateur == "All" or infosElement["createurElement"] == utilisateur:
                     #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
-                    liste_activitesWIMS.append(element)
+                    liste_activitesWIMS.append(idElement)
 
                     # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
-                    activite = getattr(self, element)
-                    liste_exos_id = activite.getListeExercices()
+                    activite = getattr(self, idElement)
 
-                    # On se place dans l'espace WIMS de createurElement
-                    espace_WIMS = getattr(getattr(portal_members, infosElement["createurElement"]), "Wims")
+                    # retire l'activité des relatedItems pour ses exercices et ses documents.
+                    activite.retirerTousElements(force_WIMS=True)
 
-                    # Pour chaque exo, on coupe sa relation avec l'activité à supprimer.
-                    for id_exo in liste_exos_id:
-                        exo = getattr(espace_WIMS, id_exo)
-                        exo.removeRelatedItem(activite)
+                    # Supprime l'activité (du plan du cours et du cours)
+                    self.retirerElementPlan(idElement, force_WIMS=True)
+                    # Supprime l'activité des actus du cours
+                    self.delActu(idElement)
 
-                    # Supprime l'activité du plan du cours.
-                    self.retirerElementPlan(element, force_WIMS=True)
+                    ### A utiliser dans un patch correctif :
+                    #(on refait ce que fait normalement retirerElementPlan, sauf dans le cas ou l'element n'est plus dans le plan) :
+                    #self.manage_delObjects([idElement])
+                    #del self._elements_cours[idElement]
 
         # Supprime toutes les classes du serveur WIMS
         listeClasses = list(self.getListeClasses())
@@ -2477,7 +2482,7 @@ class JalonCours(ATFolder):
 
     def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
-        #self.plone_log("retirerElementPlan")
+        #LOG.info("retirerElementPlan")
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())
@@ -2487,20 +2492,22 @@ class JalonCours(ATFolder):
                 #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
                 if "listeElement" in element and element["listeElement"] != []:
-                    self.retirerElementPlan("all", element["listeElement"])
+                    self.retirerElementPlan("all", element["listeElement"], force_WIMS)
 
                 #on supprime element de la liste où il etait dans le plan
                 while element in listeElement:
                     listeElement.remove(element)
 
                 infosElement = self.getElementCours().get(element["idElement"])
+
                 if infosElement:
                     #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
                     if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
                         self.ajouterElementPlan(element["idElement"])
                     else:
+
                         if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
-                            # Si ce n'est pas un element Wims, on le supprime des objets du cours
+                            # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
                             del self._elements_cours[element["idElement"]]
                             self.setElementsCours(self._elements_cours)
 
@@ -2516,7 +2523,7 @@ class JalonCours(ATFolder):
 
             elif "listeElement" in element:
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
-                self.retirerElementPlan(idElement, element["listeElement"])
+                self.retirerElementPlan(idElement, element["listeElement"], force_WIMS)
 
         if start:
             self.plan = tuple(listeElement)

@@ -180,27 +180,47 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
     #            )
 ))
 
+# Liste des type d'elements susceptibles d'etre ajoutés à un jaloncoursWIMS
+_dicoRep = {"Image"                    : "Fichiers",
+            "File"                     : "Fichiers",
+            "Page"                     : "Fichiers",
+            "Lienweb"                  : "Externes",
+            "Lien web"                 : "Externes",
+            "Lecteurexportable"        : "Externes",
+            "Lecteur exportable"       : "Externes",
+            "Referencebibliographique" : "Externes",
+            "Reference bibliographique": "Externes",
+            "Presentationssonorisees"  : "Sonorisation",
+            "Presentations sonorisees" : "Sonorisation",
+            "ExerciceWims"             : "Wims",
+            "ExercicesWims"            : "Wims",
+            "Exercice Wims"            : "Wims"
+            }
+
 
 class JalonCoursWims(ATDocument):
 
     u"""
     Une autoevaluation ou un examen pour Jalon.
 
-    ce qui correspond à une feuille d'entrainement ou un examen pour Wims
+    ce qui correspond à une feuille d'entrainement ou un couple [feuille+examen] pour Wims
 
     """
 
     implements(IJalonCoursWims)
     meta_type = 'JalonCoursWims'
     schema = JalonCoursWimsSchema
+
     schema['description'].required = False
     schema['description'].default_output_type = 'text/x-html-safe'
     schema['description'].allowable_content_types = ('text/plain', 'text/html')
     schema['description'].widget.label = _(u"Consigne")
     schema['description'].widget.description = _(u"Quelques consignes que devront suivre vos &eacute;tudiants pour travailler sur cette activit&eacute;.")
+
     schema['text'].required = False
     schema['text'].mode = "r"
 
+    # Liste des elements ajoutés à ce jalonCoursWims
     _infos_element = {}
 
     def getInfosElement(self, key=None):
@@ -208,6 +228,10 @@ class JalonCoursWims(ATDocument):
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
+
+    def getElementCours(self, key=None):
+        u""" Renvoi vers la fonction getInfosElement() (utilisé depuis macro_form/detacher-cours)."""
+        return self.getInfosElement(key)
 
     def getKeyInfosElement(self):
         """getKeyInfosElement."""
@@ -440,22 +464,19 @@ class JalonCoursWims(ATDocument):
         else:
             return {"val": True, "reason": ""}
 
+    """
+    DEPRECATED ? [utiliser plutot retirerElement() ]
+
     def detacherRessource(self, ressource, repertoire, attribut):
-        u"""détache un sujet (la ressource) de l'activité courante."""
+        #Détache un sujet (la ressource) de l'activité courante.
         listeElement = list(self.getListeAttribut(attribut))
         listeElement.remove(ressource)
         setattr(self, "liste%s" % attribut.capitalize(), tuple(listeElement))
         infos_element = self.aq_parent.retirerInfosSousElement(ressource)
         categorie, idRessource = ressource.split("*-*")
-        dicoRep = {"Image": "Fichiers",
-                   "File": "Fichiers",
-                   "Lien web": "Externes",
-                   "Lecteur exportable": "Externes",
-                   "Reference bibliographique": "Externes",
-                   "Glossaire": "Glossaire",
-                   "Presentations sonorisees": "Sonorisation"}
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
+
+        if repertoire in _dicoRep:
+            repertoire = _dicoRep[repertoire]
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, infos_element["createurElement"]), repertoire)
         objet = getattr(home, idRessource)
@@ -463,6 +484,7 @@ class JalonCoursWims(ATDocument):
         relatedItems.remove(self)
         objet.setRelatedItems(relatedItems)
         objet.reindexObject()
+    """
 
     def getAllNotes(self, quser, actif, isProf):
         u"""renvoie toutes les notes des étudiants sur l'activité courante.
@@ -578,12 +600,6 @@ class JalonCoursWims(ATDocument):
                 "Wims_lang": self.getWims_lang(),
                 }
         return dico
-
-    def getElementCours(self, key=None):
-        u"""renvoie soit infos_element, soit infos_element[key] (utilisé pour detacher un exercice)."""
-        if key:
-            return self.getInfosElement().get(key, None)
-        return self.getInfosElement()
 
     def getGroupement(self, auteur=None):
         u"""Renvoit le groupement de classe associé a l'auteur en parametre."""
@@ -1041,7 +1057,7 @@ class JalonCoursWims(ATDocument):
         return 0
 
     def modifierExoFeuille(self, form):
-        """modifierExoFeuille."""
+        """modifie un exo de l'activite."""
         param = form
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
@@ -1055,45 +1071,82 @@ class JalonCoursWims(ATDocument):
         liste_elements = self.getInfosElement()
         # On demande les infos de l'element à supprimer
         infosElement = liste_elements[idElement]
+
         # On met à jour la liste des elements du menu
         menu_list = list(self.__getattribute__("liste%s" % menu.capitalize()))
         menu_list.remove(idElement)
         self.__getattribute__("setListe%s" % menu.capitalize())(tuple(menu_list))
+
         # On supprime l'element de la liste
         del liste_elements[idElement]
-        dicoRep = {"Image"                    : "Fichiers",
-                   "File"                     : "Fichiers",
-                   "Page"                     : "Fichiers",
-                   "Lienweb"                  : "Externes",
-                   "Lien web"                 : "Externes",
-                   "Lecteurexportable"        : "Externes",
-                   "Lecteur exportable"       : "Externes",
-                   "Referencebibliographique" : "Externes",
-                   "Reference bibliographique": "Externes",
-                   "Presentationssonorisees"  : "Sonorisation",
-                   "Presentations sonorisees" : "Sonorisation",
-                   "ExerciceWims"             : "Wims",
-                   "ExercicesWims"            : "Wims",
-                   "Exercice Wims"            : "Wims"
-                   }
+
         repertoire = infosElement["typeElement"]
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
+        if repertoire in _dicoRep:
+            repertoire = _dicoRep[repertoire]
         if "*-*" in idElement:
             idElement = idElement.replace("*-*", ".")
         if repertoire == "Wims":
-            #ICI il faut également supprimer l'exercice côté WIMS !
             auteur = self.getCreateur()
             idClasse = self.getClasse()
             idFeuille = self.getIdFeuille()
             idEexo = int(ordre) + 1
+            # Supprime l'exercice de la feuille côté WIMS
             dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille, "qexo": idEexo}
             self.wims("retirerExoFeuille", dico)
+        # Supprime l'activité des relatedItems de l'objet retiré.
         objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), idElement)
         relatedItems = objet.getRelatedItems()
         relatedItems.remove(self)
         objet.setRelatedItems(relatedItems)
         objet.reindexObject()
+
+    def retirerTousElements(self, force_WIMS=False):
+        """ Retire tous les elements de l'activite (exercices et documents)."""
+        #Concernant les exercices, on n'execute l'opération que si :
+        # * force=True (cas où on supprime l'intégralité des activités du cours)
+        # * TODO : ou c'est une autoéval masquée
+        # * TODO : ou c'est un exam non verrouillé
+        if force_WIMS is True:
+            liste_exos_id = self.getListeExercices()
+            createur = self.getCreateur()
+            # On se place dans l'espace WIMS de createurElement
+            portal_members = getattr(self.portal_url.getPortalObject(), "Members")
+            espace_WIMS = getattr(getattr(portal_members, createur), "Wims")
+
+            # Pour chaque exo
+            for id_exo in liste_exos_id:
+                # on coupe sa relation avec l'activité à supprimer.
+                exo = getattr(espace_WIMS, id_exo)
+                exo.removeRelatedItem(self.getId())
+
+            # TODO : Suppression côté WIMS (seulement dans les cas autorisés)
+            #if ....:
+            #idClasse = self.getClasse()
+            #idFeuille = self.getIdFeuille()
+
+            # Supprime les exercices de la feuille côté WIMS
+            #dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille}
+            # ICI il faut voir si coté WIMS on a un job qui permet de supprimer d'un coup tous les exos d'une feuille.
+            #self.wims("retirerExosFeuille", dico)
+
+        #suppression des documents
+        liste_elements = self.getInfosElement()
+        for sujet in self.getListeSujets():
+            infosElement = liste_elements[sujet]
+            repertoire = infosElement["typeElement"]
+            if repertoire in _dicoRep:
+                repertoire = _dicoRep[repertoire]
+            if "*-*" in sujet:
+                sujet = sujet.replace("*-*", ".")
+            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), sujet, None)
+            if objet:
+                relatedItems = objet.getRelatedItems()
+                try:
+                    relatedItems.remove(self)
+                    objet.setRelatedItems(relatedItems)
+                except:
+                    pass
+                objet.reindexObject()
 
     def setAttributActivite(self, form):
         """modifie les attribut de l'objet jaloncourswims."""
