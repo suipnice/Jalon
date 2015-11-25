@@ -89,7 +89,6 @@ Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fa
 \statement{
     \data[1;]
     \for{k=1 to \qs}{
-
         \if{\types[\k] notsametext menu}{
             \embed{r \k,\lengths[\k]
                 autocomplete='off'}
