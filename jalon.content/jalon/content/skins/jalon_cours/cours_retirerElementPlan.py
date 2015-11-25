@@ -11,10 +11,10 @@
 request = context.REQUEST
 
 try:
-	if request.form["repertoire"] and request.form["repertoire"] == "CatalogueBU":
-	    context.tagBU("remove", request.form["idElement"])
+    if request.form["repertoire"] and request.form["repertoire"] == "CatalogueBU":
+        context.tagBU("remove", request.form["idElement"])
 except:
-	pass
+    pass
 
 context.retirerElementPlan(context.REQUEST["idElement"], None)
 context.delActu(context.REQUEST["idElement"])
