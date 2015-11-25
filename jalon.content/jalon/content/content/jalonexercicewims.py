@@ -423,10 +423,8 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
             for exo_id in liste_exos:
                 exo = getattr(self.aq_parent, exo_id, None)
                 if exo:
-                    relatedItems = exo.getRelatedItems()
-                    relatedItems.remove(self)
-                    exo.setRelatedItems(relatedItems)
-                    exo.reindexObject()
+                    exo.removeRelatedItem(self)
+
             return {"status": "OK", "code": "GROUP_ADDED"}
         else:
             return {"status": "ERROR", "code": "NO_EXERCICE"}
@@ -832,6 +830,16 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                 if key not in ['cmd', 'session', 'module']:
                     new_permalink = "%s&%s=%s" % (new_permalink, key, params[key])
         return new_permalink
+
+    def removeRelatedItem(self, item_a_retirer):
+        u""" Permet de retirer unobjet des relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        relatedItems = self.getRelatedItems()
+        try:
+            relatedItems.remove(item_a_retirer)
+            self.setRelatedItems(relatedItems)
+        except:
+            pass
+        self.reindexObject()
 
     def checkRoles(self, user, context, action="view"):
         u"""Permet de vérifier si l'utilisateur courant a le droit d'accéder à un exercice.

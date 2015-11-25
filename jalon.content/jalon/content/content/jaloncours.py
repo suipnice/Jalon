@@ -2372,19 +2372,39 @@ class JalonCours(ATFolder):
         return retour
 
     def supprimerActivitesWims(self, utilisateur="All"):
-        u"""Suppression de toutes les activites WIMS du cours, créées par "utilisateur"."""
+        u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
         # Retirer toutes les activités du plan
-        listeElements = self.getPlanPlat()
+
+        # Ici on utilise getElementCours() plutot que getPlanPlat,
+        # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
+        dicoElements = self.getElementCours()
+
         liste_activitesWIMS = []
-        for element in listeElements:
-            infosElement = self.getElementCours().get(element)
+        portal_members = getattr(self.portal_url.getPortalObject(), "Members")
+        for element in dicoElements:
+            infosElement = dicoElements[element]
             if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
+                # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
                 if utilisateur == "All" or infosElement["createurElement"] == utilisateur:
                     #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
                     liste_activitesWIMS.append(element)
+
+                    # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
+                    activite = getattr(self, element)
+                    liste_exos_id = activite.getListeExercices()
+
+                    # On se place dans l'espace WIMS de createurElement
+                    espace_WIMS = getattr(getattr(portal_members, infosElement["createurElement"]), "Wims")
+
+                    # Pour chaque exo, on coupe sa relation avec l'activité à supprimer.
+                    for id_exo in liste_exos_id:
+                        exo = getattr(espace_WIMS, id_exo)
+                        exo.removeRelatedItem(activite)
+
+                    # Supprime l'activité du plan du cours.
                     self.retirerElementPlan(element, force_WIMS=True)
 
-        # Puis supprimer toutes les classes du serveur WIMS
+        # Supprime toutes les classes du serveur WIMS
         listeClasses = list(self.getListeClasses())
         removed_classes = []
         dico = listeClasses[0]
@@ -2398,14 +2418,14 @@ class JalonCours(ATFolder):
                     new_listeClasses.append({auteur: dico[auteur]})
                 else:
                     new_listeClasses[0][auteur] = dico[auteur]
-        if removed_classes != None:
+        if removed_classes is not None:
             self.aq_parent.delClassesWims(removed_classes)
 
         # Et enfin remettre à zero la liste des classes du cours.
         #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
         self.setListeClasses(new_listeClasses)
 
-        # On renvoit enfin le nombre d'activités supprimées.
+        # Renvoit le nombre d'activités supprimées.
         return len(liste_activitesWIMS)
 
     # rechercheApogee
@@ -2476,7 +2496,7 @@ class JalonCours(ATFolder):
                 infosElement = self.getElementCours().get(element["idElement"])
                 if infosElement:
                     #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
-                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS == False:
+                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
                         self.ajouterElementPlan(element["idElement"])
                     else:
                         if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
@@ -2491,7 +2511,7 @@ class JalonCours(ATFolder):
                         boite = getattr(self, element["idElement"])
                         boite.retirerTousElements()
 
-                    if infosElement["typeElement"] in ["Forum", "BoiteDepot"]:
+                    if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
 
             elif "listeElement" in element:
