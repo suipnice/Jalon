@@ -63,12 +63,23 @@
                         </div>
                     </a>
                     <div class="text-center">
-                        <a class="button tiny" title="Voir la vidéo"
+                        <a title="Voir la vidéo"
                            data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
                            i18n:attributes="title">
-                            <i class="fa fa-youtube-play"></i>
-                            <tal:block i18n:translate="">Voir</tal:block>
+                            <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
+                        </a>
+                        <a title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                           i18n:attributes="title">
+                            <i class="fa fa-edit fa-lg fa-fw no-pad"></i>
+                        </a>
+                        <a title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                           i18n:attributes="title">
+                            <i class="fa fa-chain-broken fa-lg fa-fw no-pad warning"></i>
                         </a>
                     </div>
                 </div>
