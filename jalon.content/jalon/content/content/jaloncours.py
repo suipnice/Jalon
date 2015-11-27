@@ -913,7 +913,7 @@ class JalonCours(ATFolder):
             categorieElement = ""
             if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
                 categorieElement = "Classement"
-            if infos_element["typeElement"] in ["File", "Image", "Page", "Lien web", "Lecteur exportable", "Ressource bibliographique", "Glossaire", "Presentations sonorisees", "Webconference", "Catalogue BU"]:
+            if infos_element["typeElement"] in ["File", "Image", "Page", "Lien web", "Lecteur exportable", "Ressource bibliographique", "Glossaire", "Presentations sonorisees", "Webconference", "Catalogue BU", "Video"]:
                 categorieElement = "Mon_Espace"
             if infos_element["typeElement"] in ["AutoEvaluation", "Examen", "BoiteDepot", "Forum", "Glossaire", "SalleVirtuelle"]:
                 categorieElement = "Activite"
