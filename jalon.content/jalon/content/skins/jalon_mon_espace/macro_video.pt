@@ -23,6 +23,10 @@
         Macro d'affichage des messages en reveal
     </metal:macro>
 
+    <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_deletion">
+        Macro d'affichage des messages en reveal
+    </metal:macro>
+
     <main class="row" role="main" aria-labelledby="page_title"
           tal:define="tags context/getTag;">
 
@@ -75,7 +79,9 @@
     </tal:condition>
 
     <tal:condition condition="is_ajax">
-    IS AJAX
+        <metal:macro use-macro="context/macro_video_liste/macros/video_liste">
+            Macro d'affichage de la liste des liens
+        </metal:macro>
     </tal:condition>
 
 </metal:macro>

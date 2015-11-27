@@ -12,16 +12,18 @@
 
 <metal:macro define-macro="video_liste">
 
-    <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='')">
+    <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='');
+                        server_url context/getUrlServeurElasticsearch;
+                        tags tags | context/getTag">
 
         <tal:block define="tagList python:context.tagFormat(subjects)"
                    condition="python:context.test(tagList, 0, 1)">
-                    <div class="panel callout radius"
-                         tal:condition="not:folderContents">
-                        <i class="fa fa-info-circle no-pad"></i>
-                        <strong i18n:translate="">Vous n'avez aucune vidéo sur UNSPod.</strong><br />
-                        <tal:block i18n:translate="">Pour en ajouter, rendez vous sur UNSPod.</tal:block>
-                    </div>
+        <div class="panel callout radius"
+             tal:condition="not:folderContents">
+            <i class="fa fa-info-circle no-pad"></i>
+            <strong i18n:translate="">Vous n'avez aucune vidéo sur UNSPod.</strong><br />
+            <tal:block i18n:translate="">Pour en ajouter, rendez vous sur UNSPod.</tal:block>
+        </div>
         </tal:block>
 
         <tal:listing condition="folderContents">
@@ -46,10 +48,65 @@
 
         <ul id="elasticsearch" class="small-block-grid-4">
             <li tal:repeat="video folderContents">
-                <div class="panel radius">
-                    <h4 data-tooltip aria-haspopup="true" class="has-tip"
-                        tal:attributes="title video/Title"
-                        tal:content="video/Title"/>
+                <div class="panel callout radius">
+                    <h4>
+                        <a class="dropdown right" data-options="align:left"
+                           tal:attributes="data-dropdown string:drop-${repeat/video/index}">
+                            <i class="fa fa-cog fa-lg no-pad"></i>
+                        </a>
+                        <span tal:attributes="title video/Title"
+                              tal:content="video/Title"/>
+                    </h4>
+                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                        tal:attributes="id string:drop-${repeat/video/index}"
+                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False)">
+                        <li>
+                            <a title="Modifier la vidéo sur POD"
+                               target="_blank"
+                               tal:attributes="href video/getVideourl"
+                               i18n:attributes="title">
+                                <i class="fa fa-pencil fa-lg fa-fw no-pad"></i>Modifier
+                            </a>
+                        </li>
+                        <li tal:condition="tags">
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${video/getURL}/folder_form?macro=macro_form&amp;formulaire=etiqueter">
+                                <i class="fa fa-tag fa-fw no-pad"></i>
+                                <tal:block i18n:translate="">Étiqueter</tal:block>
+                            </a>
+                        </li>
+                        <tal:condition condition="can_delete">
+                        <li>
+                            <a data-reveal-id="reveal-deletion">
+                                <i class="fa fa-chain-broken fa-fw no-pad"></i>
+                                <tal:block i18n:translate="">Détacher</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a target="_blank"
+                               tal:attributes="href string:${server_url}/owner_videos_list">
+                                <i class="fa fa-trash-o fa-fw no-pad"></i>
+                                <tal:block i18n:translate="">Supprimer</tal:block>
+                            </a>
+                        </li>
+                        </tal:condition>
+                        <tal:condition condition="not:can_delete">
+                        <li>
+                            <a title="Détacher la vidéo"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                               i18n:attributes="title">
+                                <i class="fa fa-chain-broken fa-lg fa-fw no-pad"></i>Détacher
+                            </a>
+                        </li>
+                        <li tal:condition="not:can_delete">
+                            <a data-reveal-id="reveal-no_deletion">
+                                <i class="fa fa-trash-o fa-fw no-pad"></i>
+                                <tal:block i18n:translate="">Supprimer</tal:block>
+                            </a>
+                        </li>
+                        </tal:condition>
+                    </ul>
                     <p>
                         <strong>Auteur :</strong> <tal:replace replace="video/getVideoauteur"/>
                     </p>
@@ -62,30 +119,16 @@
                             <img tal:attributes="src video/getVideothumbnail"/>
                         </div>
                     </a>
-                    <div class="text-center">
-                        <a title="Voir la vidéo"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
-                           i18n:attributes="title">
-                            <i class="fa fa-eye fa-lg fa-fw no-pad"></i>
-                        </a>
-                        <a title="Voir la vidéo"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
-                           i18n:attributes="title">
-                            <i class="fa fa-edit fa-lg fa-fw no-pad"></i>
-                        </a>
-                        <a title="Voir la vidéo"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
-                           i18n:attributes="title">
-                            <i class="fa fa-chain-broken fa-lg fa-fw no-pad warning"></i>
-                        </a>
-                    </div>
                 </div>
             </li>
         </ul>
 
+        </tal:listing>
+
+        <tal:listing condition="not:folderContents">
+            <metal:macro use-macro="context/macro_form/macros/supprimer-tag">
+                Supprimer un tag
+            </metal:macro>
         </tal:listing>
 
     </tal:define>

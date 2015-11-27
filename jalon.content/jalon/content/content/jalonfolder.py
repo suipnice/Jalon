@@ -305,12 +305,13 @@ class JalonFolder(ATFolder):
                         obj = getattr(self, idobj)
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
                         LOG.info(video)
-                        param = {"Title":                 video["title"],
+                        param = {"Title":                video["title"],
                                  "TypeRessourceExterne": "Pod",
-                                 "Description":           video["text"],
-                                 "Lecteur":               video["iframe"],
-                                 "Videoauteur":           video["owner"],
-                                 "Videothumbnail":        video["thumbnail"]}
+                                 "Videourl":             video["full_url"],
+                                 "Description":          video["text"],
+                                 "Lecteur":              video["iframe"],
+                                 "Videoauteur":          video["owner"],
+                                 "Videothumbnail":       video["thumbnail"]}
                         obj.setProperties(param)
             elif jalon_videos_id:
                 #Supprimer toutes les vidéos
@@ -1306,6 +1307,11 @@ class JalonFolder(ATFolder):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         return portal_elasticsearch.getPropertiesElasticsearch()["name_serveur"]
+
+    def getUrlServeurElasticsearch(self):
+        portal = self.portal_url.getPortalObject()
+        portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
+        return portal_elasticsearch.getPropertiesElasticsearch()["url_connexion"]
 
     #-----------------#
     #   Utilitaires   #
