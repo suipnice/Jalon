@@ -416,14 +416,20 @@ class JalonCoursWims(ATDocument):
                         # Attention si la creation n'a pas eu lieu coté WIMS, il ne faut rien créer côté Jalon.
                         return rep_wims
 
+            #On ajoute l'activité aux relatedItems de l'objet.
             relatedItems = objet.getRelatedItems()
             if not self in relatedItems:
                 relatedItems.append(self)
                 objet.setRelatedItems(relatedItems)
                 objet.reindexObject()
-                depotRelatedItems = self.getRelatedItems()
-                depotRelatedItems.append(objet)
-                self.setRelatedItems(depotRelatedItems)
+
+            #Et on ajoute l'exercice aux relatedItems de l'activité ??
+            # ==> Inutile, l'activité connait deja ses listes d'objets.
+            #activiteRelatedItems = self.getRelatedItems()
+            #if not objet in activiteRelatedItems:
+            #   activiteRelatedItems.append(objet)
+            #   self.setRelatedItems(activiteRelatedItems)
+            #   self.reindexObject()
 
             categorie = list(self.__getattribute__("liste%s" % menu.capitalize()))
             if menu == "sujets" and "." in idElement:
@@ -465,7 +471,7 @@ class JalonCoursWims(ATDocument):
             return {"val": True, "reason": ""}
 
     """
-    DEPRECATED ? [utiliser plutot retirerElement() ]
+    DEPRECATED ? [utiliser plutot retirerElement()]
 
     def detacherRessource(self, ressource, repertoire, attribut):
         #Détache un sujet (la ressource) de l'activité courante.
@@ -1093,12 +1099,14 @@ class JalonCoursWims(ATDocument):
             # Supprime l'exercice de la feuille côté WIMS
             dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille, "qexo": idEexo}
             self.wims("retirerExoFeuille", dico)
+
         # Supprime l'activité des relatedItems de l'objet retiré.
         objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), idElement)
         relatedItems = objet.getRelatedItems()
-        relatedItems.remove(self)
-        objet.setRelatedItems(relatedItems)
-        objet.reindexObject()
+        if self in relatedItems:
+            relatedItems.remove(self)
+            objet.setRelatedItems(relatedItems)
+            objet.reindexObject()
 
     def retirerTousElements(self, force_WIMS=False):
         """ Retire tous les elements de l'activite (exercices et documents)."""
@@ -1141,12 +1149,10 @@ class JalonCoursWims(ATDocument):
             objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), sujet, None)
             if objet:
                 relatedItems = objet.getRelatedItems()
-                try:
+                if self in relatedItems:
                     relatedItems.remove(self)
                     objet.setRelatedItems(relatedItems)
-                except:
-                    pass
-                objet.reindexObject()
+                    objet.reindexObject()
 
     def setAttributActivite(self, form):
         """modifie les attribut de l'objet jaloncourswims."""
