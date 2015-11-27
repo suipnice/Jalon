@@ -1045,9 +1045,9 @@ def getFilAriane(portal, folder, authMemberId, page=None):
 
 def getElementView(context, typeContext, idElement, createurElement=None, typeElement=None, indexElement=None, mode_etudiant=None):
     portal = context.portal_url.getPortalObject()
-    retour = {"titreElement"       : "",
-              "descriptionElement" : "",
-              "urlElement"         : ""}
+    retour = {"titreElement":       "",
+              "descriptionElement": "",
+              "urlElement":         ""}
 
     if "*-*" in idElement:
         idElement = idElement.replace("*-*", ".")
@@ -1082,17 +1082,16 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
             retour["urlElement"] = "%s/cours_glossaire_view" % context.absolute_url()
             return retour
 
-        dicoRep = {"File"                     : "Fichiers",
-                   "Image"                    : "Fichiers",
-                   "Page"                     : "Fichiers",
-                   "ExercicesWims"            : "Wims",
-                   "Lienweb"                  : "Externes",
-                   "Lecteurexportable"        : "Externes",
-                   "CatalogueBU"              : "Externes",
-                   "Pod"                      : "Externes",
-                   "Presentationssonorisees"  : "Sonorisation",
-                   "TermeGlossaire"           : "Glossaire",
-                  }
+        dicoRep = {"File":                    "Fichiers",
+                   "Image":                   "Fichiers",
+                   "Page":                    "Fichiers",
+                   "ExercicesWims":           "Wims",
+                   "Lienweb":                 "Externes",
+                   "Lecteurexportable":       "Externes",
+                   "CatalogueBU":             "Externes",
+                   "Video":                     "Video",
+                   "Presentationssonorisees": "Sonorisation",
+                   "TermeGlossaire":          "Glossaire"}
 
         if typeElement in dicoRep:
             rep = dicoRep[typeElement]
@@ -1127,7 +1126,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                 retour["urlElement"] = element.getUrlEnr()
             if typeElement == "ExercicesWims":
                 retour["urlElement"] = "cours_autoevaluation_view?qexo=%s" % (int(indexElement) + 1)
-            if typeElement in ["Lecteurexportable", "Pod"]:
+            if typeElement in ["Lecteurexportable", "Video"]:
                 retour["urlElement"] = element.getLecteurExportable()
                 retour["auteurVideoElement"] = element.getVideoauteur()
             if typeElement == "Lienweb":

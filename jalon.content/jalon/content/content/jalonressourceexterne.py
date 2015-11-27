@@ -133,7 +133,7 @@ class JalonRessourceExterne(ATDocumentBase):
                 "Lecteur exportable":         ["title", "description", "lecteur"],
                 "Ressource bibliographique":  ["title", "sousTitre", "description", "auteurs", "volume", "lieu", "editeur", "annee",  "pagination", "collection", "isbn", "urlbiblio"],
                 "Catalogue BU":               ["description"],
-                "Pod":                        ["title", "description"]}
+                "Video":                      ["title", "description"]}
         return dico[self.getTypeRessourceExterne()]
 
     def getAttributsTypeMod(self):
@@ -156,7 +156,7 @@ class JalonRessourceExterne(ATDocumentBase):
                                                "isbn":        "Isbn",
                                                "urlbiblio":   "Urlbiblio"},
                 "Catalogue BU":               {"description": "Description"},
-                "Pod":                        {"title":       "Title",
+                "Video":                      {"title":       "Title",
                                                "description": "Description"}}
         return dico[self.getTypeRessourceExterne()]
 
@@ -168,7 +168,7 @@ class JalonRessourceExterne(ATDocumentBase):
                 "Lecteur exportable":         "lecteur",
                 "Ressource bibliographique":  "reference",
                 "Catalogue BU":               "cataloguebu",
-                "Pod":                        "pod"}
+                "Video":                      "video"}
         return dico[self.getTypeRessourceExterne()]
 
     def getRessourceCatalogueBU(self):
@@ -177,13 +177,13 @@ class JalonRessourceExterne(ATDocumentBase):
         if resultat:
             resultat["description"] = self.Description()
         else:
-            resultat = {"title"        : self.Title(),
-                        "description"  : self.Description(),
-                        "creator"      : self.getAuteurs(),
-                        "publisher"    : self.getEditeur(),
-                        "creationdate" : self.getCollection(),
-                        "image"        : self.getLecteur().split("\n"),
-                        "urlcatalogue" :  "",}
+            resultat = {"title": self.Title(),
+                        "description":  self.Description(),
+                        "creator":      self.getAuteurs(),
+                        "publisher":    self.getEditeur(),
+                        "creationdate": self.getCollection(),
+                        "image":        self.getLecteur().split("\n"),
+                        "urlcatalogue":  ""}
         return resultat
 
     def getRessourceType(self):

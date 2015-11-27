@@ -306,7 +306,7 @@ class JalonFolder(ATFolder):
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
                         LOG.info(video)
                         param = {"Title":                video["title"],
-                                 "TypeRessourceExterne": "Pod",
+                                 "TypeRessourceExterne": "Video",
                                  "Videourl":             video["full_url"],
                                  "Description":          video["text"],
                                  "Lecteur":              video["iframe"],

@@ -44,7 +44,7 @@ if not REQUEST.form.has_key("recordsid"):
                     obj = getattr(context, idobj)
                     video = context.searchElasticsearch(type_search="video", term_search=video_id)
                     param = {"Title"                : video["title"],
-                             "TypeRessourceExterne" : "Pod",
+                             "TypeRessourceExterne" : "Video",
                              "Description"          : video["text"],
                              "Lecteur"              : video["iframe"]}
                     obj.setProperties(param)

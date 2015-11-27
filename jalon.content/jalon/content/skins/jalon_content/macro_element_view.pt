@@ -196,7 +196,7 @@
 <!--
         Lecteur exportable
 -->
-<metal:macro define-macro="Pod">
+<metal:macro define-macro="Video">
 
     <h3>
         <tal:replace replace="element/titreElement" />

@@ -564,9 +564,7 @@ class JalonCours(ATFolder):
                     "JalonRessourceExterne": "Externes",
                     "JalonTermeGlossaire":   "Glossaire",
                     "JalonExerciceWims":     "Wims"}
-        if typeR == "JalonConnect":
-            if repertoire != "Webconference":
-                repertoire = "Sonorisation"
+        if repertoire:
             home = getattr(getattr(portal.Members, authMember), repertoire)
         else:
             home = getattr(getattr(portal.Members, authMember), dicoType[typeR])
@@ -1152,34 +1150,39 @@ class JalonCours(ATFolder):
         portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
         mon_espace = portal_jalon_properties.getPropertiesMonEspace()
 
-        retour = {"titre"     : [],
-                  "espace"    : [],
-                  "activites" : [],
-                  "rapide"    : []}
+        retour = {"titre":     [],
+                  "espace":    [],
+                  "activites": [],
+                  "rapide":    []}
 
         # Menu Mon Espace
         if mon_espace["activer_fichiers"]:
             retour["espace"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
         if mon_espace["activer_presentations_sonorisees"]:
-            retour["espace"].append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées", "icone" : "fa fa-microphone fa-fw"})
+            retour["espace"].append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées", "icone": "fa fa-microphone fa-fw"})
         if mon_espace["activer_liens"]:
-            retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone" : "fa fa-external-link fa-fw"})
+            retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
         if mon_espace["activer_webconferences"]:
-            retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone" : "fa fa-headphones fa-fw"})
+            retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone": "fa fa-headphones fa-fw"})
+
+        # à retirer quand partie administration OK
+        mon_espace["activer_videos"] = True
+        if mon_espace["activer_videos"]:
+            retour["espace"].append({"rubrique": "Video", "titre": "Vidéos", "icone": "fa fa-youtube-play fa-fw"})
 
         # Menu Activités
-        retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone" : "fa fa-fw fa-inbox"})
+        retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone": "fa fa-fw fa-inbox"})
         if mon_espace["activer_exercices_wims"]:
-            retour["activites"].append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS", "icone" : "fa fa-fw fa-gamepad"})
-            retour["activites"].append({"rubrique": "Examen", "titre": "Examen WIMS", "icone" : "fa fa-fw fa-graduation-cap"})
+            retour["activites"].append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS", "icone": "fa fa-fw fa-gamepad"})
+            retour["activites"].append({"rubrique": "Examen", "titre": "Examen WIMS", "icone": "fa fa-fw fa-graduation-cap"})
         if mon_espace["activer_webconferences"]:
-            retour["activites"].append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle", "icone" : "fa fa-fw fa-globe"})
+            retour["activites"].append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle", "icone": "fa fa-fw fa-globe"})
 
         # Menu Ajout rapide
         if mon_espace["activer_fichiers"]:
             retour["rapide"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
         if mon_espace["activer_liens"]:
-            retour["rapide"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone" : "fa fa-external-link fa-fw"})
+            retour["rapide"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
 
         return retour
 
@@ -1267,21 +1270,15 @@ class JalonCours(ATFolder):
 
     def getPageMacro(self, espace):
         #self.plone_log("getPageMacro")
-        dicoMacro = {"Fichiers"                 : {"page" : "macro_cours_fichiers", "macro" : "fichiers_liste"},
-                     "Ressources Externes"      : {"page" : "macro_cours_externes", "macro" : "externes_liste"},
-                     "Presentations sonorisees" : {"page" : "macro_cours_webconference", "macro" : "webconferences_liste"},
-                     "Webconference"            : {"page" : "macro_cours_webconference", "macro" : "webconferences_liste"},
-                     "Glossaire"                : {"page" : "macro_cours_glossaire", "macro" : "termes_glossaire_liste"},
-                     "Bibliographie"            : {"page" : "macro_cours_bibliographie", "macro" : "bibliographie_liste"},
-                     "Exercices Wims"           : {"page" : "macro_cours_activites", "macro" : "exercices_wims_liste"},
-                    }
+        dicoMacro = {"Fichiers":                 {"page": "macro_cours_fichiers", "macro": "fichiers_liste"},
+                     "Ressources Externes":      {"page": "macro_cours_externes", "macro": "externes_liste"},
+                     "Presentations sonorisees": {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
+                     "Webconference":            {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
+                     "Video":                    {"page": "macro_cours_video", "macro": "video_liste"},
+                     "Glossaire":                {"page": "macro_cours_glossaire", "macro": "termes_glossaire_liste"},
+                     "Bibliographie":            {"page": "macro_cours_bibliographie", "macro": "bibliographie_liste"},
+                     "Exercices Wims":           {"page": "macro_cours_activites", "macro": "exercices_wims_liste"}}
         return dicoMacro[espace]
-
-    """
-    def getURLWEB(self):
-        #self.plone_log("getURLWEB")
-        return self.absolute_url()
-    """
 
     def getUrlWebconference(self, url):
         #self.plone_log("getUrlWebconference")
@@ -2087,7 +2084,7 @@ class JalonCours(ATFolder):
 
     def getEnfantPlanElement(self, idElement, listeElement=None):
         #self.plone_log("getEnfantPlanElement")
-        if listeElement == None:
+        if listeElement is None:
             listeElement = self.plan
         for element in listeElement:
             if element["idElement"] == idElement and "listeElement" in element:
@@ -2124,6 +2121,7 @@ class JalonCours(ATFolder):
                "Lien web":                  "Externes",
                "Lecteur exportable":        "Externes",
                "Reference bibliographique": "Externes",
+               "Video":                     "Video",
                "Catalogue BU":              "Externes",
                "TermeGlossaire":            "Glossaire",
                "Webconference":             "Webconference",
@@ -2141,8 +2139,7 @@ class JalonCours(ATFolder):
                     portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
                 dicoActu = {"reference":      idElement,
                             "code":           "dispo",
-                            "dateActivation": DateTime(),
-                           }
+                            "dateActivation": DateTime()}
                 self.setActuCours(dicoActu)
             relatedItems = objet.getRelatedItems()
             if not self in relatedItems:

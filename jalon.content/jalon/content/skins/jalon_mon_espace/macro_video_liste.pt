@@ -94,7 +94,7 @@
                         <li>
                             <a title="Détacher la vidéo"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/element_view?idElement=${video/getId}"
+                               tal:attributes="href string:${video/getURL}/folder_form?macro=macro_form&amp;formulaire=detacher"
                                i18n:attributes="title">
                                 <i class="fa fa-chain-broken fa-lg fa-fw no-pad"></i>Détacher
                             </a>
