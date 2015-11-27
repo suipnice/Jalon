@@ -15,27 +15,7 @@
     </metal:macro>
     </tal:define>
 
-    <style>
-        #elasticsearch h4
-        {
-            overflow:hidden;
-            white-space:nowrap;
-            text-overflow: ellipsis;
-        }
-
-        #elasticsearch .flex-video
-        {
-            padding-top: 0;
-            margin-bottom: 0;
-        }
-        #pagination-page_number input[type="number"]
-        {
-            width:50px;
-        }
-    </style>
-
     <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
-
 
     <main class="row" role="main" aria-labelledby="page_title"
           tal:define="type_search request/type_search | nothing;
@@ -82,7 +62,7 @@
         </h2>
         <tal:define define="page python:int(request.get('page', 1));
                             videos python:context.searchElasticsearch(type_search, term_search, page)">
-        <div>
+        <div tal:define="is_owner python:test(type_search == 'mes_videos', True, False)">
             <div tal:condition="not:videos/liste_videos"
                   i18n:translate="">
                 La recherche n'a donné aucun résultat.
@@ -104,7 +84,7 @@
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
                         <div class="panel radius">
-                            <span>
+                            <span tal:condition="not:is_owner">
                                 <div class="noSwitch" style="display:inline-block;"
                                      title="Action par lot : sélectionner / désélectionner"
                                      i18n:attributes="title">
@@ -114,9 +94,8 @@
                                     <label tal:attributes="for string:switch-${repeat/video/index}"/>
                                 </div>
                             </span>
-                            <h4 data-tooltip aria-haspopup="true" class="has-tip"
-                                tal:attributes="title video/title"
-                                tal:content="video/title"/>
+                            <h4 tal:attributes="title video/title"
+                                tal:content="python:context.getShortText(video['title'], 20)"/>
                             <p>
                                 <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
                             </p>
@@ -129,7 +108,8 @@
                                     <img tal:attributes="src video/thumbnail"/>
                                 </div>
                             </a>
-                            <div class="text-center">
+                            <div class="text-center"
+                                 tal:condition="not:is_owner">
                                 <a class="button tiny" title="Voir la vidéo"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"

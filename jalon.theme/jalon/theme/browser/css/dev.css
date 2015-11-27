@@ -61,3 +61,28 @@
 {
     color:red;
 }
+
+/*
+    css utilsé dans la liste des video
+    fichier : macro_video_list
+    macro   : video;
+
+    fichier : videos_pod;
+*/
+/*
+#elasticsearch h4
+{
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+}
+*/
+#elasticsearch .flex-video
+{
+    padding-top: 0;
+    margin-bottom: 0.5rem;
+}
+#pagination-page_number input[type="number"]
+{
+    width:50px;
+}
