@@ -59,8 +59,9 @@
                     </h4>
                     <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                         tal:attributes="id string:drop-${repeat/video/index}"
-                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False)">
-                        <li>
+                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False);
+                                    is_owner python:context.test(user.getId() == video.getVideoauteur, True, False)">
+                        <li tal:condition="is_owner">
                             <a title="Modifier la vidéo sur POD"
                                target="_blank"
                                tal:attributes="href video/getVideourl"
@@ -82,7 +83,7 @@
                                 <tal:block i18n:translate="">Détacher</tal:block>
                             </a>
                         </li>
-                        <li>
+                        <li tal:condition="is_owner">
                             <a target="_blank"
                                tal:attributes="href string:${server_url}/owner_videos_list">
                                 <i class="fa fa-trash-o fa-fw no-pad"></i>
@@ -99,7 +100,7 @@
                                 <i class="fa fa-chain-broken fa-lg fa-fw no-pad"></i>Détacher
                             </a>
                         </li>
-                        <li tal:condition="not:can_delete">
+                        <li tal:condition="is_owner">
                             <a data-reveal-id="reveal-no_deletion">
                                 <i class="fa fa-trash-o fa-fw no-pad"></i>
                                 <tal:block i18n:translate="">Supprimer</tal:block>
@@ -108,7 +109,7 @@
                         </tal:condition>
                     </ul>
                     <p>
-                        <strong>Auteur :</strong> <tal:replace replace="video/getVideoauteur"/>
+                        <strong>Auteur :</strong> <tal:replace replace="video/getVideoauteurname"/>
                     </p>
                     <a title="Voir la vidéo"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"

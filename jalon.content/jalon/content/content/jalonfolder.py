@@ -311,6 +311,7 @@ class JalonFolder(ATFolder):
                                  "Description":          video["text"],
                                  "Lecteur":              video["iframe"],
                                  "Videoauteur":          video["owner"],
+                                 "Videoauteurname":      video["owner_full_name"],
                                  "Videothumbnail":       video["thumbnail"]}
                         obj.setProperties(param)
             elif jalon_videos_id:

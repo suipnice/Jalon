@@ -1128,7 +1128,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                 retour["urlElement"] = "cours_autoevaluation_view?qexo=%s" % (int(indexElement) + 1)
             if typeElement in ["Lecteurexportable", "Video"]:
                 retour["urlElement"] = element.getLecteurExportable()
-                retour["auteurVideoElement"] = element.getVideoauteur()
+                retour["auteurVideoElement"] = element.getVideoauteurname()
             if typeElement == "Lienweb":
                 urlWEB = element.getURLWEB()
                 if not "://" in urlWEB:

@@ -55,13 +55,14 @@ class JalonElasticsearch(SimpleItem):
             result = elasticsearch.search(body=body)
             if result:
                 fiche = result["hits"]["hits"][0]
-                return {"id":        fiche["_source"]["id"],
-                        "full_url":  fiche["_source"]["full_url"],
-                        "title":     fiche["_source"]["title"].encode("utf-8"),
-                        "owner":     fiche["_source"]["owner_full_name"].encode("utf-8"),
-                        "iframe":    '<iframe src="%s?is_iframe=true&size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % fiche["_source"]["full_url"].encode("utf-8"),
-                        "thumbnail": fiche["_source"]["thumbnail"].encode("utf-8"),
-                        "text":      fiche["_source"]["description"].encode("utf-8")}
+                return {"id":                  fiche["_source"]["id"],
+                        "full_url":            fiche["_source"]["full_url"],
+                        "title":               fiche["_source"]["title"].encode("utf-8"),
+                        "owner":               fiche["_source"]["owner"],
+                        "owner_full_name":     fiche["_source"]["owner_full_name"].encode("utf-8"),
+                        "iframe":              '<iframe src="%s?is_iframe=true&size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen ></iframe>' % fiche["_source"]["full_url"].encode("utf-8"),
+                        "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
+                        "text":                fiche["_source"]["description"].encode("utf-8")}
             return None
         resultat = {"count": 0, "first": 0, "last": 0, "nb_pages": 0, "liste_videos": []}
         for key in ["from", "size", "sort"]:
@@ -75,10 +76,12 @@ class JalonElasticsearch(SimpleItem):
         resultat["nb_pages"] = int(ceil(nb_pages))
         if result:
             for fiche in result["hits"]["hits"]:
-                resultat["liste_videos"].append({"id":        fiche["_source"]["id"],
-                                                 "title":     fiche["_source"]["title"].encode("utf-8"),
-                                                 "owner":     fiche["_source"]["owner_full_name"].encode("utf-8"),
-                                                 "thumbnail": fiche["_source"]["thumbnail"].encode("utf-8"),
-                                                 "text":      fiche["_source"]["description"].encode("utf-8")})
+                resultat["liste_videos"].append({"id":                  fiche["_source"]["id"],
+                                                 "full_url":            fiche["_source"]["full_url"],
+                                                 "title":               fiche["_source"]["title"].encode("utf-8"),
+                                                 "owner":               fiche["_source"]["owner"],
+                                                 "owner_full_name":     fiche["_source"]["owner_full_name"].encode("utf-8"),
+                                                 "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
+                                                 "text":                fiche["_source"]["description"].encode("utf-8")})
 
         return resultat

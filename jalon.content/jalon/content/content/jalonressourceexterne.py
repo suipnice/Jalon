@@ -103,6 +103,12 @@ JalonRessourceExterneSchema = ATDocumentSchema.copy() + atpublic.Schema((
                          searchable=False,
                          widget=atpublic.StringWidget(label=_(u"Auteur de la vidéo"),)
                          ),
+    atpublic.StringField("videoauteurname",
+                         required=False,
+                         accessor="getVideoauteurname",
+                         searchable=False,
+                         widget=atpublic.StringWidget(label=_(u"Nom de l'auteur de la vidéo"),)
+                         ),
     atpublic.StringField("videothumbnail",
                          required=False,
                          accessor="getVideothumbnail",

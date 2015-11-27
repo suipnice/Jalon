@@ -118,7 +118,7 @@
                                 tal:attributes="title video/title"
                                 tal:content="video/title"/>
                             <p>
-                                <strong>Auteur :</strong> <tal:replace replace="video/owner"/>
+                                <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
                             </p>
                             <a title="Voir la vidéo"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"

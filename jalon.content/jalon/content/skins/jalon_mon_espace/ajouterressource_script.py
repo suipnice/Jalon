@@ -18,18 +18,18 @@ if not REQUEST.form.has_key("recordsid"):
         if REQUEST["formulaire"] == "ajout-web":
             idobj = context.invokeFactory(type_name='JalonRessourceExterne', id="Externe-%s-%s" % (REQUEST["authMember"], DateTime().strftime("%Y%m%d%H%M%S")))
             obj = getattr(context, idobj)
-            param = {"Title"                : REQUEST["title"]
-                    ,"TypeRessourceExterne" : "Lien web"
-                    ,"Description"          : REQUEST["description"]
-                    ,"Urlbiblio"            : REQUEST["urlbiblio"]}
+            param = {"Title":                REQUEST["title"],
+                     "TypeRessourceExterne": "Lien web",
+                     "Description":           REQUEST["description"],
+                     "Urlbiblio":             REQUEST["urlbiblio"]}
             obj.setProperties(param)
         if REQUEST["formulaire"] == "ajout-video":
             idobj = context.invokeFactory(type_name='JalonRessourceExterne', id="Externe-%s-%s" % (REQUEST["authMember"], DateTime().strftime("%Y%m%d%H%M%S")))
             obj = getattr(context, idobj)
-            param = {"Title"                : REQUEST["title"]
-                    ,"TypeRessourceExterne" : "Lecteur exportable"
-                    ,"Description"          : REQUEST["description"]
-                    ,"Lecteur"              : REQUEST["lecteur"]}
+            param = {"Title":                REQUEST["title"],
+                     "TypeRessourceExterne": "Lecteur exportable",
+                     "Description":          REQUEST["description"],
+                     "Lecteur":              REQUEST["lecteur"]}
             obj.setProperties(param)
         if REQUEST["formulaire"] == "ajout-elasticsearch":
             if "video_id" in REQUEST:
@@ -43,10 +43,14 @@ if not REQUEST.form.has_key("recordsid"):
                     context.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
                     obj = getattr(context, idobj)
                     video = context.searchElasticsearch(type_search="video", term_search=video_id)
-                    param = {"Title"                : video["title"],
-                             "TypeRessourceExterne" : "Video",
-                             "Description"          : video["text"],
-                             "Lecteur"              : video["iframe"]}
+                    param = {"Title":                video["title"],
+                             "TypeRessourceExterne": "Video",
+                             "Videourl":             video["full_url"],
+                             "Description":          video["text"],
+                             "Lecteur":              video["iframe"],
+                             "Videoauteur":          video["owner"],
+                             "Videoauteurname":      video["owner_full_name"],
+                             "Videothumbnail":       video["thumbnail"]}
                     obj.setProperties(param)
     #sinon on la modifie juste
     else:
