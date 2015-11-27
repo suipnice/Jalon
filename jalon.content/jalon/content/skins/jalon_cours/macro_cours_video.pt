@@ -91,6 +91,12 @@
             </table>
 
         <tal:condition condition="folderContents">
+            <div class="field">
+                <h3><i class="fa fa-sitemap"></i><tal:block i18n:translate="">Informations dans le plan</tal:block></h3>
+                <input type="checkbox" name="display_in_plan" id="display_in_plan"
+                       value="1"/>
+                <label for="display_in_plan" i18n:translate="">Afficher la vignette de la vidéo dans le plan</label>
+            </div>
             <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
                 Macro d'affichage de la liste en fonction de la variable espace
             </metal:macro>

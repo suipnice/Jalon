@@ -1021,10 +1021,14 @@ class JalonCours(ATFolder):
                     html_etudiant = ""
                     if not personnel:
                         html_etudiant = "&amp;mode_etudiant=true"
-                    html.append("""<%s href="%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s&amp;indexElement=%s%s"
+                    html.append("""<a href="%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s&amp;indexElement=%s%s"
                                        title="Voir cet élément du plan"
                                        data-reveal-id="reveal-main" data-reveal-ajax="true"
-                                       class="typeElementTitre">%s</%s>""" % (tag, self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"], tag))
+                                       class="typeElementTitre">%s""" % (self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"]))
+                    if "complementElement" in infos_element:
+                        html.append("<div><strong>Auteur : </strong>%s" % infos_element["complementElement"]["auteur"])
+                        html.append("<div class=\"flex-video\"><img src=\"%s\"/></div>" % infos_element["complementElement"]["image"])
+                    html.append("</a>")
                     # TODO : troncature coté serveur -> refonte du JS associé
                     #html.append("   <%s href='./cours_element_view?idElement=%s&createurElement=%s&typeElement=%s&indexElement=%s&requete_ajax=0' class='typeElementTitre'>%s</%s>" % (tag, element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, self.getShortText( infos_element["titreElement"] ), tag))
                 else:
@@ -2095,7 +2099,7 @@ class JalonCours(ATFolder):
                     return retour
         return None
 
-    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement="", position=None):
+    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement="", position=None, display_in_plan=False):
         #self.plone_log("ajouterElement")
         remplacer = False
         if typeElement == "Glossaire":
@@ -2115,6 +2119,7 @@ class JalonCours(ATFolder):
             if "." in idElement:
                 remplacer = True
 
+        complement_element = None
         rep = {"Image":                     "Fichiers",
                "File":                      "Fichiers",
                "Page":                      "Fichiers",
@@ -2150,7 +2155,10 @@ class JalonCours(ATFolder):
             if not objet.getId() in coursRelatedItems:
                 coursRelatedItems.append(objet)
                 self.setRelatedItems(coursRelatedItems)
-        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
+            if display_in_plan:
+                complement_element = {"auteur": objet.getVideoauteurname(),
+                                      "image":  objet.getVideothumbnail()}
+        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement, complementElement=complement_element)
 
     def ajouterElementPlan(self, idElement, position=None):
         #self.plone_log("ajouterElementPlan")
@@ -2190,7 +2198,7 @@ class JalonCours(ATFolder):
                     element["listeElement"].append(element_add)
                     break
 
-    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
+    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement="", complementElement=None):
         #self.plone_log("ajouterInfosElement")
         parent = self.getParentPlanElement(idElement, 'racine', '')
         if parent and parent['idElement'] != 'racine':
@@ -2205,6 +2213,8 @@ class JalonCours(ATFolder):
                                         "createurElement": createurElement,
                                         "affElement":      affElement,
                                         "masquerElement":  ""}
+            if complementElement:
+                infos_element[idElement]["complementElement"] = complementElement
             self.setElementsCours(infos_element)
         #self.setProperties({"DateDerniereModif": DateTime()})
 
