@@ -132,7 +132,7 @@
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
 
                 <div class="formControls"
-                     tal:condition="videos">
+                     tal:condition="python:videos and not is_owner">
                     <button type="submit" class="button small create"
                             name="form.button.save">
                         <i class="fa fa-plus-circle"></i>
