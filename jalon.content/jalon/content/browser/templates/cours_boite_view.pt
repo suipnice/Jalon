@@ -81,7 +81,7 @@
                 <li tal:repeat="option boite_view/menu_options">
                     <a tal:attributes="href option/href"
                        data-reveal-id="reveal-main" data-reveal-ajax="true">
-                       <i tal:attributes="class string:fa ${option/icon} fa-fw"></i> <tal:block tal:content="option/text" 
+                       <i tal:attributes="class string:fa ${option/icon} fa-fw"></i> <tal:block tal:content="option/text"
                                                                                                 i18n:translate=""/>
                     </a>
                 </li>
