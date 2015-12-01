@@ -194,12 +194,11 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  widget=BooleanWidget(label=_(u"J'aime sur Facebook"))
                  ),
     BooleanField("activer_email_forum",
-                required=False,
-                accessor="getActiverEmailForum",
-                searchable=False,
-                widget=StringWidget(label=_(u"Envoie de courriels"),
-                                    description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),
-                                    )),
+                 required=False,
+                 accessor="getActiverEmailForum",
+                 searchable=False,
+                 widget=StringWidget(label=_(u"Envoie de courriels"),
+                                     description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),)),
     StringField("dateDerniereModif",
                 required=False,
                 accessor="getDateDerniereModif",
@@ -208,35 +207,31 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                                     description=_(u"Date de dernière modification"),
                                     )),
     BooleanField("activer_dll_fichier",
-                required=True,
-                accessor="getActiver_dll_fichier",
-                searchable=False,
-                default=False,
-                widget=BooleanWidget(label=_(u"Telechargement de fichiers"),
-                                    description=_(u"Autorise le telechargement d'une archive de tous les fichiers d'un cours"),
-                                    )),
+                 required=True,
+                 accessor="getActiver_dll_fichier",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"Telechargement de fichiers"),
+                                      description=_(u"Autorise le telechargement d'une archive de tous les fichiers d'un cours"),)),
     StringField("catiTunesU",
                 required=False,
                 accessor="getCatiTunesU",
                 searchable=False,
                 widget=StringWidget(label=_(u"Catégorie iTunesU du cours"),
-                                    description=_(u"Catégorie iTunesU du cours"),
-                                    )),
+                                    description=_(u"Catégorie iTunesU du cours"),)),
     BooleanField("diffusioniTunesU",
-                required=True,
-                accessor="isDiffuseriTunesU",
-                searchable=False,
-                default=False,
-                widget=BooleanWidget(label=_(u"État de la diffusion sur iTunesU"),
-                                    description=_(u"État de la diffusion sur iTunesU"),
-                                    )),
+                 required=True,
+                 accessor="isDiffuseriTunesU",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"État de la diffusion sur iTunesU"),
+                                      description=_(u"État de la diffusion sur iTunesU"),)),
     StringField("dateDerniereActu",
                 required=False,
                 accessor="getLastDateActu",
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de la dernière Actu du cours"),
-                                    description=_(u"Date de la dernière Actu du cours"),
-                                    )),
+                                    description=_(u"Date de la dernière Actu du cours"),)),
 ))
 
 
@@ -274,6 +269,31 @@ class JalonCours(ATFolder):
             self._elements_cours = PersistentDict(elements_cours)
         else:
             self._elements_cours = elements_cours
+
+    def getProprietesVideo(self, id_video):
+        infos_element = self.getElementCours(id_video)
+        video_title = infos_element["titreElement"]
+        video_title_my_space = video_title
+        if "titreElementMonEspace" in infos_element:
+            video_title_my_space = infos_element["titreElementMonEspace"]
+        return {"video_title":          video_title,
+                "video_title_my_space": video_title_my_space,
+                "is_display_in_map":    "checked" if infos_element["complementElement"]["value"] else ""}
+
+    def setProprietesElement(self, infos_element):
+        dico = self.getElementCours(infos_element["idElement"])
+        if not "titreElementMonEspace" in dico:
+            dico["titreElementMonEspace"] = dico["titreElement"][:]
+        if infos_element["element_title_in_map"] == "":
+            dico["titreElement"] = dico["titreElementMonEspace"][:]
+        else:
+            dico["titreElement"] = infos_element["element_title_in_map"]
+        if not "display_in_plan" in infos_element:
+            dico["complementElement"]["value"] = False
+        else:
+            dico["complementElement"]["value"] = True
+        self._elements_cours[infos_element["idElement"]] = dico
+        self.setElementsCours(self._elements_cours)
 
     def getTwitterCours(self, key=None):
         #self.plone_log("getTwitterCours")
@@ -978,7 +998,11 @@ class JalonCours(ATFolder):
                                            <a href="%s/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=%s&amp;repertoire=%s"
                                               data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-trash-o fa-fw"></i>Supprimer</a>
                                        </li>""" % (self.absolute_url(), element["idElement"], self.verifType(infos_element["typeElement"])))
-
+                    if infos_element["typeElement"] in ["Video"]:
+                        html.append("""<li>
+                                           <a href="%s/folder_form?macro=macro_cours_video&amp;formulaire=modifier-video_infos&amp;idElement=%s"
+                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-cubes fa-fw"></i>Propriétés</a>
+                                       </li>""" % (self.absolute_url(), element["idElement"]))
                     if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
                         html.append("""<li>
                                            <a href="%s/folder_form?macro=macro_cours_plan&amp;formulaire=modifier-plan&amp;idElement=%s&amp;typeElement=%s"
@@ -1025,7 +1049,7 @@ class JalonCours(ATFolder):
                                        title="Voir cet élément du plan"
                                        data-reveal-id="reveal-main" data-reveal-ajax="true"
                                        class="typeElementTitre">%s""" % (self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"]))
-                    if "complementElement" in infos_element:
+                    if "complementElement" in infos_element and infos_element["complementElement"]["value"]:
                         html.append("<div><strong>Auteur : </strong>%s" % infos_element["complementElement"]["auteur"])
                         html.append("<div class=\"flex-video\"><img src=\"%s\"/></div>" % infos_element["complementElement"]["image"])
                     html.append("</a>")
@@ -2155,9 +2179,12 @@ class JalonCours(ATFolder):
             if not objet.getId() in coursRelatedItems:
                 coursRelatedItems.append(objet)
                 self.setRelatedItems(coursRelatedItems)
-            if display_in_plan:
-                complement_element = {"auteur": objet.getVideoauteurname(),
+
+            if typeElement == "Video":
+                complement_element = {"value":  display_in_plan,
+                                      "auteur": objet.getVideoauteurname(),
                                       "image":  objet.getVideothumbnail()}
+
         self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement, complementElement=complement_element)
 
     def ajouterElementPlan(self, idElement, position=None):

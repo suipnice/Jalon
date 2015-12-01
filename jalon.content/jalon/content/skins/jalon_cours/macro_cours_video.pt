@@ -117,6 +117,49 @@
     </tal:define>
 </metal:macro>
 
+<metal:macro define-macro="modifier-video_infos">
+    <h2>
+        <tal:block i18n:translate="">
+            Modifier les propriétés de cette ressource dans le plan
+        </tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/modifierProprietes_script"
+          tal:define="id_video request/idElement;
+                      infos_element python:context.getProprietesVideo(id_video)">
+
+        <div class="field ArchetypesStringWidget">
+            <label for="title" i18n:translate="">Titre dans le plan</label>
+            <input type="text" name="element_title_in_map" maxlength="255" size="30"
+                   tal:attributes="value infos_element/video_title"/>
+        </div>
+
+        <div class="field ArchetypesStringWidget">
+            <label for="title" i18n:translate="">Titre dans mon espace</label>
+            <input type="text" maxlength="255" size="30" disabled="disabled"
+                   tal:attributes="value infos_element/video_title_my_space"/>
+        </div>
+
+        <div class="field">
+            <input type="checkbox" name="display_in_plan" id="display_in_plan"
+                   value="1" tal:attributes="checked infos_element/is_display_in_map"/>
+            <label for="display_in_plan" i18n:translate="">Afficher la vignette de la vidéo dans le plan</label>
+        </div>
+
+        <input type="hidden" name="idElement" tal:attributes="value id_video"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</metal:macro>
+
 </metal:content-core>
 </body>
 </html>
