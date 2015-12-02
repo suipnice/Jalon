@@ -214,7 +214,9 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"
           tal:attributes="action context/aq_parent/absolute_url;
@@ -519,7 +521,7 @@
                               data-success_msg string:La suppression demandée a été effectuée.;
                               data-all_att_msg string:Suppression impossible :;
                               data-s_all_att_msg string:l'exercice sélectionné est attaché à au moins un cours ou groupe d'exercices.;
-                              data-p_all_att_msg string:les exercices sélectionnés sont attachés à au moins un cours ou groupe d'exercices.;
+                              data-p_all_att_msg string:tous les exercices sélectionnés sont attachés à au moins un cours ou groupe d'exercices.;
                               data-s_supp_msg string:L'exercice suivant va être supprimé :;
                               data-p_supp_msg string:Les exercices suivants vont être supprimés :;
                               data-s_att_msg string:L'exercice suivant, attaché à au moins un cours ou groupe d'exercices, ne sera pas supprimé :;
@@ -528,6 +530,7 @@
 
             <div class="panel alert radius"
                  i18n:translate="">
+                <i class="fa fa-exclamation-triangle no-pad"></i>
                 <strong>Attention :</strong> cette opération est définitive.
             </div>
 

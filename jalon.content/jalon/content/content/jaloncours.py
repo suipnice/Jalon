@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+""" L'objet "Cours" de Jalon."""
 from zope.interface import implements
 
 from Products.Archetypes.public import *
@@ -26,6 +26,10 @@ import string
 import jalon_utils
 import random
 import os
+import copy
+
+from logging import getLogger
+LOG = getLogger('[JalonCours]')
 
 JalonCoursSchema = ATFolderSchema.copy() + Schema((
     StringField("auteurPrincipal",
@@ -236,8 +240,8 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
 
 
 class JalonCours(ATFolder):
-    """ Un document avec une note
-    """
+
+    """ Un cours Jalon."""
 
     implements(IJalonCours)
     meta_type = 'JalonCours'
@@ -250,7 +254,7 @@ class JalonCours(ATFolder):
         super(JalonCours, self).__init__(*args, **kwargs)
 
     def toPloneboardTime(self, context, request, time_=None):
-        """Return time formatted for Ploneboard"""
+        """Return time formatted for Ploneboard."""
         return toPloneboardTime(context, request, time_)
 
     def getElementCours(self, key=None):
@@ -867,9 +871,9 @@ class JalonCours(ATFolder):
             last_login = DateTime(last_login)
         return last_login
 
-    def getLocaleDate( self, date, format = "%d/%m/%Y" ):
+    def getLocaleDate(self, date, format="%d/%m/%Y"):
         #self.plone_log("getLocaleDate : %s" % date)
-        return jalon_utils.getLocaleDate( date, format )
+        return jalon_utils.getLocaleDate(date, format)
 
     def getMotsClefs(self, search, objet):
         #self.plone_log("getMotsClefs")
@@ -1619,7 +1623,7 @@ class JalonCours(ATFolder):
                                     relatedItems = objet.getRelatedItems()
                                     for related in relatedItems:
                                         # On ne rend pas public les exercices WIMS. l'objet lui-même ne reste accessible que par son propriétaire.
-                                        if related.meta_type!="JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
+                                        if related.meta_type != "JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
                                             portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
                         for related in self.getRelatedItems():
                             if portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
@@ -1657,7 +1661,7 @@ class JalonCours(ATFolder):
                 portal = self.portal_url.getPortalObject()
                 infosMembre = jalon_utils.getInfosMembre(self.Creator())
                 jalon_utils.envoyerMail({"objet"  : "Demande de publication sur iTunesU",
-                                         "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()),})
+                                         "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
 
         self.setProperties({"DateDerniereModif": DateTime()})
 
@@ -2405,19 +2409,40 @@ class JalonCours(ATFolder):
         return retour
 
     def supprimerActivitesWims(self, utilisateur="All"):
-        u"""Suppression de toutes les activites WIMS du cours, créées par "utilisateur"."""
+        u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
         # Retirer toutes les activités du plan
-        listeElements = self.getPlanPlat()
+
+        # Ici on utilise getElementCours() plutot que getPlanPlat,
+        # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
+        dicoElements = copy.deepcopy(self.getElementCours())
+
         liste_activitesWIMS = []
-        for element in listeElements:
-            infosElement = self.getElementCours().get(element)
+        portal_members = getattr(self.portal_url.getPortalObject(), "Members")
+        for idElement in dicoElements:
+            infosElement = dicoElements[idElement]
             if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
+                # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
                 if utilisateur == "All" or infosElement["createurElement"] == utilisateur:
                     #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
-                    liste_activitesWIMS.append(element)
-                    self.retirerElementPlan(element, force_WIMS=True)
+                    liste_activitesWIMS.append(idElement)
 
-        # Puis supprimer toutes les classes du serveur WIMS
+                    # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
+                    activite = getattr(self, idElement)
+
+                    # retire l'activité des relatedItems pour ses exercices et ses documents.
+                    activite.retirerTousElements(force_WIMS=True)
+
+                    # Supprime l'activité (du plan du cours et du cours)
+                    self.retirerElementPlan(idElement, force_WIMS=True)
+                    # Supprime l'activité des actus du cours
+                    self.delActu(idElement)
+
+                    ### A utiliser dans un patch correctif :
+                    #(on refait ce que fait normalement retirerElementPlan, sauf dans le cas ou l'element n'est plus dans le plan) :
+                    #self.manage_delObjects([idElement])
+                    #del self._elements_cours[idElement]
+
+        # Supprime toutes les classes du serveur WIMS
         listeClasses = list(self.getListeClasses())
         removed_classes = []
         dico = listeClasses[0]
@@ -2431,14 +2456,14 @@ class JalonCours(ATFolder):
                     new_listeClasses.append({auteur: dico[auteur]})
                 else:
                     new_listeClasses[0][auteur] = dico[auteur]
-        if removed_classes != None:
+        if removed_classes is not None:
             self.aq_parent.delClassesWims(removed_classes)
 
         # Et enfin remettre à zero la liste des classes du cours.
         #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
         self.setListeClasses(new_listeClasses)
 
-        # On renvoit enfin le nombre d'activités supprimées.
+        # Renvoit le nombre d'activités supprimées.
         return len(liste_activitesWIMS)
 
     # rechercheApogee
@@ -2488,10 +2513,9 @@ class JalonCours(ATFolder):
                 del infos_element[idElement]
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    # retirerElementPlan() fonction recursive qui supprime l'element idElement du plan,
-    #                      ainsi que tout son contenu si c'est un Titre.
     def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
-        #self.plone_log("retirerElementPlan")
+        """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
+        #LOG.info("retirerElementPlan")
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())
@@ -2501,20 +2525,22 @@ class JalonCours(ATFolder):
                 #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
                 if "listeElement" in element and element["listeElement"] != []:
-                    self.retirerElementPlan("all", element["listeElement"])
+                    self.retirerElementPlan("all", element["listeElement"], force_WIMS)
 
                 #on supprime element de la liste où il etait dans le plan
                 while element in listeElement:
                     listeElement.remove(element)
 
                 infosElement = self.getElementCours().get(element["idElement"])
+
                 if infosElement:
                     #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
-                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS == False:
+                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
                         self.ajouterElementPlan(element["idElement"])
                     else:
+
                         if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
-                            # Si ce n'est pas un element Wims, on le supprime des objets du cours
+                            # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
                             del self._elements_cours[element["idElement"]]
                             self.setElementsCours(self._elements_cours)
 
@@ -2525,12 +2551,12 @@ class JalonCours(ATFolder):
                         boite = getattr(self, element["idElement"])
                         boite.retirerTousElements()
 
-                    if infosElement["typeElement"] in ["Forum", "BoiteDepot"]:
+                    if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
 
             elif "listeElement" in element:
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
-                self.retirerElementPlan(idElement, element["listeElement"])
+                self.retirerElementPlan(idElement, element["listeElement"], force_WIMS)
 
         if start:
             self.plan = tuple(listeElement)
@@ -2673,11 +2699,11 @@ class JalonCours(ATFolder):
                         if len(ancienTagSplit) == 2:
                             ancienTag = ancienTag.replace(" ", "%20")
                             if action == "diplome":
-                                if nomAuteur == ancienTagSplit[0]: # and ancienTagSplit[2] in titreCour:
+                                if nomAuteur == ancienTagSplit[0]:  # and ancienTagSplit[2] in titreCour:
                                     portal_primo.tagBU(ressource, ancienTag, "remove")
                             if action == "nom":
                                 ancienNom = self.getInfosMembre(elemTag)["nom"]
-                                if ancienNom == ancienTagSplit[0]: #ancienTagSplit[2] in titreCour and
+                                if ancienNom == ancienTagSplit[0]:  # ancienTagSplit[2] in titreCour and
                                     portal_primo.tagBU(ressource, ancienTag, "remove")
                     action = "add"
 
@@ -2685,7 +2711,7 @@ class JalonCours(ATFolder):
                 for public in self.getInfosListeAcces():
                     COD_ETU = public[1]
                     if COD_ETU not in ["email", "perso"]:
-                        tag = nomAuteur + "%20" + COD_ETU #+ "%20" + titreCour
+                        tag = nomAuteur + "%20" + COD_ETU  # + "%20" + titreCour
                         tag = tag.replace("%20", " ")
                         if len(tag) > 34:
                             tag = tag[0:34]
@@ -2724,7 +2750,7 @@ class JalonCours(ATFolder):
         #self.plone_log("setDateDerniereActu")
         #self.plone_log("***** listeActualites : %s" % str(listeActualites))
         retour = self.created()
-        paramDate="dateActivation"
+        paramDate = "dateActivation"
         if listeActualites == None:
             listeActualites = self.getActualitesCours(True)["listeActu"]
             paramDate = "date"
@@ -2743,7 +2769,7 @@ class JalonCours(ATFolder):
     def getFichiersCours(self, page=None):
         #self.plone_log("getFichiersCours")
         #fixe le nb d'element voulu par page
-        nbElem = 15 #doit etre identique a celui de nbPage
+        nbElem = 15  # doit etre identique a celui de nbPage
         elem = dict(self.getElementCours())
         retour = []
         i = 0
@@ -2796,7 +2822,7 @@ class JalonCours(ATFolder):
 
     def nbPage(self):
         #self.plone_log("nbPage")
-        nbPage= 0
+        nbPage = 0
         #fixe le nb d'element voulu par page
         nbElem = 15
         i = 0
@@ -2846,7 +2872,7 @@ class JalonCours(ATFolder):
                     try:
                         objid = cle_element.replace(" ", "-")
                     except:
-                         objid = cle_element
+                        objid = cle_element
                     for obj in home.objectValues(["ATBlob", "ATDocument"]):
                         if objid in obj.id :
                             if len(fichiers) == 1 and fichiers[0] == element["titreElement"] and element["typeElement"] not in ["Image"] :
