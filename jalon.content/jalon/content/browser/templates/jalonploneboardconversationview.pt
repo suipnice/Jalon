@@ -56,7 +56,7 @@
 
         <metal:block define-macro="quickreply">
 
-            <form id="forum-quickreply" method="POST" enctype="multipart/form-data"
+            <form method="POST" enctype="multipart/form-data"
                   tal:define="firstcomment here/getFirstComment"
                   tal:attributes="action string:${firstcomment/absolute_url}/add_comment_script"
                   tal:condition="not:isAnon">
@@ -65,8 +65,7 @@
                     <legend i18n:translate="label_quickreply">Réponse rapide</legend>
 
                     <div id="archetypes-fieldname-description" class="field">
-                        <div class="fieldErrorBox hide">Champ obligatoire</div>
-                        <textarea name="text" rows="8" id="rapide"
+                        <textarea name="text" rows="8" id="js-forum-quickreply"
                                   required="required" placeholder="Saisie obligatoire"
                                   i18n:attributes="placeholder" ></textarea>
                     </div>
@@ -83,7 +82,7 @@
                 </fieldset>
             </form>
 
-            <tal:define define="script string:setForumSearchReplyForm('forum-quickreply', 'rapide')">
+            <tal:define define="script string:setForumQuickReplyForm()">
                 <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
             </tal:define>
 

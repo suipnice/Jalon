@@ -88,9 +88,9 @@
         <!-- CSS principale -->
         <link rel="stylesheet"
               tal:attributes="href string:${navroot}/++resource++jalon.theme.stylesheets/app.css" />
-        <!-- CSS dev
+        <!-- CSS dev -->
         <link rel="stylesheet"
-              tal:attributes="href string:${navroot}/++resource++jalon.theme.stylesheets/dev.css" /> -->
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.stylesheets/dev.css" />
 
     <tal:comment replace="nothing"><!--
 

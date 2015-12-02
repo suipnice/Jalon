@@ -42,9 +42,9 @@
             </h2>
 
             <div class="panel callout radius"
-                 tal:condition="python:numConversations == 0"
-                 i18n:translate="">
-                Il n'y a pas de conversation sans réponse.
+                 tal:condition="python:numConversations == 0">
+                <i class="fa fa-info-circle"></i>
+                <tal:block i18n:translate="">Il n'y a pas de conversation sans réponse.</tal:block>
             </div>
 
         <tal:condition condition="python:numConversations > 0">

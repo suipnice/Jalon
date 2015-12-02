@@ -7,26 +7,83 @@
 
 
 /*
-    Suppression contenu lecteur exportable à la fermeture de son conteneur (reveal)
+    Instanciation CKEditor standard
 */
 
-function removePlayerOnClose( ) {
+function instantiateCKEditor( textareaID ) {
 
-    Foundation.utils.S( '#reveal-main' ).on( 'closed', function( ) {
-        $( this ).children( '.flex-video' ).remove( );
-    } );
+    if ( window.CKEDITOR && window.CKEDITOR.dom ) {
+
+        CKEDITOR.replace( textareaID, {
+            customConfig: '',
+            language: 'fr',
+            // Define the toolbar groups as it is a more accessible solution.
+            toolbarGroups: [
+                { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
+                //{ 'name': "links",       'groups': [ "links" ] },
+                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
+                { 'name': "paragraph",   'groups': [ "list" ] },
+                { 'name': "insert",      'groups': [ "insert" ] },
+                //{ 'name': "document",    'groups': [ "mode" ] },
+            ],
+            // Remove unwanted plug-ins.
+            removePlugins: 'image,elementspath',
+            // Remove the redundant buttons from toolbar groups defined above.
+            removeButtons: 'Strike,Subscript,Superscript,Anchor',
+        } );
+
+        return textareaID;
+
+    } else {
+
+        return false;
+    }
+
 }
 
 
 
 /*
-    Suppression des images inexistantes (Primo BU)
+    Gestion standard des formulaires en "reveal"
+
+        - ckEditorInstanceName est un ID de textarea utilisant CKEditor.
+
 */
 
-function removeErrorImages( containerId ) {
+// Validation et chargement d'une nouvelle page
+function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum ) {
 
-    Foundation.utils.S( '#' + containerId + ' img.primo_img' ).on( 'error', function( event ) {
-        $( this ).remove( );
+    if ( typeof ckEditorInstanceName !== 'undefined' ) {
+        if ( typeof isForum !== 'undefined' && Boolean( isForum ) ) {
+            ckEditorInstanceName = instantiateForumCKEditor( ckEditorInstanceName );
+        } else {
+            ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
+        }
+    } else {
+        ckEditorInstanceName = false;
+    }
+
+    Foundation.utils.S( '#' + formID ).submit( function( event ) {
+
+        if ( ckEditorInstanceName ) {
+            CKEDITOR.instances[ ckEditorInstanceName ].updateElement( );
+        }
+
+        event.preventDefault( );
+
+        var $form = $( this );
+        var $reveal = Foundation.utils.S( '#' + revealID );
+
+        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+            var html = $.parseHTML( data );
+            if ( $( html ).find( '.error' ).length ) {
+                $reveal.empty( ).html( data );
+                revealInit( $reveal );
+            } else {
+                $reveal.foundation( 'reveal', 'close' );
+                document.location.href = data;
+            }
+        } );
     } );
 }
 
@@ -60,42 +117,26 @@ function revealInit( $reveal ) {
 
 
 /*
-    Gestion standard des formulaires en "reveal"
-
-        - ckEditorInstanceName est un ID de textarea utilisant CKEditor.
-
+    Suppression contenu lecteur exportable à la fermeture de son conteneur (reveal)
 */
 
-// Validation et chargement d'une nouvelle page
-function setRevealFormNewPage( formID, revealID, ckEditorInstanceName ) {
+function removePlayerOnClose( ) {
 
-    if ( typeof ckEditorInstanceName !== 'undefined' ) {
-        ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
-    } else {
-        ckEditorInstanceName = false;
-    }
+    Foundation.utils.S( '#reveal-main' ).on( 'closed', function( ) {
+        $( this ).children( '.flex-video' ).remove( );
+    } );
+}
 
-    Foundation.utils.S( '#' + formID ).submit( function( event ) {
 
-        if ( ckEditorInstanceName ) {
-            CKEDITOR.instances[ ckEditorInstanceName ].updateElement( );
-        }
 
-        event.preventDefault( );
+/*
+    Suppression des images inexistantes (Primo BU)
+*/
 
-        var $form = $( this );
-        var $reveal = Foundation.utils.S( '#' + revealID );
+function removeErrorImages( containerId ) {
 
-        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
-            var html = $.parseHTML( data );
-            if ( $( html ).find( '.error' ).length ) {
-                $reveal.empty( ).html( data );
-                revealInit( $reveal );
-            } else {
-                $reveal.foundation( 'reveal', 'close' );
-                document.location.href = data;
-            }
-        } );
+    Foundation.utils.S( '#' + containerId + ' img.primo_img' ).on( 'error', function( event ) {
+        $( this ).remove( );
     } );
 }
 
@@ -215,112 +256,5 @@ function setTabMemory( tabId ) {
         }
     }
 }
-*/
-
-
-/*
-    Correctif lecteur exportable UNS.pod / flex-video
-
-function setFlexVideo( ) {
-
-    //Foundation.utils.S( '.flex-video > iframe' ).contents( ).find( '#player.simplevideo #player_video' ).css( 'padding-bottom', '0px !important' );
-
-    //console.log( Foundation.utils.S( '#accueil .flex-video > iframe' ).contents( ) );
-    //console.log( Foundation.utils.S( '#accueil .flex-video > iframe' ).find( 'head' ) );
-
-    //setTimeout( function( ) { console.log( Foundation.utils.S( '#accueil .flex-video > iframe' ).contents( ) ); }, 1000 );
-
-    var $flexVideo = Foundation.utils.S( '.flex-video > iframe' );
-    //console.log( $flexVideo.attr( 'src' ) );
-
-    $.ajax( {
-            url: $flexVideo.attr( 'src' ),
-            async: false,
-            crossDomain: true,
-            cache: false,
-            dataType: 'html',
-            beforeSend : function ( ) {
-
-            },
-        } )
-        .done( function( data ) {
-
-            console.log( data );
-            //var $content = $( data ).find( '#wimspagebox' ).contents( );
-
-            //$insertWims.remove( );
-            //$content.find( 'p.send_answer > [type="submit"], #oef_actions span a' ).addClass( 'button small radius' );
-            //$( '#wims' ).append( $content );
-    } );
-}
-*/
-
-
-/*
-    Troncature de textes avec animation
-
-function cropText( text, limit ) {
-    text = text.substring( 0, limit );
-    var lastSpace = text.lastIndexOf( ' ' );
-    if ( lastSpace > -1 )
-        text = text.substring( 0, lastSpace );
-    return text.replace( /[?!:.,;\-…"“”«» ]+$/, '' ) + '…';
-}
-
-( function( $ ) {
-
-    $.fn.crop = function( maxLength ) {
-
-        var limit = maxLength || 75;
-
-        return this.each( function( ) {
-
-            //var text = $( this ).contents( ':not(span)' ).text( );
-            var text = jQuery.trim( $( this ).contents( ':not(span)' ).text( ).replace( /\s+/g, ' ' ) );
-
-            if ( text.length > limit ) {
-
-                var spanClassList = $( this ).children( 'span.discreet' ).attr( 'class' );
-                var spanText = $( this ).children( 'span.discreet' ).text( );
-                var tailHTML = '<br/><span class="' + spanClassList + '"">' + spanText + '</span>';
-                var croppedText = cropText( text, limit ) + '&#160;<span class="bouton iconeseule icone_fleche_bas js-cropHandle" title="Lire la suite…"></span>';
-
-                $( this ).data( 'text-org', text + '&#160;<span class="bouton iconeseule icone_fleche_haut js-cropHandle" title="Réduire le texte…"></span>' );
-                $( this ).data( 'text-mod', croppedText );
-                $( this ).data( 'tail', tailHTML );
-
-                $( this ).html( croppedText + tailHTML ).addClass( 'js-crop-on' ).children( '.js-cropHandle' ).animCrop( );
-            }
-
-        } );
-
-    };
-
-    $.fn.animCrop = function( ) {
-
-        $( this ).click( function( e ) {
-
-            e.preventDefault( );
-            e.stopPropagation( );
-
-            var cropTarget = $( this ).parent( );
-
-            if ( cropTarget.hasClass( 'js-crop-on' ) ) {
-                cropTarget.fadeOut( 'fast', function( ) {
-                    cropTarget.removeClass( 'js-crop-on' ).html( cropTarget.data( 'text-org' ) + cropTarget.data( 'tail' ) ).addClass( 'js-crop-off' ).fadeIn( ).children( '.js-cropHandle' ).animCrop( );
-                } );
-            } else if ( cropTarget.hasClass( 'js-crop-off' ) ) {
-                cropTarget.fadeOut( 'fast', function( ) {
-                    cropTarget.removeClass( 'js-crop-off' ).html( cropTarget.data( 'text-mod' ) + cropTarget.data( 'tail' ) ).addClass( 'js-crop-on' ).fadeIn( ).children( '.js-cropHandle' ).animCrop( );
-                } );
-            }
-
-        } );
-
-        return $( this );
-
-    };
-
-} )( jQuery );
 */
 
