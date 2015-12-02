@@ -618,7 +618,7 @@ En entrée :
         </a>
     </tal:condition>
 
-    <tal:condition condition="python:is_personnel and not affElement['val'] and not context.getIdExam() and context.Creator()==user.getId()">
+    <tal:condition condition="python:is_personnel and not affElement['val'] and not context.getIdExam() and context.getCreateur()==user.getId()">
     <!-- Boutons pour les enseignants -->
     <!-- Affichés uniquement pour le créateur de l'activité, qui est masquée et n'est pas un examen déjà activé -->
         <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="drop-action-activite">
@@ -663,8 +663,8 @@ En entrée :
         <div class="panel callout radius" tal:condition="python:is_personnel and not isExam and not affElement['val'] and listeExos">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel warning radius" tal:condition="python:is_personnel and context.Creator()!=user.getId() and not affElement['val']">
-            Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur de le faire.
+        <div class="panel warning radius" tal:condition="python:is_personnel and context.getCreateur()!=user.getId() and not affElement['val']">
+            Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur (<tal:creator content="context/getCreateur"/>) de le faire.
         </div>
 
         <div class="panel callout radius"
