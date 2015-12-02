@@ -1050,7 +1050,6 @@ class JalonCours(ATFolder):
                                        data-reveal-id="reveal-main" data-reveal-ajax="true"
                                        class="typeElementTitre">%s""" % (self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"]))
                     if "complementElement" in infos_element and infos_element["complementElement"]["value"]:
-                        html.append("<div><strong>Auteur : </strong>%s" % infos_element["complementElement"]["auteur"])
                         html.append("<div class=\"flex-video\"><img src=\"%s\"/></div>" % infos_element["complementElement"]["image"])
                     html.append("</a>")
                     # TODO : troncature coté serveur -> refonte du JS associé
