@@ -91,7 +91,8 @@
             </table>
 
         <tal:condition condition="folderContents">
-            <div class="field">
+            <div class="field"
+                 tal:condition="python:context.test(context.portal_type =='JalonCours', 1, 0)">
                 <h3><i class="fa fa-sitemap"></i><tal:block i18n:translate="">Informations dans le plan</tal:block></h3>
                 <input type="checkbox" name="display_in_plan" id="display_in_plan"
                        value="1"/>
