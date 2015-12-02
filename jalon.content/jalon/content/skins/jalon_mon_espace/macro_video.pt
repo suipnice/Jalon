@@ -27,23 +27,31 @@
         Macro d'affichage des messages en reveal
     </metal:macro>
 
-    <main class="row" role="main" aria-labelledby="page_title"
+    <main id="video_mon_espace" class="row" role="main" aria-labelledby="page_title"
           tal:define="tags context/getTag;">
 
         <section class="show-for-medium-up medium-12 columns">
-
-            <div id="item-adder">
-                <a class="button expand radius"
-                   tal:attributes="href string:${context/absolute_url}/videos_pod">
-                   <i class="fa fa-search"></i>
-                   <tal:block i18n:translate="">Rechercher une vidéo dans UNSPod</tal:block>
-                </a>
-            </div>
-
+            <nav id="item-adder">
+                <ul class="button-group expand radius">
+                    <li>
+                        <a class="button create" target="_blank"
+                           tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
+                           <i class="fa fa-plus-circle"></i>
+                           <tal:block i18n:translate="">Ajouter une Vidéo dans UNSPod</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button"
+                           tal:attributes="href string:${context/absolute_url}/lister_auteur">
+                           <i class="fa fa-search"></i>
+                           <tal:block i18n:translate="">Rechercher une vidéo dans UNSPod</tal:block>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </section>
 
         <section class="small-12 columns">
-
             <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
             <ul id="js-tag_filter">
                 <metal:macro use-macro="context/tag_macro/macros/create-tag">

@@ -13,7 +13,6 @@
 <metal:macro define-macro="video_liste">
 
     <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='');
-                        server_url context/getUrlServeurElasticsearch;
                         tags tags | context/getTag">
 
         <tal:block define="tagList python:context.tagFormat(subjects)"
@@ -64,7 +63,7 @@
                         <li tal:condition="is_owner">
                             <a title="Modifier la vidéo sur POD"
                                target="_blank"
-                               tal:attributes="href video/getVideourl"
+                               tal:attributes="href string:${context/absolute_url}/${video/getId}/cas_pod_login/edit"
                                i18n:attributes="title">
                                 <i class="fa fa-pencil fa-lg fa-fw no-pad"></i>Modifier
                             </a>
@@ -85,7 +84,7 @@
                         </li>
                         <li tal:condition="is_owner">
                             <a target="_blank"
-                               tal:attributes="href string:${server_url}/owner_videos_list">
+                               tal:attributes="href string:${context/absolute_url}/${video/getId}/cas_pod_login/delete">
                                 <i class="fa fa-trash-o fa-fw no-pad"></i>
                                 <tal:block i18n:translate="">Supprimer</tal:block>
                             </a>

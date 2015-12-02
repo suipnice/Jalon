@@ -69,14 +69,6 @@
 
     fichier : videos_pod;
 */
-/*
-#elasticsearch h4
-{
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow: ellipsis;
-}
-*/
 #elasticsearch .flex-video
 {
     padding-top: 0;
@@ -85,4 +77,16 @@
 #pagination-page_number input[type="number"]
 {
     width:50px;
+}
+
+/*
+    css utilsé dans la section vidéo de Mon espace
+    fichier : macro_video
+*/
+#video_mon_espace #item-adder ul.button-group > li {
+    width: 50%;
+}
+
+#video_mon_espace #item-adder {
+    margin-bottom: 1rem;
 }
