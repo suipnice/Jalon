@@ -89,6 +89,14 @@
                                 <tal:block i18n:translate="">Supprimer</tal:block>
                             </a>
                         </li>
+                        <li tal:condition="not:is_owner">
+                            <a target="_blank"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${video/getURL}/folder_form?macro=macro_form&amp;formulaire=supprimer">
+                                <i class="fa fa-trash-o fa-fw no-pad"></i>
+                                <tal:block i18n:translate="">Supprimer</tal:block>
+                            </a>
+                        </li>
                         </tal:condition>
                         <tal:condition condition="not:can_delete">
                         <li>
@@ -99,7 +107,7 @@
                                 <i class="fa fa-chain-broken fa-lg fa-fw no-pad"></i>Détacher
                             </a>
                         </li>
-                        <li tal:condition="is_owner">
+                        <li>
                             <a data-reveal-id="reveal-no_deletion">
                                 <i class="fa fa-trash-o fa-fw no-pad"></i>
                                 <tal:block i18n:translate="">Supprimer</tal:block>
