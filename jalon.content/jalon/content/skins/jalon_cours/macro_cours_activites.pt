@@ -839,8 +839,7 @@ En entrée :
                 <td ><tal:qualite replace="infosNotes/note"/> / <tal:sur replace="context/getNoteMax"/></td-->
             </tal:comment>
                 <tr>
-                    <th class="show-for-medium-up" />
-                    <th class="fullwidth text-right" colspan="2">
+                    <th class="fullwidth text-right" colspan="3">
                         <i class="fa fa-bar-chart-o"></i>
                         <tal:block i18n:translate="">Moyennes</tal:block>
                     </th>
