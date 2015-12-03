@@ -24,6 +24,8 @@
                         acces context/getAcces;
                         is_public python:context.test(acces == 'Public', 'success', 'disabled')">
 
+    <tal:define define="no_return python:context.insererConsultation(user.getId(), 'Cours', '')"/>
+
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         encart d'affichage du fil d'ariane
     </metal:macro>
