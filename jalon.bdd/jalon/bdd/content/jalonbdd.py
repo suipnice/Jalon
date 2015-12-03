@@ -18,12 +18,23 @@ from jalon.content.content import jalon_utils
 
 import tables
 import jalonsqlite
+import jalon_mysql
+
 import os
 import os.path
 import sqlite3
 import json
 
+from datetime import datetime
 from DateTime import DateTime
+
+# Messages de debug :
+from logging import getLogger
+LOG = getLogger('[JalonBDD]')
+"""
+# Log examples :
+LOG.info('info message')
+"""
 
 
 class JalonBDD(SimpleItem):
@@ -38,12 +49,14 @@ class JalonBDD(SimpleItem):
     _activer_stockage_consultation = 1
 
     #mysql+mysqldb://<user>:<password>@<host>[:<port>]/<dbname>
-    _use_mysql      = 1   
-    _host_mysql     = "127.0.0.1"
-    _user_mysql     = "zope"
+    _use_mysql = 1
+    _host_mysql = "127.0.0.1"
+    _user_mysql = "zope"
     _password_mysql = "zope"
-    _port_mysql     = 3306
-    _db_name_mysql   = "jalon"
+    _port_mysql = 3306
+    _db_name_mysql = "jalon"
+    _session_mysql_open = False
+    SessionMySQL = sessionmaker()
 
     def __init__(self, *args, **kwargs):
         super(JalonBDD, self).__init__(*args, **kwargs)
@@ -67,15 +80,15 @@ class JalonBDD(SimpleItem):
         self._typeBDD = typeBDD
 
     def getVariablesBDD(self):
-        return {"typeBDD"                      : self._typeBDD,
-                "urlConnexion"                 : self._urlConnexion,
-                "activerStockageConnexion"     : self._activer_stockage_connexion,
-                "activerStockageConsultation"  : self._activer_stockage_consultation,
-                "host_mysql"                   : self._host_mysql,
-                "user_mysql"                   : self._user_mysql,
-                "password_mysql"               : self._password_mysql,
-                "port_mysql"                   : self._port_mysql,
-                "db_name_mysql"                : self._db_name_mysql}
+        return {"typeBDD":                     self._typeBDD,
+                "urlConnexion":                self._urlConnexion,
+                "activerStockageConnexion":    self._activer_stockage_connexion,
+                "activerStockageConsultation": self._activer_stockage_consultation,
+                "host_mysql":                  self._host_mysql,
+                "user_mysql":                  self._user_mysql,
+                "password_mysql":              self._password_mysql,
+                "port_mysql":                  self._port_mysql,
+                "db_name_mysql":               self._db_name_mysql}
 
     def setVariablesBDD(self, variablesBDD):
         # s'il n'y a aucun type renseigné ou alors aucune url de connexion
@@ -166,6 +179,27 @@ class JalonBDD(SimpleItem):
             self.Session.configure(bind=engine)
             self._typeBDDActif = self._typeBDD
         return self.Session()
+
+    def getSessionMySQL(self):
+        #print "----------- getSession -----------"
+        try:
+            self.SessionMySQL().get_bind()
+            #print self.Session()
+        except:
+            #print "except Session"
+            self._session_mysql_open = False
+        if not self._session_mysql_open:
+            #print "initialiser session"
+            try:
+                self.SessionMySQL().close()
+            except:
+                pass
+            connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
+            engine = create_engine(connexion, echo=True, poolclass=NullPool)
+            #print "ouverture connexion"
+            self.SessionMySQL.configure(bind=engine)
+            self._session_mysql_open = True
+        return self.SessionMySQL()
 
     #-------------------------------------#
     # Interrogation de la base de données #
@@ -426,10 +460,17 @@ class JalonBDD(SimpleItem):
     #-------------------------------------#
     # Modification de la base de données  #
     #-------------------------------------#
-    def addConnexionUtilisateur(self, SESAME_ETU, DATE_CONN):
-        if not self._use_mysql:
+    def addConnexionUtilisateur(self, SESAME_ETU):
+        LOG.info('----- addConnexionUtilisateur -----')
+        if self._use_mysql:
+            LOG.info('Appel MySQL')
+            session = self.getSessionMySQL()
+            LOG.info("datetime : %s" % str(datetime.now()))
+            jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.now())
+        else:
+            LOG.info('Appel SQLITE')
             session = self.getSession()
-        jalonsqlite.addConnexionIND(session, SESAME_ETU, DATE_CONN)
+            jalonsqlite.addConnexionIND(session, SESAME_ETU, str(datetime().now()))
 
     def setInfosELP(self, param):
         session = self.getSession()
@@ -455,6 +496,10 @@ class JalonBDD(SimpleItem):
         session = self.getSession()
         if self._typeBDD == "sqlite":
             retour = jalonsqlite.creerUtilisateur(session, param)
+
+        if self._use_mysql:
+            session_mysql = self.getSessionMySQL()
+            jalon_mysql.addIndividu(session_mysql, param)
 
         if retour:
             sesame = param["SESAME_ETU"].replace(" ", "")

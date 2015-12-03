@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Text, Integer, String, ForeignKey
+from sqlalchemy import Column, Text, Integer, String, ForeignKey, DateTime
 
 from individu import IndividuMySQL
 
@@ -28,7 +28,7 @@ class ConnexionINDMySQL(Base):
 
     NUM_CONN = Column(Integer, primary_key=True, autoincrement=True)
     SESAME_ETU = Column(String(50), ForeignKey(IndividuMySQL.SESAME_ETU))
-    DATE_CONN = Column(String(10))
+    DATE_CONN = Column(DateTime(True))
 
     def __init__(self, SESAME_ETU=None, DATE_CONN=None):
         self.SESAME_ETU = SESAME_ETU

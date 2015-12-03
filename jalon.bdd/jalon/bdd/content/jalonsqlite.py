@@ -12,8 +12,8 @@ from sqlalchemy.orm import aliased
 from math import ceil
 
 # Messages de debug :
-from logging import getLogger
-#LOG = getLogger( '[jalon bdd]' )
+#from logging import getLogger
+#LOG = getLogger( '[jalonsqlite]' )
 
 
 #-------------------------------------#

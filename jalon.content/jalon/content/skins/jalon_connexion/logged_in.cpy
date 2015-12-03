@@ -68,10 +68,6 @@ if not hasattr(context.cours, memberid):
 membership_tool.loginUser(REQUEST)
 
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
-
-if portal_jalon_bdd.getBDDProperty("activer_stockage_connexion"):
-    portal_jalon_bdd.addConnexionUtilisateur(memberid, str(DateTime()))
-
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
     infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
@@ -94,6 +90,9 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
                                                    "VIL_IND"         : "Non renseignée",
                                                    "UNIV_IND"        : "Non renseignée",
                                                    "PROMO_IND"       : ""})
+
+if portal_jalon_bdd.getBDDProperty("activer_stockage_connexion"):
+    portal_jalon_bdd.addConnexionUtilisateur(memberid)
 
 if portal_jalon_bdd.isUtilisateurNotActif(memberid):
     state.set(status="failure")
