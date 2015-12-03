@@ -500,10 +500,6 @@ class JalonBDD(SimpleItem):
         if self._typeBDD == "sqlite":
             return jalonsqlite.supprimerELP(session, param)
 
-    def creerUtilisateurTest(self, param):
-        session = self.getSession()
-        jalonsqlite.creerUtilisateur(session, param)
-
     def creerUtilisateur(self, param):
         retour = 0
         session = self.getSession()
@@ -531,6 +527,15 @@ class JalonBDD(SimpleItem):
             #    portal_registration.registeredNotify(sesame)
             #except:
             #    pass
+
+    def creerUtilisateurTest(self, param):
+        session = self.getSession()
+        jalonsqlite.creerUtilisateur(session, param)
+
+    def creerUtilisateurMySQL(self, param):
+        session_mysql = self.getSessionMySQL()
+        jalon_mysql.addIndividu(session_mysql, param)
+
 
     def setInfosUtilisateurs(self, param):
         session = self.getSession()
