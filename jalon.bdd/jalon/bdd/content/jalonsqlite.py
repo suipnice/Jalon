@@ -863,8 +863,8 @@ def ajouterActuCours(session, param):
     session.commit()
 
 
-def insererConsultation(session, param):
-    session.add(tables.ConsultationCoursSQLITE(SESAME_ETU=param["SESAME_ETU"], DATE_CONS=param["DATE_CONS"], ID_COURS=param["ID_COURS"], TYPE_CONS=param["TYPE_CONS"], ID_CONS=param["ID_CONS"]))
+def insererConsultation(session, SESAME_ETU, DATE_CONS, ID_COURS, TYPE_CONS, ID_CONS):
+    session.add(tables.ConsultationCoursSQLITE(SESAME_ETU=SESAME_ETU, DATE_CONS=DATE_CONS, ID_COURS=ID_COURS, TYPE_CONS=TYPE_CONS, ID_CONS=ID_CONS))
     session.commit()
 
 

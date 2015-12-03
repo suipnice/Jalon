@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Text, Integer, String, ForeignKey
+from sqlalchemy import Column, Text, Integer, String, DateTime, ForeignKey
 
 from individu import IndividuMySQL
 
@@ -34,7 +34,7 @@ class ConsultationCoursMySQL(Base):
 
     NUM_CONS = Column(Integer, primary_key=True, autoincrement=True)
     SESAME_ETU = Column(String(50), ForeignKey(IndividuMySQL.SESAME_ETU))
-    DATE_CONS = Column(String(10))
+    DATE_CONS = Column(DateTime(True))
     ID_COURS = Column(String(50))
     TYPE_CONS = Column(String(10))
     ID_CONS = Column(String(50))

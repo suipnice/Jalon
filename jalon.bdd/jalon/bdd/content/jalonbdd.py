@@ -462,15 +462,28 @@ class JalonBDD(SimpleItem):
     #-------------------------------------#
     def addConnexionUtilisateur(self, SESAME_ETU):
         LOG.info('----- addConnexionUtilisateur -----')
-        if self._use_mysql:
-            LOG.info('Appel MySQL')
-            session = self.getSessionMySQL()
-            LOG.info("datetime : %s" % str(datetime.now()))
-            jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.now())
-        else:
-            LOG.info('Appel SQLITE')
-            session = self.getSession()
-            jalonsqlite.addConnexionIND(session, SESAME_ETU, str(datetime().now()))
+        if self._activer_stockage_connexion:
+            if self._use_mysql:
+                LOG.info('Appel MySQL')
+                session = self.getSessionMySQL()
+                LOG.info("datetime : %s" % str(datetime.now()))
+                jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.now())
+            else:
+                LOG.info('Appel SQLITE')
+                session = self.getSession()
+                jalonsqlite.addConnexionIND(session, SESAME_ETU, str(DateTime()))
+
+    def insererConsultation(self, SESAME_ETU, ID_COURS, TYPE_CONS, ID_CONS):
+        LOG.info('----- insererConsultation -----')
+        if self._activer_stockage_consultation:
+            if self._use_mysql:
+                LOG.info('Appel MySQL')
+                session = self.getSessionMySQL()
+                jalon_mysql.addConsultation(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS)
+            else:
+                LOG.info('Appel SQLITE')
+                session = self.getSession()
+                jalonsqlite.insererConsultation(session, SESAME_ETU, str(DateTime()), ID_COURS, TYPE_CONS, ID_CONS)
 
     def setInfosELP(self, param):
         session = self.getSession()
@@ -1070,12 +1083,6 @@ class JalonBDD(SimpleItem):
         session.execute('''CREATE TABLE consultationCours
                         (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONS TEXT, ID_COURS TEXT, TYPE_CONS TEXT, ID_CONS TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu_lite(SESAME_ETU))''')
         session.commit()
-
-    def insererConsultation(self, param):
-        if self._activerStockageConsultation:
-            session = self.getSession()
-            if self._typeBDD == "sqlite":
-                return jalonsqlite.insererConsultation(session, param)
 
     def getConsultation(self):
         session = self.getSession()

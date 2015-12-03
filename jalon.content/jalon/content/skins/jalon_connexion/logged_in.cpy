@@ -91,8 +91,7 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
                                                    "UNIV_IND"        : "Non renseignée",
                                                    "PROMO_IND"       : ""})
 
-if portal_jalon_bdd.getBDDProperty("activer_stockage_connexion"):
-    portal_jalon_bdd.addConnexionUtilisateur(memberid)
+portal_jalon_bdd.addConnexionUtilisateur(memberid)
 
 if portal_jalon_bdd.isUtilisateurNotActif(memberid):
     state.set(status="failure")

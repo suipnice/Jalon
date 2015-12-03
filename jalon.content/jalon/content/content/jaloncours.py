@@ -2718,7 +2718,7 @@ class JalonCours(ATFolder):
         #self.plone_log("***** listeActualites : %s" % str(listeActualites))
         retour = self.created()
         paramDate = "dateActivation"
-        if listeActualites == None:
+        if listeActualites is None:
             listeActualites = self.getActualitesCours(True)["listeActu"]
             paramDate = "date"
         for actualite in listeActualites:
@@ -2730,7 +2730,7 @@ class JalonCours(ATFolder):
         #self.plone_log("insererConsultation")
         portal = self.portal_url.getPortalObject()
         portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
-        portal_jalon_bdd.insererConsultation({"SESAME_ETU": sesame, "DATE_CONS": str(DateTime()), "ID_COURS": self.getId(), "TYPE_CONS": type_cons, "ID_CONS": id_cons})
+        portal_jalon_bdd.insererConsultation(SESAME_ETU=sesame, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons)
 
     #Recupere la liste des fichiers d'un cours pouvant etre telecharges
     def getFichiersCours(self, page=None):
