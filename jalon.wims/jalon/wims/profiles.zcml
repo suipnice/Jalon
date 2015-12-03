@@ -7,7 +7,7 @@
     name="Wims"
     title="Wims Connector"
     directory="profiles/default"
-    description="Adds the Wims editor to the site."
+    description="Ajoute les API de connexion au serveur WIMS dans Plone."
     provides="Products.GenericSetup.interfaces.EXTENSION"
     />
 

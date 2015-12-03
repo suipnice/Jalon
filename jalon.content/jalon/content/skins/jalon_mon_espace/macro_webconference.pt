@@ -45,6 +45,7 @@
                    <tal:block i18n:translate="">Se connecter à votre salle virtuelle</tal:block>
                 </a>
                 <p class="panel callout radius">
+                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
                     <strong tal:content="string:${reunion/urlreunion}" />
                 </p>

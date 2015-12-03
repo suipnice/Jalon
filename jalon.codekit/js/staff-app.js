@@ -221,43 +221,6 @@ function setMailRegistrationForm( ) {
 
 
 /*
-    Instanciation CKEditor (dupliquée dans APP.js)
-*/
-
-function instantiateCKEditor( textareaID ) {
-
-    if ( window.CKEDITOR && window.CKEDITOR.dom ) {
-
-        CKEDITOR.replace( textareaID, {
-            customConfig: '',
-            language: 'fr',
-            // Define the toolbar groups as it is a more accessible solution.
-            toolbarGroups: [
-                { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
-                //{ 'name': "links",       'groups': [ "links" ] },
-                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
-                { 'name': "paragraph",   'groups': [ "list" ] },
-                { 'name': "insert",      'groups': [ "insert" ] },
-                //{ 'name': "document",    'groups': [ "mode" ] },
-            ],
-            // Remove unwanted plug-ins.
-            removePlugins: 'image,elementspath',
-            // Remove the redundant buttons from toolbar groups defined above.
-            removeButtons: 'Strike,Subscript,Superscript,Anchor',
-        } );
-
-        return textareaID;
-
-    } else {
-
-        return false;
-    }
-
-}
-
-
-
-/*
     Bascule de l'etat active / desactive d'un bouton
 */
 

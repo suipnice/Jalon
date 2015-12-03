@@ -8,3 +8,11 @@ Remplacer les fichiers :
         cp ./uploadcapable.py /home/zope/Plone/buildout-cache/eggs/collective.quickupload-1.8.0-py2.7.egg/collective/quickupload/browser/
     - utils.py dans le buildout-cache - Products.PloneBoard - browser
         cp ./utils.py /home/zope/Plone/buildout-cache/eggs/Products.Ploneboard-3.5-py2.7.egg/Products/Ploneboard/browser/
+
+Installation de MySQL :
+
+apt-get install mysql-server
+apt-get install python-pip libmysqlclient-dev python-dev python-mysqldb
+
+pip install mysql
+pip install MySQL-python

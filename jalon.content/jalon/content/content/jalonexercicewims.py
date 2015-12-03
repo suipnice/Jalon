@@ -92,6 +92,8 @@ class JalonExerciceWims(ATDocumentBase):
                                  "options"         : "checkbox split",
                                  "accolade"        : "1",
                                  "credits"         : "",
+                                 "hint"            : "",
+                                 "help"            : "",
                                  },
                             "equation":
                                 {"precision"    : "1000",
@@ -404,10 +406,8 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
             for exo_id in liste_exos:
                 exo = getattr(self.aq_parent, exo_id)
                 if exo.getModele() != "groupe":
-                    relatedItems = exo.getRelatedItems()
-                    relatedItems.append(self)
-                    exo.setRelatedItems(relatedItems)
-                    exo.reindexObject()
+                    exo.addRelatedItem(self)
+
             return {"status": "OK", "code": "GROUP_ADDED"}
 
             #return self.aq_parent.wims("lierExoFeuille", {"listeExos": self.getListeIdsExos(), "qnum": self.getQnum(), "title": self.Title(), "authMember": author, "qclass": qclass, "qsheet": "1"})
@@ -421,10 +421,8 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
             for exo_id in liste_exos:
                 exo = getattr(self.aq_parent, exo_id, None)
                 if exo:
-                    relatedItems = exo.getRelatedItems()
-                    relatedItems.remove(self)
-                    exo.setRelatedItems(relatedItems)
-                    exo.reindexObject()
+                    exo.removeRelatedItem(self)
+
             return {"status": "OK", "code": "GROUP_ADDED"}
         else:
             return {"status": "ERROR", "code": "NO_EXERCICE"}
@@ -475,6 +473,13 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/getModule", "message": "demande les infos d'un module", "requete": dico})
 
+    def getTypeWims(self):
+        """ retourne le type d'element (exercice / groupe)."""
+        if self.modele == "groupe":
+            return "Groupe"
+        else:
+            return "Exercice"
+
     def cleanData(self, input_data):
         """cleanData."""
         # Il faut verifier quelques points à l'interieur des parametres :
@@ -523,7 +528,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
             self.aq_parent.wims("verifierRetourWims", {"rep": file,
                                                        "fonction": "jalonexercicewims.py/getExoWims",
-                                                       "message": "Impossible d'obtenir un exo WIMS de l'utilisateur %s" % authMember,
+                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
                                                        "jalon_request": requete
                                                        })
             return None
@@ -544,7 +549,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                              "feedback_mauvais": "text{feedback_mauvais",
                                              "options":          "text{option",
                                              "accolade":         "text{accolade=item\(",
-                                             "credits"         : "credits{",
+                                             "credits":          "credits{",
+                                             "hint":             "hint{",
+                                             "help":             "help{",
                                              },
                                "equation": {"precision":     "precision{",
                                             "equation":      "real{ans",
@@ -647,10 +654,10 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
-                if key not in ["precision", "texte_reponse", "accolade", "credits"]:
+                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
-                    if key in ["precision", "credits"]:
+                    if key in ["precision", "credits", "hint", "help"]:
                         #exemple : \precision{100}
                         pattern = "%s(.*?)}_ENDLINE_" % variables_parse[modele][key]
                     if key == "texte_reponse":
@@ -826,6 +833,22 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                 if key not in ['cmd', 'session', 'module']:
                     new_permalink = "%s&%s=%s" % (new_permalink, key, params[key])
         return new_permalink
+
+    def addRelatedItem(self, item_a_ajouter):
+        u""" Ajoute un objet aux relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        relatedItems = self.getRelatedItems()
+        if item_a_ajouter not in relatedItems:
+            relatedItems.append(item_a_ajouter)
+            self.setRelatedItems(relatedItems)
+            self.reindexObject()
+
+    def removeRelatedItem(self, item_a_retirer):
+        u""" Retire un objet des relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        relatedItems = self.getRelatedItems()
+        if item_a_retirer in relatedItems:
+            relatedItems.remove(item_a_retirer)
+            self.setRelatedItems(relatedItems)
+            self.reindexObject()
 
     def checkRoles(self, user, context, action="view"):
         u"""Permet de vérifier si l'utilisateur courant a le droit d'accéder à un exercice.

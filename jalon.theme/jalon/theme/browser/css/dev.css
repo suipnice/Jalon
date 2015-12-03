@@ -14,3 +14,96 @@
 */
 
 
+/*
+    rappel du style "sup" présent sur le plan du cours  sur la barres d'onglets de la doite de dépots
+    fichier cours_boite_view
+*/
+#boite .sup {
+    position: absolute;
+    top: 0;
+    display: inline-block;
+    background-color: #f04124;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.75rem;
+    margin-top: -0.33em;
+    vertical-align: top;
+    padding: 2px .5em;
+    text-shadow: none;
+    border: 2px solid #fff;
+    z-index: 10;
+    border-radius: 1em;
+    margin-left: .5em;
+}
+
+/*
+    css utilsé dans la liste des dépôts
+    fichier : macro_cours_boite
+    macro   : boite;
+*/
+#js-listeDepots .list .dropdown
+{
+    margin-top: 0.6rem;
+}
+
+#js-listeDepots .list .discreet
+{
+    font-size: 0.73125rem;
+    font-style: italic;
+}
+
+#js-listeDepots .list .activer
+{
+    color:green;
+}
+
+#js-listeDepots .list .desactiver
+{
+    color:red;
+}
+
+/*----------*/
+/* Permet d'avoir un affichage similaire sur Firefox et Safari,
+     avec un checkbox et le label qui le suit toujours sur la même ligne, meme sur petits écrans.
+     J'appelle la classe "confirm_button" dans l'idée de la génériser
+      à d'éventuels futurs checkbox de confirmation d'actions de formulaire.
+     C'est pour le moment utilisé dans jalon/content/skins/jalon_mescours/macro_mescours.pt :
+     ligne 693 : "confirm-suppr_WIMS"
+*/
+.confirm_check input[type="checkbox"]{
+    /* permet d'éviter un espace indésirable dans le cas ou le label suivant se retrouve sur 2 lignes*/
+    margin-bottom:0;
+}
+.confirm_check input[type="checkbox"]+label{
+    /* important pour WebKit (Safari) */
+    display:inline;
+}
+
+/*----------*/
+/* Permet d'appliquer la classe "warning" sur un entete de reveal-modal,
+ afin d'attirer l'attention sur des actions (non autorisées par exemple)
+C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wims.pt :
+     ligne 176 : "no_deletion" */
+.reveal-modal>h2.warning{
+   background-color:#CF6E0E;
+}
+
+/*----------*/
+/*La classe "debug" permet d'afficher des elements à l'écran pendant les tests, avec une couleur bien criarde,
+ histoire de ne pas oublier de les retirer avant de faire un commit !*/
+.debug{
+    color :darkorange;
+    border-style: solid;
+    border-width: 1px;
+    padding:3px;
+}
+
+/*----------*/
+/* la classe "disabled" indique un element de formulaire non accessible à l'utilisateur connecté.
+ avec le css ci-dessous, on associe au label associé un visuel clair indiquant que l'action n'est pas possible (le texte est barré)
+   - a voir par exemple dans le fichier macro_mescours.pt, ligne 657 (correspond à l'action "supprimer les activités WIMS" du bouton d'action général d'un cours, pour le co-auteur.)
+ */
+.disabled label{
+    text-decoration: line-through;
+    cursor:initial;
+}

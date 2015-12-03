@@ -8,9 +8,10 @@
 ##parameters=
 ##title=Supprimer toutes les activités WIMS d'un cours
 ##
+u""" Script de suppression de l'ensemble des activités WIMS d'un cours."""
 
 # MessageFactory permet d'utiliser le systeme i18n
-#normalement on devrait utiliser celui de jalon.contnet, mais souci de privileges ?
+#normalement on devrait utiliser celui de jalon.content, mais souci de privileges ?
 #from jalon.content import contentMessageFactory as _
 from Products.CMFPlone import PloneMessageFactory as _
 
@@ -47,7 +48,7 @@ else:
                                "message": "<p>Suspicion de fraude de l'utilisateur <strong>%s</strong></p><div>%s</div>" % (authMember_id, context.REQUEST)})
 
 
-if "came_from" in context.REQUEST and context.REQUEST["came_from"]=="cours_plan_view":
+if "came_from" in context.REQUEST and context.REQUEST["came_from"] == "cours_plan_view":
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
     context.REQUEST.RESPONSE.redirect(context.aq_parent.absolute_url())

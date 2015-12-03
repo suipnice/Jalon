@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 from zope.schema import List, TextLine, Bool
 from zope.component import adapts
 from zope.interface import Interface, implements
@@ -16,9 +15,9 @@ from jalon.content import contentMessageFactory as _
 
 
 class IJalonConfigFichiersControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config Fichiers control panel."""
+
     activer_fichiers = Bool(title=_(u"Activer la section Fichiers dans mon espace."),
                             description=_(u"Cocher pour activer la section Fichiers dans mon espace."),
                             default=False, required=False)
@@ -28,9 +27,9 @@ class IJalonConfigFichiersControlPanel(Interface):
 
 
 class IJalonConfigSonorisationControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config Sonorisation control panel."""
+
     activer_sonorisation = Bool(title=_(u"Activer la section Présentation sonorisée dans mon espace."),
                             description=_(u"Cocher pour activer la section Présentation sonorisée dans mon espace, seulement possible si le produit jalon.connect est installé."),
                             default=False, required=False)
@@ -53,9 +52,9 @@ class IJalonConfigSonorisationControlPanel(Interface):
 
 
 class IJalonConfigWimsControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config Wims control panel."""
+
     activer_wims = Bool(title=_(u"Activer la section Exercices Wims dans mon espace."),
                         description=_(u"Cocher pour activer la section Exercices Wims dans mon espace, seulement possible si le produit jalon.wims est installé."),
                         default=False, required=False)
@@ -71,9 +70,9 @@ class IJalonConfigWimsControlPanel(Interface):
 
 
 class IJalonConfigExterneControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config Externe control panel."""
+
     activer_externes = Bool(title=_(u"Activer la section Ressources externes dans mon espace."),
                             description=_(u"Cocher pour activer la section Ressources externes dans mon espace."),
                             default=False, required=False)
@@ -86,9 +85,9 @@ class IJalonConfigExterneControlPanel(Interface):
 
 
 class IJalonConfigGlossaireControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config Glossaire control panel."""
+
     activer_glossaire = Bool(title=_(u"Activer la section Glossaire dans mon espace."),
                             description=_(u"Cocher pour activer la section Glossaire dans mon espace."),
                             default=False, required=False)
@@ -98,9 +97,9 @@ class IJalonConfigGlossaireControlPanel(Interface):
 
 """
 class IJalonConfigWebconferenceControlPanel(Interface):
-    \"""
-    fields for jalon import control panel
-    \"""
+
+    \"""fields for jalon ConfigWebconference control panel.\"""
+
     activer_webconference = Bool(title=_(u"Activer la section Webconférence dans mon espace."),
                             description=_(u"Cocher pour activer la Webconference dans mon espace, seulement possible si le produit jalon.connect est installé."),
                             default=False, required=False)
@@ -114,9 +113,9 @@ class IJalonConfigWebconferenceControlPanel(Interface):
 
 
 class IJalonConfigMAJControlPanel(Interface):
-    """
-    fields for jalon import control panel
-    """
+
+    """fields for jalon Config MAJ control panel."""
+
     activer_maj = Bool(title=_(u"Activer les notes de mise à jour de Jalon"),
                              description=_(u"Cocher pour activer les notes de mise à jour depuis la page mon espace"),
                              default=False, required=False)
@@ -131,8 +130,8 @@ class IJalonConfigControlPanel(IJalonConfigFichiersControlPanel,
                                IJalonConfigExterneControlPanel,
                                IJalonConfigGlossaireControlPanel,
                                IJalonConfigMAJControlPanel,):
-    """Combined schema for the adapter lookup.
-    """
+
+    """Combined schema for the adapter lookup."""
 
 
 class JalonConfigControlPanelAdapter(SchemaAdapterBase):
@@ -145,8 +144,8 @@ class JalonConfigControlPanelAdapter(SchemaAdapterBase):
         self.jiProps = pprop.jalonconfig_properties
 
     def exclureNavigation(self, repertoire, exclure):
-        recherche = {"portal_type" : "JalonFolder"
-                    ,"id" : repertoire}
+        recherche = {"portal_type" : "JalonFolder",
+                     "id" : repertoire}
         portal_catalog = getToolByName(self.context, 'portal_catalog')
         for result in portal_catalog.searchResults(recherche):
             objet = result.getObject()

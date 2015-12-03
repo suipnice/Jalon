@@ -20,9 +20,12 @@ from os import close
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import jalon_utils
-import ldap
 import os
 import copy
+
+# Messages de debug :
+#from logging import getLogger
+#LOG = getLogger( '[JalonBoiteDepot]' )
 
 ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8"), u"Ressource bibliographie".encode("utf-8")]
 
@@ -123,6 +126,9 @@ class JalonBoiteDepot(ATFolder):
     _competences = {}
     _comp_etudiants = {}
 
+    ##-------------------##
+    # Fonctions générales #
+    ##-------------------##
     def getElementCours(self, key):
         return self.getInfosElement(key)
 
@@ -140,123 +146,18 @@ class JalonBoiteDepot(ATFolder):
         else:
             self._infos_element = infos_element
 
-    def getOrdreCompetences(self):
-        ordre = self._competences.keys()
-        ordre.sort(lambda x, y: cmp(int(x), int(y)))
-        return ordre
-
-    def getCompetences(self, key=None):
-        if key:
-            return self._competences.get(key, None)
-        return self._competences
-
-    def setCompetences(self, competences):
-        if type(self._competences).__name__ != "PersistentMapping":
-            self._competences = PersistentDict(competences)
-        else:
-            self._competences = competences
-
-    def getOrdreEtudiants(self):
-        ordre = []
-        for SESAME_ETU in self._comp_etudiants.keys():
-            ordre.append({"id"  : SESAME_ETU,
-                          "nom" : self.getNomEtudiant(SESAME_ETU)})
-        ordre.sort(lambda x, y: cmp(x["nom"], y["nom"]))
-        return ordre
-
-    def getCompEtudiants(self, key=None):
-        if key:
-            return self._comp_etudiants.get(key, None)
-        return self._comp_etudiants
-
-    def getAffComEtu(self, SESAME_ETU):
-        dicoCompEtudiants = self._comp_etudiants
-        if not SESAME_ETU in dicoCompEtudiants:
-            return {}
-
-        dicoCompEtudiant = {}
-        compEtu = dicoCompEtudiants[SESAME_ETU]
-        dicoGradation = {"acquerir" : "À acquérir",
-                         "encours"  : "En cours d'acquisition",
-                         "partielle": "Partiellement acquis",
-                         "acquise"  : "Acquis"}
-        dicoCompetences = self._competences
-        listeIdCompetences = self._competences.keys()
-        listeIdCompetences.sort(lambda x, y: cmp(int(x), int(y)))
-        for idcompetence in listeIdCompetences:
-            competence = dicoCompetences[idcompetence]
-            if idcompetence in compEtu:
-                if competence["evaluation"] == "libre":
-                    dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
-                if competence["evaluation"] == "validation":
-                    dicoCompEtudiant[idcompetence] = "Acquis"
-                if competence["evaluation"] == "gradation":
-                    dicoCompEtudiant[idcompetence] = dicoGradation[compEtu[idcompetence]]
-                if competence["evaluation"] == "note":
-                    if "." in compEtu[idcompetence] or "," in compEtu[idcompetence]:
-                        if competence["note_partielle"]:
-                            note_partielle = float(competence["note_partielle"])
-                        if competence["note_acquise"]:
-                            note_acquise = float(competence["note_acquise"])
-                        note = float(compEtu[idcompetence])
-                    else:
-                        if competence["note_partielle"]:
-                            note_partielle = int(competence["note_partielle"])
-                        if competence["note_acquise"]:
-                            note_acquise = int(competence["note_acquise"])
-                        try:
-                            note = int(compEtu[idcompetence])
-                        except:
-                            note = "Pas de note"
-                    if note_acquise and note >= note_acquise:
-                        dicoCompEtudiant[idcompetence] = "Acquis"
-                        #dicoCompEtudiant[idcompetence] = "%s / %s (Acquis)" % (compEtu[idcompetence], competence["note_max"])
-                    elif note_partielle and note >= note_partielle:
-                        dicoCompEtudiant[idcompetence] = "Partiellement acquis"
-                        #dicoCompEtudiant[idcompetence] = "%s / %s (Partiellement acquis)" % (compEtu[idcompetence], competence["note_max"])
-                    else:
-                        dicoCompEtudiant[idcompetence] = "À acquérir"
-                        #dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
-            else:
-                dicoCompEtudiant[idcompetence] = 'À acquérir'
-        return dicoCompEtudiant
-
-    def getNomEtudiant(self, SESAME_ETU):
-        if self.isLDAP() or "@" in SESAME_ETU:
-            #Cas du ldap actif ou de l'etudiant EtudiantJalon
-            portal_membership = getToolByName(self, "portal_membership")
-            member = portal_membership.getMemberById(SESAME_ETU)
-            if member:
-                etudiantName = str(member.getProperty("fullname"))
-                if not etudiantName:
-                    etudiantName = str(member.getProperty("cn"))
-            else:
-                etudiantName = SESAME_ETU
-        else:
-            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-            etudiant = portal_jalon_bdd.getIndividuLITE(SESAME_ETU)
-            if etudiant:
-                etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-            else:
-                etudiantName = SESAME_ETU
-        return etudiantName
-
-    def setCompEtudiants(self, comp_etudiants):
-        if type(self._comp_etudiants).__name__ != "PersistentMapping":
-            self._comp_etudiants = PersistentDict(comp_etudiants)
-        else:
-            self._comp_etudiants = comp_etudiants
-
-    def ajouterTag(self, tag):
-        return jalon_utils.setTag(self, tag)
-
-    def getTagDefaut(self):
-        return jalon_utils.getTagDefaut(self)
-
     def getAttributsMod(self, info):
         dico = {"info":  ['title', 'description'],
                 "date":  ['dateDepot', 'dateRetard']}
         return dico[info]
+
+    def setProperties(self, dico):
+        for key in dico.keys():
+            self.__getattribute__("set%s" % key)(dico[key])
+        self.reindexObject()
+
+    def getListeAttribut(self, attribut):
+        return self.__getattribute__("liste%s" % attribut.capitalize())
 
     def getInfosListeAttribut(self, attribut, personnel=False):
         retour = []
@@ -264,23 +165,31 @@ class JalonBoiteDepot(ATFolder):
         infos_element = self.getInfosElement()
         for idElement in listeElement:
             infos = infos_element.get(idElement, '')
-            affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
-            if personnel or not affElement['val'] == 0:
-                new = {"idElement":       idElement,
-                       "titreElement":    infos["titreElement"],
-                       "typeElement":     infos["typeElement"].replace(" ", ""),
-                       "createurElement": infos["createurElement"],
-                       "affElement":      affElement,
-                       "iconElement":     affElement["icon"],
-                       "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
-                       }
-                retour.append(new)
+            if infos:
+                affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
+                if personnel or not affElement['val'] == 0:
+                    new = {"idElement":       idElement,
+                           "titreElement":    infos["titreElement"],
+                           "typeElement":     infos["typeElement"].replace(" ", ""),
+                           "createurElement": infos["createurElement"],
+                           "affElement":      affElement,
+                           "iconElement":     affElement["icon"],
+                           "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
+                           }
+                    retour.append(new)
         if retour:
             retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
 
-    def getListeAttribut(self, attribut):
-        return self.__getattribute__("liste%s" % attribut.capitalize())
+    def setAttributActivite(self, form):
+        if "DateDepot" in form and form["DateDepot"] != self.getDateDepot():
+            self.aq_parent.setActuCours({"reference": self.getId(),
+                                         "code":      "datedepot",
+                                         "dateDepot": form["DateDepot"]})
+        self.setProperties(form)
+        if "Title" in form:
+            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
+        self.reindexObject()
 
     def getAffDate(self, attribut):
         if attribut == "DateDepot":
@@ -292,171 +201,20 @@ class JalonBoiteDepot(ATFolder):
         else:
             return jalon_utils.getLocaleDate(date, '%d %B %Y - %Hh%M')
 
-    def getDateDepot(self):
-        if not self.dateDepot:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
-        else:
-            return self.dateDepot.strftime("%Y/%m/%d %H:%M")
-
-    def getDateRetard(self):
-        if not self.dateRetard:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
-        else:
-            return self.dateRetard.strftime("%Y/%m/%d %H:%M")
-
-    def getNbDepots(self, personnel):
-        if not personnel:
-            nbDepots = 0
-            authMember = self.portal_membership.getAuthenticatedMember().getId()
-            for iddepot in self.objectIds():
-                if authMember in iddepot:
-                    nbDepots = nbDepots + 1
-            return nbDepots
-        depots = self.objectIds()
-        if "corrections" in depots:
-            return len(depots) - 1
-        else:
-            return len(depots)
-
     def getNbSujets(self):
         return len(self.getInfosListeAttribut("sujets", True))
-
-    def getNbCompetences(self):
-        return len(self._competences.keys())
-
-    def getDepots(self, authMember, personnel, request):
-        retour = {"total":              0,
-                  "etudiantsTotal":     0,
-                  "valides":            0,
-                  "etudiantsValides":   0,
-                  "invalides":          0,
-                  "etudiantsInvalides": 0,
-                  "listeDepots":  []}
-        listeDepots = []
-        valides = 0
-        listeEtudiantsValides = []
-        invalides = 0
-        listeEtudiantsInvalides = []
-        listeEtudiantsTotal = []
-        if personnel or self.getAccesDepots():
-            depots = self.getFolderContents(contentFilter={"portal_type": "JalonFile"})
-            if not depots:
-                return retour
-            portal = self.portal_url.getPortalObject()
-            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-            #if not self.isLDAP():
-            #    portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-
-            for depot in depots:
-                #etudiant = créateur du dépôt
-                auteurDepot = str(depot.Creator)
-                member = portal.portal_membership.getMemberById(auteurDepot)
-                """
-                if self.isLDAP() or member.has_role("EtudiantJalon"):
-                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
-                    if member:
-                        etudiantName = str(member.getProperty("fullname"))
-                        if not etudiantName:
-                            etudiantName = str(member.getProperty("cn"))
-                    else:
-                        etudiantName = auteurDepot
-                else:
-                    etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
-                    if etudiant:
-                        etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-                    else:
-                        etudiantName = auteurDepot
-                """
-                etudiant = portal_jalon_bdd.getIndividuLITE(auteurDepot)
-                if etudiant:
-                    etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
-                elif self.isLDAP() or member.has_role("EtudiantJalon"):
-                    #Cas du ldap actif ou de l'etudiant EtudiantJalon
-                    if member:
-                        etudiantName = str(member.getProperty("fullname"))
-                        if not etudiantName:
-                            etudiantName = str(member.getProperty("cn"))
-                    else:
-                        etudiantName = auteurDepot
-                else:
-                    etudiantName = auteurDepot
-
-                if not etudiantName in listeEtudiantsTotal:
-                    listeEtudiantsTotal.append(etudiantName)
-                if depot.getActif:
-                    valides = valides + 1
-                    if not etudiantName in listeEtudiantsValides:
-                        listeEtudiantsValides.append(etudiantName)
-                else:
-                    invalides = invalides + 1
-                    if not etudiantName in listeEtudiantsInvalides:
-                        listeEtudiantsInvalides.append(etudiantName)
-                correction = 0
-                if not depot.getCorrection in ["", None, " ", "\n"]:
-                    correction = 1
-                if depot.getFichierCorrection:
-                    correction = 1
-                listeDepots.append({"etudiant":   ' '.join([item.capitalize() for item in etudiantName.split()]),
-                                    "id":         depot.getId,
-                                    "title":      depot.Title,
-                                    "date":       self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M'),
-                                    "url":        depot.getURL,
-                                    "actif":      depot.getActif,
-                                    "correction": correction,
-                                    "note":       depot.getNote,
-                                    "size":       1000})
-            retour = {"total":              len(listeDepots),
-                      "etudiantsTotal":     len(listeEtudiantsTotal),
-                      "valides":            valides,
-                      "etudiantsValides":   len(listeEtudiantsValides),
-                      "invalides":          invalides,
-                      "etudiantsInvalides": len(listeEtudiantsInvalides),
-                      "listeDepots":        listeDepots}
-        else:
-            for iddepot in self.objectIds():
-                if authMember.getId() in iddepot:
-                    depot = getattr(self, iddepot)
-                    correction = 0
-                    if depot.getCorrection() not in ["", None, " "]:
-                        correction = 1
-                    if depot.getFichierCorrection():
-                        correction = 1
-                    listeDepots.append({"etudiant":   authMember,
-                                        "id":         depot.getId(),
-                                        "title":      depot.title_or_id(),
-                                        "date":       self.getLocaleDate(depot.created(), '%d/%m/%Y - %Hh%M'),
-                                        "url":        depot.absolute_url(),
-                                        "actif":      depot.getActif(),
-                                        "correction": correction,
-                                        "note":       depot.getNote(),
-                                        "size":       depot.getSize()})
-            retour = {"listeDepots": listeDepots}
-        return retour
-
-    def getLocaleDate(self, date, format="%d/%m/%Y"):
-        return jalon_utils.getLocaleDate(date, format)
 
     def getOptionsAvancees(self):
         options = {}
         for option in ["getCorrectionIndividuelle", "getNotificationCorrection", "getNotation", "getNotificationNotation", "getAccesDepots", "getAccesCompetences"]:
             if self.__getattribute__(option)():
-                options[option] = {"actif" : 1, "texte": _(u"Activée")}
+                options[option] = {"actif": 1, "texte": _(u"Activée")}
             else:
                 options[option] = {"actif": 0, "texte": _(u"Désactivée")}
         return options
 
     def getRubriqueEspace(self, ajout=None):
         return self.aq_parent.getRubriqueEspace(ajout)
-
-    def getPermissionModifierCompetence(self, personnel, user_id):
-        if not personnel:
-            return False
-        elif user_id == self.Creator():
-            return True
-        elif self.getModifierCompetences():
-            return False
-        else:
-            return True
 
     def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant=None):
         if typeElement == "JalonFile":
@@ -476,27 +234,6 @@ class JalonBoiteDepot(ATFolder):
         else:
             return self.aq_parent.getElementView(idElement, createurElement, typeElement, indexElement, mode_etudiant)
 
-    def getDepotDate(self, data, sortable=False):
-        return jalon_utils.getDepotDate(data, sortable)
-
-    def setProperties(self, dico):
-        for key in dico.keys():
-            self.__getattribute__("set%s" % key)(dico[key])
-        self.reindexObject()
-
-    def setAttributActivite(self, form):
-        if "DateDepot" in form and form["DateDepot"] != self.getDateDepot():
-            self.aq_parent.setActuCours({"reference": self.getId(),
-                                         "code":      "datedepot",
-                                         "dateDepot": form["DateDepot"]})
-        self.setProperties(form)
-        if "Title" in form:
-            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
-        self.reindexObject()
-
-    def isAfficherElement(self, affElement, masquerElement):
-        return jalon_utils.isAfficherElement(affElement, masquerElement)
-
     def getParentPlanElement(self, idElement, idParent, listeElement):
         if idElement == self.getId():
             return self.aq_parent.getParentPlanElement(idElement, idParent, listeElement)
@@ -511,47 +248,6 @@ class JalonBoiteDepot(ATFolder):
             if idElement in list(self.getListeCorrections()):
                 return 1
             return 0
-
-    """
-    isDepotActif renvoit :
-        1 si les étudiants ont le droit de déposer.
-        2 s'ils sont en retard.
-        0 s'ils n'ont plus le droit.
-    """
-    def isDepotActif(self):
-        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
-        date_depot = DateTime(self.getDateDepot())
-        date_retard = DateTime(self.getDateRetard())
-        # La date de dépot n'est pas encore passée.
-        if now <= date_depot:
-            return 1
-        # La date de retard n'est pas encore passée.
-        if date_retard > date_depot and now < date_retard:
-            return 2
-        return 0
-
-    def isCorrigerNoter(self):
-        corriger = self.getCorrectionIndividuelle()
-        noter = self.getNotation()
-        if corriger and noter:
-            return {"title"    : "Corriger et Noter",
-                    "corriger" : 1,
-                    "noter"    : 1}
-        if corriger:
-            return {"title"    : "Corriger",
-                    "corriger" : 1,
-                    "noter"    : 0}
-        if noter:
-            return {"title"    : "Noter",
-                    "corriger" : 0,
-                    "noter"    : 1}
-
-    def isLDAP(self):
-        return jalon_utils.isLDAP()
-
-    def activerDepot(self, idDepot, actif):
-        depot = getattr(self, idDepot)
-        depot.setProperties({"Actif": actif})
 
     def afficherRessource(self, idElement, dateAffichage, attribut):
         if idElement == self.getId():
@@ -638,12 +334,6 @@ class JalonBoiteDepot(ATFolder):
             #self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
-    def purgerDepots(self):
-        self.manage_delObjects(self.objectIds())
-        self.setListeDevoirs(())
-        self.setCompEtudiants({})
-        self.reindexObject()
-
     def retirerElement(self, idElement, menu):
         infos_element = self.getInfosElement()
         infosElement = infos_element[idElement]
@@ -706,6 +396,392 @@ class JalonBoiteDepot(ATFolder):
                 except:
                     pass
                 objet.reindexObject()
+
+    def getTemplateView(self, user, mode_etudiant, menu):
+        is_anonymous = user.has_role('Anonymous')
+        if is_anonymous:
+            return {"is_anonymous": True}
+
+        personnel = self.isPersonnel(user, mode_etudiant)
+        affElement = self.isAfficherElement(self.getDateAff(), self.getDateMasq())
+
+        id_boite = self.getId()
+        url_boite = self.absolute_url()
+
+        menu_options = []
+        if affElement["val"]:
+            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=%s" % (url_boite, id_boite),
+                                 "icon": "fa-eye-slash",
+                                 "text": "Masquer"})
+        else:
+            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=%s" % (url_boite, id_boite),
+                                 "icon": "fa-eye",
+                                 "text": "Afficher"})
+        menu_options.append({"href": "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon": "fa-align-justify",
+                             "text": "Titre et consigne"})
+
+        onglets = []
+        is_onglet_depots = True if menu == "depots" else False
+        onglets.append({"href":      "%s?menu=depots&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                        "css_class": " selected" if is_onglet_depots else "",
+                        "icon":      "fa-download",
+                        "text":      "Mes dépôts" if not personnel and not self.getAccesDepots() else "Dépôts étudiants",
+                        "nb":        self.getNbDepots(personnel)})
+        menu_option_depots = []
+        if is_onglet_depots:
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getCorrectionIndividuelle() else "fa-toggle-off",
+                                       "text": "Correction des dépôts"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationCorrection() else "fa-toggle-off",
+                                       "text": "Notification des corrections"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotation() else "fa-toggle-off",
+                                       "text": "Notation des dépôts"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationNotation() else "fa-toggle-off",
+                                       "text": "Notification des notations"})
+            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getAccesDepots() else "fa-toggle-off",
+                                       "text": "Visualisation des dépôts entre étudiants"})
+
+        onglets.append({"href":      "%s?menu=sujets&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                        "css_class": " selected" if menu == "sujets" else "",
+                        "icon":      "fa-upload",
+                        "text":      "Documents enseignants",
+                        "nb":        self.getNbSujets()})
+
+        is_onglet_competences = True if menu == "competences" else False
+        if personnel or self.getAfficherCompetences():
+            onglets.append({"href":      "%s?menu=competences&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
+                            "css_class": " selected" if is_onglet_competences else "",
+                            "icon":      "fa-tasks",
+                            "text":      "Compétences",
+                            "nb":        self.getNbCompetences()})
+        menu_option_competences = []
+        if is_onglet_competences:
+            menu_option_competences.append({"icon": "fa-toggle-on success" if self.getAfficherCompetences() else "fa-toggle-off",
+                                            "text": "Affichage de l'onglet \"Compétences\" aux étudiants"})
+            if self.getPermissionModifierCompetence(personnel, user.getId()):
+                menu_option_competences.append({"icon": "fa-toggle-on success" if self.getModifierCompetences() else "fa-toggle-off",
+                                                "text": "Restriction de la gestion des compétences"})
+
+        instructions = []
+        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon":      "fa-calendar",
+                             "text":      "Date"})
+        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
+                             "icon":      "fa-align-justify",
+                             "text":      "Titre et consigne"})
+
+        is_depot_actif = self.isDepotActif()
+        if is_depot_actif == 2:
+            is_retard = True
+            class_limit_date = "callout"
+        else:
+            is_retard = False
+            class_limit_date = "warning"
+
+        return {"id_boite":                      id_boite,
+                "url_boite":                     url_boite,
+                "is_anonymous":                  False,
+                "is_personnel":                  personnel,
+                "is_etu_and_boite_hidden":       True if (not personnel) and affElement['val'] == 0 else False,
+                "is_personnel_or_boite_visible": True if personnel or affElement['val'] != 0 else False,
+                "is_auteur":                     self.isAuteurs(user.getId()),
+                "is_depot_actif":                is_depot_actif,
+                "is_retard":                     is_retard,
+                "is_afficher_comp":              self.getAfficherCompetences(),
+                "menu_options":                  menu_options,
+                "affElement":                    affElement,
+                "came_from":                     "%s/login_form?came_from=%s" % (url_boite, self.jalon_quote(url_boite)),
+                "class_limit_date":              class_limit_date,
+                "date_depot_aff":                self.getAffDate('DateDepot'),
+                "onglets":                       onglets,
+                "instructions":                  instructions,
+                "description":                   self.Description(),
+                "is_onglet_depots":              is_onglet_depots,
+                "menu_option_depots":            menu_option_depots,
+                "is_onglet_competences":         is_onglet_competences,
+                "menu_option_competences":       menu_option_competences}
+
+    ##-----------------------##
+    # Fonctions onglet Dépots #
+    ##-----------------------##
+    def getDepots(self, auth_member, is_personnel, is_depot_actif, is_retard):
+        valides = 0
+        liste_depots = []
+        liste_etudiants = []
+        liste_etudiants_valides = []
+        dico_name_etudiants = {}
+        auth_member_id = auth_member.getId()
+
+        menus = []
+        if is_personnel:
+            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
+                         "icon": "fa-file-archive-o",
+                         "text": "Télécharger les dépôts (ZIP)"})
+            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
+                         "icon": "fa-list",
+                         "text": "Télécharger listing"})
+            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
+                         "icon": "fa-filter",
+                         "text": "Purger les dépôts"})
+
+        table_title = "Dépôts étudiants"
+        content_filter = {"portal_type": "JalonFile"}
+        acces_depots = self.getAccesDepots()
+        if not is_personnel and not acces_depots:
+            table_title = "Mes dépôts"
+            content_filter["Creator"] = auth_member_id
+        depots = self.getFolderContents(contentFilter=content_filter)
+
+        if not depots:
+            return {"table_title":     table_title,
+                    "is_infos_depots": False,
+                    "infos_depots":    "",
+                    "liste_depots":    [],
+                    "acces_depots":    acces_depots,
+                    "menus":           menus}
+
+        is_corriger_noter = self.isCorrigerNoter()
+        for depot in depots:
+            # créateur du dépôt = etudiant
+            depot_id = depot.getId
+            etudiant_id = str(depot.Creator)
+            if not etudiant_id in liste_etudiants:
+                liste_etudiants.append(etudiant_id)
+                etudiant_infos = jalon_utils.getInfosMembre(etudiant_id)
+                if etudiant_infos:
+                    etudiant_name = "%s %s" % (etudiant_infos["nom"], etudiant_infos["prenom"])
+                else:
+                    etudiant_name = etudiant_id
+                dico_name_etudiants[etudiant_id] = etudiant_name
+            else:
+                etudiant_name = dico_name_etudiants[etudiant_id]
+
+            columns_etat_correction_notation = []
+
+            is_valide = {"value": False, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label warning", "text": "Invalide"}
+            if depot.getActif:
+                is_valide = {"value": True, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label success", "text": "Valide"}
+                valides = valides + 1
+                if not etudiant_id in liste_etudiants_valides:
+                    liste_etudiants_valides.append(etudiant_id)
+            columns_etat_correction_notation.append(is_valide)
+
+            is_correction = {"value": False, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label secondary", "text": "Non corrigé"}
+            if depot.getCorrection not in ["", None, " "]:
+                is_correction = {"value": True, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label success", "text": "Corrigé"}
+            if depot.getFichierCorrection:
+                is_correction = {"value": True, "test": "is_column_correction", "css_class": "correction", "span_css_class": "label success", "text": "Corrigé"}
+            columns_etat_correction_notation.append(is_correction)
+
+            note = depot.getNote
+            is_notation = {"value": False, "test": "is_column_notation", "css_class": "note", "span_css_class": "label secondary", "text": "Non noté"}
+            if note:
+                is_notation = {"value": True, "test": "is_column_notation", "css_class": "note", "span_css_class": "", "text": note}
+            columns_etat_correction_notation.append(is_notation)
+
+            is_corrupt = False
+            depot_action = {"action_title": "Consulter",
+                            "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
+                            "action_icon":  "fa-eye",
+                            "action_text":  "Consulter"}
+            if etudiant_id == auth_member_id:
+                if depot.getObject().getSize() < 100:
+                    is_corrupt = True
+                if not is_correction["value"] or not is_notation["value"]:
+                    if not is_valide["value"]:
+                        depot_action = {"action_title": "Valider ce dépôt",
+                                        "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=" % (self.absolute_url(), depot_id),
+                                        "action_icon":  "fa-check-circle success",
+                                        "action_text":  "Valider"}
+                    else:
+                        depot_action = {"action_title": "Ignorer ce dépôt",
+                                        "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=actif" % (self.absolute_url(), depot_id),
+                                        "action_icon":  "fa-times-circle warning",
+                                        "action_text":  "Ignorer"}
+            if is_personnel and is_corriger_noter:
+                depot_action = {"action_title": is_corriger_noter["title"],
+                                "action_url":   "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction" % (self.absolute_url(), depot_id),
+                                "action_icon":  "fa-legal",
+                                "action_text":  is_corriger_noter["title"]}
+
+            creation_date = self.getLocaleDate(depot.created, '%d/%m/%Y - %Hh%M')
+
+            liste_depots.append({"etudiant_name":                    etudiant_name,
+                                 "depot_id":                         depot_id,
+                                 "depot_title":                      depot.Title,
+                                 "depot_date":                       creation_date,
+                                 "depot_url":                        depot.getURL(),
+                                 "date_sort":                        self.getDepotDate(creation_date, 1),
+                                 "date_aff":                         self.getDepotDate(creation_date),
+                                 "is_corrupt":                       is_corrupt,
+                                 "columns_etat_correction_notation": columns_etat_correction_notation,
+                                 "depot_action":                     depot_action})
+
+        infos_depots = {}
+        is_infos_depots = False
+        if is_personnel:
+            if len(liste_depots):
+                is_infos_depots = True
+                infos_depots["css_class"] = "callout"
+                text_infos_depots = ["Il y a actuellement"]
+                if valides == 1:
+                    text_infos_depots.append("<strong>%s</strong> dépôt valide envoyé par" % valides)
+                else:
+                    text_infos_depots.append("<strong>%s</strong> dépôts valides envoyés par" % valides)
+                taille_liste_etudiants_valides = len(liste_etudiants_valides)
+                if taille_liste_etudiants_valides == 1:
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % taille_liste_etudiants_valides)
+                else:
+                    text_infos_depots.append("<strong>%s</strong> étudiant." % taille_liste_etudiants_valides)
+                infos_depots["text"] = " ".join(text_infos_depots)
+        else:
+            if not is_depot_actif:
+                is_infos_depots = True
+                infos_depots = {"css_class": "warning",
+                                "text":      "<i class=\"fa fa-warning\"></i>La date limite autorisée a été dépassée. Vous ne pouvez plus déposer."}
+            if is_retard:
+                is_infos_depots = True
+                infos_depots = {"css_class": "warning",
+                                "text":      "<i class=\"fa fa-warning\"></i>Vous êtes en retard. Dernières minutes avant la fermeture des dépôts."}
+
+        retour = {"table_title":     table_title,
+                  "is_infos_depots": is_infos_depots,
+                  "infos_depots":    infos_depots,
+                  "liste_depots":    liste_depots,
+                  "acces_depots":    acces_depots,
+                  "menus":           menus}
+        return retour
+
+    def getInfosTableau(self, is_personnel, is_depot_actif):
+        head_table = []
+        is_column_correction = self.getCorrectionIndividuelle()
+        is_column_notation = self.getNotation()
+        #is_personnel_and_is_actions = True if is_personnel and (is_colmun_correction or is_colmun_notation) else False
+        is_colmun_etudiant = True if is_personnel or self.getAccesDepots() else False
+        if is_colmun_etudiant:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon l'étudiant",
+                               "data-sort":    "name",
+                               "column_title": "Étudiant"})
+        head_table.append({"css_class":    "sort text-left has-tip",
+                           "attr_title":   "Cliquer pour trier selon la date",
+                           "data-sort":    "title",
+                           "column_title": "Dépôt"})
+        head_table.append({"css_class":    "sort text-left has-tip",
+                           "attr_title":   "Cliquer pour trier selon l'état",
+                           "data-sort":    "valide",
+                           "column_title": "État"})
+        if is_column_correction:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon la correction",
+                               "data-sort":    "correction",
+                               "column_title": "Correction"})
+        if is_column_notation:
+            head_table.append({"css_class":    "sort text-left has-tip",
+                               "attr_title":   "Cliquer pour trier selon la note",
+                               "data-sort":    "note",
+                               "column_title": "Note"})
+        #if is_personnel_and_is_actions:
+        #    head_table.append({"css_class":    "nosort",
+        #                       "attr_title":   "",
+        #                       "data-sort":    "",
+        #                       "column_title": "<i class=\"fa fa-cog\"></i>"})
+
+        is_column_actions = False
+        if is_personnel:
+            if is_column_correction or is_column_notation:
+                is_column_actions = True
+        else:
+            if is_depot_actif:
+                is_column_actions = True
+            if is_column_correction:
+                is_column_actions = True
+        if is_column_actions:
+            head_table.append({"css_class":    "nosort",
+                               "attr_title":   "",
+                               "data-sort":    "",
+                               "column_title": "<i class=\"fa fa-cog\"></i>"})
+        return {"head_table":           head_table,
+                "is_column_etudiant":   is_colmun_etudiant,
+                "is_column_etat":       True,
+                "is_column_correction": is_column_correction,
+                "is_column_notation":   is_column_notation,
+                "is_column_actions":    is_column_actions,
+                "option":               self.getOptionsAvancees()}
+        #        "is_personnel_and_is_actions": is_personnel_and_is_actions,
+
+    def getDepotDate(self, data, sortable=False):
+        return jalon_utils.getDepotDate(data, sortable)
+
+    def getDateDepot(self):
+        if not self.dateDepot:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateDepot.strftime("%Y/%m/%d %H:%M")
+
+    def getDateRetard(self):
+        if not self.dateRetard:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateRetard.strftime("%Y/%m/%d %H:%M")
+
+    def getNbDepots(self, is_personnel):
+        if not is_personnel and not self.getAccesDepots():
+            nbDepots = 0
+            authMember = self.portal_membership.getAuthenticatedMember().getId()
+            for iddepot in self.objectIds():
+                if authMember in iddepot:
+                    nbDepots = nbDepots + 1
+            return nbDepots
+        depots = self.objectIds()
+        if "corrections" in depots:
+            return len(depots) - 1
+        else:
+            return len(depots)
+
+    """
+    isDepotActif renvoit :
+        1 si les étudiants ont le droit de déposer.
+        2 s'ils sont en retard.
+        0 s'ils n'ont plus le droit.
+    """
+    def isDepotActif(self):
+        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
+        date_depot = DateTime(self.getDateDepot())
+        date_retard = DateTime(self.getDateRetard())
+        # La date de dépot n'est pas encore passée.
+        if now <= date_depot:
+            return 1
+        # La date de retard n'est pas encore passée.
+        if date_retard > date_depot and now < date_retard:
+            return 2
+        return 0
+
+    def isCorrigerNoter(self):
+        corriger = self.getCorrectionIndividuelle()
+        noter = self.getNotation()
+        if corriger and noter:
+            return {"title"    : "Corriger et Noter",
+                    "corriger" : 1,
+                    "noter"    : 1}
+        if corriger:
+            return {"title"    : "Corriger",
+                    "corriger" : 1,
+                    "noter"    : 0}
+        if noter:
+            return {"title"    : "Noter",
+                    "corriger" : 0,
+                    "noter"    : 1}
+
+    def activerDepot(self, idDepot, actif):
+        depot = getattr(self, idDepot)
+        depot.setProperties({"Actif": actif})
+
+    def purgerDepots(self):
+        self.manage_delObjects(self.objectIds())
+        self.setListeDevoirs(())
+        self.setCompEtudiants({})
+        self.reindexObject()
 
     def telechargerDepots(self, HTTP_USER_AGENT):
         import tempfile
@@ -839,6 +915,129 @@ class JalonBoiteDepot(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
+    ##----------------------------##
+    # Fonctions onglet Compétences #
+    ##----------------------------##
+    def getOrdreCompetences(self):
+        ordre = self._competences.keys()
+        ordre.sort(lambda x, y: cmp(int(x), int(y)))
+        return ordre
+
+    def getCompetences(self, key=None):
+        if key:
+            return self._competences.get(key, None)
+        return self._competences
+
+    def setCompetences(self, competences):
+        if type(self._competences).__name__ != "PersistentMapping":
+            self._competences = PersistentDict(competences)
+        else:
+            self._competences = competences
+
+    def getOrdreEtudiants(self):
+        ordre = []
+        for SESAME_ETU in self._comp_etudiants.keys():
+            ordre.append({"id"  : SESAME_ETU,
+                          "nom" : self.getNomEtudiant(SESAME_ETU)})
+        ordre.sort(lambda x, y: cmp(x["nom"], y["nom"]))
+        return ordre
+
+    def getCompEtudiants(self, key=None):
+        if key:
+            return self._comp_etudiants.get(key, None)
+        return self._comp_etudiants
+
+    def getAffComEtu(self, SESAME_ETU):
+        dicoCompEtudiants = self._comp_etudiants
+        if not SESAME_ETU in dicoCompEtudiants:
+            return {}
+
+        dicoCompEtudiant = {}
+        compEtu = dicoCompEtudiants[SESAME_ETU]
+        dicoGradation = {"acquerir" : "À acquérir",
+                         "encours"  : "En cours d'acquisition",
+                         "partielle": "Partiellement acquis",
+                         "acquise"  : "Acquis"}
+        dicoCompetences = self._competences
+        listeIdCompetences = self._competences.keys()
+        listeIdCompetences.sort(lambda x, y: cmp(int(x), int(y)))
+        for idcompetence in listeIdCompetences:
+            competence = dicoCompetences[idcompetence]
+            if idcompetence in compEtu:
+                if competence["evaluation"] == "libre":
+                    dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
+                if competence["evaluation"] == "validation":
+                    dicoCompEtudiant[idcompetence] = "Acquis"
+                if competence["evaluation"] == "gradation":
+                    dicoCompEtudiant[idcompetence] = dicoGradation[compEtu[idcompetence]]
+                if competence["evaluation"] == "note":
+                    if "." in compEtu[idcompetence] or "," in compEtu[idcompetence]:
+                        if competence["note_partielle"]:
+                            note_partielle = float(competence["note_partielle"])
+                        if competence["note_acquise"]:
+                            note_acquise = float(competence["note_acquise"])
+                        note = float(compEtu[idcompetence])
+                    else:
+                        if competence["note_partielle"]:
+                            note_partielle = int(competence["note_partielle"])
+                        if competence["note_acquise"]:
+                            note_acquise = int(competence["note_acquise"])
+                        try:
+                            note = int(compEtu[idcompetence])
+                        except:
+                            note = "Pas de note"
+                    if note_acquise and note >= note_acquise:
+                        dicoCompEtudiant[idcompetence] = "Acquis"
+                        #dicoCompEtudiant[idcompetence] = "%s / %s (Acquis)" % (compEtu[idcompetence], competence["note_max"])
+                    elif note_partielle and note >= note_partielle:
+                        dicoCompEtudiant[idcompetence] = "Partiellement acquis"
+                        #dicoCompEtudiant[idcompetence] = "%s / %s (Partiellement acquis)" % (compEtu[idcompetence], competence["note_max"])
+                    else:
+                        dicoCompEtudiant[idcompetence] = "À acquérir"
+                        #dicoCompEtudiant[idcompetence] = compEtu[idcompetence]
+            else:
+                dicoCompEtudiant[idcompetence] = 'À acquérir'
+        return dicoCompEtudiant
+
+    def getNomEtudiant(self, SESAME_ETU):
+        if self.isLDAP() or "@" in SESAME_ETU:
+            #Cas du ldap actif ou de l'etudiant EtudiantJalon
+            portal_membership = getToolByName(self, "portal_membership")
+            member = portal_membership.getMemberById(SESAME_ETU)
+            if member:
+                etudiantName = str(member.getProperty("fullname"))
+                if not etudiantName:
+                    etudiantName = str(member.getProperty("cn"))
+            else:
+                etudiantName = SESAME_ETU
+        else:
+            portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+            etudiant = portal_jalon_bdd.getIndividuLITE(SESAME_ETU)
+            if etudiant:
+                etudiantName = "%s %s" % (etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"])
+            else:
+                etudiantName = SESAME_ETU
+        return etudiantName
+
+    def setCompEtudiants(self, comp_etudiants):
+        if type(self._comp_etudiants).__name__ != "PersistentMapping":
+            self._comp_etudiants = PersistentDict(comp_etudiants)
+        else:
+            self._comp_etudiants = comp_etudiants
+
+    def getNbCompetences(self):
+        return len(self._competences.keys())
+
+    def getPermissionModifierCompetence(self, personnel, user_id):
+        if not personnel:
+            return False
+        elif user_id == self.Creator():
+            return True
+        elif self.getModifierCompetences():
+            return False
+        else:
+            return True
+
     def telechargerListingCompetences(self):
         import tempfile
         from xlwt import Workbook, XFStyle, Style, Pattern, Font
@@ -971,7 +1170,7 @@ class JalonBoiteDepot(ATFolder):
 
                             ligne1.write(index_comp, note, style)
                     else:
-                        ligne1.write(index_comp, 'À acquérir',styleAcquerir)
+                        ligne1.write(index_comp, 'À acquérir', styleAcquerir)
                     index_comp = index_comp + 1
             i = i + 1
 
@@ -982,8 +1181,26 @@ class JalonBoiteDepot(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
+    ##-----------------------------##
+    # Fonctions appel à jalon_utils #
+    ##-----------------------------##
     def test(self, condition, valeurVrai, valeurFaux):
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
+
+    def ajouterTag(self, tag):
+        return jalon_utils.setTag(self, tag)
+
+    def getTagDefaut(self):
+        return jalon_utils.getTagDefaut(self)
+
+    def isLDAP(self):
+        return jalon_utils.isLDAP()
+
+    def isAfficherElement(self, affElement, masquerElement):
+        return jalon_utils.isAfficherElement(affElement, masquerElement)
+
+    def getLocaleDate(self, date, format="%d/%m/%Y"):
+        return jalon_utils.getLocaleDate(date, format)
 
     def jalon_quote(self, encode):
         return jalon_utils.jalon_quote(encode)
@@ -994,35 +1211,11 @@ class JalonBoiteDepot(ATFolder):
     def retirerEspace(self, mot):
         return jalon_utils.retirerEspace(mot)
 
-    def getShortText( self, text, limit = 75 ):
-        return jalon_utils.getShortText( text, limit )
+    def getShortText(self, text, limit=75):
+        return jalon_utils.getShortText(text, limit)
 
     #   Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
-
-    def majBoite(self):
-        """ Pour utiliser cette fonction :
-                1 - décommenter import ATExtensions puis RecordField infos_element
-                2 - mettre getInfosElement en commentaire
-                3 - appeler cette fonction depuis un script en ZMI"""
-        listeSujets = list(self.getListeSujets())
-        listeDevoirs = list(self.getListeDevoirs())
-        listeCorrections = list(self.getListeCorrections())
-        listeSujets.extend(listeDevoirs)
-        listeSujets.extend(listeCorrections)
-
-        infos_element = self.getInfosElement()
-        if infos_element:
-            dico = {}
-            dicoElements = copy.deepcopy(infos_element)
-            for idElement in listeSujets:
-                if idElement in dicoElements:
-                    dico[idElement] = {"titreElement":     dicoElements[idElement]["titreElement"],
-                                        "typeElement":     dicoElements[idElement]["typeElement"],
-                                        "createurElement": dicoElements[idElement]["createurElement"],
-                                        "affElement":      dicoElements[idElement]["affElement"],
-                                        "masquerElement":  dicoElements[idElement]["masquerElement"]}
-            self.setInfosElement(dico)
 
 registerATCT(JalonBoiteDepot, PROJECTNAME)

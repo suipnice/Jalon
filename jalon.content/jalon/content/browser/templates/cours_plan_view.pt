@@ -445,7 +445,6 @@
                define="script string:setSortablePlan()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
-
     </tal:block>
 
     <script charset="UTF-8"

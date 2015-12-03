@@ -41,6 +41,33 @@ i.fa {
     &.alert { color: $alert-color; }
 }
 
+a > i.fa {
+
+    &.primary {
+
+        &:hover { color: scale-color($primary-color, $lightness: $button-function-factor); }
+        @include single-transition(color);
+    }
+
+    &.success {
+
+        &:hover { color: scale-color($success-color, $lightness: $button-function-factor); }
+        @include single-transition(color);
+    }
+
+    &.warning {
+
+        &:hover { color: scale-color($warning-color, $lightness: $button-function-factor); }
+        @include single-transition(color);
+    }
+
+    &.alert {
+
+        &:hover { color: scale-color($alert-color, $lightness: $button-function-factor); }
+        @include single-transition(color);
+    }
+}
+
 .panel .fa-stack {
     width: 1em;
     margin-right: $iconPadding;
@@ -1419,7 +1446,6 @@ code {
 }
 
 #course_plan-plan {
-    margin-bottom: .85rem;
 
     li {
 

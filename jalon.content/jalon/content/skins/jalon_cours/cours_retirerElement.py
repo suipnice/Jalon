@@ -18,4 +18,9 @@ if request.form.has_key("menu") and request.form["menu"] not in ["vide", "glossa
 else:
     context.retirerElement(request.form["idElement"])
 
-context.REQUEST.RESPONSE.redirect(request.form["orig_template"])
+redirection = context.absolute_url()
+if request.form.has_key("orig_template"):
+    redirection = request.form["orig_template"]
+if request.form.has_key("menu"):
+    redirection = "%s?menu=%s" % (redirection, request.form["menu"])
+context.REQUEST.RESPONSE.redirect(redirection)
