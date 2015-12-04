@@ -9,10 +9,11 @@
 ##
 
 REQUEST = context.REQUEST
-bdd = {"typeBDD"                     : REQUEST.form["typeBDD"],
-       "urlConnexion"                : REQUEST.form["urlConnexion"],
-       "activerStockageConnexion"    : REQUEST.form["activerStockageConnexion"],
-       "activerStockageConsultation" : REQUEST.form["activerStockageConsultation"]}
+bdd = {"typeBDD":                       REQUEST.form["typeBDD"],
+       "urlConnexion":                  REQUEST.form["urlConnexion"],
+       "activer_stockage_connexion":    REQUEST.form["activerStockageConnexion"],
+       "activer_stockage_consultation": REQUEST.form["activerStockageConsultation"],
+       "use_mysql":                     REQUEST.form["useSaveMySQL"]}
 
 retour = context.setVariablesBDD(bdd)
 

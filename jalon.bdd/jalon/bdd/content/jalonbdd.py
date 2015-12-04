@@ -85,6 +85,7 @@ class JalonBDD(SimpleItem):
                 "urlConnexion":                self._urlConnexion,
                 "activerStockageConnexion":    self._activer_stockage_connexion,
                 "activerStockageConsultation": self._activer_stockage_consultation,
+                "useSaveMySQL":                self._use_mysql,
                 "host_mysql":                  self._host_mysql,
                 "user_mysql":                  self._user_mysql,
                 "password_mysql":              self._password_mysql,
@@ -107,7 +108,7 @@ class JalonBDD(SimpleItem):
                 retour = 3
         for key in variablesBDD.keys():
             val = variablesBDD[key]
-            if key.startswith("activer"):
+            if key.startswith("activer") or key.startswith("use"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
         #self._typeBDD = variablesBDD["typeBDD"]

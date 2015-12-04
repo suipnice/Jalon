@@ -15,19 +15,21 @@
     <br/>
     <div tal:define="message request/message | nothing"
          tal:condition="message"
-         class="panel callout radius">
+         class="panel success radius">
+        <strong>
         <tal:condition condition="python:context.test(message == '1', '1', 0)">
             Modifications enregistrées.
         </tal:condition>
-        <div tal:condition="python:context.test(message == '0', '0', 0)">
+        <tal:condition tal:condition="python:context.test(message == '0', '0', 0)">
             Veuillez renseigner tous les champs.
-        </div>
+        </tal:condition>
         <tal:condition condition="python:context.test(message == '2', '2', 0)">
             URL de connexion invalide.
         </tal:condition>
         <tal:condition condition="python:context.test(message == '3', '3', 0)">
             Base de données créée avec succès.
-        </tal:condition> 
+        </tal:condition>
+        </strong>
     </div>  
     <form method="post" class="text-center"
           tal:attributes="action string:${context/absolute_url}/saveVariablesBDD"
@@ -60,7 +62,7 @@
             <div class="medium-6 columns">
                 <div class="panel callout radius">
                     <label for="activerStockageConnexion" i18n:translate="activerStockageConnexion">
-                        Activer le stockage des connexions des utilisateurs
+                        Stockage des connexions
                     </label>
                     <p class="text-center field-lg">
                         <input type="radio" name="activerStockageConnexion" id="activerStockageConnexion" value="1"
@@ -83,7 +85,7 @@
             <div class="medium-6 columns">
                 <div class="panel callout radius">
                     <label for="activerStockageConsultation" i18n:translate="activerStockageConsultation">
-                        Activer le stockage des consultations des cours par les utilisateurs
+                        Stockage des consultations des cours
                     </label>
                     <p class="text-center field-lg">
                         <input type="radio" name="activerStockageConsultation" id="activerStockageConsultation" value="1"
@@ -96,6 +98,31 @@
                         <input type="radio" name="activerStockageConsultation" id="desactiverStockageConsultation" value="0"
                                tal:attributes="checked python:context.test(not bdd['activerStockageConsultation'], 'checked', '')" />
                         <label for="desactiverStockageConsultation"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="useSaveMySQL" i18n:translate="useSaveMySQL">
+                        Utiliser MySQL pour le stockage des connexions et consultations
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="useSaveMySQL" id="useSaveMySQL" value="1"
+                               tal:attributes="checked python:context.test(bdd['useSaveMySQL'], 'checked', '')" />
+                        <label for="useSaveMySQL"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="useSaveMySQL" id="notUseSaveMySQL" value="0"
+                               tal:attributes="checked python:context.test(not bdd['useSaveMySQL'], 'checked', '')" />
+                        <label for="notUseSaveMySQL"
                                class="desactiver">
                             <i class="fa fa-times"></i>
                             <tal:block i18n:translate="">Désactivé</tal:block>
