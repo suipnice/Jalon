@@ -72,3 +72,65 @@ def getIndividu(session, sesame):
     IND = aliased(tables.IndividuMySQL)
     recherche = session.query(IND.LIB_NOM_PAT_IND, IND.LIB_NOM_USU_IND, IND.LIB_PR1_IND, IND.SESAME_ETU, IND.DATE_NAI_IND, IND.TYPE_IND, IND.COD_ETU, IND.EMAIL_ETU).filter(IND.SESAME_ETU == sesame)
     return convertirResultatBDD(recherche)
+
+
+#----------------------------#
+# Interrogation statistique  #
+#----------------------------#
+def getConnexionELPByMonth(session, COD_ELP, month, year, listeInds):
+    CI = aliased(tables.ConnexionINDMySQL)
+    nbConnexion = session.query(CI.SESAME_ETU).filter(and_(CI.SESAME_ETU.in_(listeInds), func.MONTH(CI.DATE_CONN) == month, func.YEAR(CI.DATE_CONN) == year))
+    return nbConnexion.count()
+
+
+def getConnexionELPByYear(session, COD_ELP, year, listeInds):
+    CI = aliased(tables.ConnexionINDMySQL)
+    nbConnexion = session.query(CI.SESAME_ETU, CI.DATE_CONN).filter(and_(CI.SESAME_ETU.in_(listeInds), func.YEAR(CI.DATE_CONN) == year))
+    return nbConnexion
+
+
+def getConnexionELPByMonthByIND(session, COD_ELP, month, year, listeInds):
+    CI = aliased(tables.ConnexionINDMySQL)
+    nbConnexion = session.query(CI.SESAME_ETU, func.count(CI.DATE_CONN)).filter(and_(CI.SESAME_ETU.in_(listeInds), func.MONTH(CI.DATE_CONN) == month, func.YEAR(CI.DATE_CONN) == year)).group_by(CI.SESAME_ETU)
+    return nbConnexion
+
+
+def getConnexionELPByYearByIND(session, COD_ELP, year, listeInds):
+    CI = aliased(tables.ConnexionINDMySQL)
+    nbConnexion = session.query(CI.SESAME_ETU, func.count(CI.DATE_CONN)).filter(and_(CI.SESAME_ETU.in_(listeInds), func.YEAR(CI.DATE_CONN) == year)).group_by(CI.SESAME_ETU)
+    return nbConnexion
+
+
+def getMinMaxYearByELP(session, COD_ELP, listeInds):
+    retour = {"min": 0, "max": 0, "ecart": 0}
+    CI = aliased(tables.ConnexionINDMySQL)
+    minMaxYear = session.query(func.distinct(CI.DATE_CONN)).filter(CI.SESAME_ETU.in_(listeInds)).order_by(CI.DATE_CONN)
+    if minMaxYear:
+        retour["min"] = minMaxYear[0][0].year
+        retour["max"] = minMaxYear[-1][0].year
+        retour["ecart"] = retour["max"] - retour["min"]
+    return retour
+
+
+def getConnexionByIND(session, SESAME_ETU):
+    CI = aliased(tables.ConnexionINDMySQL)
+    nbConnexion = session.query(CI.DATE_CONN).filter(CI.SESAME_ETU == SESAME_ETU)
+    return nbConnexion
+
+
+def getConsultationCoursByMonth(session, month, year='%', listeIdCours=[], SESAME_ETU=None):
+    COC = aliased(tables.ConsultationCoursMySQL)
+    if SESAME_ETU:
+        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    else:
+        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    return nbConnexion
+
+
+def getConsultationCoursByYear(session, year='%', listeIdCours=[], SESAME_ETU=None):
+    COC = aliased(tables.ConsultationCoursMySQL)
+    if SESAME_ETU:
+        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    else:
+        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    return nbConnexion

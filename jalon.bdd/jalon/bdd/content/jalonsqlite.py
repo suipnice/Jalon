@@ -577,13 +577,8 @@ def getConsultationCoursByYear(session, year='%', listeIdCours=[], SESAME_ETU=No
     return nbConnexion
 
 
-def getMinMaxYearByELP(session, COD_ELP):
-    retour = {"min" : 0, "max" : 0, "ecart" : 0}
-
-    ICE = aliased(tables.IndContratElpSQLITE)
-    requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP==COD_ELP).all()
-    listeInds = [x[0] for x in requete]
-
+def getMinMaxYearByELP(session, COD_ELP, listeInds):
+    retour = {"min": 0, "max": 0, "ecart": 0}
     CI = aliased(tables.ConnexionINDSQLITE)
     minMaxYear = session.query(func.distinct(CI.DATE_CONN)).filter(CI.SESAME_ETU.in_(listeInds)).order_by(CI.DATE_CONN)
     if minMaxYear:
@@ -591,6 +586,7 @@ def getMinMaxYearByELP(session, COD_ELP):
         retour["max"] = int(minMaxYear[-1][0].split("/")[0])
         retour["ecart"] = retour["max"] - retour["min"]
     return retour
+
 
 #-------------------------------------#
 # Modification de la base de données  #

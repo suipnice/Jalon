@@ -10,6 +10,7 @@ from sqlite3 import dbapi2 as sqlite
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import aliased
 from sqlalchemy.pool import NullPool
 
 from interfaces import IJalonBDD
@@ -654,18 +655,22 @@ class JalonBDD(SimpleItem):
             return jalonsqlite.getIndByElp(session, COD_ELP)
 
     def getConnexionCouranteByELP(self, COD_ELP):
-        session = self.getSession()
-        month = str(DateTime().month())
-        if int(month) < 10:
-            month = "0%s" % month
-        year = str(DateTime().year())
-
+        month = DateTime().month()
+        year = DateTime().year()
         listeInds = self.getIndByElp(COD_ELP)
         if not listeInds:
             return {"mois" : "Aucun inscrit dans cet élément pédagigique",
                     "annee": "Aucun inscrit dans cet élément pédagigique"}
-        coMois = jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
-        coAnnee = jalonsqlite.getConnexionELPByYear(session, COD_ELP, year, listeInds)
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+            coMois = jalon_mysql.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
+            coAnnee = jalon_mysql.getConnexionELPByYear(session, COD_ELP, year, listeInds)
+        else:
+            if int(month) < 10:
+                month = "0%s" % month
+            session = self.getSession()
+            coMois = jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, str(year), listeInds)
+            coAnnee = jalonsqlite.getConnexionELPByYear(session, COD_ELP, str(year), listeInds)
 
         detailMois = ({"label" : "Janvier",   "nb" : 0},
                       {"label" : "Février",   "nb" : 0},
@@ -691,7 +696,14 @@ class JalonBDD(SimpleItem):
 
     def getConnexionELPByMonth(self, COD_ELP, month=None, year="%", listeInds=None):
         session = self.getSession()
-        return jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
+        if not listeInds:
+            ICE = aliased(tables.IndContratElpSQLITE)
+            requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP==COD_ELP).all()
+            listeInds = [x[0] for x in requete]
+        if self._use_mysql:
+            return jalon_mysql.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
+        else:
+            return jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
 
     def getConnexionELPByYear(self, COD_ELP, year=None, listeInds=None):
         session = self.getSession()
@@ -732,8 +744,6 @@ class JalonBDD(SimpleItem):
         return jalonsqlite.getIndAndNameByElp(session, COD_ELP)
 
     def getConnexionByDateByELPByIND(self, COD_ELP, month, year):
-        session = self.getSession()
-
         if not month or month == '0':
             month = DateTime().month()
 
@@ -742,43 +752,54 @@ class JalonBDD(SimpleItem):
 
         monthPrec = month - 1
         if monthPrec == 0:
-            monthPrec = "12"
+            monthPrec = 12
             yearPrec = year - 1
         else:
             yearPrec = year
 
-        if int(month) < 10:
-            month = "0%s" % str(month)
-        else:
-            month = str(month)
-        year = str(year)
 
-        if int(monthPrec) < 10:
-            monthPrec = "0%s" % str(monthPrec)
-        else:
-            monthPrec = str(monthPrec)
-        yearPrec = str(yearPrec)
-
+        session = self.getSession()
         listeInds = self.getIndAndNameByElp(COD_ELP)
         if not listeInds:
             return {"etu" : []}
-
         listeSesames = self.getIndByElp(COD_ELP)
 
         dicoMoisInd = {}
-        coMois = jalonsqlite.getConnexionELPByMonthByIND(session, COD_ELP, month, year, listeSesames)
-        for ligne in coMois:
-            dicoMoisInd[ligne[0]] = ligne[1]
-
         dicoMoisPrecInd = {}
-        coMoisPrec = jalonsqlite.getConnexionELPByMonthByIND(session, COD_ELP, monthPrec, yearPrec, listeSesames)
-        for ligne in coMoisPrec:
-            dicoMoisPrecInd[ligne[0]] = ligne[1]
-
         dicoAnneeInd = {}
-        coAnnee = jalonsqlite.getConnexionELPByYearByIND(session, COD_ELP, year, listeSesames)
-        for ligne in coAnnee:
-            dicoAnneeInd[ligne[0]] = ligne[1]
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+            coMois = jalon_mysql.getConnexionELPByMonthByIND(session, COD_ELP, month, year, listeSesames)
+            for ligne in coMois:
+                dicoMoisInd[ligne[0]] = ligne[1]
+
+            coMoisPrec = jalon_mysql.getConnexionELPByMonthByIND(session, COD_ELP, monthPrec, yearPrec, listeSesames)
+            for ligne in coMoisPrec:
+                dicoMoisPrecInd[ligne[0]] = ligne[1]
+
+            coAnnee = jalon_mysql.getConnexionELPByYearByIND(session, COD_ELP, year, listeSesames)
+            for ligne in coAnnee:
+                dicoAnneeInd[ligne[0]] = ligne[1]
+        else:
+            year = str(year)
+            month = str(month)
+            if int(month) < 10:
+                month = "0%s" % str(month)
+            monthPrec = str(monthPrec)
+            if int(monthPrec) < 10:
+                monthPrec = "0%s" % str(monthPrec)
+
+            coMois = jalonsqlite.getConnexionELPByMonthByIND(session, COD_ELP, month, year, listeSesames)
+            for ligne in coMois:
+                dicoMoisInd[ligne[0]] = ligne[1]
+
+            coMoisPrec = jalonsqlite.getConnexionELPByMonthByIND(session, COD_ELP, monthPrec, str(yearPrec), listeSesames)
+            for ligne in coMoisPrec:
+                dicoMoisPrecInd[ligne[0]] = ligne[1]
+
+            coAnnee = jalonsqlite.getConnexionELPByYearByIND(session, COD_ELP, year, listeSesames)
+            for ligne in coAnnee:
+                dicoAnneeInd[ligne[0]] = ligne[1]
 
         return {"etu"  :    listeInds,
                 "mois" :    dicoMoisInd,
@@ -786,7 +807,6 @@ class JalonBDD(SimpleItem):
                 "annee":    dicoAnneeInd}
 
     def getConnexionByIND(self, SESAME_ETU):
-        session = self.getSession()
         dicoRetour = {}
         listeRetour = []
 
@@ -803,7 +823,12 @@ class JalonBDD(SimpleItem):
                      11 : u"Novembre",
                      12 : u"Décembre"}
 
-        listeConnexion = jalonsqlite.getConnexionByIND(session, SESAME_ETU)
+        session = self.getSession()
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+            listeConnexion = jalon_mysql.getConnexionByIND(session, SESAME_ETU)
+        else:
+            listeConnexion = jalonsqlite.getConnexionByIND(session, SESAME_ETU)
 
         if listeConnexion:
             dicoRetour["first"] = jalon_utils.getLocaleDate(listeConnexion.first()[0], "%d/%m/%Y à %Hh%M")
@@ -813,8 +838,14 @@ class JalonBDD(SimpleItem):
             i = 0
             monthP = 0
             for connexion in listeConnexion:
-                year = connexion[0].split("/")[0]
-                month = connexion[0].split("/")[1]
+                try:
+                    year = connexion[0].year
+                except:
+                    year = connexion[0].split("/")[0]
+                try:
+                    month = connexion[0].month
+                except:
+                    month = connexion[0].split("/")[1]
                 if i == 0:
                     dico = {"label" : "%s %s" % (dicoLabel[int(month)], year),
                             "tri"   : "%s/%s" % (year, month),
@@ -907,8 +938,6 @@ class JalonBDD(SimpleItem):
         return "\n".join(graph)
 
     def getConsultationCoursByDate(self, COD_ELP, TYP_ELP, SESAME_ETU, month, year):
-        session = self.getSession()
-
         if SESAME_ETU == "tous":
             SESAME_ETU = None
 
@@ -944,50 +973,83 @@ class JalonBDD(SimpleItem):
             year = DateTime().year()
 
         if monthPrec == 0:
-            monthPrec = "12"
+            monthPrec = 12
             yearPrec = year - 1
         else:
             yearPrec = year
 
-        if int(month) < 10:
-            month = "0%s" % month
-        year = str(DateTime().year())
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+            consultationCoursPrec = jalon_mysql.getConsultationCoursByMonth(session, monthPrec, yearPrec, dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCoursPrec.all():
+                try:
+                    dicoCours[ligne[0]]["NbPrec"] = ligne[1]
+                except:
+                    pass
 
-        if int(monthPrec) < 10:
-            monthPrec = "0%s" % str(monthPrec)
+            consultationCours = jalon_mysql.getConsultationCoursByMonth(session, month, year, dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCours.all():
+                try:
+                    dicoCours[ligne[0]]["NbCour"] = ligne[1]
+                except:
+                    pass
+
+            consultationCours = jalon_mysql.getConsultationCoursByYear(session, year, dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCours.all():
+                try:
+                    dicoCours[ligne[0]]["NbAnnee"] = ligne[1]
+                    if not dicoCours[ligne[0]] in listeCours:
+                        listeCours.append(dicoCours[ligne[0]])
+                except:
+                    pass
         else:
-            monthPrec = str(monthPrec)
-        yearPrec = str(yearPrec)
+            if int(month) < 10:
+                month = "0%s" % month
+            #year = str(DateTime().year())
 
-        consultationCoursPrec = jalonsqlite.getConsultationCoursByMonth(session, monthPrec, yearPrec, dicoCours.keys(), SESAME_ETU)
-        for ligne in consultationCoursPrec.all():
-            try:
-                dicoCours[ligne[0]]["NbPrec"] = ligne[1]
-            except:
-                pass
+            if int(monthPrec) < 10:
+                monthPrec = "0%s" % str(monthPrec)
+            else:
+                monthPrec = str(monthPrec)
+            yearPrec = str(yearPrec)
 
-        consultationCours = jalonsqlite.getConsultationCoursByMonth(session, month, year, dicoCours.keys(), SESAME_ETU)
-        for ligne in consultationCours.all():
-            try:
-                dicoCours[ligne[0]]["NbCour"] = ligne[1]
-            except:
-                pass
+            session = self.getSession()
+            consultationCoursPrec = jalonsqlite.getConsultationCoursByMonth(session, monthPrec, yearPrec, dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCoursPrec.all():
+                try:
+                    dicoCours[ligne[0]]["NbPrec"] = ligne[1]
+                except:
+                    pass
 
-        consultationCours = jalonsqlite.getConsultationCoursByYear(session, year, dicoCours.keys(), SESAME_ETU)
-        for ligne in consultationCours.all():
-            try:
-                dicoCours[ligne[0]]["NbAnnee"] = ligne[1]
-                if not dicoCours[ligne[0]] in listeCours:
-                    listeCours.append(dicoCours[ligne[0]])
-            except:
-                pass
+            consultationCours = jalonsqlite.getConsultationCoursByMonth(session, month, str(year), dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCours.all():
+                try:
+                    dicoCours[ligne[0]]["NbCour"] = ligne[1]
+                except:
+                    pass
 
-        listeCours.sort(lambda x,y: cmp(x["Title"], y["Title"]))
+            consultationCours = jalonsqlite.getConsultationCoursByYear(session, str(year), dicoCours.keys(), SESAME_ETU)
+            for ligne in consultationCours.all():
+                try:
+                    dicoCours[ligne[0]]["NbAnnee"] = ligne[1]
+                    if not dicoCours[ligne[0]] in listeCours:
+                        listeCours.append(dicoCours[ligne[0]])
+                except:
+                    pass
+
+        listeCours.sort(lambda x, y: cmp(x["Title"], y["Title"]))
         return listeCours
 
     def getMinMaxYearByELP(self, COD_ELP):
         session = self.getSession()
-        return jalonsqlite.getMinMaxYearByELP(session, COD_ELP)
+        ICE = aliased(tables.IndContratElpSQLITE)
+        requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP==COD_ELP).all()
+        listeInds = [x[0] for x in requete]
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+            return jalon_mysql.getMinMaxYearByELP(session, COD_ELP, listeInds)
+        else:
+            return jalonsqlite.getMinMaxYearByELP(session, COD_ELP, listeInds)
 
     #-----------------------#
     # Fonctions utilitaires #
@@ -1093,6 +1155,10 @@ class JalonBDD(SimpleItem):
         session = self.getSession()
         if self._typeBDD == "sqlite":
             return jalonsqlite.getConsultation(session)
+
+    def addConnexionINDMySQL(self, SESAME_ETU, DATE_CONN):
+        session = self.getSessionMySQL()
+        jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.strptime(DATE_CONN, '%Y-%m-%d %H:%M:%S'))
 
     def convertirResultatBDD(self, resultat):
         conversion = []
