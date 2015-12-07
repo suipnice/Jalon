@@ -60,7 +60,7 @@ def addConnexionIND(session, SESAME_ETU, DATE_CONN):
     session.commit()
 
 
-def addConsultation(session, SESAME_ETU, DATE_CONS, ID_COURS, TYPE_CONS, ID_CONS):
+def addConsultationIND(session, SESAME_ETU, DATE_CONS, ID_COURS, TYPE_CONS, ID_CONS):
     session.add(tables.ConsultationCoursMySQL(SESAME_ETU=SESAME_ETU, DATE_CONS=DATE_CONS, ID_COURS=ID_COURS, TYPE_CONS=TYPE_CONS, ID_CONS=ID_CONS))
     session.commit()
 

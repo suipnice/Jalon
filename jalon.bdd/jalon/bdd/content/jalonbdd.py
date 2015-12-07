@@ -481,7 +481,7 @@ class JalonBDD(SimpleItem):
             if self._use_mysql:
                 LOG.info('Appel MySQL')
                 session = self.getSessionMySQL()
-                jalon_mysql.addConsultation(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS)
+                jalon_mysql.addConsultationIND(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS)
             else:
                 LOG.info('Appel SQLITE')
                 session = self.getSession()
@@ -1160,6 +1160,10 @@ class JalonBDD(SimpleItem):
     def addConnexionINDMySQL(self, SESAME_ETU, DATE_CONN):
         session = self.getSessionMySQL()
         jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.strptime(DATE_CONN, '%Y-%m-%d %H:%M:%S'))
+
+    def addConsultationINDMySQL(self, SESAME_ETU, DATE_CONN, ID_COURS, TYPE_CONS, ID_CONS):
+        session = self.getSessionMySQL()
+        jalon_mysql.addConsultationIND(session, SESAME_ETU, datetime.strptime(DATE_CONN, '%Y-%m-%d %H:%M:%S'), ID_COURS, TYPE_CONS, ID_CONS)
 
     def convertirResultatBDD(self, resultat):
         conversion = []
