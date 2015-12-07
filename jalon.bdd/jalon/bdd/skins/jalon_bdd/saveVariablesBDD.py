@@ -13,7 +13,12 @@ bdd = {"typeBDD":                       REQUEST.form["typeBDD"],
        "urlConnexion":                  REQUEST.form["urlConnexion"],
        "activer_stockage_connexion":    REQUEST.form["activerStockageConnexion"],
        "activer_stockage_consultation": REQUEST.form["activerStockageConsultation"],
-       "use_mysql":                     REQUEST.form["useSaveMySQL"]}
+       "use_mysql":                     REQUEST.form["useSaveMySQL"],
+       "host_mysql":                    REQUEST.form["hostMySQL"],
+       "port_mysql":                    REQUEST.form["portMySQL"],
+       "db_name_mysql":                 REQUEST.form["dbNameMySQL"],
+       "user_mysql":                    REQUEST.form["userMySQL"],
+       "password_mysql":                REQUEST.form["passwordMySQL"]}
 
 retour = context.setVariablesBDD(bdd)
 

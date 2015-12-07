@@ -14,8 +14,8 @@
 <metal:macro define-macro="gestion_connexion_bdd">
     <br/>
     <div tal:define="message request/message | nothing"
-         tal:condition="message"
-         class="panel success radius">
+         tal:attributes="class python:context.test(message != 0, 'panel success radius', 'panel alert radius')"
+         tal:condition="message">
         <strong>
         <tal:condition condition="python:context.test(message == '1', '1', 0)">
             Modifications enregistrées.
@@ -128,6 +128,60 @@
                             <tal:block i18n:translate="">Désactivé</tal:block>
                         </label>
                     </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="hostMySQL" i18n:translate="hostMySQL">
+                        Host du serveur MySQL
+                    </label>
+                    <input type="text" name="hostMySQL"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/hostMySQL | nothing" />
+                </div>
+            </div>
+            <div class="medium-6 columns">
+                <div class="panel callout radius">
+                    <label for="portMySQL" i18n:translate="portMySQL">
+                        Port du serveur MySQL
+                    </label>
+                    <input type="text" name="portMySQL"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/portMySQL | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="dbNameMySQL" i18n:translate="dbNameMySQL">
+                        Nom de la BDD MySQL
+                    </label>
+                    <input type="text" name="dbNameMySQL"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/dbNameMySQL | nothing" />
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="userMySQL" i18n:translate="userMySQL">
+                        Utilisateur de la BDD MySQL
+                    </label>
+                    <input type="text" name="userMySQL"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/userMySQL | nothing" />
+                </div>
+            </div>
+            <div class="medium-4 columns">
+                <div class="panel callout radius">
+                    <label for="passwordMySQL" i18n:translate="passwordMySQL">
+                        Password Utilisateur de la BDD MySQL
+                    </label>
+                    <input type="password" name="passwordMySQL"
+                           maxlength="255" size="30" class="blurrable"
+                           tal:attributes="value bdd/passwordMySQL | nothing" />
                 </div>
             </div>
         </div>

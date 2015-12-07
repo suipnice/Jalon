@@ -86,11 +86,11 @@ class JalonBDD(SimpleItem):
                 "activerStockageConnexion":    self._activer_stockage_connexion,
                 "activerStockageConsultation": self._activer_stockage_consultation,
                 "useSaveMySQL":                self._use_mysql,
-                "host_mysql":                  self._host_mysql,
-                "user_mysql":                  self._user_mysql,
-                "password_mysql":              self._password_mysql,
-                "port_mysql":                  self._port_mysql,
-                "db_name_mysql":               self._db_name_mysql}
+                "hostMySQL":                   self._host_mysql,
+                "portMySQL":                   self._port_mysql,
+                "dbNameMySQL":                 self._db_name_mysql,
+                "userMySQL":                   self._user_mysql,
+                "passwordMySQL":               self._password_mysql}
 
     def setVariablesBDD(self, variablesBDD):
         # s'il n'y a aucun type renseigné ou alors aucune url de connexion
@@ -108,7 +108,7 @@ class JalonBDD(SimpleItem):
                 retour = 3
         for key in variablesBDD.keys():
             val = variablesBDD[key]
-            if key.startswith("activer") or key.startswith("use"):
+            if key.startswith("activer_") or key.startswith("use_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
         #self._typeBDD = variablesBDD["typeBDD"]
