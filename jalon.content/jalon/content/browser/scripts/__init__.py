@@ -7,3 +7,4 @@ from podcasts import JalonPodcast
 from config import JalonConfiguration
 from footer import Footer
 from search import SearchView
+from indicateurs_view import IndicateursView
