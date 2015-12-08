@@ -821,7 +821,6 @@ class JalonCours(ATFolder):
             res.append(["Invitations individuelles : étudiant(s) hors université", "email", len(invitations), "invitationsemail"])
         return res
 
-
     # getInfosMembre recupere les infos sur les personnes.
     def getInfosMembre(self, username):
         #self.plone_log("getInfosMembre")
@@ -2740,8 +2739,22 @@ class JalonCours(ATFolder):
     def insererConsultation(self, sesame, type_cons, id_cons):
         #self.plone_log("insererConsultation")
         portal = self.portal_url.getPortalObject()
-        portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
-        portal_jalon_bdd.insererConsultation(SESAME_ETU=sesame, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons)
+        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=sesame, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons)
+
+    def getConsultation(self):
+        #self.plone_log("getConsultation")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByDate(self.getId())
+
+    def getConsultationByCoursByYearByPublic(self):
+        #self.plone_log("getConsultation")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByYearByPublic(self.getId())
+
+    def genererGraphIndicateurs(self, months_dict):
+        #self.plone_log("genererGraphIndicateurs")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.genererGraphIndicateurs(months_dict)
 
     #Recupere la liste des fichiers d'un cours pouvant etre telecharges
     def getFichiersCours(self, page=None):

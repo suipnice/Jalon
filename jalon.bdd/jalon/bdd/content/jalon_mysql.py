@@ -121,16 +121,37 @@ def getConnexionByIND(session, SESAME_ETU):
 def getConsultationCoursByMonth(session, month, year='%', listeIdCours=[], SESAME_ETU=None):
     COC = aliased(tables.ConsultationCoursMySQL)
     if SESAME_ETU:
-        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+        nbConsultations = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
     else:
-        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
-    return nbConnexion
+        nbConsultations = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    return nbConsultations
 
 
 def getConsultationCoursByYear(session, year='%', listeIdCours=[], SESAME_ETU=None):
     COC = aliased(tables.ConsultationCoursMySQL)
     if SESAME_ETU:
-        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+        nbConsultations = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.SESAME_ETU == SESAME_ETU, COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
     else:
-        nbConnexion = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
-    return nbConnexion
+        nbConsultations = session.query(COC.ID_COURS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS.in_(listeIdCours), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_COURS)
+    return nbConsultations
+
+
+def getConsultationByCoursByMonth(session, ID_COURS, month, year='%'):
+    LOG.info("----- getConsultationByCoursByMonth -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+    nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
+    return nbConsultations
+
+
+def getConsultationByCoursByYear(session, ID_COURS, year='%'):
+    LOG.info("----- getConsultationByCoursByYear -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+    nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
+    return nbConsultations
+
+
+def getConsultationByCoursByYearByPublic(session, ID_COURS, year='%', public="Etudiant"):
+    LOG.info("----- getConsultationByCoursByYearByPublic -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+    nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.YEAR(COC.DATE_CONS) == year)).group_by(func.MONTH(COC.DATE_CONS))
+    return nbConsultations

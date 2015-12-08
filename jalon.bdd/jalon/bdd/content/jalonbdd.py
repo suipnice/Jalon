@@ -197,7 +197,7 @@ class JalonBDD(SimpleItem):
             except:
                 pass
             connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
-            engine = create_engine(connexion, echo=True, poolclass=NullPool)
+            engine = create_engine(connexion, echo=False, poolclass=NullPool)
             #print "ouverture connexion"
             self.SessionMySQL.configure(bind=engine)
             self._session_mysql_open = True
@@ -802,8 +802,8 @@ class JalonBDD(SimpleItem):
             for ligne in coAnnee:
                 dicoAnneeInd[ligne[0]] = ligne[1]
 
-        return {"etu"  :    listeInds,
-                "mois" :    dicoMoisInd,
+        return {"etu":      listeInds,
+                "mois":     dicoMoisInd,
                 "moisPrec": dicoMoisPrecInd,
                 "annee":    dicoAnneeInd}
 
@@ -811,18 +811,18 @@ class JalonBDD(SimpleItem):
         dicoRetour = {}
         listeRetour = []
 
-        dicoLabel = {1  : u"Janvier",
-                     2  : u"Février",
-                     3  : u"Mars",
-                     4  : u"Avril",
-                     5  : u"Mai",
-                     6  : u"Juin",
-                     7  : u"Juillet",
-                     8  : u"Août",
-                     9  : u"Septembre",
-                     10 : u"Octobre",
-                     11 : u"Novembre",
-                     12 : u"Décembre"}
+        dicoLabel = {1:  u"Janvier",
+                     2:  u"Février",
+                     3:  u"Mars",
+                     4:  u"Avril",
+                     5:  u"Mai",
+                     6:  u"Juin",
+                     7:  u"Juillet",
+                     8:  u"Août",
+                     9:  u"Septembre",
+                     10: u"Octobre",
+                     11: u"Novembre",
+                     12: u"Décembre"}
 
         session = self.getSession()
         if self._use_mysql:
@@ -848,18 +848,18 @@ class JalonBDD(SimpleItem):
                 except:
                     month = connexion[0].split("/")[1]
                 if i == 0:
-                    dico = {"label" : "%s %s" % (dicoLabel[int(month)], year),
-                            "tri"   : "%s/%s" % (year, month),
-                            "year"  : year,
-                            "month" : month,
-                            "nb"    : 1}
+                    dico = {"label": "%s %s" % (dicoLabel[int(month)], year),
+                            "tri":   "%s/%s" % (year, month),
+                            "year":  year,
+                            "month": month,
+                            "nb":    1}
                 elif monthP != 0 and month != monthP:
                     listeRetour.append(dico)
-                    dico = {"label" : "%s %s" % (dicoLabel[int(month)], year),
-                            "tri"   : "%s/%s" % (year, month),
-                            "year"  : year,
-                            "month" : month,
-                            "nb"    : 1}
+                    dico = {"label": "%s %s" % (dicoLabel[int(month)], year),
+                            "tri":   "%s/%s" % (year, month),
+                            "year":  year,
+                            "month": month,
+                            "nb":    1}
                 else:
                     dico["nb"] = dico["nb"] + 1
                 monthP = month
@@ -871,18 +871,18 @@ class JalonBDD(SimpleItem):
         return None
 
     def genererGraphConnexionInd(self, listeMois):
-        dicoLabel = {1  : u"Janvier",
-                     2  : u"Février",
-                     3  : u"Mars",
-                     4  : u"Avril",
-                     5  : u"Mai",
-                     6  : u"Juin",
-                     7  : u"Juillet",
-                     8  : u"Août",
-                     9  : u"Septembre",
-                     10 : u"Octobre",
-                     11 : u"Novembre",
-                     12 : u"Décembre"}
+        dicoLabel = {1:  u"Janvier",
+                     2:  u"Février",
+                     3:  u"Mars",
+                     4:  u"Avril",
+                     5:  u"Mai",
+                     6:  u"Juin",
+                     7:  u"Juillet",
+                     8:  u"Août",
+                     9:  u"Septembre",
+                     10: u"Octobre",
+                     11: u"Novembre",
+                     12: u"Décembre"}
 
         graph = ['<script type="text/javascript">']
         graph.append("var chartData = [")
@@ -960,12 +960,12 @@ class JalonBDD(SimpleItem):
         dicoCours = {}
         if rechercheCours:
             for cours in rechercheCours:
-                dicoCours[cours.getId] = {"id"      : cours.getId,
-                                          "Title"   : cours.Title,
-                                          "Creator" : cours.Creator,
-                                          "NbPrec"  : 0,
-                                          "NbCour"  : 0,
-                                          "NbAnnee" : 0}
+                dicoCours[cours.getId] = {"id":      cours.getId,
+                                          "Title":   cours.Title,
+                                          "Creator": cours.Creator,
+                                          "NbPrec":  0,
+                                          "NbCour":  0,
+                                          "NbAnnee": 0}
 
         if not month or month == '0':
             month = DateTime().month()
@@ -1041,10 +1041,151 @@ class JalonBDD(SimpleItem):
         listeCours.sort(lambda x, y: cmp(x["Title"], y["Title"]))
         return listeCours
 
+    def getConsultationByCoursByDate(self, ID_COURS, month=None, year=None):
+        LOG.info("----- getConsultationByCoursByDate -----")
+        consultation_dict = {}
+        consultations_list = []
+
+        if not month or month == '0':
+            month = DateTime().month()
+        monthPrec = month - 1
+        if not year or year == '0':
+            year = DateTime().year()
+
+        if monthPrec == 0:
+            monthPrec = 12
+            yearPrec = year - 1
+        else:
+            yearPrec = year
+
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+
+            consultationCours = jalon_mysql.getConsultationByCoursByYear(session, ID_COURS, year)
+            for ligne in consultationCours.all():
+                LOG.info(ligne)
+                #try:
+                consultation_dict[ligne[0]] = {"public":               ligne[0],
+                                               "nb_cons_month_before": 0,
+                                               "nb_cons_month":        0,
+                                               "icon":                 "",
+                                               "nb_cons_year":         0}
+                consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+                if not consultation_dict[ligne[0]] in consultations_list:
+                    consultations_list.append(consultation_dict[ligne[0]])
+                #except:
+                #    pass
+            LOG.info(consultation_dict)
+
+            consultationCoursPrec = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
+            for ligne in consultationCoursPrec.all():
+                #try:
+                consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+                #except:
+                #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+                #    pass
+
+            consultationCours = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, month, year)
+            for ligne in consultationCours.all():
+                #try:
+                consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+                #except:
+                #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
+        else:
+            if int(month) < 10:
+                month = "0%s" % month
+
+            if int(monthPrec) < 10:
+                monthPrec = "0%s" % str(monthPrec)
+            else:
+                monthPrec = str(monthPrec)
+            yearPrec = str(yearPrec)
+
+            session = self.getSession()
+            consultationCoursPrec = jalonsqlite.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
+            for ligne in consultationCoursPrec.all():
+                try:
+                    consultation["nb_cons_month_before"] = ligne[0]
+                except:
+                    pass
+
+            consultationCours = jalonsqlite.getConsultationByCoursByMonth(session, ID_COURS, month, str(year))
+            for ligne in consultationCours.all():
+                try:
+                    consultation["nb_cons_month"] = ligne[0]
+                except:
+                    pass
+
+            consultationCours = jalonsqlite.getConsultationByCoursByYear(session, ID_COURS, str(year))
+            for ligne in consultationCours.all():
+                try:
+                    consultation["nb_cons_year"] = ligne[0]
+                except:
+                    pass
+
+        LOG.info(consultations_list)
+        for consultation in consultations_list:
+            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
+            if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
+                consultation["icon"] = "fa fa-arrow-right no-pad"
+        return consultations_list
+
+    def getConsultationByCoursByYearByPublic(self, ID_COURS, year=None, public="Etudiant"):
+        LOG.info("----- getConsultationByCoursByYearByPublic -----")
+        if not year or year == '0':
+            year = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByCoursByYearByPublic(session, ID_COURS, year, public)
+        return consultationCours
+
+    def genererGraphIndicateurs(self, months_dict):
+        dicoLabel = {1:  u"Janvier",
+                     2:  u"Février",
+                     3:  u"Mars",
+                     4:  u"Avril",
+                     5:  u"Mai",
+                     6:  u"Juin",
+                     7:  u"Juillet",
+                     8:  u"Août",
+                     9:  u"Septembre",
+                     10: u"Octobre",
+                     11: u"Novembre",
+                     12: u"Décembre"}
+
+        graph = ['<script type="text/javascript">']
+        graph.append("var chartData = [")
+
+        for month in range(1, 13):
+            graph.append("{")
+            graph.append('  "month": "%s",' % dicoLabel[month])
+            graph.append('  "visits": %s' % str(months_dict[month]) if month in months_dict else '  "visits": 0')
+            graph.append('},')
+        graph.append('];')
+
+        graph.append('''
+        AmCharts.ready(function() {
+            var chart = new AmCharts.AmSerialChart();
+            chart.dataProvider = chartData;
+            chart.categoryField = "month";
+
+            var categoryAxis = chart.categoryAxis;
+            categoryAxis.labelRotation = 65;
+
+            var graph = new AmCharts.AmGraph();
+            graph.valueField = "visits";
+            graph.type = "column";
+            graph.fillAlphas = 0.8;
+            chart.addGraph(graph);
+
+            chart.write("chartdiv");
+        });
+        </script>''')
+        return "\n".join(graph)
+
     def getMinMaxYearByELP(self, COD_ELP):
         session = self.getSession()
         ICE = aliased(tables.IndContratElpSQLITE)
-        requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP==COD_ELP).all()
+        requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP == COD_ELP).all()
         listeInds = [x[0] for x in requete]
         if self._use_mysql:
             session = self.getSessionMySQL()
@@ -1172,8 +1313,11 @@ class JalonBDD(SimpleItem):
                 conversion.append(dict(zip(ligne.keys(), ligne)))
         return conversion
 
-    def execRequeteBDD(self, requete, maj=False):
-        session = self.getSession()
+    def execRequeteBDD(self, requete, maj=False, use_mysql=False):
+        if use_mysql:
+            session = self.getSessionMySQL()
+        else:
+            session = self.getSession()
         requete = session.execute(requete)
         if maj:
             session.commit()
