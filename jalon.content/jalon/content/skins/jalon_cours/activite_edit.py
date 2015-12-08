@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Cours edit
+##title=Activite edit
 ##
 
 #context = context
@@ -28,20 +28,20 @@ if form["formulaire"] == "modifier-boite-date":
 
 #Cas de l'examen
 if "duree" in form:
-    dico = {"Title": form["title"],
+    dico = {"Title":       form["title"],
             "Description": form["description"],
-            "note_max": form["note_max"],
-            "duree": form["duree"],
-            "attempts": form["attempts"],
-            "verrou": form["verrou"],
-            "wims_lang":form["wims_lang"]}
+            "note_max":    form["note_max"],
+            "duree":       form["duree"],
+            "attempts":    form["attempts"],
+            "verrou":      form["verrou"],
+            "wims_lang":   form["wims_lang"]}
 
 elif "note_max" in form:
    #Cas de l'autoevaluation
-    dico = {"Title": form["title"],
+    dico = {"Title":       form["title"],
             "Description": form["description"],
-            "note_max": form["note_max"],
-            "wims_lang":form["wims_lang"]}
+            "note_max":    form["note_max"],
+            "wims_lang":   form["wims_lang"]}
 
 
 context.setAttributActivite(dico)

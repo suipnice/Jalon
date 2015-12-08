@@ -662,7 +662,7 @@
         <input type="hidden" name="repertoire" tal:attributes="value repertoire" />
         <input type="hidden" name="indexElement" tal:attributes="value request/indexElement | nothing" />
         <input type="hidden" name="menu" tal:attributes="value menu" />
-        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${retour}?menu=${menu}"
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${retour}"
                tal:condition="retour"/>
 
         <div class="formControls">

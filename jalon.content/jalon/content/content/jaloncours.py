@@ -1772,7 +1772,7 @@ class JalonCours(ATFolder):
         return jalon_utils.isAfficherElement(affElement, masquerElement)
 
     def isAuteurs(self, username):
-        #self.plone_log("isAuteurs")
+        #self.plone_log("jaloncours/isAuteurs = %s" % (self.isAuteur(username) or self.isCoAuteurs(username)))
         return self.isAuteur(username) or self.isCoAuteurs(username)
 
     def isAuteur(self, username):
@@ -1804,11 +1804,15 @@ class JalonCours(ATFolder):
             return False
 
     def isCoAuteurs(self, username):
-        #self.plone_log("isCoAuteurs")
+        u""" Détermine si l'utilisateur 'username' est un auteur ou co-auteur du cours."""
         if self.isAuteur(username):
+            #self.plone_log("isCoAuteurs = 1 (isAuteur)")
             return 1
         if username in self.coAuteurs:
+            #self.plone_log("isCoAuteurs = 1 (coAuteur)")
             return 1
+        # Dans le cas de l'admin, isCoAuteurs renvoi 0 aussi
+        #self.plone_log("isCoAuteurs = 0 (ni auteur, ni coAuteur)")
         return 0
 
     def isCoLecteurs(self, username):
@@ -1841,12 +1845,15 @@ class JalonCours(ATFolder):
         """
 
     def isPersonnel(self, user, mode_etudiant="false"):
-        #self.plone_log("isPersonnel")
+        #self.plone_log("jaloncours/isPersonnel")
         if mode_etudiant == "true":
+            #self.plone_log("isPersonnel = False (mode étudiant)")
             return False
         if user.has_role("Manager"):
+            #self.plone_log("isPersonnel = True (manager role)")
             return True
         if user.has_role("Personnel") and self.isCoAuteurs(user.getId()):
+            #self.plone_log("isPersonnel = True (Personnel & iscoAuteurs)")
             return True
         return False
 
@@ -1938,8 +1945,8 @@ class JalonCours(ATFolder):
         self.actualites = tuple(newActu)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    # afficherRessource() modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)
     def afficherRessource(self, idElement, dateAffichage, attribut, chapitre=None):
+        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         #self.plone_log("afficherRessource")
         dico = self.getElementCours(idElement)
         if dico:
@@ -2381,13 +2388,16 @@ class JalonCours(ATFolder):
 
         # Ici on utilise getElementCours() plutot que getPlanPlat,
         # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
-        dicoElements = copy.deepcopy(self.getElementCours())
+        # nb : on pourrait également parcourir "for idElement in self.objectIds()", afin de lister les objets réellement dans le cours.
+        #dicoElements = copy.deepcopy(self.getElementCours())
 
         liste_activitesWIMS = []
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
-        for idElement in dicoElements:
-            infosElement = dicoElements[idElement]
-            if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
+        #for idElement in dicoElements:
+        for idElement in self.objectIds():
+            #infosElement = dicoElements[idElement]
+            #if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
+            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
                 # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
                 if utilisateur == "All" or infosElement["createurElement"] == utilisateur:
                     #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
@@ -2406,8 +2416,9 @@ class JalonCours(ATFolder):
 
                     ### A utiliser dans un patch correctif :
                     #(on refait ce que fait normalement retirerElementPlan, sauf dans le cas ou l'element n'est plus dans le plan) :
-                    #self.manage_delObjects([idElement])
-                    #del self._elements_cours[idElement]
+                    self.manage_delObjects(idElement)
+                    if idElement in self._elements_cours:
+                        del self._elements_cours[idElement]
 
         # Supprime toutes les classes du serveur WIMS
         listeClasses = list(self.getListeClasses())
