@@ -2746,10 +2746,25 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByDate(self.getId())
 
-    def getConsultationByCoursByYearByPublic(self):
-        #self.plone_log("getConsultation")
+    def getConsultationByCoursByYearForGraph(self):
+        #self.plone_log("getConsultationByCoursByYearForGraph")
         portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByCoursByYearByPublic(self.getId())
+        return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
+
+    def getConsultationElementsByCours(self, elements_list, elements_dict):
+        #self.plone_log("getConsultationElementsByCours")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationElementsByCours(self.getId(), elements_list=elements_list, elements_dict=elements_dict)
+
+    def getConsultationByElementByCours(self, element_id):
+        #self.plone_log("getConsultationByElementByCours")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCours(self.getId(), element_id)
+
+    def getConsultationByElementByCoursByYearForGraph(self, element_id):
+        #self.plone_log("getConsultationByElementByCoursByYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
 
     def genererGraphIndicateurs(self, months_dict):
         #self.plone_log("genererGraphIndicateurs")

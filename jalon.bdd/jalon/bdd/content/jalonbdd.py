@@ -530,14 +530,17 @@ class JalonBDD(SimpleItem):
             #except:
             #    pass
 
-    def creerUtilisateurTest(self, param):
-        session = self.getSession()
-        jalonsqlite.creerUtilisateur(session, param)
+    def creerUtilisateurTest(self, param, use_mysql=False):
+        if use_mysql:
+            session = self.getSessionMySQL()
+            jalon_mysql.addIndividu(session, param)
+        else:
+            session = self.getSession()
+            jalonsqlite.creerUtilisateur(session, param)
 
     def creerUtilisateurMySQL(self, param):
         session_mysql = self.getSessionMySQL()
         jalon_mysql.addIndividu(session_mysql, param)
-
 
     def setInfosUtilisateurs(self, param):
         session = self.getSession()
@@ -1130,12 +1133,136 @@ class JalonBDD(SimpleItem):
                 consultation["icon"] = "fa fa-arrow-right no-pad"
         return consultations_list
 
-    def getConsultationByCoursByYearByPublic(self, ID_COURS, year=None, public="Etudiant"):
-        LOG.info("----- getConsultationByCoursByYearByPublic -----")
+    def getConsultationByCoursByYearForGraph(self, ID_COURS, year=None):
+        LOG.info("----- getConsultationByCoursByYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
-        consultationCours = jalon_mysql.getConsultationByCoursByYearByPublic(session, ID_COURS, year, public)
+        consultationCours = jalon_mysql.getConsultationByCoursByYearForGraph(session, ID_COURS, year)
+        return consultationCours
+
+    def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
+        LOG.info("----- getConsultationElementsByCours -----")
+        consultation_dict = {}
+        consultations_list = []
+
+        if not month or month == '0':
+            month = DateTime().month()
+        monthPrec = month - 1
+
+        if not year or year == '0':
+            year = DateTime().year()
+
+        if monthPrec == 0:
+            monthPrec = 12
+            yearPrec = year - 1
+        else:
+            yearPrec = year
+
+        session = self.getSessionMySQL()
+        elements_consultation = jalon_mysql.getConsultationByElementsByCoursByYear(session, ID_COURS, year, elements_list)
+        for ligne in elements_consultation.all():
+            LOG.info(ligne)
+            #try:
+            consultation_dict[ligne[0]] = {"element_id":           ligne[0],
+                                           "element_titre":        elements_dict.get(ligne[0], "Sans titre"),
+                                           "nb_cons_month_before": 0,
+                                           "nb_cons_month":        0,
+                                           "icon":                 "",
+                                           "nb_cons_year":         0}
+            consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+            if not consultation_dict[ligne[0]] in consultations_list:
+                consultations_list.append(consultation_dict[ligne[0]])
+            #except:
+            #    pass
+        LOG.info(consultation_dict)
+
+        elements_consultation_month_before = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, monthPrec, yearPrec, elements_list)
+        for ligne in elements_consultation_month_before.all():
+            #try:
+            consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+            #except:
+            #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+            #    pass
+
+        elements_consultation_month = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year, elements_list)
+        for ligne in elements_consultation_month.all():
+            #try:
+            consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+            #except:
+            #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
+
+        LOG.info(consultations_list)
+        for consultation in consultations_list:
+            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
+            if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
+                consultation["icon"] = "fa fa-arrow-right no-pad"
+        return consultations_list
+
+    def getConsultationByElementByCours(self, ID_COURS, ID_CONS, month=None, year=None):
+        LOG.info("----- getConsultationByElementByCours -----")
+        consultation_dict = {}
+        consultations_list = []
+
+        if not month or month == '0':
+            month = DateTime().month()
+        monthPrec = month - 1
+        if not year or year == '0':
+            year = DateTime().year()
+
+        if monthPrec == 0:
+            monthPrec = 12
+            yearPrec = year - 1
+        else:
+            yearPrec = year
+
+        if self._use_mysql:
+            session = self.getSessionMySQL()
+
+            consultation_element = jalon_mysql.getConsultationByElementByCoursByYear(session, ID_COURS, ID_CONS, year)
+            for ligne in consultation_element.all():
+                LOG.info(ligne)
+                #try:
+                consultation_dict[ligne[0]] = {"public":               ligne[0],
+                                               "nb_cons_month_before": 0,
+                                               "nb_cons_month":        0,
+                                               "icon":                 "",
+                                               "nb_cons_year":         0}
+                consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+                if not consultation_dict[ligne[0]] in consultations_list:
+                    consultations_list.append(consultation_dict[ligne[0]])
+                #except:
+                #    pass
+            LOG.info(consultation_dict)
+
+            consultation_element = jalon_mysql.getConsultationByElementByCoursByMonth(session, ID_COURS, ID_CONS, monthPrec, yearPrec)
+            for ligne in consultation_element.all():
+                #try:
+                consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+                #except:
+                #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+                #    pass
+
+            consultation_element = jalon_mysql.getConsultationByElementByCoursByMonth(session, ID_COURS, ID_CONS, month, year)
+            for ligne in consultation_element.all():
+                #try:
+                consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+                #except:
+                #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
+
+        LOG.info(consultations_list)
+        for consultation in consultations_list:
+            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
+            if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
+                consultation["icon"] = "fa fa-arrow-right no-pad"
+        return consultations_list
+
+    def getConsultationByElementByCoursByYearForGraph(self, ID_COURS, ID_CONS, year=None):
+        LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
+        if not year or year == '0':
+            year = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByElementByCoursByYearForGraph(session, ID_COURS, ID_CONS, year)
         return consultationCours
 
     def genererGraphIndicateurs(self, months_dict):

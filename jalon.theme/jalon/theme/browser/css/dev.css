@@ -107,3 +107,62 @@ C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wim
     text-decoration: line-through;
     cursor:initial;
 }
+
+/*
+    css utilsé dans les indicateurs du cours
+    fichier : macro_cours_indicateurs
+    macro   : indicateurs_ressources
+*/
+#cours_indicateurs nav .button {
+    -moz-appearance: none;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 0;
+    font-size: 90%;
+    width: 24%;
+    cursor: pointer;
+    display: inline-block !important;
+    font-family: Tahoma,Verdana,Helvetica,Arial,sans-serif;
+    font-size: 1rem;
+    font-weight: normal;
+    line-height: normal;
+    margin: 0 0 0.5rem;
+    padding: 0.5625rem 1.125rem 0.625rem;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 300ms ease-out 0s;
+}
+
+#cours_indicateurs nav .button.res-fichiers {
+    background-color: #e78841;
+    border-color: #227da3;
+    border-radius: 5px;
+    color: #fff;
+}
+
+#cours_indicateurs nav .button.res-fichiers:hover, #cours_indicateurs nav .button.res-fichiers:focus, #cours_indicateurs nav .button.res-fichiers.selected {
+    background-color: #d2691b;
+}
+
+#cours_indicateurs nav .button.res-connect {
+    background-color: #79a445;
+    border-color: #227da3;
+    border-radius: 5px;
+    color: #fff;
+}
+
+#cours_indicateurs nav .button.res-connect:hover, #cours_indicateurs nav .button.res-connect:focus, #cours_indicateurs nav .button.res-connect.selected {
+    background-color: #618337;
+}
+
+#cours_indicateurs nav .button.res-liens {
+    background-color: #f1c340;
+    border-color: #227da3;
+    border-radius: 5px;
+    color: #fff;
+}
+
+#cours_indicateurs nav .button.res-liens:hover, #cours_indicateurs nav .button.res-liens:focus, #cours_indicateurs nav .button.res-liens.selected {
+    background-color: #e3ad11;
+}

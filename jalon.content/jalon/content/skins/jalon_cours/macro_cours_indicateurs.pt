@@ -107,7 +107,7 @@
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nb_cons_year"
-                        title="Trier selon les consultations sur l'année" i18n:attributes="title">
+                        title="Trier selon les consultations sur l'année en cours" i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
@@ -151,8 +151,23 @@
 <metal:macro define-macro="indicateurs_ressources">
 
     <h2>
-        <i class="fa fa-files-o"></i>Supports pédagogiques
+        <i class="fa fa-check-square-o "></i>Sélectionner un type de Supports pédagogiques
     </h2>
+    <nav class="small-12 columns"
+         tal:define="box_list onglet_view/box_list">
+        <a tal:repeat="box box_list"
+           tal:attributes="class box/css_class;
+                           href box/link_url">
+            <i tal:attributes="class string:fa ${box/icon}"></i><tal:replace replace="box/link_text"/>
+        </a>
+    </nav>
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>Consultations
+    </h2>
+    <metal:macro use-macro="python:context.macro_cours_indicateurs_second.macros.get(onglet_view['second_macro'])">
+        Macro d'affichage des informations d'un onglet
+    </metal:macro>
 
 </metal:macro>
 
