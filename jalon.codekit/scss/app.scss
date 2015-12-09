@@ -1154,6 +1154,7 @@ table {
             &.res-connect { @include button-style( $connect-color, true, false, scale-color( $connect-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-wims { @include button-style( $wims-color, true, false, scale-color( $wims-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-liens { @include button-style( $link-color, true, false, scale-color( $link-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-video { @include button-style( $pod-color, true, false, scale-color( $pod-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-glossaire { @include button-style( $glossary-color, true, false, scale-color( $glossary-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-utilisateurs { @include button-style( $users-color, true, false, scale-color( $users-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-bug { @include button-style( $bug-color, true, false, scale-color( $bug-color, $lightness: $button-function-factor), $button-border-color ); }
