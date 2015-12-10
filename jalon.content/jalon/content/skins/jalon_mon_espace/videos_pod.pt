@@ -85,8 +85,8 @@
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
                         <div class="panel radius">
-                            <span tal:condition="not:is_owner">
-                                <div class="noSwitch" style="display:inline-block;"
+                            <tal:condition condition="not:is_owner">
+                                <div class="switch tiny round"
                                      title="Action par lot : sélectionner / désélectionner"
                                      i18n:attributes="title">
                                     <input type="checkbox" name="video_ids:list"
@@ -94,7 +94,7 @@
                                                            value video/id;"/>
                                     <label tal:attributes="for string:switch-${repeat/video/index}"/>
                                 </div>
-                            </span>
+                            </tal:condition>
                             <h4 tal:attributes="title video/title"
                                 tal:content="python:context.getShortText(video['title'], 20)"/>
                             <p>
