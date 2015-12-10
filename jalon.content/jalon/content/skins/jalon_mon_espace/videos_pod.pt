@@ -22,7 +22,7 @@
                       term_search request/term_search | nothing;">
 
         <h2 class="texte_icone icone_recherche"><i class="fa fa-plus-circle no-pad"></i>
-            <tal:block i18n:translate="">Rechercher du contenu</tal:block>
+            <tal:block i18n:translate="">Rechercher un contenu dans</tal:block>
             <tal:replace replace="context/getNameServeurElasticsearch"/>
             <tal:block i18n:translate="">et l'ajouter à votre espace</tal:block>
         </h2>
@@ -36,10 +36,10 @@
                         id="type_search">
                     <option value="mes_videos"
                             i18n:translate=""
-                            tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">Mes vidéos</option>
+                            tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">Mes contenus</option>
                     <option value="toutes_videos"
                             i18n:translate=""
-                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">Toutes les vidéos</option>
+                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">Tous les contenus</option>
                 </select>
 
                 <label for="term_search" i18n:translate="">Mot clé ou auteur :</label>
@@ -49,31 +49,39 @@
 
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
 
-                <input class="button expand tiny radius" type="submit"
-                        name="form.button.save" value="Rechercher"
-                        i18n:attributes="value label_rechercher" />
+                <button type="submit" class="button small expand radius"
+                        name="form.button.save">
+                    <i class="fa fa-search"></i>
+                    <tal:block i18n:translate="">Rechercher</tal:block>
+                </button>
 
             </div>
         </form>
 
         <tal:condition condition="type_search">
+
         <h2 class="texte_icone icone_resultats"
             i18n:translate="">
             Résultats de la recherche
         </h2>
+
         <tal:define define="page python:int(request.get('page', 1));
                             videos python:context.searchElasticsearch(type_search, term_search, page)">
         <div tal:define="is_owner python:test(type_search == 'mes_videos', True, False)">
+
             <div tal:condition="not:videos/liste_videos"
                   i18n:translate="">
                 La recherche n'a donné aucun résultat.
             </div>
+
             <form name="element_add" method="POST"
                   tal:attributes="action string:${context/absolute_url}/ajouterressource_script"
                   tal:condition="videos/liste_videos">
-                <h3>
-                    Sélectionnez une ou plusieurs vidéos.
-                </h3>
+
+                <div class="panel callout radius">
+                    <tal:block i18n:translate="">Ajoutez directement un contenu en cliquant sur son bouton « Ajouter », ou sélectionnez-en plusieurs et ajoutez les en cliquant sur « Ajouter les contenus sélectionnés ».</tal:block>
+                </div>
+
                 <div class="el_counter show-for-medium-up">
                     <tal:block i18n:translate="">Vidéos</tal:block>
                     <tal:replace replace="videos/first"/>
@@ -82,6 +90,7 @@
                     <tal:block i18n:translate="">affichées sur</tal:block>
                     <tal:replace replace="videos/count"/>.
                 </div>
+
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
                         <div class="panel radius">
@@ -109,7 +118,8 @@
                                     <img tal:attributes="src video/thumbnail"/>
                                 </div>
                             </a>
-                            <div class="text-center"
+
+                            <div class="formControls"
                                  tal:condition="not:is_owner">
                                 <a class="button tiny" title="Voir la vidéo"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
@@ -125,21 +135,28 @@
                                     <tal:block i18n:translate="">Ajouter</tal:block>
                                 </a>
                             </div>
+
                         </div>
                     </li>
                 </ul>
+
                 <input type="hidden" name="macro" value="macro_creer_mon_espace" />
                 <input type="hidden" name="formulaire" value="ajout-elasticsearch" />
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
 
                 <div class="formControls"
                      tal:condition="python:videos and not is_owner">
-                    <button type="submit" class="button small create"
+                    <button type="submit" class="button small expand create"
                             name="form.button.save">
                         <i class="fa fa-plus-circle"></i>
                         <tal:block i18n:translate="">Ajouter</tal:block>
                     </button>
                 </div>
+
+                <div class="panel warning radius">
+                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Les sélections ne valent que sur une même page, elles ne sont pas mémorisées lorsque vous changez de page.</tal:block>
+                </div>
+
             </form>
         </div>
 
