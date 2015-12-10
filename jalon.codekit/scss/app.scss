@@ -168,14 +168,16 @@ button:focus { border: 0 none; outline: 0; }
 #item-adder {
 
     ul.button-group {
-        margin-bottom: 0;
+        margin-bottom: 0.5rem;
+
+        &:not(.even-2):not(.even-3):not(.even-4):not(.even-5):not(.even-6) > li {
+            width: 25%;
+        }
 
         & > li {
-            width: 25%; // souci avec .even
 
             & .button {
                 width: 100%;
-                margin: 0;
 
                 &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
                 &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
@@ -183,6 +185,8 @@ button:focus { border: 0 none; outline: 0; }
                 &.course-direct { @include button-style( $course_direct-color, false, false, scale-color( $course_direct-color, $lightness: $button-function-factor), $course_direct-color ); }
             }
         }
+
+        .button { margin: 0; }
     }
 }
 

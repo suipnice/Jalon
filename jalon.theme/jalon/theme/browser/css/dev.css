@@ -118,14 +118,3 @@ C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wim
     width:50px;
 }
 
-/*
-    css utilsé dans la section vidéo de Mon espace
-    fichier : macro_video
-*/
-#video_mon_espace #item-adder ul.button-group > li {
-    width: 50%;
-}
-
-#video_mon_espace #item-adder {
-    margin-bottom: 1rem;
-}

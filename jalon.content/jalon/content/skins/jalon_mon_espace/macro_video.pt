@@ -32,18 +32,18 @@
 
         <section class="show-for-medium-up medium-12 columns">
             <nav id="item-adder">
-                <ul class="button-group expand radius">
+                <ul class="button-group even-2 radius">
                     <li>
                         <a class="button create" target="_blank"
                            tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
-                           <i class="fa fa-plus-circle"></i>
-                           <tal:block i18n:translate="">Ajouter une Vidéo dans UNSPod</tal:block>
+                           <i class="fa fa-plus-circle no-pad"></i>
+                           <tal:block i18n:translate="">Ajouter une vidéo dans UNSPod</tal:block>
                         </a>
                     </li>
                     <li>
                         <a class="button"
                            tal:attributes="href string:${context/absolute_url}/videos_pod">
-                           <i class="fa fa-search"></i>
+                           <i class="fa fa-search no-pad"></i>
                            <tal:block i18n:translate="">Rechercher une vidéo dans UNSPod</tal:block>
                         </a>
                     </li>
