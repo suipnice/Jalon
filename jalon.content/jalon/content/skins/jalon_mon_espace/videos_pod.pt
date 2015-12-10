@@ -27,10 +27,10 @@
             <tal:block i18n:translate="">et l'ajouter à votre espace</tal:block>
         </h2>
 
-        <form name="recherche_apogee" method="POST"
+        <form method="POST"
               tal:attributes="action string:${context/absolute_url}/videos_pod">
 
-            <div class="field" id="recherche">
+            <div class="field">
                 <label for="type_search" i18n:translate="">Type :</label>
                 <select name="type_search"
                         id="type_search">
@@ -182,10 +182,6 @@
         </tal:define>
         </tal:condition>
     </main>
-
-    <script charset="UTF-8"
-            tal:content="structure string:setApogeeSearch()">
-    </script>
 
 </metal:core>
 
