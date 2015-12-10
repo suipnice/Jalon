@@ -42,7 +42,7 @@
                     </li>
                     <li>
                         <a class="button"
-                           tal:attributes="href string:${context/absolute_url}/lister_auteur">
+                           tal:attributes="href string:${context/absolute_url}/videos_pod">
                            <i class="fa fa-search"></i>
                            <tal:block i18n:translate="">Rechercher une vidéo dans UNSPod</tal:block>
                         </a>
