@@ -60,13 +60,22 @@
 
         <tal:condition condition="type_search">
 
+        <tal:define define="page python:int(request.get('page', 1));
+                            videos python:context.searchElasticsearch(type_search, term_search, page)">
+
         <h2 class="texte_icone icone_resultats"
             i18n:translate="">
             Résultats de la recherche
+            <span class="label secondary right show-for-medium-up" tal:condition="videos/liste_videos">
+                <tal:block i18n:translate="">vidéos</tal:block>
+                <tal:replace replace="videos/first"/>
+                <tal:block i18n:translate="">à</tal:block>
+                <tal:replace replace="videos/last"/>
+                <tal:block i18n:translate="">sur</tal:block>
+                <tal:replace replace="videos/count"/>
+            </span>
         </h2>
 
-        <tal:define define="page python:int(request.get('page', 1));
-                            videos python:context.searchElasticsearch(type_search, term_search, page)">
         <div tal:define="is_owner python:test(type_search == 'mes_videos', True, False)">
 
             <div tal:condition="not:videos/liste_videos"
@@ -79,16 +88,8 @@
                   tal:condition="videos/liste_videos">
 
                 <div class="panel callout radius">
+                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Ajoutez directement un contenu en cliquant sur son bouton « Ajouter », ou sélectionnez-en plusieurs et ajoutez les en cliquant sur « Ajouter les contenus sélectionnés ».</tal:block>
-                </div>
-
-                <div class="el_counter show-for-medium-up">
-                    <tal:block i18n:translate="">Vidéos</tal:block>
-                    <tal:replace replace="videos/first"/>
-                    <tal:block i18n:translate="">à</tal:block>
-                    <tal:replace replace="videos/last"/>
-                    <tal:block i18n:translate="">affichées sur</tal:block>
-                    <tal:replace replace="videos/count"/>.
                 </div>
 
                 <ul id="elasticsearch" class="small-block-grid-4">
@@ -154,7 +155,8 @@
                 </div>
 
                 <div class="panel warning radius">
-                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Les sélections ne valent que sur une même page, elles ne sont pas mémorisées lorsque vous changez de page.</tal:block>
+                    <i class="fa fa-exclamation-triangle no-pad"></i>
+                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page, elles ne sont pas mémorisées lorsque vous changez de page.</tal:block>
                 </div>
 
             </form>
