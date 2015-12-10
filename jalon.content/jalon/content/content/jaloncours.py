@@ -2736,10 +2736,23 @@ class JalonCours(ATFolder):
                 retour = actualite[paramDate]
         self.dateDerniereActu = retour
 
-    def insererConsultation(self, sesame, type_cons, id_cons):
+    def insererConsultation(self, user, type_cons, id_cons):
         #self.plone_log("insererConsultation")
+        if user.has_role("Personnel"):
+            if self.isAuteur(username):
+                public_cons = "Auteur"
+            if username in self.coAuteurs:
+                public_cons = "Co-auteur"
+            if username in self.coLecteur:
+                public_cons = "Lecteur"
+        if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
+            public_cons = "Etudiant"
+        if user.has_role("Manager"):
+            public_cons = "Manager"
+        if user.has_role("Secretaire"):
+            public_cons = "Secretaire"
         portal = self.portal_url.getPortalObject()
-        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=sesame, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons)
+        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=user.getId(), ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
 
     def getConsultation(self):
         #self.plone_log("getConsultation")

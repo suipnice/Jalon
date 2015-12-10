@@ -31,7 +31,7 @@
             <a class="close-reveal-modal"></a>
         </h2>
 
-        <tal:define define="no_return python:context.insererConsultation(user.getId(), typeElement, idElement)"/>
+        <tal:define define="no_return python:context.insererConsultation(user, typeElement, idElement)"/>
 
         <metal:macro use-macro="python:getattr(context, 'macro_element_view').macros[typeElement]">
             Macro d'affichage de l'element

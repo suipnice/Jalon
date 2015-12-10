@@ -475,17 +475,17 @@ class JalonBDD(SimpleItem):
                 session = self.getSession()
                 jalonsqlite.addConnexionIND(session, SESAME_ETU, str(DateTime()))
 
-    def insererConsultation(self, SESAME_ETU, ID_COURS, TYPE_CONS, ID_CONS):
+    def insererConsultation(self, SESAME_ETU, ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS):
         LOG.info('----- insererConsultation -----')
         if self._activer_stockage_consultation:
             if self._use_mysql:
                 LOG.info('Appel MySQL')
                 session = self.getSessionMySQL()
-                jalon_mysql.addConsultationIND(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS)
+                jalon_mysql.addConsultationIND(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS)
             else:
                 LOG.info('Appel SQLITE')
                 session = self.getSession()
-                jalonsqlite.insererConsultation(session, SESAME_ETU, str(DateTime()), ID_COURS, TYPE_CONS, ID_CONS)
+                jalonsqlite.insererConsultation(session, SESAME_ETU, str(DateTime()), ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS)
 
     def setInfosELP(self, param):
         session = self.getSession()
