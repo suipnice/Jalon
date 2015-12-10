@@ -21,9 +21,10 @@
           tal:define="type_search request/type_search | nothing;
                       term_search request/term_search | nothing;">
 
-        <h2 class="texte_icone icone_recherche">
-            <tal:block i18n:translate="">Rechercher une vidéo dans</tal:block>
+        <h2 class="texte_icone icone_recherche"><i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Rechercher du contenu</tal:block>
             <tal:replace replace="context/getNameServeurElasticsearch"/>
+            <tal:block i18n:translate="">et l'ajouter à votre espace</tal:block>
         </h2>
 
         <form name="recherche_apogee" method="POST"
@@ -42,14 +43,14 @@
                 </select>
 
                 <label for="term_search" i18n:translate="">Mot clé ou auteur :</label>
-                <input type="text" name="term_search" class="blurrable" id="term_search" 
+                <input type="text" name="term_search" class="blurrable" id="term_search"
                        size="30" maxlength="255"
                        tal:attributes="value term_search" />
 
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
 
-                <input class="button expand tiny radius" type="submit" 
-                        name="form.button.save" value="Rechercher" 
+                <input class="button expand tiny radius" type="submit"
+                        name="form.button.save" value="Rechercher"
                         i18n:attributes="value label_rechercher" />
 
             </div>
@@ -75,7 +76,7 @@
                 </h3>
                 <div class="el_counter show-for-medium-up">
                     <tal:block i18n:translate="">Vidéos</tal:block>
-                    <tal:replace replace="videos/first"/> 
+                    <tal:replace replace="videos/first"/>
                     <tal:block i18n:translate="">à</tal:block>
                     <tal:replace replace="videos/last"/>
                     <tal:block i18n:translate="">affichées sur</tal:block>
@@ -141,6 +142,7 @@
                 </div>
             </form>
         </div>
+
         <div id="pagination-container"
              tal:define="nb_pages videos/nb_pages;">
 
@@ -165,9 +167,9 @@
             <form id="pagination-page_number" method="post"
                   tal:attributes="action string:${context/absolute_url}/${template/id}"
                   tal:condition="python:context.test(nb_pages != 0, 1, 0)">
-                <input type="hidden" name="type_search" 
+                <input type="hidden" name="type_search"
                        tal:attributes="value type_search"/>
-                <input type="hidden" name="term_search" 
+                <input type="hidden" name="term_search"
                        tal:attributes="value term_search"/>
                 <input type="number" name="page"
                        min="1" step="1" size="4" maxlenght="4"
