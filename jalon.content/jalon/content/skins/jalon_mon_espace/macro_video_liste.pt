@@ -20,13 +20,26 @@
         <div class="panel callout radius"
              tal:condition="not:folderContents">
             <i class="fa fa-info-circle no-pad"></i>
-            <strong i18n:translate="">Vous n'avez aucune vidéo sur UNSPod.</strong><br />
-            <tal:block i18n:translate="">Pour en ajouter, rendez vous sur UNSPod.</tal:block>
+            <strong i18n:translate="">Aucun contenu UNSPod n'est enregistré dans votre espace.</strong><br />
+            <tal:block i18n:translate="">Pour rechercher et ajouter du contenu UNSPod à votre espace, cliquez sur</tal:block>
+            «<a tal:attributes="href string:${context/absolute_url}/videos_pod;
+                               target string:_blank">
+                <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
+            </a>»
+            <tal:block i18n:translate="">ci-dessus</tal:block>
+            <tal:block i18n:translate="">(à gauche).</tal:block><br />
+            <tal:block i18n:translate="">Pour déposer du contenu sur UNSPod, cliquez sur</tal:block>
+            «<a tal:attributes="href string:${context/absolute_url}/cas_pod_login/add;
+                               target string:_blank">
+                <tal:block i18n:translate="">Déposer un fichier audio ou vidéo sur UNSPod</tal:block>
+            </a>»
+            <tal:block i18n:translate="">ci-dessus</tal:block>
+            <tal:block i18n:translate="">(à droite).</tal:block>
         </div>
         </tal:block>
 
         <tal:listing condition="folderContents">
-        
+
         <tal:define define="nb_affiche python:len(folderContents);
                             total_elements python:len(context.objectIds())">
         <div class="el_counter show-for-small-only">
