@@ -174,7 +174,8 @@
             </form>
 
             <div id="pagination-container"
-                 tal:define="nb_pages videos/nb_pages;">
+                 tal:define="nb_pages videos/nb_pages;"
+                 tal:condition="python:context.test(nb_pages > 1, 1, 0)">
 
                 <tal:condition condition="python:page-1 > 0">
                     <a id="pagination-prev" class="button tiny"
@@ -195,7 +196,6 @@
                 </tal:condition>
 
                 <form id="pagination-page_number" method="post"
-                      tal:condition="python:context.test(nb_pages != 0, 1, 0)"
                       tal:attributes="action string:${context/absolute_url}/${template/id};
                                       data-page_change_msg1 string:Attention : les sélections ne sont pas conservées lors des changements de page.;
                                       data-page_change_msg2 string:Changer de page tout de même ?"
