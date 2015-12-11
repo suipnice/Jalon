@@ -1487,6 +1487,20 @@ code {
         cursor: help;
 
     }
+
+    div.pod_thumb {
+        overflow: hidden;
+        max-width: 90%;
+        max-height: 8rem;
+        margin: rem-calc( 6 8 4 );
+        border: 1px solid #d8d8d8;
+
+        img {
+            max-width: 100%;
+            height: auto !important;
+            margin-top: -20%;
+        }
+    }
 }
 
 //#course_plan-legend.panel {
