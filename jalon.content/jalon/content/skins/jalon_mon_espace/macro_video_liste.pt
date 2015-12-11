@@ -20,13 +20,26 @@
         <div class="panel callout radius"
              tal:condition="not:folderContents">
             <i class="fa fa-info-circle no-pad"></i>
-            <strong i18n:translate="">Vous n'avez aucune vidéo sur UNSPod.</strong><br />
-            <tal:block i18n:translate="">Pour en ajouter, rendez vous sur UNSPod.</tal:block>
+            <strong i18n:translate="">Aucun contenu UNSPod n'est enregistré dans votre espace.</strong><br />
+            <tal:block i18n:translate="">Pour rechercher et ajouter du contenu UNSPod à votre espace, cliquez sur</tal:block>
+            «<a tal:attributes="href string:${context/absolute_url}/videos_pod;
+                               target string:_blank">
+                <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
+            </a>»
+            <tal:block i18n:translate="">ci-dessus</tal:block>
+            <tal:block i18n:translate="">(à gauche).</tal:block><br />
+            <tal:block i18n:translate="">Pour déposer du contenu sur UNSPod, cliquez sur</tal:block>
+            «<a tal:attributes="href string:${context/absolute_url}/cas_pod_login/add;
+                               target string:_blank">
+                <tal:block i18n:translate="">Déposer un fichier audio ou vidéo sur UNSPod</tal:block>
+            </a>»
+            <tal:block i18n:translate="">ci-dessus</tal:block>
+            <tal:block i18n:translate="">(à droite).</tal:block>
         </div>
         </tal:block>
 
         <tal:listing condition="folderContents">
-        
+
         <tal:define define="nb_affiche python:len(folderContents);
                             total_elements python:len(context.objectIds())">
         <div class="el_counter show-for-small-only">
@@ -47,19 +60,26 @@
 
         <ul id="elasticsearch" class="small-block-grid-4">
             <li tal:repeat="video folderContents">
-                <div class="panel callout radius">
+                <div tal:define="is_owner python:context.test(user.getId() == video.getVideoauteur, True, False)"
+                     tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
                     <h4>
                         <a class="dropdown right" data-options="align:left"
                            tal:attributes="data-dropdown string:drop-${repeat/video/index}">
                             <i class="fa fa-cog fa-lg no-pad"></i>
                         </a>
+                <tal:comment replace="nothing"><!--
+
+                        <i class="fa fa-lock right"
+                           title="Ce contenu est protégé par un mot de passe."
+                           i18n:attributes="title"></i>
+
+                --></tal:comment>
                         <span tal:attributes="title video/Title"
                               tal:content="python:context.getShortText(video.Title, 20)"/>
                     </h4>
                     <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                         tal:attributes="id string:drop-${repeat/video/index}"
-                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False);
-                                    is_owner python:context.test(user.getId() == video.getVideoauteur, True, False)">
+                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False)">
                         <li tal:condition="is_owner">
                             <a title="Modifier la vidéo sur POD"
                                target="_blank"

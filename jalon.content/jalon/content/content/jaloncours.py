@@ -1054,7 +1054,8 @@ class JalonCours(ATFolder):
                                        data-reveal-id="reveal-main" data-reveal-ajax="true"
                                        class="typeElementTitre">%s""" % (self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"]))
                     if "complementElement" in infos_element and infos_element["complementElement"]["value"]:
-                        html.append("<div class=\"flex-video\"><img src=\"%s\"/></div>" % infos_element["complementElement"]["image"])
+                        html.append("<div class=\"pod_thumb\"><img src=\"%s\" /></div>" % infos_element["complementElement"]["image"])
+
                     html.append("</a>")
                     # TODO : troncature coté serveur -> refonte du JS associé
                     #html.append("   <%s href='./cours_element_view?idElement=%s&createurElement=%s&typeElement=%s&indexElement=%s&requete_ajax=0' class='typeElementTitre'>%s</%s>" % (tag, element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, self.getShortText( infos_element["titreElement"] ), tag))

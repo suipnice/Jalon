@@ -284,6 +284,10 @@ form {
     }
 
     &#cours_edit_form label.formQuestion { display: none; }
+
+    div.switch { margin: 0; padding: 0; }
+    div.switch label { margin-bottom: 0 !important; }
+    div.switch input:disabled + label { background-color: scale-color( $secondary-color, $lightness: 30% ); }
 }
 
 #wims-edit form {

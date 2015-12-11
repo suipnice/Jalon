@@ -32,19 +32,19 @@
 
         <section class="show-for-medium-up medium-12 columns">
             <nav id="item-adder">
-                <ul class="button-group expand radius">
+                <ul class="button-group even-2 radius">
                     <li>
-                        <a class="button create" target="_blank"
-                           tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
-                           <i class="fa fa-plus-circle"></i>
-                           <tal:block i18n:translate="">Ajouter une Vidéo dans UNSPod</tal:block>
+                        <a class="button create"
+                           tal:attributes="href string:${context/absolute_url}/videos_pod">
+                           <i class="fa fa-plus-circle no-pad"></i>
+                           <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
                         </a>
                     </li>
                     <li>
-                        <a class="button"
-                           tal:attributes="href string:${context/absolute_url}/videos_pod">
-                           <i class="fa fa-search"></i>
-                           <tal:block i18n:translate="">Rechercher une vidéo dans UNSPod</tal:block>
+                        <a class="button" target="_blank"
+                           tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
+                           <i class="fa fa-share-square-o no-pad"></i>
+                           <tal:block i18n:translate="">Déposer un fichier audio ou vidéo sur UNSPod</tal:block>
                         </a>
                     </li>
                 </ul>
@@ -67,13 +67,13 @@
         <section id="js-list-ressource" class="small-12 columns">
 
             <h2 id="js-update_title">
-                <i class="fa fa fa-external-link"></i><tal:block i18n:translate="">Vidéos</tal:block>
+                <i class="fa fa fa-external-link"></i><tal:block i18n:translate="">Contenus audio ou vidéo Pod</tal:block>
             </h2>
 
             <div id="js-update_target"
                  tal:attributes="data-href string:${context/absolute_url}">
                 <metal:macro use-macro="context/macro_video_liste/macros/video_liste">
-                    Macro d'affichage de la liste des liens
+                    Macro d'affichage de la liste des contenus Pod
                 </metal:macro>
             </div>
 
@@ -88,7 +88,7 @@
 
     <tal:condition condition="is_ajax">
         <metal:macro use-macro="context/macro_video_liste/macros/video_liste">
-            Macro d'affichage de la liste des liens
+            Macro d'affichage de la liste des contenus Pod
         </metal:macro>
     </tal:condition>
 
