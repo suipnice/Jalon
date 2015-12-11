@@ -87,6 +87,19 @@ class IndicateursView(BrowserView):
 
     def getIndicateursGeneralitesView(self):
         LOG.info("----- getIndicateursGeneralitesView -----")
+        thead_th_list = [{"data-sort": "public",
+                          "th_title":  "les consultations par public",
+                          "th_text":   "Public"},
+                         {"data-sort": "nb_cons_month_before",
+                          "th_title":  "les consultations du mois précédent",
+                          "th_text":   "Mois précédent"},
+                         {"data-sort": "nb_cons_month",
+                          "th_title":  "les consultations du mois courant",
+                          "th_text":   "Mois courant"},
+                         {"data-sort": "nb_cons_year",
+                          "th_title":  "les consultations sur l'année en cours",
+                          "th_text":   "Année en cours"}]
+
         nb_element_by_type = {"Titre":          0,
                               "TexteLibre":     0,
                               "Fichiers":       0,
@@ -113,12 +126,25 @@ class IndicateursView(BrowserView):
 
         graph = ""
         requete = self.context.getConsultationByCoursByYearForGraph().all()
+        #if requete:
+        #    graph = self.context.genererGraphIndicateurs(dict(requete))
         if requete:
-            graph = self.context.genererGraphIndicateurs(dict(requete))
+            requete_dict = {}
+            for ligne in requete:
+                try:
+                    requete_dict[ligne[0]].append({"consultations": ligne[1], "public": ligne[2]})
+                except:
+                    requete_dict[ligne[0]] = [{"consultations": ligne[1], "public": ligne[2]}]
+            try:
+                requete_dict[ligne[0]].sort(lambda x, y: cmp(x["public"], y["public"]))
+            except:
+                pass
+            graph = self.context.genererGraphIndicateurs(requete_dict)
 
         return {"macro":              "indicateurs_generalite",
                 "created":            jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
                 "modified":           jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
+                "thead_th_list":      thead_th_list,
                 "nb_element_by_type": nb_element_by_type,
                 "cours_consultation": self.context.getConsultation(),
                 "graph":              graph}
@@ -179,7 +205,17 @@ class IndicateursView(BrowserView):
             requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
             LOG.info(requete)
             if requete:
-                graph = self.context.genererGraphIndicateurs(dict(requete))
+                requete_dict = {}
+                for ligne in requete:
+                    try:
+                        requete_dict[ligne[0]].append({"consultations": ligne[1], "public": ligne[2]})
+                    except:
+                        requete_dict[ligne[0]] = [{"consultations": ligne[1], "public": ligne[2]}]
+                try:
+                    requete_dict[ligne[0]].sort(lambda x, y: cmp(x["public"], y["public"]))
+                except:
+                    pass
+                graph = self.context.genererGraphIndicateurs(requete_dict)
             indicateurs_ressources_view = {"macro":                 "indicateurs_ressources",
                                            "element_title":         self.context.getElementCours(element_id)["titreElement"],
                                            "box_list":              box_list,

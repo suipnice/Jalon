@@ -79,40 +79,16 @@
     </h3>
     <table summary="Consultations du cours pour le mois courant">
         <thead>
-            <th class="sort has-tip" data-tooltip data-sort="public"
-                title="Trier selon le Public" i18n:attributes="title">
+            <th tal:repeat="th onglet_view/thead_th_list"
+                class="sort has-tip" data-tooltip 
+                tal:attributes="data-sort th/data-sort;
+                                title string:Trier selon ${th/th_title}" i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">public</tal:block>
-                </span>
-            </th>
-            <th class="sort has-tip" data-tooltip data-sort="nb_cons_month_before"
-                        title="Trier selon les consultations du mois précédent" i18n:attributes="title">
-                <span>
-                    <i class="fa fa-sort"></i>
-                    <i class="fa fa-sort-asc"></i>
-                    <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Mois précédent</tal:block>
-                </span>
-            </th>
-            <th class="sort has-tip" data-tooltip data-sort="nb_cons_month"
-                        title="Trier selon les consultations du mois courant" i18n:attributes="title">
-                <span>
-                    <i class="fa fa-sort"></i>
-                    <i class="fa fa-sort-asc"></i>
-                    <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Mois courant</tal:block>
-                </span>
-            </th>
-            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nb_cons_year"
-                        title="Trier selon les consultations sur l'année en cours" i18n:attributes="title">
-                <span>
-                    <i class="fa fa-sort"></i>
-                    <i class="fa fa-sort-asc"></i>
-                    <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Année en cours</tal:block>
+                    <tal:block tal:replace="th/th_text"
+                               i18n:translate=""/>
                 </span>
             </th>
         </thead>
@@ -137,7 +113,7 @@
         Graphique des consultations de l'année en cours
     </h3>
     <tal:replace replace="structure onglet_view/graph"/>
-    <div id="chartdiv" style="width:80%; height:400px; margin-left:auto; margin-right:auto;"/>
+    <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"/>
 
     <tal:block define="script1 string:setSortableList('js-list-indicateurs',['public','nb_cons_month_before', 'nb_cons_month', 'nb_cons_year'],'public','asc');">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />

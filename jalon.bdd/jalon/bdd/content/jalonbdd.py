@@ -1266,6 +1266,8 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def genererGraphIndicateurs(self, months_dict):
+        LOG.info("----- genererGraphIndicateurs -----")
+        LOG.info(months_dict)
         dicoLabel = {1:  u"Janvier",
                      2:  u"Février",
                      3:  u"Mars",
@@ -1279,16 +1281,26 @@ class JalonBDD(SimpleItem):
                      11: u"Novembre",
                      12: u"Décembre"}
 
+        legend_list = []
         graph = ['<script type="text/javascript">']
         graph.append("var chartData = [")
 
         for month in range(1, 13):
             graph.append("{")
+
+            #graph.append('  "month": "%s",' % dicoLabel[month])
+            #graph.append('  "visits": %s' % str(months_dict[month]) if month in months_dict else '  "visits": 0')
+
             graph.append('  "month": "%s",' % dicoLabel[month])
-            graph.append('  "visits": %s' % str(months_dict[month]) if month in months_dict else '  "visits": 0')
+            if month in months_dict:
+                for month_consultation in months_dict[month]:
+                    graph.append('  "%s": %s,' % (month_consultation["public"], str(month_consultation["consultations"])))
+                    legend_list.append(month_consultation["public"])
+
             graph.append('},')
         graph.append('];')
 
+        """
         graph.append('''
         AmCharts.ready(function() {
             var chart = new AmCharts.AmSerialChart();
@@ -1307,6 +1319,70 @@ class JalonBDD(SimpleItem):
             chart.write("chartdiv");
         });
         </script>''')
+        """
+
+        graph.append('''
+        AmCharts.ready(function() {
+            // SERIALL CHART
+            var chart = new AmCharts.AmSerialChart();
+            chart.dataProvider = chartData;
+            chart.categoryField = "month";
+            chart.plotAreaBorderAlpha = 0.2;
+
+            // AXES
+            // Category
+            var categoryAxis = chart.categoryAxis;
+            categoryAxis.gridAlpha = 0.1;
+            categoryAxis.axisAlpha = 0;
+            categoryAxis.gridPosition = "start";
+            categoryAxis.labelRotation = 65;
+
+            // value
+            var valueAxis = new AmCharts.ValueAxis();
+            valueAxis.stackType = "regular";
+            valueAxis.gridAlpha = 0.1;
+            valueAxis.axisAlpha = 0;
+            chart.addValueAxis(valueAxis);
+        ''')
+
+        legend_color = {"Auteur":     "#C72C95",
+                        "Co-Auteur":  "#D8E0BD",
+                        "Lecteur":    "#B3DBD4",
+                        "Etudiant":   "#69A55C",
+                        "Manager":    "#B5B8D3",
+                        "Secretaire": "#F4E23B"}
+        legend_list = list(set(legend_list))
+        for legend in legend_list:
+            graph.append('''
+                // GRAPHS
+                // firstgraph
+                 var graph = new AmCharts.AmGraph();
+                graph.title = "%s";
+                graph.labelText = "[[value]]";
+                graph.valueField = "%s";
+                graph.type = "column";
+                graph.lineAlpha = 0;
+                graph.fillAlphas = 1;
+                graph.lineColor = "%s";
+                graph.balloonText = "<b><span style='color:%s'>[[title]]</b></span><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>";
+                graph.labelPosition = "middle";
+                chart.addGraph(graph);
+
+                // LEGEND
+                var legend = new AmCharts.AmLegend();
+                legend.position = "right";
+                legend.borderAlpha = 0.3;
+                legend.horizontalGap = 10;
+                legend.switchType = "v";
+                chart.addLegend(legend);''' % (legend, legend, legend_color[legend], legend_color[legend]))
+
+        graph.append('''
+            chart.creditsPosition = "top-right";
+
+            chart.write("chartdiv");
+        });
+        </script>''')
+
         return "\n".join(graph)
 
     def getMinMaxYearByELP(self, COD_ELP):
