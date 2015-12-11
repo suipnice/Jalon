@@ -26,7 +26,6 @@ import string
 import jalon_utils
 import random
 import os
-import copy
 
 from logging import getLogger
 LOG = getLogger('[JalonCours]')
@@ -38,8 +37,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 default="",
                 searchable=False,
                 widget=StringWidget(label=_(u"Auteur Principal"),
-                                    description=_(u"L'auteur principal du cours a accès à celui-ci en modification, son nom est affiché aux étudiants comme étant l'auteur du cours."),
-                                    )),
+                                    description=_(u"L'auteur principal du cours a accès à celui-ci en modification, son nom est affiché aux étudiants comme étant l'auteur du cours."),)),
     LinesField("coAuteurs",
                required=False,
                accessor="getCoAuteurs",
@@ -47,8 +45,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                searchable=False,
                widget=MultiSelectionWidget(label=_(u"Co-auteurs"),
                                            description=_(u"Un co-auteur du cours a accès à celui-ci en modification, comme s'il en était l'auteur."),
-                                           format="checkbox",
-                                           )),
+                                           format="checkbox",)),
     LinesField("coLecteurs",
                required=False,
                accessor="getCoLecteurs",
@@ -56,8 +53,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                searchable=False,
                widget=MultiSelectionWidget(label=_(u"Co-lecteurs"),
                                            description=_(u"Un lecteur du cours a accès à celui-ci en lecture, comme s'il était étudiant."),
-                                           format="checkbox",
-                                           )),
+                                           format="checkbox",)),
     StringField("acces",
                 required=True,
                 accessor="getAcces",
@@ -65,115 +61,100 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 default=u"Privé".encode("utf-8"),
                 vocabulary=[u"Privé".encode("utf-8"), u"Aux étudiants".encode("utf-8"), u"Public".encode("utf-8")],
                 widget=SelectionWidget(label=_(u"Diffusion du cours:"),
-                                       format="select",
-                                       )),
+                                       format="select",)),
     LinesField("listeAcces",
                required=False,
                accessor="getListeAcces",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des diplômes, ue, uel, groupe d'Apogée"),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("groupe",
                required=False,
                accessor="getGroupe",
                searchable=False,
                widget=LinesWidget(label=_(u"groupe d'étudiants personnalisé du cours"),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("invitations",
                required=False,
                accessor="getInvitations",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des courriels d'invités au cours"),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     StringField("lienCourt",
                 required=False,
                 accessor="getLienCourt",
                 default="",
                 searchable=False,
                 widget=StringWidget(label=_(u"Le lien court d'un cours"),
-                                    description=_(u"Le lien cours n'existe que pour le cours public"),
-                                    )),
+                                    description=_(u"Le lien cours n'existe que pour le cours public"),)),
     BooleanField("libre",
                  required=True,
                  accessor="getLibre",
                  searchable=False,
                  default=False,
-                 widget=BooleanWidget(label=_(u"Inscriptions libres"))
-                 ),
+                 widget=BooleanWidget(label=_(u"Inscriptions libres"))),
     LinesField("inscriptionsLibres",
                required=False,
                accessor="getInscriptionsLibres",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des inscriptions libres"),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     StringField("lienMooc",
                 required=False,
                 accessor="getLienMooc",
                 default="",
                 searchable=False,
                 widget=StringWidget(label=_(u"Le lien court mooc d'un cours"),
-                                    description=_(u"Le lien court mooc n'existe que pour le cours en accès libre"),
-                                    )),
+                                    description=_(u"Le lien court mooc n'existe que pour le cours en accès libre"),)),
     LinesField("plan",
                required=False,
                accessor="getPlan",
                searchable=False,
                widget=LinesWidget(label=_(u"Plan intéractif"),
                                   description=_(u"Le plan intéractif."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("elements_glossaire",
                required=False,
                accessor="getGlossaire",
                searchable=False,
                widget=LinesWidget(label=_(u"Liste des éléments du glossaire"),
                                   description=_(u"La liste des éléments du glossaire."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("elements_bibliographie",
                required=False,
                accessor="getBibliographie",
                searchable=False,
                widget=LinesWidget(label=_(u"Liste des éléments de la bibliographie"),
                                   description=_(u"La liste des éléments de la bibliographie."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("listeclasses",
                required=False,
                accessor="getListeClasses",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des classes du cours"),
                                   description=_(u"Les classes du cours."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("webconferences",
                required=False,
                accessor="getWebconferences",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des webconferences du cours"),
                                   description=_(u"Les webconferences du cours."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("actualites",
                required=False,
                accessor="getActualites",
                searchable=False,
                widget=LinesWidget(label=_(u"liste des actualités du cours"),
                                   description=_(u"Les actualités du cours."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("avancementPlan",
                required=False,
                accessor="getAvancementPlan",
                searchable=False,
                widget=LinesWidget(label=_(u"Avancement de l'enseignant et des étudiants dans le plan du cours."),
                                   description=_(u"Avancement de l'enseignant et des étudiants dans le plan du cours."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("categorie",
                required=False,
                accessor="getCategorieCours",
@@ -181,66 +162,57 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                default=["1"],
                widget=LinesWidget(label=_(u"Catégorie(s) du cours."),
                                   description=_(u"Catégorie(s) du cours."),
-                                  visible={'view': 'visible', 'edit': 'invisible'},
-                                  )),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
     BooleanField("commentaires_sociaux",
                  required=True,
                  accessor="getCommentaires_sociaux",
                  searchable=False,
                  default=False,
-                 widget=BooleanWidget(label=_(u"Commentaires sur les réseaux sociaux"))
-                 ),
+                 widget=BooleanWidget(label=_(u"Commentaires sur les réseaux sociaux"))),
     BooleanField("jaime_sociaux",
                  required=True,
                  accessor="getJaime_sociaux",
                  searchable=False,
                  default=False,
-                 widget=BooleanWidget(label=_(u"J'aime sur Facebook"))
-                 ),
+                 widget=BooleanWidget(label=_(u"J'aime sur Facebook"))),
     BooleanField("activer_email_forum",
-                required=False,
-                accessor="getActiverEmailForum",
-                searchable=False,
-                widget=StringWidget(label=_(u"Envoie de courriels"),
-                                    description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),
-                                    )),
+                 required=False,
+                 accessor="getActiverEmailForum",
+                 searchable=False,
+                 widget=StringWidget(label=_(u"Envoie de courriels"),
+                                     description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),)),
     StringField("dateDerniereModif",
                 required=False,
                 accessor="getDateDerniereModif",
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de dernière modification"),
-                                    description=_(u"Date de dernière modification"),
-                                    )),
+                                    description=_(u"Date de dernière modification"),)),
     BooleanField("activer_dll_fichier",
-                required=True,
-                accessor="getActiver_dll_fichier",
-                searchable=False,
-                default=False,
-                widget=BooleanWidget(label=_(u"Telechargement de fichiers"),
-                                     description=_(u"Autorise le telechargement d'une archive de tous les fichiers d'un cours"),
-                                     )),
+                 required=True,
+                 accessor="getActiver_dll_fichier",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"Telechargement de fichiers"),
+                                      description=_(u"Autorise le telechargement d'une archive de tous les fichiers d'un cours"),)),
     StringField("catiTunesU",
                 required=False,
                 accessor="getCatiTunesU",
                 searchable=False,
                 widget=StringWidget(label=_(u"Catégorie iTunesU du cours"),
-                                    description=_(u"Catégorie iTunesU du cours"),
-                                    )),
+                                    description=_(u"Catégorie iTunesU du cours"),)),
     BooleanField("diffusioniTunesU",
-                required=True,
-                accessor="isDiffuseriTunesU",
-                searchable=False,
-                default=False,
-                widget=BooleanWidget(label=_(u"État de la diffusion sur iTunesU"),
-                                     description=_(u"État de la diffusion sur iTunesU"),
-                                     )),
+                 required=True,
+                 accessor="isDiffuseriTunesU",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"État de la diffusion sur iTunesU"),
+                                      description=_(u"État de la diffusion sur iTunesU"),)),
     StringField("dateDerniereActu",
                 required=False,
                 accessor="getLastDateActu",
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de la dernière Actu du cours"),
-                                    description=_(u"Date de la dernière Actu du cours"),
-                                    )),
+                                    description=_(u"Date de la dernière Actu du cours"),)),
 ))
 
 
@@ -323,8 +295,8 @@ class JalonCours(ATFolder):
         listeActualites = list(self.getActualites())
         listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
         if not listeActualites:
-            return {"nbActu"    : 0,
-                    "listeActu" : []}
+            return {"nbActu":    0,
+                    "listeActu": []}
 
         infos_elements = self.getElementCours()
 
@@ -598,27 +570,6 @@ class JalonCours(ATFolder):
         #self.plone_log("getForums")
         return None
 
-    """
-    def getLettresGloBib(self, glo_bib):
-        #self.plone_log("getLettresGloBib")
-        dicoLettres = {}
-        if glo_bib == "glossaire":
-            elements = self.getGlossaire()
-        else:
-            elements = self.getBibliographie()
-        if elements:
-            infos_element = self.getElementCours()
-        for idElement in elements:
-            info_element = infos_element.get(idElement)
-            if info_element:
-                lettre = info_element["titreElement"][0].upper()
-                if not lettre in dicoLettres:
-                    dicoLettres[lettre] = 1
-                else:
-                    dicoLettres[lettre] = dicoLettres[lettre] +1
-        return dicoLettres
-    """
-
     def getGloBib(self, glo_bib):
         #self.plone_log("getGloBib")
         dicoLettres = {}
@@ -638,43 +589,6 @@ class JalonCours(ATFolder):
                 else:
                     dicoLettres[lettre].append(info_element)
         return dicoLettres
-
-    """
-    def getGloBib(self, glo_bib, lettre_selec, mode_etudiant):
-        #self.plone_log("getGloBib")
-        dico = {}
-        listeTermes = []
-        infos_element = self.getElementCours()
-        if glo_bib == "glossaire":
-            elements = self.getGlossaire()
-        else:
-            elements = self.getBibliographie()
-        for idElement in elements:
-            info_element = infos_element.get(idElement)
-            lettre = info_element["titreElement"][0].upper()
-            if lettre_selec == 'toutes':
-                element = self.getElementView(idElement, info_element["createurElement"], info_element["typeElement"].replace(" ", ""), "", mode_etudiant)
-                if "typeElement" in element:
-                    if not lettre in dico:
-                        dico[lettre] = [element]
-                    else:
-                        dico[lettre].append(element)
-                else:
-                    self.retirerElement(idElement)
-            else:
-                if lettre == lettre_selec:
-                    element = self.getElementView(idElement, info_element["createurElement"], info_element["typeElement"].replace(" ", ""), "", mode_etudiant)
-                    if "typeElement" in element:
-                        element["createurElement"] = info_element["createurElement"]
-                        listeTermes.append(element)
-                    else:
-                        self.retirerElement(idElement)
-        if lettre_selec == "toutes":
-            return dico
-        else:
-            listeTermes.sort(lambda x,y: cmp(x["titreElement"], y["titreElement"]))
-            return listeTermes
-    """
 
     def getInfosGroupe(self):
         #self.plone_log("getInfosGroupe")
@@ -942,11 +856,11 @@ class JalonCours(ATFolder):
 
                 if personnel:
                     html.append("""
-<a class="dropdown" data-dropdown="drop-%s" data-options="align:left">
-    <i class="fa fa-cog fa-fw no-pad"></i>
-</a>
-<ul id="drop-%s" class="f-dropdown" data-dropdown-content="data-dropdown-content">
-""" % (index, index))
+                                <a class="dropdown" data-dropdown="drop-%s" data-options="align:left">
+                                    <i class="fa fa-cog fa-fw no-pad"></i>
+                                </a>
+                                <ul id="drop-%s" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+                                """ % (index, index))
                     if isAffElement["val"] == 0:
                         epinglerPos = "non"
                         html.append("""<li>
@@ -1104,9 +1018,9 @@ class JalonCours(ATFolder):
             main_category = dicoLibCatITunesU[idCatiTunesU[:3]]
             sub_category = dicoLibCatITunesU[idCatiTunesU]
 
-            return {'main_category' : main_category,
-                    'sub_category'  : sub_category,
-                    'icon'          : 'http://itunesu.unice.fr/icones/%s.png' % icon}
+            return {'main_category': main_category,
+                    'sub_category':  sub_category,
+                    'icon':          'http://itunesu.unice.fr/icones/%s.png' % icon}
         except:
             return None
 
@@ -1126,11 +1040,10 @@ class JalonCours(ATFolder):
 
     def getRole(self):
         #self.plone_log("getRole")
-        roles = {"createur"  : False,
-                 "auteur"    : False,
-                 "coauteur"  : False,
-                 "colecteur" : False
-                 }
+        roles = {"createur":  False,
+                 "auteur":    False,
+                 "coauteur":  False,
+                 "colecteur": False}
         authMember = self.portal_membership.getAuthenticatedMember().getId()
         if authMember == self.Creator():
             roles["auteur"] = True
@@ -1155,34 +1068,34 @@ class JalonCours(ATFolder):
         portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
         mon_espace = portal_jalon_properties.getPropertiesMonEspace()
 
-        retour = {"titre"     : [],
-                  "espace"    : [],
-                  "activites" : [],
-                  "rapide"    : []}
+        retour = {"titre":     [],
+                  "espace":    [],
+                  "activites": [],
+                  "rapide":    []}
 
         # Menu Mon Espace
         if mon_espace["activer_fichiers"]:
             retour["espace"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
         if mon_espace["activer_presentations_sonorisees"]:
-            retour["espace"].append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées", "icone" : "fa fa-microphone fa-fw"})
+            retour["espace"].append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées", "icone": "fa fa-microphone fa-fw"})
         if mon_espace["activer_liens"]:
-            retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone" : "fa fa-external-link fa-fw"})
+            retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
         if mon_espace["activer_webconferences"]:
-            retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone" : "fa fa-headphones fa-fw"})
+            retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone": "fa fa-headphones fa-fw"})
 
         # Menu Activités
-        retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone" : "fa fa-fw fa-inbox"})
+        retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone": "fa fa-fw fa-inbox"})
         if mon_espace["activer_exercices_wims"]:
-            retour["activites"].append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS", "icone" : "fa fa-fw fa-gamepad"})
-            retour["activites"].append({"rubrique": "Examen", "titre": "Examen WIMS", "icone" : "fa fa-fw fa-graduation-cap"})
+            retour["activites"].append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS", "icone": "fa fa-fw fa-gamepad"})
+            retour["activites"].append({"rubrique": "Examen", "titre": "Examen WIMS", "icone": "fa fa-fw fa-graduation-cap"})
         if mon_espace["activer_webconferences"]:
-            retour["activites"].append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle", "icone" : "fa fa-fw fa-globe"})
+            retour["activites"].append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle", "icone": "fa fa-fw fa-globe"})
 
         # Menu Ajout rapide
         if mon_espace["activer_fichiers"]:
             retour["rapide"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
         if mon_espace["activer_liens"]:
-            retour["rapide"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone" : "fa fa-external-link fa-fw"})
+            retour["rapide"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
 
         return retour
 
@@ -1270,21 +1183,14 @@ class JalonCours(ATFolder):
 
     def getPageMacro(self, espace):
         #self.plone_log("getPageMacro")
-        dicoMacro = {"Fichiers"                 : {"page" : "macro_cours_fichiers", "macro" : "fichiers_liste"},
-                     "Ressources Externes"      : {"page" : "macro_cours_externes", "macro" : "externes_liste"},
-                     "Presentations sonorisees" : {"page" : "macro_cours_webconference", "macro" : "webconferences_liste"},
-                     "Webconference"            : {"page" : "macro_cours_webconference", "macro" : "webconferences_liste"},
-                     "Glossaire"                : {"page" : "macro_cours_glossaire", "macro" : "termes_glossaire_liste"},
-                     "Bibliographie"            : {"page" : "macro_cours_bibliographie", "macro" : "bibliographie_liste"},
-                     "Exercices Wims"           : {"page" : "macro_cours_activites", "macro" : "exercices_wims_liste"},
-                     }
+        dicoMacro = {"Fichiers":                 {"page": "macro_cours_fichiers", "macro": "fichiers_liste"},
+                     "Ressources Externes":      {"page": "macro_cours_externes", "macro": "externes_liste"},
+                     "Presentations sonorisees": {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
+                     "Webconference":            {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
+                     "Glossaire":                {"page": "macro_cours_glossaire", "macro": "termes_glossaire_liste"},
+                     "Bibliographie":            {"page": "macro_cours_bibliographie", "macro": "bibliographie_liste"},
+                     "Exercices Wims":           {"page": "macro_cours_activites", "macro": "exercices_wims_liste"}}
         return dicoMacro[espace]
-
-    """
-    def getURLWEB(self):
-        #self.plone_log("getURLWEB")
-        return self.absolute_url()
-    """
 
     def getUrlWebconference(self, url):
         #self.plone_log("getUrlWebconference")
@@ -1386,13 +1292,13 @@ class JalonCours(ATFolder):
         self.auteurPrincipal = form["username"]
         infosMembre = self.getInfosMembre(form["username"])
         #self.tagBU(ancienPrincipal)
-        self.envoyerMail({"a"      : infosMembre["email"],
-                          "objet"  : "Vous avez été ajouté à un cours",
+        self.envoyerMail({"a":       infosMembre["email"],
+                          "objet":   "Vous avez été ajouté à un cours",
                           "message": message})
         infosMembre = self.getInfosMembre(ancienPrincipal)
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ou vous êtiez auteur.\n\nCordialement,\n%s.' % (self.Title(), portal.Title())
-        self.envoyerMail({"a"      : infosMembre["email"],
-                          "objet"  : "Vous avez été retiré d'un cours",
+        self.envoyerMail({"a":       infosMembre["email"],
+                          "objet":   "Vous avez été retiré d'un cours",
                           "message": message})
         self.manage_setLocalRoles(form["username"], ["Owner"])
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1438,8 +1344,8 @@ class JalonCours(ATFolder):
 
         for idMember in supprAuteurs:
             infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a"      : infosMembre["email"],
-                              "objet"  : "Vous avez été retiré d'un cours",
+            self.envoyerMail({"a":      infosMembre["email"],
+                              "objet":  "Vous avez été retiré d'un cours",
                               "message": message})
         self.coAuteurs = tuple(auteurs)
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1470,8 +1376,8 @@ class JalonCours(ATFolder):
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for idMember in supprLecteurs:
             infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a"      : infosMembre["email"],
-                              "objet"  : "Vous avez été retiré d'un cours",
+            self.envoyerMail({"a":       infosMembre["email"],
+                              "objet":   "Vous avez été retiré d'un cours",
                               "message": message})
         self.coLecteurs = tuple(lecteurs)
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1486,8 +1392,8 @@ class JalonCours(ATFolder):
                 if not username in nomminatives:
                     nomminatives.append(username)
                     infosMembre = self.getInfosMembre(username)
-                    self.envoyerMail({"a"      : infosMembre["email"],
-                                      "objet"  : "Vous avez été inscrit à un cours",
+                    self.envoyerMail({"a":       infosMembre["email"],
+                                      "objet":   "Vous avez été inscrit à un cours",
                                       "message": message})
         self.setGroupe(tuple(nomminatives))
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1502,8 +1408,8 @@ class JalonCours(ATFolder):
         message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for idMember in supprNomminatives:
             infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a"      : infosMembre["email"],
-                              "objet"  : "Vous avez été désincrit d'un cours",
+            self.envoyerMail({"a":       infosMembre["email"],
+                              "objet":   "Vous avez été désincrit d'un cours",
                               "message": message})
         self.setGroupe(tuple(nomminatives))
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1535,8 +1441,8 @@ class JalonCours(ATFolder):
                         portal_registration.registeredNotify(emailInvit)
                     invitations.append(emailInvit)
                     message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-                    self.envoyerMail({"a"      : emailInvit,
-                                      "objet"  : "Vous avez été inscrit à un cours",
+                    self.envoyerMail({"a":       emailInvit,
+                                      "objet":   "Vous avez été inscrit à un cours",
                                       "message": message})
                 self.setInvitations(tuple(invitations))
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1551,8 +1457,8 @@ class JalonCours(ATFolder):
         message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for idMember in supprInvitations:
             infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a"      : infosMembre["email"],
-                              "objet"  : "Vous avez été désincrit d'un cours",
+            self.envoyerMail({"a":       infosMembre["email"],
+                              "objet":   "Vous avez été désincrit d'un cours",
                               "message": message})
         self.setInvitations(tuple(invitations))
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1573,14 +1479,14 @@ class JalonCours(ATFolder):
                         state = "published"
                         court = self.getLienCourt()
                         if not court:
-                            i = 1
-                            while i:
+                            dont_stop = 1
+                            while dont_stop:
                                 part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
                                 part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
                                 short = part1 + part2
                                 objLien = getattr(portal.public, short, None)
                                 if not objLien:
-                                    i = 0
+                                    dont_stop = 0
                             portal.public.invokeFactory(type_name="Link", id=short)
                             objLien = getattr(portal.public, short)
                             objLien.setTitle(self.title_or_id())
@@ -1635,7 +1541,7 @@ class JalonCours(ATFolder):
             if key == "catiTunesU":
                 portal = self.portal_url.getPortalObject()
                 infosMembre = jalon_utils.getInfosMembre(self.Creator())
-                jalon_utils.envoyerMail({"objet"  : "Demande de publication sur iTunesU",
+                jalon_utils.envoyerMail({"objet":   "Demande de publication sur iTunesU",
                                          "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
 
         self.setProperties({"DateDerniereModif": DateTime()})
@@ -1828,20 +1734,6 @@ class JalonCours(ATFolder):
         if idElement in listeElement:
             return 1
         return 0
-        """
-        retour = 0
-        if listeElement is None:
-            listeElement = self.getPlan()
-        for dico in listeElement:
-            if idElement == dico["idElement"]:
-                retour = 1
-                break
-            elif "listeElement" in dico:
-                retour = self.isInPlan(idElement, dico["listeElement"])
-                if retour == 1:
-                    break
-        return retour
-        """
 
     def isPersonnel(self, user, mode_etudiant="false"):
         #self.plone_log("jaloncours/isPersonnel")
@@ -2097,7 +1989,7 @@ class JalonCours(ATFolder):
 
     def getEnfantPlanElement(self, idElement, listeElement=None):
         #self.plone_log("getEnfantPlanElement")
-        if listeElement == None:
+        if listeElement is None:
             listeElement = self.plan
         for element in listeElement:
             if element["idElement"] == idElement and "listeElement" in element:
@@ -2391,7 +2283,7 @@ class JalonCours(ATFolder):
         #dicoElements = copy.deepcopy(self.getElementCours())
 
         liste_activitesWIMS = []
-        portal_members = getattr(self.portal_url.getPortalObject(), "Members")
+        #portal_members = getattr(self.portal_url.getPortalObject(), "Members")
         #for idElement in dicoElements:
         for idElement in self.objectIds():
             #infosElement = dicoElements[idElement]
@@ -2701,7 +2593,7 @@ class JalonCours(ATFolder):
     #pour montrer les nouveaux éléments dans le cours
     def isNouveau(self, idElement, listeActualites=None):
         #self.plone_log("isNouveau")
-        if listeActualites == None:
+        if listeActualites is None:
             #self.plone_log("***** Not listeActualites")
             listeActualites = self.getActualitesCours(True)["listeActu"]
         for actualite in listeActualites:
@@ -2836,7 +2728,7 @@ class JalonCours(ATFolder):
         except:
             pass
         for obj in home.objectValues(["ATBlob", "ATDocument"]):
-            if objid in obj.id :
+            if objid in obj.id:
                 return obj.getObjSize()
 
     def nbPage(self):
@@ -2893,8 +2785,8 @@ class JalonCours(ATFolder):
                     except:
                         objid = cle_element
                     for obj in home.objectValues(["ATBlob", "ATDocument"]):
-                        if objid in obj.id :
-                            if len(fichiers) == 1 and fichiers[0] == element["titreElement"] and element["typeElement"] not in ["Image"] :
+                        if objid in obj.id:
+                            if len(fichiers) == 1 and fichiers[0] == element["titreElement"] and element["typeElement"] not in ["Image"]:
                                 return {"situation": 1, "data": '%s/at_download/file' % obj.absolute_url()}
                             dansArchive.append(cle_element)
                             file_data = str(obj.data)
@@ -2952,10 +2844,10 @@ class JalonCours(ATFolder):
 
         # ajout des étudiants de l'offre de formations
         bdd = getToolByName(self, "portal_jalon_bdd")
-        dicoAffFormation = {"etape"  : "Diplôme",
-                            "ue"     : "Unité d'enseignement",
-                            "uel"    : "Unité d'enseignement libre",
-                            "groupe" : "Groupe"}
+        dicoAffFormation = {"etape":  "Diplôme",
+                            "ue":     "Unité d'enseignement",
+                            "uel":    "Unité d'enseignement libre",
+                            "groupe": "Groupe"}
         formations = self.getAffichageFormations()
         for formation in formations:
             # création d'une feuille de formation
