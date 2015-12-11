@@ -104,7 +104,7 @@
 
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
-                        <div class="panel radius">
+                        <div class="panel callout radius">
                             <tal:condition condition="not:is_owner">
                                 <div class="switch tiny round"
                                      title="Sélectionner / désélectionner ce contenu"
@@ -130,8 +130,7 @@
                                 </div>
                             </a>
 
-                            <div class="formControls"
-                                 tal:condition="not:is_owner">
+                            <div class="formControls">
                                 <a class="button tiny" title="Voir la vidéo"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
@@ -140,6 +139,7 @@
                                     <tal:block i18n:translate="">Voir</tal:block>
                                 </a>
                                 <a class="button tiny create" title="Ajouter la vidéo"
+                                   tal:condition="not:is_owner"
                                    tal:attributes="href string:${context/absolute_url}/ajouterressource_script?formulaire=ajout-elasticsearch&amp;video_id=${video/id}&amp;authMember=${user/getId}"
                                    i18n:attributes="title">
                                     <i class="fa fa-plus-circle"></i>
