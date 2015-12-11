@@ -39,7 +39,7 @@
                             tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">… dont je suis propriétaire (sauf brouillons)</option>
                     <option value="toutes_videos"
                             i18n:translate=""
-                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">… appartenant aux autres utilisateurs (sauf brouillons)</option>
+                            tal:attributes="selected python:context.test(type_search != 'mes_videos', 'selected', 0)">… appartenant aux autres utilisateurs (sauf brouillons)</option>
                 </select>
 
                 <label for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
