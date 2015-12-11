@@ -67,6 +67,13 @@
                            tal:attributes="data-dropdown string:drop-${repeat/video/index}">
                             <i class="fa fa-cog fa-lg no-pad"></i>
                         </a>
+                <tal:comment replace="nothing"><!--
+
+                        <i class="fa fa-lock right"
+                           title="Ce contenu est protégé par un mot de passe."
+                           i18n:attributes="title"></i>
+
+                --></tal:comment>
                         <span tal:attributes="title video/Title"
                               tal:content="python:context.getShortText(video.Title, 20)"/>
                     </h4>

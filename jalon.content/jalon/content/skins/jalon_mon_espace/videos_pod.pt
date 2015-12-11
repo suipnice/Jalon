@@ -120,14 +120,23 @@
                     <li tal:repeat="video videos/liste_videos">
                         <div tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
 
-                            <div class="switch tiny round"
-                                 title="Sélectionner / désélectionner ce contenu"
-                                 i18n:attributes="title"
-                                 tal:condition="not:is_owner">
-                                <input type="checkbox" name="video_ids:list"
-                                       tal:attributes="id string:switch-${repeat/video/index};
-                                                       value video/id;"/>
-                                <label tal:attributes="for string:switch-${repeat/video/index}"/>
+                            <div>
+                        <tal:comment replace="nothing"><!--
+
+                                <i class="fa fa-lock"
+                                   title="Ce contenu est protégé par un mot de passe."
+                                   i18n:attributes="title"></i>
+
+                        --></tal:comment>
+                                <div class="switch tiny round right"
+                                     title="Sélectionner / désélectionner ce contenu"
+                                     i18n:attributes="title"
+                                     tal:condition="not:is_owner">
+                                    <input type="checkbox" name="video_ids:list"
+                                           tal:attributes="id string:switch-${repeat/video/index};
+                                                           value video/id;"/>
+                                    <label tal:attributes="for string:switch-${repeat/video/index}"/>
+                                </div>
                             </div>
 
                             <h4 tal:attributes="title video/title"
