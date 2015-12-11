@@ -83,7 +83,7 @@
                 La recherche n'a donné aucun résultat.
             </div>
 
-            <form name="element_add" method="POST"
+            <form id="js-podContentsList" name="element_add" method="POST"
                   tal:attributes="action string:${context/absolute_url}/ajouterressource_script"
                   tal:condition="videos/liste_videos">
 
@@ -97,7 +97,7 @@
                         <div class="panel radius">
                             <tal:condition condition="not:is_owner">
                                 <div class="switch tiny round"
-                                     title="Action par lot : sélectionner / désélectionner"
+                                     title="Sélectionner / désélectionner ce contenu"
                                      i18n:attributes="title">
                                     <input type="checkbox" name="video_ids:list"
                                            tal:attributes="id string:switch-${repeat/video/index};
@@ -158,6 +158,10 @@
                     <i class="fa fa-exclamation-triangle no-pad"></i>
                     <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page, elles ne sont pas mémorisées lorsque vous changez de page.</tal:block>
                 </div>
+
+                <tal:block define="script string:setPodContentMultipleSelection()">
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+                </tal:block>
 
             </form>
         </div>

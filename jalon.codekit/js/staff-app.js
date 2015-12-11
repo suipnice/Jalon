@@ -120,6 +120,33 @@ function setRevealForm( formID, revealID, ckEditorInstanceName ) {
 */
 
 
+
+/*
+    Selection multiple des contenus Pod
+*/
+
+function setPodContentMultipleSelection( ) {
+
+    var $form = Foundation.utils.S( '#js-podContentsList' );
+    var $formSubmit = $form.find( '[name="form.button.save"]' );
+
+    switchButtonEnabledState( $formSubmit, false );
+
+    // Activation du submit
+    $form.on( 'change', 'ul > li .switch > [type="checkbox"]', function( ) {
+
+        if ( $form.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+            switchButtonEnabledState( $formSubmit, true );
+        } else {
+            switchButtonEnabledState( $formSubmit, false );
+        }
+
+    } );
+
+}
+
+
+
 /*
     Inscription par courriel : constitution de la liste.
 */
@@ -228,8 +255,10 @@ function switchButtonEnabledState( $button, state ) {
 
     if ( state ) {
         $button.prop( 'disabled', false );
+        //$button.removeClass( 'disabled' );
     } else {
         $button.prop( 'disabled', true );
+        //$button.addClass( 'disabled' );
     }
 
 }
