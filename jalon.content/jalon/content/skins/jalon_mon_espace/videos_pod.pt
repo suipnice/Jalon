@@ -78,9 +78,10 @@
 
         <div tal:define="is_owner python:test(type_search == 'mes_videos', True, False)">
 
-            <div tal:condition="not:videos/liste_videos"
-                  i18n:translate="">
-                La recherche n'a donné aucun résultat.
+            <div class="panel callout radius"
+                tal:condition="not:videos/liste_videos">
+                <i class="fa fa-info-circle no-pad"></i>
+                <tal:block i18n:translate="">La recherche n'a donné aucun résultat.</tal:block>
             </div>
 
             <form id="js-podContentsList" name="element_add" method="POST"
