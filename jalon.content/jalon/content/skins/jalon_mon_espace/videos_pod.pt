@@ -150,13 +150,18 @@
                     <button type="submit" class="button small expand create"
                             name="form.button.save">
                         <i class="fa fa-plus-circle"></i>
-                        <tal:block i18n:translate="">Ajouter</tal:block>
+                        <tal:block i18n:translate="">Ajouter les contenus sélectionnés</tal:block>
                     </button>
+                </div>
+
+                <div class="panel callout radius">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="">Pour vous rendre directement sur une page, entrez son n° ci-dessous et validez en appuyant sur « Entrée ».</tal:block>
                 </div>
 
                 <div class="panel warning radius">
                     <i class="fa fa-exclamation-triangle no-pad"></i>
-                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page, elles ne sont pas mémorisées lorsque vous changez de page.</tal:block>
+                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
                 </div>
 
                 <tal:block define="script string:setPodContentMultipleSelection()">
@@ -181,15 +186,18 @@
             <tal:condition condition="python:page < nb_pages">
                 <a id="pagination-next" class="button tiny"
                    tal:define="page_suiv python:page + 1"
-                   tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_suiv}&amp;type_search=${type_search}&amp;term_search=${term_search}"
+                   tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_suiv}&amp;type_search=${type_search}&amp;term_search=${term_search};"
                    i18n:translate="">
                     <span>Suivant</span>
                 </a>
             </tal:condition>
 
             <form id="pagination-page_number" method="post"
-                  tal:attributes="action string:${context/absolute_url}/${template/id}"
-                  tal:condition="python:context.test(nb_pages != 0, 1, 0)">
+                  tal:condition="python:context.test(nb_pages != 0, 1, 0)"
+                  tal:attributes="action string:${context/absolute_url}/${template/id};
+                                  data-page_change_msg1 string:Attention : les sélections ne sont pas conservées lors des changements de page.;
+                                  data-page_change_msg2 string:Changer de page tout de même ?"
+                  i18n:attributes="data-page_change_msg">
                 <input type="hidden" name="type_search"
                        tal:attributes="value type_search"/>
                 <input type="hidden" name="term_search"

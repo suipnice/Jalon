@@ -127,20 +127,44 @@ function setRevealForm( formID, revealID, ckEditorInstanceName ) {
 
 function setPodContentMultipleSelection( ) {
 
-    var $form = Foundation.utils.S( '#js-podContentsList' );
-    var $formSubmit = $form.find( '[name="form.button.save"]' );
+    var $listForm = Foundation.utils.S( '#js-podContentsList' );
+    var $listFormSubmit = $listForm.find( '[name="form.button.save"]' );
+    var $pageChangeForm = Foundation.utils.S( '#pagination-page_number' );
+    var $pageNumberInput = $pageChangeForm.find( '[name="page"]' );
+    var pageChangeMessage = $pageChangeForm.data( 'page_change_msg1' ) + "\n" + $pageChangeForm.data( 'page_change_msg2' );
+    var actualPageNumber = $pageNumberInput.val( );
 
-    switchButtonEnabledState( $formSubmit, false );
+    function _displayMessageOnPageChange( event ) {
+        if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+            if ( ! confirm( pageChangeMessage ) ) {
+                event.preventDefault( );
+                event.stopPropagation( );
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // Activation du submit
-    $form.on( 'change', 'ul > li .switch > [type="checkbox"]', function( ) {
+    switchButtonEnabledState( $listFormSubmit, false );
 
-        if ( $form.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
-            switchButtonEnabledState( $formSubmit, true );
+    $listForm.on( 'change', 'ul > li .switch > [type="checkbox"]', function( ) {
+
+        if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+            switchButtonEnabledState( $listFormSubmit, true );
         } else {
-            switchButtonEnabledState( $formSubmit, false );
+            switchButtonEnabledState( $listFormSubmit, false );
         }
 
+    } );
+
+    Foundation.utils.S( '#pagination-container' ).on( 'click', 'a.button', function( event ) {
+        _displayMessageOnPageChange( event );
+    } );
+
+    $pageChangeForm.submit( function( event ) {
+        if ( ! _displayMessageOnPageChange( event ) ) {
+            $pageNumberInput.val( actualPageNumber );
+        }
     } );
 
 }
