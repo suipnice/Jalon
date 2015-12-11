@@ -119,21 +119,24 @@
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
                         <div tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
-                            <tal:condition condition="not:is_owner">
-                                <div class="switch tiny round"
-                                     title="Sélectionner / désélectionner ce contenu"
-                                     i18n:attributes="title">
-                                    <input type="checkbox" name="video_ids:list"
-                                           tal:attributes="id string:switch-${repeat/video/index};
-                                                           value video/id;"/>
-                                    <label tal:attributes="for string:switch-${repeat/video/index}"/>
-                                </div>
-                            </tal:condition>
+
+                            <div class="switch tiny round"
+                                 title="Sélectionner / désélectionner ce contenu"
+                                 i18n:attributes="title"
+                                 tal:condition="not:is_owner">
+                                <input type="checkbox" name="video_ids:list"
+                                       tal:attributes="id string:switch-${repeat/video/index};
+                                                       value video/id;"/>
+                                <label tal:attributes="for string:switch-${repeat/video/index}"/>
+                            </div>
+
                             <h4 tal:attributes="title video/title"
                                 tal:content="python:context.getShortText(video['title'], 20)"/>
+
                             <p>
                                 <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
                             </p>
+
                             <a title="Voir la vidéo"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"
                                tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
