@@ -60,7 +60,8 @@
 
         <ul id="elasticsearch" class="small-block-grid-4">
             <li tal:repeat="video folderContents">
-                <div class="panel callout radius">
+                <div tal:define="is_owner python:context.test(user.getId() == video.getVideoauteur, True, False)"
+                     tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
                     <h4>
                         <a class="dropdown right" data-options="align:left"
                            tal:attributes="data-dropdown string:drop-${repeat/video/index}">
@@ -71,8 +72,7 @@
                     </h4>
                     <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                         tal:attributes="id string:drop-${repeat/video/index}"
-                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False);
-                                    is_owner python:context.test(user.getId() == video.getVideoauteur, True, False)">
+                        tal:define="can_delete python:context.test(len(video.getRawRelatedItems) == 0, True, False)">
                         <li tal:condition="is_owner">
                             <a title="Modifier la vidéo sur POD"
                                target="_blank"

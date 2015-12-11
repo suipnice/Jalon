@@ -31,21 +31,23 @@
               tal:attributes="action string:${context/absolute_url}/videos_pod">
 
             <div class="field">
-                <label for="type_search" i18n:translate="">Type :</label>
+                <label for="type_search" i18n:translate="">Lister les contenus…</label>
                 <select name="type_search"
                         id="type_search">
                     <option value="mes_videos"
                             i18n:translate=""
-                            tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">Mes contenus</option>
+                            tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">… dont je suis propriétaire (sauf brouillons)</option>
                     <option value="toutes_videos"
                             i18n:translate=""
-                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">Tous les contenus</option>
+                            tal:attributes="selected python:context.test(type_search == 'toutes_videos', 'selected', 0)">… appartenant aux autres utilisateurs (sauf brouillons)</option>
                 </select>
 
-                <label for="term_search" i18n:translate="">Mot clé ou auteur :</label>
+                <label for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
                 <input type="text" name="term_search" class="blurrable" id="term_search"
                        size="30" maxlength="255"
-                       tal:attributes="value term_search" />
+                       placeholder="Entrez un mot-clé ou un nom d'auteur…"
+                       tal:attributes="value term_search"
+                       i18n:attributes="placeholder" />
 
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
 
@@ -104,7 +106,7 @@
 
                 <ul id="elasticsearch" class="small-block-grid-4">
                     <li tal:repeat="video videos/liste_videos">
-                        <div class="panel callout radius">
+                        <div tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
                             <tal:condition condition="not:is_owner">
                                 <div class="switch tiny round"
                                      title="Sélectionner / désélectionner ce contenu"
