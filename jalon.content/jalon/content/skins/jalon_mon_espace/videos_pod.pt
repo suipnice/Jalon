@@ -39,6 +39,7 @@
                                data-term_search_placeholder2">
 
             <div class="field">
+
                 <label for="type_search" i18n:translate="">Lister les contenus…</label>
                 <select id="type_search" name="type_search">
                     <option value="mes_videos"
@@ -57,6 +58,10 @@
                        i18n:attributes="placeholder" />
 
                 <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+
+            </div>
+
+            <div class="formControls">
 
                 <button type="submit" class="button small expand radius"
                         name="form.button.save">
