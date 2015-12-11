@@ -122,6 +122,36 @@ function setRevealForm( formID, revealID, ckEditorInstanceName ) {
 
 
 /*
+    Changement de label suivant etat du filtre des contenus Pod
+*/
+
+function setPodFilterSelector( ) {
+
+    var $form = Foundation.utils.S( '#js-podFilterSelector' );
+    var $searchLabel = Foundation.utils.S( '#term_search_label' );
+    var $searchInput = Foundation.utils.S( '#term_search' );
+    var label1 = $form.data( 'term_search_label1' );
+    var label2 = $form.data( 'term_search_label2' );
+    var placeholder1 = $form.data( 'term_search_placeholder1' );
+    var placeholder2 = $form.data( 'term_search_placeholder2' );
+
+    Foundation.utils.S( '#type_search' ).on( 'change', function( ) {
+
+        if ( $( this ).val( ) === 'mes_videos' ) {
+            $searchLabel.text( label2 );
+            $searchInput.attr( 'placeholder', placeholder2 );
+        } else {
+            $searchLabel.text( label1 );
+            $searchInput.attr( 'placeholder', placeholder1 );
+        }
+
+    } );
+
+}
+
+
+
+/*
     Selection multiple des contenus Pod
 */
 

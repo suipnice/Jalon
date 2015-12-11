@@ -27,13 +27,20 @@
             <tal:block i18n:translate="">et l'ajouter à votre espace</tal:block>
         </h2>
 
-        <form method="POST"
-              tal:attributes="action string:${context/absolute_url}/videos_pod">
+        <form id="js-podFilterSelector" method="POST"
+              tal:attributes="action string:${context/absolute_url}/videos_pod;
+                              data-term_search_label1 string:Filtrer par mot-clé ou auteur;
+                              data-term_search_label2 string:Filtrer par mot-clé;
+                              data-term_search_placeholder1 string:Entrez un mot-clé ou un nom d'auteur…;
+                              data-term_search_placeholder2 string:Entrez un mot-clé…";
+              i18n:attributes="data-term_search_label1;
+                               data-term_search_label2;
+                               data-term_search_placeholder1;
+                               data-term_search_placeholder2">
 
             <div class="field">
                 <label for="type_search" i18n:translate="">Lister les contenus…</label>
-                <select name="type_search"
-                        id="type_search">
+                <select id="type_search" name="type_search">
                     <option value="mes_videos"
                             i18n:translate=""
                             tal:attributes="selected python:context.test(type_search == 'mes_videos', 'selected', 0)">… dont je suis propriétaire (sauf brouillons)</option>
@@ -42,8 +49,8 @@
                             tal:attributes="selected python:context.test(type_search != 'mes_videos', 'selected', 0)">… appartenant aux autres utilisateurs (sauf brouillons)</option>
                 </select>
 
-                <label for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
-                <input type="text" name="term_search" class="blurrable" id="term_search"
+                <label id="term_search_label" for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
+                <input type="text" id="term_search" name="term_search" class="blurrable"
                        size="30" maxlength="255"
                        placeholder="Entrez un mot-clé ou un nom d'auteur…"
                        tal:attributes="value term_search"
@@ -58,6 +65,11 @@
                 </button>
 
             </div>
+
+            <tal:block define="script string:setPodFilterSelector()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
         </form>
 
     <tal:isSearch condition="type_search"
@@ -209,7 +221,7 @@
                       tal:attributes="action string:${context/absolute_url}/${template/id};
                                       data-page_change_msg1 string:Attention : les sélections ne sont pas conservées lors des changements de page.;
                                       data-page_change_msg2 string:Changer de page tout de même ?"
-                      i18n:attributes="data-page_change_msg">
+                      i18n:attributes="data-page_change_msg1; data-page_change_msg2">
                     <input type="hidden" name="type_search"
                            tal:attributes="value type_search"/>
                     <input type="hidden" name="term_search"
