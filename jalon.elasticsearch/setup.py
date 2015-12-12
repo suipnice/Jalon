@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 import os
 
@@ -5,7 +6,7 @@ version = '1.0'
 
 setup(name='jalon.elasticsearch',
       version=version,
-      description="",
+      description="Connexion avec le moteur elasticsearch du produit Pod",
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       # Get more strings from
@@ -15,8 +16,8 @@ setup(name='jalon.elasticsearch',
         "Programming Language :: Python",
         ],
       keywords='',
-      author='',
-      author_email='',
+      author='Bordonado Christophe (Université Nice Sophia Antipolis Service TICE)',
+      author_email='pi@unice.fr',
       url='http://svn.plone.org/svn/collective/',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),

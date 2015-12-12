@@ -66,8 +66,9 @@ class IndicateursView(BrowserView):
                                 "AutoEvaluation": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Examen":         {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "SalleVirtuelle": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "Forum":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Forums":         {"elements_count": len(self.context.forum.objectIds()), "elements_list": [], "elements_dict": {}},
-                                "Glossaire":      {"elements_count": len(self.context.getGlossaire()), "elements_list": [], "elements_dict": {}},
+                                "TermeGlossaire": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Bibliographie":  {"elements_count": len(self.context.getBibliographie()), "elements_list": [], "elements_dict": {}}}
         element_cours_dict = self.context.getElementCours()
         for element_id in element_cours_dict.keys():
@@ -108,8 +109,9 @@ class IndicateursView(BrowserView):
                               "AutoEvaluation": 0,
                               "Examen":         0,
                               "SalleVirtuelle": 0,
+                              "Forum":          0,
                               "Forums":         len(self.context.forum.objectIds()),
-                              "Glossaire":      len(self.context.getGlossaire()),
+                              "TermeGlossaire": 0,
                               "Bibliographie":  len(self.context.getBibliographie())}
         element_cours = self.context.getElementCours().values()
         for element in element_cours:

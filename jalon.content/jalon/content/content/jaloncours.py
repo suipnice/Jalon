@@ -2677,11 +2677,12 @@ class JalonCours(ATFolder):
     def insererConsultation(self, user, type_cons, id_cons):
         #self.plone_log("insererConsultation")
         if user.has_role("Personnel"):
+            username = user.getId()
             if self.isAuteur(username):
                 public_cons = "Auteur"
             if username in self.coAuteurs:
                 public_cons = "Co-auteur"
-            if username in self.coLecteur:
+            if username in self.coLecteurs:
                 public_cons = "Lecteur"
         if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
             public_cons = "Etudiant"

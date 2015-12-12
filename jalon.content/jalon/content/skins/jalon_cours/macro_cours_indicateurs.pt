@@ -64,7 +64,7 @@
                     <i class="fa fa-external-link"></i>Compléments
                 </h3>
                 Forums : <tal:replace replace="nb_element_by_type/Forums"/><br/>
-                Termes de Glossaire : <tal:replace replace="nb_element_by_type/Glossaire"/><br/>
+                Termes de Glossaire : <tal:replace replace="nb_element_by_type/TermeGlossaire"/><br/>
                 Éléments de Bibliographie : <tal:replace replace="nb_element_by_type/Bibliographie"/>
             </div>
         </div>
