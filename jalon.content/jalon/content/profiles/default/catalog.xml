@@ -49,5 +49,6 @@
  <column value="getDateDerniereActu"/>
  <column value="getVideourl"/>
  <column value="getVideoauteur"/>
+ <column value="getVideoauteurname"/>
  <column value="getVideothumbnail"/>
 </object>
