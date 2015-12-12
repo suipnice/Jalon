@@ -465,7 +465,6 @@
         <tal:define define="script string:setForumSearchForm()">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:define>
-
     </div>
 
 </metal:macro>

@@ -924,9 +924,11 @@ class JalonFolder(ATFolder):
                     item.setInfosElement(dico)
 
     def dupliquerCours(self, idcours, creator, manager):
-        """Permet de dupliquer un cours Jalon."""
+        """Permet de dupliquer le cours Jalon 'idcours'."""
+        #LOG.info("[dupliquerCours]")
         import time
         home = self
+
         if manager:
             home = getattr(self.aq_parent, manager)
         try:
@@ -947,6 +949,7 @@ class JalonFolder(ATFolder):
         #LOG.error('original.getListeClasses() : %s' % listeClasses)
         new_listeClasses = []
 
+        # Cree une nouvelle classe WIMS pour chaque createur d'activité
         for index, dico in enumerate(listeClasses):
             new_listeClasses.append({})
             for auteur in dico:
@@ -955,12 +958,12 @@ class JalonFolder(ATFolder):
                 rep_wims = self.wims("callJob", dico_wims)
                 rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonfolder.py/dupliquerCours", "message": "parametres de la requete : %s" % dico_wims})
                 if rep_wims["status"] == "OK":
-                    #LOG.error('rep_wims["status"] : %s' % rep_wims["status"])
+                    #LOG.info('rep_wims["status"] : %s' % rep_wims["status"])
                     new_listeClasses[index][auteur] = rep_wims["new_class"]
                 else:
                     message = _(u"Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de contacter votre administrateur svp.")
                     self.plone_utils.addPortalMessage(message, type='error')
-        #LOG.error('new_listeClasses : %s' % new_listeClasses)
+        #LOG.info('new_listeClasses : %s' % new_listeClasses)
 
         duplicata.setListeClasses(new_listeClasses)
         param = {"Title":                  "%s (Duplicata du %s)" % (cours.Title(), DateTime().strftime("%d/%m/%Y - %H:%M:%S")),
@@ -982,13 +985,22 @@ class JalonFolder(ATFolder):
                    "File":                     "Fichiers",
                    "Page":                     "Fichiers",
                    "Lienweb":                  "Externes",
+                   "Lien web":                 "Externes",
                    "Lecteurexportable":        "Externes",
                    "Referencebibliographique": "Externes",
                    "CatalogueBU":              "Externes",
                    "Catalogue BU":             "Externes",
                    "TermeGlossaire":           "Glossaire",
-                   "Presentationssonorisees":  "Sonorisation"}
+                   "Presentationssonorisees":  "Sonorisation",
+                   "Exercice Wims":            "Wims"}
+
+        portal_members = getattr(self.portal_url.getPortalObject(), "Members")
+
+        #dico_espaces contiendra les espaces enseignants précédement chargés, afin d'optimiser le traitement.
+        dico_espaces = {}
+
         for key in infos_element:
+            #LOG.info('[dupliquerCours] KEY : %s' % key)
             duplicataObjet = None
 
             if key.startswith("BoiteDepot"):
@@ -1006,6 +1018,11 @@ class JalonFolder(ATFolder):
                              "DateAff":          boite.getDateAff(),
                              "DateMasq":         boite.getDateMasq()}
                     duplicataObjet.setProperties(param)
+
+                    # Met a jour les relatedItems des documents.
+                    infos_elements = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+
                 else:
                     duplicataObjet = "Invalide"
 
@@ -1016,30 +1033,60 @@ class JalonFolder(ATFolder):
                     duplicata.invokeFactory(type_name="JalonCoursWims", id=key)
                     duplicataObjet = getattr(duplicata, key)
                     duplicataObjet.setJalonProperties(activite.getDicoProperties())
+
+                    # Met a jour les relatedItems des documents et exercices.
+                    infos_elements = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
+                    rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
+                    self.wims("verifierRetourWims", {"rep": rep, "fonction": "jalonfolder.py/dupliquerCours", "message": "ID objet : %s | infos_element = %s" % (key, infos_element)})
 
+            # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
-                    repertoire = dicoRep[infos_element[key]["typeElement"]]
-                    if "*-*" in key:
-                        ressource = key.replace("*-*", ".")
-                    else:
-                        ressource = key
-                    try:
-                        duplicataObjet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infos_element[key]["createurElement"]), repertoire), ressource)
-                        relatedItems = duplicataObjet.getRelatedItems()
-                        relatedItems.append(duplicata)
-                        duplicataObjet.setRelatedItems(relatedItems)
-                        duplicataObjet.reindexObject()
-                    except:
-                        pass
+                    self.associerCoursListeObjets(duplicata, [key], infos_element[key], dico_espaces, dicoRep)
 
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)
         duplicata.reindexObject()
         #LOG.error('duplicata.getListeClasses : %s' % str(duplicata.getListeClasses()))
         return duplicata.getId()
+
+    def associerCoursListeObjets(self, idElement, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
+        u""" ajoute l'element "idElement" aux relatedItems de tous les objets de liste_objets.
+
+        * infos_elements contient les infos de l'objet ?
+        * dico_espaces contient les objets précédement chargés, afin d'optimiser le traitement.
+
+        """
+        #LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
+        for id_objet in liste_objets:
+            infos_objet = infos_elements[id_objet]
+            repertoire = infos_objet["typeElement"]
+            if repertoire in dicoRep:
+                repertoire = dicoRep[repertoire]
+            if "*-*" in id_objet:
+                id_objet = id_objet.replace("*-*", ".")
+            #On en profite pour remplir "dico_espaces", qui nous permettra d'éviter de trop nombreux appels à "getattr",
+            # afin d'optimiser la tache pour des cours avec beacoup d'objets.
+            createur = infos_objet["createurElement"]
+            if createur not in dico_espaces:
+                dico_espaces[createur] = {"espace" : getattr(portal_members, createur)}
+            espace_createur = dico_espaces[createur]["espace"]
+
+            if repertoire not in infos_objet["createurElement"]:
+                dico_espaces[createur][repertoire] = getattr(espace_createur, repertoire)
+            rep_createur = dico_espaces[createur][repertoire]
+
+            objet = getattr(rep_createur, id_objet, None)
+            if objet:
+                relatedItems = objet.getRelatedItems()
+                if self not in relatedItems:
+                    relatedItems.append(idElement)
+                    objet.setRelatedItems(relatedItems)
+                    objet.reindexObject()
 
     def getElementView(self, idElement):
         return jalon_utils.getElementView(self, "MonEspace", idElement)

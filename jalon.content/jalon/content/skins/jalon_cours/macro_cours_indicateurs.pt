@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Macro de l'onglet Généralité
+-->
+<metal:macro define-macro="indicateurs_generalite">
+
+    <h2>
+        <i class="fa fa-calendar"></i>Dates
+    </h2>
+    <div class="panel bkgrnd radius">
+        Date de création du cours : <tal:replace replace="onglet_view/created"/><br/>
+        Derniere modification du cours : <tal:replace replace="onglet_view/modified"/>
+    </div>
+
+    <metal:macro use-macro="context/macro_cours_life/macros/afficher-participants">
+        Affichage des participants au cours
+    </metal:macro>
+
+    <h2>
+        <i class="fa fa-sitemap"></i>Composition
+    </h2>
+    <div class="panel radius bkgrnd">
+        <div class="row"
+             tal:define="nb_element_by_type onglet_view/nb_element_by_type">
+            <div class="medium-3 columns">
+                <h3>
+                    <i class="fa fa-list"></i>Éléments organisationels
+                </h3>
+                Titres : <tal:replace replace="nb_element_by_type/Titre"/><br/>
+                Textes libres : <tal:replace replace="nb_element_by_type/TexteLibre"/>
+            </div>
+            <div class="medium-3 columns">
+                <h3>
+                    <i class="fa fa-files-o"></i>Supports pédagogiques
+                </h3>
+                Fichiers : <tal:replace replace="nb_element_by_type/Fichiers"/><br/>
+                Webconférences : <tal:replace replace="nb_element_by_type/Webconferences"/><br/>
+                Ressources externes : <tal:replace replace="nb_element_by_type/Externes"/><br/>
+                Présentations sonorisées : <tal:replace replace="nb_element_by_type/Presentations"/><br/>
+            </div>
+            <div class="medium-3 column">
+                <h3>
+                    <i class="fa fa-random"></i>Activités
+                </h3>
+                Boîtes de dépôts : <tal:replace replace="nb_element_by_type/BoiteDepot"/><br/>
+                Auto-évaluations WIMS : <tal:replace replace="nb_element_by_type/AutoEvaluation"/><br/>
+                Examens WIMS : <tal:replace replace="nb_element_by_type/Examen"/><br/>
+                Salles virtuelles : <tal:replace replace="nb_element_by_type/SalleVirtuelle"/>
+            </div>
+            <div class="medium-3 columns">
+                <h3>
+                    <i class="fa fa-external-link"></i>Compléments
+                </h3>
+                Forums : <tal:replace replace="nb_element_by_type/Forums"/><br/>
+                Termes de Glossaire : <tal:replace replace="nb_element_by_type/Glossaire"/><br/>
+                Éléments de Bibliographie : <tal:replace replace="nb_element_by_type/Bibliographie"/>
+            </div>
+        </div>
+    </div>
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>Consultations
+    </h2>
+    <h3>
+        <i class="fa fa-table"></i>
+        Consultations sur l'année courante par public
+    </h3>
+    <table summary="Consultations du cours pour le mois courant">
+        <thead>
+            <th tal:repeat="th onglet_view/thead_th_list"
+                class="sort has-tip" data-tooltip 
+                tal:attributes="data-sort th/data-sort;
+                                title string:Trier selon ${th/th_title}" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block tal:replace="th/th_text"
+                               i18n:translate=""/>
+                </span>
+            </th>
+        </thead>
+        <tfoot></tfoot>
+        <tbody class="list">
+            <tal:repeat repeat="cours_consultation onglet_view/cours_consultation">
+            <tr>
+                <td class="public" tal:content="cours_consultation/public"/>
+                <td class="nb_cons_month_before" tal:content="cours_consultation/nb_cons_month_before"/>
+                <td class="nb_cons_month">
+                    <i tal:attributes="class cours_consultation/icon"></i>
+                    <span tal:content="cours_consultation/nb_cons_month"/>
+                </td>
+                <td class="nb_cons_year" tal:content="cours_consultation/nb_cons_year"/>
+            </tr>
+            </tal:repeat>
+        </tbody>
+    </table>
+
+    <h3>
+        <i class="fa fa-bar-chart"></i>
+        Graphique des consultations de l'année en cours
+    </h3>
+    <tal:replace replace="structure onglet_view/graph"/>
+    <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"/>
+
+    <tal:block define="script1 string:setSortableList('js-list-indicateurs',['public','nb_cons_month_before', 'nb_cons_month', 'nb_cons_year'],'public','asc');">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+    </tal:block>
+</metal:macro>
+
+
+<!--
+        Macro de l'onglet Ressources
+-->
+<metal:macro define-macro="indicateurs_ressources">
+
+    <h2>
+        <i class="fa fa-check-square-o "></i>Sélectionner un type de Supports pédagogiques
+    </h2>
+    <nav class="small-12 columns"
+         tal:define="box_list onglet_view/box_list">
+        <a tal:repeat="box box_list"
+           tal:attributes="class box/css_class;
+                           href box/link_url">
+            <i tal:attributes="class string:fa ${box/icon}"></i><tal:replace replace="box/link_text"/>
+        </a>
+    </nav>
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>Consultations
+    </h2>
+    <metal:macro use-macro="python:context.macro_cours_indicateurs_second.macros.get(onglet_view['second_macro'])">
+        Macro d'affichage des informations d'un onglet
+    </metal:macro>
+
+</metal:macro>
+
+
+<!--
+        Macro de l'onglet Activités
+-->
+<metal:macro define-macro="indicateurs_activites">
+
+    <h2>
+        <i class="fa fa-random"></i>Activités
+    </h2>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

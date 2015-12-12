@@ -12,8 +12,8 @@ from sqlalchemy.orm import aliased
 from math import ceil
 
 # Messages de debug :
-from logging import getLogger
-#LOG = getLogger( '[jalon bdd]' )
+#from logging import getLogger
+#LOG = getLogger( '[jalonsqlite]' )
 
 
 #-------------------------------------#
@@ -577,13 +577,8 @@ def getConsultationCoursByYear(session, year='%', listeIdCours=[], SESAME_ETU=No
     return nbConnexion
 
 
-def getMinMaxYearByELP(session, COD_ELP):
-    retour = {"min" : 0, "max" : 0, "ecart" : 0}
-
-    ICE = aliased(tables.IndContratElpSQLITE)
-    requete = session.query(ICE.SESAME_ETU).filter(ICE.COD_ELP==COD_ELP).all()
-    listeInds = [x[0] for x in requete]
-
+def getMinMaxYearByELP(session, COD_ELP, listeInds):
+    retour = {"min": 0, "max": 0, "ecart": 0}
     CI = aliased(tables.ConnexionINDSQLITE)
     minMaxYear = session.query(func.distinct(CI.DATE_CONN)).filter(CI.SESAME_ETU.in_(listeInds)).order_by(CI.DATE_CONN)
     if minMaxYear:
@@ -591,6 +586,7 @@ def getMinMaxYearByELP(session, COD_ELP):
         retour["max"] = int(minMaxYear[-1][0].split("/")[0])
         retour["ecart"] = retour["max"] - retour["min"]
     return retour
+
 
 #-------------------------------------#
 # Modification de la base de données  #
@@ -863,8 +859,8 @@ def ajouterActuCours(session, param):
     session.commit()
 
 
-def insererConsultation(session, param):
-    session.add(tables.ConsultationCoursSQLITE(SESAME_ETU=param["SESAME_ETU"], DATE_CONS=param["DATE_CONS"], ID_COURS=param["ID_COURS"], TYPE_CONS=param["TYPE_CONS"], ID_CONS=param["ID_CONS"]))
+def insererConsultation(session, SESAME_ETU, DATE_CONS, ID_COURS, TYPE_CONS, ID_CONS):
+    session.add(tables.ConsultationCoursSQLITE(SESAME_ETU=SESAME_ETU, DATE_CONS=DATE_CONS, ID_COURS=ID_COURS, TYPE_CONS=TYPE_CONS, ID_CONS=ID_CONS))
     session.commit()
 
 

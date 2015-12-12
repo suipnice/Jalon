@@ -1,4 +1,4 @@
-## Controller Python Script "cours_modifier_element_plan"
+## Controller Python Script "cours_modifier_annonce"
 ##bind container=container
 ##bind context=context
 ##bind namespace=

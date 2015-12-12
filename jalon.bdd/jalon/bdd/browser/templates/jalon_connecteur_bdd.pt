@@ -132,7 +132,7 @@ div.panel label{
                    tal:attributes="href string:${context/absolute_url}/@@jalon-bdd?gestion=gestion_connexion_bdd;
                                    class python:context.test(gestion == 'gestion_connexion_bdd', 'button small selected', 'button small')"
                    i18n:translate="ongletConnexion">
-                    Connexion
+                    Propriétés
                 </a>
             </li>
         </ul>

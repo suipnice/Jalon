@@ -70,8 +70,6 @@ membership_tool.loginUser(REQUEST)
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
-    portal_jalon_bdd.addConnexionUtilisateur(memberid, str(DateTime()))
-
     infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     if not infos_user:
         acl_users = getattr(context.acl_users, "ldap-plugin").acl_users
@@ -92,6 +90,8 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
                                                    "VIL_IND"         : "Non renseignée",
                                                    "UNIV_IND"        : "Non renseignée",
                                                    "PROMO_IND"       : ""})
+
+portal_jalon_bdd.addConnexionUtilisateur(memberid)
 
 if portal_jalon_bdd.isUtilisateurNotActif(memberid):
     state.set(status="failure")

@@ -99,6 +99,12 @@
      class=".scripts.search.SearchView"
      permission="zope2.View"/>
 
+  <browser:page
+     name="cours_indicateurs_view"
+     for="jalon.content.interfaces.jaloninterface.IJalonCours"
+     class=".scripts.indicateurs_view.IndicateursView"
+     permission="zope2.View"/>
+
   <!-- Viewlets registration -->
   <browser:viewlet
       name="jalon.footer"
