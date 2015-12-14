@@ -67,7 +67,7 @@
         <section id="js-list-ressource" class="small-12 columns">
 
             <h2 id="js-update_title">
-                <i class="fa fa fa-external-link"></i><tal:block i18n:translate="">Contenus audio ou vidéo Pod</tal:block>
+                <i class="fa fa fa-youtube-play"></i><tal:block i18n:translate="">Contenus audio ou vidéo Pod</tal:block>
             </h2>
 
             <div id="js-update_target"
