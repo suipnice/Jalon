@@ -2676,6 +2676,7 @@ class JalonCours(ATFolder):
 
     def insererConsultation(self, user, type_cons, id_cons):
         #self.plone_log("insererConsultation")
+        public_cons = "Anonymous"
         if user.has_role("Personnel"):
             username = user.getId()
             if self.isAuteur(username):
