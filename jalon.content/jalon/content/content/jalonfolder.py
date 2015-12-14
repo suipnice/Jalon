@@ -928,20 +928,23 @@ class JalonFolder(ATFolder):
         #LOG.info("[dupliquerCours]")
         import time
         home = self
-
+        home_id = self.getId()
         if manager:
             home = getattr(self.aq_parent, manager)
-        try:
-            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (self.Creator(), DateTime().strftime("%Y%m%d%H%M%S")))
-        except:
-            time.sleep(1)
-            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (self.Creator(), DateTime().strftime("%Y%m%d%H%M%S")))
-        duplicata = getattr(home, idobj)
-        if self.Creator() == creator:
+            home_id = home.getId()
+
+        if home_id == creator:
             cours = getattr(self, idcours)
         else:
             cours = getattr(getattr(self.aq_parent, creator), idcours)
         infos_element = copy.deepcopy(cours.getElementCours())
+
+        try:
+            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
+        except:
+            time.sleep(1)
+            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
+        duplicata = getattr(home, idobj)
 
         # On duplique chaque classe de la liste getListeClasses() coté Wims,
         # et on assigne les identifiants des nouvelles classes au cours dupliqué
@@ -1021,7 +1024,7 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents.
                     infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1036,8 +1039,8 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents et exercices.
                     infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
                     #ici il faudrait retirer l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
