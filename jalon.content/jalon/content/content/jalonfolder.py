@@ -1040,13 +1040,14 @@ class JalonFolder(ATFolder):
                     self.associerCoursListeObjets(duplicata, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
+                    #ici il faudrait retirer l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
-                    self.wims("verifierRetourWims", {"rep": rep, "fonction": "jalonfolder.py/dupliquerCours", "message": "ID objet : %s | infos_element = %s" % (key, infos_element)})
+                    self.wims("verifierRetourWims", {"rep": rep, "fonction": "jalonfolder.py/dupliquerCours", "message": "ID cours : %s | ID objet : %s | infos_element = %s" % (idcours, key, infos_element)})
 
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
-                    self.associerCoursListeObjets(duplicata, [key], infos_element[key], dico_espaces, dicoRep)
+                    self.associerCoursListeObjets(duplicata, [key], infos_element[key], dico_espaces, dicoRep, portal_members)
 
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)
@@ -1057,8 +1058,10 @@ class JalonFolder(ATFolder):
     def associerCoursListeObjets(self, idElement, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
         u""" ajoute l'element "idElement" aux relatedItems de tous les objets de liste_objets.
 
-        * infos_elements contient les infos de l'objet ?
-        * dico_espaces contient les objets précédement chargés, afin d'optimiser le traitement.
+        * infos_elements : les infos de l'objet ?
+        * dico_espaces   : les objets précédement chargés, afin d'optimiser le traitement.
+        * dicoRep
+        * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
         #LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
