@@ -126,7 +126,8 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                     elementXML = ET.SubElement(exoXML, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
 
             else:
-                exoXML.text = u"Désolé, ce format n'est pas pris en charge."
+                exoXML = ET.Element("error")
+                exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
             return ET.tostring(exoXML)
 
         else:

@@ -42,13 +42,6 @@
                  tal:define="wims_lang python:context.convertLangToWIMS(portal_lang);">
 
             <a class="button small success right"
-               tal:condition="python:modele=='qcmsimple'"
-               tal:attributes="href string:${context/absolute_url}/getExoWIMS_XML?format=QTI">
-                <i class="fa fa-pencil no-pad"></i>
-                <tal:block  i18n:translate="">GET XML (QTI)</tal:block>
-            </a>
-
-            <a class="button small success right"
                tal:condition="python:modele!='groupe'"
                tal:attributes="href string:${context/absolute_url}/exercicewims_edit">
                 <i class="fa fa-pencil no-pad"></i>

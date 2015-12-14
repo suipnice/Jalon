@@ -176,22 +176,65 @@
          « <tal:block content="context/Title" /> »
         <a class="close-reveal-modal"></a>
     </h2>
+    <div><!-- div pour casser le CSS du reveal, en attendant mieux -->
     <form method="POST"
-      tal:attributes="action string:${context/absolute_url}/${template/id};">
+      tal:attributes="action string:${context/absolute_url}/getExoWIMS_XML;">
 
-<ul>
-    <li><input type="radio"/><label for="radio1">QTI</label></li>
-    <li><input type="radio"/><label for="radio2">EDX</label></li>
-</ul>
+        <p>Choisissez sous quel format vous souhaitez exporter cet exercice :</p>
+        <div class="js-input-filter"><!-- div pour (re)casser le CSS du reveal, en attendant mieux -->
+            <ul>
+                <li>
+                    <input type="radio" id="QTI" value="QTI" name="format" checked="checked"/>
+                    <label for="QTI">QTI <span>(format utilisables dans divers LMS et outils tiers)</span></label>
+                    <div id="QTI_versions">
+                        <ul>
+                            <li>
+                                <input type="radio" id="QTI_1" value="1.1" name="version"/>
+                                <label for="QTI_1">1.1 <span>(bla bla)</span></label>
+                            </li>
+                            <li>
+                                <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
+                                <label for="QTI_default">1.2.1 <span class="discret">(utilisable entre autres par TurningPoint 5.4)</span></label>
+                            </li>
+                            <li>
+                                <input type="radio" id="QTI_2" value="2.1" name="version"/>
+                                <label for="QTI_2">2.1 <span>(bla bla)</span></label>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <input type="radio" id="EDX" value="EDX" name="format"/>
+                    <label for="EDX">EDX <span>(format utilisables dans le LMS EDX)</span></label>
+                    <div id="EDX_versions">
+                        <ul>
+                            <li>
+                                <input type="radio" id="EDX_default" value="1.1" name="version"/>
+                                <label for="EDX_default">Dernière version <span>(?)</span></label>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
 
         <div class="formControls">
             <button type="submit" class="button small radius"
                     name="form.button.save">
-                <i class="fa fa-tag"></i>
+                <i class="fa fa-download"></i>
                 <tal:block i18n:translate="">Exporter</tal:block>
             </button>
         </div>
     </form>
+    </div>
+
+    <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
+
+    <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getBuffer()"
+                tal:condition="buffer"
+                tal:content="structure buffer"></script>
 </metal:macro>
 
 
