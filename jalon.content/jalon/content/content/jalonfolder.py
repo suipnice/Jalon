@@ -1024,7 +1024,7 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents.
                     infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1039,8 +1039,8 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents et exercices.
                     infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicata, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
                     #ici il faudrait retirer l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
