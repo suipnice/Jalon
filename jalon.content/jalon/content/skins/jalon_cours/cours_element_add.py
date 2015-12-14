@@ -15,6 +15,8 @@ affElement = ""
 if "attacher_afficher" in request.form and request.form["attacher_afficher"] == "1":
     affElement = DateTime()
 
+display_in_plan = True if "display_in_plan" in request.form and request.form["display_in_plan"] == "1" else False
+
 redirection = context.absolute_url()
 if request.form.has_key("page"):
    redirection = "%s/%s" % (redirection, request.form["page"])
@@ -42,7 +44,7 @@ if request.form.has_key("paths"):
         elif request.form.has_key("espace") and request.form["espace"] == "Bibliographie":
             context.ajouterElement(param[0], "%s*-*%s" % ("biblio", param[1]), param[2], param[3])
         else:
-            context.ajouterElement(param[0], param[1], param[2], param[3], affElement, position)
+            context.ajouterElement(param[0], param[1], param[2], param[3], affElement, position, display_in_plan)
 
 HTTP_X_REQUESTED_WITH = False
 

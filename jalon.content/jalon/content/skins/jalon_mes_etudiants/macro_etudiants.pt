@@ -44,15 +44,16 @@
         <section id="js-list-etudiants" class="small-12 columns">
 
             <h2 id="js-update_title">
-                <i class="fa fa-users"></i><tal:block i18n:translate="">Étudiants attachés à mes cours</tal:block>
+                <i class="fa fa-users"></i><tal:block i18n:translate="">Étudiants attachés à mes cours via l'offre de formation</tal:block>
             </h2>
 
             <div id="js-update_target">
 
             <tal:block condition="not:listeAcces">
-                <div class="panel callout radius"
-                     i18n:translate="">
-                    Aucun élément
+                <div class="panel callout radius">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <strong i18n:translate="">Aucun étudiant n'a accès à vos cours pour l'instant.</strong><br />
+                    <tal:block i18n:translate="">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
                 </div>
             </tal:block>
 
@@ -664,7 +665,7 @@
 </metal:macro>
 
 <metal:macro define-macro="details-etudiants">
-    <section id="js-list-etudiants" class="small-12 columns" 
+    <section id="js-list-etudiants" class="small-12 columns"
              tal:define="moisSelec request/moisSelec | string:0;
                          anneeSelec request/anneeSelec | string:0;
                          detailsConnexion python:context.jalonBDD('getConnexionByDateByELPByIND', {'COD_ELP': request['COD_ELP'], 'month' : int(moisSelec), 'year' : int(anneeSelec)});

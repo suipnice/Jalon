@@ -214,7 +214,9 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"
           tal:attributes="action context/aq_parent/absolute_url;
@@ -519,7 +521,7 @@
                               data-success_msg string:La suppression demandée a été effectuée.;
                               data-all_att_msg string:Suppression impossible :;
                               data-s_all_att_msg string:l'exercice sélectionné est attaché à au moins un cours ou groupe d'exercices.;
-                              data-p_all_att_msg string:les exercices sélectionnés sont attachés à au moins un cours ou groupe d'exercices.;
+                              data-p_all_att_msg string:tous les exercices sélectionnés sont attachés à au moins un cours ou groupe d'exercices.;
                               data-s_supp_msg string:L'exercice suivant va être supprimé :;
                               data-p_supp_msg string:Les exercices suivants vont être supprimés :;
                               data-s_att_msg string:L'exercice suivant, attaché à au moins un cours ou groupe d'exercices, ne sera pas supprimé :;
@@ -528,6 +530,7 @@
 
             <div class="panel alert radius"
                  i18n:translate="">
+                <i class="fa fa-exclamation-triangle no-pad"></i>
                 <strong>Attention :</strong> cette opération est définitive.
             </div>
 
@@ -651,7 +654,7 @@
 
     <form tal:attributes="action python:context.test(menu == 'vide', '%s/cours_retirerElementPlan' % context.absolute_url(), '%s/cours_retirerElement' % context.absolute_url())"
           tal:define="menu request/menu | string:vide;
-                      retour request/retour | string:cours_plan_view"
+                      retour request/retour | nothing"
           method="POST">
 
         <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
@@ -659,7 +662,8 @@
         <input type="hidden" name="repertoire" tal:attributes="value repertoire" />
         <input type="hidden" name="indexElement" tal:attributes="value request/indexElement | nothing" />
         <input type="hidden" name="menu" tal:attributes="value menu" />
-        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${retour}?menu=${menu}" />
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/absolute_url}/${retour}"
+               tal:condition="retour"/>
 
         <div class="formControls">
             <button type="submit" class="button small warning"

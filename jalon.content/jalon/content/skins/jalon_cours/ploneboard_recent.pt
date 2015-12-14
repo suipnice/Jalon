@@ -143,7 +143,7 @@
                                 <a title="Voir le message…"
                                    tal:attributes="href string:${conversation/absolute_url}#${conversation/last_comment_id}"
                                    i18n:attributes="title">
-                                    <tal:block i18n:translate="">Par</tal:block>
+                                    <tal:block i18n:translate="">par</tal:block>
                                     <tal:content content="conversation/last_comment_creator" />
                                 </a>
                             </div>

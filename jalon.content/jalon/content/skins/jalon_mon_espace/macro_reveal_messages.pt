@@ -31,6 +31,27 @@
 
 </metal:macro>
 
+
+<metal:macro define-macro="reveal_deletion">
+
+    <div id="reveal-deletion" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+        <h2>
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <tal:block i18n:translate="">Détacher cette ressource</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+
+        <div class="panel warning radius">
+             <i class="fa fa-info-circle no-pad"></i>
+             <strong i18n:translate="">La ressource est attachée à aucun un cours, vous pouvez la supprimer.</strong><br />
+             <tal:block i18n:translate="">Pour ce faire, utilisez l'option Supprimer dans le menu des actions disponibles pour cette ressource.</tal:block>
+        </div>
+
+    </div>
+
+</metal:macro>
+
 </metal:content-core>
 
 </body>

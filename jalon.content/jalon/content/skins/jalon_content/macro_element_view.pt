@@ -194,13 +194,17 @@
 
 
 <!--
-        Lecteur exportable
+        Video
 -->
-<metal:macro define-macro="Pod">
+<metal:macro define-macro="Video">
 
     <h3>
         <tal:replace replace="element/titreElement" />
     </h3>
+
+    <h4>
+        <strong>Auteur :</strong> <tal:block replace="element/auteurVideoElement"/>
+    </h4>
 
     <div class="panel radius"
          tal:condition="not:element/descriptionElement"

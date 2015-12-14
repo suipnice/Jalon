@@ -652,42 +652,41 @@ class JalonProperties(SimpleItem):
                     "url_video"                        : self._url_video}
 
     def getGridMonEspace(self, key=None):
-        return [{"espace"     : "fichiers",
-                 "titre"      : "Fichiers",
-                 "activer"    : self._activer_fichiers,
-                 "repertoire" : "Fichiers",
-                 "icone"      : "fa fa-files-o"
-                },
-                {"espace"     : "connect",
-                 "titre"      : "Présentations sonorisées",
-                 "activer"    : self._activer_presentations_sonorisees,
-                 "repertoire" : "Sonorisation",
-                 "icone"      : "fa fa-microphone"
-                },
-                {"espace"     : "wims",
-                 "titre"      : "Exercices Wims",
-                 "activer"    : self._activer_exercices_wims,
-                 "repertoire" : "Wims",
-                 "icone"      : "fa fa-random"
-                },
-                {"espace"     : "liens",
-                 "titre"      : "Ressources externes",
-                 "activer"    : self._activer_liens,
-                 "repertoire" : "Externes",
-                 "icone"      : "fa fa-external-link"
-                },
-                {"espace"     : "glossaire",
-                 "titre"      : "Termes de glossaire",
-                 "activer"    : self._activer_termes_glossaire,
-                 "repertoire" : "Glossaire",
-                 "icone"      : "fa fa-font"
-                },
-                {"espace"     : "connect",
-                 "titre"      : "Webconférences",
-                 "activer"    : self._activer_webconferences,
-                 "repertoire" : "Webconference",
-                 "icone"      : "fa fa-headphones"
-                }]
+        return [{"espace":      "fichiers",
+                 "titre":       "Fichiers",
+                 "activer":     self._activer_fichiers,
+                 "repertoire":  "Fichiers",
+                 "icone":       "fa fa-files-o"},
+                {"espace":      "connect",
+                 "titre":       "Présentations sonorisées",
+                 "activer":     self._activer_presentations_sonorisees,
+                 "repertoire":  "Sonorisation",
+                 "icone":       "fa fa-microphone"},
+                {"espace":      "wims",
+                 "titre":       "Exercices Wims",
+                 "activer":     self._activer_exercices_wims,
+                 "repertoire":  "Wims",
+                 "icone":       "fa fa-random"},
+                {"espace":      "liens",
+                 "titre":       "Ressources externes",
+                 "activer":     self._activer_liens,
+                 "repertoire":  "Externes",
+                 "icone":       "fa fa-external-link"},
+                {"espace":      "glossaire",
+                 "titre":       "Termes de glossaire",
+                 "activer":     self._activer_termes_glossaire,
+                 "repertoire":  "Glossaire",
+                 "icone":       "fa fa-font"},
+                {"espace":      "connect",
+                 "titre":       "Webconférences",
+                 "activer":     self._activer_webconferences,
+                 "repertoire":  "Webconference",
+                 "icone":       "fa fa-headphones"},
+                {"espace":      "video",
+                 "titre":       "Vidéos",
+                 "activer":     True,
+                 "repertoire":  "Video",
+                 "icone":       "fa fa-youtube-play"}]
 
     def setPropertiesMonEspace(self, form):
         for key in form.keys():

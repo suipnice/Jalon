@@ -180,7 +180,7 @@
     <div class="text-right"
          tal:content="context/getAttempts"/>
 
-<tal:condition condition="personnel">
+<tal:condition condition="is_personnel">
     <h3>
         <i class="fa fa-lock"></i>
         <tal:block i18n:translate="">Mot de passe</tal:block>
@@ -418,7 +418,7 @@ En entrée : infosBoite
 -->
 <metal:macro define-macro="liste-sujets">
 
-<tal:condition condition="personnel">
+<tal:condition condition="is_personnel">
     <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
         <i class="fa fa-plus-circle"></i>
         <tal:block i18n:translate="">Ajouter</tal:block>
@@ -440,7 +440,7 @@ En entrée : infosBoite
         <tal:block i18n:translate="">Documents enseignants</tal:block>
     </h2>
 
-<tal:define define="listeElements python:context.getInfosListeAttribut(menu, personnel)">
+<tal:define define="listeElements python:context.getInfosListeAttribut(menu, is_personnel)">
 
     <div class="panel callout radius"
          tal:condition="not:listeElements"
@@ -455,7 +455,7 @@ En entrée : infosBoite
         <thead>
             <tr>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="visible" title="Trier selon la visibilité"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -473,7 +473,7 @@ En entrée : infosBoite
                     </span>
                 </th>
                 <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
-                    tal:condition="personnel"
+                    tal:condition="is_personnel"
                     i18n:attributes="title">
                     <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
                 </th>
@@ -490,7 +490,7 @@ En entrée : infosBoite
             <tr tal:define="typeElement python:context.jalon_quote(element['typeElement']);
                             affElement element/affElement">
                 <td class="visible"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <i class="fa fa-eye fa-lg"
                        tal:condition="affElement/val"></i>
                     <i class="fa fa-eye-slash fa-lg"
@@ -507,7 +507,7 @@ En entrée : infosBoite
                 </td>
 
                 <td class="show-for-medium-up"
-                    tal:condition="personnel">
+                    tal:condition="is_personnel">
                     <a class="dropdown right" data-options="align:left"
                        tal:attributes="data-dropdown string:drop-${repeat/element/index}">
                         <i class="fa fa-cog fa-lg no-pad"></i>
@@ -516,21 +516,21 @@ En entrée : infosBoite
                         tal:attributes="id string:drop-${repeat/element/index}">
                         <li tal:condition="not:affElement/val">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=${element/idElement}&amp;tag=activite">
                                 <i class="fa fa-eye fa-fw"></i>
                                 <tal:block i18n:translate="">Afficher</tal:block>
                             </a>
                         </li>
                         <li tal:condition="affElement/val">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=${idpage}&amp;idElement=${element/idElement}&amp;tag=activite">
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=${element/idElement}&amp;tag=activite">
                                 <i class="fa fa-eye-slash fa-fw"></i>
                                 <tal:block i18n:translate="">Masquer</tal:block>
                             </a>
                         </li>
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;retour=${idpage}&amp;menu=${menu}"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;menu=${menu}"
                                title="Détacher le document enseignant"
                                i18n:attributes="title" i18n:translate="">
                                 <i class="fa fa-chain-broken fa-fw"></i>
@@ -546,12 +546,12 @@ En entrée : infosBoite
 
         </tbody>
 
-        <tal:block condition="personnel"
+        <tal:block condition="is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['visible','title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>
 
-        <tal:block condition="not:personnel"
+        <tal:block condition="not:is_personnel"
                    define="script string:setSortableList('js-listeDocuments',['title'],'title','desc')">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         </tal:block>
@@ -562,17 +562,28 @@ En entrée : infosBoite
 
 </metal:macro>
 
+<metal:macro define-macro="liste-depots">
+    <metal:macro use-macro="context/macro_cours_boite/macros/depots">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>
+
+<metal:macro define-macro="liste-competences">
+    <metal:macro use-macro="context/macro_cours_boite/macros/competences">
+        Page d'affichage de la liste des compétences
+    </metal:macro>
+</metal:macro>
 
 <!-- Liste des exercices d'une autoevaluation ou d'un examen
 En entrée :
     ajout
-    personnel : booleen qui definit si l'utilisateur courant est un prof ou un eleve.
+    is_personnel : booleen qui definit si l'utilisateur courant est un prof ou un eleve.
 -->
 <metal:macro define-macro="liste-exercices">
 
-<tal:define define="listeExos  python:context.getInfosListeAttribut(menu, personnel);
+<tal:define define="listeExos  python:context.getInfosListeAttribut(menu, is_personnel);
                     site_lang  portal_state/language;
-                    infosNotes python:context.getNotes(quser=user.getId(), actif=affElement['val'], isProf=personnel, site_lang=site_lang, request=request);
+                    infosNotes python:context.getNotes(quser=user.getId(), actif=affElement['val'], isProf=is_personnel, site_lang=site_lang, request=request);
                     qexam context/getIdExam;
                     isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
 
@@ -588,7 +599,7 @@ En entrée :
     </tal:condition>
     <tal:condition condition="python:infosNotes['status']=='OK'">
 
-    <tal:condition condition="not:personnel">
+    <tal:condition condition="not:is_personnel">
         <tal:comment replace="nothing"><!-- Boutons pour les etudiants --></tal:comment>
         <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
            tal:condition="not:qexam"
@@ -607,7 +618,7 @@ En entrée :
         </a>
     </tal:condition>
 
-    <tal:condition condition="python:personnel and not affElement['val'] and not context.getIdExam() and context.Creator()==user.getId()">
+    <tal:condition condition="python:is_personnel and not affElement['val'] and not context.getIdExam() and context.getCreateur()==user.getId()">
     <!-- Boutons pour les enseignants -->
     <!-- Affichés uniquement pour le créateur de l'activité, qui est masquée et n'est pas un examen déjà activé -->
         <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="drop-action-activite">
@@ -639,21 +650,21 @@ En entrée :
             <i class="fa fa-random"></i>
             <tal:block i18n:translate="">Liste des exercices</tal:block>
         </h2>
-        <div class="panel warning radius" tal:condition="python:personnel and context.getIdExam()">
+        <div class="panel warning radius" tal:condition="python:is_personnel and context.getIdExam()">
             Cet examen a été affiché au moins une fois. Les exercices ne peuvent donc plus être modifiés.
         </div>
-        <div class="panel warning radius" tal:condition="python:personnel and affElement['val'] and not context.getIdExam()">
+        <div class="panel warning radius" tal:condition="python:is_personnel and affElement['val'] and not context.getIdExam()">
             <span class="fa-stack no-pad text-center">
               <i class="fa fa-stack-2x text-danger">\</i>
               <i class="fa fa-stack-1x fa-pencil"></i>
             </span>
             <tal:block i18n:translate="">Les exercices ne peuvent pas être modifiés tant que l'activité est accessible aux étudiants.</tal:block>
         </div>
-        <div class="panel callout radius" tal:condition="python:personnel and not isExam and not affElement['val'] and listeExos">
+        <div class="panel callout radius" tal:condition="python:is_personnel and not isExam and not affElement['val'] and listeExos">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel warning radius" tal:condition="python:personnel and context.Creator()!=user.getId() and not affElement['val']">
-            Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur de le faire.
+        <div class="panel warning radius" tal:condition="python:is_personnel and context.getCreateur()!=user.getId() and not affElement['val']">
+            Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur (<tal:creator content="context/getCreateur"/>) de le faire.
         </div>
 
         <div class="panel callout radius"
@@ -697,7 +708,7 @@ En entrée :
                     </th>
 
             <tal:block condition="not:isExam">
-                <tal:block condition="not:personnel">
+                <tal:block condition="not:is_personnel">
                     <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon la note"
                         i18n:attributes="title">
                         <span>
@@ -717,7 +728,7 @@ En entrée :
                         </span>
                     </th>
                 </tal:block>
-                <tal:block condition="personnel">
+                <tal:block condition="is_personnel">
                     <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon le Taux de réussite"
                         i18n:attributes="title">
                         <span>
@@ -741,7 +752,7 @@ En entrée :
                 </tal:block>
             </tal:block>
                     <th class="action show-for-medium-up"
-                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()"
+                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()"
                         i18n:translate="">
                         <i class="fa fa-cog no-pad"></i>
                     </th>
@@ -774,7 +785,7 @@ En entrée :
                     <!-- Cas des examens pas encore activés et des autoévaluation inactives -->
                 </tal:comment>
                     <td class="show-for-medium-up"
-                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()">
+                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()">
                 <tal:condition condition="python:not affElement['val'] and not context.getIdExam()">
                         <a class="dropdown" data-options="align:left"
                            tal:attributes="data-dropdown string:activite-options-${repeat/element/index}">
@@ -820,7 +831,7 @@ En entrée :
             </tbody>
             <tfoot tal:condition="not:isExam">
                 <!-- pied de tableau des autoevaluations -->
-            <tal:condition condition="personnel">
+            <tal:condition condition="is_personnel">
             <tal:comment replace="nothing">
                 <!-- On n'affiche pas les maximums de la feuille ici, car ce sont des maximums globaux, pas détaillés par exercice
                 <th class="fullwidth" colspan="2"><span class="texte_icone icone_reussite">Maximums</span></th>
@@ -828,8 +839,7 @@ En entrée :
                 <td ><tal:qualite replace="infosNotes/note"/> / <tal:sur replace="context/getNoteMax"/></td-->
             </tal:comment>
                 <tr>
-                    <th class="show-for-medium-up" />
-                    <th class="fullwidth text-right" colspan="2">
+                    <th class="fullwidth text-right" colspan="3">
                         <i class="fa fa-bar-chart-o"></i>
                         <tal:block i18n:translate="">Moyennes</tal:block>
                     </th>
@@ -840,10 +850,10 @@ En entrée :
                         <tal:replace replace="infosNotes/qualite"/> / <tal:replace replace="context/getNoteMax"/>
                     </th>
                     <th class="show-for-medium-up"
-                        tal:condition="python:personnel and not affElement['val'] and not context.getIdExam()"/>
+                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()"/>
                 </tr>
             </tal:condition>
-            <tal:condition condition="not:personnel">
+            <tal:condition condition="not:is_personnel">
                 <tr>
                     <th class="text-right show-for-medium-up"
                         colspan="3">
@@ -865,7 +875,7 @@ En entrée :
             </tal:condition>
             </tfoot>
 
-            <tfoot tal:condition="python:isExam and not personnel">
+            <tfoot tal:condition="python:isExam and not is_personnel">
             <tal:comment tal:replace="nothing">
                 <!-- pied de tableau des examens pour les etudiants -->
             </tal:comment>
@@ -905,29 +915,28 @@ En entrée :
 <metal:macro define-macro="resultats-exam">
 
     <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
-                        isCoAuteur personnel;
                         site_lang  portal_state/language;
-                        infosNotes python:context.getNotes(user.getId(), affElement['val'], isCoAuteur, site_lang=site_lang, request=request);
+                        infosNotes python:context.getNotes(user.getId(), affElement['val'], is_personnel, site_lang=site_lang, request=request);
                         data_scores infosNotes/data_scores | nothing;">
 
         <h2>
             <i class="fa fa-trophy fa-fw"></i>
-        <tal:condition condition="not:isCoAuteur"
+        <tal:condition condition="not:is_personnel"
                        i18n:translate="">
             Mes résultats
         </tal:condition>
-        <tal:condition condition="isCoAuteur"
+        <tal:condition condition="is_personnel"
                        i18n:translate="">
             Réussite de mes étudiants
         </tal:condition>
         </h2>
         <div class="panel callout radius">
-            <p tal:condition="not:isCoAuteur">
+            <p tal:condition="not:is_personnel">
                 <tal:block i18n:translate="">Ma meilleure note :</tal:block>
                 <strong><tal:replace replace="infosNotes/note"/> / <tal:replace replace="context/getNoteMax"/></strong>
 
             </p>
-            <ul tal:condition="isCoAuteur">
+            <ul tal:condition="is_personnel">
                 <li>
                 <tal:condition tal:condition="python:tag=='Examen'"
                                i18n:translate="">
@@ -954,7 +963,7 @@ En entrée :
            tal:condition="data_scores">
             <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger (CSV)</tal:block>
         </a>
-        <tal:block condition="isCoAuteur">
+        <tal:block condition="is_personnel">
             <h2>
                 <i class="fa fa-trophy fa-fw"></i>
                 <tal:block i18n:translate="">Détails des notes :</tal:block>
@@ -1081,10 +1090,9 @@ En entrée :
 <!-- Resultats d'une autoévaluation WIMS -->
 <metal:macro define-macro="resultats-auto">
 <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
-                    isCoAuteur personnel;
                     actif python:affElement['val'];
                     site_lang  portal_state/language;
-                    infosNotes python:context.getNotes(user.getId(), actif, isCoAuteur, detailed=True, site_lang=site_lang, request=request);
+                    infosNotes python:context.getNotes(user.getId(), actif, is_personnel, detailed=True, site_lang=site_lang, request=request);
                     data_scores infosNotes/data_scores | nothing;">
 
     <tal:condition condition="python:infosNotes['status']!='OK'" >
@@ -1114,7 +1122,7 @@ En entrée :
             <i class="fa fa-trophy"></i>
             <tal:block i18n:translate="">Résultats</tal:block>
         </h2>
-        <p class="note_info" tal:condition="python:personnel and infosNotes['user_cnt']!=0">
+        <p class="note_info" tal:condition="python:is_personnel and infosNotes['user_cnt']!=0">
             <tal:block i18n:translate="">Il y a actuellement</tal:block>
             <strong>
                 <tal:replace replace="infosNotes/user_cnt"/> <tal:block i18n:translate="">étudiant(s)</tal:block>
@@ -1122,7 +1130,7 @@ En entrée :
             <tal:block i18n:translate="">ayant fait une activité WIMS dans ce cours.</tal:block>
         </p>
         <div class="panel callout radius"
-             tal:condition="python: personnel and not data_scores and not affElement['val'] ">
+             tal:condition="python: is_personnel and not data_scores and not affElement['val'] ">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
         <div class="panel callout radius"

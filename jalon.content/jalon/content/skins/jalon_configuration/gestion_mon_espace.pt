@@ -102,7 +102,7 @@ div.panel label{
                 <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_elasticsearch;
                                    class python:context.test(gestion == 'gestion_elasticsearch', 'button small', 'button small secondary')"
                    i18n:translate="ongletPrimo">
-                    Connexion Lille1Pod
+                    Connexion Pod
                 </a>
             </li>
         </ul>
