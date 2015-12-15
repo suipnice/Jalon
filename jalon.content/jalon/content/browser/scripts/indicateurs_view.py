@@ -157,19 +157,19 @@ class IndicateursView(BrowserView):
                     "3": "Externes",
                     "4": "Webconferences"}
         cours_url = self.context.absolute_url()
-        box_list = [{"css_class": "button res-fichiers%s" % (" selected" if box == "1" else ""),
+        box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=1" % cours_url,
                      "icon":      "fa-files-o",
                      "link_text": "Fichiers"},
-                    {"css_class": "button res-connect%s" % (" selected" if box == "2" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "2" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=2" % cours_url,
                      "icon":      "fa-microphone",
                      "link_text": "Présentations sonorisées"},
-                    {"css_class": "button res-liens%s" % (" selected" if box == "3" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "3" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=3" % cours_url,
                      "icon":      "fa-external-link",
                      "link_text": "Ressources externes"},
-                    {"css_class": "button res-connect%s" % (" selected" if box == "4" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=4" % cours_url,
                      "icon":      "fa-headphones",
                      "link_text": "Webconférences"}]
@@ -196,7 +196,7 @@ class IndicateursView(BrowserView):
                                            "second_macro":          "display_all_ressources",
                                            "thead_th_list":         thead_th_list,
                                            "elements_consultation": elements_consultation,
-                                           "box_url":   "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
+                                           "box_url":               "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
         else:
             thead_th_list.insert(0, {"data-sort": "public",
                                      "th_title":  "le type de public",
@@ -223,12 +223,85 @@ class IndicateursView(BrowserView):
                                            "thead_th_list":         thead_th_list,
                                            "elements_consultation": self.context.getConsultationByElementByCours(element_id),
                                            "graph":                 graph,
-                                           "box_url":   "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
+                                           "box_url":               "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
         return indicateurs_ressources_view
 
     def getIndicateursActitivesView(self):
         #LOG.info("----- getIndicateursActitivesView -----")
-        return {"macro": "indicateurs_activites"}
+        box = self.request.get("box", "1")
+        box_dict = {"1": "BoiteDepot",
+                    "2": "AutoEvaluation",
+                    "3": "Examen",
+                    "4": "SalleVirtuelle"}
+        cours_url = self.context.absolute_url()
+        box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=1" % cours_url,
+                     "icon":      "fa-inbox",
+                     "link_text": "Boite de dépôts"},
+                    {"css_class": "button radius%s" % (" selected" if box == "2" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=2" % cours_url,
+                     "icon":      "fa-gamepad",
+                     "link_text": "Auto-évaluation WIMS"},
+                    {"css_class": "button radius%s" % (" selected" if box == "3" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=3" % cours_url,
+                     "icon":      "fa-graduation-cap",
+                     "link_text": "Examen WIMS"},
+                    {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=4" % cours_url,
+                     "icon":      "fa-globe",
+                     "link_text": "Salle virtuelle"}]
+        element_id = self.request.get("element_id", None)
+        thead_th_list = [{"data-sort": "nb_cons_month_before",
+                          "th_title":  "les consultations du mois précédent",
+                          "th_text":   "Mois précédent"},
+                         {"data-sort": "nb_cons_month",
+                          "th_title":  "les consultations du mois courant",
+                          "th_text":   "Mois courant"},
+                         {"data-sort": "nb_cons_year",
+                          "th_title":  "les consultations sur l'année en cours",
+                          "th_text":   "Année en cours"}]
+        if not element_id:
+            thead_th_list.insert(0, {"data-sort": "title",
+                                     "th_title":  "le titre du fichiers",
+                                     "th_text":   "Titre"})
+            elements_consultation = []
+            elements_cours = self.getElementsCoursByType()
+            if box_dict[box] in elements_cours:
+                elements_consultation = self.context.getConsultationElementsByCours(elements_cours[box_dict[box]]["elements_list"], elements_cours[box_dict[box]]["elements_dict"])
+            indicateurs_activites_view = {"macro":                 "indicateurs_ressources",
+                                          "box_list":              box_list,
+                                          "second_macro":          "display_all_ressources",
+                                          "thead_th_list":         thead_th_list,
+                                          "elements_consultation": elements_consultation,
+                                          "box_url":               "%s/cours_indicateurs_view?onglet=3&box=%s" % (self.context.absolute_url(), box)}
+        else:
+            thead_th_list.insert(0, {"data-sort": "public",
+                                     "th_title":  "le type de public",
+                                     "th_text":   "Public"})
+            graph = ""
+            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            #LOG.info(requete)
+            if requete:
+                requete_dict = {}
+                for ligne in requete:
+                    try:
+                        requete_dict[ligne[0]].append({"consultations": ligne[1], "public": ligne[2]})
+                    except:
+                        requete_dict[ligne[0]] = [{"consultations": ligne[1], "public": ligne[2]}]
+                try:
+                    requete_dict[ligne[0]].sort(lambda x, y: cmp(x["public"], y["public"]))
+                except:
+                    pass
+                graph = self.context.genererGraphIndicateurs(requete_dict)
+            indicateurs_activites_view = {"macro":                "indicateurs_activites",
+                                          "element_title":         self.context.getElementCours(element_id)["titreElement"],
+                                          "box_list":              box_list,
+                                          "second_macro":          "display_ressource",
+                                          "thead_th_list":         thead_th_list,
+                                          "elements_consultation": self.context.getConsultationByElementByCours(element_id),
+                                          "graph":                 graph,
+                                          "box_url":               "%s/cours_indicateurs_view?onglet=3&box=%s" % (self.context.absolute_url(), box)}
+        return indicateurs_activites_view
 
     def __call__(self):
         #LOG.info("----- Call -----")
