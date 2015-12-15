@@ -229,6 +229,7 @@ class JalonCours(ATFolder):
 
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
+        self._elements_cours = {}
 
     def toPloneboardTime(self, context, request, time_=None):
         """Return time formatted for Ploneboard."""

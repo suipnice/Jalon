@@ -53,6 +53,7 @@
             <dt i18n:translate="">Ressource ou complément</dt>
                 <dd class="type_File" i18n:translate="">Fichier</dd>
                 <dd class="type_Image" i18n:translate="">Image</dd>
+                <dd class="type_Video" i18n:translate="">Ressource Pod</dd>
                 <dd class="type_Lienweb" i18n:translate="">Ressource externe</dd>
                 <dd class="type_Lecteurexportable" i18n:translate="">Lecteur exportable</dd>
                 <dd class="type_CatalogueBU" i18n:translate="">Catalogue BU</dd>
