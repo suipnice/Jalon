@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+
+<metal:macro define-macro="topbar_help">
+    <ol class="joyride-list" data-joyride>
+      <li data-id="firstStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: false">
+        <p>
+            Bonjour et bienvenue dans Jalon. <br>Ce petit guide vous présentera la berre de menu de Jalon, pour commencer cliquez suir "Suivant".
+        </p>
+      </li>
+      <li data-id="monEspaceStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: true">
+        <p>
+            Dans "Mon espace" vous pourrez déposer des fichiers, créer des liens et bien d'autres ressources à utiliser ensuite dans vos cours.
+        </p>
+      </li>
+      <li data-id="mesCoursStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: true">
+        <p>
+            "Mes cours" regroupe l'ensemble des cours auxquels vous avez accès, que vous en soyez auteur, co-auteur ou lecteur. Vous pourrez créer un cours depuis cette page.
+        </p>
+      </li>
+      <li data-id="mesEtudiantsStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: true">
+        <p>
+            Une fois un de vos cours diffusé à des étudiants vous pourrez trouvez vos listes d'étudiants mais aussi les trombinoscopes dans "Mes étudiants".
+        </p>
+      </li>
+      <li data-button="Terminer" data-prev-text="Précédent">
+        <h4>Fin de cette visite</h4>
+        <p>Merci de ne pas oublier le guide</p>
+      </li>
+    </ol>
+</metal:macro>
+
+</metal:core>
+
+</body>
+
+</html>

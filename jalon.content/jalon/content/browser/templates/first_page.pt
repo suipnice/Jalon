@@ -117,6 +117,10 @@
         Mon espace
     </metal:macro>
 
+    <metal:macro use-macro="context/macro_topbar_help/macros/topbar_help">
+        Joyride sur la topbar
+    </metal:macro>
+
 </tal:block>
 
 

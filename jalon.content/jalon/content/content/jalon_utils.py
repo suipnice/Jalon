@@ -1176,7 +1176,7 @@ def getJalonMenu(context, portal_url, user, request):
             class_cours = "has-dropdown not-click"
 
     activer = jalon_properties.getPropertiesMonEspace()
-    menu = {"left_menu": [{"id":        "mon_espace",
+    menu = {"left_menu": [{"id":        "monEspaceStop",
                            "class":     "has-dropdown not-click",
                            "icone":     "fa fa-home",
                            "title":     _(u"Mon espace"),
@@ -1217,14 +1217,14 @@ def getJalonMenu(context, portal_url, user, request):
                                           "href":    "%s/Members/%s/Video" % (portal_url, member_id),
                                           "activer": True}],
                            "is_visible": is_personnel},
-                          {"id"      : "mes-cours",
+                          {"id"      : "mesCoursStop",
                            "class"   : class_cours,
                            "icone"   : "fa fa-university",
                            "title"   :  _(u"Mes cours"),
                            "href"    :   "%s/cours/%s" % (portal_url, member_id),
                            "sub_menu": sub_menu_mes_cours,
                            "is_visible": True},
-                          {"id"      : "mes_etudiants",
+                          {"id"      : "mesEtudiantsStop",
                            "class"   : "",
                            "icone"   : "fa fa-users",
                            "title"   : _(u"Mes étudiants"),

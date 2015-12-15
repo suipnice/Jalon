@@ -121,6 +121,13 @@
                 tal:condition="buffer"
                 tal:content="structure buffer"></script>
 
+    <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/foundation.joyride.js"></script>
+
+    <script>
+        $(document).foundation('joyride', 'start');
+    </script>
+
     <tal:block replace="structure python:context.getGoogleAnalytics_script(user)" />
 
 </metal:slot>

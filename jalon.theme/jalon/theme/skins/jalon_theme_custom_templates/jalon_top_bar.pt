@@ -5,7 +5,7 @@
             <nav class="top-bar" data-topbar="data-topbar" role="navigation" aria-label="Navigation principale">
 
                 <ul class="title-area">
-                    <li class="name">
+                    <li class="name" id="firstStop">
                         <h1>
                             <a tal:attributes="href portal_url">
                                 <tal:replace replace="portal_state/portal_title" />
@@ -21,7 +21,8 @@
                     <ul class="left"
                         tal:define="left_menu menu/left_menu">
     <tal:repeat repeat="left_menu_li left_menu">
-                        <li tal:attributes="class left_menu_li/class"
+                        <li tal:attributes="id left_menu_li/id;
+                                            class left_menu_li/class"
                             tal:condition="left_menu_li/is_visible">
                             <a tal:attributes="href left_menu_li/href">
                                 <i tal:attributes="class left_menu_li/icone"></i>
