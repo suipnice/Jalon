@@ -1248,7 +1248,7 @@ def getJalonMenu(context, portal_url, user, request):
                                          "activer": True},
                                         {"id"     : "gestion_connexion_bdd",
                                          "icone"  : "fa fa-key",
-                                         "title"  : _(u"Connexion"),
+                                         "title"  : _(u"Propriétés"),
                                          "href"   : "%s/portal_jalon_bdd/@@jalon-bdd?gestion=gestion_connexion_bdd" % portal_url,
                                          "activer": True},
                                        ],
