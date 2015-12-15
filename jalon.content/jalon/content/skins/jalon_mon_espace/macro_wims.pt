@@ -260,8 +260,11 @@
             </tal:block>
         </p>
         <ul tal:repeat="elem context/getRelatedItems" style="list-style-type:initial;">
-            <li style="display:list-item !important;">
-                <a tal:content="string:'${elem/Title}' (${elem/getTypeWims})" tal:attributes="href elem/absolute_url"/>
+            <li style="display:list-item !important;"
+                tal:define="elem_type elem/getTypeWims| nothing">
+                <a tal:attributes="href elem/absolute_url"><tal:block tal:content="elem/Title"/>
+                    <tal:block condition="elem_type" content="string:(${elem_type})"/>
+                </a>
             </li>
         </ul>
     </div>

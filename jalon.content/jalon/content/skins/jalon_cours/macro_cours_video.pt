@@ -1,0 +1,166 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="video_liste">
+    <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonRessourceExterne', authMember=user.getId(), repertoire='Video');">
+
+        <div class="panel callout radius"
+             tal:condition="not:folderContents"
+             i18n:translate="">
+            Aucun élément ne correspond à la sélection d'étiquettes
+        </div>
+
+        <tal:listing condition="folderContents">
+
+            <table summary="Liste des vidéos"
+                   tal:define="espace request/espace | nothing;
+                               authMember user/getId;
+                               tags python:context.getTag(authMember, espace);
+                               planPlat context/getPlanPlat | nothing">
+                <thead>
+                    <tr>
+                        <th class="checkall show-for-medium-up">
+                            <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                                 i18n:attributes="title">
+                                <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                                <label for="switch-all"></label>
+                            </div>
+                        </th>
+                        <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Date</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Titre / Description</tal:block>
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+                    <tal:entry repeat="item folderContents">
+                        <tr>
+                            <td class="show-for-medium-up"
+                                tal:define="attached python:context.isChecked(item['getId'].replace('.', '*-*'), formulaire, planPlat)">
+                                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                                     tal:condition="not:attached"
+                                     i18n:attributes="title">
+                                    <input type="checkbox" name="paths:list"
+                                           tal:attributes="id string:switch-${repeat/item/index};
+                                                           value python:'*-*'.join([item.getId, item.getTypeRessourceExterne, item.Title.decode('utf-8'), user.getId()])" />
+                                    <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                                </div>
+                                <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+                            </td>
+                            <td class="date show-for-medium-up">
+                                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
+                                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                            </td>
+                            <td class="title">
+                                <span class="hide" tal:content="item/Title" />
+                                <strong tal:content="python:here.getShortText(item['Title'])"
+                                        i18n:attributes="title" />
+                                <span class="show-for-medium-up"
+                                      tal:condition="item/Description"
+                                      tal:content="python:here.getShortText(item['Description'], 160)" />
+                                <a tal:attributes="href item/getVideourl" target="_blank">
+                                    Voir la vidéo sur UNSPod
+                                </a>
+                            </td>
+                        </tr>
+                    </tal:entry>
+                </tbody>
+            </table>
+
+        <tal:condition condition="folderContents">
+            <div class="field"
+                 tal:condition="python:context.test(context.portal_type =='JalonCours', 1, 0)">
+                <h3><i class="fa fa-sitemap"></i><tal:block i18n:translate="">Informations dans le plan</tal:block></h3>
+                <input type="checkbox" name="display_in_plan" id="display_in_plan"
+                       value="1"/>
+                <label for="display_in_plan" i18n:translate="">Afficher la vignette de la vidéo dans le plan</label>
+            </div>
+            <metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+                Macro d'affichage de la liste en fonction de la variable espace
+            </metal:macro>
+        </tal:condition>
+
+            <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                               script2 string:setSortableList('js-list-ressource',['date','title'],'date','desc')">
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+                <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+            </tal:define>
+
+            <script charset="UTF-8"
+                    tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                    tal:content="structure buffer" />
+
+        </tal:listing>
+
+    </tal:define>
+</metal:macro>
+
+<metal:macro define-macro="modifier-video_infos">
+    <h2>
+        <tal:block i18n:translate="">
+            Modifier les propriétés de cette ressource dans le plan
+        </tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/modifierProprietes_script"
+          tal:define="id_video request/idElement;
+                      infos_element python:context.getProprietesVideo(id_video)">
+
+        <div class="field ArchetypesStringWidget">
+            <label for="title" i18n:translate="">Titre dans le plan</label>
+            <input type="text" name="element_title_in_map" maxlength="255" size="30"
+                   tal:attributes="value infos_element/video_title"/>
+        </div>
+
+        <div class="field ArchetypesStringWidget">
+            <label for="title" i18n:translate="">Titre dans mon espace</label>
+            <input type="text" maxlength="255" size="30" disabled="disabled"
+                   tal:attributes="value infos_element/video_title_my_space"/>
+        </div>
+
+        <div class="field">
+            <input type="checkbox" name="display_in_plan" id="display_in_plan"
+                   value="1" tal:attributes="checked infos_element/is_display_in_map"/>
+            <label for="display_in_plan" i18n:translate="">Afficher la vignette de la vidéo dans le plan</label>
+        </div>
+
+        <input type="hidden" name="idElement" tal:attributes="value id_video"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</metal:macro>
+
+</metal:content-core>
+</body>
+</html>

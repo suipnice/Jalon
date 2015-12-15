@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.2.1r1393'
+version = '2.2.3'
 
 setup(name='jalon.policy',
       version=version,
@@ -28,6 +28,7 @@ setup(name='jalon.policy',
           'jalon.theme',
           'jalon.bdd',
           'jalon.pas.bdd',
+          'jalon.elasticsearch',
           'jalon.wims',
           'jalon.connect',
           'jalon.primo',

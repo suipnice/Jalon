@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="mode_etudiant request/mode_etudiant | nothing;
+                        personnel python:context.isPersonnel(user, mode_etudiant);">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        encart d'affichage du fil d'ariane
+    </metal:macro>
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_second" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main-large" class="reveal-modal large" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main id="cours_indicateurs" class="row" role="main" aria-labelledby="page_title"
+          tal:define="page_view view/getPageView;
+                      onglet_view page_view/onglet_view">
+        <h1>
+            <i class="fa fa-line-chart no-pad"></i> Indicateurs
+        </h1>
+
+        <ul id="tab_button-group" class="button-group radius">
+            <li tal:repeat="onglet page_view/onglets">
+                <a tal:attributes="class string:button small${onglet/css_class};
+                                   href onglet/href"
+                   i18n:translate="">
+                    <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
+                                                                                       i18n:translate=""/>
+                </a>
+            </li>
+        </ul>
+        <section id="js-list-indicateurs">
+        <metal:macro use-macro="python:context.macro_cours_indicateurs.macros.get(onglet_view['macro'])">
+            Macro d'affichage des informations d'un onglet
+        </metal:macro>
+        </section>
+    </main>
+
+    <script charset="UTF-8"
+            tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
+            tal:content="jsTranslate/getJsTranslate"></script>
+
+</metal:core>
+
+</body>
+
+</html>

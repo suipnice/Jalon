@@ -64,6 +64,7 @@ dl.typeElement > dd,
     &.type_File:before              { content: $fa-var-file-o; }
     //&.type_image:before             { content: $fa-var-file-image-o; }
     &.type_Image:before             { content: $fa-var-file-image-o; }
+    &.type_Video:before             { content: $fa-var-youtube-play; }
     //&.type_externe:before           { content: $fa-var-external-link; }
     &.type_Lienweb:before           { content: $fa-var-external-link; }
     //&.type_lecteur:before           { content: $fa-var-file-video-o; }

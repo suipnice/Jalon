@@ -70,8 +70,6 @@ membership_tool.loginUser(REQUEST)
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
-    portal_jalon_bdd.addConnexionUtilisateur(memberid, str(DateTime()))
-
     infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     if not infos_user:
         acl_users = getattr(context.acl_users, "ldap-plugin").acl_users
@@ -92,6 +90,25 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
                                                    "VIL_IND"         : "Non renseignée",
                                                    "UNIV_IND"        : "Non renseignée",
                                                    "PROMO_IND"       : ""})
+
+if member.has_role("EtudiantJalon"):
+    LIB_PR1_IND, LIB_NOM_PAT_IND = member.getProperty("fullname", "Non renseigné").rsplit(" ", 1)
+    portal_jalon_bdd.creerUtilisateur({"SESAME_ETU"  : member.getId(),
+                                       "DATE_NAI_IND"    : "",
+                                       "LIB_NOM_PAT_IND" : LIB_NOM_PAT_IND,
+                                       "LIB_NOM_USU_IND" : "Non renseignée",
+                                       "LIB_PR1_IND"     : LIB_PR1_IND,
+                                       "TYPE_IND"        : "Etudiant",
+                                       "COD_ETU"         : "",
+                                       "EMAIL_ETU"       : member.getId(),
+                                       "ADR1_IND"        : "Non renseignée",
+                                       "ADR2_IND"        : "Non renseignée",
+                                       "COD_POST_IND"    : "Non renseignée",
+                                       "VIL_IND"         : "Non renseignée",
+                                       "UNIV_IND"        : "Invité",
+                                       "PROMO_IND"       : ""})
+
+portal_jalon_bdd.addConnexionUtilisateur(memberid)
 
 if portal_jalon_bdd.isUtilisateurNotActif(memberid):
     state.set(status="failure")

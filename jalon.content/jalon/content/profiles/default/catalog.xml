@@ -47,4 +47,8 @@
  <column value="getTypeRessourceExterne"/>
  <column value="getURLWEB"/>
  <column value="getDateDerniereActu"/>
+ <column value="getVideourl"/>
+ <column value="getVideoauteur"/>
+ <column value="getVideoauteurname"/>
+ <column value="getVideothumbnail"/>
 </object>

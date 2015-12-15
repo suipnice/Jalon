@@ -96,7 +96,7 @@
                     <a tal:attributes="class string:button small${onglet/css_class};
                                        href onglet/href"
                        i18n:translate="">
-                        <i tall:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
                                                                                            i18n:translate=""/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>

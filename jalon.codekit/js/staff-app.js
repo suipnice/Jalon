@@ -120,6 +120,87 @@ function setRevealForm( formID, revealID, ckEditorInstanceName ) {
 */
 
 
+
+/*
+    Changement de label suivant etat du filtre des contenus Pod
+*/
+
+function setPodFilterSelector( ) {
+
+    var $form = Foundation.utils.S( '#js-podFilterSelector' );
+    var $searchLabel = Foundation.utils.S( '#term_search_label' );
+    var $searchInput = Foundation.utils.S( '#term_search' );
+    var label1 = $form.data( 'term_search_label1' );
+    var label2 = $form.data( 'term_search_label2' );
+    var placeholder1 = $form.data( 'term_search_placeholder1' );
+    var placeholder2 = $form.data( 'term_search_placeholder2' );
+
+    Foundation.utils.S( '#type_search' ).on( 'change', function( ) {
+
+        if ( $( this ).val( ) === 'mes_videos' ) {
+            $searchLabel.text( label2 );
+            $searchInput.attr( 'placeholder', placeholder2 );
+        } else {
+            $searchLabel.text( label1 );
+            $searchInput.attr( 'placeholder', placeholder1 );
+        }
+
+    } );
+
+}
+
+
+
+/*
+    Selection multiple des contenus Pod
+*/
+
+function setPodContentMultipleSelection( ) {
+
+    var $listForm = Foundation.utils.S( '#js-podContentsList' );
+    var $listFormSubmit = $listForm.find( '[name="form.button.save"]' );
+    var $pageChangeForm = Foundation.utils.S( '#pagination-page_number' );
+    var $pageNumberInput = $pageChangeForm.find( '[name="page"]' );
+    var pageChangeMessage = $pageChangeForm.data( 'page_change_msg1' ) + "\n" + $pageChangeForm.data( 'page_change_msg2' );
+    var actualPageNumber = $pageNumberInput.val( );
+
+    function _displayMessageOnPageChange( event ) {
+        if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+            if ( ! confirm( pageChangeMessage ) ) {
+                event.preventDefault( );
+                event.stopPropagation( );
+                return false;
+            }
+        }
+        return true;
+    }
+
+    switchButtonEnabledState( $listFormSubmit, false );
+
+    $listForm.on( 'change', 'ul > li .switch > [type="checkbox"]', function( ) {
+
+        if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+            switchButtonEnabledState( $listFormSubmit, true );
+        } else {
+            switchButtonEnabledState( $listFormSubmit, false );
+        }
+
+    } );
+
+    Foundation.utils.S( '#pagination-container' ).on( 'click', 'a.button', function( event ) {
+        _displayMessageOnPageChange( event );
+    } );
+
+    $pageChangeForm.submit( function( event ) {
+        if ( ! _displayMessageOnPageChange( event ) ) {
+            $pageNumberInput.val( actualPageNumber );
+        }
+    } );
+
+}
+
+
+
 /*
     Inscription par courriel : constitution de la liste.
 */
@@ -228,8 +309,10 @@ function switchButtonEnabledState( $button, state ) {
 
     if ( state ) {
         $button.prop( 'disabled', false );
+        //$button.removeClass( 'disabled' );
     } else {
         $button.prop( 'disabled', true );
+        //$button.addClass( 'disabled' );
     }
 
 }
