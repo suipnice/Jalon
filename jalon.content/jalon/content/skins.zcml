@@ -9,6 +9,7 @@
   <cmf:registerDirectory name="jalon_content"/>
   <cmf:registerDirectory name="jalon_cours"/>
   <cmf:registerDirectory name="jalon_createxo"/>
+  <cmf:registerDirectory name="jalon_joyride"/>
   <cmf:registerDirectory name="jalon_mes_etudiants"/>
   <cmf:registerDirectory name="jalon_mescours"/>
   <cmf:registerDirectory name="jalon_mon_espace"/>

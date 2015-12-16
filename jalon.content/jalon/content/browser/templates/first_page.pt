@@ -12,7 +12,8 @@
             tal:define="came_from request/came_from | nothing;
                         plone_view context/@@plone;
                         body_class python:plone_view.bodyClass(template, view);
-                        anonymous view/isAnonymous;">
+                        anonymous view/isAnonymous;
+                        no_return python:joyRide.addJoyRide('macro_topbar_help', 'topbar_help')">
 
 <tal:block condition="anonymous"
            define="infos_connexion view/getConnexion;">
@@ -115,10 +116,6 @@
 
     <metal:macro use-macro="context/mon_espace/macros/mon_espace">
         Mon espace
-    </metal:macro>
-
-    <metal:macro use-macro="context/macro_topbar_help/macros/topbar_help">
-        Joyride sur la topbar
     </metal:macro>
 
 </tal:block>
