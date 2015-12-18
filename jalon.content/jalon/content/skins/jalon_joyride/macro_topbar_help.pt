@@ -14,7 +14,7 @@
     <ol class="joyride-list" data-joyride>
       <li data-id="firstStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: false">
         <p>
-            Bonjour et bienvenue dans Jalon. <br>Ce petit guide vous présentera la berre de menu de Jalon, pour commencer cliquez suir "Suivant".
+            Bonjour et bienvenue dans Jalon. <br>Ce petit guide vous présentera la barre de menu de Jalon, pour commencer cliquez suir "Suivant".
         </p>
       </li>
       <li data-id="monEspaceStop" data-text="Suivant" data-options="tip_location: bottom; prev_button: true">
