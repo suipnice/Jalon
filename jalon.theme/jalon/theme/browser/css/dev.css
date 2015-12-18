@@ -80,15 +80,6 @@
 }
 
 /*----------*/
-/* Permet d'appliquer la classe "warning" sur un entete de reveal-modal,
- afin d'attirer l'attention sur des actions (non autorisées par exemple)
-C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wims.pt :
-     ligne 176 : "no_deletion" */
-.reveal-modal>h2.warning{
-   background-color:#CF6E0E;
-}
-
-/*----------*/
 /*La classe "debug" permet d'afficher des elements à l'écran pendant les tests, avec une couleur bien criarde,
  histoire de ne pas oublier de les retirer avant de faire un commit !*/
 .debug{

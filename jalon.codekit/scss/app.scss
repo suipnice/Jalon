@@ -624,6 +624,11 @@ button.dropdown.small:after { right: .5rem; }
 .reveal-modal {
     padding: 0 0 0 0 !important;
 
+    &#reveal-no_deletion {
+
+        h2 { background-color: $warning-color; }
+    }
+
     & > h2:first-child {
         padding: rem-calc( 6 32 8 12 );
         margin-bottom: 0;

@@ -204,7 +204,7 @@
                                             </a>
                                         </li>
                                         <li tal:condition="python:context.test(len(item.getRawRelatedItems) != 0, 1, 0)">
-                                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                            <a data-reveal-id="reveal-no_deletion" data-reveal-ajax="true"
                                                 tal:attributes="href string:${item/getURL}/folder_form?macro=macro_wims&amp;formulaire=no_deletion">
                                                 <i class="fa fa-trash-o fa-fw no-pad"></i>
                                                 <tal:block i18n:translate="">Supprimer</tal:block>
