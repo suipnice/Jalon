@@ -102,6 +102,9 @@ function revealInit( $reveal ) {
         $firstInput.focus( );
     }
 
+    // Ajout attr. "title" lien de fermeture
+    $reveal.find( 'h2 > a.close-reveal-modal' ).attr( 'title', CLOSE_REVEAL_TITLE );
+
     // Envoi du formulaire
     $reveal.find( 'form:not(.no_reveal_action)' ).submit( function( event ) {
 
