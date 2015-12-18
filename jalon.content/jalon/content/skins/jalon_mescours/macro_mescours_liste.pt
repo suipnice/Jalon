@@ -206,13 +206,10 @@
 
     <tal:condition condition="is_ajax">
 
-            <!--script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')">
-            </script-->
-            <!-- Le reflow échoue parfois… -->
             <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation({dropdown:{align:'left'}})">
-            </script>
+                    tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+            <script charset="UTF-8"
+                    tal:content="structure string:$$(document).foundation({dropdown:{align:'left'}})" />
 
         <tal:block define="script1 string:setSortableList('js-list-cours',['new','favori','title','role','acc_etu','acc_pass','acc_anon'],'new','desc');
                            script2 string:setFavoriteState()">
