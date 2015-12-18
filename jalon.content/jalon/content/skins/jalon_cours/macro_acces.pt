@@ -156,7 +156,7 @@
                     </td>
                     <td class="email"
                         tal:condition="not:etudiant/email">
-                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
                     </td>
                 </tr>
             </tbody>
@@ -265,7 +265,7 @@
                            tal:content="etudiant/email" />
                     </td>
                     <td tal:condition="not:etudiant/email">
-                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
                     </td>
                 </tr>
             </tbody>
