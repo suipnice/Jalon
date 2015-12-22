@@ -30,6 +30,8 @@ function instantiateCKEditor( textareaID ) {
             removePlugins: 'image,elementspath',
             // Remove the redundant buttons from toolbar groups defined above.
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
+            // Remove the advanced link tab in link popup.
+            removeDialogTabs: 'link:advanced',
         } );
 
         return textareaID;
