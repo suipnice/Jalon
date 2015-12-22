@@ -20,7 +20,7 @@ function instantiateCKEditor( textareaID ) {
             // Define the toolbar groups as it is a more accessible solution.
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
-                //{ 'name': "links",       'groups': [ "links" ] },
+                { 'name': "links",       'groups': [ "links" ] },
                 //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
                 { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
