@@ -294,7 +294,10 @@
 
 
 <!--
+
         Inscription par courriel : ajout / liste
+
+
 -->
 <metal:macro define-macro="ajouter-invitations-email"
              tal:define="mode_etudiant request/mode_etudiant | nothing;
@@ -418,7 +421,7 @@
     <div class="panel callout radius"
          tal:condition="not:invitations">
          <i class="fa fa-info-circle no-pad"></i>
-         <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) extérieur(e) invité(e) par courriel.</tal:block>
+         <tal:block i18n:translate="">Aucun(e) étudiant(e) extérieur(e) n'a pour l'instant été inscrit(e) par courriel à ce cours.</tal:block>
     </div>
 
     <div id="js-courriel-insc_list"
