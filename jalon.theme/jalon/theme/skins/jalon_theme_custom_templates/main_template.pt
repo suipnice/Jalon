@@ -89,7 +89,7 @@
                 tal:content="jsTranslate/getJsTranslate"></script>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/app.min.js"></script>
-    <tal:isNotStudent condition="python:not(user.has_role('Etudiant'))">
+    <tal:isNotStudent condition="python:user.has_role(['Personnel', 'Manager', 'Secretaire'])">
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-post.min.js"></script>
         <script charset="UTF-8"
