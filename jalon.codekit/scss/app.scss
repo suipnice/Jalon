@@ -655,6 +655,11 @@ button.dropdown.small:after { right: .5rem; }
 
     & h3 {
         font-style: italic;
+
+        & > button {
+            font-style: normal;
+            float: right;
+        }
     }
 
     & > h3,
