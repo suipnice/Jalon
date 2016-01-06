@@ -165,13 +165,18 @@ function setPodContentMultipleSelection( ) {
     var actualPageNumber = $pageNumberInput.val( );
 
     function _displayMessageOnPageChange( event ) {
+
         if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+
             if ( ! confirm( pageChangeMessage ) ) {
+
                 event.preventDefault( );
                 event.stopPropagation( );
+
                 return false;
             }
         }
+
         return true;
     }
 
@@ -188,10 +193,12 @@ function setPodContentMultipleSelection( ) {
     } );
 
     Foundation.utils.S( '#pagination-container' ).on( 'click', 'a.button', function( event ) {
+
         _displayMessageOnPageChange( event );
     } );
 
     $pageChangeForm.submit( function( event ) {
+
         if ( ! _displayMessageOnPageChange( event ) ) {
             $pageNumberInput.val( actualPageNumber );
         }
@@ -225,6 +232,53 @@ function setMailRegistrationForm( ) {
     var mailUserList = '';
     var doubleCheck = false;
 
+    function _validateUsersList( inputString ) {
+
+        if ( ! Boolean( inputString.trim( ).length ) ) {
+
+            return false;
+
+        } else {
+
+            var users = inputString.split( ',' );
+            var index, len;
+
+            users = users.filter( function( n ){ return n !== ''; } );
+
+            for ( index = 0, len = users.length; index < len; ++index ) {
+
+                users[ index ] = users[ index ].trim( );
+
+                if ( users[ index ].search( '>' ) !== users[ index ].length - 1 ) {
+
+                    return false;
+
+                } else {
+
+                    var userData = users[ index ].replace( '>', '' ).split( '<' );
+
+                    if ( userData.length === 2 ) {
+
+                        var reName = new RegExp( $listForm.find( 'input[name=lastname]' ).attr( 'pattern' ) );
+                        var reMail = new RegExp( $listForm.find( 'input[name=email]' ).attr( 'pattern' ) );
+
+                        if ( ! reName.test( userData[ 0 ] ) || ! reMail.test( userData[ 1 ] ) ) {
+
+                            return false;
+                        }
+
+                    } else {
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+    }
+
 
     switchButtonEnabledState( $registrationFormButton, false );
 
@@ -234,7 +288,9 @@ function setMailRegistrationForm( ) {
         if ( $listForm.is( ':visible' ) ) {
 
             $listTableBody.fadeOut( 'fast', function( ) {
+
                 $listForm.fadeOut( 'slow', function( ) {
+
                     $registrationFormFieldset.fadeIn( 'slow' );
                     switchButtonEnabledState( $registrationFormButton, true );
                     $listInput.focus( ).attr( 'required', "required" );
@@ -244,13 +300,20 @@ function setMailRegistrationForm( ) {
         } else {
 
             $registrationFormFieldset.fadeOut( 'slow', function( ) {
+
                 $listForm.fadeIn( 'slow', function( ) {
+
                     $listTableBody.fadeIn( 'fast', function( ) {
+
                         if ( $listTableBody.find( 'tr' ).length ) {
+
                             switchButtonEnabledState( $registrationFormButton, true );
+
                         } else {
+
                             switchButtonEnabledState( $registrationFormButton, false );
                         }
+
                         $listFormFirstInput.focus( );
                         $listInput.removeAttr( 'required' );
                     } );
@@ -270,6 +333,14 @@ function setMailRegistrationForm( ) {
             } );
 
             $listInput.val( registrationList.join( ', ' ) );
+
+        } else {
+
+            if ( ! _validateUsersList( $listInput.val( ) ) ) {
+
+                event.preventDefault( );
+                $registrationFormFieldset.find( '.fieldErrorBox' ).html( MSG_FORM_VALIDATION_ERROR );
+            }
         }
 
     } );
@@ -300,7 +371,9 @@ function setMailRegistrationForm( ) {
         } else {
 
             $listTableBody.find( 'tr' ).each( function( ) {
+
                 if ( $( this ).data( 'user_info' ) === mailUserList || $( this ).children( 'td.email' ).html( ) === email ) {
+
                     doubleCheck = true;
                     return false;
                 }
@@ -308,6 +381,7 @@ function setMailRegistrationForm( ) {
         }
 
         if ( ! doubleCheck ) {
+
             $( listTableRowHTML ).appendTo( $listTableBody ).show( 'slow' );
             $listFormFirstInput.focus( );
         }
@@ -325,6 +399,7 @@ function setMailRegistrationForm( ) {
             $( this ).remove( );
 
             if ( ! $listTableBody.find( 'tr' ).length ) {
+
                 $listForm.find( 'div.panel:last-child' ).slideUp( 'slow', function( ) {
                     switchButtonEnabledState( $registrationFormButton, false );
                 } );
