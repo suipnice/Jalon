@@ -91,7 +91,7 @@
                         <i class="fa fa-files-o"></i>Supports pédagogiques
                     </h3>
                     Fichiers : <tal:replace replace="nb_element_by_type/Fichiers"/><br/>
-                    Webconférences : <tal:replace replace="nb_element_by_type/Webconferences"/><br/>
+                    Webconférences : <tal:replace replace="nb_element_by_type/Webconference"/><br/>
                     Ressources externes : <tal:replace replace="nb_element_by_type/Externes"/><br/>
                     Présentations sonorisées : <tal:replace replace="nb_element_by_type/Presentations"/><br/>
                 </div>
