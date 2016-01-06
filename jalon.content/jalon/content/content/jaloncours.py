@@ -2721,6 +2721,11 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
 
+    def getConsultationByElementByCoursByUniversityYearForGraph(self, element_id):
+        #self.plone_log("getConsultationByElementByCoursByUniversityYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByUniversityYearForGraph(self.getId(), element_id)
+
     def genererGraphIndicateurs(self, months_dict):
         #self.plone_log("genererGraphIndicateurs")
         portal = self.portal_url.getPortalObject()

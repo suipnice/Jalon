@@ -202,7 +202,7 @@ class IndicateursView(BrowserView):
                                      "th_title":  "le type de public",
                                      "th_text":   "Public"})
             graph = ""
-            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
             #LOG.info(requete)
             if requete:
                 requete_dict = {}
@@ -279,7 +279,7 @@ class IndicateursView(BrowserView):
                                      "th_title":  "le type de public",
                                      "th_text":   "Public"})
             graph = ""
-            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
             #LOG.info(requete)
             if requete:
                 requete_dict = {}

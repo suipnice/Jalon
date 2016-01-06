@@ -1191,6 +1191,12 @@ class JalonBDD(SimpleItem):
     def getConsultationByElementByCours(self, ID_COURS, ID_CONS, month=None, year=None):
         #LOG.info("----- getConsultationByElementByCours -----")
         consultation_dict = {}
+        for public in self._public_bdd:
+            consultation_dict[public] = {"public":               public,
+                                         "nb_cons_month_before": 0,
+                                         "nb_cons_month":        0,
+                                         "icon":                 "",
+                                         "nb_cons_year":         0}
         consultations_list = []
 
         if not month or month == '0':
@@ -1208,15 +1214,10 @@ class JalonBDD(SimpleItem):
         if self._use_mysql:
             session = self.getSessionMySQL()
 
-            consultation_element = jalon_mysql.getConsultationByElementByCoursByYear(session, ID_COURS, ID_CONS, year)
+            consultation_element = jalon_mysql.getConsultationByElementByCoursByUniversityYear(session, ID_COURS, ID_CONS, year)
             for ligne in consultation_element.all():
                 #LOG.info(ligne)
                 #try:
-                consultation_dict[ligne[0]] = {"public":               ligne[0],
-                                               "nb_cons_month_before": 0,
-                                               "nb_cons_month":        0,
-                                               "icon":                 "",
-                                               "nb_cons_year":         0}
                 consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
                 if not consultation_dict[ligne[0]] in consultations_list:
                     consultations_list.append(consultation_dict[ligne[0]])
@@ -1252,6 +1253,14 @@ class JalonBDD(SimpleItem):
             year = DateTime().year()
         session = self.getSessionMySQL()
         consultationCours = jalon_mysql.getConsultationByElementByCoursByYearForGraph(session, ID_COURS, ID_CONS, year)
+        return consultationCours
+
+    def getConsultationByElementByCoursByUniversityYearForGraph(self, ID_COURS, ID_CONS, year=None):
+        #LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
+        if not year or year == '0':
+            year = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, ID_CONS, year)
         return consultationCours
 
     def genererGraphIndicateurs(self, months_dict):
