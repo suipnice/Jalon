@@ -125,7 +125,7 @@ class IndicateursView(BrowserView):
             nb_element_by_type[type_element] += 1
 
         graph = ""
-        requete = self.context.getConsultationByCoursByYearForGraph().all()
+        requete = self.context.getConsultationByCoursByUniversityYearForGraph().all()
         #if requete:
         #    graph = self.context.genererGraphIndicateurs(dict(requete))
         if requete:

@@ -2701,6 +2701,11 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
 
+    def getConsultationByCoursByUniversityYearForGraph(self):
+        #self.plone_log("getConsultationByCoursByYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
+
     def getConsultationElementsByCours(self, elements_list, elements_dict):
         #self.plone_log("getConsultationElementsByCours")
         portal = self.portal_url.getPortalObject()

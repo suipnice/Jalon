@@ -58,6 +58,8 @@ class JalonBDD(SimpleItem):
     _session_mysql_open = False
     SessionMySQL = sessionmaker()
 
+    _public_bdd = ["Etudiant", "Lecteur", "Co-auteur", "Auteur",  "Manager", "Secretaire"]
+
     def __init__(self, *args, **kwargs):
         super(JalonBDD, self).__init__(*args, **kwargs)
 
@@ -1017,8 +1019,14 @@ class JalonBDD(SimpleItem):
         return listeCours
 
     def getConsultationByCoursByDate(self, ID_COURS, month=None, year=None):
-        #LOG.info("----- getConsultationByCoursByDate -----")
+        LOG.info("----- getConsultationByCoursByDate -----")
         consultation_dict = {}
+        for public in self._public_bdd:
+            consultation_dict[public] = {"public":               public,
+                                         "nb_cons_month_before": 0,
+                                         "nb_cons_month":        0,
+                                         "icon":                 "",
+                                         "nb_cons_year":         0}
         consultations_list = []
 
         if not month or month == '0':
@@ -1036,15 +1044,11 @@ class JalonBDD(SimpleItem):
         if self._use_mysql:
             session = self.getSessionMySQL()
 
-            consultationCours = jalon_mysql.getConsultationByCoursByYear(session, ID_COURS, year)
+            consultationCours = jalon_mysql.getConsultationByCoursByUniversityYear(session, ID_COURS, year)
+            LOG.info("Consultation Année Courant")
             for ligne in consultationCours.all():
-                #LOG.info(ligne)
+                LOG.info(ligne)
                 #try:
-                consultation_dict[ligne[0]] = {"public":               ligne[0],
-                                               "nb_cons_month_before": 0,
-                                               "nb_cons_month":        0,
-                                               "icon":                 "",
-                                               "nb_cons_year":         0}
                 consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
                 if not consultation_dict[ligne[0]] in consultations_list:
                     consultations_list.append(consultation_dict[ligne[0]])
@@ -1053,7 +1057,9 @@ class JalonBDD(SimpleItem):
             #LOG.info(consultation_dict)
 
             consultationCoursPrec = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
+            LOG.info("Consultation Mois Précédent")
             for ligne in consultationCoursPrec.all():
+                LOG.info(ligne)
                 #try:
                 consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
                 #except:
@@ -1061,7 +1067,9 @@ class JalonBDD(SimpleItem):
                 #    pass
 
             consultationCours = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, month, year)
+            LOG.info("Consultation Mois Courant")
             for ligne in consultationCours.all():
+                LOG.info(ligne)
                 #try:
                 consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
                 #except:
@@ -1111,6 +1119,14 @@ class JalonBDD(SimpleItem):
             year = DateTime().year()
         session = self.getSessionMySQL()
         consultationCours = jalon_mysql.getConsultationByCoursByYearForGraph(session, ID_COURS, year)
+        return consultationCours
+
+    def getConsultationByCoursByUniversityYearForGraph(self, ID_COURS, year=None):
+        LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+        if not year or year == '0':
+            year = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year)
         return consultationCours
 
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
@@ -1257,15 +1273,26 @@ class JalonBDD(SimpleItem):
         graph = ['<script type="text/javascript">']
         graph.append("var chartData = [")
 
-        for month in range(1, 13):
+        for month in range(9, 13):
             graph.append("{")
             graph.append('  "month": "%s",' % dicoLabel[month])
             if month in months_dict:
                 for month_consultation in months_dict[month]:
                     graph.append('  "%s": %s,' % (month_consultation["public"], str(month_consultation["consultations"])))
-                    legend_list.append(month_consultation["public"])
+                    #legend_list.append(month_consultation["public"])
 
             graph.append('},')
+
+        for month in range(1, 9):
+            graph.append("{")
+            graph.append('  "month": "%s",' % dicoLabel[month])
+            if month in months_dict:
+                for month_consultation in months_dict[month]:
+                    graph.append('  "%s": %s,' % (month_consultation["public"], str(month_consultation["consultations"])))
+                    #legend_list.append(month_consultation["public"])
+
+            graph.append('},')
+
         graph.append('];')
 
         graph.append('''
@@ -1293,12 +1320,13 @@ class JalonBDD(SimpleItem):
         ''')
 
         legend_color = {"Auteur":     "#C72C95",
-                        "Co-Auteur":  "#D8E0BD",
+                        "Co-auteur":  "#D8E0BD",
                         "Lecteur":    "#B3DBD4",
                         "Etudiant":   "#69A55C",
                         "Manager":    "#B5B8D3",
                         "Secretaire": "#F4E23B"}
-        legend_list = list(set(legend_list))
+        #legend_list = list(set(legend_list))
+        legend_list = self._public_bdd
         for legend in legend_list:
             graph.append('''
                 // GRAPHS
