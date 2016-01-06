@@ -93,22 +93,34 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
 
 if member.has_role("EtudiantJalon"):
     LIB_PR1_IND, LIB_NOM_PAT_IND = member.getProperty("fullname", "Non renseigné").rsplit(" ", 1)
-    portal_jalon_bdd.creerUtilisateur({"SESAME_ETU"  : member.getId(),
-                                       "DATE_NAI_IND"    : "",
-                                       "LIB_NOM_PAT_IND" : LIB_NOM_PAT_IND,
-                                       "LIB_NOM_USU_IND" : "Non renseignée",
-                                       "LIB_PR1_IND"     : LIB_PR1_IND,
-                                       "TYPE_IND"        : "Etudiant",
-                                       "COD_ETU"         : "",
-                                       "EMAIL_ETU"       : member.getId(),
-                                       "ADR1_IND"        : "Non renseignée",
-                                       "ADR2_IND"        : "Non renseignée",
-                                       "COD_POST_IND"    : "Non renseignée",
-                                       "VIL_IND"         : "Non renseignée",
-                                       "UNIV_IND"        : "Invité",
-                                       "PROMO_IND"       : ""})
+    portal_jalon_bdd.creerUtilisateur({"SESAME_ETU":      memberid,
+                                       "DATE_NAI_IND":    "",
+                                       "LIB_NOM_PAT_IND": LIB_NOM_PAT_IND,
+                                       "LIB_NOM_USU_IND": "Non renseignée",
+                                       "LIB_PR1_IND":     LIB_PR1_IND,
+                                       "TYPE_IND":        "Etudiant",
+                                       "COD_ETU":         "",
+                                       "EMAIL_ETU":       member.getId(),
+                                       "ADR1_IND":        "Non renseignée",
+                                       "ADR2_IND":        "Non renseignée",
+                                       "COD_POST_IND":    "Non renseignée",
+                                       "VIL_IND":         "Non renseignée",
+                                       "UNIV_IND":        "Invité",
+                                       "PROMO_IND":       ""})
 
-portal_jalon_bdd.addConnexionUtilisateur(memberid)
+try:
+    portal_jalon_bdd.addConnexionUtilisateur(memberid)
+except:
+    infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
+    portal_jalon_bdd.creerUtilisateurMySQL({"SESAME_ETU":      memberid,
+                                            "DATE_NAI_IND":    "",
+                                            "LIB_NOM_PAT_IND": infos_user["LIB_NOM_PAT_IND"],
+                                            "LIB_NOM_USU_IND": "Non renseignée",
+                                            "LIB_PR1_IND":     infos_user["LIB_PR1_IND"],
+                                            "TYPE_IND":        infos_user["TYPE_IND"],
+                                            "COD_ETU":         infos_user["COD_ETU"],
+                                            "EMAIL_ETU":       infos_user["EMAIL_ETU"]})
+    portal_jalon_bdd.addConnexionUtilisateur(memberid)
 
 if portal_jalon_bdd.isUtilisateurNotActif(memberid):
     state.set(status="failure")
