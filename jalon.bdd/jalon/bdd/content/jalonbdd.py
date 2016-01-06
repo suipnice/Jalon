@@ -1132,6 +1132,13 @@ class JalonBDD(SimpleItem):
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
         #LOG.info("----- getConsultationElementsByCours -----")
         consultation_dict = {}
+        for element in elements_list:
+            consultation_dict[element] = {"element_id":           element,
+                                          "element_titre":        elements_dict.get(element, "Sans titre"),
+                                          "nb_cons_month_before": 0,
+                                          "nb_cons_month":        0,
+                                          "icon":                 "",
+                                          "nb_cons_year":         0}
         consultations_list = []
 
         if not month or month == '0':
@@ -1148,16 +1155,10 @@ class JalonBDD(SimpleItem):
             yearPrec = year
 
         session = self.getSessionMySQL()
-        elements_consultation = jalon_mysql.getConsultationByElementsByCoursByYear(session, ID_COURS, year, elements_list)
+        elements_consultation = jalon_mysql.getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list)
         for ligne in elements_consultation.all():
             #LOG.info(ligne)
             #try:
-            consultation_dict[ligne[0]] = {"element_id":           ligne[0],
-                                           "element_titre":        elements_dict.get(ligne[0], "Sans titre"),
-                                           "nb_cons_month_before": 0,
-                                           "nb_cons_month":        0,
-                                           "icon":                 "",
-                                           "nb_cons_year":         0}
             consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
             if not consultation_dict[ligne[0]] in consultations_list:
                 consultations_list.append(consultation_dict[ligne[0]])

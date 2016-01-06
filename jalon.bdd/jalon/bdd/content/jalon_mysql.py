@@ -175,10 +175,17 @@ def getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year='%', 
     return nbConsultations
 
 
-def getConsultationByElementsByCoursByYear(session, ID_COURS, year='%', elements_list=[]):
+def getConsultationByElementsByCoursByYear(session, ID_COURS, year, elements_list=[]):
     #LOG.info("----- getConsultationByElementsByCoursByYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.ID_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS.in_(elements_list), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_CONS)
+    return nbConsultations
+
+
+def getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list=[]):
+    #LOG.info("----- getConsultationByElementsByCoursByYear -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+    nbConsultations = session.query(COC.ID_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS.in_(elements_list), COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(COC.ID_CONS)
     return nbConsultations
 
 
