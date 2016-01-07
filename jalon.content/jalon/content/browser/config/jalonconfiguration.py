@@ -87,8 +87,8 @@ class IJalonConfigLienControlPanel(Interface):
     fields for jalon Lien control panel
     """
 
-    lien_sesame = TextLine(title=_(u"Absence de sésame"),
-                           description=_(u"lien vers la page « Vous n'avez pas de sésame ? »"),
+    lien_sesame = TextLine(title=_(u"Absence de compte UNS"),
+                           description=_(u"lien vers la page « Vous n'avez pas de compte UNS ? »"),
                            default=_(u"http://serveur.univ.fr/sesame"),
                            required=True)
     lien_contact = TextLine(title=_(u"Contact du service en charge"),

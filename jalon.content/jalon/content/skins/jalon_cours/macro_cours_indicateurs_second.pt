@@ -16,10 +16,10 @@
 -->
 <metal:macro define-macro="display_all_ressources">
 
-    <h3>
+    <h2>
         <i class="fa fa-table"></i>
         Consultations sur l'année courante
-    </h3>
+    </h2>
     <table summary="Consultations du cours pour le mois courant">
         <thead>
             <th tal:repeat="th onglet_view/thead_th_list"
@@ -69,7 +69,7 @@
         Détails d'une ressource
 -->
 <metal:macro define-macro="display_ressource">
-    <h3>
+    <h2>
         <a class="button small right"
            tal:attributes="href onglet_view/box_url">
             <i class="fa fa-arrow-left"></i>
@@ -77,7 +77,7 @@
         </a>
         <i class="fa fa-table"></i>
         Consultations sur l'année courante par public : <tal:replace replace="onglet_view/element_title"/>
-    </h3>
+    </h2>
     <table summary="Consultations du cours pour le mois courant">
         <thead>
             <th tal:repeat="th onglet_view/thead_th_list"
@@ -109,10 +109,10 @@
         </tbody>
     </table>
 
-    <h3>
+    <h2>
         <i class="fa fa-bar-chart"></i>
         Graphique des consultations de l'année en cours : <tal:replace replace="onglet_view/element_title"/>
-    </h3>
+    </h2>
     <tal:replace replace="structure onglet_view/graph"/>
     <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>
     <tal:block define="script1 string:setSortableList('js-list-indicateurs',['public','nb_cons_month_before', 'nb_cons_month', 'nb_cons_year'],'public','asc');">

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+""" WIMS Connector for Jalon LMS."""
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 from zope.component import getUtility
@@ -27,7 +27,7 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 # Messages de debug :
 from logging import getLogger
-LOG = getLogger( '[jalon.wims.utility]' )
+LOG = getLogger('[jalon.wims.utility]')
 """
 # Log examples :
 LOG.debug('debug message')
@@ -37,13 +37,16 @@ LOG.error('error message')
 LOG.critical('critical message')
 """
 
+
 def form_adapter(context):
-    """Form Adapter"""
+    """Form Adapter."""
     return getUtility(IWims)
 
 
 class Wims(SimpleItem):
-    """Wims Utility"""
+
+    """Wims Utility."""
+
     implements(IWims)
     classProvides(
         IWimsLayout,
@@ -94,33 +97,35 @@ class Wims(SimpleItem):
     max_login_len = 24
 
     def getWimsProperty(self, key):
+        u""" obtient les propriétés."""
         return getattr(self, "%s" % key)
 
     def setProperties(self, form):
+        u""" modifie les propriétés."""
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "%s" % key, val.decode("utf-8"))
 
-    # authUser demande a wims d'ouvrir une session pour un utilisateur
-    # Cette fonction ne renvoit pas un json, car elle peux etre utilisée pour tester si un utilisateur existe.
     def authUser(self, param):
+        """demande a Wims d'ouvrir une session pour un utilisateur."""
+        # Cette fonction ne renvoit pas un json, car elle peux etre utilisée pour tester si un utilisateur existe.
         param["quser"] = self.validerUserID(param["quser"])
         param["job"] = "authUser"
         return self.callJob(param)
 
     security.declarePrivate('convertirDate')
 
-    # convertirDate : convertit une date d au format us ou fr
     def convertirDate(self, d, us=False):
+        """convertit une date d au format us ou fr."""
         if not us:
             return DateTime(d).strftime("%d.%m.%Y - %Hh%M")
         else:
             return DateTime(d).strftime("%Y-%m-%d")
 
-    # callJob : fonction d'appel generique des jobs du module adm/raw de Wims
     def callJob(self, param):
+        """fonction d'appel generique des jobs du module adm/raw de Wims."""
         param["module"] = "adm/raw"
         param["ident"] = self.login
         param["passwd"] = self.password
@@ -159,8 +164,8 @@ class Wims(SimpleItem):
         rep = rep.decode("iso-8859-1")
         return rep.encode("utf-8")
 
-    #checkIdent : verification de la validité des identifiants
     def checkIdent(self, param):
+        u"""verification de la validité des identifiants du plugin."""
         param['job'] = 'checkident'
         data = urllib.urlencode(param)
         retour = "OK"
@@ -172,9 +177,9 @@ class Wims(SimpleItem):
             retour = "Erreur HTTP"
         return retour
 
-    #cleanClass : purge les activités de la classe param[qclass]
-    # en entreee : params = {"qclass": class_id, "code": authMember}
     def cleanClass(self, params):
+        u"""Purge les activités de la classe param[qclass]."""
+        # en entree : params = {"qclass": class_id, "code": authMember}
         params["job"] = "cleanclass"
         params["rclass"] = self.classe_locale
 
@@ -187,8 +192,8 @@ class Wims(SimpleItem):
             cleaned = None
         return {"status": rep["status"], "cleaned": cleaned, "message": rep["message"]}
 
-    #creerClasse : creation d'une classe ou d'un groupement de classes WIMS
     def creerClasse(self, param):
+        """Creation d'une classe ou d'un groupement de classes WIMS."""
         #LOG.debug("** param[fullname] = %s" % param["fullname"])
         if not "titre_classe" in param:
             param["titre_classe"] = "Classes de %s" % param["fullname"]
@@ -210,10 +215,11 @@ class Wims(SimpleItem):
 
         return rep
 
-    #creerExercice : creation d'un exercice WIMS
-    # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
-    # dans la classe, mais seulement dans un bac à sable pour compilation.
     def creerExercice(self, param):
+        """Creation d'un exercice WIMS."""
+        # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
+        # dans la classe, mais seulement dans un bac à sable pour compilation.
+
         #data = self.getAttribut(param["modele"])
 
         if "sandbox" in param:
@@ -235,8 +241,8 @@ class Wims(SimpleItem):
         #result={"status" : "ERROR","type": "JSON_DECODING", "infos":sys.exc_info()[0]}
         return result
 
-    # creerFeuille : ajoute une feuille d'entrainement à une classe Wims
     def creerFeuille(self, param):
+        u"""ajoute une feuille d'entrainement à une classe Wims."""
         if param["qclass"] and param["qclass"] is not None:
             donnees_feuille = self.formaterDonnees(param)
             #modele = "expiration=%s\ntitle=%s\ndescription=%s"
@@ -248,8 +254,8 @@ class Wims(SimpleItem):
         else:
             return None
 
-    # creerExamen : ajoute un examen a une classe wims
     def creerExamen(self, param):
+        """Ajoute un examen a une classe wims."""
         #modele = "expiration=%s\ntitle=%s\ndescription=%s\nduration=%s\nattempts=%s\ncut_hours=%s\n"
         #donnees = modele % (self.expiration_date, param["title"].decode("utf-8"), param["description"].decode("utf-8"),
         #                    param["duration"], param["attempts"], param["cut_hours"].decode("utf-8"))
@@ -259,8 +265,8 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/creerExamen", "requete": requete})
         return rep
 
-    # creerUser : Ajoute un utilisateur a une classe wims
     def creerUser(self, param):
+        """Ajoute un utilisateur a une classe wims."""
         quser = self.validerUserID(param["quser"])
         try:
             data = "lastname=%s\nfirstname=%s\npassword=%s\n" % (param["lastname"].encode("iso-8859-1"), param["firstname"].encode("iso-8859-1"), DateTime().strftime("%d%H%M%S"))
@@ -271,28 +277,28 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/creerUser", "requete": requete})
         return rep
 
-    # getAttribut : renvoie l'attribut demandé
     def getAttribut(self, attribut):
+        u"""renvoie l'attribut demandé."""
         return self.__getattribute__(attribut)
 
-    # getURLWims : construit et renvoie l'url d'appel au module adm/raw de wims
     def getURLWims(self):
+        """construit et renvoie l'url d'appel au module adm/raw de wims."""
         # ici il faudra remplacer "lang=fr" par la langue d'affichage de Jalon.
         return "%s?lang=fr&module=adm/raw&ident=%s&passwd=%s" % (self.url_connexion, self.login, self.password)
 
-    #getExercicesWims permet d'obtenir la liste des exercices d'une classe
     def getExercicesWims(self, param):
+        """permet d'obtenir la liste des exercices d'une classe."""
         requete = {"job": "listExos", "code": param["authMember"], "qclass": param["qclass"]}
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep,
                                        "fonction": "jalon.wims/utility.py/getExercicesWims",
                                        "requete": requete,
                                        "jalon_URL": param["jalon_URL"]
-                                      })
+                                       })
         return rep
 
-    # getNote permet d'obtenir la liste des notes d'un utilisateur param["quser"]
     def getNote(self, param):
+        """permet d'obtenir la liste des notes d'un utilisateur param["quser"]."""
         requete = {"job": "getscore", "code": param["quser"], "qclass": param["qclass"], "quser": param["quser"]}
 
         # Si param["qsheet"] est précisé, on filtre les notes pour n'afficher que la feuille "qsheet"
@@ -311,138 +317,20 @@ class Wims(SimpleItem):
                                              "fonction": "jalon.wims/utility.py/getNote",
                                              "requete": requete,
                                              "jalon_request": param["jalon_request"]
-                                            })
+                                             })
                     # Attention, il peut y avoir un decalage si une des feuilles precedente n'a pas ete activées...
                     # print "****\n  [Jalon.wims/utility] ERREUR WIMS : pas de notes pour la feuille demandee. \n rep = %s \n****" % rep
         return retour
 
-    """
-    Fonction remplacée par getVariablesDefaut de JalonExerciceWims
-    
-    # getVariablesDefaut permet d'obtenir les variables par défaut d'un modele. (plus utilis)
-    def getVariablesDefaut(self, modele):
-        #getVariablesDefaut permet de lister les valeurs par defaut a definir en fonction du modele d'exercice.
-        variables_defaut = {"qcmsimple":
-                                {"enonce": "Cochez la(les) bonne(s) réponse(s).",
-                                 "bonnesrep": "bon choix n°1\nbon choix n°2",
-                                 "mauvaisesrep": "mauvais choix n°1\nmauvais choix n°2",
-                                 "tot": "5",
-                                 "givetrue": "2",
-                                 "minfalse": "0",
-                                 "feedback_general": "",
-                                 "feedback_bon": "",
-                                 "feedback_mauvais": "",
-                                 "options_checkbox": "checkbox",
-                                 "options_split": "split"
-                                 },
-                            "equation":
-                                {"precision": "100",
-                                 "param_a": "randint(1..20)",
-                                 "param_b": "randint(1..5)",
-                                 "param_c": "0",
-                                 "param_d": "0",
-                                 "equation": "\\a * \\b",
-                                 "enonce": "Je vend \\a chaussette(s) au prix de \\b euros chacune. Quel est le montant de ma vente ?",
-                                 "texte_reponse": "Ma réponse"
-                                 },
-                            "texteatrous":
-                                {"type_rep": "atext",
-                                 "donnees": "Le texte ci-dessous est incomplet. Remplissez les trous.\n<br/>\nL'Université de Nice fut officiellement instituée par décret du 23 octobre ??1965??.\nNéanmoins, ses racines historiques remontent au XVIIéme siècle, avec le fameux ??Collegium jurisconsultorum niciensium, Collegius niciensius?? crée en ??1639?? par les Princes de Savoie ; il comprenait un important corps de jurisconsultes et sa notoriété dura jusqu'au rattachement de Nice à la France, en ??1860,1870,1850,1840??.\nÀu XVIIème siècle, une Ecole de ??Médecine, Couture, Danse, Chimie?? dispensa des enseignements appréciés dans toute l'Europe.\n"
-                                 },
-                            "marqueruntexte":
-                                {"minmark": "1",
-                                 "maxmark": "8",
-                                 "data": "{Jack,Jean,Louis,Michel,Pierre}  ??et,est?? forain, il \n??{tien,tiens} ,tient?? ??un,une?? baraque de tir ??a,à?? la noix de coco.\n??Ont,On?? ??trouvent,trouve?? des ??Baraque,Baraques?? Noix de Coco dans \n??tous,toutes?? les foires. Les ??,gens?? ??arrive,arrivent??,\n??donne,donnent?? des ??,sous??\n??est,et?? ??envoie,envoient?? des ??,boules?? sur une noix de coco \n??{poser,posé} ,posée?? en haut d'une ??,colonne??.\nCeux qui ??fait,font??\n??{dégringolé,dégringolée} ,dégringoler?? une noix de coco \n??{peu,peut,peux} ,peuvent?? ??{le,les} ,la??\n??{gardée,gardé} ,garder??.\n;\n??{Quel,Quels,Quelles} ,Quelle??\nidée ??est-je,ai-je??\n??{d'acheté,d'achetée,d'achetés} ,d'acheter?? ??{cept,cette,ces,ce} ,cet??\noiseau ? L'oiselier me dit : '??{S'est,Cet} ,C'est?? un ??{mal,malle} ,mâle??.\n??Attender,Attendez?? une ??,semaine?? qu'il \n??{s'abitue,s'abituent,s'habituent} ,s'habitue??, ??est,et?? il chantera'.\n??Hors,Or??, l'oiseau ??sobstine,s'obstine?? ??a,à?? ??ce,se?? \n??tait,taire?? et il ??fais,fait?? ??tous,tout?? de ??{traver,travert} ,travers??.\n;\nLes ??désert,déserts?? de ??sables,sable?? ??occupe,occupent?? de\n??large,larges?? parties {de la planète,du monde,de la Terre} .\nIl n'y ??{pleu,pleus,pleuvent} ,pleut??\npresque ??,pas??. Très ??peut,peu?? de plantes et ??,d'animaux?? y\n??vit,vivent??. Les ??,dunes?? ??son,sont?? des collines de\n??,sable?? que le vent ??à,a??\n??{construit,construits,construite} ,construites??. Les \n??grains,graines?? de ??{certain,certaine,certains} ,certaines??\nplantes ??reste,restent?? sous le ??sole,sol?? du désert pendant\ndes années. ??{Ils,Elle} ,Elles?? ??ce,se?? ??met,mettent??\n??a,à?? ??{poussées,poussée,poussés} ,pousser?? dès qu'il y a\n??une,un?? orage.\n;",
-                                 "pre": "Marquez les fautes d'orthographe dans la phrase ci-dessous.",
-                                 "post": "",
-                                 "options": "split"
-                                 },
-                            "marquerparpropriete":
-                                {"explain": "Parmi les joueurs de football ci-dessous, marquez ceux qui sont dans l'équipe \prop.",
-                                 "prop": "française, italienne, allemande",
-                                 "data": "Fabien Barthez , francaise\nLilian Thuram , francaise\nClaude Makélélé , francaise\nZinedine Zidane , francaise\nFranck Ribéry , francaise\nThierry Henry , francaise\nDavid Trézéguet , francaise\nGianluigi Buffon , italienne\nMorgan De Sanctis , italienne\nAngelo Peruzzi , italienne\nChristian Abbiati , italienne\nMarco Amelia , italienne\nJens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\nPhilipp Lahm , allemande\nArne Friedrich , allemande\n",
-                                 "tot": "12",
-                                 "mingood": "1",
-                                 "minbad": "4",
-                                 "options": "split",
-                                 "presentation": "liste"
-                                 },
-                            "questiontextuelletolerante":
-                                {"len": "20",
-                                 "data": "l'intensité est : ??ampère??;\nla tension est : ??volt??;\nla résistance est : ??ohm??;\nla capacité d'un condensateur est : ??farad??. Son symbole est : ??F??;\nl'inductance d'un solénoïde est : ??henri??;\nla puissance dissipée sur une composante est : ??watt??;\nla fréquence est : ??hertz??. Son symbole est : ??Hz??;",
-                                 "atype": "atext",
-                                 "include_good": "oui",
-                                 "words": "electricite electrique circuit composante intensite courant tension charge resistor resistance diode transistor condensateur capacite solenoide inductance puissance frequence",
-                                 "pre": "En électricité, l'unité de base pour mesurer ",
-                                 "post": "."
-                                 },
-                            "taperlemotassocie":
-                                {"size": "20",
-                                 "words": "bambou,bambous\nbijou,bijoux\ncadeau,cadeaux\ncaillou,cailloux\ncheval,chevaux\nchou,choux\nciel,cieux\nclou,clous",
-                                 "type_rep": "atext",
-                                 "explain": "Tapez le pluriel du nom \\name :",
-                                 },
-                            "reordonner":
-                                {"tot": "6",
-                                 "size": "80x50",
-                                 "data": "Mercure, Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune",
-                                 "explain": "Mettre les planètes suivantes du système solaire dans le bon ordre, avec la plus proche du Soleil en premier."
-                                 },
-                            "correspondance":
-                                {"tot": "6",
-                                 "sizev": "50",
-                                 "sizer": "250",
-                                 "sizel": "250",
-                                 "feedback_general": "",
-                                 "data": "L'Allemagne, Berlin\nL'Australie, Canberra\nLe Canada, Ottawa\nLa Chine, Beijing\nL'Espagne, Madrid\nLes Etats-Unis, Washington\nLa France, Paris\nLa Grande Bretagne, Londres\nL'Inde, New Delhi\nL'Indonésie, Jakarta\nL'Italie, Rome\nLe Japon, Tokyo\nLa Russie, Moscou",
-                                 "explain": "Établissez la correspondance entre les pays et leurs capitales."
-                                 },
-                            "classerparpropriete":
-                                {"tot": "8",
-                                 "max1": "4",
-                                 "size1": "120x120",
-                                 "prop": "Oiseau,Mammifère",
-                                 "data": "L'aigle,Oiseau\nL'albatros,Oiseau\nL'alouette,Oiseau\nLe canard,Oiseau\nLe corbeau,Oiseau\nLe faucon,Oiseau\nLe goéland,Oiseau\n\nLe lion,Mammifère\nL'éléphant,Mammifère\nLe chat <img src='http://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Black_hills_cat-tochichi.jpg/120px-Black_hills_cat-tochichi.jpg' alt='photo d'un chat'/>,Mammifère\nLe cheval,Mammifère\nLe chien,Mammifère\nLe cochon,Mammifère\nLa vache,Mammifère",
-                                 "shuffle": "shuffle",
-                                 "explain": "Classez les animaux ci-dessous selon leurs catégories.",
-                                 "post": "",
-                                 "estun": "est un",
-                                 "noclass": "n'appartient à aucune catégorie",
-                                 "feedback_general": ""
-                                 },
-                            "vraifauxmultiples":
-                                {"tot": "4",
-                                 "mintrue": "1",
-                                 "minfalse": "1",
-                                 "datatrue": "À tension égale, le courant passant par un résistor est inversement proportionnel à sa résistance.\nÀ courant égal, la tension sur un résistor est proportionnelle à sa résistance.\nLe courant passant par un résistor est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré de la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré du courant.",
-                                 "datafalse": "À tension alternative égale, le courant passant par un condensateur est inversement proportionnel à la capacité.\nÀ tension alternative égale, le courant passant par un condensateur est indépendant de la capacité.\nÀ tension alternative égale, le courant passant par un solénoïde est proportionnel à l'inductance.\nÀ tension continue égale, le courant passant par un condensateur est proportionnel à la capacité.\nÀ tension égale, le courant passant par un résistor est proportionnel à sa résistance.\nÀ tension égale, le courant passant par un résistor est indépendant de sa résistance.\nLe courant passant par une diode est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au courant.\nLa puissance dissipée par un condensateur est proportionnelle {à,au carré de} la tension appliquée.\nLa puissance dissipée par un condensateur est proportionnelle {au,au carré du} courant.\nLa puissance dissipée par un solénoïde idéal est proportionnelle {à,au carré de} la tension appliquée.\nLa puissance dissipée par un solénoïde idéal est proportionnelle {au,au carré du} courant.",
-                                 "options": "split",
-                                 "explain": "Parmi les affirmations suivantes, lesquelles sont vraies ? Marquez-les.",
-                                 "feedback_general": ""
-                                 },
-                            "texteatrousmultiples":
-                                {"data": "Le début officiel de la Seconde Guerre Mondiale est marqué par\n??la déclaration de guerre,l'offensive?? de\n??la Grande Bretagne et la France,la France,la Grande Bretagne,l'Allemagne,l'Union Soviétique??\ncontre ??l'Allemagne,la Pologne,l'Union Soviétique,la France??.\n;\nLa Seconde Guerre Mondiale s'est déroulée entre ??1939?? et ??1945??.\n;\n??La Grande Bretagne et la France ont,La France a,La Grande Bretagne a,Les États-Unis ont,L'Union Soviétique a?? \ndéclaré la guerre contre l'Allemagne en ??1939?? à la suite de l'envahissement de ??la Pologne?? par cette dernière.\n;\nPendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Francisco|] Franco?? est un pays\n??neutre,axe,allié,envahi??.\n;\n??Après avoir battu,Avant d'attaquer?? la France,\n{l'Allemagne,Hitler,l'Allemagne Nazie} a lancé une attaque surprise contre l'URSS en\n??décembre,{novembre,octobre},{septembre,août,juillet},{juin,mai,avril},{mars,février,janvier}??\n??1940??, sous le nom {du plan,de l'opération} ??Barbarossa??.",
-                                 "pre": "Completez le texte suivant :",
-                                 "post": "",
-                                 "feedback_general": "",
-                                 "type_rep": "atext"
-                                 },
-                            "exercicelibre": {}
-                            }
-        if modele in variables_defaut:
-            return variables_defaut[modele]
-        else:
-            return None
-    """
-    # injecter_exercice : injecte les exercice d'une feuille dans un examen
     def injecter_exercice(self, param):
+        """injecte tous les exercices d'une feuille dans un examen."""
         requete = {"job": "linksheet", "code": param["authMember"], "qclass": param["qclass"], "qexam": param["qexam"], "qsheet": param["qsheet"]}
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/injecter_exercice", "requete": requete})
         return rep
 
-    # lierExoFeuille : ajoute un exercice à une feuille
     def lierExoFeuille(self, param):
+        u"""Ajoute un exercice à une feuille."""
         listeExos = "&exo=".join(param["listeExos"])
         """
         Par défaut :
@@ -460,11 +348,11 @@ class Wims(SimpleItem):
                            title=param["title"].decode("utf-8"),
                            description="")
         """
-        intro_check="1,2,4"
+        intro_check = "1,2,4"
 
         #intro_check="3" affiche la bonne réponse en cas d'erreur ( à utiliser dans le cas des entrainements uniquement)
-        if "afficher_reponses" in param and param["afficher_reponses"]==True:
-            intro_check="1,2,3,4"
+        if "afficher_reponses" in param and param["afficher_reponses"] is True:
+            intro_check = "1,2,3,4"
 
         donnees_exercice = self.donnees_exercice % (u"classes/fr",
                                                     listeExos,
@@ -485,8 +373,8 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/lierExoFeuille", "requete": requete})
         return rep
 
-    # modifierExoFeuille : modifie l'exercice d'une feuille
     def modifierExoFeuille(self, param):
+        """modifie l'exercice d'une feuille."""
         donnees_exercice = self.donnees_exercice % ("",
                                                     "",
                                                     "",
@@ -506,26 +394,30 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
         return rep
 
-    # retirerExoFeuille : Retire l'exercice param["qexo"] de la feuille param["qsheet"]
     def retirerExoFeuille(self, param):
+        u""" Retire l'exercice param["qexo"] de la feuille param["qsheet"]."""
         requete = {"job": "modexosheet", "code": param["authMember"], "option": "remove forced",
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}
         #print "jalon.wims/retirerExoFeuille : Suppression de l'exercice %s" % param["qexo"]
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/retirerExoFeuille", "requete": requete})
+        rep = self.verifierRetourWims({"rep": rep,
+                                       "fonction": "jalon.wims/utility.py/retirerExoFeuille",
+                                       "requete": requete,
+                                       "jalon_URL": param["jalon_URL"]
+                                       })
         return rep
 
-    # monterExoFeuille : Change l'ordre des exercices de la feuille param["qsheet"], en remontant l'exercice param["qexo"] d'un cran
-    # pour l'instant, cette fonction n'est pas utilisée.
     def monterExoFeuille(self, param):
+        """Change l'ordre des exercices de la feuille param["qsheet"], en remontant l'exercice param["qexo"] d'un cran."""
+        # pour l'instant, cette fonction n'est pas utilisée.
         requete = {"job": "modexosheet", "code": param["authMember"], "option": "moveup",
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
         return rep
 
-    # FormaterDonnees : fournit la variable "data1" des propriétés d'une autoeval au bon format
     def formaterDonnees(self, param):
+        u"""fournit la variable "data1" des propriétés d'une autoeval au bon format."""
         donnees = []
 
         #donnees Communes
@@ -555,9 +447,8 @@ class Wims(SimpleItem):
         donnees.append("expiration=%s" % self.expiration_date)
         return u"\n".join(donnees)
 
-    # modifierFeuille : modifie les parametres d'une feuille
     def modifierFeuille(self, param):
-
+        """Modifie les parametres d'une feuille."""
         donnees_feuille = self.formaterDonnees(param)
 
         requete = {"job": "modsheet", "code": param["authMember"], "data1": donnees_feuille.encode("iso-8859-1", "replace"),
@@ -566,9 +457,8 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierFeuille", "requete": requete})
         return rep
 
-    # modifierExamen : modifie les parametres d'un examen
     def modifierExamen(self, param):
-
+        """Modifie les parametres d'un examen."""
         donnees = self.formaterDonnees(param)
 
         requete = {"job": "modexam", "code": param["authMember"], "data1": donnees.encode("iso-8859-1", "replace"),
@@ -577,12 +467,15 @@ class Wims(SimpleItem):
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExamen", "requete": requete})
         return rep
 
-    # reordonnerFeuille :  reordonne les exercices d'une feuille
-    # TODO : Le plus simple sera surement de procéder ainsi :
-    #  1. stockge des infos des exos de la feuille
-    #  2. suppression des exos de la feuille
-    #  3. ajouter les exos de la feuille dans le nouvel ordre
     def reordonnerFeuille(self, param):
+        u""" reordonnerFeuille :  reordonne les exercices d'une feuille.
+
+        # TODO : Le plus simple sera surement de procéder ainsi :
+        #  1. stockge des infos des exos de la feuille
+        #  2. suppression des exos de la feuille
+        #  3. ajouter les exos de la feuille dans le nouvel ordre
+
+        """
         #  1. stockge des infos des exos de la feuille
         infos_feuille = "liste des infos des exos de la feuille"
         nbexos = len(infos_feuille)
@@ -597,14 +490,14 @@ class Wims(SimpleItem):
             param = infos_feuille[exo_id]
             self.lierExoFeuille(param)
 
-    # string_for_json : Supprime tous les caracteres indesirables d'une chaine pour l'integrer au format JSON (quotes, retour chariot, barre oblique )
     def string_for_json(self, chaine):
+        """Supprime tous les caracteres indesirables d'une chaine pour l'integrer au format JSON (quotes, retour chariot, barre oblique )."""
         return chaine.replace('\"', "'").replace('\n', "").replace("\\", "").replace("\t", "\\t")
 
-    #validerUserID : verification de conformité de l'id d'un utilisateur WIMS
-    # Il doit avoir une taille mini et maxi et ne contenir aucun caractere interdit
     def validerUserID(self, user_ID):
-        if user_ID == None:
+        u"""Verification de conformité de l'id d'un utilisateur WIMS."""
+        # Il doit avoir une taille mini et maxi et ne contenir aucun caractere interdit
+        if user_ID is None:
             return None
         else:
             retour = user_ID.strip()
@@ -618,6 +511,7 @@ class Wims(SimpleItem):
         return retour
 
     def importerHotPotatoes(self, folder, member_auth, import_file):
+        u"""import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
         h = HTMLParser.HTMLParser()
         tree = ET.parse(import_file)
         root = tree.getroot()
@@ -670,15 +564,13 @@ class Wims(SimpleItem):
                 if wims_response["status"] == "OK":
                     obj.setProperties({"Title": question_dict["title"],
                                        "Modele": "qcmsimple",
-                                      })
+                                       })
         #self.plone_log(questions_list)
         return questions_list
-        
 
-    # verifierRetourWims : verifie le bon retour d'un appel Wims, et envoie un mail d'erreur si besoin.
-    # rep doit etre une chaine de caracteres au format json.
     def verifierRetourWims(self, params):
-
+        """verifie le bon retour d'un appel Wims, et envoie un mail d'erreur si besoin."""
+        # rep doit etre une chaine de caracteres au format json.
         if "fonction" in params:
             fonction = params["fonction"]
         else:

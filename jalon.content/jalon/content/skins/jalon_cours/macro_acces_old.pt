@@ -611,7 +611,7 @@
                            tal:content="etudiant/email" />
             </tal:block>
             <tal:block condition="not:etudiant/email">
-                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
             </tal:block>
                     </td>
                 </tr>
@@ -829,7 +829,7 @@
     <table class="listing">
         <thead>
             <tr>
-            <th title="Cliquer pour trier selon l'état du sésame'" i18n:attributes="title" i18n:translate="">Sésame</th>
+            <th title="Cliquer pour trier selon l'état du compte UNS'" i18n:attributes="title" i18n:translate="">Compte UNS</th>
             <th title="Cliquer pour trier selon le nom" i18n:attributes="title" i18n:translate="" class="fullwidth">Nom</th>
             <th title="Cliquer pour trier selon le prénom" i18n:attributes="title" i18n:translate="" class="fullwidth">Prénom</th>
             <th title="Cliquer pour trier selon l'identifiant étudiant'" i18n:attributes="title" i18n:translate="">ID étu.</th>
@@ -847,7 +847,7 @@
           </td>
           -->
           <td>
-            <span class="indicateur couleur6" i18n:translate="">Sésame ouvert</span>
+            <span class="indicateur couleur6" i18n:translate="">Compte UNS ouvert</span>
           </td>
           <td tal:content="etudiant/nom" class="fullwidth"/>
           <td tal:content="etudiant/prenom" class="fullwidth"/>

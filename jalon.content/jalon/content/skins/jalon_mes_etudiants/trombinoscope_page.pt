@@ -112,7 +112,7 @@
                            tal:content="etudiant/EMAIL_ETU" class="discreet"/>
                         <span tal:condition="not:etudiant/EMAIL_ETU"
                               i18n:translate="" class="discreet">
-                          Sésame non ouvert
+                            Compte UNS non ouvert
                         </span>
                     </p>
                 </li>

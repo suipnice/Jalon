@@ -239,10 +239,15 @@
 
 
 <!--
-        Supprimer une ressource / un cours
+        Supprimer un exercice / un groupe
 -->
-<metal:macro define-macro="no_deletion">
+<metal:macro define-macro="supprimer_exo">
 
+  <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) == 0, 1, 0)">
+    <metal:macro use-macro="here/macro_form/macros/supprimer">Supression autorisée</metal:macro>
+  </tal:condition>
+
+  <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) != 0, 1, 0)">
     <h2 class="warning">
         <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Suppression non autorisée</tal:block>
@@ -279,7 +284,7 @@
           $('#reveal-main').foundation('reveal','close');
         });
     </script>
-
+  </tal:condition>
 </metal:macro>
 
 </metal:content-core>

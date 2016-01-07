@@ -44,8 +44,8 @@
 
         <div class="panel warning radius">
              <i class="fa fa-info-circle no-pad"></i>
-             <strong i18n:translate="">La ressource est attachée à aucun un cours, vous pouvez la supprimer.</strong><br />
-             <tal:block i18n:translate="">Pour ce faire, utilisez l'option Supprimer dans le menu des actions disponibles pour cette ressource.</tal:block>
+             <strong i18n:translate="">La ressource n'est attachée à aucun un cours, vous pouvez la supprimer.</strong><br />
+             <tal:block i18n:translate="">Pour ce faire, utilisez l'option « Supprimer » dans le menu des actions disponibles pour cette ressource.</tal:block>
         </div>
 
     </div>

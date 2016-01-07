@@ -1259,10 +1259,6 @@ class JalonBDD(SimpleItem):
 
         for month in range(1, 13):
             graph.append("{")
-
-            #graph.append('  "month": "%s",' % dicoLabel[month])
-            #graph.append('  "visits": %s' % str(months_dict[month]) if month in months_dict else '  "visits": 0')
-
             graph.append('  "month": "%s",' % dicoLabel[month])
             if month in months_dict:
                 for month_consultation in months_dict[month]:
@@ -1271,27 +1267,6 @@ class JalonBDD(SimpleItem):
 
             graph.append('},')
         graph.append('];')
-
-        """
-        graph.append('''
-        AmCharts.ready(function() {
-            var chart = new AmCharts.AmSerialChart();
-            chart.dataProvider = chartData;
-            chart.categoryField = "month";
-
-            var categoryAxis = chart.categoryAxis;
-            categoryAxis.labelRotation = 65;
-
-            var graph = new AmCharts.AmGraph();
-            graph.valueField = "visits";
-            graph.type = "column";
-            graph.fillAlphas = 0.8;
-            chart.addGraph(graph);
-
-            chart.write("chartdiv");
-        });
-        </script>''')
-        """
 
         graph.append('''
         AmCharts.ready(function() {
@@ -1342,7 +1317,7 @@ class JalonBDD(SimpleItem):
 
                 // LEGEND
                 var legend = new AmCharts.AmLegend();
-                legend.position = "right";
+                legend.position = "bottom";
                 legend.borderAlpha = 0.3;
                 legend.horizontalGap = 10;
                 legend.switchType = "v";

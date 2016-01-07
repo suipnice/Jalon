@@ -80,15 +80,6 @@
 }
 
 /*----------*/
-/* Permet d'appliquer la classe "warning" sur un entete de reveal-modal,
- afin d'attirer l'attention sur des actions (non autorisées par exemple)
-C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wims.pt :
-     ligne 176 : "no_deletion" */
-.reveal-modal>h2.warning{
-   background-color:#CF6E0E;
-}
-
-/*----------*/
 /*La classe "debug" permet d'afficher des elements à l'écran pendant les tests, avec une couleur bien criarde,
  histoire de ne pas oublier de les retirer avant de faire un commit !*/
 .debug{
@@ -130,6 +121,14 @@ C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wim
     fichier : macro_cours_indicateurs
     macro   : indicateurs_ressources
 */
+
+#cours_indicateurs ul#tab_button-group {
+    margin-bottom: 1rem;
+}
+
+#cours_indicateurs nav {
+    margin-bottom: 1rem;
+}
 #cours_indicateurs nav .button {
     -moz-appearance: none;
     border-radius: 0;
@@ -182,4 +181,32 @@ C'est pour le moment utilisé dans jalon/content/skins/jalon_monespace/macro_wim
 
 #cours_indicateurs nav .button.res-liens:hover, #cours_indicateurs nav .button.res-liens:focus, #cours_indicateurs nav .button.res-liens.selected {
     background-color: #e3ad11;
+}
+
+#cours_indicateurs nav .off {
+    background-color: #e7e7e7;
+    border-color: #b9b9b9;
+    border-radius: 5px;
+    color: #333;
+    margin-bottom: 0.5rem !important;
+    width: 24%;
+}
+
+#cours_indicateurs nav .off:hover {
+    background-color: #b9b9b9;
+    border-color: #b9b9b9;
+}
+
+#cours_indicateurs nav .selected {
+    background-color: #2a9ccc;
+    border-color: #227da3;
+    border-radius: 5px;
+    color: #fff;
+    margin-bottom: 0.5rem !important;
+    width: 24%;
+}
+
+#cours_indicateurs nav .selected:hover {
+    background-color: #227da3;
+    border-color: #227da3;
 }

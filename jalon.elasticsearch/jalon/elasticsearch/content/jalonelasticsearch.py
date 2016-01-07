@@ -38,7 +38,7 @@ class JalonElasticsearch(SimpleItem):
 
     def searchElasticsearch(self, type_search=None, term_search=None, page=1):
         start = (page - 1) * 12
-        LOG.info("%s:%s/%s" % (self._url_connexion, self._port_connexion, self._index))
+        #LOG.info("%s:%s/%s" % (self._url_connexion, self._port_connexion, self._index))
         elasticsearch = Elasticsearch(hosts=["%s:%s/%s" % (self._url_connexion, self._port_connexion, self._index)])
         if not type_search or type_search == "mes_videos":
             portal_membership = getToolByName(self, 'portal_membership')

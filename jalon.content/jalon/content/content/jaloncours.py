@@ -2322,28 +2322,24 @@ class JalonCours(ATFolder):
 
     def supprimerActivitesWims(self, utilisateur="All"):
         u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
-        # Retirer toutes les activités du plan
+        # Retire du plan toutes les activités de l'utilisateur "utilisateur"
 
-        # Ici on utilise getElementCours() plutot que getPlanPlat,
+        # Ici on utilise self.objectIds() plutot que getPlanPlat, afin de lister les objets réellement dans le cours.
         # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
-        # nb : on pourrait également parcourir "for idElement in self.objectIds()", afin de lister les objets réellement dans le cours.
-        #dicoElements = copy.deepcopy(self.getElementCours())
 
         liste_activitesWIMS = []
-        #portal_members = getattr(self.portal_url.getPortalObject(), "Members")
-        #for idElement in dicoElements:
+
         for idElement in self.objectIds():
-            #infosElement = dicoElements[idElement]
-            #if infosElement and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]:
+
             if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
                 # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
-                if utilisateur == "All" or infosElement["createurElement"] == utilisateur:
+                activite = getattr(self, idElement)
+
+                if utilisateur == "All" or activite.getCreateur() == utilisateur:
                     #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
                     liste_activitesWIMS.append(idElement)
 
                     # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
-                    activite = getattr(self, idElement)
-
                     # retire l'activité des relatedItems pour ses exercices et ses documents.
                     activite.retirerTousElements(force_WIMS=True)
 
@@ -2353,9 +2349,9 @@ class JalonCours(ATFolder):
                     self.delActu(idElement)
 
                     ### A utiliser dans un patch correctif :
-                    #(on refait ce que fait normalement retirerElementPlan, sauf dans le cas ou l'element n'est plus dans le plan) :
-                    self.manage_delObjects(idElement)
+                    #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
                     if idElement in self._elements_cours:
+                        self.manage_delObjects(idElement)
                         del self._elements_cours[idElement]
 
         # Supprime toutes les classes du serveur WIMS

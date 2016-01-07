@@ -82,7 +82,7 @@
                        tal:attributes="href string:${here/absolute_url}/casloginunice;
                                        title string:Identifiant et mot de passe de votre compte de messagerie de l'${infos_connexion/etablissement}."
                        i18n:attributes="title">
-                        <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter avec son sésame</tal:block>
+                        <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter avec son compte UNS</tal:block>
                         <span data-dropdown="no_sesame"></span>
                     </a>
                     <ul id="no_sesame" class="f-dropdown" data-dropdown-content="">
@@ -91,7 +91,7 @@
                                tal:attributes="href infos_connexion/lien_sesame"
                                i18n:attributes="title"
                                i18n:translate="">
-                                Vous avez perdu votre sésame, ou n'en avez pas ?
+                                Vous avez perdu vos identifiants UNS, ou n'en avez pas ?
                             </a>
                         </li>
                     </ul>

@@ -1097,7 +1097,11 @@ class JalonCoursWims(ATDocument):
             idFeuille = self.getIdFeuille()
             idEexo = int(ordre) + 1
             # Supprime l'exercice de la feuille côté WIMS
-            dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille, "qexo": idEexo}
+            dico = {"authMember": auteur,
+                    "qclass": idClasse,
+                    "qsheet": idFeuille,
+                    "qexo": idEexo,
+                    "jalon_URL": self.absolute_url()}
             self.wims("retirerExoFeuille", dico)
 
         # Supprime l'activité des relatedItems de l'objet retiré.

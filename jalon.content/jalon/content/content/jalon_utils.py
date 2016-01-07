@@ -742,7 +742,7 @@ def getFilAriane(portal, folder, authMemberId, page=None):
     url_portal = portal.absolute_url()
     #print "jalon_utils/getFilAriane folder.getId() = %s" %folder.getId()
 
-    if authMemberId != None:
+    if authMemberId is not None:
         # Cas d'un utilisateur connecté
         dico_mes_cours = {"titre": _(u"Mes cours"),
                           "icone": "fa fa-university",
@@ -762,28 +762,35 @@ def getFilAriane(portal, folder, authMemberId, page=None):
             return [dico_mes_cours,
                     {"titre": folder.Title(),
                      "icone": "fa fa-book",
-                     "url"  : folder.absolute_url()},
+                     "url":   folder.absolute_url()},
                     {"titre": "Accès et options",
                      "icone": "fa fa-cogs"}]
         if page == "annonces":
             return [dico_mes_cours,
                     {"titre": folder.Title(),
                      "icone": "fa fa-book",
-                     "url"  : folder.absolute_url()},
+                     "url":   folder.absolute_url()},
                     {"titre": "Toutes les annonces",
                      "icone": "fa fa-bullhorn"}]
         if page == "actualites":
             return [dico_mes_cours,
                     {"titre": folder.Title(),
                      "icone": "fa fa-book",
-                     "url"  : folder.absolute_url()},
+                     "url":   folder.absolute_url()},
                     {"titre": "Toutes les nouveautés",
                      "icone": "fa fa-bell-o"}]
+        if page == "indicateurs":
+            return [dico_mes_cours,
+                    {"titre": folder.Title(),
+                     "icone": "fa fa-book",
+                     "url":   folder.absolute_url()},
+                    {"titre": "Indicateurs",
+                     "icone": "fa fa-line-chart"}]
 
     liste = [dico_mes_cours,
              {"titre": folder.aq_parent.title_or_id(),
               "icone": "fa fa-book",
-               "url":   folder.aq_parent.absolute_url()}]
+              "url":   folder.aq_parent.absolute_url()}]
 
     if folder.getId().startswith("BoiteDepot"):
         liste.append({"titre": folder.Title(),
@@ -1241,7 +1248,7 @@ def getJalonMenu(context, portal_url, user, request):
                                          "activer": True},
                                         {"id"     : "gestion_connexion_bdd",
                                          "icone"  : "fa fa-key",
-                                         "title"  : _(u"Connexion"),
+                                         "title"  : _(u"Propriétés"),
                                          "href"   : "%s/portal_jalon_bdd/@@jalon-bdd?gestion=gestion_connexion_bdd" % portal_url,
                                          "activer": True},
                                        ],

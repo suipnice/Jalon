@@ -1025,11 +1025,11 @@ En entrée :
                     <div class="nom_etudiant" tal:content="string:${etudiant/last_name} ${etudiant/first_name}"/>
                     <span class="show-for-large-up">
                         <div>
-                            <tal:block i18n:translate="">Sésame : </tal:block>
+                            <tal:block i18n:translate="">Id UNS :</tal:block>
                             <tal:replace replace="etudiant/id"/>
                         </div>
                         <div>
-                            <tal:block i18n:translate="">Numéro étudiant : </tal:block>
+                            <tal:block i18n:translate="">Numéro étudiant :</tal:block>
                             <tal:replace replace="etudiant/num_etu" />
                         </div>
                     </span>
@@ -1190,11 +1190,11 @@ En entrée :
                     <div class="nom_etudiant" tal:content="string:${etudiant/last_name} ${etudiant/first_name}"/>
                     <span class="show-for-large-up">
                         <div>
-                            <tal:block i18n:translate="">Sésame : </tal:block>
+                            <tal:block i18n:translate="">Id UNS :</tal:block>
                             <tal:replace replace="etudiant/id"/>
                         </div>
                         <div>
-                            <tal:block i18n:translate="">Numéro étudiant : </tal:block>
+                            <tal:block i18n:translate="">Numéro étudiant :</tal:block>
                             <tal:replace replace="etudiant/num_etu" />
                         </div>
                     </span>

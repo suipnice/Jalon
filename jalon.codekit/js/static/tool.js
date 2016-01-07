@@ -20,7 +20,7 @@ function instantiateCKEditor( textareaID ) {
             // Define the toolbar groups as it is a more accessible solution.
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
-                //{ 'name': "links",       'groups': [ "links" ] },
+                { 'name': "links",       'groups': [ "links" ] },
                 //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
                 { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
@@ -30,6 +30,8 @@ function instantiateCKEditor( textareaID ) {
             removePlugins: 'image,elementspath',
             // Remove the redundant buttons from toolbar groups defined above.
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
+            // Remove the advanced link tab in link popup.
+            removeDialogTabs: 'link:advanced',
         } );
 
         return textareaID;
@@ -101,6 +103,9 @@ function revealInit( $reveal ) {
     if ( $firstInput.length > 0 ) {
         $firstInput.focus( );
     }
+
+    // Ajout attr. "title" lien de fermeture
+    $reveal.find( 'h2 > a.close-reveal-modal' ).attr( 'title', CLOSE_REVEAL_TITLE );
 
     // Envoi du formulaire
     $reveal.find( 'form:not(.no_reveal_action)' ).submit( function( event ) {
