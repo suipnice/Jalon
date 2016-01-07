@@ -990,6 +990,7 @@ class JalonFolder(ATFolder):
                    "Lienweb":                  "Externes",
                    "Lien web":                 "Externes",
                    "Lecteurexportable":        "Externes",
+                   "Lecteur exportable":       "Externes",
                    "Referencebibliographique": "Externes",
                    "CatalogueBU":              "Externes",
                    "Catalogue BU":             "Externes",
@@ -1079,7 +1080,7 @@ class JalonFolder(ATFolder):
             # afin d'optimiser la tache pour des cours avec beacoup d'objets.
             createur = infos_objet["createurElement"]
             if createur not in dico_espaces:
-                dico_espaces[createur] = {"espace" : getattr(portal_members, createur)}
+                dico_espaces[createur] = {"espace": getattr(portal_members, createur)}
             espace_createur = dico_espaces[createur]["espace"]
 
             if repertoire not in infos_objet["createurElement"]:
