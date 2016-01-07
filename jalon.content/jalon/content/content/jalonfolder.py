@@ -990,6 +990,7 @@ class JalonFolder(ATFolder):
                    "Lienweb":                  "Externes",
                    "Lien web":                 "Externes",
                    "Lecteurexportable":        "Externes",
+                   "Lecteur exportable":       "Externes",
                    "Referencebibliographique": "Externes",
                    "CatalogueBU":              "Externes",
                    "Catalogue BU":             "Externes",

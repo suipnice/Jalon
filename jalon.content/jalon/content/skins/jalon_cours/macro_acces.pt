@@ -380,8 +380,10 @@
                              arch_class string:field;"
                  tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                 <label for="mailUserList">Liste des étudiant(e)s extérieur(e)s à inscrire</label>
-                <div class="fieldErrorBox"
+                <!--div class="fieldErrorBox"
                      tal:condition="error"
+                     tal:content="error" /-->
+                <div class="fieldErrorBox"
                      tal:content="error" />
                 <input type="text" id="mailUserList" name="invitation"
                        placeholder="Prénom Nom &lt;compte@domaine.tld&gt;"
