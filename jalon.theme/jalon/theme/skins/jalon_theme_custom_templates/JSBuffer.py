@@ -18,7 +18,7 @@ class jsBuffer:
     dans « main_template.pt » de trois manières, dans l'ordre suivant :
         - ExtraFiles : ces fichiers seront chargés via l'attribut src d'une
           balise <script /> après les fichiers JS standard de Jalon (app, post,
-          staff-app, etc.), depuis les dossiers accessibles de « theme/skins » ;
+          staff-app, etc.), depuis le dossier « ./browser/scripts/ » du thème ;
         - DirectBuffer : ce code sera injecté directement dans une balise
           <script /> pour être évalué une fois l'ensemble des fichiers JS chargés ;
         - Buffer : ce code sera injecté dans une fonction « doc. ready » (dans
