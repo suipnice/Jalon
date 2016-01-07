@@ -179,7 +179,7 @@ class Wims(SimpleItem):
 
     def cleanClass(self, params):
         u"""Purge les activités de la classe param[qclass]."""
-        # en entreee : params = {"qclass": class_id, "code": authMember}
+        # en entree : params = {"qclass": class_id, "code": authMember}
         params["job"] = "cleanclass"
         params["rclass"] = self.classe_locale
 
