@@ -230,14 +230,17 @@ def envoyerMailErreur(form):
 
             # Now send the message
             s = smtplib.SMTP()
-            s.connect(portal.MailHost.smtp_host, portal.MailHost.smtp_port)
-            if portal.MailHost.smtp_uid:
-                s.starttls()
-                s.login(portal.MailHost.smtp_uid, portal.MailHost.smtp_pwd)
+            try:
+                s.connect(portal.MailHost.smtp_host, portal.MailHost.smtp_port)
+                if portal.MailHost.smtp_uid:
+                    s.starttls()
+                    s.login(portal.MailHost.smtp_uid, portal.MailHost.smtp_pwd)
 
-            s.sendmail(form["de"], form["a"], outer.as_string())
+                s.sendmail(form["de"], form["a"], outer.as_string())
+                s.close()
+            except:
+                LOG.info("Impossible d'envoyer le mail d'erreur :%s" % msg)
 
-            s.close()
 
 
 def getAttributConf(attribut):
