@@ -95,6 +95,17 @@ function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum )
     Initialisation des "reveal"
 */
 
+function revealFormOnSubmitBehavior( $form ) {
+
+    // Spinner
+    var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
+    $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
+
+    // Protection anti double-clic
+    $form.find( '[type="submit"]' ).prop( 'disabled', true );
+}
+
+
 function revealInit( $reveal ) {
 
     // Focus sur le 1er input
@@ -109,13 +120,7 @@ function revealInit( $reveal ) {
 
     // Envoi du formulaire
     $reveal.find( 'form:not(.no_reveal_action)' ).submit( function( event ) {
-
-        // Spinner
-        var $h2 = $( this ).parents( '.reveal-modal' ).children( 'h2' );
-        $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
-
-        // Protection anti double-clic
-        $( this ).find( '[type="submit"]' ).prop( 'disabled', true );
+        revealFormOnSubmitBehavior( $( this ) );
     } );
 }
 

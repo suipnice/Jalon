@@ -333,6 +333,7 @@ function setMailRegistrationForm( ) {
             } );
 
             $listInput.val( registrationList.join( ', ' ) );
+            revealFormOnSubmitBehavior( $listForm );
 
         } else {
 
@@ -340,6 +341,10 @@ function setMailRegistrationForm( ) {
 
                 event.preventDefault( );
                 $registrationFormFieldset.find( '.fieldErrorBox' ).html( MSG_FORM_VALIDATION_ERROR );
+
+            } else {
+
+                revealFormOnSubmitBehavior( $registrationForm );
             }
         }
 
