@@ -131,10 +131,10 @@ li.check{list-style: none;}
 
 \statement{
 <div class="explain">\explain</div>
-<ul>
-\for{i=1 to \tot}
-{<li class='check oefreply'><label>\embed{reply 1,\i}- \pick[\i;]</label></li>}
-</ul>
+<ol type="A">
+  \for{i=1 to \tot}
+  {<li class='check oefreply'>\embed{reply 1,\i, \list[\i] - \pick[\i;]}</li>}
+</ol>
 }
 
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5

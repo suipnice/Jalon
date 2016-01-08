@@ -233,7 +233,7 @@ La puissance dissipée par un solénoïde idéal est proportionnelle {au,au carr
                                  "help"            : "",
                                  },
                             "texteatrousmultiples":
-                                {"data": "Le début officiel de la Seconde Guerre Mondiale est marqué par\n\
+                                {"data"             : "Le début officiel de la Seconde Guerre Mondiale est marqué par\n\
 ??la déclaration de guerre,l'offensive?? de\n\
 ??la Grande Bretagne et la France,la France,la Grande Bretagne,l'Allemagne,l'Union Soviétique??\n\
 contre ??l'Allemagne,la Pologne,l'Union Soviétique,la France??.\n;\n\
@@ -247,10 +247,13 @@ Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Franci
 {l'Allemagne,Hitler,l'Allemagne Nazie} a lancé une attaque surprise contre l'URSS en\n\
 ??décembre,{novembre,octobre},{septembre,août,juillet},{juin,mai,avril},{mars,février,janvier}??\n\
 ??1940??, sous le nom {du plan,de l'opération} ??Barbarossa??.",
-                                 "pre": "Completez le texte suivant :",
-                                 "post": "",
-                                 "feedback_general": "",
-                                 "type_rep": "atext"
+                                 "pre"              : "Completez le texte suivant :",
+                                 "post"             : "",
+                                 "feedback_general" : "",
+                                 "type_rep"         : "atext",
+                                 "credits"          : "",
+                                 "hint"            : "",
+                                 "help"            : "",
                                  },
                              "qcmsuite":
                                 {"list_id_questions": "data1 data2",
@@ -671,7 +674,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                         "pre":              "text{pre",
                                                         "post":             "text{post",
                                                         "feedback_general": "text{feedback_general",
-                                                        "type_rep":         "text{type_rep"
+                                                        "type_rep":         "text{type_rep",
+                                                        "credits":          "credits{",
+                                                        "hint":             "hint{",
+                                                        "help":             "help{",
                                                         },
                                 "qcmsuite": {"instruction"            : "text{instruction",
                                              "alea"                   : "text{alea",

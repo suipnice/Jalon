@@ -73,7 +73,7 @@
 
     <!--HTML_allowed : Message commun concernant l'utilisation de code HTML. -->
     <metal:macro define-macro="html_allowed">
-        <h2 i18n:translate="">Utiliser de l'HTML pour la mise en forme.</h2>
+        <div><h2 i18n:translate="">Utiliser de l'HTML pour la mise en forme.</h2></div>
         <div class="html_allowed" i18n:translate="label_wims_html_allowed">
             <div>Vous pouvez ici utiliser des balises HTML pour faire de la mise en forme.</div>
             <div>
