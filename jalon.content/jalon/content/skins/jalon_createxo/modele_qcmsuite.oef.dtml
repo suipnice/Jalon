@@ -129,7 +129,7 @@ $$boucle_data_q$$
 
 :%%%%%%%%%%%%%% Rien à modifier jusqu'à l'énoncé %%%%%%%%%%%%%%%%
 \text{anstype=radio iswordof \anstype?radio:checkbox}
-\text{option=\anstype}
+
 
 \integer{cnt_question=items(\data_q)}
 
@@ -180,7 +180,7 @@ $$boucle_data_q$$
   ol li {list-style: upper-alpha; }
   input[type='checkbox'] { font-size:150%; }
 
-  /*.oefanswer{display:none;}*/
+  .oefanswer{display:none;}
 
   /** CSS for medium and up **/
   @media all and (min-width: 40.0625em) {
