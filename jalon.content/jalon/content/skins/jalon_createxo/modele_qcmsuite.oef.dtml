@@ -111,19 +111,25 @@ Proposition n°1
 Proposition n°2
 Proposition n°3</pre></div>
 $$questions$$
-:
+
+:Type de réponses (checkbox ou radio)
+
+\text{anstype=$$anstype$$}
+
 \language{fr}
 \computeanswer{no}
 \format{html}
 
-\text{format=checkbox}
-
 \text{paste=yes}
 
-\text{option=}
+
 #####################
 
 $$boucle_data_q$$
+
+:%%%%%%%%%%%%%% Rien à modifier jusqu'à l'énoncé %%%%%%%%%%%%%%%%
+\text{anstype=radio iswordof \anstype?radio:checkbox}
+\text{option=\anstype}
 
 \integer{cnt_question=items(\data_q)}
 
@@ -174,7 +180,7 @@ $$boucle_data_q$$
   ol li {list-style: upper-alpha; }
   input[type='checkbox'] { font-size:150%; }
 
-  .oefanswer{display:none;}
+  /*.oefanswer{display:none;}*/
 
   /** CSS for medium and up **/
   @media all and (min-width: 40.0625em) {
@@ -221,6 +227,7 @@ $$boucle_data_q$$
 \text{battage=wims(nonempty items \battage)}
 
 \text{option=\option noanalyzeprint}
+
 \matrix{question=}
 \matrix{explication=xxx}
 \matrix{rep=}
@@ -250,11 +257,16 @@ $$boucle_data_q$$
   \text{test_inst=\inst_audio\inst_image\inst_title  notsametext ? 1 : 0}
   \text{preliminaire=\test_inst=1 ? \rab_inst:&nbsp;}
   \text{QUEST=\test_inst=1 ? \QUEST[2..-1;]}
+  \text{QUEST=wims(replace internal " by $$quot; in \QUEST)}
+
   \matrix{QUEST=\accolade=1 ? wims(embraced randitem \QUEST):\QUEST}
+
   \matrix{question = \question
 \QUEST[1;]}
+
   \matrix{PRELIMINAIRE=\PRELIMINAIRE
 \preliminaire}
+
   \text{expl=\QUEST[2;]}
   \text{ligne=wims(upper \expl)}
   \text{ligne=wims(text select ABCDEFGHIJKLMNOPQRSTUVWXYZ in \ligne)}
@@ -339,6 +351,8 @@ text{testexp=wims(nospace \testexp)}
 \if {\columns>1}
   {\text{css_columns = equalize_height bloc-\columns-columns }}
 
+:%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
+::Vous n'avez pas besoin de modifier ceci en général.
 
 \statement{
   \nopaste
@@ -366,8 +380,8 @@ text{testexp=wims(nospace \testexp)}
       <div class="reponse">
         <span class="prompt">\qcm_prompt1</span>
         \for{ a in \REP[\h;]}{
-          \if{ \a  isitemof \CHOIX[\h;\rep[\h;]]}{
-            \if{\TEST[\h;2]>0 and \TEST[\h;3]=0}
+          \if{ \a isitemof \CHOIX[\h;\rep[\h;]]}{
+            \if{\anstype issametext checkbox and \TEST[\h;2]>0 and \TEST[\h;3]=0}
               {<span class="oef_indpartial">\a</span>}
               {<span class="oef_indgood">\a</span>}
           }
@@ -375,9 +389,12 @@ text{testexp=wims(nospace \testexp)}
           -
         }
 
-        \if{\TEST[\h;3]=0 and \TEST[\h;2]>0}{<span class="oef_indpartial">\incomplete_answer_text</span>}
         \if{\TEST[\h;3]>0}{<span class="oef_indbad">\bad_answer_text</span>}
-        \if{\TEST[\h;3]=0 and \TEST[\h;2]=0}{<span class="oef_indgood">\good_answer_text</span>}
+        {
+            \if{\anstype issametext checkbox and \TEST[\h;2]>0}
+                {<span class="oef_indpartial">\incomplete_answer_text</span>}
+                {<span class="oef_indgood">\good_answer_text</span>}
+        }
 
         \if{\answer_given=yes}{
           \if{\TEST[\h;3]>0 or \TEST[\h;2]>0}{
@@ -395,7 +412,8 @@ text{testexp=wims(nospace \testexp)}
     {
       \if{ r \h isitemof \nstep}{
         <ol class="question">
-          \for{s=1 to \CNT_choix[\h]}{ <li>\embed{reply \h , \s}</li> }
+          \for{s=1 to \CNT_choix[\h]}
+           {<li>\embed{reply \h , \s}</li>}
         </ol>
       }
     }
@@ -407,10 +425,12 @@ text{testexp=wims(nospace \testexp)}
 }
 $$boucle_answer$$
 
-$$boucle_maxtrix_rep$$
-\if{\format=radio}{
- \text{REP=wims(replace internal , by  &#44; in \REP)}
+$$boucle_matrix_rep$$
+\if{\anstype=radio}{
+ \text{REP=wims(replace internal , by &#44; in \REP)}
 }
+\text{REP=wims(replace internal " by $$quot; in \REP)}
+
 \matrix{explication2 = \explication2}
 
 \for{u = 1 to \N}{
@@ -420,18 +440,18 @@ $$boucle_maxtrix_rep$$
   \text{test2 = wims(listcomplement \REP[\H;] in \CHOIX[\H;\rep[\H;]])}
   \text{test3 = wims(listcomplement \CHOIX[\H;\rep[\H;]] in \REP[\H;])}
   %%% \integer{test4=items(\REP[\H;]) - items(\CHOIX[\H;])}
-  \text{test_cnt=\test1, items(\test2),items(\test3)}
+  \text{test_cnt=\test1, items(\test2), items(\test3)}
   \integer{cnt_juste= \test_cnt[1]+\test_cnt[2]+\test_cnt[3] =0 ? \cnt_juste + 1}
   \matrix{TEST=\TEST
 \test_cnt}
 }
 
-test1 = 0 rep < juste
-test2  nombre de réponses dites justes et en fait fausses
-test3  nombre de réponses dites fausses et en fait justes
+# test1 = (nb de bonnes réponses données) - (nb bonnes rep total) => doit etre 0 pour avoir tout juste.
+# test2 = bonnes réponses oubliées
+# test3 = réponses fausses cochées
 
-totalement justes : test1=0, test2=0 test3=0
-partiellement justes :
+# totalement justes : test1=0, test2=0 test3=0
+# partiellement justes : test2>0 and test3=0
 
 \real{v=\cnt_juste/\CNT[\step-1;\N]}
 

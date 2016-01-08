@@ -265,6 +265,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
         source = source.replace("&gt;", ">")
         source = source.replace("&quot;", '"')
 
+        # on souhaite conserver certains '&quot;'
+        source = source.replace("$$quot;", '&quot;')
+
         # dico contiendra les parametres a envoyer a WIMS
         dico = {"authMember": author, "qexo": idobj}
         dico["qclass"] = "%s_1" % self.aq_parent.getComplement()
