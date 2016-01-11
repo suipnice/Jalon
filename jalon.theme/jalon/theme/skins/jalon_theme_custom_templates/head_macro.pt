@@ -96,14 +96,18 @@
 
         Scripts
             - generic libraries & frameworks
-            - specific to “ manager ” &  “ secretaire ” roles
+            - AmCharts (specific to “ manager ” &  “ secretaire ” roles)
 
     --></tal:comment>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/pre.min.js"></script>
     <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire'])">
         <script charset="UTF-8"
-                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/man_sec-pre.min.js"></script>
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/serial.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/themes/light.js"></script>
     </tal:isManager>
 
     </head>
