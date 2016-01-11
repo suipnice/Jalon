@@ -26,7 +26,8 @@ import os.path
 import sqlite3
 import json
 
-from datetime import datetime
+from dateutil import rrule
+from datetime import datetime, timedelta
 from DateTime import DateTime
 
 # Messages de debug :
@@ -1129,6 +1130,14 @@ class JalonBDD(SimpleItem):
         consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year)
         return consultationCours
 
+    def getFrequentationByCoursByUniversityYearForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
+        LOG.info("----- getFrequentationByCoursByUniversityYearForGraph -----")
+        if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
+            DATE_CONS_YEAR = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getFrequentationByCoursByUniversityYearForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR)
+        return consultationCours
+
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
         #LOG.info("----- getConsultationElementsByCours -----")
         consultation_dict = {}
@@ -1414,6 +1423,111 @@ class JalonBDD(SimpleItem):
                            {"type":    "groupe",
                             "libelle": _(u"Groupe")}]}
         return dico[type]
+
+    def genererFrequentationGraph(self, dates_dict, DATE_CONS_YEAR=None):
+        LOG.info("----- genererFrequentationGraph -----")
+        LOG.info(dates_dict)
+
+        graph = ['<script type="text/javascript">']
+        graph.append("""var chart = AmCharts.makeChart("frequentationchartdiv", {
+                        "type": "serial",
+                        "theme": "light",
+                        "marginRight": 40,
+                        "marginLeft": 40,
+                        "autoMarginOffset": 20,
+                        "dataDateFormat": "YYYY-MM-DD",
+                        "valueAxes": [{
+                            "id": "v1",
+                            "axisAlpha": 0,
+                            "position": "left",
+                            "ignoreAxisWidth":true
+                        }],
+                        "balloon": {
+                            "borderThickness": 1,
+                            "shadowAlpha": 0
+                        },
+                        "graphs": [{
+                            "id": "g1",
+                            "balloon":{
+                              "drop":true,
+                              "adjustBorderColor":false,
+                              "color":"#ffffff"
+                            },
+                            "bullet": "round",
+                            "bulletBorderAlpha": 1,
+                            "bulletColor": "#FFFFFF",
+                            "bulletSize": 5,
+                            "hideBulletsCount": 50,
+                            "lineThickness": 2,
+                            "title": "red line",
+                            "useLineColorForBulletBorder": true,
+                            "valueField": "value",
+                            "balloonText": "<span style='font-size:18px;'>[[value]]</span>"
+                        }],
+                        "chartScrollbar": {
+                            "graph": "g1",
+                            "oppositeAxis":false,
+                            "offset":15,
+                            "scrollbarHeight": 80,
+                            "backgroundAlpha": 0,
+                            "selectedBackgroundAlpha": 0.1,
+                            "selectedBackgroundColor": "#888888",
+                            "graphFillAlpha": 0,
+                            "graphLineAlpha": 0.5,
+                            "selectedGraphFillAlpha": 0,
+                            "selectedGraphLineAlpha": 1,
+                            "autoGridCount":true,
+                            "color":"#AAAAAA"
+                        },
+                        "chartCursor": {
+                            "pan": true,
+                            "valueLineEnabled": true,
+                            "valueLineBalloonEnabled": true,
+                            "cursorAlpha":1,
+                            "cursorColor":"#258cbb",
+                            "limitToGraph":"g1",
+                            "valueLineAlpha":0.2
+                        },
+                        "valueScrollbar":{
+                          "oppositeAxis":false,
+                          "offset":50,
+                          "scrollbarHeight":10
+                        },
+                        "categoryField": "date",
+                        "categoryAxis": {
+                            "parseDates": true,
+                            "dashLength": 1,
+                            "minorGridEnabled": true
+                        },
+                        "export": {
+                            "enabled": true
+                        },
+                        "dataProvider": [""")
+
+        if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
+            DATE_CONS_YEAR = DateTime().year()
+
+        date_stop = datetime.now().date()
+        date_start = date_stop - timedelta(days=90)
+
+        date_value = []
+        for dt in rrule.rrule(rrule.DAILY, dtstart=date_start, until=date_stop):
+            date = dt.date()
+            LOG.info(date)
+            frequentation = dates_dict[date] if date in dates_dict else 0
+            date_value.append("""{"date": "%s", "value": %s}""" % (date, frequentation))
+        graph.append(",\n".join(date_value))
+        graph.append("""]
+                        });
+                        chart.addListener("rendered", zoomChart);
+                        zoomChart();
+
+                        function zoomChart() {
+                            chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
+                        }""")
+        graph.append("</script>")
+        LOG.info("\n".join(graph))
+        return "\n".join(graph)
 
     def isBDD(self):
         if not self._urlConnexion:

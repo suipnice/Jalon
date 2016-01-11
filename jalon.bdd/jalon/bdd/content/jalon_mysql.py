@@ -168,6 +168,13 @@ def getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year):
     return nbConsultations
 
 
+def getFrequentationByCoursByUniversityYearForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR):
+    LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+    nbConsultations = session.query(func.date(COC.DATE_CONS), func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(func.date(COC.DATE_CONS))
+    return nbConsultations
+
+
 def getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year='%', elements_list=[]):
     #LOG.info("----- getConsultationByElementsByCoursByMonth -----")
     COC = aliased(tables.ConsultationCoursMySQL)

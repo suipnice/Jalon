@@ -85,7 +85,7 @@ class IndicateursView(BrowserView):
         return element_by_type_dict
 
     def getIndicateursGeneralitesView(self):
-        #LOG.info("----- getIndicateursGeneralitesView -----")
+        LOG.info("----- getIndicateursGeneralitesView -----")
         thead_th_list = [{"data-sort": "public",
                           "th_title":  "les consultations par public",
                           "th_text":   "Public"},
@@ -126,8 +126,6 @@ class IndicateursView(BrowserView):
 
         graph = ""
         requete = self.context.getConsultationByCoursByUniversityYearForGraph().all()
-        #if requete:
-        #    graph = self.context.genererGraphIndicateurs(dict(requete))
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -141,13 +139,21 @@ class IndicateursView(BrowserView):
                 pass
             graph = self.context.genererGraphIndicateurs(requete_dict)
 
-        return {"macro":              "indicateurs_generalite",
-                "created":            jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
-                "modified":           jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
-                "thead_th_list":      thead_th_list,
-                "nb_element_by_type": nb_element_by_type,
-                "cours_consultation": self.context.getConsultation(),
-                "graph":              graph}
+        requete2 = self.context.getFrequentationByCoursByUniversityYearForGraph("Etudiant").all()
+        LOG.info(requete2)
+        if requete2:
+            requete_dict = dict(requete2)
+            frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
+            #LOG.info(frequentation_graph)
+
+        return {"macro":               "indicateurs_generalite",
+                "created":             jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
+                "modified":            jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
+                "thead_th_list":       thead_th_list,
+                "nb_element_by_type":  nb_element_by_type,
+                "cours_consultation":  self.context.getConsultation(),
+                "graph":               graph,
+                "frequentation_graph": frequentation_graph}
 
     def getIndicateursRessourcesView(self):
         #LOG.info("----- getIndicateursRessourcesView -----")
