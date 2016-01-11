@@ -100,6 +100,7 @@
                     Webconférences : <tal:replace replace="nb_element_by_type/Webconference"/><br/>
                     Ressources externes : <tal:replace replace="nb_element_by_type/Externes"/><br/>
                     Présentations sonorisées : <tal:replace replace="nb_element_by_type/Presentations"/><br/>
+                    Vidéos : <tal:replace replace="nb_element_by_type/Video"/><br/>
                 </div>
                 <div >
                     <h3>

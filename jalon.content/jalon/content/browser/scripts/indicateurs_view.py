@@ -104,6 +104,7 @@ class IndicateursView(BrowserView):
                               "Fichiers":       0,
                               "Webconference":  0,
                               "Externes":       0,
+                              "Video":          0,
                               "Presentations":  0,
                               "BoiteDepot":     0,
                               "AutoEvaluation": 0,
