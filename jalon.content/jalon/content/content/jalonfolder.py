@@ -1024,8 +1024,8 @@ class JalonFolder(ATFolder):
                     duplicataObjet.setProperties(param)
 
                     # Met a jour les relatedItems des documents.
-                    infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1039,14 +1039,20 @@ class JalonFolder(ATFolder):
                     duplicataObjet.setJalonProperties(activite.getDicoProperties())
 
                     # Met a jour les relatedItems des documents et exercices.
-                    infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
-                    #ici il faudrait retirer l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
+                    #On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
+                    del infos_element[key]
+                    duplicata.setElementsCours(infos_element)
+                    #On retire également l'objet des infos_elementdu cours d'origine, afin de corriger le bug.
+                    cours.setElementsCours(infos_element)
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
-                    self.wims("verifierRetourWims", {"rep": rep, "fonction": "jalonfolder.py/dupliquerCours", "message": "ID cours : %s | ID objet : %s | infos_element = %s" % (idcours, key, infos_element)})
+                    self.wims("verifierRetourWims", {"rep": rep,
+                                                     "fonction": "jalonfolder.py/dupliquerCours",
+                                                     "message": "ID cours : %s | ID objet : %s | L'id a été supprimé des 2 cours, ce bug ne devrait plus survenir ici." % (idcours, key)})
 
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
