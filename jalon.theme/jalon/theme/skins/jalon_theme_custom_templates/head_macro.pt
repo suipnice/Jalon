@@ -108,6 +108,10 @@
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/serial.js"></script>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/themes/light.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.min.js"></script>
+        <link rel="stylesheet"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
     </tal:isManager>
 
     </head>
