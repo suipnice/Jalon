@@ -182,6 +182,7 @@ Mauvaise réponse n°2</pre>
                     </div>
                 </div>
                 <div class="row">
+
                     <div class="medium-6 columns">
                         <div class="panel" tal:define="alea QCM_parsed/alea | string:yes">
                             <label for="alea">Ordre aléatoire</label>
@@ -208,8 +209,8 @@ Mauvaise réponse n°2</pre>
 
                 <metal:macro use-macro="context/macro_commune/macros/credits"/>
 
-                <!--div class="row equalize_height">
-                    <div class="small-12 medium-6 columns"-->
+                <div class="row equalize_height">
+                    <div class="medium-6 columns">
                         <div class="panel" tal:define="columns QCM_parsed/columns | string:1">
                             <a href="#reveal_columns" class="button tiny radius right" data-reveal-id="reveal_columns">
                                 <i class="fa fa-question"></i>
@@ -236,9 +237,27 @@ Mauvaise réponse n°2</pre>
                                 <div i18n:translate="">Notez que sur <a href="http://caniuse.com/#search=flex" target="_blank">certains anciens navigateurs internet</a>, cette fonctionalité peut ne pas fonctionner.</div>
                             </div>
                         </div>
-                    <!--/div>
+                    </div>
 
-                    <div class="small-12 medium-6 columns">
+                    <div class="medium-6 columns">
+                        <div class="panel" tal:define="anstype QCM_parsed/anstype | string:checkbox">
+                            <label for="anstype">Autoriser plusieurs réponses</label>
+                            <div class="formHelp texte_icone icone_information">Permet à l'apprenant de cocher plusieurs réponses par question.</div>
+                            <input type="radio" name="anstype" id="anstype_checkbox" value="checkbox"
+                                   tal:attributes="checked python:context.test(anstype=='checkbox', 'checked', '')"/>
+                            <label for="anstype_checkbox"
+                                   class="activer">
+                                <i class="fa fa-check"></i><tal:block i18n:translate="">Activé</tal:block>
+                            </label>
+                            <input type="radio" name="anstype" id="anstype_radio" value="radio"
+                                   tal:attributes="checked python:context.test(anstype=='radio', 'checked', '')"/>
+                            <label for="anstype_radio"
+                                   class="desactiver">
+                                <i class="fa fa-times"></i><tal:block i18n:translate="">Désactivé</tal:block>
+                            </label>
+                          </div>
+                    </div>
+                    <!--div class="small-12 medium-6 columns">
                         <div class="panel" tal:define="equalizer QCM_parsed/equalizer | string:no">
                             <a href="#reveal_equalizer" class="button tiny radius right" data-reveal-id="reveal_equalizer">
                                 <i class="fa fa-question"></i>
@@ -257,8 +276,8 @@ Mauvaise réponse n°2</pre>
                                 <div>Lorsque cette option est activée, l'ensemble des blocs de questions s'afficheront avec la même hauteur de bloc, soit la hauteur de la question la plus longue de la page.</div>
                             </div>
                         </div>
-                    </div>
-                </div-->
+                    </div-->
+                </div>
 
             </div>
         </dd>

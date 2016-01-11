@@ -126,6 +126,9 @@ function readSwitcher( ) {
     Pseudo-constantes et variables globales
 */
 
+// Chemin de base CKEditor
+var CKEDITOR_BASEPATH = '/++resource++jalon.theme.javascript/ckeditor/';
+
 // Message d'actualisation en cours
 var MSG_LOADING = '<i class="fa fa-spin fa-refresh"></i>' + MSG_LOADING_TEXT;
 

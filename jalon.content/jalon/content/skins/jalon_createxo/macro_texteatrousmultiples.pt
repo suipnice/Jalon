@@ -74,6 +74,14 @@
         </div>
 
         <dl class="accordion" data-accordion="data-accordion">
+
+            <dd class="accordion-navigation">
+                <a href="#param_avances" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <div id="param_avances" class="content">
+                    <metal:macro use-macro="context/macro_commune/macros/hint_and_help"/>
+                    <metal:macro use-macro="context/macro_commune/macros/credits"/>
+                </div>
+            </dd>
             <dd class="accordion-navigation">
                 <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
                 <div id="usages_avances" class="content">

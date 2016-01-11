@@ -104,10 +104,6 @@
     <tal:block define="extraFiles python:jsBuffer.getExtraFiles()"
                condition="extraFiles">
         <tal:repeat repeat="extraFile extraFiles">
-        <tal:comment replace="nothing"><!--
-        <script charset="UTF-8"
-                tal:attributes="src string:${context/absolute_url}/${extraFile}"></script>
-        --></tal:comment>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/${extraFile}"></script>
         </tal:repeat>

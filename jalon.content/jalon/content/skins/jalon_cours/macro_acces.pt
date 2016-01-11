@@ -371,7 +371,7 @@
 
     </form>
 
-    <form id="js-mailRegistration" class="itemAdder" method="POST"
+    <form id="js-mailRegistration" class="no_reveal_action itemAdder" method="POST"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
         <fieldset class="row hide">
