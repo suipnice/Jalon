@@ -6,7 +6,7 @@
         - “_base.css”   ->  commenter le bloc « UNS » / décommenter le bloc « Campus Pegasus »
         - “app.css”     ->  decommenter le bloc « Campus Pegasus » en fin de fichier
 
-    Correctif bug expand 5.5.3 --> L1031-1035
+    Correctif “expand” 5.5.3 --> L1107
 */
 
 
@@ -15,20 +15,27 @@
 $iconPadding: .3em;
 
 
-// Imports
+/*
+        Imports
+
+    Changer l'extension de “./bower_components/datetimepicker/jquery.datetimepicker.css”
+    en “.scss” en cas de maj.
+
+*/
 @import "base";
 @import "jalon/mixins";
 @import "jalon/icons";
 @import "jalon/forms";
-@import "jalon/quickupload";
-@import "jalon/tokeninput";
-//@import "jquery.datetimepicker";
-@import "jalon/jquery.datetimepicker";
+@import "jalon/quickupload/fileuploader";
+@import "jalon/quickupload/quickupload";
+@import "jalon/tokeninput/tokeninput";
+@import "jquery.datetimepicker";
 
 
 
 /*
-    Font-Awesome
+        Font-Awesome
+
 */
 
 i.fa {
@@ -107,7 +114,8 @@ section > h2:first-child { margin-top: 0; }
 
 
 /*
-    Liens etc. : carré bleu “accessible”…
+        Liens etc. : carré bleu “accessible”…
+
 */
 
 a:focus,
@@ -116,7 +124,8 @@ button:focus { border: 0 none; outline: 0; }
 
 
 /*
-    Fil d'ariane
+        Fil d'ariane
+
 */
 
 #breadcrumb {
@@ -162,7 +171,8 @@ button:focus { border: 0 none; outline: 0; }
 
 
 /*
-    Navigation de gestion des items
+        Navigation de gestion des items
+
 */
 
 #item-adder {
@@ -193,7 +203,8 @@ button:focus { border: 0 none; outline: 0; }
 
 
 /*
-    Groupe de boutons type "onglets"
+        Groupe de boutons type “onglets”
+
 */
 
 #tab_button-group {
@@ -223,7 +234,8 @@ button:focus { border: 0 none; outline: 0; }
 
 
 /*
-    Pied de page
+        Pied de page
+
 */
 
 footer {
@@ -260,13 +272,14 @@ footer {
 
 /***************************************************************************************************
 
-        Éléments “ Foundation ”
+        Éléments “Foundation”
 
 */
 
 
 /*
-    Top bar
+        Top bar
+
 */
 
 .top-bar {
@@ -312,7 +325,8 @@ footer {
 
 
 /*
-    Panel
+        Panel
+
 */
 
 $side-panel-padding: rem-calc( 6 8 8 );
@@ -504,7 +518,8 @@ aside .panel {
 
 
 /*
-    Label
+        Label
+
 */
 
 .label {
@@ -520,7 +535,8 @@ aside .panel {
 
 
 /*
-    Accordion
+        Accordion
+
 */
 
 .accordion-navigation {
@@ -539,7 +555,8 @@ aside .panel {
 
 
 /*
-    Tooltip
+        Tooltip
+
 */
 
 .tooltip {
@@ -550,7 +567,8 @@ aside .panel {
 
 
 /*
-    Dropdown
+        Dropdown
+
 */
 
 .dropdown.button.small:after,
@@ -593,7 +611,8 @@ button.dropdown.small:after { right: .5rem; }
 
 
 /*
-    Reveal / Alert-box etc.
+        Reveal / Alert-box etc.
+
 */
 
 // Boîtes d'info
@@ -766,7 +785,8 @@ button.dropdown.small:after { right: .5rem; }
 
 
 /*
-    Tableaux
+        Tableaux
+
 */
 
 table {
@@ -971,7 +991,8 @@ table {
 
 
 /*
-    Filtrage des listes
+        Filtrage des listes
+
 */
 
 #js-tag_filter {
@@ -1011,7 +1032,8 @@ a.filter-button {
 
 
 /*
-    Icônes de tri (titres de colonnes)
+        Icônes de tri (titres de colonnes)
+
 */
 
 .sort {
@@ -1059,7 +1081,8 @@ a.filter-button {
 
 
 /*
-    Boutons
+        Boutons
+
 */
 
 button, .button {
@@ -1081,7 +1104,7 @@ button, .button {
         &.warning { @include button-style( $warning-color, false, false, scale-color( $warning-color, $lightness: $button-function-factor), $button-border-color ); }
         &.alert { @include button-style( $alert-color, false, false, scale-color( $alert-color, $lightness: $button-function-factor), $button-border-color ); }
     }
-    // Correctif bug expand 5.5.3 -->
+    // Correctif “expand” Foundation 5.5.3 -->
     &.expand.large { @include button-size( $padding: $button-lrg, $full-width: true ); }
     &.expand.small { @include button-size( $padding: $button-sml, $full-width: true ); }
     &.expand.tiny { @include button-size( $padding: $button-tny, $full-width: true ); }
@@ -1295,7 +1318,8 @@ code {
 
 
 /*
-    Plan du cours
+        Plan du cours
+
 */
 
 #course_plan {
@@ -1568,7 +1592,8 @@ code {
 
 
 /*
-    Onglets “Vie du cours”
+        Onglets “Vie du cours”
+
 */
 
 #course_life {
@@ -1674,7 +1699,7 @@ code {
 
 
 /*
-    Accès et préférences
+        Accès et préférences
 
 #mes_cours-acces {
 
