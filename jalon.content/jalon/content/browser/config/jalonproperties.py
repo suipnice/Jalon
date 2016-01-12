@@ -974,14 +974,27 @@ class JalonProperties(SimpleItem):
         if portal_jalon_elasticsearch:
             elasticsearch_properties = portal_jalon_elasticsearch.getPropertiesElasticsearch()
             if not elasticsearch_properties["url_connexion"] or elasticsearch_properties["url_connexion"] == "http://domainname.com/":
-                return {"module"  : False,
-                        "message" : "Le module Elasticsearch de Jalon n'est pas configuré"}
+                return {"module":  False,
+                        "message": "Le module Elasticsearch de Jalon n'est pas configuré"}
             else:
-                return {"module"  : True,
-                        "message" : "Test"}
+                return {"module":  True,
+                        "message": "Test"}
         else:
-            return {"module"  : False,
-                    "message" : "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+
+    #----------------#
+    # Fonction Wowza #
+    #----------------#
+    def getWowzaProperties(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getWowzaProperties()
+
+    def setWowzaProperties(self, wowzaProperties):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.setWowzaProperties(wowzaProperties)
 
     #-------------------------------#
     # Fonction Communication NodeJS #

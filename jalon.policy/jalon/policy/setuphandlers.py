@@ -20,7 +20,7 @@ def installHandler(self):
     if self.readDataFile('jalon.policy-install.txt') is None:
         return
 
-    listeInstall = ["collective.quickupload", "collective.js.jqueryui", "jalon.content", "jalon.theme", "jalon.bdd", "jalon.pas.bdd", "jalon.connect", "jalon.wims", "jalon.primo", "jalon.elasticsearch", "anz.casclient", "plone.app.ldap", "Products.Ploneboard"]
+    listeInstall = ["collective.quickupload", "collective.js.jqueryui", "jalon.content", "jalon.theme", "jalon.bdd", "jalon.pas.bdd", "jalon.connect", "jalon.wims", "jalon.primo", "jalon.elasticsearch", "jalon.wowza", "anz.casclient", "plone.app.ldap", "Products.Ploneboard"]
     if self.readDataFile('jalon.policy-recipe.txt') is not None:
         listeInstall = listeInstall.append("jalon.theme")
 

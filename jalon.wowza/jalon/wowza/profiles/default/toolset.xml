@@ -1,0 +1,6 @@
+<?xml version="1.1"?>
+<tool-setup>
+  <required tool_id="portal_jalon_wowza"
+            class="jalon.wowza.content.jalonwowza.JalonWowza"/>
+</tool-setup>
+

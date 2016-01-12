@@ -708,8 +708,33 @@
         </div>
     </div>
 </tal:define>
-
 </metal:macro>
+
+<!--
+        Connexion Wowza
+-->
+<metal:macro define-macro="gestion_wowza">
+    <h2>
+        <i class="fa fa-puzzle-piece"></i><tal:block i18n:translate="">Configuration du module Wowza</tal:block>
+    </h2>
+<tal:define define="wowza context/getWowzaProperties">
+    <div class="row"
+         tal:condition="wowza">
+        <metal:macro use-macro="context/macro_formulaire_wowza/macros/formulaire_wowza">
+            Macro de gestion
+        </metal:macro>
+    </div>
+    <div class="row"
+         tal:condition="not:wowza">
+        <div class="columns">
+            <div class="panel warning radius">
+                Vous n'avez pas de module Wowza compatible avec Jalon installé.
+            </div>
+        </div>
+    </div>
+</tal:define>
+</metal:macro>
+
 
 </metal:content-core>
 

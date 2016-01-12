@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.wowza">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="formulaire_wowza">
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigWowza"
+          tal:condition="wowza">
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_server" i18n:translate="wowza_server">
+                        Url du serveur Wowza
+                    </label>
+                    <input type="text" name="wowza_server"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_server | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_application" i18n:translate="wowza_application">
+                        Application Wowza
+                    </label>
+                    <input type="text" name="wowza_application"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_application | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_secret" i18n:translate="wowza_secret">
+                        Secret Wowza
+                    </label>
+                    <input type="text" name="wowza_secret"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_secret | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_sha" i18n:translate="wowza_sha">
+                        Méthode d'encodage SHA sur Wowza
+                    </label>
+                    <input type="text" name="wowza_sha"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_sha | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Enregistrer"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>
