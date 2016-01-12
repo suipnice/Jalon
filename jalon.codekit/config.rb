@@ -2,7 +2,7 @@ require 'compass/import-once/activate'
 # Require any additional compass plugins here.
 add_import_path "bower_components/foundation/scss"
 add_import_path "bower_components/font-awesome/scss"
-#add_import_path "bower_components/datetimepicker"
+add_import_path "bower_components/datetimepicker"
 
 
 # Set this to the root of your project when deployed:
