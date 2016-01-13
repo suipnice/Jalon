@@ -963,10 +963,10 @@ class JalonProperties(SimpleItem):
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         portal_elasticsearch.setPropertiesElasticsearch(propertiesElasticsearch)
 
-    def searchElasticsearch(self):
+    def searchElasticsearch(self, type_search=None, term_search=None, page=1):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
-        return portal_elasticsearch.searchElasticsearch()
+        return portal_elasticsearch.searchElasticsearch(type_search, term_search, page)
 
     def isElasticsearch(self):
         portal = self.portal_url.getPortalObject()
@@ -995,6 +995,11 @@ class JalonProperties(SimpleItem):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         portal_jalon_wowza.setWowzaProperties(wowzaProperties)
+
+    def searchExtraits(self, page):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page)
 
     #-------------------------------#
     # Fonction Communication NodeJS #
