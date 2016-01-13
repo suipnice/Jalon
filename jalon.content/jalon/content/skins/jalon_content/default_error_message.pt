@@ -43,7 +43,7 @@
                     <p i18n:translate="description_site_error">
                         We apologize for the inconvenience, but the page you were trying to access is not at this address.
                         You can use the links below to help you find what you are looking for.
-                     </p>
+                    </p>
                 </div>
             </tal:redirect>
 
