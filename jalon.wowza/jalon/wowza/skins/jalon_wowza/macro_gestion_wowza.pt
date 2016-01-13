@@ -10,12 +10,12 @@
 
 <metal:content-core fill-slot="content-core">
 
-<metal:macro define-macro="formulaire_wowza">
+<metal:macro define-macro="wowza_config">
     <form method="post" class="text-center"
           tal:attributes="action string:${context/absolute_url}/saveConfigWowza"
           tal:condition="wowza">
         <div class="row">
-            <div class="columns">
+            <div class="columns medium-6">
                 <div class="panel callout radius">
                     <label for="wowza_server" i18n:translate="wowza_server">
                         Url du serveur Wowza
@@ -25,9 +25,7 @@
                            tal:attributes="value wowza/wowza_server | nothing" />
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="columns">
+            <div class="columns medium-6">
                 <div class="panel callout radius">
                     <label for="wowza_application" i18n:translate="wowza_application">
                         Application Wowza
@@ -39,7 +37,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="columns">
+            <div class="columns medium-6">
                 <div class="panel callout radius">
                     <label for="wowza_secret" i18n:translate="wowza_secret">
                         Secret Wowza
@@ -49,9 +47,7 @@
                            tal:attributes="value wowza/wowza_secret | nothing" />
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="columns">
+            <div class="columns medium-6">
                 <div class="panel callout radius">
                     <label for="wowza_sha" i18n:translate="wowza_sha">
                         Méthode d'encodage SHA sur Wowza
@@ -62,6 +58,50 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_server" i18n:translate="pod_server">
+                        Serveur Pod (extraits)
+                    </label>
+                    <input type="text" name="pod_server"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_server | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_user" i18n:translate="pod_user">
+                        Utilisateur Pod (extraits)
+                    </label>
+                    <input type="text" name="pod_user"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_user | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_elasticsearch_port" i18n:translate="pod_elasticsearch_port">
+                        Port Elasticsearch Pod
+                    </label>
+                    <input type="text" name="pod_elasticsearch_port"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_elasticsearch_port | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_elasticsearch_index" i18n:translate="pod_elasticsearch_index">
+                        Index Elasticsearch Pod
+                    </label>
+                    <input type="text" name="pod_elasticsearch_index"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_elasticsearch_index | nothing" />
+                </div>
+            </div>
+        </div>
         <input type="hidden" name="gestion"
                tal:attributes="value gestion"/>
         <div class="formControls">
@@ -69,6 +109,13 @@
                    i18n:attributes="value label_save;"/>
         </div>
     </form>
+</metal:macro>
+
+<metal:macro define-macro="wowza_extraits">
+
+    <h2>Vide</h2>
+    <div class="panel radius">Vide</div>
+
 </metal:macro>
 
 </metal:content-core>

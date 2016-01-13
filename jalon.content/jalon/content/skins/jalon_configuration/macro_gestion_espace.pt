@@ -690,7 +690,7 @@
 -->
 <metal:macro define-macro="gestion_elasticsearch">
     <h2>
-        <i class="fa fa-puzzle-piece"></i><tal:block i18n:translate="">Configuration du module Elasticsearch (Pod)</tal:block>
+        <i class="fa fa-youtube-play"></i><tal:block i18n:translate="">Configuration du module Elasticsearch (Pod)</tal:block>
     </h2>
 <tal:define define="elasticsearch context/getPropertiesElasticsearch">
     <div class="row"
@@ -714,16 +714,40 @@
         Connexion Wowza
 -->
 <metal:macro define-macro="gestion_wowza">
+<tal:define define="wowza context/getWowzaProperties;
+                    onglet request/onglet | string:wowza_config">
     <h2>
-        <i class="fa fa-puzzle-piece"></i><tal:block i18n:translate="">Configuration du module Wowza</tal:block>
+        <i class="fa fa-video-camera"></i><tal:block i18n:translate="">Configuration du module Wowza</tal:block>
     </h2>
-<tal:define define="wowza context/getWowzaProperties">
+
+    <section class="small-12 columns">
+        <ul class="button-group radius even-2">
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wowza&amp;onglet=wowza_config;
+                                   class python:context.test(onglet == 'wowza_config', 'button small', 'button small secondary')"
+                   i18n:translate="ongletConfiguration">
+                    <i class="fa fa-cog"></i>
+                    Configuration
+                </a>
+            </li>
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wowza&amp;onglet=wowza_extraits;
+                                   class python:context.test(onglet == 'wowza_extraits', 'button small', 'button small secondary')"
+                   i18n:translate="ongletExtraits">
+                    <i class="fa fa-list"></i>
+                    Extraits
+                </a>
+            </li>
+        </ul>
+    </section>
+
     <div class="row"
          tal:condition="wowza">
-        <metal:macro use-macro="context/macro_formulaire_wowza/macros/formulaire_wowza">
-            Macro de gestion
+        <metal:macro use-macro="python:context.macro_gestion_wowza.macros.get(onglet)">
+            Macro d'affichage d'un onglet
         </metal:macro>
     </div>
+
     <div class="row"
          tal:condition="not:wowza">
         <div class="columns">

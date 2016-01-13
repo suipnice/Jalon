@@ -117,10 +117,10 @@ div.panel label{
                 </a>
             </li>
         </ul>
-        <metal:macro use-macro="python:context.macro_gestion_espace.macros[gestion]">
-            Macro de gestion
-        </metal:macro>
     </section>
+    <metal:macro use-macro="python:context.macro_gestion_espace.macros[gestion]">
+        Macro de gestion
+    </metal:macro>
 </main>
 
 </metal:core>
