@@ -13,7 +13,7 @@
 <tal:define define="pod request/pod;
                     video python:context.searchElasticsearch('video', pod);">
     <h2>
-        <tal:replace replace="video/title"/> : Autoriser le streaming
+        <tal:replace replace="video/title"/> : Bloquer le Streaming
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -27,35 +27,20 @@
          Description non renseignée…
     </div>
 
-    <div class="panel radius"
-         tal:content="structure video/text"
-         tal:condition="video/text">
-         Description
-    </div>
-
     <form method="post"
           tal:attributes="action string:${context/absolute_url}/modify_streaming_script">
 
-        <div class="text-center" i18n:translate="">
-            <strong>Date d'expiration des droits de streaming de la vidéo</strong>
-        </div>
-
-        <div id="archetypes-fieldname-expiration_date" class="field">
-
-            <div class="formControls">
-                <input id="datetime-expiration_date" name="datetime-expiration_date" type="datetime"
-                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"/>
-            </div>
-
+        <div class="panel callout alert">
+            <strong>Attention :</strong> vous allez interdire le streaming de cette vidéo depuis Jalon, pour confirmer votre choix cliquez sur le bouton "Bloquer".
         </div>
 
         <input type="hidden" name="pod" tal:attributes="value request/pod"/>
 
         <div class="formControls">
-            <button type="submit" class="button small"
+            <button type="submit" class="button small alert"
                     name="form.button.save">
-                <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Enregistrer</tal:block>
+                <i class="fa fa-chain-broken"></i>
+                <tal:block i18n:translate="">Bloquer</tal:block>
             </button>
         </div>
 

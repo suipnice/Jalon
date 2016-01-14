@@ -70,10 +70,12 @@ class JalonWowza(SimpleItem):
             streaming_available_ids = self.getKeyStreamingAvailable()
             for fiche in result["hits"]["hits"]:
                 pod_id = str(fiche["_source"]["id"])
-                streaming_available = "fa fa-video-camera alert"
+                is_streaming = False
+                streaming_available = "fa fa-video-camera alert right"
                 expiration_date = "Streaming interdit"
                 if pod_id in streaming_available_ids:
-                    streaming_available = "fa fa-video-camera success"
+                    is_streaming = True
+                    streaming_available = "fa fa-video-camera success right"
                     expiration_date = "Streaming autorisé jusqu'au %s" % jalon_utils.getLocaleDate(self.getStreamingAvailable(pod_id), '%d %B %Y - %Hh%M')
                 resultat["liste_videos"].append({"id":                  pod_id,
                                                  "full_url":            fiche["_source"]["full_url"],
@@ -82,6 +84,7 @@ class JalonWowza(SimpleItem):
                                                  "owner_full_name":     fiche["_source"]["owner_full_name"].encode("utf-8"),
                                                  "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
                                                  "text":                fiche["_source"]["description"].encode("utf-8"),
+                                                 "is_streaming":        is_streaming,
                                                  "streaming_available": streaming_available,
                                                  "expiration_date":     expiration_date})
 

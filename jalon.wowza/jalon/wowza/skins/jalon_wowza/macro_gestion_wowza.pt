@@ -158,13 +158,15 @@
                                i18n:attributes="title"></i>
 
                     --></tal:comment>
+                        </div>
+
+                        <h4 tal:attributes="title video/title">
+
                             <i tal:attributes="class video/streaming_available;
                                                title video/expiration_date"
                                i18n:attributes="title"></i>
-                        </div>
-
-                        <h4 tal:attributes="title video/title"
-                            tal:content="python:context.getShortText(video['title'], 20)"/>
+                            <tal:block replace="python:context.getShortText(video['title'], 20)"/>
+                        </h4>
 
                         <p>
                             <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
@@ -180,20 +182,21 @@
                             </div>
                         </a>
 
-                        <div class="formControls">
-                            <a class="button tiny" title="Voir la vidéo"
-                               data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
-                               i18n:attributes="title">
-                                <i class="fa fa-youtube-play"></i>
-                                <tal:block i18n:translate="">Voir</tal:block>
-                            </a>
-                            <a class="button tiny create" title="Autoriser le streaming"
+                        <div class="text-center">
+                            <a class="button tiny" title="Autoriser le streaming"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"
                                tal:attributes="href string:${context/absolute_url}/modify_streaming?pod=${video/id}"
                                i18n:attributes="title">
                                 <i class="fa fa-video-camera"></i>
-                                <tal:block i18n:translate="">Streaming</tal:block>
+                                <tal:block i18n:translate="">Streamer</tal:block>
+                            </a>
+                            <a class="button tiny alert" title="Bloquer le streaming"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/forbid_streaming?pod=${video/id}"
+                               tal:condition="video/is_streaming"
+                               i18n:attributes="title">
+                                <i class="fa fa-chain-broken"></i>
+                                <tal:block i18n:translate="">Bloquer</tal:block>
                             </a>
                         </div>
 
