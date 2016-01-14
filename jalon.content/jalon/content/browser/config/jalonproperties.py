@@ -19,6 +19,10 @@ from DateTime import DateTime
 import json
 import copy
 
+# Messages de debug :
+from logging import getLogger
+LOG = getLogger('[JalonProperties]')
+
 
 class JalonProperties(SimpleItem):
 
@@ -1000,6 +1004,16 @@ class JalonProperties(SimpleItem):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         return portal_jalon_wowza.searchExtraits(page)
+
+    def modifyStreaming(self, params):
+        LOG.info("----- modifyStreaming -----")
+        LOG.info(params)
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if "datetime-expiration_date" in params:
+            portal_jalon_wowza.modifyStreaming(params["pod"], params["datetime-expiration_date"])
+        else:
+            portal_jalon_wowza.modifyStreaming(params["pod"])
 
     #-------------------------------#
     # Fonction Communication NodeJS #

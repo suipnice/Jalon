@@ -2,11 +2,10 @@
 from zope.interface import implements
 from OFS.SimpleItem import SimpleItem
 
-from Products.CMFCore.utils import getToolByName
-
-#from Products.CMFCore.utils import getToolByName
+from persistent.dict import PersistentDict
 
 from interfaces import IJalonWowza
+from jalon.content.content import jalon_utils
 
 from math import ceil
 from elasticsearch import Elasticsearch
@@ -29,6 +28,8 @@ class JalonWowza(SimpleItem):
     _pod_user = "wowza"
     _pod_elasticsearch_port = 9200
     _pod_elasticsearch_index = "pod"
+
+    _streaming_available = {}
 
     def __init__(self, *args, **kwargs):
         super(JalonWowza, self).__init__(*args, **kwargs)
@@ -66,13 +67,44 @@ class JalonWowza(SimpleItem):
         nb_pages = float(count["count"] / 12.0)
         resultat["nb_pages"] = int(ceil(nb_pages))
         if result:
+            streaming_available_ids = self.getKeyStreamingAvailable()
             for fiche in result["hits"]["hits"]:
-                resultat["liste_videos"].append({"id":              fiche["_source"]["id"],
-                                                 "full_url":        fiche["_source"]["full_url"],
-                                                 "title":           fiche["_source"]["title"].encode("utf-8"),
-                                                 "owner":           fiche["_source"]["owner"],
-                                                 "owner_full_name": fiche["_source"]["owner_full_name"].encode("utf-8"),
-                                                 "thumbnail":       fiche["_source"]["thumbnail"].encode("utf-8"),
-                                                 "text":            fiche["_source"]["description"].encode("utf-8")})
+                pod_id = str(fiche["_source"]["id"])
+                streaming_available = "fa fa-video-camera alert"
+                expiration_date = "Streaming interdit"
+                if pod_id in streaming_available_ids:
+                    streaming_available = "fa fa-video-camera success"
+                    expiration_date = "Streaming autorisé jusqu'au %s" % jalon_utils.getLocaleDate(self.getStreamingAvailable(pod_id), '%d %B %Y - %Hh%M')
+                resultat["liste_videos"].append({"id":                  pod_id,
+                                                 "full_url":            fiche["_source"]["full_url"],
+                                                 "title":               fiche["_source"]["title"].encode("utf-8"),
+                                                 "owner":               fiche["_source"]["owner"],
+                                                 "owner_full_name":     fiche["_source"]["owner_full_name"].encode("utf-8"),
+                                                 "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
+                                                 "text":                fiche["_source"]["description"].encode("utf-8"),
+                                                 "streaming_available": streaming_available,
+                                                 "expiration_date":     expiration_date})
 
         return resultat
+
+    def getStreamingAvailable(self, key=None):
+        if key:
+            return self._streaming_available.get(key, None)
+        return self._streaming_available
+
+    def getKeyStreamingAvailable(self):
+        return self._streaming_available.keys()
+
+    def setStreamingAvailable(self, streaming_available):
+        if type(self._streaming_available).__name__ != "PersistentMapping":
+            self._streaming_available = PersistentDict(streaming_available)
+        else:
+            self._streaming_available = streaming_available
+
+    def modifyStreaming(self, pod, expiration_date=None):
+        streaming_available = self.getStreamingAvailable()
+        if expiration_date:
+            streaming_available[pod] = expiration_date
+        else:
+            del streaming_available[pod]
+        self.setStreamingAvailable(streaming_available)

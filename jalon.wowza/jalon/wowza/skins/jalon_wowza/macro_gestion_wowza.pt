@@ -146,56 +146,60 @@
                 <tal:replace replace="videos/count"/>
             </div>
 
-                <ul id="elasticsearch" class="small-block-grid-4">
-                    <li tal:repeat="video videos/liste_videos">
-                        <div class="panel callout radius">
+            <ul id="elasticsearch" class="small-block-grid-4">
+                <li tal:repeat="video videos/liste_videos">
+                    <div class="panel callout radius">
 
-                            <div>
-                        <tal:comment replace="nothing"><!--
+                        <div>
+                    <tal:comment replace="nothing"><!--
 
-                                <i class="fa fa-lock"
-                                   title="Ce contenu est protégé par un mot de passe."
-                                   i18n:attributes="title"></i>
+                            <i class="fa fa-lock"
+                               title="Ce contenu est protégé par un mot de passe."
+                               i18n:attributes="title"></i>
 
-                        --></tal:comment>
+                    --></tal:comment>
+                            <i tal:attributes="class video/streaming_available;
+                                               title video/expiration_date"
+                               i18n:attributes="title"></i>
+                        </div>
+
+                        <h4 tal:attributes="title video/title"
+                            tal:content="python:context.getShortText(video['title'], 20)"/>
+
+                        <p>
+                            <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
+                        </p>
+
+                        <a title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
+                           i18n:attributes="title"
+                           i18n:translate="">
+                            <div class="flex-video">
+                                <img tal:attributes="src video/thumbnail"/>
                             </div>
+                        </a>
 
-                            <h4 tal:attributes="title video/title"
-                                tal:content="python:context.getShortText(video['title'], 20)"/>
-
-                            <p>
-                                <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
-                            </p>
-
-                            <a title="Voir la vidéo"
+                        <div class="formControls">
+                            <a class="button tiny" title="Voir la vidéo"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"
                                tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
-                               i18n:attributes="title"
-                               i18n:translate="">
-                                <div class="flex-video">
-                                    <img tal:attributes="src video/thumbnail"/>
-                                </div>
+                               i18n:attributes="title">
+                                <i class="fa fa-youtube-play"></i>
+                                <tal:block i18n:translate="">Voir</tal:block>
                             </a>
-
-                            <div class="formControls">
-                                <a class="button tiny" title="Voir la vidéo"
-                                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                                   tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
-                                   i18n:attributes="title">
-                                    <i class="fa fa-youtube-play"></i>
-                                    <tal:block i18n:translate="">Voir</tal:block>
-                                </a>
-                                <a class="button tiny create" title="Autoriser le streaming"
-                                   tal:attributes="href string:${context/absolute_url}"
-                                   i18n:attributes="title">
-                                    <i class="fa fa-plus-circle"></i>
-                                    <tal:block i18n:translate="">Autoriser le streaming</tal:block>
-                                </a>
-                            </div>
-
+                            <a class="button tiny create" title="Autoriser le streaming"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/modify_streaming?pod=${video/id}"
+                               i18n:attributes="title">
+                                <i class="fa fa-video-camera"></i>
+                                <tal:block i18n:translate="">Streaming</tal:block>
+                            </a>
                         </div>
-                    </li>
-                </ul>
+
+                    </div>
+                </li>
+            </ul>
 
             <div id="pagination-container"
                  tal:define="nb_pages videos/nb_pages"
