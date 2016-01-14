@@ -288,6 +288,7 @@ class JalonProperties(SimpleItem):
     _lien_assitance = "https://sourcesup.renater.fr/forum/forum.php?thread_id=3460&forum_id=2232&group_id=832"
     _activer_video = 0
     _url_video = ""
+    _activer_vod = 0
 
     # Gestion du bloc "Réaseaux sociaux"
     _COMPTE_TWITTER = ""
@@ -651,21 +652,22 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_fichiers"                 : self._activer_fichiers,
-                    "activer_presentations_sonorisees" : self._activer_presentations_sonorisees,
-                    "activer_exercices_wims"           : self._activer_exercices_wims,
-                    "activer_liens"                    : self._activer_liens,
-                    "activer_liens_catalogue_bu"       : self._activer_liens_catalogue_bu,
-                    "activer_tags_catalogue_bu"        : self._activer_tags_catalogue_bu,
-                    "activer_lille1pod"                : self._activer_lille1pod,
-                    "activer_termes_glossaire"         : self._activer_termes_glossaire,
-                    "activer_webconferences"           : self._activer_webconferences,
-                    "activer_lien_intracursus"         : self._activer_lien_intracursus,
-                    "lien_intracursus"                 : self._lien_intracursus,
-                    "activer_lien_assistance"          : self._activer_lien_assistance,
-                    "lien_assitance"                   : self._lien_assitance,
-                    "activer_video"                    : self._activer_video,
-                    "url_video"                        : self._url_video}
+            return {"activer_fichiers":                  self._activer_fichiers,
+                    "activer_presentations_sonorisees":  self._activer_presentations_sonorisees,
+                    "activer_exercices_wims":            self._activer_exercices_wims,
+                    "activer_liens":                     self._activer_liens,
+                    "activer_liens_catalogue_bu":        self._activer_liens_catalogue_bu,
+                    "activer_tags_catalogue_bu":         self._activer_tags_catalogue_bu,
+                    "activer_lille1pod":                 self._activer_lille1pod,
+                    "activer_termes_glossaire":          self._activer_termes_glossaire,
+                    "activer_webconferences":            self._activer_webconferences,
+                    "activer_lien_intracursus":          self._activer_lien_intracursus,
+                    "lien_intracursus":                  self._lien_intracursus,
+                    "activer_lien_assistance":           self._activer_lien_assistance,
+                    "lien_assitance":                    self._lien_assitance,
+                    "activer_video":                     self._activer_video,
+                    "url_video":                         self._url_video,
+                    "activer_vod":                       self._activer_vod}
 
     def getGridMonEspace(self, key=None):
         return [{"espace":      "fichiers",
@@ -700,9 +702,14 @@ class JalonProperties(SimpleItem):
                  "icone":       "fa fa-headphones"},
                 {"espace":      "video",
                  "titre":       "Vidéos",
-                 "activer":     True,
+                 "activer":     self._activer_video,
                  "repertoire":  "Video",
-                 "icone":       "fa fa-youtube-play"}]
+                 "icone":       "fa fa-youtube-play"},
+                {"espace":      "vod",
+                 "titre":       "VOD",
+                 "activer":     self._activer_vod,
+                 "repertoire":  "VOD",
+                 "icone":       "fa fa-video-camera"}]
 
     def setPropertiesMonEspace(self, form):
         for key in form.keys():
@@ -1002,6 +1009,21 @@ class JalonProperties(SimpleItem):
     #----------------#
     # Fonction Wowza #
     #----------------#
+    def isVOD(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if portal_jalon_wowza:
+            wowza_properties = portal_jalon_wowza.getWowzaProperties()
+            if not wowza_properties["wowza_server"] or wowza_properties["wowza_server"] == "http://domainname.com":
+                return {"module":  False,
+                        "message": "Le module Wowza de Jalon n'est pas configuré"}
+            else:
+                return {"module":  True,
+                        "message": "Test"}
+        else:
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Wowza installé dans Jalon"}
+
     def getWowzaProperties(self):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)

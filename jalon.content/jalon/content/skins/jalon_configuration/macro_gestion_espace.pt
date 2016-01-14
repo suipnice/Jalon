@@ -106,9 +106,8 @@
             </div>
         </div>
         <div class="row"
-             tal:define="isPrimo context/isPrimo;
-                         isElasticsearch context/isElasticsearch">
-            <div class="medium-4 columns">
+             tal:define="isPrimo context/isPrimo;">
+            <div class="medium-6 columns">
                 <div class="panel callout radius">
                     <label for="activer_liens" i18n:translate="activer_liens">
                         Activer la création de Liens (Url, Lecteurs exportables)
@@ -131,7 +130,7 @@
                     </p>
                 </div>
             </div>
-            <div class="medium-4 columns"
+            <div class="medium-6 columns"
                  tal:condition="isPrimo/module">
                 <div class="panel callout radius">
                     <label for="activer_liens_catalogue_bu" i18n:translate="activer_liens_catalogue_bu">
@@ -155,37 +154,11 @@
                     </p>
                 </div>
             </div>
-            <div class="medium-4 columns"
+            <div class="medium-6 columns"
                  tal:condition="not:isPrimo/module">
                 <div class="panel warning radius"
                      tal:content="isPrimo/message"
                      i18n:translate=""/>
-            </div>
-            <div class="medium-4 columns"
-                 tal:condition="isElasticsearch/module">
-                <div class="panel callout radius">
-                    <label i18n:translate="">
-                        Activer la recherche dans le produit Lille1pod
-                    </label>
-                    <p class="text-center field-lg">
-                        <input type="radio" name="activer_lille1pod" id="activer_lille1pod"
-                               value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_lille1pod'], 'checked', '')" />
-                        <label for="activer_lille1pod"
-                               class="activer">
-                            <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
-                        </label>
-                        <input type="radio" name="activer_lille1pod" id="desactiver_lille1pod"
-                               value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_lille1pod'], 'checked', '')" />
-                        <label for="desactiver_lille1pod"
-                               class="desactiver">
-                            <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
-                        </label>
-                    </p>
-                </div>
             </div>
             <tal:replace replace="nothing">
             <!--
@@ -215,12 +188,6 @@
             </div>
             -->
             </tal:replace>
-            <div class="medium-4 columns"
-                 tal:condition="not:isElasticsearch/module">
-                <div class="panel warning radius"
-                     tal:content="isPrimo/message"
-                     i18n:translate=""/>
-            </div>
         </div>
         <div class="row">
             <div class="columns">
@@ -274,6 +241,76 @@
                     </label>
                 </tal:condition>
                 </div>
+            </div>
+        </div>
+        <div class="row"
+             tal:define="isElasticsearch context/isElasticsearch">
+            <div class="columns"
+                 tal:condition="isElasticsearch/module">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer la rubrique Vidéos (Pod)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_lille1pod" id="activer_lille1pod"
+                               value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_lille1pod'], 'checked', '')" />
+                        <label for="activer_lille1pod"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_lille1pod" id="desactiver_lille1pod"
+                               value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_lille1pod'], 'checked', '')" />
+                        <label for="desactiver_lille1pod"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="columns"
+                 tal:condition="not:isElasticsearch/module">
+                <div class="panel warning radius"
+                     tal:content="isElasticsearch/message"
+                     i18n:translate=""/>
+            </div>
+        </div>
+        <div class="row"
+             tal:define="isVOD context/isVOD">
+            <div class="columns"
+                 tal:condition="isVOD/module">
+                <div class="panel callout radius">
+                    <label i18n:translate="">
+                        Activer la rubrique VOD (Wowza)
+                    </label>
+                    <p class="text-center field-lg">
+                        <input type="radio" name="activer_vod" id="activer_vod"
+                               value="1"
+                               tal:attributes="checked python:context.test(mon_espace['activer_vod'], 'checked', '')" />
+                        <label for="activer_vod"
+                               class="activer">
+                            <i class="fa fa-check"></i>
+                            <tal:block i18n:translate="">Activé</tal:block>
+                        </label>
+                        <input type="radio" name="activer_vod" id="desactiver_vod"
+                               value="0"
+                               tal:attributes="checked python:context.test(not mon_espace['activer_vod'], 'checked', '')" />
+                        <label for="desactiver_vod"
+                               class="desactiver">
+                            <i class="fa fa-times"></i>
+                            <tal:block i18n:translate="">Désactivé</tal:block>
+                        </label>
+                    </p>
+                </div>
+            </div>
+            <div class="columns"
+                 tal:condition="not:isVOD/module">
+                <div class="panel warning radius"
+                     tal:content="isVOD/message"
+                     i18n:translate=""/>
             </div>
         </div>
         <div class="row">
