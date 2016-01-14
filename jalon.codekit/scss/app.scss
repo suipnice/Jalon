@@ -458,6 +458,9 @@ $side-panel-padding: rem-calc( 6 8 8 );
                     font-weight: bold;
                 }
             }
+            > a:after{
+                content: "";
+            }
 
             .content {
                 padding: .16rem;
