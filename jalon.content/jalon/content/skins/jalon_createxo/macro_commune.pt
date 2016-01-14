@@ -153,7 +153,7 @@
                         </blockquote>
                         Attention. Ce mode a quelques inconvénients :
                         <ul>
-                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML : 
+                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML :
                                 <ul><li><code>&amp;#123;</code> pour l'accolade ouvrante {</li>
                                 <li><code>&amp;#125;</code> pour l'accolade fermante }</li></ul>
                             </li>
@@ -208,12 +208,12 @@
             <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
             <p i18n:translate="">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
             <p i18n:translate="">N'hésitez-pas à
-                <strong tal:define="admin_email here/email_from_address;
+                <strong tal:define="admin_link here/portal_jalon_properties/getLienContact;
                                     object_title here/Title;
                                     site_title python:here.getInfosConnexion()['site'];
                                     abs_url here/absolute_url;">
                     <a i18n:translate="contact_site_admin"
-                       tal:attributes="href string:mailto:${admin_email}?subject=[${site_title}] Accès non autorisé&amp;body=%0DDécrivez précisément votre souci : %0D%0DURL : ${abs_url}%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
+                       tal:attributes="href string:${admin_link}?subject=[${site_title}] Accès non autorisé&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
                 en décrivant au maximum votre souci, si vous pensez que c'est une erreur.
             </p>
         </div>
