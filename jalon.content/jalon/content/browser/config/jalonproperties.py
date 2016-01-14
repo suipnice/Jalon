@@ -1017,6 +1017,11 @@ class JalonProperties(SimpleItem):
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         return portal_jalon_wowza.searchExtraits(page)
 
+    def getExpirationDate(self, pod):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getStreamingAvailable(pod)
+
     def modifyStreaming(self, params):
         LOG.info("----- modifyStreaming -----")
         LOG.info(params)

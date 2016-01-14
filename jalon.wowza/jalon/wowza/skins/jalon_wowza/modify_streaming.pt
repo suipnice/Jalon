@@ -11,7 +11,8 @@
 <metal:core fill-slot="content">
 
 <tal:define define="pod request/pod;
-                    video python:context.searchElasticsearch('video', pod);">
+                    video python:context.searchElasticsearch('video', pod);
+                    expiration_date python:context.getExpirationDate(pod)">
     <h2>
         <tal:replace replace="video/title"/> : Autoriser le streaming
         <a class="close-reveal-modal"></a>
@@ -44,7 +45,8 @@
 
             <div class="formControls">
                 <input id="datetime-expiration_date" name="datetime-expiration_date" type="datetime"
-                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"/>
+                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                       tal:attributes="value expiration_date"/>
             </div>
 
         </div>
