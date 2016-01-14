@@ -29,7 +29,7 @@
         </tal:block>
 
         <tal:listing condition="folderContents">
-
+            <tal:comment replace="nothing"><!-- folderContents.length déclenche un "DeprecationWarning" quand "les 20 derniers" est coché, car dans ce cas getFolderContents renvoit un objet "Batch", mais uniquement dans ce cas... :/ --></tal:comment>
             <tal:define define="nb_affiche python:len(folderContents)">
 
                     <div class="el_counter show-for-small-only">

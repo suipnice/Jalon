@@ -15,7 +15,7 @@
 
 
 /*
-    rappel du style "sup" présent sur le plan du cours  sur la barres d'onglets de la doite de dépots
+    rappel du style "sup" présent sur le plan du cours sur la barre d'onglets de la boite de dépots
     fichier cours_boite_view
 */
 #boite .sup {
@@ -65,7 +65,7 @@
 /*----------*/
 /* Permet d'avoir un affichage similaire sur Firefox et Safari,
      avec un checkbox et le label qui le suit toujours sur la même ligne, meme sur petits écrans.
-     J'appelle la classe "confirm_button" dans l'idée de la génériser
+     J'appelle la classe "confirm_check" dans l'idée de la génériser
       à d'éventuels futurs checkbox de confirmation d'actions de formulaire.
      C'est pour le moment utilisé dans jalon/content/skins/jalon_mescours/macro_mescours.pt :
      ligne 693 : "confirm-suppr_WIMS"
@@ -89,6 +89,7 @@
     padding:3px;
 }
 
+
 /*----------*/
 /* la classe "disabled" indique un element de formulaire non accessible à l'utilisateur connecté.
  avec le css ci-dessous, on associe au label associé un visuel clair indiquant que l'action n'est pas possible (le texte est barré)
@@ -97,6 +98,14 @@
 .disabled label{
     text-decoration: line-through;
     cursor:initial;
+}
+
+/*----------*/
+/*Jusqu'à présent, la classe ".formHelp" n'était utilisée que dans "#wims-edit". on permet avec le css ci-dessous de l'utiliser egalement ailleurs (exemple : dans la popup d'export d'un exo WIMS.)*/
+.formHelp{
+    font-size: 80%;
+    line-height: 1.2;
+    font-style: italic;
 }
 
 /*
@@ -117,7 +126,7 @@
 }
 
 /*
-    css utilsé dans les indicateurs du cours
+    css utilsés dans les indicateurs du cours
     fichier : macro_cours_indicateurs
     macro   : indicateurs_ressources
 */

@@ -116,7 +116,7 @@ class JalonFolder(ATFolder):
         return size
 
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
-        """Founi la liste des elements d'un jalonfolder."""
+        """Fourni la liste des elements d'un jalonfolder."""
         dico = {"portal_type": typeR}
         if typeR == "Fichiers":
             dico["portal_type"] = ["File", "Image", "Document"]

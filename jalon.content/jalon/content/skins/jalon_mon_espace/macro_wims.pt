@@ -174,49 +174,50 @@
     <h2>
         <tal:block i18n:translate="">Exporter l'exercice</tal:block>
          « <tal:block content="context/Title" /> »
-        <a class="close-reveal-modal"></a>
+        <a tal:condition="is_ajax" class="close-reveal-modal"></a>
     </h2>
-    <div><!-- div pour casser le CSS du reveal, en attendant mieux -->
     <form method="POST"
       tal:attributes="action string:${context/absolute_url}/getExoWIMS_XML;">
 
         <p>Choisissez sous quel format vous souhaitez exporter cet exercice :</p>
-        <div class="js-input-filter"><!-- div pour (re)casser le CSS du reveal, en attendant mieux -->
-            <ul>
-                <li>
-                    <input type="radio" id="QTI" value="QTI" name="format" checked="checked"/>
-                    <label for="QTI">QTI <span>(format utilisables dans divers LMS et outils tiers)</span></label>
-                    <div id="QTI_versions">
-                        <ul>
-                            <li>
-                                <input type="radio" id="QTI_1" value="1.1" name="version"/>
-                                <label for="QTI_1">1.1 <span>(bla bla)</span></label>
-                            </li>
-                            <li>
-                                <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
-                                <label for="QTI_default">1.2.1 <span class="discret">(utilisable entre autres par TurningPoint 5.4)</span></label>
-                            </li>
-                            <li>
-                                <input type="radio" id="QTI_2" value="2.1" name="version"/>
-                                <label for="QTI_2">2.1 <span>(bla bla)</span></label>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-                <li>
-                    <input type="radio" id="EDX" value="EDX" name="format"/>
-                    <label for="EDX">EDX <span>(format utilisables dans le LMS EDX)</span></label>
-                    <div id="EDX_versions">
-                        <ul>
-                            <li>
-                                <input type="radio" id="EDX_default" value="1.1" name="version"/>
-                                <label for="EDX_default">Dernière version <span>(?)</span></label>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </div>
+        <input type="hidden" name="format" id="export_format" value="QTI" />
+
+        <dl id="js-accordion_export-WIMS" class="accordion" data-accordion="data-accordion">
+            <dd class="accordion-navigation">
+                <a href="#QTI">QTI <span class="formHelp">(utilisable dans divers LMS et outils tiers)</span></a>
+                <!--input type="radio" id="QTI" value="QTI" name="format" checked="checked"/>
+                <label for="QTI">QTI <span class="formHelp">(utilisable dans divers LMS et outils tiers)</span></label-->
+                <div id="QTI" class="content active">
+                    <ul>
+                        <li>
+                            <input type="radio" id="QTI_1" value="1.1" name="version"/>
+                            <label for="QTI_1">1.1 <span class="formHelp">(bla bla)</span></label>
+                        </li>
+                        <li>
+                            <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
+                            <label for="QTI_default">1.2.1 <span class="formHelp">(utilisable entre autres par TurningPoint 5.4)</span></label>
+                        </li>
+                        <li>
+                            <input type="radio" id="QTI_2" value="2.1" name="version"/>
+                            <label for="QTI_2">2.1 <span class="formHelp">(bla bla)</span></label>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
+            <dd class="accordion-navigation">
+                <a href="#EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></a>
+                <!--input type="radio" id="EDX" value="EDX" name="format"/>
+                <label for="EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></label-->
+                <div id="EDX" class="content">
+                    <ul>
+                        <li>
+                            <input type="radio" id="EDX_default" value="1.1" name="version"/>
+                            <label for="EDX_default">Dernière version <span class="formHelp">(?)</span></label>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
+        </dl>
 
 
         <div class="formControls">
@@ -227,9 +228,13 @@
             </button>
         </div>
     </form>
-    </div>
 
-    <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
+    <tal:not_ajax condition="not:is_ajax">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addFileDirect('dev')" />
+    </tal:not_ajax>
+    <tal:is_ajax condition="is_ajax">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
+    </tal:is_ajax>
 
     <script charset="UTF-8"
                 tal:define="buffer python:jsBuffer.getBuffer()"
