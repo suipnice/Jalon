@@ -134,6 +134,10 @@ class JalonFolder(ATFolder):
             maj_video = True if subject == "last" else False
             self.getContentsVideo(authMember, maj_video)
 
+        if self.getId() == "VOD":
+            maj_vod = True if subject == "last" else False
+            self.getContentsVOD(authMember, maj_vod)
+
         if subject not in ["", None, "last"]:
             last = False
             subjects = []
@@ -317,6 +321,9 @@ class JalonFolder(ATFolder):
             elif jalon_videos_id:
                 #Supprimer toutes les vidéos
                 pass
+
+    def getContentsVOD(self, member_id, maj_vod):
+        return []
 
     def DEBUG(self):
         a = set([1, 2, 3, 4])
@@ -1367,6 +1374,14 @@ class JalonFolder(ATFolder):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         return portal_elasticsearch.getPropertiesElasticsearch()["url_connexion"]
+
+    #------------------#
+    # Utilitaire Wowza #
+    #------------------#
+    def searchVod(self, page, term_search=None):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
 
     #-----------------#
     #   Utilitaires   #

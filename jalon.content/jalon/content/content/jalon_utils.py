@@ -1028,6 +1028,11 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                               "url":   url_portal},
                              {"titre": _(u"Vidéos"),
                               "icone": "fa fa-youtube-play"}],
+           "VOD":           [{"titre": _(u"Mon espace"),
+                              "icone": "fa fa-home",
+                              "url":   url_portal},
+                             {"titre": _(u"VOD"),
+                              "icone": "fa fa-video-camera"}],
            authMemberId:   [{"titre": _(u"Mes cours"),
                              "icone": "fa fa-university"}],
            "etudiants":    [{"titre": _(u"Mes étudiants"),
@@ -1043,6 +1048,16 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                  "icone": "fa fa-youtube-play",
                  "url": folder.absolute_url()},
                 {"titre": _(u"Rechercher une vidéo"),
+                 "icone": "fa fa-search"}]
+
+    if page == "search_vod":
+        return [{"titre": _(u"Mon espace"),
+                 "icone": "fa fa-home",
+                 "url":   url_portal},
+                {"titre": _(u"VOD"),
+                 "icone": "fa fa-video-camera",
+                 "url": folder.absolute_url()},
+                {"titre": _(u"Rechercher une VOD"),
                  "icone": "fa fa-search"}]
 
     if not folder.getId() in fil:

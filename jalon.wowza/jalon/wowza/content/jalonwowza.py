@@ -49,11 +49,13 @@ class JalonWowza(SimpleItem):
             val = wowzaProperties[key]
             setattr(self, "_%s" % key, val)
 
-    def searchExtraits(self, page):
+    def searchExtraits(self, page, term_search=None):
         start = (page - 1) * 12
         elasticsearch = Elasticsearch(hosts=["%s:%s/%s" % (self._pod_server, self._pod_elasticsearch_port, self._pod_elasticsearch_index)])
 
         body = {"from": start, "size": 12, "sort": [{"date_added": "desc"}], "query": {"filtered": {"filter": {"term": {"owner": self._pod_user}}}}}
+        if term_search:
+            body["query"]["filtered"]["query"] = {"multi_match": {"query": term_search, "fields": ["title", "owner", "owner_full_name", "description", "discipline", "tags", "channel"], "type": "phrase_prefix"}}
         result = elasticsearch.search(body=body, size=12)
 
         resultat = {"count": 0, "first": 0, "last": 0, "nb_pages": 0, "liste_videos": []}
