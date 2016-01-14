@@ -119,7 +119,7 @@ class JalonMaintenanceControlPanelAdapter(SchemaAdapterBase):
                 "date_debut": self.get_date_debut(),
                 "date_fin": self.get_date_fin(),
                 "texte_maintenance": self.get_texte_maintenance().replace("\n", "<br/>"),
-               }
+                }
 
     def get_texte_information(self):
         return self.jiProps.getProperty('texte_information')
@@ -132,7 +132,7 @@ class JalonMaintenanceControlPanelAdapter(SchemaAdapterBase):
     def getInformation(self):
         return {"activer_information": self.get_activer_information(),
                 "texte_information": self.get_texte_information().replace("\n", "<br/>"),
-               }
+                }
 
     def get_annoncer_vider_cache(self):
         return self.jiProps.getProperty('annoncer_vider_cache')
@@ -143,8 +143,7 @@ class JalonMaintenanceControlPanelAdapter(SchemaAdapterBase):
     annoncer_vider_cache = property(get_annoncer_vider_cache, set_annoncer_vider_cache)
 
     def getViderCache(self):
-        return {"annoncer_vider_cache": self.get_annoncer_vider_cache()
-               }
+        return {"annoncer_vider_cache": self.get_annoncer_vider_cache()}
 
 
 class JalonMaintenanceControlPanel(ControlPanelForm):

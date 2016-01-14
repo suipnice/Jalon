@@ -561,6 +561,18 @@ class JalonProperties(SimpleItem):
                 val = int(val)
             setattr(self, "_%s" % key, val)
 
+    def getLienContact(self):
+        """ Fournit un lien pour contacter l'administrateur du site."""
+        if self._activer_lien_contact:
+            lien_contact = self._lien_contact
+        else:
+            if self._activer_email_erreur:
+                lien_contact = "mailto:%s" % self._adresse_email_erreur
+            else:
+                portal = getUtility(IPloneSiteRoot)
+                lien_contact = "mailto:%s" % portal.getProperty("email_from_address")
+        return lien_contact
+
     #--------------------------------#
     # Fonctions du bloc Didacticiels #
     #--------------------------------#

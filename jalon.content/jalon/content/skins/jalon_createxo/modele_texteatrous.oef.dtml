@@ -1,7 +1,7 @@
 type=first
 modele_jalon=Texte_a_Trou
 textarea="data, feedback_general"
-asis="feedback_general"
+asis="data feedback_general"
 
 :Questions mixtes incorporées dans un texte fixe.
 <p>Cet exercice présente un texte où des Trous (champs à réponse) sont insérés.</p>
@@ -19,11 +19,6 @@ Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
 :\email{$$email$$}
 :\credits{$$credits$$}
 
-:Type d'analyse des réponses libres.
-Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les
-applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
-\text{type_rep=$$type_rep$$}
-
 :Données principales.
 <p>Les questions à poser doivent être mises entre une paire de double-point d'interrogation '??'.</p><p>
 La question est un choix multiple s'il contient plusieurs objets séparés par des virgules.<br/>
@@ -32,7 +27,12 @@ Dans ce dernier cas, l'analyse se fait par symtext si la réponse donnée contie
 On peut poser plusieurs questions dans une même phrase (jusqu'à 20).<br/>
 Si un choix multiple accepte plusieurs réponses correctes possibles, mettez toutes les bonnes réponses (synonymes) séparées par un trait vertical '|'.</p>
 $embraced_randitem
-\text{data=$$donnees$$}
+\text{data=asis($$donnees$$)}
+
+:Type d'analyse des réponses libres.
+Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les
+applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
+\text{type_rep=$$type_rep$$}
 
 :Feedback General
 Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.

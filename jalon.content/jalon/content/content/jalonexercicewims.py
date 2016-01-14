@@ -211,34 +211,74 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                  "mintrue": "1",
                                  "minfalse": "1",
                                  "datatrue": "À tension égale, le courant passant par un résistor est inversement proportionnel à sa résistance.\nÀ courant égal, la tension sur un résistor est proportionnelle à sa résistance.\nLe courant passant par un résistor est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré de la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré du courant.",
-                                 "datafalse": "À tension alternative égale, le courant passant par un condensateur est inversement proportionnel à la capacité.\nÀ tension alternative égale, le courant passant par un condensateur est indépendant de la capacité.\nÀ tension alternative égale, le courant passant par un solénoïde est proportionnel à l'inductance.\nÀ tension continue égale, le courant passant par un condensateur est proportionnel à la capacité.\nÀ tension égale, le courant passant par un résistor est proportionnel à sa résistance.\nÀ tension égale, le courant passant par un résistor est indépendant de sa résistance.\nLe courant passant par une diode est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au courant.\nLa puissance dissipée par un condensateur est proportionnelle {à,au carré de} la tension appliquée.\nLa puissance dissipée par un condensateur est proportionnelle {au,au carré du} courant.\nLa puissance dissipée par un solénoïde idéal est proportionnelle {à,au carré de} la tension appliquée.\nLa puissance dissipée par un solénoïde idéal est proportionnelle {au,au carré du} courant.",
+                                 "datafalse": "À tension alternative égale, le courant passant par un condensateur est inversement proportionnel à la capacité.\n\
+À tension alternative égale, le courant passant par un condensateur est indépendant de la capacité.\n\
+À tension alternative égale, le courant passant par un solénoïde est proportionnel à l'inductance.\n\
+À tension continue égale, le courant passant par un condensateur est proportionnel à la capacité.\n\
+À tension égale, le courant passant par un résistor est proportionnel à sa résistance.\n\
+À tension égale, le courant passant par un résistor est indépendant de sa résistance.\n\
+Le courant passant par une diode est proportionnel à la tension appliquée.\n\
+La puissance dissipée par un résistor est proportionnelle à la tension appliquée.\n\
+La puissance dissipée par un résistor est proportionnelle au courant.\n\
+La puissance dissipée par un condensateur est proportionnelle {à,au carré de} la tension appliquée.\n\
+La puissance dissipée par un condensateur est proportionnelle {au,au carré du} courant.\n\
+La puissance dissipée par un solénoïde idéal est proportionnelle {à,au carré de} la tension appliquée.\n\
+La puissance dissipée par un solénoïde idéal est proportionnelle {au,au carré du} courant.",
                                  "options": "split",
-                                 "explain": "Parmi les affirmations suivantes, lesquelles sont vraies ? Marquez-les.",
-                                 "feedback_general": ""
+                                 "explain": "Parmi les affirmations suivantes, cochez les phrases vraies.",
+                                 "accolade"        : "1",
+                                 "feedback_general": "",
+                                 "credits"         : "",
+                                 "hint"            : "",
+                                 "help"            : "",
                                  },
                             "texteatrousmultiples":
-                                {"data": "Le début officiel de la Seconde Guerre Mondiale est marqué par\n??la déclaration de guerre,l'offensive?? de\n??la Grande Bretagne et la France,la France,la Grande Bretagne,l'Allemagne,l'Union Soviétique??\ncontre ??l'Allemagne,la Pologne,l'Union Soviétique,la France??.\n;\nLa Seconde Guerre Mondiale s'est déroulée entre ??1939?? et ??1945??.\n;\n??La Grande Bretagne et la France ont,La France a,La Grande Bretagne a,Les États-Unis ont,L'Union Soviétique a?? \ndéclaré la guerre contre l'Allemagne en ??1939?? à la suite de l'envahissement de ??la Pologne?? par cette dernière.\n;\nPendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Francisco|] Franco?? est un pays\n??neutre,axe,allié,envahi??.\n;\n??Après avoir battu,Avant d'attaquer?? la France,\n{l'Allemagne,Hitler,l'Allemagne Nazie} a lancé une attaque surprise contre l'URSS en\n??décembre,{novembre,octobre},{septembre,août,juillet},{juin,mai,avril},{mars,février,janvier}??\n??1940??, sous le nom {du plan,de l'opération} ??Barbarossa??.",
-                                 "pre": "Completez le texte suivant :",
-                                 "post": "",
-                                 "feedback_general": "",
-                                 "type_rep": "atext"
+                                {"data"             : "Le début officiel de la Seconde Guerre Mondiale est marqué par\n\
+??la déclaration de guerre,l'offensive?? de\n\
+??la Grande Bretagne et la France,la France,la Grande Bretagne,l'Allemagne,l'Union Soviétique??\n\
+contre ??l'Allemagne,la Pologne,l'Union Soviétique,la France??.\n;\n\
+La Seconde Guerre Mondiale s'est déroulée entre ??1939?? et ??1945??.\n\
+;\n\
+??La Grande Bretagne et la France ont,La France a,La Grande Bretagne a,Les États-Unis ont,L'Union Soviétique a?? \n\
+déclaré la guerre contre l'Allemagne en ??1939?? à la suite de l'envahissement de ??la Pologne?? par cette dernière.\n\
+;\n\
+Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Francisco|] Franco?? est un pays\n\
+??neutre,axe,allié,envahi??.\n;\n??Après avoir battu,Avant d'attaquer?? la France,\n\
+{l'Allemagne,Hitler,l'Allemagne Nazie} a lancé une attaque surprise contre l'URSS en\n\
+??décembre,{novembre,octobre},{septembre,août,juillet},{juin,mai,avril},{mars,février,janvier}??\n\
+??1940??, sous le nom {du plan,de l'opération} ??Barbarossa??.",
+                                 "pre"              : "Completez le texte suivant :",
+                                 "post"             : "",
+                                 "feedback_general" : "",
+                                 "type_rep"         : "atext",
+                                 "credits"          : "",
+                                 "hint"            : "",
+                                 "help"            : "",
                                  },
                              "qcmsuite":
                                 {"list_id_questions": "data1 data2",
-                                 "instruction"                : "Instruction globale : Répondez à chaque question d'une première série, validez, puis répondez aux questions de la seconde série.",
+                                 "instruction"                : "Instruction globale : Répondez à chaque question d'une première série, validez, puis répondez aux questions de la seconde série.",
                                  "alea"                       : "yes",
                                  "nb_questions_max"           : "10",
                                  "nb_etapes"                  : "1",
                                  "pourcentage_validation"     : "0",
                                  "accolade"                   : "1",
-                                 "questions"                  : "*-*text{data1=Énoncé de la Question 1\nFeedback affiché une fois la réponse à la question 1 envoyée\n1\nProposition 1\nProposition 2\nProposition 3\nProposition 4}\n\n:Question 2\n\n*-*text{data2=En quelle année eut lieu la bataille de Marignan ?\nMarignan fut la première victoire du jeune roi François Ier, la première année de son règne.\n1\n1515\n1414\n1313\n1616}",
+                                 "questions"                  : "*-*text{data1=Énoncé de la Question 1\nFeedback affiché une fois la réponse à la question 1 envoyée\n\
+1\nProposition 1\nProposition 2\nProposition 3\nProposition 4}\n\n\
+:Question 2\n\n*-*text{data2=En quelle année eut lieu la bataille de Marignan ?\n\
+Marignan fut la première victoire du jeune roi François Ier, la première année de son règne.\n\
+1\n1515\n1414\n1313\n1616}",
                                  "boucle_data_q"              : "*-*text{data_q=\data1!= ? 1:}\n*-*text{data_q=\data2!= ? wims(append item 2 to \data_q)}",
                                  "boucle_battage"             : " *-*text{QUEST=*-*battage[\i]=1? \data1}\n *-*text{QUEST=*-*battage[\i]=2? \data2}",
-                                 "boucle_answer"              : "*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*format}{option=\option}\n*-*answer{}{\REP2;\CHOIX[2;]}{type=*-*format}{option=\option}",
-                                 "boucle_maxtrix_rep"         : "\matrix{REP = \REP1\n\REP2}",
-                                 "boucle_condition_questions" : "\condition{Question 1 : \REP1}{\TEST[1;3]=0}{option=hide}\n\condition{Question 1 : \REP1}{\TEST[1;1]=0 and \TEST[1;2]=0 and \TEST[1;3]=0}{option=hide}\n\condition{Question 2 : \REP2}{\TEST[2;3]=0 and \step >=\CONDSTEP[2]}{option=hide}\n\condition{Question 2 : \REP2}{\TEST[2;1]=0 and \TEST[2;2]=0 and \TEST[2;3]=0 and \step >=\CONDSTEP[2]}{option=hide}",
-                                 "credits"         : "",
-                                 "columns"         : "1",
+                                 "boucle_answer"              : "*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*anstype}{option=\option}\n*-*answer{}{\REP2;\CHOIX[2;]}{type=*-*anstype}{option=\option}",
+                                 "boucle_matrix_rep"          : "\matrix{REP = \REP1\n\REP2}",
+                                 "boucle_condition_questions" : "\condition{Question 1 : Aucune mauvaise réponse }{\TEST[1;3]=0}\n\
+                                                                 \condition{Question 1 : Tout juste }{\TEST[1;1]=0 and \TEST[1;2]=0 and \TEST[1;3]=0}\n\
+                                                                 \condition{Question 2 : Aucune mauvaise réponse }{\TEST[2;3]=0 and \step >=\CONDSTEP[2]}\n\
+                                                                 \condition{Question 2 : Tout juste }{\TEST[2;1]=0 and \TEST[2;2]=0 and \TEST[2;3]=0 and \step >=\CONDSTEP[2]}",
+                                 "credits"                    : "",
+                                 "columns"                    : "1",
+                                 "anstype"                    : "checkbox",
                                  }
                             }
         if modele in variables_defaut:
@@ -264,6 +304,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
         source = source.replace("&lt;", "<")
         source = source.replace("&gt;", ">")
         source = source.replace("&quot;", '"')
+
+        # on souhaite conserver certains '&quot;'
+        source = source.replace("$$quot;", '&quot;')
 
         # dico contiendra les parametres a envoyer a WIMS
         dico = {"authMember": author, "qexo": idobj}
@@ -310,9 +353,9 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                 questions = ["*-*text{data1=asis(%s\n%s\n%s)}" % (enonce, param["feedback0"].replace("\n", "<br/>"), param["reponses0"])]
                 boucle_data_q = ["*-*text{data_q=\data1!= ? 1:}"]
                 boucle_battage = [" *-*matrix{QUEST=*-*battage[\i]=1? \data1}"]
-                boucle_answer = ["*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*format}{option=\option}"]
-                boucle_maxtrix_rep = ["\matrix{REP = \REP1"]
-                boucle_condition_questions = ["\condition{Question 1 : \REP1}{\TEST[1;3]=0}{option=hide}", "\condition{Question 1 : \REP1}{\TEST[1;1]=0 and \TEST[1;2]=0 and \TEST[1;3]=0}{option=hide}"]
+                boucle_answer = ["*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*anstype}{option=\option}"]
+                boucle_matrix_rep = ["\matrix{REP = \REP1"]
+                boucle_condition_questions = ["\condition{Question 1 : Aucune mauvaise réponse }{\TEST[1;3]=0}", "\condition{Question 1 : Tout juste }{\TEST[1;3]=0 and (\\anstype issametext radio or (\TEST[1;2]=0 and \TEST[1;1]=0))}"]
                 for i in range(2, nb_questions):
                     list_id_questions.append("data%s" % str(i))
                     questions.append(":Question %s" % str(i))
@@ -321,18 +364,18 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                         .replace("\n", "<br/>"), param["reponses%s" % str(i - 1)]))
                     boucle_data_q.append("*-*text{data_q=\data%s!= ? wims(append item %s to \data_q)}" % (str(i), str(i)))
                     boucle_battage.append(" *-*matrix{QUEST=*-*battage[\i]=%s? \data%s}" % (str(i), str(i)))
-                    boucle_answer.append("*-*answer{}{\REP%s;\CHOIX[%s;]}{type=*-*format}{option=\option}" % (str(i), str(i)))
-                    boucle_maxtrix_rep.append("\REP%s" % str(i))
-                    boucle_condition_questions.append("\condition{Question %s : \REP%s}{\TEST[%s;3]=0 and \step >=\CONDSTEP[%s]}{option=hide}" % (str(i),  str(i), str(i), str(i)))
-                    boucle_condition_questions.append("\condition{Question %s : \REP%s}{\TEST[%s;1]=0 and \TEST[%s;2]=0 and \TEST[%s;3]=0 and \step >=\CONDSTEP[%s]}{option=hide}" % (str(i), str(i), str(i),  str(i), str(i), str(i)))
+                    boucle_answer.append("*-*answer{}{\REP%s;\CHOIX[%s;]}{type=*-*anstype}{option=\option}" % (str(i), str(i)))
+                    boucle_matrix_rep.append("\REP%s" % str(i))
+                    boucle_condition_questions.append("\condition{Question %s : Aucune mauvaise réponse }{\TEST[%s;3]=0 and \step >=\CONDSTEP[%s]}" % (str(i),  str(i), str(i)))
+                    boucle_condition_questions.append("\condition{Question %s : Tout juste }{\TEST[%s;3]=0 and (\\anstype issametext radio or (\TEST[%s;2]=0 and \TEST[%s;1]=0)) and \step >=\CONDSTEP[%s]}" % (str(i), str(i),  str(i), str(i), str(i)))
 
-                boucle_maxtrix_rep[-1] = "%s}" % boucle_maxtrix_rep[-1]
+                boucle_matrix_rep[-1] = "%s}" % boucle_matrix_rep[-1]
                 param["list_id_questions"] = " ".join(list_id_questions)
                 param["questions"] = "\n".join(questions)
                 param["boucle_data_q"] = "\n".join(boucle_data_q)
                 param["boucle_battage"] = "\n".join(boucle_battage)
                 param["boucle_answer"] = "\n".join(boucle_answer)
-                param["boucle_maxtrix_rep"] = "\n".join(boucle_maxtrix_rep)
+                param["boucle_matrix_rep"] = "\n".join(boucle_matrix_rep)
                 param["boucle_condition_questions"] = "\n".join(boucle_condition_questions)
 
         self.listeIdsGroupes = [0]
@@ -626,13 +669,20 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                                      "datafalse":        "matrix{datafalse",
                                                      "options":          "text{option",
                                                      "explain":          "text{explain",
-                                                     "feedback_general": "text{feedback_general"
+                                                     "accolade":         "text{accolade=item\(",
+                                                     "feedback_general": "text{feedback_general",
+                                                     "credits":          "credits{",
+                                                     "hint":             "hint{",
+                                                     "help":             "help{",
                                                      },
                                "texteatrousmultiples": {"data":             "text{data",
                                                         "pre":              "text{pre",
                                                         "post":             "text{post",
                                                         "feedback_general": "text{feedback_general",
-                                                        "type_rep":         "text{type_rep"
+                                                        "type_rep":         "text{type_rep",
+                                                        "credits":          "credits{",
+                                                        "hint":             "hint{",
+                                                        "help":             "help{",
                                                         },
                                 "qcmsuite": {"instruction"            : "text{instruction",
                                              "alea"                   : "text{alea",
@@ -642,6 +692,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                              "pourcentage_validation" : "text{percent",
                                              "credits"                : "credits{",
                                              "columns"                : "text{columns",
+                                             "anstype"                : "text{anstype",
                                              }
                                }
 
