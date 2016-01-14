@@ -127,8 +127,7 @@
 
                         <div class="text-center">
                             <a class="button tiny create" title="Ajouter à Mon espace"
-                               data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/add_vod_myspace?pod=${video/id}"
+                               tal:attributes="href string:${context/absolute_url}/ajouterressource_script?formulaire=ajout-vod&amp;video_id=${video/id}&amp;authMember=${user/getId}"
                                tal:condition="video/is_streaming"
                                i18n:attributes="title">
                                 <i class="fa fa-plus-circle"></i>

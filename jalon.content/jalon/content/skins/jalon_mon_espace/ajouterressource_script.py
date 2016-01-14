@@ -52,6 +52,23 @@ if not REQUEST.form.has_key("recordsid"):
                              "Videoauteurname":      video["owner_full_name"],
                              "Videothumbnail":       video["thumbnail"]}
                     obj.setProperties(param)
+        if REQUEST["formulaire"] == "ajout-vod":
+            video_id = REQUEST["video_id"]
+            idobj = "Externe-%s-%s" % (REQUEST["authMember"], video_id)
+            obj = getattr(context, idobj, None)
+            if not obj:
+                context.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
+                obj = getattr(context, idobj)
+                video = context.searchElasticsearch(type_search="video", term_search=video_id)
+                param = {"Title":                video["title"],
+                         "TypeRessourceExterne": "VOD",
+                         "Videourl":             video["full_url"],
+                         "Description":          video["text"],
+                         "Lecteur":              video["iframe"],
+                         "Videoauteur":          video["owner"],
+                         "Videoauteurname":      video["owner_full_name"],
+                         "Videothumbnail":       video["thumbnail"]}
+                obj.setProperties(param)
     #sinon on la modifie juste
     else:
         obj = context

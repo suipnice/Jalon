@@ -134,10 +134,6 @@ class JalonFolder(ATFolder):
             maj_video = True if subject == "last" else False
             self.getContentsVideo(authMember, maj_video)
 
-        if self.getId() == "VOD":
-            maj_vod = True if subject == "last" else False
-            self.getContentsVOD(authMember, maj_vod)
-
         if subject not in ["", None, "last"]:
             last = False
             subjects = []
@@ -321,9 +317,6 @@ class JalonFolder(ATFolder):
             elif jalon_videos_id:
                 #Supprimer toutes les vidéos
                 pass
-
-    def getContentsVOD(self, member_id, maj_vod):
-        return []
 
     def DEBUG(self):
         a = set([1, 2, 3, 4])
@@ -1382,6 +1375,21 @@ class JalonFolder(ATFolder):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         return portal_jalon_wowza.searchExtraits(page, term_search)
+
+    def getExpirationDate(self, vod_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        pod = vod_id.split("-")[-1]
+        expiration_date = portal_jalon_wowza.getStreamingAvailable(pod)
+        expiration_dico = {"css_class": "fa fa-video-camera success", "expiration_date": "Disponible jusqu'au %s" % jalon_utils.getLocaleDate(expiration_date, '%d %B %Y - %Hh%M')}
+        if not expiration_date:
+            expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
+        else:
+            now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
+            expiration_date = DateTime(expiration_date)
+            if expiration_date < now:
+                expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
+        return expiration_dico
 
     #-----------------#
     #   Utilitaires   #
