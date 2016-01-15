@@ -459,10 +459,6 @@ $side-panel-padding: rem-calc( 6 8 8 );
                 }
             }
 
-            &.active>a, >a:hover{
-                background-color: transparent;
-            }
-
             .content {
                 padding: .16rem;
 
@@ -542,25 +538,6 @@ aside .panel {
         Accordion
 
 */
-
-// Nouvelle couleur de fond pour les accordéons
-$accordion-navigation-bg-color: $callout-panel-bg;
-$accordion-navigation-hover-bg-color:  scale-color($accordion-navigation-bg-color, $lightness: -5%);
-$accordion-navigation-active-bg-color: scale-color($accordion-navigation-bg-color, $lightness: -3%);
-
-.accordion{
-    .accordion-navigation {
-        >a{
-            background-color:$accordion-navigation-bg-color;
-        }
-        >a:hover{
-            background-color: $accordion-navigation-hover-bg-color;
-        }
-        &.active>a{
-            background-color: $accordion-navigation-active-bg-color;
-        }
-    }
-}
 
 .accordion-navigation {
 
