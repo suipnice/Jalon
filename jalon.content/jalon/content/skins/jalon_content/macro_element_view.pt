@@ -238,8 +238,10 @@
 -->
 <metal:macro define-macro="VOD">
 
-        <link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
-        <script src="//vjs.zencdn.net/4.12/video.js"></script>
+<tal:define define="is_geoloc python:context.isGeoLoc(request)">
+    <tal:condition condition="is_geoloc">
+    <link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">
+    <script src="//vjs.zencdn.net/4.12/video.js"></script>
 
     <h3>
         <tal:replace replace="element/titreElement" />
@@ -261,23 +263,22 @@
 
     <div class="flex-video">
     <center>
-    <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
-           width="480" height="360" tal:attributes="poster element/videothumbnail" data-setup="{}">
-        <source tal:attributes="src element/urlElement" type='rtmp/mp4' />
-    </video>
+        <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
+               width="480" height="360" tal:attributes="poster element/videothumbnail" data-setup="{}">
+            <source tal:attributes="src element/urlElement" type='rtmp/mp4' />
+        </video>
     </center>
     </div>
 
     <script charset="UTF-8"
             tal:content="structure string:removePlayerOnClose()" />
+    </tal:condition>
 
-<tal:comments replace="nothing"><!--
-    <tal:block define="script1 string:setFlexVideo();
-                       script2 string:removePlayerOnClose()">
-        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
-        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
-    </tal:block>
---></tal:comments>
+    <div class="panel radius alert"
+         tal:condition="not:is_geoloc">
+        <strong>Attention : </strong> Vous devez être en France pour regarder cette vidéo.
+    </div>
+</tal:define>
 
 </metal:macro>
 

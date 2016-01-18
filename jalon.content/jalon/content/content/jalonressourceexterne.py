@@ -250,4 +250,7 @@ class JalonRessourceExterne(ATDocumentBase):
             pass
         self.setProperties(dico)
 
+    def isGeoLoc(self, request):
+        return jalon_utils.isGeoLoc(request)
+
 registerATCT(JalonRessourceExterne, PROJECTNAME)

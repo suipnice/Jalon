@@ -1065,6 +1065,22 @@ def getFilAriane(portal, folder, authMemberId, page=None):
     return fil[folder.getId()]
 
 
+def isGeoLoc(request):
+    LOG.info("----- isGeoLoc -----")
+    if not request.has_key("HTTP_X_REAL_IP"):
+        return False
+    from geoip import geolite2
+    LOG.info(request["HTTP_X_REAL_IP"])
+    #match = geolite2.lookup(request["HTTP_X_REAL_IP"])
+    match = geolite2.lookup("134.59.205.212")
+    if match is None:
+        return False
+    LOG.info(match.country)
+    if match.country == "FR":
+        return True
+    return False
+
+
 def getElementView(context, typeContext, idElement, createurElement=None, typeElement=None, indexElement=None, mode_etudiant=None):
     portal = context.portal_url.getPortalObject()
     retour = {"titreElement":       "",
