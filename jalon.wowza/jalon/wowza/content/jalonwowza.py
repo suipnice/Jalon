@@ -7,12 +7,16 @@ from persistent.dict import PersistentDict
 from interfaces import IJalonWowza
 from jalon.content.content import jalon_utils
 
+import time
+import base64
+import hashlib
 from math import ceil
+from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch
 
 # Messages de debug :
 from logging import getLogger
-LOG = getLogger('[JalonWowza]')
+#LOG = getLogger('[JalonWowza]')
 
 
 class JalonWowza(SimpleItem):
@@ -23,6 +27,7 @@ class JalonWowza(SimpleItem):
     _wowza_application = "vod"
     _wowza_secret = ""
     _wowza_sha = "512"
+    _wowza_token_prefix = "wowzatoken"
 
     _pod_server = "http://domainname.com"
     _pod_user = "wowza"
@@ -113,3 +118,32 @@ class JalonWowza(SimpleItem):
         else:
             del streaming_available[pod]
         self.setStreamingAvailable(streaming_available)
+
+    def secureStreamingUrl(self, streaming_id, client_ip):
+        client_ip = "134.59.205.212"
+        #LOG.info("----- secureStreamingUrl -----")
+        wowza_content_path = "%s/%s.mp4" % (self._wowza_application, streaming_id)
+        #LOG.info(wowza_content_path)
+        now = datetime.now()
+        add_one_week = now + timedelta(days=1)
+
+        wowzatoken_start_time = "%sstarttime=%s" % (self._wowza_token_prefix, str(int(time.mktime(now.timetuple()))))
+        #LOG.info(wowzatoken_start_time)
+        wowzatoken_end_time = "%sendtime=%s" % (self._wowza_token_prefix, str(int(time.mktime(add_one_week.timetuple()))))
+        #LOG.info(wowzatoken_end_time)
+
+        #LOG.info(self._wowza_secret)
+        str_for_sha = "%s?%s&%s&%s&%s" % (wowza_content_path, client_ip, self._wowza_secret, wowzatoken_end_time, wowzatoken_start_time)
+        #LOG.info(str_for_sha)
+        str_sha = hashlib.new("sha256")
+        str_sha.update(str_for_sha)
+        str_sha = str_sha.digest()
+        #LOG.info(str_sha)
+        str_sha_base64 = base64.b64encode(str_sha)
+        #LOG.info(str_sha_base64)
+        str_sha_base64 = str_sha_base64.replace("+", "-")
+        str_sha_base64 = str_sha_base64.replace("/", "_")
+        #LOG.info(str_sha_base64)
+        secure_streaming_url = "%s/%s/%s.mp4?%s&%s&%shash=%s" % (self._wowza_server, self._wowza_application, streaming_id, wowzatoken_start_time, wowzatoken_end_time, self._wowza_token_prefix, str_sha_base64)
+        #LOG.info(secure_streaming_url)
+        return secure_streaming_url

@@ -1169,10 +1169,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                 retour["auteurVideoElement"] = element.getVideoauteurname()
                 retour["videothumbnail"] = element.getVideothumbnail()
             if typeElement == "VOD":
-                portal = element.portal_url.getPortalObject()
-                portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
-                wowza_properties = portal_jalon_wowza.getWowzaProperties()
-                retour["urlElement"] = "%s/%s/mp4:%s.mp4" % (wowza_properties["wowza_server"], wowza_properties["wowza_application"], element.getId().split("-")[-1])
+                retour["urlElement"] = element.getId().split("-")[-1]
                 retour["auteurVideoElement"] = element.getVideoauteurname()
                 retour["videothumbnail"] = element.getVideothumbnail()
             if typeElement == "Lienweb":
