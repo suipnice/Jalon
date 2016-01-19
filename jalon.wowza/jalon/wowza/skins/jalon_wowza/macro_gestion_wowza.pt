@@ -65,6 +65,50 @@
         <div class="row">
             <div class="columns medium-6">
                 <div class="panel callout radius">
+                    <label for="wowza_token_prefix" i18n:translate="wowza_token_prefix">
+                        Wowza Token Prefix
+                    </label>
+                    <input type="text" name="wowza_token_prefix"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_token_prefix | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_ticket_validation" i18n:translate="wowza_ticket_validation">
+                        Durée de validation du ticket de Streaming en jour
+                    </label>
+                    <input type="text" name="wowza_ticket_validation"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_ticket_validation | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_nb_view_authorized" i18n:translate="wowza_nb_view_authorized">
+                        Nombre de visualisations d'un streaming autorisé
+                    </label>
+                    <input type="text" name="wowza_nb_view_authorized"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_nb_view_authorized | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_type_reset_view" i18n:translate="wowza_type_reset_view">
+                        Période de reset du nombre de visu (week, month, year)
+                    </label>
+                    <input type="text" name="wowza_type_reset_view"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_type_reset_view | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
                     <label for="pod_server" i18n:translate="pod_server">
                         Serveur Pod (extraits)
                     </label>
@@ -162,7 +206,7 @@
 
                         <h4 tal:attributes="title video/title">
 
-                            <i tal:attributes="class video/streaming_available;
+                            <i tal:attributes="class video/css_class;
                                                title video/expiration_date"
                                i18n:attributes="title"></i>
                             <tal:block replace="python:context.getShortText(video['title'], 20)"/>

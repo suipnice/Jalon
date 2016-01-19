@@ -1376,20 +1376,10 @@ class JalonFolder(ATFolder):
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         return portal_jalon_wowza.searchExtraits(page, term_search)
 
-    def getExpirationDate(self, vod_id):
+    def getExpirationDate(self, streaming_id):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
-        pod = vod_id.split("-")[-1]
-        expiration_date = portal_jalon_wowza.getStreamingAvailable(pod)
-        expiration_dico = {"css_class": "fa fa-video-camera success", "expiration_date": "Disponible jusqu'au %s" % jalon_utils.getLocaleDate(expiration_date, '%d %B %Y - %Hh%M')}
-        if not expiration_date:
-            expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
-        else:
-            now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
-            expiration_date = DateTime(expiration_date)
-            if expiration_date < now:
-                expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
-        return expiration_dico
+        return portal_jalon_wowza.getExpirationDate(streaming_id.split("-")[-1])
 
     def isStreamingAuthorized(self, streaming_id, request):
         if not request.has_key("HTTP_X_REAL_IP"):

@@ -30,6 +30,8 @@ class JalonWowza(SimpleItem):
     _wowza_sha = "sha256"
     _wowza_token_prefix = "wowzatoken"
     _wowza_ticket_validation = "1"
+    _wowza_nb_view_authorized = "2"
+    _wowza_type_reset_view = "month"
 
     _pod_server = "http://domainname.com"
     _pod_user = "wowza"
@@ -42,19 +44,35 @@ class JalonWowza(SimpleItem):
         super(JalonWowza, self).__init__(*args, **kwargs)
 
     def getWowzaProperties(self):
-        return {"wowza_server":            self._wowza_server,
-                "wowza_application":       self._wowza_application,
-                "wowza_secret":            self._wowza_secret,
-                "wowza_sha":               self._wowza_sha,
-                "pod_server":              self._pod_server,
-                "pod_user":                self._pod_user,
-                "pod_elasticsearch_port":  self._pod_elasticsearch_port,
-                "pod_elasticsearch_index": self._pod_elasticsearch_index}
+        return {"wowza_server":             self._wowza_server,
+                "wowza_application":        self._wowza_application,
+                "wowza_secret":             self._wowza_secret,
+                "wowza_sha":                self._wowza_sha,
+                "wowza_token_prefix":       self._wowza_token_prefix,
+                "wowza_ticket_validation":  self._wowza_ticket_validation,
+                "wowza_nb_view_authorized": self._wowza_nb_view_authorized,
+                "wowza_type_reset_view":    self._wowza_type_reset_view,
+                "pod_server":               self._pod_server,
+                "pod_user":                 self._pod_user,
+                "pod_elasticsearch_port":   self._pod_elasticsearch_port,
+                "pod_elasticsearch_index":  self._pod_elasticsearch_index}
 
     def setWowzaProperties(self, wowzaProperties):
         for key in wowzaProperties.keys():
             val = wowzaProperties[key]
             setattr(self, "_%s" % key, val)
+
+    def getExpirationDate(self, streaming_id):
+        expiration_date = self.getStreamingAvailable(streaming_id)
+        expiration_dico = {"css_class": "fa fa-video-camera success", "expiration_date": "Disponible jusqu'au %s" % jalon_utils.getLocaleDate(expiration_date, '%d %B %Y - %Hh%M')}
+        if not expiration_date:
+            expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
+        else:
+            now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
+            expiration_date = DateTime(expiration_date)
+            if expiration_date < now:
+                expiration_dico = {"css_class": "fa fa-video-camera warning", "expiration_date": "Vidéo expirée"}
+        return expiration_dico
 
     def searchExtraits(self, page, term_search=None):
         start = (page - 1) * 12
@@ -79,13 +97,8 @@ class JalonWowza(SimpleItem):
             streaming_available_ids = self.getKeyStreamingAvailable()
             for fiche in result["hits"]["hits"]:
                 pod_id = str(fiche["_source"]["id"])
-                is_streaming = False
-                streaming_available = "fa fa-video-camera alert right"
-                expiration_date = "Streaming interdit"
-                if pod_id in streaming_available_ids:
-                    is_streaming = True
-                    streaming_available = "fa fa-video-camera success right"
-                    expiration_date = "Streaming autorisé jusqu'au %s" % jalon_utils.getLocaleDate(self.getStreamingAvailable(pod_id), '%d %B %Y - %Hh%M')
+                is_streaming = True if pod_id in streaming_available_ids else False
+                expiration_date = self.getExpirationDate(pod_id)
                 resultat["liste_videos"].append({"id":                  pod_id,
                                                  "full_url":            fiche["_source"]["full_url"],
                                                  "title":               fiche["_source"]["title"].encode("utf-8"),
@@ -94,8 +107,8 @@ class JalonWowza(SimpleItem):
                                                  "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
                                                  "text":                fiche["_source"]["description"].encode("utf-8"),
                                                  "is_streaming":        is_streaming,
-                                                 "streaming_available": streaming_available,
-                                                 "expiration_date":     expiration_date})
+                                                 "css_class":           expiration_date["css_class"],
+                                                 "expiration_date":     expiration_date["expiration_date"]})
 
         return resultat
 

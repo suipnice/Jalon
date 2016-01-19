@@ -70,7 +70,6 @@ membership_tool.loginUser(REQUEST)
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
-    infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     if not infos_user:
         acl_users = getattr(context.acl_users, "ldap-plugin").acl_users
         for user in acl_users.findUser(search_param="supannAliasLogin", search_term=memberid, exact_match=True):
@@ -90,6 +89,7 @@ if portal_jalon_properties.getPropertiesDonneesUtilisateurs("activer_ldap"):
                                                    "VIL_IND"         : "Non renseignée",
                                                    "UNIV_IND"        : "Non renseignée",
                                                    "PROMO_IND"       : ""})
+infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
 
 if member.has_role("EtudiantJalon"):
     LIB_PR1_IND, LIB_NOM_PAT_IND = member.getProperty("fullname", "Non renseigné").rsplit(" ", 1)
