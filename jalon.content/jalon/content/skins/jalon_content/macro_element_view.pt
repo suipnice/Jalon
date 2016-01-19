@@ -238,8 +238,8 @@
 -->
 <metal:macro define-macro="VOD">
 
-<tal:define define="is_geoloc python:context.isGeoLoc(request)">
-    <tal:condition condition="is_geoloc">
+<tal:define define="secure_streaming_url python:context.isStreamingAuthorized(element['urlElement'], request)">
+    <tal:condition condition="secure_streaming_url">
     <link href="http://vjs.zencdn.net/5.4.6/video-js.css" rel="stylesheet">
 
     <h3>
@@ -264,8 +264,7 @@
     <center>
         <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
                width="480" height="360" tal:attributes="poster element/videothumbnail" data-setup="{}">
-            <source tal:define="secure_streaming_url python:context.secureStreamingUrl(element['urlElement'], request)"
-                    tal:attributes="src secure_streaming_url" type='rtmp/mp4' />
+            <source tal:attributes="src secure_streaming_url" type='rtmp/mp4' />
         </video>
     </center>
     </div>
@@ -277,8 +276,8 @@
     </tal:condition>
 
     <div class="panel radius alert"
-         tal:condition="not:is_geoloc">
-        <strong>Attention : </strong> Vous devez être en France pour regarder cette vidéo.
+         tal:condition="not:secure_streaming_url">
+        <strong>Attention : </strong> La vidéo que vous tentez de consulter n'est plus disponible et vous devez être en France pour la consulter.
     </div>
 </tal:define>
 

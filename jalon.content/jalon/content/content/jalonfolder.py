@@ -1391,6 +1391,13 @@ class JalonFolder(ATFolder):
                 expiration_dico = {"css_class": "fa fa-video-camera alert", "expiration_date": "Vidéo expirée"}
         return expiration_dico
 
+    def isStreamingAuthorized(self, streaming_id, request):
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
+
     #-----------------#
     #   Utilitaires   #
     #-----------------#

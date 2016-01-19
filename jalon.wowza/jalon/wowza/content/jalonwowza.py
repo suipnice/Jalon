@@ -11,12 +11,13 @@ import time
 import base64
 import hashlib
 from math import ceil
+from DateTime import DateTime
 from datetime import datetime, timedelta
 from elasticsearch import Elasticsearch
 
 # Messages de debug :
 from logging import getLogger
-#LOG = getLogger('[JalonWowza]')
+LOG = getLogger('[JalonWowza]')
 
 
 class JalonWowza(SimpleItem):
@@ -26,8 +27,9 @@ class JalonWowza(SimpleItem):
     _wowza_server = "http://domainname.com"
     _wowza_application = "vod"
     _wowza_secret = ""
-    _wowza_sha = "512"
+    _wowza_sha = "sha256"
     _wowza_token_prefix = "wowzatoken"
+    _wowza_ticket_validation = "1"
 
     _pod_server = "http://domainname.com"
     _pod_user = "wowza"
@@ -119,13 +121,44 @@ class JalonWowza(SimpleItem):
             del streaming_available[pod]
         self.setStreamingAvailable(streaming_available)
 
+    def isStreamingAuthorized(self, streaming_id, client_ip):
+        if not self.isStreamingExpired(streaming_id):
+            return False
+        if not self.isGeoLoc(client_ip):
+            return False
+        return self.secureStreamingUrl(streaming_id, client_ip)
+
+    def isStreamingExpired(self, streaming_id):
+        expiration_date = self.getStreamingAvailable(streaming_id)
+        if not expiration_date:
+            return False
+        else:
+            now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
+            expiration_date = DateTime(expiration_date)
+            if expiration_date < now:
+                return False
+        return True
+
+    def isGeoLoc(self, client_ip):
+        #LOG.info("----- isGeoLoc -----")
+        from geoip import geolite2
+        #LOG.info(request["HTTP_X_REAL_IP"])
+        #match = geolite2.lookup(request["HTTP_X_REAL_IP"])
+        match = geolite2.lookup("134.59.205.212")
+        if match is None:
+            return False
+        LOG.info(match.country)
+        if match.country == "FR":
+            return True
+        return False
+
     def secureStreamingUrl(self, streaming_id, client_ip):
         client_ip = "134.59.205.212"
         #LOG.info("----- secureStreamingUrl -----")
         wowza_content_path = "%s/%s.mp4" % (self._wowza_application, streaming_id)
         #LOG.info(wowza_content_path)
         now = datetime.now()
-        add_one_week = now + timedelta(days=1)
+        add_one_week = now + timedelta(days=int(self._wowza_ticket_validation))
 
         wowzatoken_start_time = "%sstarttime=%s" % (self._wowza_token_prefix, str(int(time.mktime(now.timetuple()))))
         #LOG.info(wowzatoken_start_time)
@@ -135,7 +168,7 @@ class JalonWowza(SimpleItem):
         #LOG.info(self._wowza_secret)
         str_for_sha = "%s?%s&%s&%s&%s" % (wowza_content_path, client_ip, self._wowza_secret, wowzatoken_end_time, wowzatoken_start_time)
         #LOG.info(str_for_sha)
-        str_sha = hashlib.new("sha256")
+        str_sha = hashlib.new(self._wowza_sha)
         str_sha.update(str_for_sha)
         str_sha = str_sha.digest()
         #LOG.info(str_sha)
