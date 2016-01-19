@@ -3061,15 +3061,12 @@ class JalonCours(ATFolder):
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
 
-    def isGeoLoc(self, request):
-        return jalon_utils.isGeoLoc(request)
-
-    def secureStreamingUrl(self, streaming_id, request):
-        if not "HTTP_X_REAL_IP" in request:
-            return None
+    def isStreamingAuthorized(self, streaming_id, request):
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
-        return portal_jalon_wowza.secureStreamingUrl(streaming_id, request["HTTP_X_REAL_IP"])
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
 
     def delElem(self, element):
         #self.plone_log("delElem")
