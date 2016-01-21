@@ -242,10 +242,10 @@ class JalonProperties(SimpleItem):
     _lien_aide_plan = '<div class="flex-video"><iframe src="//www.youtube.com/embed/Z10V-BMXuec?list=PLV8G_tL0jD2LmZ79s0D-4EkeCVgQTvWfo" frameborder="0" allowfullscreen></iframe></div>\n<p>Cette vidéo disparaîtra automatiquement quand vous aurez ajouté des éléments à votre cours.</p>'
     _activer_guide_anti_spam = "1"
     _message_guide_anti_spam = """<h3>Pour être sûr(e) de recevoir les courriels de vos enseignants</h3>
-<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur jalon@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
+<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur noreply@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
 <dl>
     <dt>Google Mail :</dt>
-    <dd>ajoutez jalon@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
+    <dd>ajoutez noreply@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
     <dt>Hotmail :</dt>
     <dd>rendez-vous dans la rubrique filtre et ajoutez @jalon.unice.fr dans la liste des serveurs expéditeurs autorisés.</dd>
     <dt>Autres :</dt>
