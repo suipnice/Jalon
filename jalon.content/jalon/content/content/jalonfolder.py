@@ -1303,11 +1303,14 @@ class JalonFolder(ATFolder):
 
         return {"status": "OK", "message": "import reussi", "nbExos": nbExos, "user_source": user_source, "user_dest": authMember}
 
-    def delClassesWims(self, listClasses):
+    def delClassesWims(self, listClasses, request=None):
         for classe in listClasses:
             dico = {"job": "delclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
             rep_wims = self.wims("callJob", dico)
-            self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonfolder.py/delClassesWims", "message": "parametres de la requete : %s" % dico})
+            self.wims("verifierRetourWims", {"rep": rep_wims,
+                                             "fonction": "jalonfolder.py/delClassesWims",
+                                             "message": "parametres de la requete : %s" % dico,
+                                             "jalon_request": request})
 
     def delExoWims(self, paths):
         """ delExoWims() : suppression (coté wims) de la liste des exercices donné en "paths" """

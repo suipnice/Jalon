@@ -70,7 +70,7 @@ if success:
     #err = catalog.refreshCatalog(clear=True)
     #Suppressions suplementaires (sur les serveurs tiers)
     if listeClasses:
-        context.delClassesWims(listeClasses)
+        context.delClassesWims(listeClasses, context.REQUEST)
     if context.getId() in ["Webconference", "Sonorisation"]:
         context.delEnregistrementConnect(paths)
 
