@@ -177,7 +177,7 @@
         <a tal:condition="is_ajax" class="close-reveal-modal"></a>
     </h2>
     <form method="POST"
-      tal:attributes="action string:${context/absolute_url}/getExoWIMS_XML;">
+          tal:attributes="action string:${context/absolute_url}/getExoWIMS_XML;">
 
         <p>Choisissez sous quel format vous souhaitez exporter cet exercice :</p>
         <input type="hidden" name="format" id="export_format" value="QTI" />
@@ -195,7 +195,7 @@
                         </li>
                         <li>
                             <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
-                            <label for="QTI_default">1.2.1 <span class="formHelp">(utilisable entre autres par TurningPoint 5.4)</span></label>
+                            <label for="QTI_default">1.2.1 <span class="formHelp">(utilisable entre autres par TurningPoint 5 et Respondus 4)</span></label>
                         </li>
                         <li>
                             <input type="radio" id="QTI_2" value="2.1" name="version"/>
@@ -219,9 +219,11 @@
             </dd>
         </dl>
 
-
+        <div class="panel warning formHelp" style="margin-top:1em;">
+            Nb : Aucun des formats d'exports ci-dessus ne permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS, étant donné les limitations de chaque format, ainsi que du logiciel dans lequel vous importez.
+        </div>
         <div class="formControls">
-            <button type="submit" class="button small radius"
+            <button type="submit" class="button small radius close-download-modal"
                     name="form.button.save">
                 <i class="fa fa-download"></i>
                 <tal:block i18n:translate="">Exporter</tal:block>

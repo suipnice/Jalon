@@ -4,6 +4,11 @@ u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS d
 import xml.etree.ElementTree as ET
 import HTMLParser
 
+from zipfile import ZipFile, ZIP_DEFLATED
+import os
+
+from random import shuffle
+
 from logging import getLogger
 LOG = getLogger('jalonExportsWims')
 """
@@ -27,111 +32,136 @@ def getExoTXT(context, format="GIFT", version="latest"):
     """
 
 
+def getExoZIP(filename_path, exo_donnees):
+    """ fournit les donnees "exo_donnees" compressees au format zip."""
+    import tempfile
+    fd, path = tempfile.mkstemp('.zipfiletransport')
+    os.close(fd)
+
+    zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
+
+    zipFile.writestr(filename_path, exo_donnees)
+    zipFile.close()
+
+    fp = open(path, 'rb')
+    data = fp.read()
+    fp.close()
+    return {"length": str(os.stat(path)[6]), "data": data}
+
+
 def getExoXML(context, formatXML="OLX", version="latest"):
-        """Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+    """Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
 
-        # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
-        # Plus d'infos sur le format IMS QTI : https://webapps.ph.ed.ac.uk/qtiworks
-        # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/30/en/Moodle_XML_format
+    # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
+    # Plus d'infos sur le format IMS QTI : https://webapps.ph.ed.ac.uk/qtiworks
+    # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/30/en/Moodle_XML_format
 
-        """
-        """
-        Imports supportés par TurningPoint 5.3 :
-        # Un document Word (.doc,.docx) doit contenir le texte de la question en titre 1 et le texte de la réponse en titre 2.
-            Seules les questions à choix multiples peuvent être importées.
-            Le type de question peut être modifié après l'importation.
-        # Un document QTI peut être importé à partir de :
-            * Respondus® (3.5 à 4.0) (fichier zip XML RAA) - Logiciel Windows uniquement, tarif $150.
-            * Examview® (5.1 à 7.0) (fichier HTML sans les polices).
-        # Un document RTF peuvent être importé à partir d'Examview® (7.0 - 8.0) (galerie de style: par défaut).
-        """
-        modele = context.getModele()
-        #LOG.info("[getExoXML] modele = %s" % modele)
-        portal = context.portal_url.getPortalObject()
-        membership_tool = portal.portal_membership
+    """
+    """
+    Imports supportés par TurningPoint 5.3 :
+    # Un document Word (.doc,.docx) doit contenir le texte de la question en titre 1 et le texte de la réponse en titre 2.
+        Seules les questions à choix multiples peuvent être importées.
+        Le type de question peut être modifié après l'importation.
+    # Un document QTI peut être importé à partir de :
+        * Respondus® (3.5 à 4.0) (fichier zip XML RAA) - Logiciel Windows uniquement, tarif $150.
+        * Examview® (5.1 à 7.0) (fichier HTML sans les polices).
+    # Un document RTF peut être importé à partir d'Examview® (7.0 - 8.0) (galerie de style: par défaut).
+    """
+    modele = context.getModele()
+    #LOG.info("[getExoXML] modele = %s" % modele)
+    portal = context.portal_url.getPortalObject()
+    membership_tool = portal.portal_membership
 
-        if not membership_tool.isAnonymousUser():
-            demandeur = membership_tool.getAuthenticatedMember()
+    if not membership_tool.isAnonymousUser():
+        demandeur = membership_tool.getAuthenticatedMember()
 
-            #try:
-            #    source = str(getattr(self, "%s_%s.xml" % (format, modele)))
-            #except:
-            #    return ("<error>Désolé, ce modèle ne peut être exporté dans le format %s.</error>" % format)
-            #tree = ET.ElementTree(root)
-            #for key in dicoXML.keys():
-            #    source = source.replace("$$%s$$" % key, ET.tostring(dicoXML[key])
-            parsed_exo = context.getExoWims(modele, demandeur)
-            parsed_exo["id"] = context.getId()
-            #### Parametres communs :
-            parsed_exo["titre"] = context.Title().decode("utf-8")
+        #try:
+        #    source = str(getattr(self, "%s_%s.xml" % (format, modele)))
+        #except:
+        #    return ("<error>Désolé, ce modèle ne peut être exporté dans le format %s.</error>" % format)
+        #tree = ET.ElementTree(root)
+        #for key in dicoXML.keys():
+        #    source = source.replace("$$%s$$" % key, ET.tostring(dicoXML[key])
+        parsed_exo = context.getExoWims(modele, demandeur)
+        parsed_exo["id"] = context.getId()
+        #### Parametres communs :
+        parsed_exo["titre"] = context.Title().decode("utf-8")
 
-            if formatXML == "OLX":
-                # apparement, EDX ne prend pas en compte les attributs du problem. (oct. 2015)
-                # attention, en choisissant ""rerandomize": "always"", le bouton "check" disparait lors des tests sur EDX... :/
-                exoXML = ET.Element("problem", attrib={"rerandomize": "always", "title": parsed_exo["titre"], "display_name": titre})
-                elementXML = ET.SubElement(exoXML, "legend")
-                elementXML.text = parsed_exo["titre"]
-                exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
+        if formatXML == "OLX":
+            # apparement, EDX ne prend pas en compte les attributs du problem. (oct. 2015)
+            # attention, en choisissant ""rerandomize": "always"", le bouton "check" disparait lors des tests sur EDX... :/
+            exoXML = ET.Element("problem", attrib={"rerandomize": "always", "title": parsed_exo["titre"], "display_name": titre})
+            elementXML = ET.SubElement(exoXML, "legend")
+            elementXML.text = parsed_exo["titre"]
+            exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
 
-            #Format Moodle XML
-            elif formatXML == "Moodle_XML":
-                exoXML = __qcmsimple_to_moodleXML(parsed_exo)
-            #Format QTI
-            elif formatXML == "QTI":
-                if version == "1.1":
-                    #Format QTI v1.1
-                    exoXML = ET.Element("assessmentItem",
-                             attrib={"xmlns"             : "http://www.imsproject.org/xsd/ims_qti_rootv1p1",
-                                     "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                     "xsi:schemaLocation": "http://www.imsproject.org/xsd/ims_qti_rootv1p1 http://www.imsglobal.org/sites/default/files/xsd/ims_qti_rootv1p1.xsd",
-                                     "identifier"        : parsed_exo["id"],
-                                     "title"             : parsed_exo["titre"]})
-                    if modele == "qcmsimple":
-                        exoXML = __qcmsimple_to_qti_11(exoXML, parsed_exo)
-                elif version == "1.2.1":
-                    #Format QTI v1.2.1
-                    exoXML = ET.Element("questestinterop",
-                             attrib={"xmlns"             : "http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1",
-                                     "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                     "xsi:schemaLocation": "http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd"
-                                     })
-                    elementXML = ET.SubElement(exoXML,
-                                               "assessment",
-                                               attrib={"ident" : parsed_exo["id"],
-                                                       "title" : parsed_exo["titre"]
-                                                       })
-                    elementXML = ET.SubElement(elementXML, "section", attrib={"ident" : parsed_exo["id"]})
-                    elementXML = ET.SubElement(elementXML, "item",
-                                                           attrib={"ident" : parsed_exo["id"],
-                                                                   "title" : parsed_exo["titre"]
-                                                                   })
+        #Format Moodle XML
+        elif formatXML == "Moodle_XML":
+            exoXML = __qcmsimple_to_moodleXML(parsed_exo)
+        #Format QTI
+        elif formatXML == "QTI":
+            if version == "1.1":
+                #Format QTI v1.1
+                exoXML = ET.Element("assessmentItem",
+                         attrib={"xmlns"             : "http://www.imsproject.org/xsd/ims_qti_rootv1p1",
+                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                 "xsi:schemaLocation": "http://www.imsproject.org/xsd/ims_qti_rootv1p1 http://www.imsproject.org/xsd/ims_qti_rootv1p1.xsd",
+                                 "identifier"        : parsed_exo["id"],
+                                 "title"             : parsed_exo["titre"]})
+                if modele == "qcmsimple":
+                    exoXML = __qcmsimple_to_qti_11(exoXML, parsed_exo)
+            elif version == "1.2.1":
+                #Format QTI v1.2.1
 
-                    if modele == "qcmsimple":
-                        __qcmsimple_to_qti_121(elementXML, parsed_exo)
-                else:
-                    #Format QTI v2.1
-                    exoXML = ET.Element("assessmentItem",
-                             attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
-                                     "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                     "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
-                                     "identifier"        : parsed_exo["id"],
-                                     "title"             : parsed_exo["titre"],
-                                     "adaptive"          : "false",
-                                     "timeDependent"     : "false"})
-                    if modele == "qcmsimple":
-                        exoXML = __qcmsimple_to_qti_21(exoXML, parsed_exo)
-                    else:
-                        exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
+                ### Plus d'infos sur le format QTI v1.2.1 :
+                # http://www.imsglobal.org/question/qtiv1p2/imsqti_litev1p2.html
+                # http://www.imsglobal.org/question/qtiv1p2/imsqti_oviewv1p2.html
+                # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_outv1p2.html  "ASI Outcomes Processing"
+                # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_bestv1p2.html "ASI Best Practice & Implementation Guide"
+                # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_bindv1p2.html "ASI XML Binding Specification"
+                ## XSD :
+                # ASI LITE                        https://www.imsglobal.org/sites/default/files/xsd/ims_qtilitev1p2p1.xsd
+                # ASI (Assessment, Section, Item) https://www.imsglobal.org/sites/default/files/xsd/ims_qtiasiv1p2p1.xsd
+                # RES (Results Reporting)         https://www.imsglobal.org/sites/default/files/xsd/ims_qtiresv1p2p1.xsd
 
-                    elementXML = ET.SubElement(exoXML, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
+                exoXML = ET.Element("questestinterop",
+                         attrib={"xmlns"             : "http://www.imsglobal.org/xsd/ims_qtiasiv1p2",
+                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                 "xsi:schemaLocation": "http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd"
+                                 })
+                elementXML = ET.SubElement(exoXML,
+                                           "assessment",
+                                           attrib={"ident" : parsed_exo["id"],
+                                                   "title" : parsed_exo["titre"]
+                                                   })
+                elementXML = ET.SubElement(elementXML, "section", attrib={"ident" : parsed_exo["id"]})
 
+                if modele == "qcmsimple":
+                    __qcmsimple_to_qti_121(elementXML, parsed_exo)
             else:
-                exoXML = ET.Element("error")
-                exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
-            return ET.tostring(exoXML)
+                #Format QTI v2.1
+                exoXML = ET.Element("assessmentItem",
+                         attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
+                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                 "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
+                                 "identifier"        : parsed_exo["id"],
+                                 "title"             : parsed_exo["titre"],
+                                 "adaptive"          : "false",
+                                 "timeDependent"     : "false"})
+                if modele == "qcmsimple":
+                    exoXML = __qcmsimple_to_qti_21(exoXML, parsed_exo)
+                else:
+                    exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
+
+                elementXML = ET.SubElement(exoXML, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
 
         else:
-            return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
+            exoXML = ET.Element("error")
+            exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
+        return ET.tostring(exoXML)
+
+    else:
+        return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
 
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
@@ -222,68 +252,16 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
     return exoXML
 
 
-def __qcmsimple_to_qti_21(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers QTI:
-    elementXML = ET.SubElement(exoXML,
-                           "responseDeclaration",
-                           attrib={"identifier":  "RESPONSE",
-                                   "cardinality": "multiple",
-                                   "baseType":    "identifier"})
-
-    correctResponse = ET.SubElement(elementXML, "correctResponse")
-
-    elementXML = ET.SubElement(exoXML,
-                               "outcomeDeclaration",
-                               attrib={"identifier":  "SCORE",
-                                       "cardinality": "single",
-                                       "baseType":    "float"})
-
-    elementXML = ET.SubElement(exoXML, "itemBody")
-    choiceInteraction = ET.SubElement(elementXML,
-                                      "choiceInteraction",
-                                      attrib={"responseIdentifier": "RESPONSE",
-                                              "shuffle":            "true",
-                                              "maxChoices":         "0"})
-
-    elementXML = ET.SubElement(choiceInteraction, "prompt")
-    elementXML.text = parsed_exo["enonce"].decode("utf-8")
-
-    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
-    nb_rep = 0
-    for ligne in liste_bons:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-        elementXML = ET.SubElement(correctResponse, "value")
-        elementXML.text = rep_id
-        elementXML = ET.SubElement(choiceInteraction,
-                                   "simpleChoice",
-                                   attrib={"identifier": rep_id,
-                                           "fixed":      "false"})
-        elementXML.text = ligne
-
-    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
-    for ligne in liste_mauvais:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-        elementXML = ET.SubElement(choiceInteraction,
-                                   "simpleChoice",
-                                   attrib={"identifier": rep_id,
-                                           "fixed":      "false"})
-        elementXML.text = ligne
-    return exoXML
-
-
 def __qcmsimple_to_qti_11(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers QTI 1.1:
-
     ### TODO !!
-
     ###
+
     elementXML = ET.SubElement(exoXML,
-                           "responseDeclaration",
-                           attrib={"identifier":  "RESPONSE",
-                                   "cardinality": "multiple",
-                                   "baseType":    "identifier"})
+                               "responseDeclaration",
+                               attrib={"identifier":  "RESPONSE",
+                                       "cardinality": "multiple",
+                                       "baseType":    "identifier"})
 
     correctResponse = ET.SubElement(elementXML, "correctResponse")
 
@@ -329,13 +307,144 @@ def __qcmsimple_to_qti_11(exoXML, parsed_exo):
 
 
 def __qcmsimple_to_qti_121(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers QTI 1.2.1:
-    ### Plus d'infos sur le format QTI 1.2.1 :
-    ### http://www.imsglobal.org/question/qtiv1p2/imsqti_litev1p2.html
-
+    """ Modele "QCM Simple" vers QTI 1.2.1."""
     ### TODO !!
 
     ###
+    # Pour TurningPoint, le title doit absolument ressembler à ca "parsed_exo["titre"] Question MC #N"
+    element_item = ET.SubElement(exoXML, "item",
+                                 attrib={"ident" : parsed_exo["id"],
+                                         "title" : "%s Question MC #1" % parsed_exo["titre"]})
+
+    element_metadata = ET.SubElement(element_item, "itemmetadata")
+    elementXML = ET.SubElement(element_metadata, "qmd_itemtype")
+    elementXML.text = "qcmsimple"
+    elementXML = ET.SubElement(element_metadata, "qmd_toolvendor")
+    elementXML.text = "Jalon @ http://jalon.unice.fr"
+
+    elementXML = ET.SubElement(element_item, "presentation")
+    element_flow = ET.SubElement(elementXML, "flow")
+    __add_matttext(element_flow, parsed_exo["enonce"].decode("utf-8"), flow_type=None)
+
+    # rcardinality (optional - enumerated list: Single, Multiple, Ordered. Default=Single). Indicates the number of responses expected from the user.
+    if parsed_exo["options_checkbox"] == 1:
+        rcardinality = "Multiple"
+    else:
+        rcardinality = "Single"
+
+    elementXML = ET.SubElement(element_flow,
+                               "response_lid",
+                               attrib={"ident": "%s_RL" % parsed_exo["id"],
+                                       "rcardinality": rcardinality,
+                                       "rtiming":      "No"})
+    element_renderchoice = ET.SubElement(elementXML,
+                                         "render_choice",
+                                         attrib={"shuffle": "Yes"})
+
+    element_resprocessing = ET.SubElement(element_item, "resprocessing")
+    elementXML = ET.SubElement(element_resprocessing, "outcomes")
+    elementXML = ET.SubElement(elementXML, "decvar")
+
+    nb_rep = 0
+
+    dico_reponses = {}
+    ## Correct answers
+    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
+    for ligne in liste_bons:
+        nb_rep = nb_rep + 1
+        rep_id = "rep_%s" % nb_rep
+
+        dico_reponses[rep_id] = {"type": "Correct",
+                                 "data": ligne,
+                                 "value": "1",  # On donne "+1" par bonne réponse.
+                                 "feedbacktype": "Response"}
+    ## Incorrect answers
+    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
+    for ligne in liste_mauvais:
+        nb_rep = nb_rep + 1
+        rep_id = "rep_%s" % nb_rep
+        dico_reponses[rep_id] = {"type": "Incorrect",
+                                 "data": ligne,
+                                 "value": "0",  # On donne "0" par mauvaise réponse.
+                                 "feedbacktype": "Solution"}
+
+    # Vu que TurningPoint 5 est incapable de faire de l'aléatoire, on mélange les propositions...
+    rep_items = dico_reponses.items()
+    shuffle(rep_items)
+    for rep_id, rep_item in rep_items:
+        elementXML = ET.SubElement(element_renderchoice,
+                                   "response_label",
+                                   attrib={"ident": rep_id})
+        __add_matttext(elementXML, rep_item["data"])
+
+        """ apparament, TT ne supporte qu'un varequal par conditionvar.
+        Du coup il faut boucler sur respcondition au lieu de varequal..."""
+        element_respcondition = ET.SubElement(element_resprocessing,
+                                              "respcondition",
+                                              attrib={"title": rep_item["type"],
+                                                      "continue": "Yes"})
+        elementXML = ET.SubElement(element_respcondition, "conditionvar")
+        elementXML = ET.SubElement(elementXML,
+                                   "varequal",
+                                   attrib={"respident": parsed_exo["id"]})
+        elementXML.text = rep_id
+
+        elementXML = ET.SubElement(element_respcondition,
+                                   "setvar",
+                                   attrib={"action": "Add"})
+
+        elementXML.text = rep_item["value"]
+        elementXML = ET.SubElement(element_respcondition,
+                                   "displayfeedback",
+                                   attrib={"feedbacktype": rep_item["feedbacktype"],
+                                           "linkrefid":    rep_item["type"]})
+
+    ## Feedbacks ##
+
+    ## Feedback bon
+    elementXML = ET.SubElement(element_item,
+                               "itemfeedback",
+                               attrib={"ident": "Correct"})
+    __add_matttext(elementXML, parsed_exo["feedback_bon"].decode("utf-8"))
+
+    ## Feedback Mauvais (+Solution)##
+    elementXML = ET.SubElement(element_item,
+                               "itemfeedback",
+                               attrib={"ident": "Incorrect"})
+    elementXML = ET.SubElement(elementXML,
+                               "solution",
+                               attrib={"feedbackstyle": "Complete"})
+    elementXML = ET.SubElement(elementXML, "solutionmaterial")
+    __add_matttext(elementXML, parsed_exo["feedback_mauvais"].decode("utf-8"))
+
+    """
+                                 "tot"             : "5",
+                                 "givetrue"        : "2",
+                                 "minfalse"        : "0",
+                                 "feedback_general": "",
+                                 "feedback_bon"    : "",
+                                 "feedback_mauvais": "",
+                                 "options"         : "checkbox split",
+                                 "accolade"        : "1",
+                                 "credits"         : "",
+                                 "hint"            : "",
+                                 "help"            : "",
+    """
+    return exoXML
+
+
+def __add_matttext(elementXML, texte, flow_type="flow_mat"):
+    if flow_type is not None:
+        elementXML = ET.SubElement(elementXML, flow_type)
+    elementXML = ET.SubElement(elementXML, "material")
+    elementXML = ET.SubElement(elementXML, "mattext",
+                               attrib={"texttype": "text/html"})
+    elementXML.text = texte
+
+
+def __qcmsimple_to_qti_21(exoXML, parsed_exo):
+    ### Modele "QCM Simple" vers QTI 2.1:
+
     elementXML = ET.SubElement(exoXML,
                            "responseDeclaration",
                            attrib={"identifier":  "RESPONSE",
