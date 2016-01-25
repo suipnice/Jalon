@@ -140,6 +140,9 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                     __qcmsimple_to_qti_121(elementXML, parsed_exo)
             else:
                 #Format QTI v2.1
+                ### Plus d'infos sur le format QTI v2.1 :
+                # XML Binding : http://www.imsglobal.org/question/qtiv2p1/imsqti_bindv2p1.html
+
                 exoXML = ET.Element("assessmentItem",
                          attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
                                  "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
@@ -422,8 +425,6 @@ def __qcmsimple_to_qti_121(exoXML, parsed_exo):
                                  "givetrue"        : "2",
                                  "minfalse"        : "0",
                                  "feedback_general": "",
-                                 "feedback_bon"    : "",
-                                 "feedback_mauvais": "",
                                  "options"         : "checkbox split",
                                  "accolade"        : "1",
                                  "credits"         : "",
@@ -445,10 +446,15 @@ def __add_matttext(elementXML, texte, flow_type="flow_mat"):
 def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers QTI 2.1:
 
+    if parsed_exo["options_checkbox"] == 1:
+        cardinality = "multiple"
+    else:
+        cardinality = "single"
+
     elementXML = ET.SubElement(exoXML,
                            "responseDeclaration",
                            attrib={"identifier":  "RESPONSE",
-                                   "cardinality": "multiple",
+                                   "cardinality": cardinality,
                                    "baseType":    "identifier"})
 
     correctResponse = ET.SubElement(elementXML, "correctResponse")
@@ -472,25 +478,41 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
     nb_rep = 0
     for ligne in liste_bons:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-        elementXML = ET.SubElement(correctResponse, "value")
-        elementXML.text = rep_id
-        elementXML = ET.SubElement(choiceInteraction,
-                                   "simpleChoice",
-                                   attrib={"identifier": rep_id,
-                                           "fixed":      "false"})
-        elementXML.text = ligne
+        rep = ligne.strip()
+        if rep != "":
+            nb_rep = nb_rep + 1
+            rep_id = "rep_%s" % nb_rep
+            elementXML = ET.SubElement(correctResponse, "value")
+            elementXML.text = rep_id
+            elementXML = ET.SubElement(choiceInteraction,
+                                       "simpleChoice",
+                                       attrib={"identifier": rep_id,
+                                               "fixed":      "false"})
+            elementXML.text = rep
 
     liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
     for ligne in liste_mauvais:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-        elementXML = ET.SubElement(choiceInteraction,
-                                   "simpleChoice",
-                                   attrib={"identifier": rep_id,
-                                           "fixed":      "false"})
-        elementXML.text = ligne
+        rep = ligne.strip()
+        if rep != "":
+            nb_rep = nb_rep + 1
+            rep_id = "rep_%s" % nb_rep
+            elementXML = ET.SubElement(choiceInteraction,
+                                       "simpleChoice",
+                                       attrib={"identifier": rep_id,
+                                               "fixed":      "false"})
+            elementXML.text = rep
+
+    if parsed_exo["feedback_general"] != "":
+        elementXML = ET.SubElement(exoXML,
+                                   "modalFeedback",
+                                   attrib={"outcomeIdentifier": "FEEDBACK",
+                                           "identifier": "COMMENT",
+                                           "showHide": "show"})
+        elementXML.text = parsed_exo["feedback_general"].decode("utf-8")
+
+    #"options"         : "checkbox split",
+    #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="correct">correct</modalFeedback>
+    #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="incorrect">incorrect</modalFeedback>
     return exoXML
 
 
