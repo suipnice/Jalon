@@ -8,20 +8,24 @@
 ##
 #import OEF_to_OLX
 
-u"""  Script (Python) "getExoWIMS_XML".
+u"""  Script (Python) "getExoWIMS".
 
-Fournit un fichier XML de l'exo WIMS courant, selon le format demandé (QTI ou EDX)
+Fournit un fichier telechargeable de l'exo WIMS courant, selon le format demandé (QTI, EDX, OEF...)
 
 """
 
 request = context.REQUEST
+modele = context.getModele()
+
+portal = context.aq_parent
+authMember = portal.portal_membership.getAuthenticatedMember()
 
 #request n'est pas un veritable dico, donc pas de "in"
 if request.has_key("format"):
-    formatXML = request["format"]
+    file_format = request["format"]
 else:
     #par défaut, on exporte en QTI
-    formatXML = "QTI"
+    file_format = "QTI"
 
 if request.has_key("version"):
     version = request["version"]
@@ -29,18 +33,23 @@ else:
     #par défaut, on exporte dans la derniere version
     version = "latest"
 
-if formatXML == "QTI":
-    filename = "exo_WIMS_%s.zip" % formatXML
-    zipfile = context.getExoZIP("questionDB.xml", context.getExoXML(formatXML, version))
+if file_format == "QTI":
+    filename = "exo_WIMS_%s%s.zip" % (file_format, version)
+    zipfile = context.getExoZIP("questionDB.xml", context.getExoXML(file_format, version))
     request.RESPONSE.setHeader('content-type', "application/zip")
     request.RESPONSE.setHeader('content-length', zipfile["length"])
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
     # Ici, context doit etre un jalonexercicewims
     return zipfile["data"]
 
+elif file_format == "OEF":
+    filename = "%s.oef" % context.getId()
+    request.RESPONSE.setHeader('content-type', "text/plain")
+    request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
+    return context.getExoOEF(modele, authMember, request)
 else:
-    filename = "exo_WIMS_%s.xml" % formatXML
+    filename = "exo_WIMS_%s.xml" % file_format
     request.RESPONSE.setHeader('content-type', "application/xml")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
     # Ici, context doit etre un jalonexercicewims
-    return context.getExoXML(formatXML, version)
+    return context.getExoXML(file_format, version)

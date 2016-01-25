@@ -546,6 +546,25 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         return input_data
 
+    def getExoOEF(self, modele, authMember, requete={}):
+        """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
+        fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
+        try:
+            retour = json.loads(fichier)
+            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
+            # autre erreur possible : l'exercice demandé a disparu de WIMS.
+
+            self.aq_parent.wims("verifierRetourWims", {"rep": fichier,
+                                                       "fonction": "jalonexercicewims.py/getExoWims",
+                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
+                                                       "jalon_request": requete
+                                                       })
+            return None
+        except:
+            # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
+            return fichier
+
     def getExoWims(self, modele, authMember, requete={}):
         """permet de parser le code source d'un exercice WIMS."""
         #LOG.info("[getExoWims] modele = %s" % modele)
@@ -567,25 +586,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     requete["options_checkbox"] = 1
             return requete
 
-        file = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
-        try:
-            retour = json.loads(file)
-            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
-            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
-            # autre erreur possible : l'exercice demandé a disparu de WIMS.
-
-            self.aq_parent.wims("verifierRetourWims", {"rep": file,
-                                                       "fonction": "jalonexercicewims.py/getExoWims",
-                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
-                                                       "jalon_request": requete
-                                                       })
+        fichier = self.getExoOEF(modele, authMember, requete)
+        if fichier is None:
             return None
-        except:
-            pass
+
         if modele == "exercicelibre":
-            return {"exercicelibre": file}
+            return {"exercicelibre": fichier}
         else:
-            retour = {"code_source": file}
+            retour = {"code_source": fichier}
             variables_parse = {"qcmsimple": {"enonce":           "text{explain",
                                              "bonnesrep":        "matrix{datatrue",
                                              "mauvaisesrep":     "matrix{datafalse",
@@ -706,7 +714,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 for lettre in lettres:
                     variables_parse["equation"]["param_%s" % lettre] = "real{%s" % lettre
 
-            file = file.replace("\n", "_ENDLINE_")
+            fichier = fichier.replace("\n", "_ENDLINE_")
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
@@ -724,7 +732,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
                 m = re.compile(pattern)
-                recherche = m.search(file)
+                recherche = m.search(fichier)
                 #LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
                 if recherche is not None:
                     variable = recherche.group(1)
@@ -759,7 +767,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 i = 0
                 pattern = 'textarea="(.*?)"_ENDLINE_'
                 m = re.compile(pattern)
-                recherche = m.search(file)
+                recherche = m.search(fichier)
                 variable = recherche.group(1)
                 variable = variable.replace("_ENDLINE_", "")
                 list_id_questions = variable.split(" ")
@@ -767,7 +775,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 for id_question in list_id_questions:
                     pattern = "text{%s=(.*?)}_ENDLINE_" % id_question
                     m = re.compile(pattern)
-                    recherche = m.search(file)
+                    recherche = m.search(fichier)
                     variable = recherche.group(1)
                     variable = variable.replace("_ENDLINE_", "\n")
 
