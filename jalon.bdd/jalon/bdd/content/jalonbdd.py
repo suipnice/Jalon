@@ -546,7 +546,11 @@ class JalonBDD(SimpleItem):
             portal.acl_users.source_users.updateUserPassword(param["SESAME_ETU"], param["password"])
             authMember = portal.portal_membership.getAuthenticatedMember()
             infos = jalon_utils.getInfosMembre(authMember.getId())
-            message = 'Bonjour\n\nVotre mot de passe a été changé par "%s". Pour vous connecter à %s (%s) vous devez utiliser :\n\nNom d\'utilisateur : %s\nMot de passe : %s\n\nVous pouvez changer ce mot de passe en cliquant sur le lien suivant : %s/mail_password_form?userid=%s\n\nCordialement,\nL\'équipe %s.' % (infos["fullname"], portal.Title(), portal.absolute_url(), param["SESAME_ETU"].encode("UTF-8"), param["password"].encode("UTF-8"), portal.absolute_url(), param["SESAME_ETU"].encode("UTF-8"), portal.Title())
+            message = 'Bonjour\n\nVotre mot de passe a été changé par "%s". Pour vous connecter à %s (%s) vous devez utiliser :\n\nNom d\'utilisateur : %s\nMot de passe : %s\n\nVous pouvez changer ce mot de passe en cliquant sur le lien suivant : %s/mail_password_form?userid=%s\n\nCordialement,\nL\'équipe %s.' % (infos["fullname"],
+                portal.Title(),
+                portal.absolute_url(), param["SESAME_ETU"].encode("UTF-8"),
+                param["password"].encode("UTF-8"), portal.absolute_url(),
+                param["SESAME_ETU"].encode("UTF-8"), portal.Title())
             jalon_utils.envoyerMail({"a":       param["EMAIL_ETU"],
                                      "objet":   "Nouveau mot de passe",
                                      "message": message})

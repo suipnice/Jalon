@@ -2369,7 +2369,7 @@ class JalonCours(ATFolder):
                 else:
                     new_listeClasses[0][auteur] = dico[auteur]
         if removing_classes is not None:
-            removing_classes = self.aq_parent.delClassesWims(removing_classes, request)
+            self.aq_parent.delClassesWims(removing_classes, request)
 
         # Et enfin remettre à zero la liste des classes du cours.
         #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)

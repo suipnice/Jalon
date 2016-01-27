@@ -17,7 +17,7 @@
 
 """
 
-fileType = imageName.split( '.' )
+fileType = imageName.split('.')
 
 return {
     'application':  'fa-file',
@@ -42,6 +42,3 @@ return {
     'xls':          'fa-file-excel-o',
     'zip':          'fa-file-archive-o',
     }.get( fileType[ 0 ], 'fa-file-o' )
-
-
-

@@ -11,7 +11,7 @@
 <metal:content-core fill-slot="content-core">
 <metal:macro define-macro="mon_espace">
 
-<tal:rediriger_etudiant 
+<tal:rediriger_etudiant
     condition="not:is_personnel"
     replace="python:context.rediriger_etudiant(user.getId())" />
 
