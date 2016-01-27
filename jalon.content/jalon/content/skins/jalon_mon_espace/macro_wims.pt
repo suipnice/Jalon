@@ -262,11 +262,12 @@
 -->
 <metal:macro define-macro="supprimer_exo">
 
-  <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) == 0, 1, 0)">
-    <metal:macro use-macro="here/macro_form/macros/supprimer">Supression autorisée</metal:macro>
-  </tal:condition>
+    <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) == 0, 1, 0)">
+        <metal:macro use-macro="here/macro_form/macros/supprimer">Supression autorisée</metal:macro>
+    </tal:condition>
 
-  <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) != 0, 1, 0)">
+    <tal:condition condition="python:context.test(len(context.getRawRelatedItems()) != 0, 1, 0)">
+
     <h2 class="warning">
         <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Suppression non autorisée</tal:block>
@@ -293,17 +294,7 @@
         </ul>
     </div>
 
-    <div class="text-center">
-        <a class="button small radius close-custom-modal">
-            D'accord, j'ai compris.
-        </a>
-    </div>
-    <script>
-        $('a.close-custom-modal').on('click', function() {
-          $('#reveal-main').foundation('reveal','close');
-        });
-    </script>
-  </tal:condition>
+    </tal:condition>
 </metal:macro>
 
 </metal:content-core>
