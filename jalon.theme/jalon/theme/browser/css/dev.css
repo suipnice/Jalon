@@ -63,23 +63,6 @@
 }
 
 /*----------*/
-/* Permet d'avoir un affichage similaire sur Firefox et Safari,
-     avec un checkbox et le label qui le suit toujours sur la même ligne, meme sur petits écrans.
-     J'appelle la classe "confirm_check" dans l'idée de la génériser
-      à d'éventuels futurs checkbox de confirmation d'actions de formulaire.
-     C'est pour le moment utilisé dans jalon/content/skins/jalon_mescours/macro_mescours.pt :
-     ligne 693 : "confirm-suppr_WIMS"
-*/
-.confirm_check input[type="checkbox"]{
-    /* permet d'éviter un espace indésirable dans le cas ou le label suivant se retrouve sur 2 lignes*/
-    margin-bottom:0;
-}
-.confirm_check input[type="checkbox"]+label{
-    /* important pour WebKit (Safari) */
-    display:inline;
-}
-
-/*----------*/
 /*La classe "debug" permet d'afficher des elements à l'écran pendant les tests, avec une couleur bien criarde,
  histoire de ne pas oublier de les retirer avant de faire un commit !*/
 .debug{
