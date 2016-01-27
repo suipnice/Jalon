@@ -105,7 +105,7 @@
 
                         <h4 tal:attributes="title video/title">
 
-                            <i tal:attributes="class video/streaming_available;
+                            <i tal:attributes="class video/css_class;
                                                title video/expiration_date"
                                i18n:attributes="title"></i>
                             <tal:block replace="python:context.getShortText(video['title'], 20)"/>
