@@ -77,7 +77,7 @@ class IndicateursView(BrowserView):
             type_element = element_cours_dict[element_id]["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"
@@ -122,7 +122,7 @@ class IndicateursView(BrowserView):
             type_element = element["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"

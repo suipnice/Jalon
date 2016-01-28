@@ -59,7 +59,7 @@ class JalonBDD(SimpleItem):
     _session_mysql_open = False
     SessionMySQL = sessionmaker()
 
-    _public_bdd = ["Etudiant", "Lecteur", "Co-auteur", "Auteur",  "Manager", "Secretaire"]
+    _public_bdd = ["Etudiant", "Lecteur"]
 
     def __init__(self, *args, **kwargs):
         super(JalonBDD, self).__init__(*args, **kwargs)
@@ -1049,32 +1049,33 @@ class JalonBDD(SimpleItem):
             LOG.info("Consultation Année Courant")
             for ligne in consultationCours.all():
                 LOG.info(ligne)
-                #try:
-                consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
-                if not consultation_dict[ligne[0]] in consultations_list:
-                    consultations_list.append(consultation_dict[ligne[0]])
-                #except:
-                #    pass
+                try:
+                    consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+                    if not consultation_dict[ligne[0]] in consultations_list:
+                        consultations_list.append(consultation_dict[ligne[0]])
+                except:
+                    pass
             #LOG.info(consultation_dict)
 
             consultationCoursPrec = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
             LOG.info("Consultation Mois Précédent")
             for ligne in consultationCoursPrec.all():
                 LOG.info(ligne)
-                #try:
-                consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
-                #except:
-                #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
-                #    pass
+                try:
+                    consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+                except:
+                    #consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+                    pass
 
             consultationCours = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, month, year)
             LOG.info("Consultation Mois Courant")
             for ligne in consultationCours.all():
                 LOG.info(ligne)
-                #try:
-                consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
-                #except:
-                #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
+                try:
+                    consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+                except:
+                    #consultation_dict[ligne[0]]["nb_cons_month"] = 0
+                    pass
         else:
             if int(month) < 10:
                 month = "0%s" % month
