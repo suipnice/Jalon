@@ -136,7 +136,7 @@
                             </a>
                             <a class="button tiny" title="Demander la mise à disposition"
                                data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/forbid_streaming?pod=${video/id}"
+                               tal:attributes="href string:${context/absolute_url}/ask_streaming?pod=${video/id}"
                                tal:condition="not:video/is_streaming"
                                i18n:attributes="title">
                                 <i class="fa fa-envelope"></i>

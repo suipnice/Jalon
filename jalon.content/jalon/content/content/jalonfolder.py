@@ -1388,6 +1388,11 @@ class JalonFolder(ATFolder):
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
 
+    def askStreaming(self, streaming_id, member_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.askStreaming(streaming_id, member_id)
+
     #-----------------#
     #   Utilitaires   #
     #-----------------#

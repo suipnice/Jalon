@@ -85,6 +85,18 @@
             </div>
         </div>
         <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_admin_email" i18n:translate="wowza_admin_email">
+                        Courriel de l'administrateur Wowza (Si vide utilisation de l'email de l'administrateur Jalon)
+                    </label>
+                    <input type="text" name="wowza_admin_email"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_admin_email | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="columns medium-6">
                 <div class="panel callout radius">
                     <label for="pod_server" i18n:translate="pod_server">

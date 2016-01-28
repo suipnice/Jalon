@@ -13,34 +13,40 @@
 <tal:define define="pod request/pod;
                     video python:context.searchElasticsearch('video', pod);">
     <h2>
-        <tal:replace replace="video/title"/> : Bloquer le Streaming
+        Demander le Streaming
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <h4>
+    <div>
+        <strong>Titre :</strong> <tal:block replace="video/title"/>
+    </div>
+    <div>
         <strong>Auteur :</strong> <tal:block replace="video/owner_full_name"/>
-    </h4>
-
+    </div>
+    <div>
+        <strong>Description :</strong>
+    </div>
     <div class="panel radius"
          tal:condition="not:video/text"
          i18n:translate="">
          Description non renseignée…
     </div>
-
+    <br/>
     <form method="post"
-          tal:attributes="action string:${context/absolute_url}/modify_streaming_script">
+          tal:attributes="action string:${context/absolute_url}/ask_streaming_script">
 
-        <div class="panel alert">
-            <strong>Attention :</strong> vous allez interdire le streaming de cette vidéo depuis Jalon, pour confirmer votre choix cliquez sur le bouton "Bloquer".
+        <div class="panel callout radius">
+            <strong>Un email sera envoyé à l'administrateur pour lui faire part de votre demande. Il vous contactera pour vous donner plus d'informations.</strong>
         </div>
 
         <input type="hidden" name="pod" tal:attributes="value request/pod"/>
+        <input type="hidden" name="member_id" tal:attributes="value user/getId"/>
 
         <div class="formControls">
-            <button type="submit" class="button small alert"
+            <button type="submit" class="button small"
                     name="form.button.save">
-                <i class="fa fa-chain-broken"></i>
-                <tal:block i18n:translate="">Bloquer</tal:block>
+                <i class="fa fa-envelope"></i>
+                <tal:block i18n:translate="">Demander</tal:block>
             </button>
         </div>
 

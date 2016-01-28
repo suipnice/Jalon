@@ -30,6 +30,7 @@ class JalonWowza(SimpleItem):
     _wowza_sha = "sha256"
     _wowza_token_prefix = "wowzatoken"
     _wowza_ticket_validation = "1"
+    _wowza_admin_email = ""
 
     _pod_server = "http://domainname.com"
     _pod_user = "wowza"
@@ -48,6 +49,7 @@ class JalonWowza(SimpleItem):
                 "wowza_sha":                self._wowza_sha,
                 "wowza_token_prefix":       self._wowza_token_prefix,
                 "wowza_ticket_validation":  self._wowza_ticket_validation,
+                "wowza_admin_email":        self._wowza_admin_email,
                 "pod_server":               self._pod_server,
                 "pod_user":                 self._pod_user,
                 "pod_elasticsearch_port":   self._pod_elasticsearch_port,
@@ -108,6 +110,23 @@ class JalonWowza(SimpleItem):
 
         return resultat
 
+    def searchExtrait(self, streaming_id):
+        #LOG.info("----- searchExtrait -----")
+        #LOG.info(streaming_id)
+        elasticsearch = Elasticsearch(hosts=["%s:%s/%s" % (self._pod_server, self._pod_elasticsearch_port, self._pod_elasticsearch_index)])
+        body = {"query": {"match": {'id': {'query': streaming_id, 'operator': 'and'}}}}
+        result = elasticsearch.search(body=body, size=12)
+        if result:
+            fiche = result["hits"]["hits"][0]
+            return {"id":                  streaming_id,
+                    "full_url":            fiche["_source"]["full_url"],
+                    "title":               fiche["_source"]["title"].encode("utf-8"),
+                    "owner":               fiche["_source"]["owner"],
+                    "owner_full_name":     fiche["_source"]["owner_full_name"].encode("utf-8"),
+                    "thumbnail":           fiche["_source"]["thumbnail"].encode("utf-8"),
+                    "text":                fiche["_source"]["description"].encode("utf-8")}
+        return None
+
     def getStreamingAvailable(self, key=None):
         if key:
             return self._streaming_available.get(key, None)
@@ -151,9 +170,8 @@ class JalonWowza(SimpleItem):
     def isGeoLoc(self, client_ip):
         #LOG.info("----- isGeoLoc -----")
         from geoip import geolite2
-        #LOG.info(request["HTTP_X_REAL_IP"])
-        #match = geolite2.lookup(request["HTTP_X_REAL_IP"])
-        match = geolite2.lookup("134.59.205.212")
+        match = geolite2.lookup(client_ip)
+        #match = geolite2.lookup("134.59.205.212")
         if match is None:
             return False
         LOG.info(match.country)
@@ -162,7 +180,7 @@ class JalonWowza(SimpleItem):
         return False
 
     def secureStreamingUrl(self, streaming_id, client_ip):
-        client_ip = "134.59.205.212"
+        #client_ip = "134.59.205.212"
         #LOG.info("----- secureStreamingUrl -----")
         wowza_content_path = "%s/%s.mp4" % (self._wowza_application, streaming_id)
         #LOG.info(wowza_content_path)
@@ -189,3 +207,19 @@ class JalonWowza(SimpleItem):
         secure_streaming_url = "%s/%s/%s.mp4?%s&%s&%shash=%s" % (self._wowza_server, self._wowza_application, streaming_id, wowzatoken_start_time, wowzatoken_end_time, self._wowza_token_prefix, str_sha_base64)
         #LOG.info(secure_streaming_url)
         return secure_streaming_url
+
+    def askStreaming(self, streaming_id, member_id):
+        #LOG.info("----- askStreaming -----")
+        portal = self.portal_url.getPortalObject()
+        member_infos = jalon_utils.getInfosMembre(member_id)
+        send_to = self._wowza_admin_email
+        if not send_to:
+            send_to = portal.getProperty("email_from_address")
+        streaming_infos = self.searchExtrait(streaming_id)
+        message = "Bonjour\n\nUne demande d'autorisation de streaming vient d'être effectuée par \"%s\" pour la vidéo \"%s\" ayant pour identifiant \"%s\".\n\nCordialement,\n%s." % (member_infos["fullname"], streaming_infos["title"], streaming_id, portal.Title())
+        #LOG.info({"send_to": member_infos["email"],
+        #          "objet":   "Demande d'activation de Streaming",
+        #          "message": message})
+        jalon_utils.envoyerMail({"send_to": send_to,
+                                 "objet":   "Demande d'activation de Streaming",
+                                 "message": message})
