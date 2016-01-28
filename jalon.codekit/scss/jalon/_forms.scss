@@ -313,6 +313,8 @@ form {
 
         & > .accordion-navigation .content {
             margin-bottom: 0;
+
+            & > ul { margin-bottom: 0; }
         }
     }
 }
