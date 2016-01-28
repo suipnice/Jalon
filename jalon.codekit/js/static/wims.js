@@ -12,13 +12,29 @@
 
 function setWimsExportAccordionRadio( accordionID ) {
 
-    Foundation.utils.S( '#' + accordionID ).on( 'toggled', function ( event, accordion ) {
+    var $accordion = Foundation.utils.S( '#' + accordionID );
+    var $form = $accordion.parent( 'form' );
+    var $submitButton = $form.children( '.formControls' ).children( '[type=submit]' );
+
+    $accordion.on( 'toggled', function ( event, accordion ) {
+
         var targetID = $( this ).find( '.content.active' ).attr( 'id' );
+
         if ( targetID !== undefined ) {
+            switchButtonEnabledState( $submitButton, true );
             Foundation.utils.S( '#js-export_format' ).prop( 'value', targetID );
             Foundation.utils.S( '#' + targetID + '_default' ).prop( 'checked', true );
+        } else {
+            switchButtonEnabledState( $submitButton, false );
         }
     });
+
+    $form.submit( function( event ) {
+
+        Foundation.utils.S( '#reveal-main' ).foundation( 'reveal', 'close' );
+        setAlertBox( 'success', $form.data( 'success_msg' ) );
+    } );
+
 
 }
 

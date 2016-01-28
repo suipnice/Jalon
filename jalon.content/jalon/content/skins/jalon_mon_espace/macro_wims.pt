@@ -178,7 +178,9 @@
     </h2>
 
     <form method="POST"
-          tal:attributes="action string:${context/absolute_url}/getExoWIMS;">
+          tal:attributes="action string:${context/absolute_url}/getExoWIMS;
+                          data-success_msg string:Votre fichier est en cours de téléchargement…"
+          i18n:attributes="data-success_msg">
 
         <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
         <input type="hidden" name="format" id="js-export_format" value="QTI" />
@@ -262,13 +264,6 @@
         tal:content="structure string:$$(document).foundation('accordion', 'reflow')" />
     <script charset="UTF-8"
         tal:content="structure string:setWimsExportAccordionRadio('js-accordion_export-WIMS')" />
-    <script charset="UTF-8">
-        $( '.close-download-modal' ).on( 'click', function( event ) {
-            setTimeout( function( ) {
-                $( '#reveal-main' ).foundation( 'reveal', 'close' );
-            }, 1500 );
-        });
-    </script>
 
 </metal:macro>
 
