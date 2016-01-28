@@ -1034,10 +1034,10 @@ class JalonProperties(SimpleItem):
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         portal_jalon_wowza.setWowzaProperties(wowzaProperties)
 
-    def searchExtraits(self, page):
+    def searchExtraits(self, page, term_search):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
-        return portal_jalon_wowza.searchExtraits(page)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
 
     def getExpirationDate(self, pod):
         portal = self.portal_url.getPortalObject()

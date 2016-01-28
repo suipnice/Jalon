@@ -142,11 +142,58 @@
     <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <tal:define define="page python:int(request.get('page', 1));
-                        videos python:context.searchExtraits(page)">
+                        term_search request/term_search | nothing;
+                        videos python:context.searchExtraits(page, term_search);">
+
+        <h2 class="texte_icone icone_recherche">
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Rechercher un contenu dans le catalogue de vidéos à la demande</tal:block>
+        </h2>
+
+        <form id="js-podFilterSelector" method="POST"
+              tal:attributes="action string:${context/absolute_url}/gestion_mon_espace;
+                              data-term_search_label1 string:Filtrer par mot-clé ou auteur;
+                              data-term_search_label2 string:Filtrer par mot-clé;
+                              data-term_search_placeholder1 string:Entrez un mot-clé ou un nom d'auteur…;
+                              data-term_search_placeholder2 string:Entrez un mot-clé…";
+              i18n:attributes="data-term_search_label1;
+                               data-term_search_label2;
+                               data-term_search_placeholder1;
+                               data-term_search_placeholder2">
+
+            <div class="field">
+
+                <label id="term_search_label" for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
+                <input type="text" id="term_search" name="term_search" class="blurrable"
+                       size="30" maxlength="255"
+                       placeholder="Entrez un mot-clé ou un nom d'auteur…"
+                       tal:attributes="value term_search"
+                       i18n:attributes="placeholder" />
+
+            </div>
+
+            <input type="hidden" name="gestion" value="gestion_wowza"/>
+            <input type="hidden" name="onglet" value="wowza_extraits"/>
+
+            <div class="formControls">
+
+                <button type="submit" class="button small expand radius"
+                        name="form.button.save">
+                    <i class="fa fa-search"></i>
+                    <tal:block i18n:translate="">Rechercher</tal:block>
+                </button>
+
+            </div>
+
+            <tal:block define="script string:setPodFilterSelector()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+        </form>
 
         <h2 class="texte_icone icone_resultats"
             i18n:translate="">
-            Liste des extraits
+            Résultats de la recherche
         </h2>
 
         <div id="js-update_target">

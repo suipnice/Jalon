@@ -21,7 +21,8 @@
           tal:define="type_search request/type_search | nothing;
                       term_search request/term_search | nothing;">
 
-        <h2 class="texte_icone icone_recherche"><i class="fa fa-plus-circle no-pad"></i>
+        <h2 class="texte_icone icone_recherche">
+            <i class="fa fa-plus-circle no-pad"></i>
             <tal:block i18n:translate="">Rechercher un contenu dans le catalogue de vidéos à la demande et l'ajouter à votre espace</tal:block>
         </h2>
 
