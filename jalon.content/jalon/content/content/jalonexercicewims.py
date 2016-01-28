@@ -515,6 +515,27 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         import jalonexportswims
         return jalonexportswims.getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
 
+    def getListeExports(self):
+        u""" fournit la liste des formats exportables a partir du modèle courant."""
+        liste_formats = {"qcmsimple":                  ["QTI", "EDX", "OEF"],
+                         "equation":                   ["OEF"],
+                         "texteatrous":                ["OEF"],
+                         "marqueruntexte":             ["OEF"],
+                         "marquerparpropriete":        ["OEF"],
+                         "questiontextuelletolerante": ["OEF"],
+                         "taperlemotassocie":          ["OEF"],
+                         "reordonner":                 ["OEF"],
+                         "correspondance":             ["OEF"],
+                         "classerparpropriete":        ["OEF"],
+                         "vraifauxmultiples":          ["OEF"],
+                         "texteatrousmultiples":       ["OEF"],
+                         "qcmsuite":                   ["QTI", "OEF"]
+                         }
+        if self.modele in liste_formats:
+            return liste_formats[self.modele]
+        else:
+            return []
+
     def getModule(self, authMember, module_path):
         """retourne toutes les infos disponibles pour le module "module_path"."""
         dico = {"job": "getmodule", "option": module_path, "code": authMember}

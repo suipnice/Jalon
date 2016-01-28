@@ -180,22 +180,18 @@
     <form method="POST"
           tal:attributes="action string:${context/absolute_url}/getExoWIMS;
                           data-success_msg string:Votre fichier est en cours de téléchargement…"
-          i18n:attributes="data-success_msg">
+          i18n:attributes="data-success_msg"
+          tal:define="listeExports context/getListeExports">
 
         <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
         <input type="hidden" name="format" id="js-export_format" value="QTI" />
 
-        <dl id="js-accordion_export-WIMS" class="accordion" data-accordion="export-WIMS">
-            <dd class="accordion-navigation">
+        <dl id="js-accordion_export-WIMS" class="accordion"
+            data-accordion="export-WIMS">
+            <dd class="accordion-navigation" tal:condition="python:'QTI' in listeExports">
                 <a href="#QTI">QTI <span class="label">Utilisable dans divers LMS et outils tiers</span></a>
-                <!--input type="radio" id="QTI" value="QTI" name="format" checked="checked"/>
-                <label for="QTI">QTI <span class="formHelp">(utilisable dans divers LMS et outils tiers)</span></label-->
-                <div id="QTI" class="content active">
+                <div id="QTI" class="content">
                     <ul>
-                        <!--li>
-                            <input type="radio" id="QTI_1" value="1.1" name="version"/>
-                            <label for="QTI_1">1.1 <span class="formHelp">(bla bla)</span></label>
-                        </li-->
                         <li>
                             <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
                             <label for="QTI_default">
@@ -215,8 +211,6 @@
             </dd>
             <dd class="accordion-navigation">
                 <a href="#EDX">edX <span class="label">Utilisable dans le LMS edX (version Cypress)</span></a>
-                <!--input type="radio" id="EDX" value="EDX" name="format"/>
-                <label for="EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></label-->
                 <div id="EDX" class="content">
                     <ul>
                         <li>
@@ -232,7 +226,7 @@
 
             <dd class="accordion-navigation">
                 <a href="#OEF">OEF <span class="label">Format natif de WIMS</span></a>
-                <div id="OEF" class="content">
+                <div id="OEF" class="content active">
                     <ul>
                         <li>
                             <input type="radio" id="OEF_default" value="latest" name="version"/>
