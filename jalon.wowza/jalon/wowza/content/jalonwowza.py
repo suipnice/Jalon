@@ -30,8 +30,6 @@ class JalonWowza(SimpleItem):
     _wowza_sha = "sha256"
     _wowza_token_prefix = "wowzatoken"
     _wowza_ticket_validation = "1"
-    _wowza_nb_view_authorized = "2"
-    _wowza_type_reset_view = "month"
 
     _pod_server = "http://domainname.com"
     _pod_user = "wowza"
@@ -50,8 +48,6 @@ class JalonWowza(SimpleItem):
                 "wowza_sha":                self._wowza_sha,
                 "wowza_token_prefix":       self._wowza_token_prefix,
                 "wowza_ticket_validation":  self._wowza_ticket_validation,
-                "wowza_nb_view_authorized": self._wowza_nb_view_authorized,
-                "wowza_type_reset_view":    self._wowza_type_reset_view,
                 "pod_server":               self._pod_server,
                 "pod_user":                 self._pod_user,
                 "pod_elasticsearch_port":   self._pod_elasticsearch_port,
