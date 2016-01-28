@@ -12,7 +12,7 @@
 
 <metal:macro define-macro="mescours_liste">
 
-<tal:define define="folderContents python:context.getListeCoursEns(subjects, authMember=user);">
+<tal:define define="folderContents python:context.getListeCoursEns(subjects, user, onglet);">
 
             <div class="panel callout radius"
                  tal:condition="not:folderContents">

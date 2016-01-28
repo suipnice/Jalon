@@ -20,7 +20,8 @@
 
     <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
-    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
+    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title"
+          tal:define="onglet request/onglet | string:2">
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
 
         <section class="show-for-medium-up medium-12 columns"
@@ -72,36 +73,36 @@
         </tal:comment>
             <ul id="mescours_button-group" class="button-group radius even-5">
                 <li>
-                    <a class="button small secondary"
-                       tal:attributes="href string:{context/absolute_url}?onglet=1"
+                    <a tal:attributes="class python:test(onglet == '1', 'button small selected', 'button small secondary');
+                                       href string:${context/absolute_url}?onglet=1"
                        i18n:translate="">
                         <tal:block i18n:translate="">Favoris</tal:block>
                     </a>
                 </li>
                 <li>
-                    <a class="button small secondary"
-                       tal:attributes="href string:{context/absolute_url}?onglet=2"
+                    <a tal:attributes="class python:test(onglet == '2', 'button small selected', 'button small secondary');
+                                       href string:${context/absolute_url}?onglet=2"
                        i18n:translate="">
                         <tal:block i18n:translate="">Auteur</tal:block>
                     </a>
                 </li>
                 <li>
-                    <a class="button small secondary"
-                       tal:attributes="href string:{context/absolute_url}?onglet=3"
+                    <a tal:attributes="class python:test(onglet == '3', 'button small selected', 'button small secondary');
+                                       href string:${context/absolute_url}?onglet=3"
                        i18n:translate="">
                         <tal:block i18n:translate="">Co-auteur</tal:block>
                     </a>
                 </li>
                 <li>
-                    <a class="button small secondary"
-                       tal:attributes="href string:{context/absolute_url}?onglet=4"
+                    <a tal:attributes="class python:test(onglet == '4', 'button small selected', 'button small secondary');
+                                       href string:${context/absolute_url}?onglet=4"
                        i18n:translate="">
                         <tal:block i18n:translate="">Lecteur</tal:block>
                     </a>
                 </li>
                 <li>
-                    <a class="button small secondary"
-                       tal:attributes="href string:{context/absolute_url}?onglet=5"
+                    <a tal:attributes="class python:test(onglet == '5', 'button small selected', 'button small secondary');
+                                       href string:${context/absolute_url}?onglet=5"
                        i18n:translate="">
                         <tal:block i18n:translate="">Archives</tal:block>
                     </a>

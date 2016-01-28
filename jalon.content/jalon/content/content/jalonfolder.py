@@ -325,7 +325,7 @@ class JalonFolder(ATFolder):
         c = a.difference(b)
         return c
 
-    def getListeCoursEns(self, subject, authMember):
+    def getListeCoursEns(self, subject, authMember, onglet):
         """ Renvoi la liste des cours pour authMember."""
 
         listeCours = []
@@ -334,16 +334,19 @@ class JalonFolder(ATFolder):
         authMemberId = authMember.getId()
         portal_catalog = getToolByName(self, "portal_catalog")
         filtre = {"portal_type": "JalonCours"}
-        if subject == "favori":
+        if onglet == "1":
             filtre["Subject"] = authMemberId
             listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId, Subject=authMemberId))
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId, Subject=authMemberId)))
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId, Subject=authMemberId)))
-        else:
+            listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
+        if onglet == "2":
             listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId))
+            listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
+        if onglet == "3":
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId)))
+        if onglet == "4":
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId)))
-        listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
 
         dicoAuteur = {}
         for cours in listeTousCours:
