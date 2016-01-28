@@ -988,15 +988,12 @@ class JalonFolder(ATFolder):
                    "File":                     "Fichiers",
                    "Page":                     "Fichiers",
                    "Lienweb":                  "Externes",
-                   "Lien web":                 "Externes",
                    "Lecteurexportable":        "Externes",
-                   "Lecteur exportable":       "Externes",
                    "Referencebibliographique": "Externes",
                    "CatalogueBU":              "Externes",
-                   "Catalogue BU":             "Externes",
                    "TermeGlossaire":           "Glossaire",
                    "Presentationssonorisees":  "Sonorisation",
-                   "Exercice Wims":            "Wims"}
+                   "ExerciceWims":             "Wims"}
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 
@@ -1077,7 +1074,7 @@ class JalonFolder(ATFolder):
         #LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
             infos_objet = infos_elements[id_objet]
-            repertoire = infos_objet["typeElement"]
+            repertoire = infos_objet["typeElement"].replace(" ", "")
             if repertoire in dicoRep:
                 repertoire = dicoRep[repertoire]
             if "*-*" in id_objet:
