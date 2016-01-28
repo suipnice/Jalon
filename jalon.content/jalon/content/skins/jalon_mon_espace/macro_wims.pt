@@ -197,14 +197,14 @@
                         <li>
                             <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
                             <label for="QTI_default">
-                                1.2.1
+                                version 1.2.1
                                 <span class="label secondary">Utilisable entre autres par TurningPoint 5 et Respondus 4</span>
                             </label>
                         </li>
                         <li>
                             <input type="radio" id="QTI_2" value="2.1" name="version"/>
                             <label for="QTI_2">
-                                2.1
+                                version 2.1
                                 <span class="label secondary">Utilisable entre autres par Claroline Connect</span>
                             </label>
                         </li>
@@ -212,7 +212,7 @@
                 </div>
             </dd>
             <dd class="accordion-navigation">
-                <a href="#EDX">EDX <span class="label">Utilisable dans le LMS EDX</span></a>
+                <a href="#EDX">edX <span class="label">Utilisable dans le LMS edX (version Cypress)</span></a>
                 <!--input type="radio" id="EDX" value="EDX" name="format"/>
                 <label for="EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></label-->
                 <div id="EDX" class="content">
@@ -220,8 +220,8 @@
                         <li>
                             <input type="radio" id="EDX_default" value="1.1" name="version"/>
                             <label for="EDX_default">
-                                Dernière version
-                                <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">Open edX Cypress release</a></span>
+                                Format edX (version Cypress)
+                                <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">En savoir plus sur « Open edX (version Cypress) »</a></span>
                             </label>
                         </li>
                     </ul>
@@ -253,11 +253,13 @@
             <button type="submit" class="button small radius close-download-modal"
                     name="form.button.save">
                 <i class="fa fa-download"></i>
-                <tal:block i18n:translate="">Exporter</tal:block>
+                <tal:block i18n:translate="">Télécharger</tal:block>
             </button>
         </div>
     </form>
 
+    <script charset="UTF-8"
+        tal:content="structure string:$$(document).foundation('accordion', 'reflow')" />
     <script charset="UTF-8"
         tal:content="structure string:setWimsExportAccordionRadio('js-accordion_export-WIMS')" />
     <script charset="UTF-8">
