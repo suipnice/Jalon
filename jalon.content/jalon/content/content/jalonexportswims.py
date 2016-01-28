@@ -4,6 +4,8 @@ u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS d
 import xml.etree.ElementTree as ET
 import HTMLParser
 
+import jalon_utils
+
 from zipfile import ZipFile, ZIP_DEFLATED
 import os
 
@@ -90,7 +92,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         if formatXML == "OLX":
             # apparement, EDX ne prend pas en compte les attributs du problem. (oct. 2015)
             # attention, en choisissant ""rerandomize": "always"", le bouton "check" disparait lors des tests sur EDX... :/
-            exoXML = ET.Element("problem", attrib={"rerandomize": "always", "title": parsed_exo["titre"], "display_name": titre})
+            exoXML = ET.Element("problem", attrib={"rerandomize": "always", "title": parsed_exo["titre"], "display_name": parsed_exo["titre"]})
             elementXML = ET.SubElement(exoXML, "legend")
             elementXML.text = parsed_exo["titre"]
             exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
@@ -138,6 +140,8 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
                 if modele == "qcmsimple":
                     __qcmsimple_to_qti_121(elementXML, parsed_exo)
+                elif modele == "qcmsuite":
+                    __qcmsuite_to_qti_121(elementXML, parsed_exo)
             else:
                 #Format QTI v2.1
                 ### Plus d'infos sur le format QTI v2.1 :
@@ -153,6 +157,8 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                                  "timeDependent"     : "false"})
                 if modele == "qcmsimple":
                     exoXML = __qcmsimple_to_qti_21(exoXML, parsed_exo)
+                elif modele == "qcmsuite":
+                    exoXML = __qcmsuite_to_qti_21(exoXML, parsed_exo)
                 else:
                     exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
 
@@ -169,8 +175,8 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers OLX:
-
-    chaine = '<div class="enonce">%s</div>' % parsed_exo["enonce"]
+    LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
+    chaine = '<div class="enonce">%s</div>' % jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
     exoXML.append(ET.fromstring(chaine))
     if parsed_exo["options_checkbox"] == 1:
         # Checkbox buttons
@@ -208,15 +214,20 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
     liste_id_bons = []
     nb_rep = 0
     for ligne in liste_bons:
-        liste_id_bons.append(alphabet[nb_rep])
-        nb_rep = nb_rep + 1
-        reponse = ET.SubElement(elementXML, "choice", attrib={"correct": "true", "explanation-id": "correct"})
-        reponse.text = ligne
+        rep = ligne.strip()
+        if rep != "":
+            liste_id_bons.append(alphabet[nb_rep])
+            nb_rep = nb_rep + 1
+            reponse = ET.SubElement(elementXML, "choice", attrib={"correct": "true", "explanation-id": "correct"})
+            reponse.text = rep
+
     liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
     for ligne in liste_mauvais:
-        nb_rep = nb_rep + 1
-        reponse = ET.SubElement(elementXML, "choice", attrib={"correct": "false", "explanation-id": "incorrect"})
-        reponse.text = ligne
+        rep = ligne.strip()
+        if rep != "":
+            nb_rep = nb_rep + 1
+            reponse = ET.SubElement(elementXML, "choice", attrib={"correct": "false", "explanation-id": "incorrect"})
+            reponse.text = ligne
 
     if parsed_exo["options_checkbox"] == 1:
         # en mode "checkbox", on place les feedbacks en compoundhint, a l'interieur du checkboxgroup
@@ -571,3 +582,167 @@ def __qcmsimple_to_moodleXML(parsed_exo):
     </question>
 
     """
+
+
+def __qcmsuite_to_qti_121(exoXML, parsed_exo):
+    u""" Modele "QCM à la suite" vers QTI 1.2.1 (principalement pour TurningPoint 5)."""
+    for index, id_question in enumerate(parsed_exo["list_id_questions"]):
+        element_item = ET.SubElement(exoXML, "item",
+                                     attrib={"ident" : id_question,
+                                             "title" : "%s Question MC #%s" % (parsed_exo["titre"], index + 1)})
+
+        element_metadata = ET.SubElement(element_item, "itemmetadata")
+        elementXML = ET.SubElement(element_metadata, "qmd_itemtype")
+        elementXML.text = "qcmsuite"
+        elementXML = ET.SubElement(element_metadata, "qmd_toolvendor")
+        elementXML.text = "Jalon @ http://jalon.unice.fr"
+
+        elementXML = ET.SubElement(element_item, "presentation")
+        element_flow = ET.SubElement(elementXML, "flow")
+        __add_matttext(element_flow, parsed_exo["enonce%s" % index].decode("utf-8"), flow_type=None)
+
+        # rcardinality (optional - enumerated list: Single, Multiple, Ordered. Default=Single). Indicates the number of responses expected from the user.
+        if parsed_exo["anstype"] == "checkbox":
+            rcardinality = "Multiple"
+        else:
+            rcardinality = "Single"
+
+        elementXML = ET.SubElement(element_flow,
+                                   "response_lid",
+                                   attrib={"ident": "%s_RL" % id_question,
+                                           "rcardinality": rcardinality,
+                                           "rtiming":      "No"})
+
+        element_renderchoice = ET.SubElement(elementXML,
+                                             "render_choice",
+                                             attrib={"shuffle": "Yes"})
+
+        element_resprocessing = ET.SubElement(element_item, "resprocessing")
+        elementXML = ET.SubElement(element_resprocessing, "outcomes")
+        elementXML = ET.SubElement(elementXML, "decvar")
+
+        nb_rep = 0
+
+        dico_reponses = {}
+        ##  answers
+        liste_reponses = parsed_exo["reponses%s" % index].split("\n")
+
+        for num_ligne, ligne in enumerate(liste_reponses):
+            if num_ligne == 0:
+                bonnes_reps = ligne.split(",")
+            else:
+                nb_rep = nb_rep + 1
+                rep_id = "rep_%s" % nb_rep
+                #LOG.info("[__qcmsuite_to_qti_121] bonnes_reps = %s" % bonnes_reps)
+                if str(num_ligne) in bonnes_reps:
+                    #LOG.info("[__qcmsuite_to_qti_121] correct == %s" % num_ligne)
+                    type_rep = "Correct"
+                    value = "1"  # On donne "+1" par bonne réponse.
+                else:
+                    type_rep = "Incorrect"
+                    value = "0"
+                dico_reponses[rep_id] = {"type":        type_rep,
+                                         "data":        ligne.decode("utf-8"),
+                                         "value":       value,
+                                         "feedbacktype": "Response"}
+
+        # Vu que TurningPoint 5 est incapable de faire de l'aléatoire, on mélange les propositions...
+        rep_items = dico_reponses.items()
+        shuffle(rep_items)
+        for rep_id, rep_item in rep_items:
+            elementXML = ET.SubElement(element_renderchoice,
+                                       "response_label",
+                                       attrib={"ident": rep_id})
+            __add_matttext(elementXML, rep_item["data"])
+
+            """ apparament, TP5 ne supporte qu'un varequal par conditionvar.
+            Du coup il faut boucler sur respcondition au lieu de varequal..."""
+            element_respcondition = ET.SubElement(element_resprocessing,
+                                                  "respcondition",
+                                                  attrib={"title": rep_item["type"],
+                                                          "continue": "Yes"})
+            elementXML = ET.SubElement(element_respcondition, "conditionvar")
+            elementXML = ET.SubElement(elementXML,
+                                       "varequal",
+                                       attrib={"respident": id_question})
+            elementXML.text = rep_id
+
+            elementXML = ET.SubElement(element_respcondition,
+                                       "setvar",
+                                       attrib={"action": "Add"})
+
+            elementXML.text = rep_item["value"]
+            elementXML = ET.SubElement(element_respcondition,
+                                       "displayfeedback",
+                                       attrib={"feedbacktype": rep_item["feedbacktype"],
+                                               "linkrefid":    "general"})
+
+        ## Feedbacks ##
+
+        elementXML = ET.SubElement(element_item,
+                                   "itemfeedback",
+                                   attrib={"ident": "general"})
+        __add_matttext(elementXML, parsed_exo["feedback%s" % index].decode("utf-8"))
+
+    return exoXML
+
+
+def __qcmsuite_to_qti_21(exoXML, parsed_exo):
+    ### Modele "QCM a la Suite" vers QTI 2.1:
+
+    if parsed_exo["anstype"] == "checkbox":
+        cardinality = "multiple"
+    else:
+        cardinality = "single"
+
+    for index, id_question in enumerate(parsed_exo["list_id_questions"]):
+        elementXML = ET.SubElement(exoXML,
+                               "responseDeclaration",
+                               attrib={"identifier":  "RESPONSE",
+                                       "cardinality": cardinality,
+                                       "baseType":    "identifier"})
+
+        correctResponse = ET.SubElement(elementXML, "correctResponse")
+
+        elementXML = ET.SubElement(exoXML,
+                                   "outcomeDeclaration",
+                                   attrib={"identifier":  "SCORE",
+                                           "cardinality": "single",
+                                           "baseType":    "float"})
+
+        elementXML = ET.SubElement(exoXML, "itemBody")
+        choiceInteraction = ET.SubElement(elementXML,
+                                          "choiceInteraction",
+                                          attrib={"responseIdentifier": "RESPONSE",
+                                                  "shuffle":            "true",
+                                                  "maxChoices":         "0"})
+
+        elementXML = ET.SubElement(choiceInteraction, "prompt")
+        elementXML.text = parsed_exo["enonce%s" % index].decode("utf-8")
+
+        liste_reponses = parsed_exo["reponses%s" % index].split("\n")
+        for num_ligne, ligne in enumerate(liste_reponses):
+            if num_ligne == 0:
+                bonnes_reps = ligne.split(",")
+            else:
+                rep = ligne.strip()
+                if rep != "":
+                    rep_id = "rep_%s" % num_ligne
+                    if str(num_ligne) in bonnes_reps:
+                        elementXML = ET.SubElement(correctResponse, "value")
+                        elementXML.text = rep_id
+                    elementXML = ET.SubElement(choiceInteraction,
+                                               "simpleChoice",
+                                               attrib={"identifier": rep_id,
+                                                       "fixed":      "false"})
+                    elementXML.text = rep
+
+        if parsed_exo["feedback%s" % index] != "":
+            elementXML = ET.SubElement(exoXML,
+                                       "modalFeedback",
+                                       attrib={"outcomeIdentifier": "FEEDBACK",
+                                               "identifier": "COMMENT",
+                                               "showHide": "show"})
+            elementXML.text = parsed_exo["feedback%s" % index].decode("utf-8")
+
+    return exoXML

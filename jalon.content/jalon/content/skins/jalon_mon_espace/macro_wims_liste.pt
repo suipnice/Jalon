@@ -171,7 +171,7 @@
                                                 <tal:block condition="python:item['getModele']=='externe'" i18n:translate="">Voir</tal:block>
                                             </a>
                                         </li>
-                                        <li tal:condition="python:item['getModele']!='externe'">
+                                        <li tal:condition="python:item['getModele'] != 'externe'">
                                             <a tal:attributes="href string:${item/getURL}?mode=examen">
                                                 <i class="fa fa-eye fa-fw no-pad"></i>
                                                 <tal:block i18n:translate="">Voir en Examen</tal:block>
@@ -196,7 +196,7 @@
                                                 <tal:block i18n:translate="">Étiqueter</tal:block>
                                             </a>
                                         </li>
-                                        <li tal:condition="python:item['getModele'] in ['qcmsimple']">
+                                        <li tal:condition="python:item['getModele'] != ['groupe']">
                                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                                                tal:attributes="href string:${item/getURL}/folder_form?macro=macro_wims&amp;formulaire=exporter_exo">
                                                 <i class="fa fa-download fa-fw no-pad"></i>

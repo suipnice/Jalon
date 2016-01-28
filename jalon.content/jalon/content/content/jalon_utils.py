@@ -143,6 +143,22 @@ def encodeUTF8(itemAEncoder):
         return itemAEncoder
 
 
+def convertUTF8ToHTMLEntities(source):
+    u""" iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €."""
+    source = source.replace("€", "&euro;")
+    source = source.replace("œ", "&oelig;")
+    source = source.replace("’", "&rsquo;")
+    return source
+
+
+def convertHTMLEntitiesToUTF8(source):
+    u""" Pour éviter d'avoir des erreur XML 'unrecognized entity', on reconvertit en UTF-8."""
+    source = source.replace("&euro;", "€")
+    source = source.replace("&oelig;", "œ")
+    source = source.replace("&rsquo;", "’")
+    return source
+
+
 def envoyerMail(form):
     u""" envoie un email selon les parametres spécifiés."""
     portal = getUtility(IPloneSiteRoot)

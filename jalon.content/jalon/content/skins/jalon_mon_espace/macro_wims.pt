@@ -193,7 +193,7 @@
                 <div id="QTI" class="content">
                     <ul>
                         <li>
-                            <input type="radio" id="QTI_default" value="1.2.1" name="version" checked="checked"/>
+                            <input type="radio" id="QTI_default" value="1.2.1" name="version"/>
                             <label for="QTI_default">
                                 version 1.2.1
                                 <span class="label secondary">Utilisable entre autres par TurningPoint 5 et Respondus 4</span>
@@ -209,14 +209,14 @@
                     </ul>
                 </div>
             </dd>
-            <dd class="accordion-navigation">
-                <a href="#EDX">edX <span class="label">Utilisable dans le LMS edX (version Cypress)</span></a>
-                <div id="EDX" class="content">
+            <dd class="accordion-navigation" tal:condition="python:'OLX' in listeExports">
+                <a href="#OLX">edX <span class="label">Utilisable dans le LMS edX (version Cypress)</span></a>
+                <div id="OLX" class="content">
                     <ul>
                         <li>
-                            <input type="radio" id="EDX_default" value="1.1" name="version"/>
-                            <label for="EDX_default">
-                                Format edX (version Cypress)
+                            <input type="radio" id="OLX_default" value="default" name="version"/>
+                            <label for="OLX_default">
+                                Format OLX (edX version Cypress)
                                 <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">En savoir plus sur « Open edX (version Cypress) »</a></span>
                             </label>
                         </li>
@@ -240,9 +240,9 @@
             </dd>
         </dl>
 
-        <div class="panel warning radius formHelp" i18n:translate="">
+        <div class="panel warning radius formHelp" i18n:translate="" tal:condition="python:len(listeExports)>1">
             <i class="fa fa-exclamation-triangle no-pad"></i>
-            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez, parmi les formats d'export ci-dessus seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
+            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez,seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
         </div>
 
         <div class="formControls">

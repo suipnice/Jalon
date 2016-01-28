@@ -34,7 +34,7 @@ else:
     version = "latest"
 
 if file_format == "QTI":
-    filename = "exo_WIMS_%s%s.zip" % (file_format, version)
+    filename = "%s_WIMS_%s%s.zip" % (modele, file_format, version)
     zipfile = context.getExoZIP("questionDB.xml", context.getExoXML(file_format, version))
     request.RESPONSE.setHeader('content-type', "application/zip")
     request.RESPONSE.setHeader('content-length', zipfile["length"])
@@ -48,7 +48,7 @@ elif file_format == "OEF":
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
     return context.getExoOEF(modele, authMember, request)
 else:
-    filename = "exo_WIMS_%s.xml" % file_format
+    filename = "%s_WIMS_%s.xml" % (modele, file_format)
     request.RESPONSE.setHeader('content-type', "application/xml")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
     # Ici, context doit etre un jalonexercicewims
