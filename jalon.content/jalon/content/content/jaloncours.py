@@ -856,7 +856,7 @@ class JalonCours(ATFolder):
             categorieElement = ""
             if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
                 categorieElement = "Classement"
-            if infos_element["typeElement"] in ["File", "Image", "Page", "Lien web", "Lecteur exportable", "Ressource bibliographique", "Glossaire", "Presentations sonorisees", "Webconference", "Catalogue BU", "Video"]:
+            if infos_element["typeElement"] in ["File", "Image", "Page", "Lien web", "Lecteur exportable", "Ressource bibliographique", "Glossaire", "Presentations sonorisees", "Webconference", "Catalogue BU", "Video", "VOD"]:
                 categorieElement = "Mon_Espace"
             if infos_element["typeElement"] in ["AutoEvaluation", "Examen", "BoiteDepot", "Forum", "Glossaire", "SalleVirtuelle"]:
                 categorieElement = "Activite"
@@ -921,7 +921,7 @@ class JalonCours(ATFolder):
                                            <a href="%s/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=%s&amp;repertoire=%s"
                                               data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-trash-o fa-fw"></i>Supprimer</a>
                                        </li>""" % (self.absolute_url(), element["idElement"], self.verifType(infos_element["typeElement"])))
-                    if infos_element["typeElement"] in ["Video"]:
+                    if infos_element["typeElement"] in ["Video", "VOD"]:
                         html.append("""<li>
                                            <a href="%s/folder_form?macro=macro_cours_video&amp;formulaire=modifier-video_infos&amp;idElement=%s"
                                               data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-cubes fa-fw"></i>Propriétés</a>
@@ -1114,11 +1114,10 @@ class JalonCours(ATFolder):
             retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
         if mon_espace["activer_webconferences"]:
             retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone": "fa fa-headphones fa-fw"})
-
-        # à retirer quand partie administration OK
-        mon_espace["activer_videos"] = True
-        if mon_espace["activer_videos"]:
+        if mon_espace["activer_video"]:
             retour["espace"].append({"rubrique": "Video", "titre": "Vidéos", "icone": "fa fa-youtube-play fa-fw"})
+        if mon_espace["activer_vod"]:
+            retour["espace"].append({"rubrique": "VOD", "titre": "VOD", "icone": "fa fa-video-camera fa-fw"})
 
         # Menu Activités
         retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone": "fa fa-fw fa-inbox"})
@@ -1225,6 +1224,7 @@ class JalonCours(ATFolder):
                      "Presentations sonorisees": {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
                      "Webconference":            {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
                      "Video":                    {"page": "macro_cours_video", "macro": "video_liste"},
+                     "VOD":                      {"page": "macro_cours_vod", "macro": "vod_liste"},
                      "Glossaire":                {"page": "macro_cours_glossaire", "macro": "termes_glossaire_liste"},
                      "Bibliographie":            {"page": "macro_cours_bibliographie", "macro": "bibliographie_liste"},
                      "Exercices Wims":           {"page": "macro_cours_activites", "macro": "exercices_wims_liste"}}
@@ -2066,6 +2066,7 @@ class JalonCours(ATFolder):
                "Lecteur exportable":        "Externes",
                "Reference bibliographique": "Externes",
                "Video":                     "Video",
+               "VOD":                       "VOD",
                "Catalogue BU":              "Externes",
                "TermeGlossaire":            "Glossaire",
                "Webconference":             "Webconference",
@@ -2095,7 +2096,7 @@ class JalonCours(ATFolder):
                 coursRelatedItems.append(objet)
                 self.setRelatedItems(coursRelatedItems)
 
-            if typeElement == "Video":
+            if typeElement in ["Video", "VOD"]:
                 complement_element = {"value":  display_in_plan,
                                       "auteur": objet.getVideoauteurname(),
                                       "image":  objet.getVideothumbnail()}
@@ -2701,6 +2702,16 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
 
+    def getConsultationByCoursByUniversityYearForGraph(self):
+        #self.plone_log("getConsultationByCoursByYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
+
+    def getFrequentationByCoursByUniversityYearForGraph(self, PUBLIC_CONS):
+        #self.plone_log("getFrequentationByCoursByUniversityYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearForGraph(self.getId(), PUBLIC_CONS)
+
     def getConsultationElementsByCours(self, elements_list, elements_dict):
         #self.plone_log("getConsultationElementsByCours")
         portal = self.portal_url.getPortalObject()
@@ -2716,10 +2727,20 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
 
+    def getConsultationByElementByCoursByUniversityYearForGraph(self, element_id):
+        #self.plone_log("getConsultationByElementByCoursByUniversityYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByUniversityYearForGraph(self.getId(), element_id)
+
     def genererGraphIndicateurs(self, months_dict):
         #self.plone_log("genererGraphIndicateurs")
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.genererGraphIndicateurs(months_dict)
+
+    def genererFrequentationGraph(self, months_dict):
+        self.plone_log("genererFrequentationGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
 
     #Recupere la liste des fichiers d'un cours pouvant etre telecharges
     def getFichiersCours(self, page=None):
@@ -3059,6 +3080,13 @@ class JalonCours(ATFolder):
     #Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
+
+    def isStreamingAuthorized(self, streaming_id, request):
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
 
     def delElem(self, element):
         #self.plone_log("delElem")

@@ -1,0 +1,70 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+
+<tal:define define="pod request/pod;
+                    video python:context.searchElasticsearch('video', pod);">
+    <h2>
+        Demander le Streaming
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div>
+        <strong>Titre :</strong> <tal:block replace="video/title"/>
+    </div>
+    <div>
+        <strong>Auteur :</strong> <tal:block replace="video/owner_full_name"/>
+    </div>
+    <div>
+        <strong>Description :</strong>
+    </div>
+    <div class="panel radius"
+         tal:condition="not:video/text"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+    <br/>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/ask_streaming_script">
+
+        <div class="panel callout radius">
+            <strong>Un email sera envoyé à l'administrateur pour lui faire part de votre demande. Il vous contactera pour vous donner plus d'informations.</strong>
+        </div>
+
+        <input type="hidden" name="pod" tal:attributes="value request/pod"/>
+        <input type="hidden" name="member_id" tal:attributes="value user/getId"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-envelope"></i>
+                <tal:block i18n:translate="">Demander</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:block define="script1 string:setDateTimePicker('datetime-expiration_date');">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer">
+    </script>
+
+</tal:define>
+
+</metal:core>
+
+</body>
+
+</html>

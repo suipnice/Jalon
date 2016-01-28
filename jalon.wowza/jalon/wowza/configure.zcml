@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="jalon.wowza">
+
+  <five:registerPackage package="." initialize=".initialize" />
+
+  <include package=".content" />
+  
+  <include file="skins.zcml" />
+
+  <genericsetup:registerProfile
+      name="default"
+      title="Jalon Wowza"
+      directory="profiles/default"
+      description="Installs the jalon.wowza package"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+  
+</configure>

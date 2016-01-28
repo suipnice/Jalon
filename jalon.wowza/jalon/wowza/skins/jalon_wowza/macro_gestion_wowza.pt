@@ -1,0 +1,345 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.wowza">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<metal:macro define-macro="wowza_config">
+    <h2 class="texte_icone icone_resultats"
+        i18n:translate="">
+        Configuration
+    </h2>
+    <form method="post" class="text-center"
+          tal:attributes="action string:${context/absolute_url}/saveConfigWowza"
+          tal:condition="wowza">
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_server" i18n:translate="wowza_server">
+                        Url du serveur Wowza
+                    </label>
+                    <input type="text" name="wowza_server"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_server | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_application" i18n:translate="wowza_application">
+                        Application Wowza
+                    </label>
+                    <input type="text" name="wowza_application"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_application | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_secret" i18n:translate="wowza_secret">
+                        Secret Wowza
+                    </label>
+                    <input type="text" name="wowza_secret"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_secret | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_sha" i18n:translate="wowza_sha">
+                        Méthode d'encodage SHA sur Wowza
+                    </label>
+                    <input type="text" name="wowza_sha"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_sha | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_token_prefix" i18n:translate="wowza_token_prefix">
+                        Wowza Token Prefix
+                    </label>
+                    <input type="text" name="wowza_token_prefix"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_token_prefix | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="wowza_ticket_validation" i18n:translate="wowza_ticket_validation">
+                        Durée de validation du ticket de Streaming en jour
+                    </label>
+                    <input type="text" name="wowza_ticket_validation"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_ticket_validation | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns">
+                <div class="panel callout radius">
+                    <label for="wowza_admin_email" i18n:translate="wowza_admin_email">
+                        Courriel de l'administrateur Wowza (Si vide utilisation de l'email de l'administrateur Jalon)
+                    </label>
+                    <input type="text" name="wowza_admin_email"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/wowza_admin_email | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_server" i18n:translate="pod_server">
+                        Serveur Pod (extraits)
+                    </label>
+                    <input type="text" name="pod_server"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_server | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_user" i18n:translate="pod_user">
+                        Utilisateur Pod (extraits)
+                    </label>
+                    <input type="text" name="pod_user"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_user | nothing" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_elasticsearch_port" i18n:translate="pod_elasticsearch_port">
+                        Port Elasticsearch Pod
+                    </label>
+                    <input type="text" name="pod_elasticsearch_port"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_elasticsearch_port | nothing" />
+                </div>
+            </div>
+            <div class="columns medium-6">
+                <div class="panel callout radius">
+                    <label for="pod_elasticsearch_index" i18n:translate="pod_elasticsearch_index">
+                        Index Elasticsearch Pod
+                    </label>
+                    <input type="text" name="pod_elasticsearch_index"
+                           maxlength="255" size="30"
+                           tal:attributes="value wowza/pod_elasticsearch_index | nothing" />
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="gestion"
+               tal:attributes="value gestion"/>
+        <div class="formControls">
+            <input class="button small" type="submit" name="form.button.save" value="Enregistrer"
+                   i18n:attributes="value label_save;"/>
+        </div>
+    </form>
+</metal:macro>
+
+<metal:macro define-macro="wowza_extraits">
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <tal:define define="page python:int(request.get('page', 1));
+                        term_search request/term_search | nothing;
+                        videos python:context.searchExtraits(page, term_search);">
+
+        <h2 class="texte_icone icone_recherche">
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Rechercher un contenu dans le catalogue de vidéos à la demande</tal:block>
+        </h2>
+
+        <form id="js-podFilterSelector" method="POST"
+              tal:attributes="action string:${context/absolute_url}/gestion_mon_espace;
+                              data-term_search_label1 string:Filtrer par mot-clé ou auteur;
+                              data-term_search_label2 string:Filtrer par mot-clé;
+                              data-term_search_placeholder1 string:Entrez un mot-clé ou un nom d'auteur…;
+                              data-term_search_placeholder2 string:Entrez un mot-clé…";
+              i18n:attributes="data-term_search_label1;
+                               data-term_search_label2;
+                               data-term_search_placeholder1;
+                               data-term_search_placeholder2">
+
+            <div class="field">
+
+                <label id="term_search_label" for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
+                <input type="text" id="term_search" name="term_search" class="blurrable"
+                       size="30" maxlength="255"
+                       placeholder="Entrez un mot-clé ou un nom d'auteur…"
+                       tal:attributes="value term_search"
+                       i18n:attributes="placeholder" />
+
+            </div>
+
+            <input type="hidden" name="gestion" value="gestion_wowza"/>
+            <input type="hidden" name="onglet" value="wowza_extraits"/>
+
+            <div class="formControls">
+
+                <button type="submit" class="button small expand radius"
+                        name="form.button.save">
+                    <i class="fa fa-search"></i>
+                    <tal:block i18n:translate="">Rechercher</tal:block>
+                </button>
+
+            </div>
+
+            <tal:block define="script string:setPodFilterSelector()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+        </form>
+
+        <h2 class="texte_icone icone_resultats"
+            i18n:translate="">
+            Résultats de la recherche
+        </h2>
+
+        <div id="js-update_target">
+
+            <div class="panel callout radius"
+                tal:condition="not:videos/liste_videos">
+                <i class="fa fa-info-circle no-pad"></i>
+                <tal:block i18n:translate="">La recherche n'a donné aucun résultat.</tal:block>
+            </div>
+
+        <tal:isContent condition="videos/liste_videos">
+
+            <div class="el_counter show-for-medium-up">
+                <tal:block i18n:translate="">contenus</tal:block>
+                <tal:replace replace="videos/first"/>
+                <tal:block i18n:translate="">à</tal:block>
+                <tal:replace replace="videos/last"/>
+                <tal:block i18n:translate="">sur</tal:block>
+                <tal:replace replace="videos/count"/>
+            </div>
+
+            <ul id="elasticsearch" class="small-block-grid-4">
+                <li tal:repeat="video videos/liste_videos">
+                    <div class="panel callout radius">
+
+                        <div>
+                    <tal:comment replace="nothing"><!--
+
+                            <i class="fa fa-lock"
+                               title="Ce contenu est protégé par un mot de passe."
+                               i18n:attributes="title"></i>
+
+                    --></tal:comment>
+                        </div>
+
+                        <h4 tal:attributes="title video/title">
+
+                            <i tal:attributes="class video/css_class;
+                                               title video/expiration_date"
+                               i18n:attributes="title"></i>
+                            <tal:block replace="python:context.getShortText(video['title'], 20)"/>
+                        </h4>
+
+                        <p>
+                            <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
+                        </p>
+
+                        <a title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
+                           i18n:attributes="title"
+                           i18n:translate="">
+                            <div class="flex-video">
+                                <img tal:attributes="src video/thumbnail"/>
+                            </div>
+                        </a>
+
+                        <div class="text-center">
+                            <a class="button tiny" title="Autoriser le streaming"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/modify_streaming?pod=${video/id}"
+                               i18n:attributes="title">
+                                <i class="fa fa-video-camera"></i>
+                                <tal:block i18n:translate="">Streamer</tal:block>
+                            </a>
+                            <a class="button tiny alert" title="Bloquer le streaming"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/forbid_streaming?pod=${video/id}"
+                               tal:condition="video/is_streaming"
+                               i18n:attributes="title">
+                                <i class="fa fa-chain-broken"></i>
+                                <tal:block i18n:translate="">Bloquer</tal:block>
+                            </a>
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+
+            <div id="pagination-container"
+                 tal:define="nb_pages videos/nb_pages"
+                 tal:condition="python:context.test(nb_pages > 1, 1, 0)">
+
+                <div class="panel callout radius text-left">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="">Pour vous rendre directement sur une page, entrez son n° ci-dessous et validez en appuyant sur « Entrée ».</tal:block>
+                </div>
+
+                <div class="panel warning radius text-left"
+                     tal:condition="not:is_owner">
+                    <i class="fa fa-exclamation-triangle no-pad"></i>
+                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
+                </div>
+
+                <tal:condition condition="python:page-1 > 0">
+                    <a id="pagination-prev" class="button tiny"
+                       tal:define="page_prec python:page - 1"
+                       tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_prec}"
+                       i18n:translate="">
+                        <span>Précédent</span>
+                    </a>
+                </tal:condition>
+
+                <tal:condition condition="python:page < nb_pages">
+                    <a id="pagination-next" class="button tiny"
+                       tal:define="page_suiv python:page + 1"
+                       tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_suiv}"
+                       i18n:translate="">
+                        <span>Suivant</span>
+                    </a>
+                </tal:condition>
+
+                <form id="pagination-page_number" method="post"
+                      tal:attributes="action string:${context/absolute_url}/${template/id};
+                                      data-page_change_msg1 string:Attention : les sélections ne sont pas conservées lors des changements de page.;
+                                      data-page_change_msg2 string:Changer de page tout de même ?"
+                      i18n:attributes="data-page_change_msg1; data-page_change_msg2">
+                    <input type="number" name="page"
+                           min="1" step="1" size="4" maxlenght="4"
+                           tal:attributes="value page;
+                                           max videos/nb_pages" />
+                    / <tal:block content="nb_pages" />
+                </form>
+
+            </div>
+
+        </tal:isContent>
+    </div>
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>
