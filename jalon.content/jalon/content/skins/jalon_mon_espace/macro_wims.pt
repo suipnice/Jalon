@@ -187,7 +187,7 @@
         <dl id="js-accordion_export-WIMS" class="accordion"
             data-accordion="export-WIMS">
             <dd class="accordion-navigation" tal:condition="python:'QTI' in listeExports">
-                <a href="#QTI">QTI <span class="formHelp">(utilisable dans divers LMS et outils tiers)</span></a>
+                <a href="#QTI">QTI <span class="label">Utilisable dans divers LMS et outils tiers</span></a>
                 <!--input type="radio" id="QTI" value="QTI" name="format" checked="checked"/>
                 <label for="QTI">QTI <span class="formHelp">(utilisable dans divers LMS et outils tiers)</span></label-->
                 <div id="QTI" class="content">
@@ -198,7 +198,7 @@
                         </li-->
                         <li>
                             <input type="radio" id="QTI_default" value="1.2.1" name="version"/>
-                            <label for="QTI_default">1.2.1 <span class="formHelp">(utilisable entre autres par TurningPoint 5 et Respondus 4)</span></label>
+                            <label for="QTI_default">1.2.1 <span class="label secondary">Utilisable entre autres par TurningPoint 5 et Respondus 4</span></label>
                         </li>
                         <li>
                             <input type="radio" id="QTI_2" value="2.1" name="version"/>
@@ -210,15 +210,15 @@
                     </ul>
                 </div>
             </dd>
-            <dd class="accordion-navigation" tal:condition="python:'EDX' in listeExports">
-                <a href="#EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></a>
+            <dd class="accordion-navigation" tal:condition="python:'OLX' in listeExports">
+                <a href="#OLX">EDX <span class="label">Utilisable dans le LMS EDX</span></a>
                 <!--input type="radio" id="EDX" value="EDX" name="format"/>
                 <label for="EDX">EDX <span class="formHelp">(utilisable dans le LMS EDX)</span></label-->
-                <div id="EDX" class="content">
+                <div id="OLX" class="content">
                     <ul>
                         <li>
-                            <input type="radio" id="EDX_default" value="1.1" name="version"/>
-                            <label for="EDX_default">
+                            <input type="radio" id="OLX_default" value="default" name="version"/>
+                            <label for="OLX_default">
                                 Dernière version
                                 <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">Open edX Cypress release</a></span>
                             </label>
@@ -229,10 +229,10 @@
 
             <dd class="accordion-navigation">
                 <a href="#OEF">OEF <span class="label">Format natif de WIMS</span></a>
-                <div id="OEF" class="content">
+                <div id="OEF" class="content active">
                     <ul>
                         <li>
-                            <input type="radio" id="OEF_default" value="latest" name="version"/>
+                            <input type="radio" id="OEF_default" value="latest" name="version" checked="checked"/>
                             <label for="OEF_default">
                                 Format OEF
                                 <span class="label secondary"><a href="http://wims.unice.fr/wims/wims.cgi?lang=fr&amp;module=help/teacher/docexooef.fr" target="_blank">En savoir plus sur « OEF - Open Exercice Format »</a></span>
