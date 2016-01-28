@@ -1051,6 +1051,11 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                               "url":   url_portal},
                              {"titre": _(u"Vidéos"),
                               "icone": "fa fa-youtube-play"}],
+           "VOD":           [{"titre": _(u"Mon espace"),
+                              "icone": "fa fa-home",
+                              "url":   url_portal},
+                             {"titre": _(u"VOD"),
+                              "icone": "fa fa-video-camera"}],
            authMemberId:   [{"titre": _(u"Mes cours"),
                              "icone": "fa fa-university"}],
            "etudiants":    [{"titre": _(u"Mes étudiants"),
@@ -1066,6 +1071,16 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                  "icone": "fa fa-youtube-play",
                  "url": folder.absolute_url()},
                 {"titre": _(u"Rechercher une vidéo"),
+                 "icone": "fa fa-search"}]
+
+    if page == "search_vod":
+        return [{"titre": _(u"Mon espace"),
+                 "icone": "fa fa-home",
+                 "url":   url_portal},
+                {"titre": _(u"VOD"),
+                 "icone": "fa fa-video-camera",
+                 "url": folder.absolute_url()},
+                {"titre": _(u"Rechercher une VOD"),
                  "icone": "fa fa-search"}]
 
     if not folder.getId() in fil:
@@ -1159,6 +1174,11 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
             if typeElement in ["Lecteurexportable", "Video"]:
                 retour["urlElement"] = element.getLecteurExportable()
                 retour["auteurVideoElement"] = element.getVideoauteurname()
+                retour["videothumbnail"] = element.getVideothumbnail()
+            if typeElement == "VOD":
+                retour["urlElement"] = element.getId().split("-")[-1]
+                retour["auteurVideoElement"] = element.getVideoauteurname()
+                retour["videothumbnail"] = element.getVideothumbnail()
             if typeElement == "Lienweb":
                 urlWEB = element.getURLWEB()
                 if not "://" in urlWEB:
@@ -1238,7 +1258,12 @@ def getJalonMenu(context, portal_url, user, request):
                                           "icone":   "fa fa-youtube-play",
                                           "title":   _(u"Vidéos"),
                                           "href":    "%s/Members/%s/Video" % (portal_url, member_id),
-                                          "activer": True}],
+                                          "activer": activer["activer_video"]},
+                                         {"id":      "vod",
+                                          "icone":   "fa fa-video-camera",
+                                          "title":   _(u"VOD"),
+                                          "href":    "%s/Members/%s/VOD" % (portal_url, member_id),
+                                          "activer": activer["activer_vod"]}],
                            "is_visible": is_personnel},
                           {"id"      : "mes-cours",
                            "class"   : class_cours,

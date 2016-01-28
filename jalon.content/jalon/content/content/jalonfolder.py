@@ -1382,6 +1382,31 @@ class JalonFolder(ATFolder):
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         return portal_elasticsearch.getPropertiesElasticsearch()["url_connexion"]
 
+    #------------------#
+    # Utilitaire Wowza #
+    #------------------#
+    def searchVod(self, page, term_search=None):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
+
+    def getExpirationDate(self, streaming_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getExpirationDate(streaming_id.split("-")[-1])
+
+    def isStreamingAuthorized(self, streaming_id, request):
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
+
+    def askStreaming(self, streaming_id, member_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.askStreaming(streaming_id, member_id)
+
     #-----------------#
     #   Utilitaires   #
     #-----------------#
