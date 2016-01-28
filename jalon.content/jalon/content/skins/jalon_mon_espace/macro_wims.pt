@@ -176,12 +176,13 @@
          « <tal:block content="context/Title" /> »
         <a tal:condition="is_ajax" class="close-reveal-modal"></a>
     </h2>
+
     <form method="POST"
           tal:attributes="action string:${context/absolute_url}/getExoWIMS;"
           tal:define="listeExports context/getListeExports">
 
-        <p>Choisissez sous quel format vous souhaitez exporter cet exercice :</p>
-        <input type="hidden" name="format" id="export_format" value="QTI" />
+        <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
+        <input type="hidden" name="format" id="js-export_format" value="QTI" />
 
         <dl id="js-accordion_export-WIMS" class="accordion"
             data-accordion="export-WIMS">
@@ -201,7 +202,10 @@
                         </li>
                         <li>
                             <input type="radio" id="QTI_2" value="2.1" name="version"/>
-                            <label for="QTI_2">2.1 <span class="formHelp">(utilisable entre autres par Claroline Connect)</span></label>
+                            <label for="QTI_2">
+                                2.1
+                                <span class="label secondary">Utilisable entre autres par Claroline Connect</span>
+                            </label>
                         </li>
                     </ul>
                 </div>
@@ -214,25 +218,36 @@
                     <ul>
                         <li>
                             <input type="radio" id="EDX_default" value="1.1" name="version"/>
-                            <label for="EDX_default">Dernière version <span class="formHelp">(<a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">Open edX Cypress release</a>)</span></label>
+                            <label for="EDX_default">
+                                Dernière version
+                                <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">Open edX Cypress release</a></span>
+                            </label>
                         </li>
                     </ul>
                 </div>
             </dd>
 
             <dd class="accordion-navigation">
-                <a href="#OEF">OEF <span class="formHelp">(format natif de WIMS)</span></a>
-                <div id="OEF" class="content active">
-                    <input type="radio" id="OEF_default" value="latest" name="version" checked="checked"/>
-                    <label for="OEF_default">format OEF </label>
-                    <span class="formHelp"><a href="http://wims.unice.fr/wims/wims.cgi?lang=fr&amp;module=help/teacher/docexooef.fr" target="_blank">En savoir plus sur "OEF - Open Exercice Format"</a></span>
+                <a href="#OEF">OEF <span class="label">Format natif de WIMS</span></a>
+                <div id="OEF" class="content">
+                    <ul>
+                        <li>
+                            <input type="radio" id="OEF_default" value="latest" name="version"/>
+                            <label for="OEF_default">
+                                Format OEF
+                                <span class="label secondary"><a href="http://wims.unice.fr/wims/wims.cgi?lang=fr&amp;module=help/teacher/docexooef.fr" target="_blank">En savoir plus sur « OEF - Open Exercice Format »</a></span>
+                            </label>
+                        </li>
+                    </ul>
                 </div>
             </dd>
         </dl>
 
-        <div class="panel warning formHelp" style="margin-top:1em;" tal:condition="python:len(listeExports)>1">
-            Nb : Parmi les formats d'exports ci-dessus, seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS, étant donné les limitations de chaque format, ainsi que du logiciel dans lequel vous importez.
+        <div class="panel warning radius formHelp" i18n:translate="">
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez, parmi les formats d'export ci-dessus seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
         </div>
+
         <div class="formControls">
             <button type="submit" class="button small radius close-download-modal"
                     name="form.button.save">
@@ -242,20 +257,16 @@
         </div>
     </form>
 
-    <tal:not_ajax condition="not:is_ajax">
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addFileDirect('dev')" />
-    </tal:not_ajax>
-    <tal:is_ajax condition="is_ajax">
-        <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('accordion', 'reflow')" />
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
-    </tal:is_ajax>
-
-
     <script charset="UTF-8"
-                tal:define="buffer python:jsBuffer.getBuffer()"
-                tal:condition="buffer"
-                tal:content="structure buffer"></script>
+        tal:content="structure string:setWimsExportAccordionRadio('js-accordion_export-WIMS')" />
+    <script charset="UTF-8">
+        $( '.close-download-modal' ).on( 'click', function( event ) {
+            setTimeout( function( ) {
+                $( '#reveal-main' ).foundation( 'reveal', 'close' );
+            }, 1500 );
+        });
+    </script>
+
 </metal:macro>
 
 

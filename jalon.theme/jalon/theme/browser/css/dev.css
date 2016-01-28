@@ -83,14 +83,6 @@
     cursor:initial;
 }
 
-/*----------*/
-/*Jusqu'à présent, la classe ".formHelp" n'était utilisée que dans "#wims-edit". on permet avec le css ci-dessous de l'utiliser egalement ailleurs (exemple : dans la popup d'export d'un exo WIMS.)*/
-.formHelp{
-    font-size: 80%;
-    line-height: 1.2;
-    font-style: italic;
-}
-
 /*
     css utilsé dans la liste des video
     fichier : macro_video_list

@@ -6,6 +6,26 @@
 
 /***************************************************************************************************
 
+        Exportation d'exercices : accordeon dans formulaire
+
+*/
+
+function setWimsExportAccordionRadio( accordionID ) {
+
+    Foundation.utils.S( '#' + accordionID ).on( 'toggled', function ( event, accordion ) {
+        var targetID = $( this ).find( '.content.active' ).attr( 'id' );
+        if ( targetID !== undefined ) {
+            Foundation.utils.S( '#js-export_format' ).prop( 'value', targetID );
+            Foundation.utils.S( '#' + targetID + '_default' ).prop( 'checked', true );
+        }
+    });
+
+}
+
+
+
+/***************************************************************************************************
+
         Creation d'un groupe d'exercices
 
 */
@@ -129,7 +149,6 @@ function setWimsGroupCreator( ) {
 
 
 
-
 /***************************************************************************************************
 
         Initialisation du type d'exercice "QCM Suite"
@@ -209,7 +228,6 @@ function setQCMSuite( ) {
 
 
 
-
 /***************************************************************************************************
 
         Mise en page CORS -> exercicewims_view_CORS.pt
@@ -240,7 +258,6 @@ function setWimsContent( ) {
 
 }
 */
-
 
 
 /***************************************************************************************************
