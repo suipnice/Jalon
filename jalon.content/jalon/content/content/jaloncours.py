@@ -2702,6 +2702,16 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
 
+    def getConsultationByCoursByUniversityYearForGraph(self):
+        #self.plone_log("getConsultationByCoursByYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
+
+    def getFrequentationByCoursByUniversityYearForGraph(self, PUBLIC_CONS):
+        #self.plone_log("getFrequentationByCoursByUniversityYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearForGraph(self.getId(), PUBLIC_CONS)
+
     def getConsultationElementsByCours(self, elements_list, elements_dict):
         #self.plone_log("getConsultationElementsByCours")
         portal = self.portal_url.getPortalObject()
@@ -2717,10 +2727,20 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
 
+    def getConsultationByElementByCoursByUniversityYearForGraph(self, element_id):
+        #self.plone_log("getConsultationByElementByCoursByUniversityYearForGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByUniversityYearForGraph(self.getId(), element_id)
+
     def genererGraphIndicateurs(self, months_dict):
         #self.plone_log("genererGraphIndicateurs")
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.genererGraphIndicateurs(months_dict)
+
+    def genererFrequentationGraph(self, months_dict):
+        self.plone_log("genererFrequentationGraph")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
 
     #Recupere la liste des fichiers d'un cours pouvant etre telecharges
     def getFichiersCours(self, page=None):

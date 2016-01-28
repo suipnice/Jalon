@@ -59,8 +59,10 @@ class IndicateursView(BrowserView):
         element_by_type_dict = {"Titre":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "TexteLibre":     {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Fichiers":       {"elements_count": 0, "elements_list": [], "elements_dict": {}},
-                                "Webconferences": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "Webconference":  {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Externes":       {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "Video":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "VOD":            {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Presentations":  {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "BoiteDepot":     {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "AutoEvaluation": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
@@ -75,7 +77,7 @@ class IndicateursView(BrowserView):
             type_element = element_cours_dict[element_id]["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"
@@ -85,7 +87,7 @@ class IndicateursView(BrowserView):
         return element_by_type_dict
 
     def getIndicateursGeneralitesView(self):
-        #LOG.info("----- getIndicateursGeneralitesView -----")
+        LOG.info("----- getIndicateursGeneralitesView -----")
         thead_th_list = [{"data-sort": "public",
                           "th_title":  "les consultations par public",
                           "th_text":   "Public"},
@@ -102,8 +104,10 @@ class IndicateursView(BrowserView):
         nb_element_by_type = {"Titre":          0,
                               "TexteLibre":     0,
                               "Fichiers":       0,
-                              "Webconferences": 0,
+                              "Webconference":  0,
                               "Externes":       0,
+                              "Video":          0,
+                              "VOD":            0,
                               "Presentations":  0,
                               "BoiteDepot":     0,
                               "AutoEvaluation": 0,
@@ -118,16 +122,14 @@ class IndicateursView(BrowserView):
             type_element = element["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"
             nb_element_by_type[type_element] += 1
 
         graph = ""
-        requete = self.context.getConsultationByCoursByYearForGraph().all()
-        #if requete:
-        #    graph = self.context.genererGraphIndicateurs(dict(requete))
+        requete = self.context.getConsultationByCoursByUniversityYearForGraph().all()
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -141,13 +143,21 @@ class IndicateursView(BrowserView):
                 pass
             graph = self.context.genererGraphIndicateurs(requete_dict)
 
-        return {"macro":              "indicateurs_generalite",
-                "created":            jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
-                "modified":           jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
-                "thead_th_list":      thead_th_list,
-                "nb_element_by_type": nb_element_by_type,
-                "cours_consultation": self.context.getConsultation(),
-                "graph":              graph}
+        requete2 = self.context.getFrequentationByCoursByUniversityYearForGraph("Etudiant").all()
+        LOG.info(requete2)
+        if requete2:
+            requete_dict = dict(requete2)
+            frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
+            #LOG.info(frequentation_graph)
+
+        return {"macro":               "indicateurs_generalite",
+                "created":             jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
+                "modified":            jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
+                "thead_th_list":       thead_th_list,
+                "nb_element_by_type":  nb_element_by_type,
+                "cours_consultation":  self.context.getConsultation(),
+                "graph":               graph,
+                "frequentation_graph": frequentation_graph}
 
     def getIndicateursRessourcesView(self):
         #LOG.info("----- getIndicateursRessourcesView -----")
@@ -202,7 +212,7 @@ class IndicateursView(BrowserView):
                                      "th_title":  "le type de public",
                                      "th_text":   "Public"})
             graph = ""
-            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
             #LOG.info(requete)
             if requete:
                 requete_dict = {}
@@ -279,7 +289,7 @@ class IndicateursView(BrowserView):
                                      "th_title":  "le type de public",
                                      "th_text":   "Public"})
             graph = ""
-            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
             #LOG.info(requete)
             if requete:
                 requete_dict = {}
