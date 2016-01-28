@@ -181,7 +181,7 @@
           tal:attributes="action string:${context/absolute_url}/getExoWIMS;">
 
         <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
-        <input type="hidden" name="format" id="export_format" value="QTI" />
+        <input type="hidden" name="format" id="js-export_format" value="QTI" />
 
         <dl id="js-accordion_export-WIMS" class="accordion" data-accordion="export-WIMS">
             <dd class="accordion-navigation">
@@ -258,10 +258,15 @@
         </div>
     </form>
 
-    <tal:jsBuffer define="addJsContent python:jsBuffer.addFileDirect('dev')" />
     <script charset="UTF-8"
-                tal:define="directBuffer python:jsBuffer.getDirectBuffer()"
-                tal:content="structure directBuffer"></script>
+        tal:content="structure string:setWimsExportAccordionRadio('js-accordion_export-WIMS')" />
+    <script charset="UTF-8">
+        $( '.close-download-modal' ).on( 'click', function( event ) {
+            setTimeout( function( ) {
+                $( '#reveal-main' ).foundation( 'reveal', 'close' );
+            }, 1500 );
+        });
+    </script>
 
 </metal:macro>
 
