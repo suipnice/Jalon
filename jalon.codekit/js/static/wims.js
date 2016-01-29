@@ -6,6 +6,42 @@
 
 /***************************************************************************************************
 
+        Exportation d'exercices : accordeon dans formulaire
+
+*/
+
+function setWimsExportAccordionRadio( accordionID ) {
+
+    var $accordion = Foundation.utils.S( '#' + accordionID );
+    var $form = $accordion.parent( 'form' );
+    var $submitButton = $form.children( '.formControls' ).children( '[type=submit]' );
+
+    $accordion.on( 'toggled', function ( event, accordion ) {
+
+        var targetID = $( this ).find( '.content.active' ).attr( 'id' );
+
+        if ( targetID !== undefined ) {
+            switchButtonEnabledState( $submitButton, true );
+            Foundation.utils.S( '#js-export_format' ).prop( 'value', targetID );
+            Foundation.utils.S( '#' + targetID + '_default' ).prop( 'checked', true );
+        } else {
+            switchButtonEnabledState( $submitButton, false );
+        }
+    });
+
+    $form.submit( function( event ) {
+
+        Foundation.utils.S( '#reveal-main' ).foundation( 'reveal', 'close' );
+        setAlertBox( 'info', $form.data( 'success_msg' ) );
+    } );
+
+
+}
+
+
+
+/***************************************************************************************************
+
         Creation d'un groupe d'exercices
 
 */
@@ -129,7 +165,6 @@ function setWimsGroupCreator( ) {
 
 
 
-
 /***************************************************************************************************
 
         Initialisation du type d'exercice "QCM Suite"
@@ -209,7 +244,6 @@ function setQCMSuite( ) {
 
 
 
-
 /***************************************************************************************************
 
         Mise en page CORS -> exercicewims_view_CORS.pt
@@ -240,7 +274,6 @@ function setWimsContent( ) {
 
 }
 */
-
 
 
 /***************************************************************************************************

@@ -79,6 +79,7 @@
             - specific to “ non-student ” roles
             - specific to “ manager ” roles
             - extra JS library(ies) loader
+            - optionnal JS “ dev ” file
             - direct JS buffer
             - “ doc. ready ” JS buffer
     --></tal:comment>
@@ -108,6 +109,9 @@
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/${extraFile}"></script>
         </tal:repeat>
     </tal:block>
+        <!-- JS dev
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/dev.js"></script> -->
         <script charset="UTF-8"
                 tal:define="directBuffer python:jsBuffer.getDirectBuffer()"
                 tal:condition="directBuffer"

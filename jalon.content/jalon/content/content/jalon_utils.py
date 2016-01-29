@@ -59,7 +59,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         if not remote_addr:
             remote_addr = request['REMOTE_ADDR']
 
-        if session_keep == True:
+        if session_keep is True:
             #Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
             # Attention : ici il faudrait vérifier sur WIMS que la session ouverte était bien celle de l'utilisateur courant.
             wims_session = request.get('wims_session', None)
@@ -81,6 +81,13 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         message = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
         mess_type = "error"
         if quser != 'supervisor':
+
+            if "in an exam session started on another IP" in rep["message"]:
+                message = _(u"Vous tentez de vous connecter à un examen commencé sur une machine différente.<br/>\n\
+                Veuillez retourner sur la machine où vous avez commencé votre examen pour pouvoir le finir.")
+                #mess_title = "Impossible d'accéder à cet examen."
+                context.plone_utils.addPortalMessage(message, type=mess_type)
+                return None
 
             dico_ETU = getInfosMembre(quser)
 
@@ -105,7 +112,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         else:
             # L'authentification du supervisor a planté => WIMS doit être indisponible.
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            return None
+            return user
     rep["url_connexion"] = url_connexion
     return rep
 
@@ -134,6 +141,22 @@ def encodeUTF8(itemAEncoder):
         return [str(encoder).encode("utf-8") for encoder in itemAEncoder]
     except:
         return itemAEncoder
+
+
+def convertUTF8ToHTMLEntities(source):
+    u""" iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €."""
+    source = source.replace("€", "&euro;")
+    source = source.replace("œ", "&oelig;")
+    source = source.replace("’", "&rsquo;")
+    return source
+
+
+def convertHTMLEntitiesToUTF8(source):
+    u""" Pour éviter d'avoir des erreur XML 'unrecognized entity', on reconvertit en UTF-8."""
+    source = source.replace("&euro;", "€")
+    source = source.replace("&oelig;", "œ")
+    source = source.replace("&rsquo;", "’")
+    return source
 
 
 def envoyerMail(form):

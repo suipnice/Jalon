@@ -657,6 +657,8 @@ class JalonCoursWims(ATDocument):
             - ou les notes de l'activité (dans ce cas, detailed permet d'obtenir les notes par etudiants)
 
         """
+
+        no_user_message = "There is no user in this class"
         param = {"quser": quser}
         # On fait un setClasse() pour créer eventuellement la classe si ce n'etait deja fait.
         param["qclass"] = self.setClasse()
@@ -762,8 +764,12 @@ class JalonCoursWims(ATDocument):
                 if not detailed:
                     # dans le menu "exercices, on ne demande que les notes globales de la feuille
                     dico = {"job": "getsheetstats", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}
-                    rep = self.wims("callJob", dico)
-                    rep = self.wims("verifierRetourWims", {"rep": rep, "fonction": "jaloncourswims.py/getNotes", "message": 'stats globales de la feuille demandees par un auteur/coauteur', "requete": dico})
+                    rep_wims = self.wims("callJob", dico)
+
+                    if no_user_message in rep_wims:
+                        rep = json.loads(rep_wims)
+                    else:
+                        rep = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes", "message": 'stats globales de la feuille demandees par un auteur/coauteur', "requete": dico})
                     #LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
@@ -790,7 +796,7 @@ class JalonCoursWims(ATDocument):
                     # dans le menu "resultats", on demande les notes detailles de la feuille
                     dico = {"job": "getsheetscores", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}
                     rep_wims = self.wims("callJob", dico)
-                    if "There is no user in this class" in rep_wims:
+                    if no_user_message in rep_wims:
                         rep = json.loads(rep_wims)
                     else:
                         rep = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes", "message": 'notes detaillees de la feuille demandees par un auteur/coauteur', "requete": dico})
@@ -834,7 +840,16 @@ class JalonCoursWims(ATDocument):
         elif self.idExam:
 
             # on demande les infos de la feuille, pour connaitre le poid de chaque exercice.
-            donnees_feuille = json.loads(self.wims("callJob", {"job": "getsheet", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}))
+            donnees_feuille = self.wims("callJob", {"job": "getsheet", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]})
+
+            donnees_feuille = self.wims("verifierRetourWims", {"rep": donnees_feuille,
+                                                               "fonction": "jaloncourswims.py/getNotes",
+                                                               "message": "[cas des examens] parametres de la requete : %s" % param,
+                                                               "jalon_request": request
+                                                               })
+            if donnees_feuille["status"] != "OK":
+                return donnees_feuille
+
             listeNotes = []
             for exo in donnees_feuille["exolist"]:
                 listeNotes.append({"note": "--",
@@ -905,7 +920,7 @@ class JalonCoursWims(ATDocument):
         rep = self.wims("callJob", {"job": "getsheet", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]})
         rep = self.wims("verifierRetourWims", {"rep": rep,
                                                "fonction": "jaloncourswims.py/getNotes",
-                                               "message": "parametres de la requete : %s" % param,
+                                               "message": "job = getsheet | parametres de la requete : %s" % param,
                                                "jalon_request": request
                                                })
 

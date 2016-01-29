@@ -446,7 +446,7 @@ function enableSubmitButtonIfCheckboxTicked( formID ) {
     var $formControls = Foundation.utils.S( '#' + formID ).children( '.formControls' );
     var $button = $formControls.children( '[type=submit]' );
 
-    $formControls.children( '[type=checkbox]' ).on( 'click', function( event ) {
+    $formControls.find( '[type=checkbox]' ).on( 'click', function( event ) {
 
         if ( $( this ).prop( 'checked' ) ) {
             switchButtonEnabledState( $button, true );

@@ -2321,7 +2321,7 @@ class JalonCours(ATFolder):
 
         return retour
 
-    def supprimerActivitesWims(self, utilisateur="All"):
+    def supprimerActivitesWims(self, utilisateur="All", request=None):
         u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
         # Retire du plan toutes les activités de l'utilisateur "utilisateur"
 
@@ -2357,20 +2357,20 @@ class JalonCours(ATFolder):
 
         # Supprime toutes les classes du serveur WIMS
         listeClasses = list(self.getListeClasses())
-        removed_classes = []
+        removing_classes = []
         dico = listeClasses[0]
         #self.plone_log("[jaloncours/supprimerActivitesWims] Ancienne liste :'%s'" % listeClasses)
         new_listeClasses = []
         for auteur in dico:
             if utilisateur == "All" or utilisateur == auteur:
-                removed_classes.append(dico[auteur])
+                removing_classes.append(dico[auteur])
             else:
                 if len(new_listeClasses) == 0:
                     new_listeClasses.append({auteur: dico[auteur]})
                 else:
                     new_listeClasses[0][auteur] = dico[auteur]
-        if removed_classes is not None:
-            self.aq_parent.delClassesWims(removed_classes)
+        if removing_classes is not None:
+            self.aq_parent.delClassesWims(removing_classes, request)
 
         # Et enfin remettre à zero la liste des classes du cours.
         #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)

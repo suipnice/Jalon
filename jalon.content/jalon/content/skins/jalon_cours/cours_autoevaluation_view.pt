@@ -36,7 +36,7 @@
          tal:define="message request/message | nothing"
          tal:condition="message">
         <metal:macro use-macro="context/macro_messages/macros/messages">
-            encart d'affichage des messages de feedback
+            encart d'affichage des anciens messages de feedback
         </metal:macro>
     </div>
 
@@ -64,20 +64,16 @@
 
             <section tal:condition="affElement/val" class="small-12 columns">
 
+
                 <!-- Version étudiant -->
                 <tal:define define="param_wims python:context.authUser(user.getId(), qclass, request, session_keep=True);">
-                    <tal:condition condition="not:param_wims">
-                        <tal:condition condition="not:qexam">
-                            <metal:macro use-macro="context/macro_messages/macros/wims_activity_unavailable">
-                                feedback "connexion impossible a wims"
-                            </metal:macro>
-                        </tal:condition>
-                        <tal:condition condition="qexam">
-                            <metal:macro use-macro="context/macro_messages/macros/wims_exam_badIP">
-                                feedback de tentative de connexion avec nouvelle IP a un exam
-                            </metal:macro>
-                        </tal:condition>
+
+                    <tal:condition tal:condition="not:param_wims">
+                        <h1 class="alert"><i class="fa fa-lock"></i><span i18n:translate="">Impossible d'accéder à cet examen.</span></h1>
                     </tal:condition>
+
+                    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
                     <tal:condition tal:condition="param_wims">
                         <tal:comment replace="nothing">
                             <!--
@@ -161,9 +157,6 @@
         <tal:prof condition="isCoAuteur" >
             <!-- Version Prof -->
             <tal:define define="param_wims python:context.authUser('supervisor', qclass, request, session_keep=True);">
-                <tal:block tal:condition="python:param_wims['status']== 'ERROR'">
-                    <metal:macro  use-macro="context/macro_messages/macros/wims_activity_unavailable">feedback d'indisponibilité WIMS</metal:macro>
-                </tal:block>
 
                 <tal:OK tal:condition="python:param_wims['status']!= 'ERROR'">
                     <tal:comment replace="nothing">

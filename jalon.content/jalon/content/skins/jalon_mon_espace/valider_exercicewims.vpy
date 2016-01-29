@@ -16,7 +16,7 @@ error = False
 form = context.REQUEST.form
 modele = form["modele"]
 
-# La validation de l'ajout d'exercice se fait dans valider_form.vpy 
+# La validation de l'ajout d'exercice se fait dans valider_form.vpy
 # "ajout-wims":                 ["title"],
 
 dicoObligatoire = {
@@ -39,7 +39,7 @@ dicoObligatoire = {
 
 #retour = context.absolute_url()
 for obligatoire in dicoObligatoire[modele]:
-    if not form.has_key(obligatoire):
+    if not obligatoire in form:
         state.setError(obligatoire, _(u"Vous n'avez pas renseigné ce champ obligatoire."))
         state.set(status='failure')
         error = True
@@ -49,9 +49,9 @@ for obligatoire in dicoObligatoire[modele]:
         error = True
 
 if error:
-    context.plone_utils.addPortalMessage(_(u"Un champ obligatoire n'a pas été renseigné. Votre exercice n'a pas été modifié."),'error')
+    context.plone_utils.addPortalMessage(_(u"Un champ obligatoire n'a pas été renseigné. Votre exercice n'a pas été modifié."), 'error')
     if modele == "qcmsuite":
-        form["list_id_questions"]=range(int(form["nb_questions"]))
+        form["list_id_questions"] = range(int(form["nb_questions"]))
     return state
 
 #Avant de modifier un exercice WIMS, on teste la compilation de celui-ci dans la "sandbox"
@@ -80,6 +80,6 @@ else:
 if not error:
     state.set(status="success")
 else:
-    context.plone_utils.addPortalMessage(_(u"Une erreur est survenue. Votre exercice n'a pas été modifié."),'error')
+    context.plone_utils.addPortalMessage(_(u"Une erreur est survenue. Votre exercice n'a pas été modifié."), 'error')
 
 return state

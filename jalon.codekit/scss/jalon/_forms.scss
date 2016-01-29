@@ -307,6 +307,16 @@ form {
     fieldset { margin-top: 0; }
 
     ul { margin-left: 0; }
+
+    .accordion {
+        margin-bottom: .5rem;
+
+        & > .accordion-navigation .content {
+            margin-bottom: 0;
+
+            & > ul { margin-bottom: 0; }
+        }
+    }
 }
 /*
 .token-input-list input {
