@@ -325,78 +325,92 @@ class JalonFolder(ATFolder):
         c = a.difference(b)
         return c
 
-    def getListeCoursEns(self, subject, authMember, onglet):
-        """ Renvoi la liste des cours pour authMember."""
+    def getInfosCours(self, cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list):
+        LOG.info("----- getInfosCours -----")
 
-        listeCours = []
-        listeCoursId = []
-        listeTousCours = []
-        authMemberId = authMember.getId()
+        cours_infos = {"id":                cours_brain.getId,
+                       "title":             cours_brain.Title,
+                       "short_title":       self.getShortText(cours_brain.Title),
+                       "short_description": self.getPlainShortText(cours_brain.Description, 210),
+                       "is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(cours_brain.getDateDerniereActu, member_login_time) > 0 else "",
+                       "modified":          cours_brain.modified,
+                       "url_cours":         cours_brain.getURL,
+                       "is_etudiants":      "fa fa-check fa-lg no-pad success" if len(cours_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
+                       "is_password":       "fa fa-check fa-lg no-pad success" if cours_brain.getLibre else "fa fa-times fa-lg no-pad warning",
+                       "is_public":         "fa fa-check fa-lg no-pad success" if cours_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
+                       "actions_list":      actions_list}
+        if onglet != "2":
+            cours_author = cours_brain.getAuteurPrincipal
+            if not cours_author:
+                cours_author = cours_brain.Creator
+            if cours_author in authors_dict:
+                cours_infos["name_auteur_cours"] = authors_dict[cours_author]
+            else:
+                name_auteur_cours = self.getInfosMembre(cours_author)["fullname"]
+                authors_dict[cours_author] = name_auteur_cours
+                cours_infos["name_auteur_cours"] = name_auteur_cours
+
+        return cours_infos
+
+    def getListeCoursEns(self, onglet, member):
+        LOG.info("----- getListeCoursEns -----")
+        """ Renvoi la liste des cours pour authMember."""
+        cours_list = []
+        cours_ids_list = []
+        cours_list_filter = []
+        member_id = member.getId()
+        member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
+
+        actions_list = [{"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=favori",
+                         "action_icon": "fa fa-star fa-fw",
+                         "action_name": "Ajouter en favoris"},
+                        {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=dupliquer",
+                         "action_icon": "fa fa-code-fork fa-fw",
+                         "action_name": "Dupliquer"},
+                        {"action_url": "/folder_form?macro=macro_mescours&amp;formulaire=purger",
+                         "action_icon": "fa fa-filter fa-fw",
+                         "action_name": "Purger les travaux étudiants"},
+                        {"action_url": "/folder_form?macro=macro_form&amp;formulaire=suppr_WIMS",
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer les activités WIMS"},
+                        {"action_url": "/folder_form?macro=macro_form&amp;formulaire=supprimer",
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer ce cours"},
+                        {"action_url": "/folder_form?macro=macro_form&amp;formulaire=archiver",
+                         "action_icon": "fa fa-folder fa-fw",
+                         "action_name": "Archiver ce cours"}]
+
         filtre = {"portal_type": "JalonCours"}
         if onglet == "1":
-            filtre["Subject"] = authMemberId
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId, Subject=authMemberId))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId, Subject=authMemberId)))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId, Subject=authMemberId)))
-            listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
+            filtre["Subject"] = member_id
+            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
+            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=favori",
+                               "action_icon": "fa fa-star-o fa-fw",
+                               "action_name": "Retirer des favoris"}
         if onglet == "2":
-            filtre["Subject"] = {'query': authMemberId, 'operator': 'not'}
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId, Subject={'query': authMemberId, 'operator': 'not'}))
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", path=self.getPhysicalPath()))
-            #listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
+            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
+            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId)))
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
         if onglet == "4":
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId)))
-
-        dicoAuteur = {}
-        for cours in listeTousCours:
-            if not cours.getId in listeCoursId:
-                """
-                if authMemberId in cours.Subject:
-                    favori = {"val": "Oui", "icon": "fa-star"}
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            actions_list[-1] = {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=archive",
+                                "action_icon": "fa fa-folder-open fa-fw",
+                                "action_name": "Désarchiver ce cours"}
+        authors_dict = {}
+        for cours_brain in cours_list:
+            if not cours_brain.getId in cours_ids_list:
+                if onglet != "1":
+                    if not member_id in cours_brain.Subject:
+                        cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 else:
-                    favori = {"val": "Non", "icon": "fa-star-o"}
-                """
-                auteur_cours = cours.getAuteurPrincipal
-                if not auteur_cours:
-                    auteur_cours = cours.Creator
-                if auteur_cours in dicoAuteur:
-                    name_auteur_cours = dicoAuteur[auteur_cours]
-                else:
-                    name_auteur_cours = self.getInfosMembre(auteur_cours)["fullname"]
-                    dicoAuteur[auteur_cours] = name_auteur_cours
-                role = {"is_creator": True, "is_auteur": False, "is_co_auteur": False, "is_lecteur": False, "affichage": "Auteur"}
-                roles = cours.getRoleCat
-                if authMemberId in roles["auteur"]:
-                    role = {"is_creator": True, "is_auteur": True, "is_co_auteur": False, "is_lecteur": False, "affichage": "Auteur"}
-                if authMemberId in roles["coauteur"]:
-                    role = {"is_creator": False, "is_auteur": False, "is_co_auteur": True, "is_lecteur": False, "affichage": "Co-auteur"}
-                if authMemberId in roles["colecteur"]:
-                    role = {"is_creator": False, "is_auteur": False, "is_co_auteur": False, "is_lecteur": True, "affichage": "Lecteur"}
-                listeCours.append({"id": cours.getId,
-                                   "title": cours.Title,
-                                   "short_title": self.getShortText(cours.Title),
-                                   #"description": cours.Description,
-                                   "short_description": self.getPlainShortText(cours.Description, 210),
-                                   "auteur_cours": auteur_cours,
-                                   "name_auteur_cours": name_auteur_cours,
-                                   "is_creator": role["is_creator"],
-                                   "is_auteur": role["is_auteur"],
-                                   "is_co_auteur": role["is_co_auteur"],
-                                   "is_lecteur": role["is_lecteur"],
-                                   "role_affichage": role["affichage"],
-                                   "is_nouveau": "fa fa-bell-o fa-fw no-pad" if cmp(cours.getDateDerniereActu, authMember.getProperty('login_time', None)) > 0 else "",
-                                   "modified": cours.modified,
-                                   #"is_favori": favori["val"],
-                                   #"favori_icon": favori["icon"],
-                                   "url_cours": cours.getURL,
-                                   "is_etudiants": len(cours.getRechercheAcces) > 0,
-                                   "is_password": cours.getLibre,
-                                   "is_public": cours.getAcces == 'Public'})
-                listeCoursId.append(cours.getId)
-        return list(listeCours)
+                    cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                cours_ids_list.append(cours_brain.getId)
+        return list(cours_list_filter)
 
     def getInfosApogee(self, code, type):
         portal = self.portal_url.getPortalObject()
