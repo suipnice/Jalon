@@ -14,6 +14,13 @@
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing">
 
+    <style type="text/css">
+        /*
+            Placer ici les définitions CSS nécessaires.
+        */
+
+    </style>
+
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         encart d'affichage du fil d'ariane
     </metal:macro>
@@ -23,11 +30,6 @@
         <metal:macro use-macro="context/macro_messages/macros/messages">
             Encart d'affichage des messages de feedback
         </metal:macro>
-
-        <style type="text/css">
-            /* Styles additionnels éventuels */
-
-        </style>
 
     <!--<tal:comment replace="nothing"><!-- -->
 
@@ -63,16 +65,12 @@
 
     </main>
 
-    <tal:comment replace="nothing"><!--
+    <script charset="UTF-8">
+        /*
+            Placer ici le code Javascript nécessaire.
+        */
 
-                Placez les javascripts en cours de dev dans le fichier
-
-                        jalon.theme/jalon/theme/skins/jalon_theme_dynamic_script/dev.min.js
-
-                pour pouvoir les tester sur cette page.
-    --></tal:comment>
-
-    <tal:jsBuffer define="addJsContent python:jsBuffer.addFile('dev')" />
+    </script>
 
 </metal:main>
 
