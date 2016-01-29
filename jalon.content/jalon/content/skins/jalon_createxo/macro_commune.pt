@@ -34,24 +34,24 @@
     <metal:macro define-macro="texte_a_trous">
         <div class="texte_a_trous">
             <div>
-              Les questions à poser doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
+              Les questions à poser (les "trous") doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
               Par exemple, en tapant
             </div>
             <div><code class="indicateur">Napoléon Bonaparte est né à <span class="strong">??Ajaccio??</span> et mort sur l'île <span class="strong">??Sainte-Hélène??</span></code>,</div>
             <div>
-              Vous obtiendrez ceci: <br/>
+              Vous obtiendrez ceci :<br/>
               <blockquote>Napoléon Bonaparte est né à <input class="disabled mini"/> et mort sur l'île <input class="disabled mini"/></blockquote>
             </div>
+
             <hr/>
             <div>
               Chaque "trou" peut présenter une liste de choix s'il contient plusieurs éléments séparés par des virgules.<br/>
               La bonne réponse étant alors toujours la première de la liste.
             </div>
-
             <div>
                 Par exemple, en tapant
                 <code class="indicateur">Napoléon Bonaparte est né
-                    à <span class="strong">??Ajaccio,Bastia??</span> et mort sur
+                    à <span class="strong">??Ajaccio, Bastia??</span> et mort sur
                     l'île <span class="strong">??Sainte-Hélène, d'Elbe??</span>
                 </code>, <br />
                 Vous obtiendrez ceci :<br/>
