@@ -32,7 +32,7 @@ function setWimsExportAccordionRadio( accordionID ) {
     $form.submit( function( event ) {
 
         Foundation.utils.S( '#reveal-main' ).foundation( 'reveal', 'close' );
-        setAlertBox( 'success', $form.data( 'success_msg' ) );
+        setAlertBox( 'info', $form.data( 'success_msg' ) );
     } );
 
 

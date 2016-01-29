@@ -147,22 +147,21 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                 ### Plus d'infos sur le format QTI v2.1 :
                 # XML Binding : http://www.imsglobal.org/question/qtiv2p1/imsqti_bindv2p1.html
 
-                exoXML = ET.Element("assessmentItem",
-                         attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
-                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                 "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
-                                 "identifier"        : parsed_exo["id"],
-                                 "title"             : parsed_exo["titre"],
-                                 "adaptive"          : "false",
-                                 "timeDependent"     : "false"})
+                exoXML = ET.Element("assessmentTest",
+                    attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
+                            "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                            "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
+                            "identifier"        : parsed_exo["id"],
+                            "title"             : parsed_exo["titre"],
+                            "adaptive"          : "false",
+                            "timeDependent"     : "false"})
+
                 if modele == "qcmsimple":
                     exoXML = __qcmsimple_to_qti_21(exoXML, parsed_exo)
                 elif modele == "qcmsuite":
                     exoXML = __qcmsuite_to_qti_21(exoXML, parsed_exo)
                 else:
                     exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
-
-                elementXML = ET.SubElement(exoXML, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
 
         else:
             exoXML = ET.Element("error")
@@ -457,12 +456,22 @@ def __add_matttext(elementXML, texte, flow_type="flow_mat"):
 def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers QTI 2.1:
 
+    assessmentItem = ET.SubElement(exoXML,
+                                   "assessmentItem",
+                                   attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
+                                           "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                           "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
+                                           "identifier"        : parsed_exo["id"],
+                                           "title"             : parsed_exo["titre"],
+                                           "adaptive"          : "false",
+                                           "timeDependent"     : "false"})
+
     if parsed_exo["options_checkbox"] == 1:
         cardinality = "multiple"
     else:
         cardinality = "single"
 
-    elementXML = ET.SubElement(exoXML,
+    elementXML = ET.SubElement(assessmentItem,
                            "responseDeclaration",
                            attrib={"identifier":  "RESPONSE",
                                    "cardinality": cardinality,
@@ -470,13 +479,13 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
 
     correctResponse = ET.SubElement(elementXML, "correctResponse")
 
-    elementXML = ET.SubElement(exoXML,
+    elementXML = ET.SubElement(assessmentItem,
                                "outcomeDeclaration",
                                attrib={"identifier":  "SCORE",
                                        "cardinality": "single",
                                        "baseType":    "float"})
 
-    elementXML = ET.SubElement(exoXML, "itemBody")
+    elementXML = ET.SubElement(assessmentItem, "itemBody")
     choiceInteraction = ET.SubElement(elementXML,
                                       "choiceInteraction",
                                       attrib={"responseIdentifier": "RESPONSE",
@@ -514,7 +523,7 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
             elementXML.text = rep
 
     if parsed_exo["feedback_general"] != "":
-        elementXML = ET.SubElement(exoXML,
+        elementXML = ET.SubElement(assessmentItem,
                                    "modalFeedback",
                                    attrib={"outcomeIdentifier": "FEEDBACK",
                                            "identifier": "COMMENT",
@@ -524,6 +533,7 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     #"options"         : "checkbox split",
     #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="correct">correct</modalFeedback>
     #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="incorrect">incorrect</modalFeedback>
+    elementXML = ET.SubElement(assessmentItem, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
     return exoXML
 
 
@@ -696,7 +706,15 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
         cardinality = "single"
 
     for index, id_question in enumerate(parsed_exo["list_id_questions"]):
-        elementXML = ET.SubElement(exoXML,
+
+        assessmentItem = ET.SubElement(exoXML,
+                               "assessmentItem",
+                               attrib={"identifier"        : id_question,
+                                       "title"             : parsed_exo["titre"],
+                                       "adaptive"          : "false",
+                                       "timeDependent"     : "false"})
+
+        elementXML = ET.SubElement(assessmentItem,
                                "responseDeclaration",
                                attrib={"identifier":  "RESPONSE",
                                        "cardinality": cardinality,
@@ -704,13 +722,13 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
 
         correctResponse = ET.SubElement(elementXML, "correctResponse")
 
-        elementXML = ET.SubElement(exoXML,
+        elementXML = ET.SubElement(assessmentItem,
                                    "outcomeDeclaration",
                                    attrib={"identifier":  "SCORE",
                                            "cardinality": "single",
                                            "baseType":    "float"})
 
-        elementXML = ET.SubElement(exoXML, "itemBody")
+        elementXML = ET.SubElement(assessmentItem, "itemBody")
         choiceInteraction = ET.SubElement(elementXML,
                                           "choiceInteraction",
                                           attrib={"responseIdentifier": "RESPONSE",
@@ -738,11 +756,11 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
                     elementXML.text = rep
 
         if parsed_exo["feedback%s" % index] != "":
-            elementXML = ET.SubElement(exoXML,
+            elementXML = ET.SubElement(assessmentItem,
                                        "modalFeedback",
                                        attrib={"outcomeIdentifier": "FEEDBACK",
                                                "identifier": "COMMENT",
                                                "showHide": "show"})
             elementXML.text = parsed_exo["feedback%s" % index].decode("utf-8")
-
+        elementXML = ET.SubElement(assessmentItem, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
     return exoXML

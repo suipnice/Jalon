@@ -196,7 +196,7 @@
                                                 <tal:block i18n:translate="">Étiqueter</tal:block>
                                             </a>
                                         </li>
-                                        <li tal:condition="python:item['getModele'] != ['groupe']">
+                                        <li tal:condition="python:item['getModele'] != 'groupe'">
                                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                                                tal:attributes="href string:${item/getURL}/folder_form?macro=macro_wims&amp;formulaire=exporter_exo">
                                                 <i class="fa fa-download fa-fw no-pad"></i>

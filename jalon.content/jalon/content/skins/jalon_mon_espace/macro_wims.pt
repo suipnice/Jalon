@@ -184,7 +184,7 @@
           tal:define="listeExports context/getListeExports">
 
         <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
-        <input type="hidden" name="format" id="js-export_format" value="QTI" />
+        <input type="hidden" name="format" id="js-export_format" value="OEF" />
 
         <dl id="js-accordion_export-WIMS" class="accordion"
             data-accordion="export-WIMS">
@@ -210,13 +210,13 @@
                 </div>
             </dd>
             <dd class="accordion-navigation" tal:condition="python:'OLX' in listeExports">
-                <a href="#OLX">edX <span class="label">Utilisable dans le LMS edX (version Cypress)</span></a>
+                <a href="#OLX">edX <span class="label">Utilisable dans le LMS edX</span></a>
                 <div id="OLX" class="content">
                     <ul>
                         <li>
                             <input type="radio" id="OLX_default" value="default" name="version"/>
                             <label for="OLX_default">
-                                Format OLX (edX version Cypress)
+                                Format OLX (Open edX, version Cypress)
                                 <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">En savoir plus sur « Open edX (version Cypress) »</a></span>
                             </label>
                         </li>

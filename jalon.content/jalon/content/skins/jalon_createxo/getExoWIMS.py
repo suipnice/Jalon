@@ -34,7 +34,7 @@ else:
     version = "latest"
 
 if file_format == "QTI":
-    filename = "%s_WIMS_%s%s.zip" % (modele, file_format, version)
+    filename = "%s_WIMS_%s-%s.zip" % (modele, file_format, version)
     zipfile = context.getExoZIP("questionDB.xml", context.getExoXML(file_format, version))
     request.RESPONSE.setHeader('content-type', "application/zip")
     request.RESPONSE.setHeader('content-length', zipfile["length"])
