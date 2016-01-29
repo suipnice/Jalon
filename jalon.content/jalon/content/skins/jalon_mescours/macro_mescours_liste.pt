@@ -26,6 +26,23 @@
             <table summary="Liste des cours de la catégorie">
                 <thead>
                     <tr>
+                        <!--th class="sort has-tip" data-tooltip data-sort="favori"
+                            title="Trier selon les favoris" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Favori</tal:block>
+                            </span>
+                        </th-->
+                        <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Titre</tal:block>
+                            </span>
+                        </th>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="new"
                             title="Trier selon la nouveauté" i18n:attributes="title">
                             <span>
@@ -35,31 +52,14 @@
                                 <span class="fa fa-bell-o fa-fw no-pad"></span>
                             </span>
                         </th>
-                        <th class="sort has-tip" data-tooltip data-sort="favori"
-                            title="Trier selon les favoris" i18n:attributes="title">
-                            <span>
-                                <i class="fa fa-sort"></i>
-                                <i class="fa fa-sort-asc"></i>
-                                <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Favori</tal:block>
-                            </span>
-                        </th>
-                        <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre" i18n:attributes="title">
-                            <span>
-                                <i class="fa fa-sort"></i>
-                                <i class="fa fa-sort-asc"></i>
-                                <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Titre</tal:block>
-                            </span>
-                        </th>
-                        <th class="sort has-tip" data-tooltip data-sort="role" title="Trier selon le rôle" i18n:attributes="title">
+                        <!--th class="sort has-tip" data-tooltip data-sort="role" title="Trier selon le rôle" i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
                                 <tal:block i18n:translate="">Rôle</tal:block>
                             </span>
-                        </th>
+                        </th-->
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_etu" title="Trier selon l'accès étudiant" i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
@@ -95,17 +95,7 @@
         <tal:entry repeat="cours folderContents">
 
                     <tr tal:condition="python:context.test(cours['is_auteur'] or cours['is_co_auteur'] or cours['is_lecteur'], 1, 0)">
-                        <td class="new show-for-medium-up">
-                    <tal:isNouveau condition="cours/is_nouveau">
-                                <span class="hide"
-                                      tal:content="cours/modified" />
-                                <i class="fa fa-bell-o fa-fw no-pad"></i>
-                    </tal:isNouveau>
-                    <tal:isNotNouveau condition="not:cours/is_nouveau">
-                                <span class="hide">Z<tal:replace replace="cours/modified"/></span>
-                    </tal:isNotNouveau>
-                        </td>
-                        <td class="favori"
+                        <!--td class="favori"
                             tal:define="is_favori python:context.test(cours['is_favori'] == 'Oui', 'Non', 'Oui')">
                             <span class="hide" tal:content="cours/is_favori" />
                             <a class="favorite-selector" title="Permuter l'attribut « favori » de ce cours"
@@ -118,7 +108,7 @@
                                i18n:attributes="title; data-success_msg_pre; data-success_msg_post_fav; data-success_msg_post_nofav">
                                 <i tal:attributes="class string:js-fav fa ${cours/favori_icon} no-pad"></i>
                             </a>
-                        </td>
+                        </td-->
                         <td class="title">
                             <span class="hide" tal:content="cours/title" />
                             <a title="Ouvrir le cours"
@@ -133,11 +123,15 @@
                                 <strong tal:content="cours/name_auteur_cours" />
                             </span>
                         </td>
-                        <td class="role">
+                        <td class="new show-for-medium-up">
+                            <span class="hide" tal:content="cours/modified" />
+                            <i tal:attributes="class cours/is_nouveau"></i>
+                        </td>
+                        <!--td class="role">
                             <span class="label bkgrnd"
                                   tal:content="cours/role_affichage"
                                   i18n:translate="">Auteur</span>
-                        </td>
+                        </td-->
                         <td class="acc_etu show-for-medium-up">
                             <i tal:attributes="class python:context.test(cours['is_etudiants'], 'fa fa-check fa-lg no-pad success', 'fa fa-times fa-lg no-pad warning')"></i>
                         </td>

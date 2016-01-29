@@ -341,8 +341,10 @@ class JalonFolder(ATFolder):
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId, Subject=authMemberId)))
             listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "2":
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId))
-            listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
+            filtre["Subject"] = {'query': authMemberId, 'operator': 'not'}
+            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId, Subject={'query': authMemberId, 'operator': 'not'}))
+            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", path=self.getPhysicalPath()))
+            #listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
             listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId)))
         if onglet == "4":
@@ -351,10 +353,12 @@ class JalonFolder(ATFolder):
         dicoAuteur = {}
         for cours in listeTousCours:
             if not cours.getId in listeCoursId:
+                """
                 if authMemberId in cours.Subject:
                     favori = {"val": "Oui", "icon": "fa-star"}
                 else:
                     favori = {"val": "Non", "icon": "fa-star-o"}
+                """
                 auteur_cours = cours.getAuteurPrincipal
                 if not auteur_cours:
                     auteur_cours = cours.Creator
@@ -383,10 +387,10 @@ class JalonFolder(ATFolder):
                                    "is_co_auteur": role["is_co_auteur"],
                                    "is_lecteur": role["is_lecteur"],
                                    "role_affichage": role["affichage"],
-                                   "is_nouveau": cmp(cours.getDateDerniereActu, authMember.getProperty('login_time', None)) > 0,
+                                   "is_nouveau": "fa fa-bell-o fa-fw no-pad" if cmp(cours.getDateDerniereActu, authMember.getProperty('login_time', None)) > 0 else "",
                                    "modified": cours.modified,
-                                   "is_favori": favori["val"],
-                                   "favori_icon": favori["icon"],
+                                   #"is_favori": favori["val"],
+                                   #"favori_icon": favori["icon"],
                                    "url_cours": cours.getURL,
                                    "is_etudiants": len(cours.getRechercheAcces) > 0,
                                    "is_password": cours.getLibre,
