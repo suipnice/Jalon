@@ -702,7 +702,7 @@ class JalonProperties(SimpleItem):
                  "icone":       "fa fa-headphones"},
                 {"espace":      "video",
                  "titre":       "Vidéos",
-                 "activer":     self._activer_video,
+                 "activer":     self._activer_lille1pod,
                  "repertoire":  "Video",
                  "icone":       "fa fa-youtube-play"},
                 {"espace":      "vod",
