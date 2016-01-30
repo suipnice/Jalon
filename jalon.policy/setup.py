@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.2.3'
+version = '2.2.4'
 
 setup(name='jalon.policy',
       version=version,
