@@ -1741,6 +1741,9 @@ class JalonCours(ATFolder):
         if espace in ["ajout-supports", "ajout-activite"]:
             return self.isInPlan(idElement, listeElement)
 
+    def isCourseOwner(self, user_id):
+        return True if self.aq_parent.getId() == user_id else False
+
     def isInscriptionsLibre(self):
         #self.plone_log("isInscriptionsLibre")
         if len(self.getInscriptionsLibre()) > 0:

@@ -338,12 +338,6 @@
                  tal:content="structure python:context.getJalonProperty('message_guide_anti_spam')" />
         </section>
 
-    <tal:comment replace="nothing"><!--
-    <metal:macro use-macro="context/macro_mescours/macros/info-etudiant">
-        Message d'information
-    </metal:macro>
-    --></tal:comment>
-
     </main>
 
     <tal:block define="script string:setSortableList('js-list-cours_etu',['new','title','author'],'new','desc')">
@@ -352,104 +346,6 @@
 
 </tal:define>
 </metal:macro>
-
-
-<!--
-    Macro "cours-etudiant" : liste des cours (version étudiant extérieur)
-
-<metal:macro define-macro="cours-etudiant-jalon">
-    <tal:define define="categories context/getJalonCategories;
-                        clefs python:context.getClefsDico(categories);
-                        cle string:categorie;
-                        default string:1;
-                        categorie python:context.getSelectedTab(cle, default);
-                        isMesCours python:context.test(categorie == '1', 1, 0);
-                        isInscriptionMotDePasse python:context.test(categorie == '2', 1, 0)">
-        <div class="mescours_etudiants">
-            <h2 class="texte_icone icone_user"><span i18n:translate="">Bonjour</span> <span tal:content="python:context.getInfosMembre(user.getId())['fullname']"/></h2>
-
-            <div id="support_ajout">
-                <ul class="arrondis onglets">
-                    <tal:block repeat="clef clefs">
-                    <li tal:define="cat python:int(categorie)"
-                        tal:attributes="class python:context.test(clef == cat, 'arrondi categorie selected', 'arrondi categorie')">
-                        <a tal:attributes="href string:.?categorie=${clef}"
-                           tal:content="python:categories[clef]['title']"
-                           i18n:translate="">
-                            Catégorie
-                        </a>
-                    </li>
-                    </tal:block>
-                </ul>
-            </div>
-
-            <div id="tableauAjout" class="onglets_contenu">
-                <div id="tableau"
-                     tal:condition="categorie">
-                    <tal:define define="diplomes python:context.getCoursEtudiantJalon(categorie)">
-                    <tal:block repeat="diplome diplomes">
-                        <tal:condition condition="isMesCours">
-                            <h2 tal:content="diplome/libelle" class="texte_icone icone_universite"/>
-                        </tal:condition>
-                        <tal:block condition="not:diplome/listeCours">
-                            <div class="listing_vide" i18n:translate="">Aucun élément</div>
-                        </tal:block>
-
-                        <table class="listing"
-                                tal:condition="diplome/listeCours">
-                        <thead>
-                        <tr>
-                            <th i18n:translate=""></th>
-                            <th title="Cliquer pour trier selon l'auteur" i18n:attributes="title" i18n:translate="">Auteur</th>
-                            <th title="Cliquer pour trier selon le nom du cours" i18n:attributes="title" i18n:translate="">Cours</th>
-                            <th title="Cliquer pour trier selon le classement" i18n:attributes="title" i18n:translate=""
-                                tal:condition="isMesCours">Classement</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tal:entry repeat="cours diplome/listeCours">
-                        <tr tal:define="oddrow repeat/cours/odd"
-                            tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
-                            <td class="tdcenter"
-                                tal:define="isNouveau python:context.isNouveau(cours['id'])">
-                                <span tal:condition="isNouveau" class="nouveau texte_icone icone_soleil"></span>
-                            </td>
-                            <td tal:content="cours/auteur"/>
-                            <td tal:condition="not:isInscriptionMotDePasse">
-                              <a tal:attributes="href cours/url"
-                                 title="Voir le cours"
-                                 i18n:attributes="title"
-                                 tal:content="cours/title"/>
-                            </td>
-                            <td tal:condition="isInscriptionMotDePasse">
-                              <a title="S'inscrire au cours" class="showmore"
-                                 tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=inscription-cours&amp;idcours=${cours/id}&amp;auteur=${cours/idauteur}"
-                                 i18n:attributes="title"
-                                 tal:content="cours/title"/>
-                            </td>
-                            <td tal:condition="isMesCours">
-                               <ul>
-                                  <tal:block repeat="acces cours/acces">
-                                    <li tal:content="acces"/>
-                                  </tal:block>
-                               </ul>
-                            </td>
-                        </tr>
-                        </tal:entry>
-                        </tbody>
-                        </table>
-                    </tal:block>
-                    </tal:define>
-                </div>
-            </div>
-            <metal:macro use-macro="context/macro_mescours/macros/info-etudiant">
-                Message d'information
-            </metal:macro>
-        </div>
-    </tal:define>
-</metal:macro>
--->
-
 
 <!--
 
@@ -521,13 +417,21 @@
 -->
 <metal:macro define-macro="dupliquer">
 
-    <tal:define define="course_name python:context.aq_parent.getShortText(context.Title())">
-
+    <tal:define define="course_name python:context.getShortText(context.Title());
+                        is_course_owner python:context.isCourseOwner(user.getId())">
     <h2><tal:block i18n:translate="">Dupliquer le cours</tal:block>
         « <tal:block replace="course_name"/> »
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <tal:condition condition="not:is_course_owner">
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le dupliquer.
+    </div>
+    </tal:condition>
+
+    <tal:condition condition="is_course_owner">
     <div class="panel callout radius">
         <tal:block i18n:translate="">Dupliquer un cours crée un nouveau cours avec le même nom suivi de l'indication</tal:block> « <strong>Duplicata</strong> ».<br />
         <tal:block i18n:translate="">Le duplicata contient tous les éléments du cours à l'exception des dépôts des étudiants (dans les boîtes de dépôt) et des notes d'auto-évaluations et d'examens WIMS.</tal:block>
@@ -567,11 +471,11 @@
 
     </form>
 
-    </tal:define>
-
     <script charset="UTF-8"
             tal:content="structure string:setCourseDuplicator()">
     </script>
+    </tal:condition>
+    </tal:define>
 
 </metal:macro>
 
@@ -772,6 +676,58 @@
 
 </metal:macro>
 
+
+<metal:macro define-macro="course_delete">
+
+<tal:define define="course_name python:context.getShortText(context.Title(), 80);
+                    is_course_owner python:context.isCourseOwner(user.getId())">
+
+    <h2><tal:block i18n:translate="">Supprimer</tal:block>
+        « <tal:block content="course_name" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:condition condition="not:is_course_owner">
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le supprimer.
+    </div>
+    </tal:condition>
+
+    <tal:condition condition="is_course_owner">
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+    <form id="js-itemSuppressor" method="POST"
+          tal:attributes="action context/aq_parent/absolute_url;
+                          data-item_name course_name;
+                          data-success_msg string:a été supprimé.";
+                          i18n:attributes="data-success_msg">
+
+        <input type="hidden" name="paths:list" tal:attributes="value python:'/'.join(list(context.getPhysicalPath()))"/>
+        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+
+        <input tal:replace="structure context/@@authenticator/authenticator" />
+
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="folder_delete:method">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setItemSuppressor()">
+    </script>
+    </tal:condition> 
+</tal:define>
+
+</metal:macro>
 
 </metal:content-core>
 </body>

@@ -12,7 +12,8 @@
 
 <metal:macro define-macro="mescours_liste">
 
-<tal:define define="folderContents python:context.getListeCoursEns(onglet, user);">
+<tal:define define="onglet onglet | string:2;
+                    folderContents python:context.getListeCoursEns(onglet, user);">
 
     <div class="panel callout radius"
          tal:condition="not:folderContents">
@@ -115,7 +116,7 @@
                         tal:attributes="id string:drop-${repeat/cours/index}">
                         <li tal:repeat="action cours/actions_list">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${cours/url_cours}/${action/action_url}">
+                               tal:attributes="href string:${cours/url_cours}${action/action_url}">
                                 <i tal:attributes="class action/action_icon"></i>
                                 <tal:block tal:content="action/action_name" i18n:translate=""/>
                             </a>
