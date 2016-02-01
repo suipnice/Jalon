@@ -1,0 +1,400 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+<!--
+        Création d'un nouveau cours
+-->
+<metal:macro define-macro="add_course">
+
+    <h2><tal:block i18n:translate="">Créer un cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-courseCreator" method="POST"
+          tal:attributes="action python:context.absolute_url()+'/'+template.id;
+                          data-success_msg_pre string:Le cours;
+                          data-success_msg_post string:a été créé."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+                tal:define="error errors/title | nothing;
+                            arch_class string:field ArchetypesStringWidget;"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="text" id="title" name="title" maxlength="255" size="30"
+                   tal:attributes="value request/title | nothing"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   required="required" />
+        </div>
+
+        <div id="archetypes-fieldname-description"
+             tal:define="error errors/description | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+              <label for="description" i18n:translate="">Description</label>
+              <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+              <textarea id="description" name="description" rows="7"><tal:block replace="request/description | nothing"/></textarea>
+        </div>
+
+        <input type="hidden" name="page" tal:attributes="value string:${context/absolute_url}" />
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="macro" value="macro_mescours" />
+        <input type="hidden" name="formulaire" value="add_course" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-courseCreator','reveal-main','description')" />
+
+</metal:macro>
+
+<!--
+        Ajout d'un cours en favori
+-->
+<metal:macro define-macro="add_favorite">
+
+</metal:macro>
+
+<!--
+        Suppression d'un cours en favori
+-->
+<metal:macro define-macro="remove_favorite">
+
+</metal:macro>
+
+<!--
+        Duplication d'un cours
+-->
+<metal:macro define-macro="duplicate_course">
+
+    <tal:define define="course_name python:context.getShortText(context.Title());
+                        is_course_owner python:context.isCourseOwner(user.getId())">
+    <h2><tal:block i18n:translate="">Dupliquer le cours</tal:block>
+        « <tal:block replace="course_name"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:condition condition="not:is_course_owner">
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le dupliquer.
+    </div>
+    </tal:condition>
+
+    <tal:condition condition="is_course_owner">
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Dupliquer un cours crée un nouveau cours avec le même nom suivi de l'indication</tal:block> « <strong>Duplicata</strong> ».<br />
+        <tal:block i18n:translate="">Le duplicata contient tous les éléments du cours à l'exception des dépôts des étudiants (dans les boîtes de dépôt) et des notes d'auto-évaluations et d'examens WIMS.</tal:block>
+    </div>
+
+    <form id="js-courseDuplicator" method="POST"
+          tal:define="manager request/manager | nothing"
+          tal:attributes="action context/aq_parent/absolute_url;
+                          data-course_name course_name;
+                          data-success_msg_pre string:Le cours;
+                          data-success_msg_post string:a été dupliqué."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <input type="hidden" name="dupliquer_cours:method" value="Dupliquer" />
+        <input type="hidden" name="idcours" tal:attributes="value context/getId" />
+        <input type="hidden" name="creator" tal:attributes="value context/Creator" />
+
+        <tal:condition condition="not:manager">
+            <input type="hidden" name="manager" value="" />
+            <input type="hidden" name="orig_template"
+                   tal:attributes="value context/aq_parent/absolute_url" />
+        </tal:condition>
+
+        <tal:condition condition="manager">
+            <input type="hidden" name="manager"
+                   tal:attributes="value user/getId" />
+            <input type="hidden" name="orig_template"
+                   tal:attributes="value string:${context/aq_parent/aq_parent/absolute_url}/${user/getId}" />
+        </tal:condition>
+
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-code-fork"></i>
+                <tal:block i18n:translate="">Dupliquer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setCourseDuplicator()">
+    </script>
+    </tal:condition>
+    </tal:define>
+
+</metal:macro>
+
+<!--
+        Supression des travaux des étudiants d'un cours
+-->
+<metal:macro define-macro="purge_course">
+
+    <h2>
+        <tal:block i18n:translate="">Purger le cours</tal:block>
+        « <tal:block replace="python:context.aq_parent.getShortText(context.Title())"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius">
+        <tal:block i18n:translate="">Ceci supprimera tous les travaux réalisés par les étudiants dans les activités de ce cours (en laissant ces dernières intactes et attachées au cours). Ceci permet de réinitialiser le cours lors d'un changement d'année scolaire, par exemple.</tal:block>
+    </div>
+
+    <div class="panel alert radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block><br />
+        <strong i18n:translate="">Assurez-vous d'avoir téléchargé une copie des travaux des étudiants avant de continuer.</strong><br />
+    </div>
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Cette opération peut prendre quelques minutes, merci de patienter.</tal:block>
+    </div>
+
+    <form tal:attributes="action context/absolute_url"
+          method="POST">
+
+        <input type="hidden" name="purger_activites:method" value="Purger" />
+        <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
+
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-filter"></i>
+                <tal:block i18n:translate="">Purger le cours</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:macro>
+
+<!--
+        Suppression de toutes les activités WIMS d'un cours
+-->
+<metal:macro define-macro="delete_wims_activity"
+             tal:define="listeClasses context/getListeClasses;
+                         personnel python:context.isPersonnel(user);
+                         user_ID user/getId;
+                         isAuteurs python:context.isAuteurs(user_ID);
+                         isAuteur python:context.isAuteur(user_ID)">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer les activités WIMS du cours</tal:block>
+        « <tal:block replace="python:context.aq_parent.getShortText(context.Title())"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:isPersonnel condition="personnel">
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Vous l'aurez certainement remarqué : il est impossible (pour des raisons techniques) de supprimer de manière individuelle une activité WIMS (autoévaluation ou examen). Cette fonction permet toutefois de supprimer toutes les autoévaluations et examens WIMS de ce cours.</tal:block>
+    </div>
+
+    <tal:isClasses condition="listeClasses">
+        <tal:define define="has_classes python:user_ID in listeClasses[0]">
+        <tal:can_delete condition="python:isAuteur or has_classes">
+
+    <form id="js-supprActWIMS-form" method="POST"
+          tal:attributes="action string:${context/absolute_url}/supprimer_WIMS">
+
+        <div class="panel radius">
+            <span i18n:translate="">Supprimer toutes les activités Wims créées par :</span>
+                <ul tal:repeat="infos_classe listeClasses">
+                    <li tal:attributes="class python:context.test(isAuteur, '', 'disabled')">
+                        <input type="radio" name="utilisateur" id="utilisateur_All" value="All"
+                               tal:attributes="disabled python:context.test(isAuteur, '', 'disabled')"/>
+                        <label for="utilisateur_All"><i class="fa fa-users fa-fw"></i>Tous les auteurs</label>
+                        <div class="formHelp texte_icone icone_information"
+                             style="margin-left:4.5em;"
+                             tal:condition="isAuteur">Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.</div>
+                    </li>
+                    <tal:repeat repeat="auteur infos_classe">
+                        <li tal:attributes="class python:context.test(isAuteur or auteur==user_ID, '', 'disabled')">
+                            <input type="radio" name="utilisateur"
+                                   tal:attributes="value auteur;
+                                                   id string:utilisateur_${auteur};
+                                                   checked python:context.test(auteur==user_ID, 'checked', '');
+                                                   disabled python:context.test(isAuteur or auteur==user_ID, '', 'disabled')"/>
+
+                            <label tal:attributes="for string:utilisateur_${auteur}">
+                                <i class="fa fa-user fa-fw"></i><span tal:content="python:context.getInfosMembre(auteur)['fullname']"/>
+                                <span tal:condition="python:auteur==user_ID">(moi)</span>
+                            </label>
+                        </li>
+                    </tal:repeat>
+                </ul>
+                <div class="texte_icone icone_information"
+                     tal:condition="not:isAuteur">Seul l'auteur du cours peut supprimer les activités de ses coauteurs.</div>
+        </div>
+
+        <tal:comment replace="nothing"><!--
+            <tal:block condition="python:len(listeClasses[0])<=1">
+                <input type="hidden" name="utilisateur" tal:attributes="value user/getId" />
+                <div class="text-center">
+                    <input id="suppr_WIMS"
+                           type="checkbox"
+                           onclick="javacript:EnableDisableButton(this,'js-suppr_act_WIMS');"
+                           /><label for="suppr_WIMS">Je confirme vouloir supprimer toutes mes activités WIMS de ce cours.</label>
+                    <div class="formHelp texte_icone icone_information">Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.</div>
+                </div>
+            </tal:block>
+        --></tal:comment>
+
+        <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
+
+        <div class="panel alert radius">
+            <strong i18n:translate=""><i class="fa fa-exclamation-triangle no-pad alert"></i> Attention :</strong>
+            <tal:block i18n:translate="">la suppression est définitive. Si vous ne souhaitez retirer que les notes, annulez et cliquez plutôt sur "Purger".</tal:block><br />
+            <tal:block i18n:translate="">Assurez-vous d'avoir au moins téléchargé une copie des notes des étudiants avant de continuer.</tal:block>
+        </div>
+
+        <div class="formControls">
+
+            <label for="confirm-suppr_WIMS">
+                <input id="confirm-suppr_WIMS" type="checkbox" style="margin-bottom:0";/>
+                <tal:block i18n:translate="">Je confirme vouloir <u>supprimer</u> toutes les activités WIMS créées par le ou les auteurs selectionné(s).</tal:block>
+            </label>
+
+            <button class="button small alert" type="submit" disabled="true">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Tout supprimer</tal:block>
+            </button>
+
+        </div>
+
+        <div class="panel callout radius hide">
+            <i class="fa fa-refresh fa-spin"></i>
+            <tal:block i18n:translate="">Merci de patienter. Cette opération peut prendre quelques minutes…</tal:block>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:enableSubmitButtonIfCheckboxTicked('js-supprActWIMS-form')" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:displayMessageOnSubmit('js-supprActWIMS-form')" />
+
+        </tal:can_delete>
+
+        <tal:cannot_delete condition="python:not(isAuteur or has_classes)">
+
+    <div class="panel alert radius"
+         tal:define="baseAnnuaire context/getBaseAnnuaire">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        Vous n'êtes pas l'auteur de ce cours et vous ne pouvez pas supprimer les activités WIMS réalisées par les co-auteurs. Contactez l'auteur de ce cours
+        (<a tal:define="auteurPrincipal context/getAuteur"
+            tal:attributes="href python:context.getFicheAnnuaire(auteurPrincipal, baseAnnuaire)" target="_blank"
+            tal:content="auteurPrincipal/fullname" />)
+        pour lui demander de le faire.
+    </div>
+
+        </tal:cannot_delete>
+        </tal:define>
+    </tal:isClasses>
+
+    <div class="panel warning radius"
+         tal:condition="not:listeClasses">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à contacter</tal:block>
+        <a href="mailto:pi@unice.fr?subject=[Jalon] Suppression d'activité WIMS" i18n:translate="">l'administrateur</a>
+        <tal:block i18n:translate="">si vous pensez que ce n'est pas le cas.</tal:block>
+    </div>
+
+</tal:isPersonnel>
+
+<tal:isNotPersonnel condition="not:personnel">
+
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
+    </div>
+
+</tal:isNotPersonnel>
+
+</metal:macro>
+
+<metal:macro define-macro="delete_course">
+
+<tal:define define="course_name python:context.getShortText(context.Title(), 80);
+                    is_course_owner python:context.isCourseOwner(user.getId())">
+
+    <h2><tal:block i18n:translate="">Supprimer</tal:block>
+        « <tal:block content="course_name" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:condition condition="not:is_course_owner">
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le supprimer.
+    </div>
+    </tal:condition>
+
+    <tal:condition condition="is_course_owner">
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+    <form id="js-itemSuppressor" method="POST"
+          tal:attributes="action context/aq_parent/absolute_url;
+                          data-item_name course_name;
+                          data-success_msg string:a été supprimé.";
+                          i18n:attributes="data-success_msg">
+
+        <input type="hidden" name="paths:list" tal:attributes="value python:'/'.join(list(context.getPhysicalPath()))"/>
+        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+
+        <input tal:replace="structure context/@@authenticator/authenticator" />
+
+        <div class="formControls">
+            <button type="submit" class="button small alert radius"
+                    name="folder_delete:method">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setItemSuppressor()">
+    </script>
+    </tal:condition> 
+</tal:define>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

@@ -362,22 +362,22 @@ class JalonFolder(ATFolder):
         member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
 
-        actions_list = [{"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=favori",
+        actions_list = [{"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_favorite",
                          "action_icon": "fa fa-star fa-fw",
                          "action_name": "Ajouter en favoris"},
-                        {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=dupliquer",
+                        {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=duplicate_course",
                          "action_icon": "fa fa-code-fork fa-fw",
                          "action_name": "Dupliquer"},
-                        {"action_url": "/folder_form?macro=macro_mescours&amp;formulaire=purger",
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=purge_course",
                          "action_icon": "fa fa-filter fa-fw",
                          "action_name": "Purger les travaux étudiants"},
-                        {"action_url": "/folder_form?macro=macro_mescours&amp;formulaire=suppr_WIMS",
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_wims_activity",
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer les activités WIMS"},
-                        {"action_url": "/folder_form?macro=macro_mescours&amp;formulaire=course_delete",
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_course",
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer ce cours"},
-                        {"action_url": "/folder_form?macro=macro_form&amp;formulaire=archiver",
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=archive_course",
                          "action_icon": "fa fa-folder fa-fw",
                          "action_name": "Archiver ce cours"}]
 
