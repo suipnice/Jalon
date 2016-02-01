@@ -2,7 +2,7 @@
 u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS dans différents formats."""
 
 import xml.etree.ElementTree as ET
-import HTMLParser
+#import HTMLParser
 
 import jalon_utils
 
@@ -24,6 +24,10 @@ LOG.critical('critical message')
 
 import string
 alphabet = list(string.ascii_uppercase)
+
+import lxml
+#lxml parser est plus permissif qu'elementTree : grace a l'option "recover" il est capable d'ignorer les balises attributs html non conforms en XML.
+parser_lxml = lxml.etree.XMLParser(recover=True)
 
 
 def getExoTXT(context, format="GIFT", version="latest"):
@@ -166,7 +170,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         else:
             exoXML = ET.Element("error")
             exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
-        return ET.tostring(exoXML)
+        return ET.tostring(exoXML, encoding="utf-8")
 
     else:
         return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
@@ -174,9 +178,13 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers OLX:
-    LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
-    chaine = '<div class="enonce">%s</div>' % jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
-    exoXML.append(ET.fromstring(chaine))
+    #LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
+    enonce = jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
+    #enonce = jalon_utils.convertHTMLToXHTML(enonce)
+    enonce = '<div class="enonce">%s</div>' % enonce
+
+    exoXML.append(ET.fromstring(enonce, parser=parser_lxml))
+
     if parsed_exo["options_checkbox"] == 1:
         # Checkbox buttons
         element = "choiceresponse"
