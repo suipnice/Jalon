@@ -1075,7 +1075,7 @@ class JalonFolder(ATFolder):
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
-                    self.associerCoursListeObjets(duplicata, [key], infos_element[key], dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
 
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)

@@ -794,18 +794,15 @@ table {
     vertical-align: middle;
 
     tr {
-        /*
-        @media #{ $medium-up } {
-            display: table-row !important;
-        }
-
-        Ne fonctionne plus depuis MAJ Foundation 5.4.3 -> 5.5.2.
+        /*Ne fonctionne plus depuis MAJ Foundation 5.4.3 -> 5.5.2.
             voir https://github.com/zurb/foundation/issues/5766
 
         Remplacé par ce qui suit pour éviter le bug de non prise en compte
         de l'attribut « colspan ». */
-        &.show-for-medium-up {
-            display: table-row !important;
+        @media #{ $medium-up } {
+            &.show-for-medium-up {
+                display: table-row !important;
+            }
         }
 
         th, td {

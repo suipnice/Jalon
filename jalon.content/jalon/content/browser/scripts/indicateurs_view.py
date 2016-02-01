@@ -145,6 +145,7 @@ class IndicateursView(BrowserView):
 
         requete2 = self.context.getFrequentationByCoursByUniversityYearForGraph("Etudiant").all()
         LOG.info(requete2)
+        frequentation_graph = ""
         if requete2:
             requete_dict = dict(requete2)
             frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
