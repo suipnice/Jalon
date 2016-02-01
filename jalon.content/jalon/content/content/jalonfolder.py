@@ -116,7 +116,7 @@ class JalonFolder(ATFolder):
         return size
 
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
-        """Founi la liste des elements d'un jalonfolder."""
+        """Fourni la liste des elements d'un jalonfolder."""
         dico = {"portal_type": typeR}
         if typeR == "Fichiers":
             dico["portal_type"] = ["File", "Image", "Document"]
@@ -988,15 +988,12 @@ class JalonFolder(ATFolder):
                    "File":                     "Fichiers",
                    "Page":                     "Fichiers",
                    "Lienweb":                  "Externes",
-                   "Lien web":                 "Externes",
                    "Lecteurexportable":        "Externes",
-                   "Lecteur exportable":       "Externes",
                    "Referencebibliographique": "Externes",
                    "CatalogueBU":              "Externes",
-                   "Catalogue BU":             "Externes",
                    "TermeGlossaire":           "Glossaire",
                    "Presentationssonorisees":  "Sonorisation",
-                   "Exercice Wims":            "Wims"}
+                   "ExerciceWims":             "Wims"}
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 
@@ -1024,8 +1021,8 @@ class JalonFolder(ATFolder):
                     duplicataObjet.setProperties(param)
 
                     # Met a jour les relatedItems des documents.
-                    infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1039,19 +1036,25 @@ class JalonFolder(ATFolder):
                     duplicataObjet.setJalonProperties(activite.getDicoProperties())
 
                     # Met a jour les relatedItems des documents et exercices.
-                    infos_elements = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements, dico_espaces, dicoRep, portal_members)
+                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
-                    #ici il faudrait retirer l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
+                    #On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
+                    del infos_element[key]
+                    duplicata.setElementsCours(infos_element)
+                    #On retire également l'objet des infos_elementdu cours d'origine, afin de corriger le bug.
+                    cours.setElementsCours(infos_element)
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
-                    self.wims("verifierRetourWims", {"rep": rep, "fonction": "jalonfolder.py/dupliquerCours", "message": "ID cours : %s | ID objet : %s | infos_element = %s" % (idcours, key, infos_element)})
+                    self.wims("verifierRetourWims", {"rep": rep,
+                                                     "fonction": "jalonfolder.py/dupliquerCours",
+                                                     "message": "ID cours : %s | ID objet : %s | L'id a été supprimé des 2 cours, ce bug ne devrait plus survenir ici." % (idcours, key)})
 
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
-                    self.associerCoursListeObjets(duplicata, [key], infos_element[key], dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
 
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)
@@ -1071,7 +1074,7 @@ class JalonFolder(ATFolder):
         #LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
             infos_objet = infos_elements[id_objet]
-            repertoire = infos_objet["typeElement"]
+            repertoire = infos_objet["typeElement"].replace(" ", "")
             if repertoire in dicoRep:
                 repertoire = dicoRep[repertoire]
             if "*-*" in id_objet:
@@ -1297,11 +1300,22 @@ class JalonFolder(ATFolder):
 
         return {"status": "OK", "message": "import reussi", "nbExos": nbExos, "user_source": user_source, "user_dest": authMember}
 
-    def delClassesWims(self, listClasses):
+    def delClassesWims(self, listClasses, request=None):
+        """ Supprime l'ensemble des classes WIMS de "listClasses"."""
+        deleted_classes = []
         for classe in listClasses:
             dico = {"job": "delclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
             rep_wims = self.wims("callJob", dico)
-            self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonfolder.py/delClassesWims", "message": "parametres de la requete : %s" % dico})
+            rep_wims = self.wims("verifierRetourWims",
+                                 {"rep": rep_wims,
+                                  "fonction": "jalonfolder.py/delClassesWims",
+                                  "message": "parametres de la requete : %s" % dico,
+                                  "jalon_request": request})
+            if rep_wims["status"] == "OK":
+                deleted_classes.append(classe)
+
+        return deleted_classes
+
 
     def delExoWims(self, paths):
         """ delExoWims() : suppression (coté wims) de la liste des exercices donné en "paths" """
@@ -1367,6 +1381,31 @@ class JalonFolder(ATFolder):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         return portal_elasticsearch.getPropertiesElasticsearch()["url_connexion"]
+
+    #------------------#
+    # Utilitaire Wowza #
+    #------------------#
+    def searchVod(self, page, term_search=None):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
+
+    def getExpirationDate(self, streaming_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getExpirationDate(streaming_id.split("-")[-1])
+
+    def isStreamingAuthorized(self, streaming_id, request):
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
+
+    def askStreaming(self, streaming_id, member_id):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.askStreaming(streaming_id, member_id)
 
     #-----------------#
     #   Utilitaires   #

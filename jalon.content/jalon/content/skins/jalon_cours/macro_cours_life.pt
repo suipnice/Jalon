@@ -69,7 +69,7 @@
     </h2>
 
     <div class="panel radius bkgrnd"
-         define="mode_etudiant request/mode_etudiant | string:false;">
+         define="mode_etudiant mode_etudiant | request/mode_etudiant | string:false;">
         <dl>
 
             <dd tal:define="infosFormations context/getAffichageFormation">

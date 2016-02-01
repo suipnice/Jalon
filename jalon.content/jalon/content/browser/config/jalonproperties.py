@@ -19,6 +19,10 @@ from DateTime import DateTime
 import json
 import copy
 
+# Messages de debug :
+from logging import getLogger
+LOG = getLogger('[JalonProperties]')
+
 
 class JalonProperties(SimpleItem):
 
@@ -33,187 +37,187 @@ class JalonProperties(SimpleItem):
     _uploadPodcasts = ""
     _dnsPodcasts = ""
     _dicoUsersPodcast = {}
-    _dicoLibCatITunesU = {"102"   : "Art & Architecture",
-                   "102100": "Architecture",
-                   "102102": "Art History",
-                   "102109": "Culinary Arts",
-                   "102103": "Dance",
-                   "102105": "Design",
-                   "102111": "Fashion",
-                   "102104": "Film",
-                   "102106": "Interior Design",
-                   "102112": "Media Arts",
-                   "102107": "Music",
-                   "102113": "Photography",
-                   "102108": "Theater",
-                   "102110": "Visual Art",
-                   "100"   : "Business",
-                   "100100": "Economics",
-                   "100107": "Entrepreneurship",
-                   "100101": "Finance",
-                   "100102": "Hospitality",
-                   "100103": "Management",
-                   "100104": "Marketing",
-                   "100105": "Personal Finance",
-                   "100106": "Real Estate",
-                   "113"   : "Communications & Media",
-                   "113101": "Broadcasting",
-                   "113102": "Digital Media",
-                   "113103": "Journalism",
-                   "113104": "Photojournalism",
-                   "113105": "Print",
-                   "113106": "Speech",
-                   "113107": "Writing",
-                   "101"   : "Engineering",
-                   "101100": "Chemical & Petroleum Engineering",
-                   "101101": "Civil Engineering",
-                   "101102": "Computer Science",
-                   "101103": "Electrical Engineering",
-                   "101104": "Environmental Engineering",
-                   "101105": "Mechanical Engineering",
-                   "103"   : "Health & Medicine",
-                   "103100": "Anatomy & Physiology",
-                   "103101": "Behavioral Science",
-                   "103102": "Dentistry",
-                   "103103": "Diet & Nutrition",
-                   "103104": "Emergency Medicine",
-                   "103105": "Genetics",
-                   "103106": "Gerontology",
-                   "103112": "Global Health",
-                   "103107": "Health & Exercise Science",
-                   "103108": "Immunology",
-                   "103109": "Neuroscience",
-                   "103114": "Nursing",
-                   "103110": "Pharmacology & Toxicology",
-                   "103111": "Psychiatry",
-                   "103113": "Radiology",
-                   "104"   : "History",
-                   "104104": "African History",
-                   "104100": "Ancient History",
-                   "104105": "Asia-Pacific History",
-                   "104106": "European History",
-                   "104101": "Medieval History",
-                   "104107": "Middle Eastern History",
-                   "104102": "Military History",
-                   "104103": "Modern History",
-                   "104108": "North American History",
-                   "104109": "South American History",
-                   "106"   : "Language",
-                   "106100": "African Languages",
-                   "106101": "Ancient Languages",
-                   "106114": "Arabic",
-                   "106113": "Chinese",
-                   "106104": "English",
-                   "106106": "French",
-                   "106107": "German",
-                   "106115": "Hebrew",
-                   "106116": "Hindi",
-                   "106117": "Indigenous Languages",
-                   "106108": "Italian",
-                   "106118": "Japanese",
-                   "106119": "Korean",
-                   "106109": "Linguistics",
-                   "106120": "Other Languages",
-                   "106121": "Portuguese",
-                   "106122": "Russian",
-                   "106111": "Spanish",
-                   "106112": "Speech Pathology",
-                   "116"   : "Law & Politics",
-                   "116100": "Foreign Policy & International Relations",
-                   "116101": "Law",
-                   "116102": "Local Governments",
-                   "116103": "National Governments",
-                   "116104": "Political Science",
-                   "116105": "Public Administration",
-                   "116106": "World Affairs",
-                   "107"   : "Literature",
-                   "107100": "Anthologies",
-                   "107101": "Biography",
-                   "107102": "Classics",
-                   "107106": "Comparative Literature",
-                   "107104": "Fiction",
-                   "107103": "Literary Criticism",
-                   "107105": "Poetry",
-                   "108"   : "Mathematics",
-                   "108100": "Advanced Mathematics",
-                   "108101": "Algebra",
-                   "108102": "Arithmetic",
-                   "108103": "Calculus",
-                   "108104": "Geometry",
-                   "108105": "Statistics",
-                   "114"   : "Philosophy",
-                   "114100": "Aesthetics",
-                   "114101": "Epistemology",
-                   "114102": "Ethics",
-                   "114105": "Logic",
-                   "114103": "Metaphysics",
-                   "114106": "Philosophy of Language",
-                   "114107": "Philosophy of Religion",
-                   "114104": "Political Philosophy",
-                   "110"   : "Psychology & Social Science",
-                   "110107": "Anthropology",
-                   "110106": "Archaeology",
-                   "110103": "Psychology",
-                   "110104": "Social Welfare",
-                   "110105": "Sociology",
-                   "115"   : "Religion & Spirituality",
-                   "115100": "Buddhism",
-                   "115101": "Christianity",
-                   "115102": "Comparative Religion",
-                   "115103": "Hinduism",
-                   "115104": "Islam",
-                   "115105": "Judaism",
-                   "115106": "Other Religions",
-                   "115107": "Spirituality",
-                   "109"   : "Science",
-                   "109100": "Agriculture",
-                   "109101": "Astronomy",
-                   "109102": "Atmosphere",
-                   "109103": "Biology",
-                   "109104": "Chemistry",
-                   "109105": "Ecology",
-                   "109109": "Environment",
-                   "109106": "Geography",
-                   "109107": "Geology",
-                   "109108": "Physics",
-                   "111"   : "Society",
-                   "111107": "African Studies",
-                   "111108": "American Studies",
-                   "111101": "Asia Pacific Studies",
-                   "111109": "Cross-cultural Studies",
-                   "111102": "European Studies",
-                   "111110": "Immigration & Emigration",
-                   "111103": "Indigenous Studies",
-                   "111104": "Latin & Caribbean Studies",
-                   "111105": "Middle Eastern Studies",
-                   "111111": "Race & Ethnicity Studies",
-                   "111112": "Sexuality Studies",
-                   "111106": "Women's Studies",
-                   "112"   : "Teaching & Learning",
-                   "112100": "Curriculum & Teaching",
-                   "112101": "Educational Leadership",
-                   "112106": "Educational Technology",
-                   "112102": "Family & Childcare",
-                   "112107": "Information/Library Science",
-                   "112103": "Learning Resources",
-                   "112104": "Psychology & Research",
-                   "112105": "Special Education"}
-    _catITunesU = {"102" : ["102100", "102102", "102109", "102103", "102105", "102111", "102104", "102106", "102112", "102107", "102113", "102108", "102110"],
-                    "100" : ["100100", "100107", "101101", "100102", "100103", "100104", "100105", "100106"],
-                    "113" : ["113101", "113102", "113103", "113104", "113105", "113106", "113107"],
-                    "101" : ["101100", "101101", "101102", "101103", "101104", "101105"],
-                    "103" : ["103100", "103101", "103102", "103103", "103104", "103105", "103106", "103112", "103107", "103108", "103109", "103114", "103110", "103111", "103113"],
-                    "104" : ["104104", "104100", "104105", "104106", "104101", "104107", "104102", "104103", "104108", "104109"],
-                    "106" : ["106100", "106101", "106114", "106113", "106104", "106106", "106107", "106115", "106116", "106117", "106108", "106118", "106119", "106109", "106120", "106121", "106122", "106111", "106112"],
-                    "116" : ["116100", "116101", "116102", "116103", "116104", "116105", "116106"],
-                    "107" : ["107100", "107101", "107102", "107106", "107104", "107103", "107105"],
-                    "108" : ["108100", "108101", "108102", "108103", "108104", "108105"],
-                    "114" : ["114100", "114101", "114102", "114105", "114103", "114106", "114107", "114104"],
-                    "110" : ["110107", "110106", "110103", "110104", "110105"],
-                    "115" : ["115100", "115101", "115102", "115103", "115104", "115105", "115106", "115107"],
-                    "109" : ["109100", "109101", "109102", "109103", "109104", "109105", "109109", "109106", "109107", "109108"],
-                    "111" : ["111107", "111108", "111101", "111109", "111102", "111110", "111103", "111104", "111105", "111111", "111112", "111106"],
-                    "112" : ["112100", "112101", "112106", "112102", "112107", "112103", "112104", "112105"]}
+    _dicoLibCatITunesU = {"102":    "Art & Architecture",
+                          "102100": "Architecture",
+                          "102102": "Art History",
+                          "102109": "Culinary Arts",
+                          "102103": "Dance",
+                          "102105": "Design",
+                          "102111": "Fashion",
+                          "102104": "Film",
+                          "102106": "Interior Design",
+                          "102112": "Media Arts",
+                          "102107": "Music",
+                          "102113": "Photography",
+                          "102108": "Theater",
+                          "102110": "Visual Art",
+                          "100":    "Business",
+                          "100100": "Economics",
+                          "100107": "Entrepreneurship",
+                          "100101": "Finance",
+                          "100102": "Hospitality",
+                          "100103": "Management",
+                          "100104": "Marketing",
+                          "100105": "Personal Finance",
+                          "100106": "Real Estate",
+                          "113":    "Communications & Media",
+                          "113101": "Broadcasting",
+                          "113102": "Digital Media",
+                          "113103": "Journalism",
+                          "113104": "Photojournalism",
+                          "113105": "Print",
+                          "113106": "Speech",
+                          "113107": "Writing",
+                          "101":    "Engineering",
+                          "101100": "Chemical & Petroleum Engineering",
+                          "101101": "Civil Engineering",
+                          "101102": "Computer Science",
+                          "101103": "Electrical Engineering",
+                          "101104": "Environmental Engineering",
+                          "101105": "Mechanical Engineering",
+                          "103":    "Health & Medicine",
+                          "103100": "Anatomy & Physiology",
+                          "103101": "Behavioral Science",
+                          "103102": "Dentistry",
+                          "103103": "Diet & Nutrition",
+                          "103104": "Emergency Medicine",
+                          "103105": "Genetics",
+                          "103106": "Gerontology",
+                          "103112": "Global Health",
+                          "103107": "Health & Exercise Science",
+                          "103108": "Immunology",
+                          "103109": "Neuroscience",
+                          "103114": "Nursing",
+                          "103110": "Pharmacology & Toxicology",
+                          "103111": "Psychiatry",
+                          "103113": "Radiology",
+                          "104":    "History",
+                          "104104": "African History",
+                          "104100": "Ancient History",
+                          "104105": "Asia-Pacific History",
+                          "104106": "European History",
+                          "104101": "Medieval History",
+                          "104107": "Middle Eastern History",
+                          "104102": "Military History",
+                          "104103": "Modern History",
+                          "104108": "North American History",
+                          "104109": "South American History",
+                          "106":    "Language",
+                          "106100": "African Languages",
+                          "106101": "Ancient Languages",
+                          "106114": "Arabic",
+                          "106113": "Chinese",
+                          "106104": "English",
+                          "106106": "French",
+                          "106107": "German",
+                          "106115": "Hebrew",
+                          "106116": "Hindi",
+                          "106117": "Indigenous Languages",
+                          "106108": "Italian",
+                          "106118": "Japanese",
+                          "106119": "Korean",
+                          "106109": "Linguistics",
+                          "106120": "Other Languages",
+                          "106121": "Portuguese",
+                          "106122": "Russian",
+                          "106111": "Spanish",
+                          "106112": "Speech Pathology",
+                          "116":    "Law & Politics",
+                          "116100": "Foreign Policy & International Relations",
+                          "116101": "Law",
+                          "116102": "Local Governments",
+                          "116103": "National Governments",
+                          "116104": "Political Science",
+                          "116105": "Public Administration",
+                          "116106": "World Affairs",
+                          "107":    "Literature",
+                          "107100": "Anthologies",
+                          "107101": "Biography",
+                          "107102": "Classics",
+                          "107106": "Comparative Literature",
+                          "107104": "Fiction",
+                          "107103": "Literary Criticism",
+                          "107105": "Poetry",
+                          "108":    "Mathematics",
+                          "108100": "Advanced Mathematics",
+                          "108101": "Algebra",
+                          "108102": "Arithmetic",
+                          "108103": "Calculus",
+                          "108104": "Geometry",
+                          "108105": "Statistics",
+                          "114":    "Philosophy",
+                          "114100": "Aesthetics",
+                          "114101": "Epistemology",
+                          "114102": "Ethics",
+                          "114105": "Logic",
+                          "114103": "Metaphysics",
+                          "114106": "Philosophy of Language",
+                          "114107": "Philosophy of Religion",
+                          "114104": "Political Philosophy",
+                          "110":    "Psychology & Social Science",
+                          "110107": "Anthropology",
+                          "110106": "Archaeology",
+                          "110103": "Psychology",
+                          "110104": "Social Welfare",
+                          "110105": "Sociology",
+                          "115":    "Religion & Spirituality",
+                          "115100": "Buddhism",
+                          "115101": "Christianity",
+                          "115102": "Comparative Religion",
+                          "115103": "Hinduism",
+                          "115104": "Islam",
+                          "115105": "Judaism",
+                          "115106": "Other Religions",
+                          "115107": "Spirituality",
+                          "109":    "Science",
+                          "109100": "Agriculture",
+                          "109101": "Astronomy",
+                          "109102": "Atmosphere",
+                          "109103": "Biology",
+                          "109104": "Chemistry",
+                          "109105": "Ecology",
+                          "109109": "Environment",
+                          "109106": "Geography",
+                          "109107": "Geology",
+                          "109108": "Physics",
+                          "111":    "Society",
+                          "111107": "African Studies",
+                          "111108": "American Studies",
+                          "111101": "Asia Pacific Studies",
+                          "111109": "Cross-cultural Studies",
+                          "111102": "European Studies",
+                          "111110": "Immigration & Emigration",
+                          "111103": "Indigenous Studies",
+                          "111104": "Latin & Caribbean Studies",
+                          "111105": "Middle Eastern Studies",
+                          "111111": "Race & Ethnicity Studies",
+                          "111112": "Sexuality Studies",
+                          "111106": "Women's Studies",
+                          "112":    "Teaching & Learning",
+                          "112100": "Curriculum & Teaching",
+                          "112101": "Educational Leadership",
+                          "112106": "Educational Technology",
+                          "112102": "Family & Childcare",
+                          "112107": "Information/Library Science",
+                          "112103": "Learning Resources",
+                          "112104": "Psychology & Research",
+                          "112105": "Special Education"}
+    _catITunesU = {"102":  ["102100", "102102", "102109", "102103", "102105", "102111", "102104", "102106", "102112", "102107", "102113", "102108", "102110"],
+                   "100": ["100100", "100107", "101101", "100102", "100103", "100104", "100105", "100106"],
+                   "113": ["113101", "113102", "113103", "113104", "113105", "113106", "113107"],
+                   "101": ["101100", "101101", "101102", "101103", "101104", "101105"],
+                   "103": ["103100", "103101", "103102", "103103", "103104", "103105", "103106", "103112", "103107", "103108", "103109", "103114", "103110", "103111", "103113"],
+                   "104": ["104104", "104100", "104105", "104106", "104101", "104107", "104102", "104103", "104108", "104109"],
+                   "106": ["106100", "106101", "106114", "106113", "106104", "106106", "106107", "106115", "106116", "106117", "106108", "106118", "106119", "106109", "106120", "106121", "106122", "106111", "106112"],
+                   "116": ["116100", "116101", "116102", "116103", "116104", "116105", "116106"],
+                   "107": ["107100", "107101", "107102", "107106", "107104", "107103", "107105"],
+                   "108": ["108100", "108101", "108102", "108103", "108104", "108105"],
+                   "114": ["114100", "114101", "114102", "114105", "114103", "114106", "114107", "114104"],
+                   "110": ["110107", "110106", "110103", "110104", "110105"],
+                   "115": ["115100", "115101", "115102", "115103", "115104", "115105", "115106", "115107"],
+                   "109": ["109100", "109101", "109102", "109103", "109104", "109105", "109109", "109106", "109107", "109108"],
+                   "111": ["111107", "111108", "111101", "111109", "111102", "111110", "111103", "111104", "111105", "111111", "111112", "111106"],
+                   "112": ["112100", "112101", "112106", "112102", "112107", "112103", "112104", "112105"]}
     _ordreCatiTunesU = ["102", "100", "113", "101", "103", "104", "106", "116", "107", "108", "114", "110", "115", "109", "111", "112"]
 
     # Gestion de la connexion
@@ -242,10 +246,10 @@ class JalonProperties(SimpleItem):
     _lien_aide_plan = '<div class="flex-video"><iframe src="//www.youtube.com/embed/Z10V-BMXuec?list=PLV8G_tL0jD2LmZ79s0D-4EkeCVgQTvWfo" frameborder="0" allowfullscreen></iframe></div>\n<p>Cette vidéo disparaîtra automatiquement quand vous aurez ajouté des éléments à votre cours.</p>'
     _activer_guide_anti_spam = "1"
     _message_guide_anti_spam = """<h3>Pour être sûr(e) de recevoir les courriels de vos enseignants</h3>
-<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur jalon@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
+<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur noreply@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
 <dl>
     <dt>Google Mail :</dt>
-    <dd>ajoutez jalon@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
+    <dd>ajoutez noreply@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
     <dt>Hotmail :</dt>
     <dd>rendez-vous dans la rubrique filtre et ajoutez @jalon.unice.fr dans la liste des serveurs expéditeurs autorisés.</dd>
     <dt>Autres :</dt>
@@ -284,6 +288,7 @@ class JalonProperties(SimpleItem):
     _lien_assitance = "https://sourcesup.renater.fr/forum/forum.php?thread_id=3460&forum_id=2232&group_id=832"
     _activer_video = 0
     _url_video = ""
+    _activer_vod = 0
 
     # Gestion du bloc "Réaseaux sociaux"
     _COMPTE_TWITTER = ""
@@ -561,6 +566,18 @@ class JalonProperties(SimpleItem):
                 val = int(val)
             setattr(self, "_%s" % key, val)
 
+    def getLienContact(self):
+        """ Fournit un lien pour contacter l'administrateur du site."""
+        if self._activer_lien_contact:
+            lien_contact = self._lien_contact
+        else:
+            if self._activer_email_erreur:
+                lien_contact = "mailto:%s" % self._adresse_email_erreur
+            else:
+                portal = getUtility(IPloneSiteRoot)
+                lien_contact = "mailto:%s" % portal.getProperty("email_from_address")
+        return lien_contact
+
     #--------------------------------#
     # Fonctions du bloc Didacticiels #
     #--------------------------------#
@@ -635,21 +652,22 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_fichiers"                 : self._activer_fichiers,
-                    "activer_presentations_sonorisees" : self._activer_presentations_sonorisees,
-                    "activer_exercices_wims"           : self._activer_exercices_wims,
-                    "activer_liens"                    : self._activer_liens,
-                    "activer_liens_catalogue_bu"       : self._activer_liens_catalogue_bu,
-                    "activer_tags_catalogue_bu"        : self._activer_tags_catalogue_bu,
-                    "activer_lille1pod"                : self._activer_lille1pod,
-                    "activer_termes_glossaire"         : self._activer_termes_glossaire,
-                    "activer_webconferences"           : self._activer_webconferences,
-                    "activer_lien_intracursus"         : self._activer_lien_intracursus,
-                    "lien_intracursus"                 : self._lien_intracursus,
-                    "activer_lien_assistance"          : self._activer_lien_assistance,
-                    "lien_assitance"                   : self._lien_assitance,
-                    "activer_video"                    : self._activer_video,
-                    "url_video"                        : self._url_video}
+            return {"activer_fichiers":                  self._activer_fichiers,
+                    "activer_presentations_sonorisees":  self._activer_presentations_sonorisees,
+                    "activer_exercices_wims":            self._activer_exercices_wims,
+                    "activer_liens":                     self._activer_liens,
+                    "activer_liens_catalogue_bu":        self._activer_liens_catalogue_bu,
+                    "activer_tags_catalogue_bu":         self._activer_tags_catalogue_bu,
+                    "activer_lille1pod":                 self._activer_lille1pod,
+                    "activer_termes_glossaire":          self._activer_termes_glossaire,
+                    "activer_webconferences":            self._activer_webconferences,
+                    "activer_lien_intracursus":          self._activer_lien_intracursus,
+                    "lien_intracursus":                  self._lien_intracursus,
+                    "activer_lien_assistance":           self._activer_lien_assistance,
+                    "lien_assitance":                    self._lien_assitance,
+                    "activer_video":                     self._activer_video,
+                    "url_video":                         self._url_video,
+                    "activer_vod":                       self._activer_vod}
 
     def getGridMonEspace(self, key=None):
         return [{"espace":      "fichiers",
@@ -684,9 +702,14 @@ class JalonProperties(SimpleItem):
                  "icone":       "fa fa-headphones"},
                 {"espace":      "video",
                  "titre":       "Vidéos",
-                 "activer":     True,
+                 "activer":     self._activer_lille1pod,
                  "repertoire":  "Video",
-                 "icone":       "fa fa-youtube-play"}]
+                 "icone":       "fa fa-youtube-play"},
+                {"espace":      "vod",
+                 "titre":       "VOD",
+                 "activer":     self._activer_vod,
+                 "repertoire":  "VOD",
+                 "icone":       "fa fa-video-camera"}]
 
     def setPropertiesMonEspace(self, form):
         for key in form.keys():
@@ -963,10 +986,10 @@ class JalonProperties(SimpleItem):
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         portal_elasticsearch.setPropertiesElasticsearch(propertiesElasticsearch)
 
-    def searchElasticsearch(self):
+    def searchElasticsearch(self, type_search=None, term_search=None, page=1):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
-        return portal_elasticsearch.searchElasticsearch()
+        return portal_elasticsearch.searchElasticsearch(type_search, term_search, page)
 
     def isElasticsearch(self):
         portal = self.portal_url.getPortalObject()
@@ -974,14 +997,62 @@ class JalonProperties(SimpleItem):
         if portal_jalon_elasticsearch:
             elasticsearch_properties = portal_jalon_elasticsearch.getPropertiesElasticsearch()
             if not elasticsearch_properties["url_connexion"] or elasticsearch_properties["url_connexion"] == "http://domainname.com/":
-                return {"module"  : False,
-                        "message" : "Le module Elasticsearch de Jalon n'est pas configuré"}
+                return {"module":  False,
+                        "message": "Le module Elasticsearch de Jalon n'est pas configuré"}
             else:
-                return {"module"  : True,
-                        "message" : "Test"}
+                return {"module":  True,
+                        "message": "Test"}
         else:
-            return {"module"  : False,
-                    "message" : "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+
+    #----------------#
+    # Fonction Wowza #
+    #----------------#
+    def isVOD(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if portal_jalon_wowza:
+            wowza_properties = portal_jalon_wowza.getWowzaProperties()
+            if not wowza_properties["wowza_server"] or wowza_properties["wowza_server"] == "http://domainname.com":
+                return {"module":  False,
+                        "message": "Le module Wowza de Jalon n'est pas configuré"}
+            else:
+                return {"module":  True,
+                        "message": "Test"}
+        else:
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Wowza installé dans Jalon"}
+
+    def getWowzaProperties(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getWowzaProperties()
+
+    def setWowzaProperties(self, wowzaProperties):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.setWowzaProperties(wowzaProperties)
+
+    def searchExtraits(self, page, term_search):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
+
+    def getExpirationDate(self, pod):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getStreamingAvailable(pod)
+
+    def modifyStreaming(self, params):
+        LOG.info("----- modifyStreaming -----")
+        LOG.info(params)
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if "datetime-expiration_date" in params:
+            portal_jalon_wowza.modifyStreaming(params["pod"], params["datetime-expiration_date"])
+        else:
+            portal_jalon_wowza.modifyStreaming(params["pod"])
 
     #-------------------------------#
     # Fonction Communication NodeJS #

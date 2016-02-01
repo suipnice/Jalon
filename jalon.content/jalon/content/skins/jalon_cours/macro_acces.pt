@@ -156,7 +156,7 @@
                     </td>
                     <td class="email"
                         tal:condition="not:etudiant/email">
-                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
                     </td>
                 </tr>
             </tbody>
@@ -265,7 +265,7 @@
                            tal:content="etudiant/email" />
                     </td>
                     <td tal:condition="not:etudiant/email">
-                        <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
                     </td>
                 </tr>
             </tbody>
@@ -294,7 +294,10 @@
 
 
 <!--
+
         Inscription par courriel : ajout / liste
+
+
 -->
 <metal:macro define-macro="ajouter-invitations-email"
              tal:define="mode_etudiant request/mode_etudiant | nothing;
@@ -307,21 +310,25 @@
 
 <tal:isPersonnel condition="personnel">
 
+    <h3>
+        <button type="button" id="js-modeSwitcher" class="button tiny success radius">
+            <i class="fa fa-code"></i>
+            <tal:block i18n:translate="">Mode</tal:block>
+        </button>
+        <i class="fa fa-envelope-o no-pad"></i>
+        <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
+    </h3>
+
     <form id="js-mailRegistrationList" class="no_reveal_action itemAdder">
-
-        <h3>
-            <i class="fa fa-envelope-o no-pad"></i>
-            <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
-        </h3>
-
-        <div class="panel callout radius">
-             <i class="fa fa-info-circle no-pad"></i>
-             <tal:block i18n:translate="">Pour constituer la liste des personnes à inscrire, renseignez les champs du formulaire et cliquez sur « Ajouter ».</tal:block>
-        </div>
 
         <fieldset class="row">
 
-            <!--legend i18n:translate="">Liste des étudiant(e)s extérieur(e)s à inviter</legend-->
+            <div class="panel callout radius">
+                 <i class="fa fa-info-circle no-pad"></i>
+                 <tal:block i18n:translate="">Pour constituer la liste des personnes à inscrire, renseignez les champs ci-dessous et cliquez sur « Ajouter ».</tal:block>
+            </div>
+
+            <!--legend i18n:translate="">Liste des étudiant(e)s extérieur(e)s à inscrire</legend-->
             <div class="medium-3 small-12 columns">
                 <input name="lastname" class="medium-4 small-12 columns"
                        type="text" required="required"
@@ -344,7 +351,7 @@
                        i18n:attributes="placeholder" />
             </div>
             <div class="medium-2 small-12 columns">
-                <button type="submit" class="button tiny expand radius">
+                <button type="submit" class="button tiny radius">
                     <i class="fa fa-plus-circle"></i>
                     <tal:block i18n:translate="">Ajouter</tal:block>
                 </button>
@@ -358,53 +365,52 @@
 
         <div class="panel callout radius hide">
              <i class="fa fa-info-circle no-pad"></i>
-             <tal:block i18n:translate="">Vous pouvez retirer des élément de la liste en cliquant sur</tal:block> «
-             <i class="fa fa-minus-circle no-pad warning"></i> ».
+             <tal:block i18n:translate="">Vous pouvez retirer des élément de la liste en cliquant sur</tal:block>
+             « <i class="fa fa-minus-circle no-pad warning"></i> ».
         </div>
 
     </form>
 
-    <form id="js-mailRegistration" method="POST"
+    <form id="js-mailRegistration" class="no_reveal_action itemAdder" method="POST"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
-    <tal:comment replace="nothing"><!-- À garder pour le « Mode avancé »
-        <h3>
-            <i class="fa fa-envelope-o no-pad"></i>
-            <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
-        </h3>
+        <fieldset class="row hide">
 
-        <div tal:define="error errors/invitation | nothing;
-                         arch_class string:field;"
-             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
-            <label for="invitation">Liste des étudiant(e)s extérieur(e)s à inviter</label>
-            <div class="fieldErrorBox"
-                 tal:condition="error"
-                 tal:content="error" />
-            <input type="text" id="invitation" name="invitation"
-                   placeholder="Prénom Nom &lt;compte@domaine.fr&gt;"
-                   tal:attributes="value request/invitation | nothing"/>
-        </div>
+            <div tal:define="error errors/invitation | nothing;
+                             arch_class string:field;"
+                 tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+                <label for="mailUserList">Liste des étudiant(e)s extérieur(e)s à inscrire</label>
+                <!--div class="fieldErrorBox"
+                     tal:condition="error"
+                     tal:content="error" /-->
+                <div class="fieldErrorBox"
+                     tal:content="error" />
+                <input type="text" id="mailUserList" name="invitation"
+                       placeholder="Prénom Nom &lt;compte@domaine.tld&gt;"
+                       tal:attributes="value request/invitation | nothing"
+                       i18n:attributes="placeholder" />
+            </div>
 
-        <div class="panel warning radius">
-            <i class="fa fa-exclamation-triangle no-pad"></i>
-            <strong><tal:block i18n:translate="">Très important :</tal:block></strong><br /><br />
-            Utilisez la syntaxe suivante pour inscrire vos étudiants via le champ ci-dessus :
-            <pre>Prénom Nom &lt;compte@domaine.tld&gt;</pre>
-            Vous pouvez en inscrire plusieurs simultanément en les séparant par une virgule :
-            <pre>Prénom1 Nom1 &lt;compte1@domaine1.tld&gt;, Prénom2 Nom2 &lt;compte2@domaine2.tld&gt;, etc.</pre>
-        </div>
-    --></tal:comment>
+            <div class="panel warning radius">
+                <i class="fa fa-exclamation-triangle no-pad"></i>
+                <strong><tal:block i18n:translate="">Très important :</tal:block></strong><br /><br />
+                Utilisez la syntaxe suivante pour inscrire vos étudiants via le champ ci-dessus :
+                <pre>Prénom Nom &lt;compte@domaine.tld&gt;</pre>
+                Vous pouvez en inscrire plusieurs simultanément en les séparant par une virgule :
+                <pre>Prénom1 Nom1 &lt;compte1@domaine1.tld&gt;, Prénom2 Nom2 &lt;compte2@domaine2.tld&gt;, etc.</pre>
+            </div>
 
-        <input type="hidden" name="invitation" />
+        </fieldset>
+
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="typeGroupe" value="email" />
         <input type="hidden" name="macro" value="macro_acces" />
         <input type="hidden" name="formulaire" value="ajouter-invitations-email" />
 
         <div class="formControls">
-            <button type="submit" class="button small radius">
+            <button type="submit" class="button small expand radius">
                 <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Enregistrer</tal:block>
+                <tal:block i18n:translate="">Inscrire ces étudiants au cours</tal:block>
             </button>
         </div>
 
@@ -418,7 +424,7 @@
     <div class="panel callout radius"
          tal:condition="not:invitations">
          <i class="fa fa-info-circle no-pad"></i>
-         <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) extérieur(e) invité(e) par courriel.</tal:block>
+         <tal:block i18n:translate="">Aucun(e) étudiant(e) extérieur(e) n'a pour l'instant été inscrit(e) par courriel à ce cours.</tal:block>
     </div>
 
     <div id="js-courriel-insc_list"
@@ -469,7 +475,10 @@
 
 
 <!--
+
         Inscription par courriel : suppression
+
+
 -->
 <metal:macro define-macro="supprimer-invitations-email">
 
@@ -538,7 +547,10 @@
 
 
 <!--
+
         Accès libre
+
+
 -->
 <metal:macro define-macro="modifier-anonyme">
 
@@ -616,7 +628,10 @@
 
 
 <!--
+
         Activer accès par mot de passe
+
+
 -->
 <metal:macro define-macro="modifier-libre"
              tal:define="mode_etudiant request/mode_etudiant | nothing;
@@ -740,7 +755,10 @@
 
 
 <!--
+
         Supprimer participants accès par mot de passe
+
+
 -->
 <metal:macro define-macro="supprimer-participants_password">
 
@@ -861,6 +879,8 @@
 <!--
 
         Inscription par mot de passe
+
+
 -->
 <metal:macro define-macro="inscription-cours">
 

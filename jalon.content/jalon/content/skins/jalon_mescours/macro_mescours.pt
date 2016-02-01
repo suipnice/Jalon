@@ -571,8 +571,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <div class="panel warning radius">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
+    <div class="panel radius">
         <tal:block i18n:translate="">Ceci supprimera tous les travaux réalisés par les étudiants dans les activités de ce cours (en laissant ces dernières intactes et attachées au cours). Ceci permet de réinitialiser le cours lors d'un changement d'année scolaire, par exemple.</tal:block>
     </div>
 
@@ -634,12 +633,6 @@
         <tal:define define="has_classes python:user_ID in listeClasses[0]">
         <tal:can_delete condition="python:isAuteur or has_classes">
 
-    <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
-        <tal:block i18n:translate="">cette opération est définitive.</tal:block><br />
-        <strong i18n:translate="">Assurez-vous d'avoir téléchargé une copie des notes des étudiants avant de continuer.</strong><br />
-    </div>
-
     <form id="js-supprActWIMS-form" method="POST"
           tal:attributes="action string:${context/absolute_url}/supprimer_WIMS">
 
@@ -688,13 +681,19 @@
 
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
 
-        <div class="formControls confirm_check">
+        <div class="panel alert radius">
+            <strong i18n:translate=""><i class="fa fa-exclamation-triangle no-pad alert"></i> Attention :</strong>
+            <tal:block i18n:translate="">la suppression est définitive. Si vous ne souhaitez retirer que les notes, annulez et cliquez plutôt sur "Purger".</tal:block><br />
+            <tal:block i18n:translate="">Assurez-vous d'avoir au moins téléchargé une copie des notes des étudiants avant de continuer.</tal:block>
+        </div>
 
-            <input id="confirm-suppr_WIMS" type="checkbox" />
-            <label for="confirm-suppr_WIMS"
-                   i18n:translate="">Je confirme vouloir supprimer toutes les activités WIMS créées par le ou les auteurs selectionné(s).
+        <div class="formControls">
+
+            <label for="confirm-suppr_WIMS">
+                <input id="confirm-suppr_WIMS" type="checkbox" style="margin-bottom:0";/>
+                <tal:block i18n:translate="">Je confirme vouloir <u>supprimer</u> toutes les activités WIMS créées par le ou les auteurs selectionné(s).</tal:block>
             </label>
-            <br/>
+
             <button class="button small alert" type="submit" disabled="true">
                 <i class="fa fa-trash-o"></i>
                 <tal:block i18n:translate="">Tout supprimer</tal:block>

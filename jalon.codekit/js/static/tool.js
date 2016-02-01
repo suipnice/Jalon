@@ -20,7 +20,7 @@ function instantiateCKEditor( textareaID ) {
             // Define the toolbar groups as it is a more accessible solution.
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
-                //{ 'name': "links",       'groups': [ "links" ] },
+                { 'name': "links",       'groups': [ "links" ] },
                 //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
                 { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
@@ -30,6 +30,8 @@ function instantiateCKEditor( textareaID ) {
             removePlugins: 'image,elementspath',
             // Remove the redundant buttons from toolbar groups defined above.
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
+            // Remove the advanced link tab in link popup.
+            removeDialogTabs: 'link:advanced',
         } );
 
         return textareaID;
@@ -93,6 +95,17 @@ function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum )
     Initialisation des "reveal"
 */
 
+function revealFormOnSubmitBehavior( $form ) {
+
+    // Spinner
+    var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
+    $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
+
+    // Protection anti double-clic
+    $form.find( '[type="submit"]' ).prop( 'disabled', true );
+}
+
+
 function revealInit( $reveal ) {
 
     // Focus sur le 1er input
@@ -102,15 +115,12 @@ function revealInit( $reveal ) {
         $firstInput.focus( );
     }
 
+    // Ajout attr. "title" lien de fermeture
+    $reveal.find( 'h2 > a.close-reveal-modal' ).attr( 'title', CLOSE_REVEAL_TITLE );
+
     // Envoi du formulaire
     $reveal.find( 'form:not(.no_reveal_action)' ).submit( function( event ) {
-
-        // Spinner
-        var $h2 = $( this ).parents( '.reveal-modal' ).children( 'h2' );
-        $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
-
-        // Protection anti double-clic
-        $( this ).find( '[type="submit"]' ).prop( 'disabled', true );
+        revealFormOnSubmitBehavior( $( this ) );
     } );
 }
 

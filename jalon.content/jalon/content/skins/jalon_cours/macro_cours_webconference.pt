@@ -13,7 +13,7 @@
 <metal:macro define-macro="webconferences_liste">
 
     <tal:define define="espace request/espace | nothing;
-                        folderContents python:context.getContents(subject=subjects, typeR='JalonConnect', authMember=user.getId(), repertoire=espace);">
+                        folderContents python:context.getContents(subject=subjects, typeR='JalonConnect', authMember=user.getId(), repertoire=espace.replace(' ', ''));">
 
             <div class="panel callout radius"
                  tal:condition="not:folderContents"

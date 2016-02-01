@@ -79,17 +79,18 @@
             - specific to “ non-student ” roles
             - specific to “ manager ” roles
             - extra JS library(ies) loader
+            - optionnal JS “ dev ” file
             - direct JS buffer
             - “ doc. ready ” JS buffer
     --></tal:comment>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/post.min.js"></script>
         <script charset="UTF-8"
-                tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_LOADING_TEXT','Actualisation en cours…'),('MSG_LOADING_OK_TEXT','Actualisation réussie !'),('MSG_TAP2CLOSE_TEXT','Toucher pour fermer'),('MSG_FORUM_NO_EMPTY_CONVERSATION','Ce forum ne contient aucune conversation sans réponse.')])"
+                tal:define="tmp python:jsTranslate.addJsTranslate([('CLOSE_REVEAL_TITLE','Cliquez pour fermer.'),('MSG_LOADING_TEXT','Actualisation en cours…'),('MSG_LOADING_OK_TEXT','Actualisation réussie !'),('MSG_TAP2CLOSE_TEXT','Toucher pour fermer'),('MSG_FORM_VALIDATION_ERROR','Votre saisie est erronée.'),('MSG_FORUM_NO_EMPTY_CONVERSATION','Ce forum ne contient aucune conversation sans réponse.')])"
                 tal:content="jsTranslate/getJsTranslate"></script>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/app.min.js"></script>
-    <tal:isNotStudent condition="python:not(user.has_role('Etudiant'))">
+    <tal:isNotStudent condition="python:user.has_role(['Personnel', 'Manager', 'Secretaire'])">
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-post.min.js"></script>
         <script charset="UTF-8"
@@ -104,14 +105,13 @@
     <tal:block define="extraFiles python:jsBuffer.getExtraFiles()"
                condition="extraFiles">
         <tal:repeat repeat="extraFile extraFiles">
-        <tal:comment replace="nothing"><!--
-        <script charset="UTF-8"
-                tal:attributes="src string:${context/absolute_url}/${extraFile}"></script>
-        --></tal:comment>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/${extraFile}"></script>
         </tal:repeat>
     </tal:block>
+        <!-- JS dev
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/dev.js"></script> -->
         <script charset="UTF-8"
                 tal:define="directBuffer python:jsBuffer.getDirectBuffer()"
                 tal:condition="directBuffer"

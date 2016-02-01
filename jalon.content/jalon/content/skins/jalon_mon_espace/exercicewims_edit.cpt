@@ -99,6 +99,8 @@
         encart d'affichage du fil d'ariane
     </metal:macro>
 
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
     <main role="main" class="row" aria-labelledby="page_title">
 
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
@@ -138,7 +140,7 @@
                     <ul style="margin-bottom:0;">
                         <li i18n:translate="">Lorsque vous mettez des parenthèses, accolades ou crochets, placez-les par paires correctement fermées.</li>
                         <li tal:condition="python:modele == 'exercicelibre'">
-                            <tal:block i18n:translate="">Lorsque vous tapez le code source d'un exercice, celui-ci doit au minimum contenir l'instruction suivante :</tal:block> 
+                            <tal:block i18n:translate="">Lorsque vous tapez le code source d'un exercice, celui-ci doit au minimum contenir l'instruction suivante :</tal:block>
                             <code>\statement{<tal:block i18n:translate="">Ici l'énoncé de l'exercice.</tal:block>}</code>
                         </li>
                     </ul>
@@ -211,7 +213,6 @@
                     </div>
                 </div>
             </form>
-
         </tal:block>
 
         <tal:block condition="python:modele == 'externe'">

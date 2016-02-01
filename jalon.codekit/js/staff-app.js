@@ -165,13 +165,18 @@ function setPodContentMultipleSelection( ) {
     var actualPageNumber = $pageNumberInput.val( );
 
     function _displayMessageOnPageChange( event ) {
+
         if ( $listForm.find( 'ul > li .switch > [type="checkbox"]:checked' ).length ) {
+
             if ( ! confirm( pageChangeMessage ) ) {
+
                 event.preventDefault( );
                 event.stopPropagation( );
+
                 return false;
             }
         }
+
         return true;
     }
 
@@ -188,10 +193,12 @@ function setPodContentMultipleSelection( ) {
     } );
 
     Foundation.utils.S( '#pagination-container' ).on( 'click', 'a.button', function( event ) {
+
         _displayMessageOnPageChange( event );
     } );
 
     $pageChangeForm.submit( function( event ) {
+
         if ( ! _displayMessageOnPageChange( event ) ) {
             $pageNumberInput.val( actualPageNumber );
         }
@@ -202,17 +209,19 @@ function setPodContentMultipleSelection( ) {
 
 
 /*
-    Inscription par courriel : constitution de la liste.
+    Constitution de la liste des inscriptions par courriel
 */
 
 function setMailRegistrationForm( ) {
 
     var $registrationForm = Foundation.utils.S( '#js-mailRegistration' );
-    var $registrationFormControls = $registrationForm.children( 'div.formControls' );
-    var $registrationFormButton = $registrationFormControls.children( 'button[type=submit]' );
-    var $registrationList = [ ];
+    var $registrationFormFieldset = $registrationForm.children( 'fieldset' );
+    var $registrationFormButton = $registrationForm.find( 'button[type=submit]' );
+    var registrationList = [ ];
 
     var $listForm = Foundation.utils.S( '#js-mailRegistrationList' );
+    var $listFormFirstInput = $listForm.find( 'input[name=lastname]' );
+    var $listInput = Foundation.utils.S( '#mailUserList' );
 
     var $listTableBody = $listForm.find( 'tbody' );
     var listTableRowHTML = '';
@@ -220,21 +229,124 @@ function setMailRegistrationForm( ) {
     var lastname = '';
     var firstname = '';
     var email = '';
-    var invitation = '';
+    var mailUserList = '';
     var doubleCheck = false;
+
+    function _validateUsersList( inputString ) {
+
+        if ( ! Boolean( inputString.trim( ).length ) ) {
+
+            return false;
+
+        } else {
+
+            var users = inputString.split( ',' );
+            var index, len;
+
+            users = users.filter( function( n ){ return n !== ''; } );
+
+            for ( index = 0, len = users.length; index < len; ++index ) {
+
+                users[ index ] = users[ index ].trim( );
+
+                if ( users[ index ].search( '>' ) !== users[ index ].length - 1 ) {
+
+                    return false;
+
+                } else {
+
+                    var userData = users[ index ].replace( '>', '' ).split( '<' );
+
+                    if ( userData.length === 2 ) {
+
+                        var reName = new RegExp( $listForm.find( 'input[name=lastname]' ).attr( 'pattern' ) );
+                        var reMail = new RegExp( $listForm.find( 'input[name=email]' ).attr( 'pattern' ) );
+
+                        if ( ! reName.test( userData[ 0 ] ) || ! reMail.test( userData[ 1 ] ) ) {
+
+                            return false;
+                        }
+
+                    } else {
+
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+    }
 
 
     switchButtonEnabledState( $registrationFormButton, false );
 
 
+    Foundation.utils.S( '#js-modeSwitcher' ).on( 'click', function( event ) {
+
+        if ( $listForm.is( ':visible' ) ) {
+
+            $listTableBody.fadeOut( 'fast', function( ) {
+
+                $listForm.fadeOut( 'slow', function( ) {
+
+                    $registrationFormFieldset.fadeIn( 'slow' );
+                    switchButtonEnabledState( $registrationFormButton, true );
+                    $listInput.focus( ).attr( 'required', "required" );
+                } );
+            } );
+
+        } else {
+
+            $registrationFormFieldset.fadeOut( 'slow', function( ) {
+
+                $listForm.fadeIn( 'slow', function( ) {
+
+                    $listTableBody.fadeIn( 'fast', function( ) {
+
+                        if ( $listTableBody.find( 'tr' ).length ) {
+
+                            switchButtonEnabledState( $registrationFormButton, true );
+
+                        } else {
+
+                            switchButtonEnabledState( $registrationFormButton, false );
+                        }
+
+                        $listFormFirstInput.focus( );
+                        $listInput.removeAttr( 'required' );
+                    } );
+                } );
+            } );
+        }
+
+    } );
+
+
     $registrationForm.submit( function( event ) {
 
-        $listTableBody.find( 'tr' ).each( function( index ) {
-            //$registrationList.push( window.atob( $( this ).data( 'invitation' ) ) );
-            $registrationList.push( $( this ).data( 'invitation' ) );
-        } );
+        if ( $listForm.is( ':visible' ) ) {
 
-        $registrationForm.children( 'input[name=invitation]' ).val( $registrationList.join( ',' ) );
+            $listTableBody.find( 'tr' ).each( function( index ) {
+                registrationList.push( $( this ).data( 'user_info' ) );
+            } );
+
+            $listInput.val( registrationList.join( ', ' ) );
+            revealFormOnSubmitBehavior( $listForm );
+
+        } else {
+
+            if ( ! _validateUsersList( $listInput.val( ) ) ) {
+
+                event.preventDefault( );
+                $registrationFormFieldset.find( '.fieldErrorBox' ).html( MSG_FORM_VALIDATION_ERROR );
+
+            } else {
+
+                revealFormOnSubmitBehavior( $registrationForm );
+            }
+        }
 
     } );
 
@@ -244,15 +356,14 @@ function setMailRegistrationForm( ) {
         event.preventDefault( );
 
         firstname = $listForm.find( 'input[name=firstname]' ).val( ).trim( );
-        lastname = $listForm.find( 'input[name=lastname]' ).val( ).trim( );
+        lastname = $listFormFirstInput.val( ).trim( );
         email = $listForm.find( 'input[name=email]' ).val( ).trim( );
-        invitation = firstname + ' ' + lastname + ' <' + email + '>';
+        mailUserList = firstname + ' ' + lastname + ' <' + email + '>';
         doubleCheck = false;
 
         $listForm.find( 'input' ).val( '' );
 
-        //listTableRowHTML = '<tr class="hide" data-invitation="' + window.btoa( invitation ) + '">';
-        listTableRowHTML = '<tr class="hide" data-invitation="' + invitation + '">';
+        listTableRowHTML = '<tr class="hide" data-user_info="' + mailUserList + '">';
         listTableRowHTML += '<td class="name">' + lastname + '</td><td class="name">' + firstname + '</td><td class="email">' + email + '</td><td>';
         listTableRowHTML += '<a title="Retirer de la liste"><i class="fa fa-minus-circle fa-lg fa-fw no-pad warning"></i></a></td></tr>';
 
@@ -265,7 +376,9 @@ function setMailRegistrationForm( ) {
         } else {
 
             $listTableBody.find( 'tr' ).each( function( ) {
-                if ( $( this ).data( 'invitation' ) === invitation || $( this ).children( 'td.email' ).html( ) === email ) {
+
+                if ( $( this ).data( 'user_info' ) === mailUserList || $( this ).children( 'td.email' ).html( ) === email ) {
+
                     doubleCheck = true;
                     return false;
                 }
@@ -273,7 +386,9 @@ function setMailRegistrationForm( ) {
         }
 
         if ( ! doubleCheck ) {
+
             $( listTableRowHTML ).appendTo( $listTableBody ).show( 'slow' );
+            $listFormFirstInput.focus( );
         }
 
     } );
@@ -289,10 +404,13 @@ function setMailRegistrationForm( ) {
             $( this ).remove( );
 
             if ( ! $listTableBody.find( 'tr' ).length ) {
+
                 $listForm.find( 'div.panel:last-child' ).slideUp( 'slow', function( ) {
                     switchButtonEnabledState( $registrationFormButton, false );
                 } );
             }
+
+            $listFormFirstInput.focus( );
         } );
 
     } );
@@ -328,7 +446,7 @@ function enableSubmitButtonIfCheckboxTicked( formID ) {
     var $formControls = Foundation.utils.S( '#' + formID ).children( '.formControls' );
     var $button = $formControls.children( '[type=submit]' );
 
-    $formControls.children( '[type=checkbox]' ).on( 'click', function( event ) {
+    $formControls.find( '[type=checkbox]' ).on( 'click', function( event ) {
 
         if ( $( this ).prop( 'checked' ) ) {
             switchButtonEnabledState( $button, true );

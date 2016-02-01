@@ -18,13 +18,6 @@
                         icones python:{'AutoEvaluation': 'icone_refresh', 'Examen': 'icone_examen'};
                         pageWIMS request/pageWIMS | string:user_log;">
 
-<style type="text/css">
-    /*
-      Coloration d'une cellule de tableau avec la classe "warning" (utile pour attirer l'attention sur une case)
-        td.warning { color: $warning-color; }
-    */
-    td.warning { color: #f08a24; }
-</style>
 <tal:comment replace="nothing"><!--seul un enseignant ou l'etudiant demandé peut voir la page --></tal:comment>
 <tal:condition condition="not:anonymous"
                define="personnel python:context.isPersonnel(user);
@@ -36,6 +29,15 @@
                        i18n:translate="">Revoir les examens</tal:condition>
         <a class="close-reveal-modal"></a>
     </h2>
+
+    <style type="text/css">
+        /*
+          Coloration d'une cellule de tableau avec la classe "warning" (utile pour attirer l'attention sur une case)
+            td.warning { color: $warning-color; }
+        */
+        td.warning { color: #f08a24; }
+    </style>
+
     <tal:condition condition="python: (personnel or quser==user) and quser != None">
     <div id="js-list-log"
          tal:define="user_logs python:context.getUserLog(quser=quser, authUser=user, isProf=personnel);

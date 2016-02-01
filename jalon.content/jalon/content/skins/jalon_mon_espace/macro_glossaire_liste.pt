@@ -217,9 +217,10 @@
 
                 <tal:condition condition="is_ajax">
 
-                    <!-- reflow à surveiller… -->
                     <script charset="UTF-8"
                             tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+                    <script charset="UTF-8"
+                            tal:content="structure string:$$(document).foundation('dropdown', 'reflow')" />
 
                     <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
                     <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />

@@ -9,7 +9,8 @@
 dl.typeElement > dd:before,
 #course_plan-plan span:before,
 #course_plan-plan .type_TexteLibre .typeElementTitre ul li:before,
-.texte_icone:before {
+.texte_icone:before,
+.accordion-navigation>a:after {
     display: inline-block;
     font-family: FontAwesome;
     font-style: normal;
@@ -18,6 +19,19 @@ dl.typeElement > dd:before,
     //vertical-align: top;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+.accordion-navigation {
+    > a:after {
+        content: $fa-var-caret-left;
+        padding-left: 5px;
+        float: right;
+        font-size: 20px;
+    }
+
+    &.active > a:after {
+        content: $fa-var-caret-down;
+    }
 }
 
 dl.typeElement > dd:before,
@@ -64,6 +78,7 @@ dl.typeElement > dd,
     &.type_File:before              { content: $fa-var-file-o; }
     //&.type_image:before             { content: $fa-var-file-image-o; }
     &.type_Image:before             { content: $fa-var-file-image-o; }
+    &.type_Video:before             { content: $fa-var-youtube-play; }
     //&.type_externe:before           { content: $fa-var-external-link; }
     &.type_Lienweb:before           { content: $fa-var-external-link; }
     //&.type_lecteur:before           { content: $fa-var-file-video-o; }

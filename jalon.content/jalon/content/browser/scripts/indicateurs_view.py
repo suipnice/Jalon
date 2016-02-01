@@ -59,8 +59,10 @@ class IndicateursView(BrowserView):
         element_by_type_dict = {"Titre":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "TexteLibre":     {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Fichiers":       {"elements_count": 0, "elements_list": [], "elements_dict": {}},
-                                "Webconferences": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "Webconference":  {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Externes":       {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "Video":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
+                                "VOD":            {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Presentations":  {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "BoiteDepot":     {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "AutoEvaluation": {"elements_count": 0, "elements_list": [], "elements_dict": {}},
@@ -75,7 +77,7 @@ class IndicateursView(BrowserView):
             type_element = element_cours_dict[element_id]["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"
@@ -85,7 +87,7 @@ class IndicateursView(BrowserView):
         return element_by_type_dict
 
     def getIndicateursGeneralitesView(self):
-        #LOG.info("----- getIndicateursGeneralitesView -----")
+        LOG.info("----- getIndicateursGeneralitesView -----")
         thead_th_list = [{"data-sort": "public",
                           "th_title":  "les consultations par public",
                           "th_text":   "Public"},
@@ -102,8 +104,10 @@ class IndicateursView(BrowserView):
         nb_element_by_type = {"Titre":          0,
                               "TexteLibre":     0,
                               "Fichiers":       0,
-                              "Webconferences": 0,
+                              "Webconference":  0,
                               "Externes":       0,
+                              "Video":          0,
+                              "VOD":            0,
                               "Presentations":  0,
                               "BoiteDepot":     0,
                               "AutoEvaluation": 0,
@@ -118,16 +122,14 @@ class IndicateursView(BrowserView):
             type_element = element["typeElement"]
             if type_element in ["File", "Image", "Page"]:
                 type_element = "Fichiers"
-            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU"]:
+            if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
             if type_element == "Presentations sonorisees":
                 type_element = "Presentations"
             nb_element_by_type[type_element] += 1
 
         graph = ""
-        requete = self.context.getConsultationByCoursByYearForGraph().all()
-        #if requete:
-        #    graph = self.context.genererGraphIndicateurs(dict(requete))
+        requete = self.context.getConsultationByCoursByUniversityYearForGraph().all()
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -141,13 +143,22 @@ class IndicateursView(BrowserView):
                 pass
             graph = self.context.genererGraphIndicateurs(requete_dict)
 
-        return {"macro":              "indicateurs_generalite",
-                "created":            jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
-                "modified":           jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
-                "thead_th_list":      thead_th_list,
-                "nb_element_by_type": nb_element_by_type,
-                "cours_consultation": self.context.getConsultation(),
-                "graph":              graph}
+        requete2 = self.context.getFrequentationByCoursByUniversityYearForGraph("Etudiant").all()
+        LOG.info(requete2)
+        frequentation_graph = ""
+        if requete2:
+            requete_dict = dict(requete2)
+            frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
+            #LOG.info(frequentation_graph)
+
+        return {"macro":               "indicateurs_generalite",
+                "created":             jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
+                "modified":            jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
+                "thead_th_list":       thead_th_list,
+                "nb_element_by_type":  nb_element_by_type,
+                "cours_consultation":  self.context.getConsultation(),
+                "graph":               graph,
+                "frequentation_graph": frequentation_graph}
 
     def getIndicateursRessourcesView(self):
         #LOG.info("----- getIndicateursRessourcesView -----")
@@ -157,19 +168,19 @@ class IndicateursView(BrowserView):
                     "3": "Externes",
                     "4": "Webconferences"}
         cours_url = self.context.absolute_url()
-        box_list = [{"css_class": "button res-fichiers%s" % (" selected" if box == "1" else ""),
+        box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=1" % cours_url,
                      "icon":      "fa-files-o",
                      "link_text": "Fichiers"},
-                    {"css_class": "button res-connect%s" % (" selected" if box == "2" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "2" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=2" % cours_url,
                      "icon":      "fa-microphone",
                      "link_text": "Présentations sonorisées"},
-                    {"css_class": "button res-liens%s" % (" selected" if box == "3" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "3" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=3" % cours_url,
                      "icon":      "fa-external-link",
                      "link_text": "Ressources externes"},
-                    {"css_class": "button res-connect%s" % (" selected" if box == "4" else ""),
+                    {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=4" % cours_url,
                      "icon":      "fa-headphones",
                      "link_text": "Webconférences"}]
@@ -196,13 +207,13 @@ class IndicateursView(BrowserView):
                                            "second_macro":          "display_all_ressources",
                                            "thead_th_list":         thead_th_list,
                                            "elements_consultation": elements_consultation,
-                                           "box_url":   "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
+                                           "box_url":               "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
         else:
             thead_th_list.insert(0, {"data-sort": "public",
                                      "th_title":  "le type de public",
                                      "th_text":   "Public"})
             graph = ""
-            requete = self.context.getConsultationByElementByCoursByYearForGraph(element_id).all()
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
             #LOG.info(requete)
             if requete:
                 requete_dict = {}
@@ -223,12 +234,85 @@ class IndicateursView(BrowserView):
                                            "thead_th_list":         thead_th_list,
                                            "elements_consultation": self.context.getConsultationByElementByCours(element_id),
                                            "graph":                 graph,
-                                           "box_url":   "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
+                                           "box_url":               "%s/cours_indicateurs_view?onglet=2&box=%s" % (self.context.absolute_url(), box)}
         return indicateurs_ressources_view
 
     def getIndicateursActitivesView(self):
         #LOG.info("----- getIndicateursActitivesView -----")
-        return {"macro": "indicateurs_activites"}
+        box = self.request.get("box", "1")
+        box_dict = {"1": "BoiteDepot",
+                    "2": "AutoEvaluation",
+                    "3": "Examen",
+                    "4": "SalleVirtuelle"}
+        cours_url = self.context.absolute_url()
+        box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=1" % cours_url,
+                     "icon":      "fa-inbox",
+                     "link_text": "Boite de dépôts"},
+                    {"css_class": "button radius%s" % (" selected" if box == "2" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=2" % cours_url,
+                     "icon":      "fa-gamepad",
+                     "link_text": "Auto-évaluation WIMS"},
+                    {"css_class": "button radius%s" % (" selected" if box == "3" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=3" % cours_url,
+                     "icon":      "fa-graduation-cap",
+                     "link_text": "Examen WIMS"},
+                    {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=3&box=4" % cours_url,
+                     "icon":      "fa-globe",
+                     "link_text": "Salle virtuelle"}]
+        element_id = self.request.get("element_id", None)
+        thead_th_list = [{"data-sort": "nb_cons_month_before",
+                          "th_title":  "les consultations du mois précédent",
+                          "th_text":   "Mois précédent"},
+                         {"data-sort": "nb_cons_month",
+                          "th_title":  "les consultations du mois courant",
+                          "th_text":   "Mois courant"},
+                         {"data-sort": "nb_cons_year",
+                          "th_title":  "les consultations sur l'année en cours",
+                          "th_text":   "Année en cours"}]
+        if not element_id:
+            thead_th_list.insert(0, {"data-sort": "title",
+                                     "th_title":  "le titre du fichiers",
+                                     "th_text":   "Titre"})
+            elements_consultation = []
+            elements_cours = self.getElementsCoursByType()
+            if box_dict[box] in elements_cours:
+                elements_consultation = self.context.getConsultationElementsByCours(elements_cours[box_dict[box]]["elements_list"], elements_cours[box_dict[box]]["elements_dict"])
+            indicateurs_activites_view = {"macro":                 "indicateurs_ressources",
+                                          "box_list":              box_list,
+                                          "second_macro":          "display_all_ressources",
+                                          "thead_th_list":         thead_th_list,
+                                          "elements_consultation": elements_consultation,
+                                          "box_url":               "%s/cours_indicateurs_view?onglet=3&box=%s" % (self.context.absolute_url(), box)}
+        else:
+            thead_th_list.insert(0, {"data-sort": "public",
+                                     "th_title":  "le type de public",
+                                     "th_text":   "Public"})
+            graph = ""
+            requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
+            #LOG.info(requete)
+            if requete:
+                requete_dict = {}
+                for ligne in requete:
+                    try:
+                        requete_dict[ligne[0]].append({"consultations": ligne[1], "public": ligne[2]})
+                    except:
+                        requete_dict[ligne[0]] = [{"consultations": ligne[1], "public": ligne[2]}]
+                try:
+                    requete_dict[ligne[0]].sort(lambda x, y: cmp(x["public"], y["public"]))
+                except:
+                    pass
+                graph = self.context.genererGraphIndicateurs(requete_dict)
+            indicateurs_activites_view = {"macro":                "indicateurs_activites",
+                                          "element_title":         self.context.getElementCours(element_id)["titreElement"],
+                                          "box_list":              box_list,
+                                          "second_macro":          "display_ressource",
+                                          "thead_th_list":         thead_th_list,
+                                          "elements_consultation": self.context.getConsultationByElementByCours(element_id),
+                                          "graph":                 graph,
+                                          "box_url":               "%s/cours_indicateurs_view?onglet=3&box=%s" % (self.context.absolute_url(), box)}
+        return indicateurs_activites_view
 
     def __call__(self):
         #LOG.info("----- Call -----")

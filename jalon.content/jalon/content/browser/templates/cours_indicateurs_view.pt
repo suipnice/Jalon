@@ -10,7 +10,21 @@
 
 <metal:core fill-slot="content"
             tal:define="mode_etudiant request/mode_etudiant | nothing;
-                        personnel python:context.isPersonnel(user, mode_etudiant);">
+                        personnel python:context.isPersonnel(user, mode_etudiant);
+                        pageCours string:indicateurs">
+
+    <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire', 'Personnel'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/serial.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/themes/light.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.min.js"></script>
+        <link rel="stylesheet"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
+    </tal:isManager>
 
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         encart d'affichage du fil d'ariane

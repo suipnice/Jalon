@@ -163,6 +163,8 @@ class JalonRessourceExterne(ATDocumentBase):
                                                "urlbiblio":   "Urlbiblio"},
                 "Catalogue BU":               {"description": "Description"},
                 "Video":                      {"title":       "Title",
+                                               "description": "Description"},
+                "VOD":                        {"title":       "Title",
                                                "description": "Description"}}
         return dico[self.getTypeRessourceExterne()]
 
@@ -174,7 +176,8 @@ class JalonRessourceExterne(ATDocumentBase):
                 "Lecteur exportable":         "lecteur",
                 "Ressource bibliographique":  "reference",
                 "Catalogue BU":               "cataloguebu",
-                "Video":                      "video"}
+                "Video":                      "video",
+                "VOD":                        "vod"}
         return dico[self.getTypeRessourceExterne()]
 
     def getRessourceCatalogueBU(self):

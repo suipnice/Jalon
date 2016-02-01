@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="formHelp texte_icone icone_information">Tapez directement votre texte, en entourant chaque "trou" avec des doubles points d'interrogation : "??".
-                Les balises HTML sont admises.</div>
+                Les balises HTML sont admises.<br /> Le texte peut contenir jusqu'à 20 « trous ».</div>
                 <textarea name="donnees" id="donnees"
                           rows="15" tal:content="QCM_parsed/donnees"
                           required="required"

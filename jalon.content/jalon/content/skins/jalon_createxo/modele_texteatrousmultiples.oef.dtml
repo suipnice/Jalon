@@ -1,6 +1,8 @@
 type=datalist
 modele_jalon=Texte_a_Trou_M
-textarea='data'
+textarea="data, feedback_general"
+asis="data feedback_general"
+
 :Questions mixtes incorporées dans un texte aléatoire.
 <p>Cet exercice présente des textes où des champs à réponse sont insérés.</p>
 <p>Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.<br/>
@@ -10,10 +12,15 @@ Une syntaxe facile permet d'incorporer les champs de choix multiples et les rép
 Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
 (Ce sont les lignes qui commencent par un ':'.)
 Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
 :%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
 :\title{$$title$$}
 :\author{$$author$$}
 :\email{$$email$$}
+:\credits{$$credits$$}
+:\hint{$$hint$$}
+:\help{$$help$$}
+
 :Données principales.
 <p>Tapez plusieurs textes à trous, en les séparant par un point-virgule (;).<br/>
 Attention : un paragraphe contenant un point-virgule sera scindé en 2 textes. <br/>
@@ -22,21 +29,29 @@ La question est un choix multiple s'il contient plusieurs objets séparés par d
 Dans ce dernier cas, l'analyse se fait par symtext si la réponse donnée contient un trait vertical '|'.</p><p>
 On peut poser plusieurs questions dans une même phrase (jusqu'à 20).<br/>
 Si un choix multiple accepte plusieurs réponses correctes possibles, mettez toutes les bonnes réponses (synonymes) séparées par un trait vertical '|'.</p>
-$embraced_randitem 
-\text{data=$$data$$}
+$embraced_randitem
+\text{data=asis($$data$$)}
+
 :Texte affiché avant la question. Balises html admises. Peut être vide.
 $embraced_randitem
 \text{pre=$$pre$$}
+
 :Texte affiché après la question. Balises html admises. Peut être vide.
  $embraced_randitem
 \text{post=$$post$$}
-:Feedback General
-Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
-\text{feedback_general=$$feedback_general$$}
+
 :Type d'analyse des réponses libres.
 Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
 \text{type_rep=$$type_rep$$}
+
+:Feedback General
+Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
+\text{feedback_general=asis($$feedback_general$$)}
+
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+\if{\feedback_general notsametext }{
+  \text{feedback_general=<div class='feedback'>\feedback_general</div>}
+}
 \precision{10000}
 \text{data=wims(singlespace \data)}
 \text{data=wims(nonempty rows \data)}
@@ -72,7 +87,7 @@ Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les applic
    \text{types=\types[]\type_rep,}
    \text{options=| isin \f?\options[]symtext}  }{
    \integer{c=max(5,\c+2)}
-   \text{lengths=\lengths\c,} 
+   \text{lengths=\lengths\c,}
    \text{f1=wims(nospace \f)}
    \text{test=wims(text select -0123456789 in \f)}
    \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}  } }
@@ -81,14 +96,25 @@ Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les applic
 \text{post=wims(embraced randitem \post)}
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
 \steps{\qlist}
+
 :%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
 ::Vous n'avez pas besoin de modifier ceci en général.
 \statement{
-<p>\pre</p>
-\data[1;]
-\for{k=1 to \qs}{
-\embed{r \k,\lengths[\k]} \data[2*\k+1;]}
-<p>\post</p>}
+    <p class="pre_tat">\pre</p>
+    \data[1;]
+    \for{k=1 to \qs}{
+        \if{\types[\k] notsametext menu}{
+            \embed{r \k,\lengths[\k]
+                autocomplete='off'}
+        }
+        {
+            \embed{r \k,\lengths[\k]}
+        }
+        \data[2*\k+1;]
+    }
+    <p class="post_tat">\post</p>
+}
+
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
 \answer{Champ 1}{\good[1]\field[1;]}{type=\types[1]}{option=\options[1]}
 \answer{Champ 2}{\good[2]\field[2;]}{type=\types[2]}{option=\options[2]}
@@ -110,4 +136,5 @@ Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les applic
 \answer{Champ 18}{\good[18]\field[18;]}{type=\types[18]}{option=\options[18]}
 \answer{Champ 19}{\good[19]\field[19;]}{type=\types[19]}{option=\options[19]}
 \answer{Champ 20}{\good[20]\field[20;]}{type=\types[20]}{option=\options[20]}
-\feedback{1=1}{<p class='feedback'>\feedback_general</p>}
+
+\feedback{1=1}{\feedback_general}

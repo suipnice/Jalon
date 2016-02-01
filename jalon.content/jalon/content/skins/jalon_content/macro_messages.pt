@@ -138,16 +138,16 @@
 	</div>
 </metal:macro>
 
-<!-- WIMS exam Bad IP detected -->
+<!-- WIMS exam Bad IP detected >
 <metal:macro define-macro="wims_exam_badIP">
   <div id="message" >
-    <div class="failure wims_unavailable">
-      <tal:block i18n:translate="">Impossible d'accéder à cet examen :</tal:block>
+    <h2 class="alert radius"><i class="fa fa-warning"></i><span i18n:translate="">Impossible d'accéder à cet examen </span>:</h2>
+    <div class="alert-box alert radius wims_unavailable">
         <p i18n:translate="">Vous tentez de vous connecter à un examen commencé sur une machine différente. Veuillez retourner sur la machine où vous avez commencé votre examen pour pouvoir le finir.</p>
         <p i18n:translate="">Évitez les connexions sans fil pour vous connecter à un examen : ces dernières ne vous garantissent pas une stabilité suffisante.</p>
     </div>
   </div>
-</metal:macro>
+</metal:macro-->
 
 <!-- wims limit reached  -->
 <metal:macro define-macro="wims_limit_reached">
@@ -171,8 +171,8 @@
 	</div>
 </metal:macro>
 
-<!-- must_be_connected - information d'inaccessibilité d'une activité 
-    En entrée : 
+<!-- must_be_connected - information d'inaccessibilité d'une activité
+    En entrée :
     page url de la page courante, avec parametres eventuels;
 -->
 <metal:macro define-macro="must_be_connected">
