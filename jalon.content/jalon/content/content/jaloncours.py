@@ -567,7 +567,7 @@ class JalonCours(ATFolder):
                        "JalonTermeGlossaire":     "Glossaire",
                        "JalonExerciceWims":       "Wims",
                        "Presentationssonorisees": "Sonorisation",
-                       "webconferences":          "Webconference"}
+                       "Webconferences":          "Webconference"}
         if repertoire:
             home = getattr(getattr(portal.Members, authMember), folder_dict[repertoire])
         else:
