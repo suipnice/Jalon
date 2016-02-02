@@ -364,7 +364,7 @@ class JalonFolder(ATFolder):
 
         actions_list = [{"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_favorite",
                          "action_icon": "fa fa-star fa-fw",
-                         "action_name": "Ajouter en favoris"},
+                         "action_name": "Ajouter aux favoris"},
                         {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=duplicate_course",
                          "action_icon": "fa fa-code-fork fa-fw",
                          "action_name": "Dupliquer"},
@@ -377,7 +377,7 @@ class JalonFolder(ATFolder):
                         {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_course",
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer ce cours"},
-                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=archive_course",
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_archive",
                          "action_icon": "fa fa-folder fa-fw",
                          "action_name": "Archiver ce cours"}]
 
@@ -388,8 +388,8 @@ class JalonFolder(ATFolder):
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
             cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
-            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=favori",
-                               "action_icon": "fa fa-star-o fa-fw",
+            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
+                               "action_icon": "fa fa-star-o fa-fw warning",
                                "action_name": "Retirer des favoris"}
         if onglet == "2":
             cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
@@ -398,7 +398,7 @@ class JalonFolder(ATFolder):
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
         if onglet == "4":
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
-            actions_list[-1] = {"action_url":  "/folder_form?macro=macro_mescours&amp;formulaire=archive",
+            actions_list[-1] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
                                 "action_icon": "fa fa-folder-open fa-fw",
                                 "action_name": "Désarchiver ce cours"}
         authors_dict = {}

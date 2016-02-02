@@ -1635,13 +1635,13 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
         return None
 
-    def setFavoris(self, authMember):
-        #self.plone_log("setFavoris")
+    def modifyFavorite(self, user_id):
+        #self.plone_log("----- modifyFavorite -----")
         subjects = list(self.Subject())
-        if not authMember in subjects:
-            subjects.append(authMember)
+        if not user_id in subjects:
+            subjects.append(user_id)
         else:
-            subjects.remove(authMember)
+            subjects.remove(user_id)
         self.setSubject(tuple(subjects))
         self.setProperties({"DateDerniereModif": DateTime()})
 

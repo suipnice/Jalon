@@ -20,7 +20,7 @@
     </h2>
 
     <form id="js-courseCreator" method="POST"
-          tal:attributes="action python:context.absolute_url()+'/'+template.id;
+          tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-success_msg_pre string:Le cours;
                           data-success_msg_post string:a été créé."
           i18n:attributes="data-success_msg_pre; data-success_msg_post">
@@ -75,14 +75,48 @@
         Ajout d'un cours en favori
 -->
 <metal:macro define-macro="add_favorite">
-
+    <h2>
+        <tal:block i18n:translate="">Ajouter aux favoris</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/modify_favorite">
+        <div class="panel callout radius">
+            Vous pouvez ajouter n'importe quel cours à vos favoris. Ajouter un cours archivé en favori le retira des archives.
+        </div>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-star"></i>
+                <tal:block i18n:translate="">Ajouter aux favoris</tal:block>
+            </button>
+        </div>
+    </form>
 </metal:macro>
 
 <!--
         Suppression d'un cours en favori
 -->
 <metal:macro define-macro="remove_favorite">
-
+    <h2>
+        <tal:block i18n:translate="">Retirer des favoris</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/modify_favorite">
+        <div class="panel warning radius">
+            Retirer un cours des favoris le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
+        </div>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-star-o"></i>
+                <tal:block i18n:translate="">Retirer des favoris</tal:block>
+            </button>
+        </div>
+    </form>
 </metal:macro>
 
 <!--
