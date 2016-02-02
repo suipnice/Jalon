@@ -101,7 +101,7 @@
 
     <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
-    <main role="main" class="row" aria-labelledby="page_title">
+    <main class="row" role="main" aria-labelledby="page_title">
 
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
 
