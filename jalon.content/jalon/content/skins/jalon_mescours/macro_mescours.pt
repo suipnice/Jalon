@@ -65,6 +65,7 @@
                     <a tal:attributes="class tab/css_class;
                                        href tab/tab_link"
                        i18n:translate="">
+                        <i tal:attributes="class tab/tab_icon"></i>
                         <tal:block replace="tab/tab_name"
                                    i18n:translate=""/>
                     </a>
