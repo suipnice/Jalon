@@ -323,7 +323,7 @@ class JalonFolder(ATFolder):
         folder_link = self.absolute_url()
         is_manager = user.has_role("Manager")
         actions_list = [{"css_class":   "button create expand",
-                         "action_link": "%s/folder_form?macro=macro_mescours&amp;formulaire=ajout-cours" % folder_link,
+                         "action_link": "%s/folder_form?macro=macro_mescours_actions&amp;formulaire=add_course" % folder_link,
                          "action_icon": "fa fa-plus-circle",
                          "action_name": "Créer un cours"},
                         {"css_class":   "button",
