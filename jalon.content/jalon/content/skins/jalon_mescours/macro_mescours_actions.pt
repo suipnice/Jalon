@@ -229,9 +229,120 @@
 
 </metal:macro>
 
-<!--
+<!----------------------------------------------------------------
+        Télécharger les notes de tous les examens WIMS d'un cours
+------------------------------------------------------------------>
+<metal:macro define-macro="get_wims_scores"
+             tal:define="listeClasses context/getListeClasses;
+                         personnel python:context.isPersonnel(user);
+                         user_ID user/getId;
+                         isAuteurs python:context.isAuteurs(user_ID);
+                         isAuteur python:context.isAuteur(user_ID);">
+
+    <h2>
+        <tal:block i18n:translate="">Télécharger les notes des examens WIMS du cours</tal:block>
+        « <tal:block replace="python:context.aq_parent.getShortText(context.Title())"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+<tal:isPersonnel condition="personnel">
+
+    <tal:isClasses condition="listeClasses">
+        <tal:define define="has_classes python:user_ID in listeClasses[0]">
+        <tal:can_delete condition="python:isAuteur or has_classes">
+
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/getscores_wims">
+
+        <span i18n:translate="">Télécharger les notes des examens créés par :</span>
+        <div class="panel radius">
+            <ul tal:repeat="infos_classe listeClasses">
+                <!--li>
+                    <input type="radio" name="utilisateur" id="utilisateur_All" value="All"/>
+                    <label for="utilisateur_All"><i class="fa fa-users fa-fw"></i>Tous les auteurs</label>
+                </li-->
+                <tal:repeat repeat="auteur infos_classe">
+                    <li>
+                        <input type="radio" name="utilisateur"
+                               tal:attributes="value auteur;
+                                               id string:utilisateur_${auteur};
+                                               checked python:context.test(auteur==user_ID, 'checked', '');"/>
+
+                        <label tal:attributes="for string:utilisateur_${auteur}">
+                            <i class="fa fa-user fa-fw"></i><span tal:content="python:context.getInfosMembre(auteur)['fullname']"/>
+                            <span tal:condition="python:auteur==user_ID">(moi)</span>
+                        </label>
+                    </li>
+                </tal:repeat>
+            </ul>
+        </div>
+        <!--input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
+        <input type="hidden" name="onglet" tal:attributes="value request/onglet | string:2" /-->
+
+        <div class="formControls">
+
+            <button class="button small" type="submit">
+                <i class="fa fa-download"></i>
+                <tal:block i18n:translate="">Télécharger</tal:block>
+            </button>
+
+        </div>
+
+        <div class="panel callout radius hide">
+            <i class="fa fa-refresh fa-spin"></i>
+            <tal:block i18n:translate="">Merci de patienter. Cette opération peut prendre quelques minutes…</tal:block>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:enableSubmitButtonIfCheckboxTicked('js-supprActWIMS-form')" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:displayMessageOnSubmit('js-supprActWIMS-form')" />
+
+        </tal:can_delete>
+
+        <tal:cannot_delete condition="python:not(isAuteur or has_classes)">
+
+    <div class="panel alert radius"
+         tal:define="baseAnnuaire context/getBaseAnnuaire">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        Vous n'êtes pas l'auteur de ce cours et vous ne pouvez pas supprimer les activités WIMS réalisées par les co-auteurs. Contactez l'auteur de ce cours
+        (<a tal:define="auteurPrincipal context/getAuteur"
+            tal:attributes="href python:context.getFicheAnnuaire(auteurPrincipal, baseAnnuaire)" target="_blank"
+            tal:content="auteurPrincipal/fullname" />)
+        pour lui demander de le faire.
+    </div>
+
+        </tal:cannot_delete>
+        </tal:define>
+    </tal:isClasses>
+
+    <div class="panel warning radius"
+         tal:condition="not:listeClasses">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à contacter</tal:block>
+        <a href="mailto:pi@unice.fr?subject=[Jalon] Suppression d'activité WIMS" i18n:translate="">l'administrateur</a>
+        <tal:block i18n:translate="">si vous pensez que ce n'est pas le cas.</tal:block>
+    </div>
+
+</tal:isPersonnel>
+
+<tal:isNotPersonnel condition="not:personnel">
+
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
+    </div>
+
+</tal:isNotPersonnel>
+
+</metal:macro>
+
+<!-----------------------------------------------------------
         Suppression de toutes les activités WIMS d'un cours
--->
+------------------------------------------------------------->
 <metal:macro define-macro="delete_wims_activity"
              tal:define="listeClasses context/getListeClasses;
                          personnel python:context.isPersonnel(user);
@@ -261,32 +372,32 @@
 
         <div class="panel radius">
             <span i18n:translate="">Supprimer toutes les activités Wims créées par :</span>
-                <ul tal:repeat="infos_classe listeClasses">
-                    <li tal:attributes="class python:context.test(isAuteur, '', 'disabled')">
-                        <input type="radio" name="utilisateur" id="utilisateur_All" value="All"
-                               tal:attributes="disabled python:context.test(isAuteur, '', 'disabled')"/>
-                        <label for="utilisateur_All"><i class="fa fa-users fa-fw"></i>Tous les auteurs</label>
-                        <div class="formHelp texte_icone icone_information"
-                             style="margin-left:4.5em;"
-                             tal:condition="isAuteur">Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.</div>
-                    </li>
-                    <tal:repeat repeat="auteur infos_classe">
-                        <li tal:attributes="class python:context.test(isAuteur or auteur==user_ID, '', 'disabled')">
-                            <input type="radio" name="utilisateur"
-                                   tal:attributes="value auteur;
-                                                   id string:utilisateur_${auteur};
-                                                   checked python:context.test(auteur==user_ID, 'checked', '');
-                                                   disabled python:context.test(isAuteur or auteur==user_ID, '', 'disabled')"/>
+            <ul tal:repeat="infos_classe listeClasses">
+                <li tal:attributes="class python:context.test(isAuteur, '', 'disabled')">
+                    <input type="radio" name="utilisateur" id="utilisateur_All" value="All"
+                           tal:attributes="disabled python:context.test(isAuteur, '', 'disabled')"/>
+                    <label for="utilisateur_All"><i class="fa fa-users fa-fw"></i>Tous les auteurs</label>
+                    <div class="formHelp texte_icone icone_information"
+                         style="margin-left:4.5em;"
+                         tal:condition="isAuteur">Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.</div>
+                </li>
+                <tal:repeat repeat="auteur infos_classe">
+                    <li tal:attributes="class python:context.test(isAuteur or auteur==user_ID, '', 'disabled')">
+                        <input type="radio" name="utilisateur"
+                               tal:attributes="value auteur;
+                                               id string:utilisateur_${auteur};
+                                               checked python:context.test(auteur==user_ID, 'checked', '');
+                                               disabled python:context.test(isAuteur or auteur==user_ID, '', 'disabled')"/>
 
-                            <label tal:attributes="for string:utilisateur_${auteur}">
-                                <i class="fa fa-user fa-fw"></i><span tal:content="python:context.getInfosMembre(auteur)['fullname']"/>
-                                <span tal:condition="python:auteur==user_ID">(moi)</span>
-                            </label>
-                        </li>
-                    </tal:repeat>
-                </ul>
-                <div class="texte_icone icone_information"
-                     tal:condition="not:isAuteur">Seul l'auteur du cours peut supprimer les activités de ses coauteurs.</div>
+                        <label tal:attributes="for string:utilisateur_${auteur}">
+                            <i class="fa fa-user fa-fw"></i><span tal:content="python:context.getInfosMembre(auteur)['fullname']"/>
+                            <span tal:condition="python:auteur==user_ID">(moi)</span>
+                        </label>
+                    </li>
+                </tal:repeat>
+            </ul>
+            <div class="texte_icone icone_information"
+                 tal:condition="not:isAuteur">Seul l'auteur du cours peut supprimer les activités de ses coauteurs.</div>
         </div>
 
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
