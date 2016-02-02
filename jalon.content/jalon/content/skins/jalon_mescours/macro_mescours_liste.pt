@@ -12,17 +12,15 @@
 
 <metal:macro define-macro="mescours_liste">
 
-<tal:define define="onglet onglet | string:2;
-                    folderContents python:context.getListeCoursEns(onglet, user);">
+<tal:define define="folderContents python:context.getListeCoursEns(onglet, user);">
 
     <div class="panel callout radius"
-         tal:condition="not:folderContents">
+         tal:condition="not:folderContents/is_courses_list">
         <i class="fa fa-info-circle no-pad"></i>
-        <strong i18n:translate="">Vous n'avez pas encore de cours dans Jalon.</strong><br />
-        <tal:block i18n:translate="">Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.</tal:block>
+        <tal:replace replace="folderContents/message"/>
     </div>
 
-<tal:condition condition="folderContents">
+<tal:condition condition="folderContents/is_courses_list">
     <table summary="Liste des cours de la catégorie">
         <thead>
             <tr>
@@ -79,7 +77,7 @@
         </thead>
         <tfoot></tfoot>
         <tbody class="list">
-            <tr tal:repeat="cours folderContents">
+            <tr tal:repeat="cours folderContents/courses_list">
                 <td class="title">
                     <span class="hide" tal:content="cours/title" />
                     <a title="Ouvrir le cours"

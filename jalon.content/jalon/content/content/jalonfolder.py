@@ -449,6 +449,15 @@ class JalonFolder(ATFolder):
             actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
                                 "action_icon": "fa fa-folder-open fa-fw warning",
                                 "action_name": "Désarchiver ce cours"}
+
+        messages_dict = {"1": "Vous n'avez aucun cours en favoris.",
+                         "2": "Vous n'avez pas encore de cours dans Jalon. Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.",
+                         "3": "Vous n'êtes co-auteur d'aucun cours.",
+                         "4": "Vous n'êtes lecteur d'aucun cours.",
+                         "5": "Vous n'avez aucun cours en archives."}
+        if not courses_list:
+            return {"is_courses_list": False,
+                    "message": messages_dict[onglet]}
         authors_dict = {}
         for cours_brain in courses_list:
             if not cours_brain.getId in courses_ids_list:
@@ -458,7 +467,8 @@ class JalonFolder(ATFolder):
                 else:
                     courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 courses_ids_list.append(cours_brain.getId)
-        return list(courses_list_filter)
+        return {"is_courses_list": True,
+                "courses_list":    list(courses_list_filter)}
 
     def getInfosApogee(self, code, type):
         portal = self.portal_url.getPortalObject()

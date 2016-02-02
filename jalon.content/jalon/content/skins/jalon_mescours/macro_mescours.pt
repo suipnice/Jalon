@@ -71,9 +71,9 @@
                 </li>
             </ul>
             <div id="js-update_target">
-        <metal:macro use-macro="context/macro_mescours_liste/macros/mescours_liste">
-            Macro d'affichage de la liste des cours
-        </metal:macro>
+                <metal:macro use-macro="context/macro_mescours_liste/macros/mescours_liste">
+                    Macro d'affichage de la liste des cours
+                </metal:macro>
             </div>
         </section>
     </main>
