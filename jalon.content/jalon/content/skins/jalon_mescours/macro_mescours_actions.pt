@@ -381,7 +381,7 @@
                tal:attributes="value user/getId"/>
         <div class="formControls">
             <button type="submit" class="button small">
-                <i class="fa fa-star"></i>
+                <i class="fa fa-folder"></i>
                 <tal:block i18n:translate="">Archiver ce cours</tal:block>
             </button>
         </div>
@@ -405,7 +405,7 @@
                tal:attributes="value user/getId"/>
         <div class="formControls">
             <button type="submit" class="button small warning">
-                <i class="fa fa-star-o"></i>
+                <i class="fa fa-folder-open"></i>
                 <tal:block i18n:translate="">Désarchiver ce cours</tal:block>
             </button>
         </div>
