@@ -435,8 +435,14 @@ class JalonFolder(ATFolder):
             courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
             courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            del actions_list[1]
+            del actions_list[-1]
         if onglet == "4":
             courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[-1]
         if onglet == "5":
             filtre["getArchive"] = member_id
             courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
