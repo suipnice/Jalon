@@ -398,14 +398,20 @@ class JalonFolder(ATFolder):
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
         if onglet == "4":
             cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
-            actions_list[-1] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
-                                "action_icon": "fa fa-folder-open fa-fw",
+        if onglet == "5":
+            filtre["getArchive"] = member_id
+            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
+            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
+            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
+                                "action_icon": "fa fa-folder-open fa-fw warning",
                                 "action_name": "Désarchiver ce cours"}
         authors_dict = {}
         for cours_brain in cours_list:
             if not cours_brain.getId in cours_ids_list:
-                if onglet != "1":
-                    if not member_id in cours_brain.Subject:
+                if not onglet in ["1", "5"]:
+                    if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
                         cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 else:
                     cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))

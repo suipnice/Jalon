@@ -395,7 +395,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <form method="POST"
-          tal:attributes="action string:${context/absolute_url}/modify_favorite">
+          tal:attributes="action string:${context/absolute_url}/modify_archive">
         <div class="panel warning radius">
             Désarchiver un cours des favoris le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
         </div>
