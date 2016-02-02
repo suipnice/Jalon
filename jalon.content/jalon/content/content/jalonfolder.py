@@ -1038,12 +1038,19 @@ class JalonFolder(ATFolder):
                 classe_id = dico[auteur]
                 dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
-                rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonfolder.py/dupliquerCours", "message": "parametres de la requete : %s" % dico_wims})
+                rep_wims = self.wims("verifierRetourWims",
+                                     {"rep": rep_wims,
+                                      "fonction": "jalonfolder.py/dupliquerCours",
+                                      "message":  "parametres de la requete : %s\ncours d'origine : %s\nduplicata : %s\nauteur : %s\n" % (dico_wims, idcours, idobj, auteur)})
                 if rep_wims["status"] == "OK":
                     #LOG.info('rep_wims["status"] : %s' % rep_wims["status"])
                     new_listeClasses[index][auteur] = rep_wims["new_class"]
                 else:
-                    message = _(u"Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de contacter votre administrateur svp.")
+                    portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
+                    admin_link = portal_jalon_properties.getLienContact()
+                    site_title = self.getInfosConnexion()['site']
+                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (admin_link, site_title, idcours, idobj)
+                    message = _(u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
                     self.plone_utils.addPortalMessage(message, type='error')
         #LOG.info('new_listeClasses : %s' % new_listeClasses)
 
