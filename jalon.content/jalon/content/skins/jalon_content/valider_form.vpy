@@ -26,7 +26,7 @@ if "annexe" in form:
 dicoObligatoire = {"ajout-activite":                     ["title"],
                    "ajout-annonce":                      ["title", "description"],
                    "ajout-forum":                        ["title", "description"],
-                   "ajout-cours":                        ["title"],
+                   "add_course":                         ["title"],
                    "ajout-depot":                        ["title", "file_file"],
                    "ajout-competence":                   ["title", "evaluation"],
                    "ajout-externe":                      ["title"],

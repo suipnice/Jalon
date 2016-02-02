@@ -166,7 +166,7 @@
             <input type="hidden" name="manager"
                    tal:attributes="value user/getId" />
             <input type="hidden" name="orig_template"
-                   tal:attributes="value string:${context/aq_parent/aq_parent/absolute_url}/${user/getId}" />
+                   tal:attributes="value string:${context/aq_parent/aq_parent/absolute_url}/${user/getId}?onglet=2" />
         </tal:condition>
 
         <div class="formControls">
@@ -217,6 +217,7 @@
 
         <input type="hidden" name="purger_activites:method" value="Purger" />
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
+        <input type="hidden" name="onglet" tal:attributes="value request/onglet | string:2" />
 
         <div class="formControls">
             <button type="submit" class="button small warning">
@@ -236,7 +237,7 @@
                          personnel python:context.isPersonnel(user);
                          user_ID user/getId;
                          isAuteurs python:context.isAuteurs(user_ID);
-                         isAuteur python:context.isAuteur(user_ID)">
+                         isAuteur python:context.isAuteur(user_ID);">
 
     <h2>
         <tal:block i18n:translate="">Supprimer les activités WIMS du cours</tal:block>
@@ -289,6 +290,7 @@
         </div>
 
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
+        <input type="hidden" name="onglet" tal:attributes="value request/onglet | string:2" />
 
         <div class="panel alert radius">
             <strong i18n:translate=""><i class="fa fa-exclamation-triangle no-pad alert"></i> Attention :</strong>
@@ -443,7 +445,7 @@
                           i18n:attributes="data-success_msg">
 
         <input type="hidden" name="paths:list" tal:attributes="value python:'/'.join(list(context.getPhysicalPath()))"/>
-        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+        <input type="hidden" name="orig_template" tal:attributes="value string:${context/aq_parent/absolute_url}?onglet=2"/>
 
         <input tal:replace="structure context/@@authenticator/authenticator" />
 

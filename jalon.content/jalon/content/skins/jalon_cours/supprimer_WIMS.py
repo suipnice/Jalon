@@ -51,4 +51,4 @@ else:
 if "came_from" in context.REQUEST and context.REQUEST["came_from"] == "cours_plan_view":
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
-    context.REQUEST.RESPONSE.redirect(context.aq_parent.absolute_url())
+    context.REQUEST.RESPONSE.redirect("%s?onglet=%s" % (context.aq_parent.absolute_url(), context.REQUEST["onglet"]))

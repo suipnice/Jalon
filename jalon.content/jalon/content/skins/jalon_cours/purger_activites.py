@@ -43,8 +43,7 @@ else:
     context.envoyerMailErreur({"objet"  : "Unauthorized access to purger_activites",
                                "message": "<p>Suspicion de fraude de l'utilisateur <strong>%s</strong></p><div>%s</div>" % (authMember.getId(), context.REQUEST)})
 
-
-if "came_from" in context.REQUEST and context.REQUEST["came_from"]=="cours_plan_view":
+if "came_from" in context.REQUEST and context.REQUEST["came_from"] == "cours_plan_view":
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
-    context.REQUEST.RESPONSE.redirect(context.aq_parent.absolute_url())
+    context.REQUEST.RESPONSE.redirect("%s?onglet=%s" % (context.aq_parent.absolute_url(), context.REQUEST["onglet"]))
