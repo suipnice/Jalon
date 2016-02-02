@@ -11,4 +11,4 @@
 user_id = context.REQUEST.form["user_id"]
 context.modifyArchive(user_id)
 
-context.REQUEST.RESPONSE.redirect("%s/cours/%s?onglet=5" % (context.portal_url.getPortalObject().absolute_url(), user_id))
+context.REQUEST.RESPONSE.redirect("%s/cours/%s?onglet=2" % (context.portal_url.getPortalObject().absolute_url(), user_id))
