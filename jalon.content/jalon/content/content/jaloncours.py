@@ -213,6 +213,14 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de la dernière Actu du cours"),
                                     description=_(u"Date de la dernière Actu du cours"),)),
+    LinesField("archive",
+               required=False,
+               accessor="getArchive",
+               searchable=False,
+               default=[],
+               widget=LinesWidget(label=_(u"Utilisateur ayant archivé ce cours."),
+                                  description=_(u"Archive(s) du cours."),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
 ))
 
 
@@ -1640,9 +1648,27 @@ class JalonCours(ATFolder):
         subjects = list(self.Subject())
         if not user_id in subjects:
             subjects.append(user_id)
+            archives = list(self.getArchive())
+            if user_id in archives:
+                archives.remove(user_id)
+                self.setArchive(tuple(archives))
         else:
             subjects.remove(user_id)
         self.setSubject(tuple(subjects))
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def modifyArchive(self, user_id):
+        #self.plone_log("----- modifyArchive -----")
+        archives = list(self.getArchive())
+        if not user_id in archives:
+            archives.append(user_id)
+            subjects = list(self.Subject())
+            if user_id in subjects:
+                subjects.remove(user_id)
+                self.setSubject(tuple(subjects))
+        else:
+            archives.remove(user_id)
+        self.setArchive(tuple(archives))
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def setLecture(self, lu, idElement, authMember):

@@ -96,7 +96,7 @@
 </metal:macro>
 
 <!--
-        Suppression d'un cours en favori
+        Retrait d'un cours en favori
 -->
 <metal:macro define-macro="remove_favorite">
     <h2>
@@ -288,19 +288,6 @@
                      tal:condition="not:isAuteur">Seul l'auteur du cours peut supprimer les activités de ses coauteurs.</div>
         </div>
 
-        <tal:comment replace="nothing"><!--
-            <tal:block condition="python:len(listeClasses[0])<=1">
-                <input type="hidden" name="utilisateur" tal:attributes="value user/getId" />
-                <div class="text-center">
-                    <input id="suppr_WIMS"
-                           type="checkbox"
-                           onclick="javacript:EnableDisableButton(this,'js-suppr_act_WIMS');"
-                           /><label for="suppr_WIMS">Je confirme vouloir supprimer toutes mes activités WIMS de ce cours.</label>
-                    <div class="formHelp texte_icone icone_information">Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.</div>
-                </div>
-            </tal:block>
-        --></tal:comment>
-
         <input type="hidden" name="came_from" tal:attributes="value request/came_from | string:mes_cours" />
 
         <div class="panel alert radius">
@@ -375,6 +362,57 @@
 
 </metal:macro>
 
+<!--
+        Ajout d'un cours en archive
+-->
+<metal:macro define-macro="add_archive">
+    <h2>
+        <tal:block i18n:translate="">Archiver ce cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/modify_archive">
+        <div class="panel callout radius">
+            Vous pouvez ajouter n'importe quel cours à vos archives. Ajouter un cours archivé aux favoris le retira des archives.
+        </div>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-star"></i>
+                <tal:block i18n:translate="">Archiver ce cours</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+<!--
+        Retrait d'un cours en archive
+-->
+<metal:macro define-macro="remove_archive">
+    <h2>
+        <tal:block i18n:translate="">Désarchiver ce cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/modify_favorite">
+        <div class="panel warning radius">
+            Désarchiver un cours des favoris le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
+        </div>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-star-o"></i>
+                <tal:block i18n:translate="">Désarchiver ce cours</tal:block>
+            </button>
+        </div>
+    </form>
+</metal:macro>
+
+<!--
+        Suppression d'un cours
+-->
 <metal:macro define-macro="delete_course">
 
 <tal:define define="course_name python:context.getShortText(context.Title(), 80);

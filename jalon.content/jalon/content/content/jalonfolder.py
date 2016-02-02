@@ -374,12 +374,12 @@ class JalonFolder(ATFolder):
                         {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_wims_activity",
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer les activités WIMS"},
-                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_course",
-                         "action_icon": "fa fa-trash-o fa-fw",
-                         "action_name": "Supprimer ce cours"},
                         {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_archive",
                          "action_icon": "fa fa-folder fa-fw",
-                         "action_name": "Archiver ce cours"}]
+                         "action_name": "Archiver ce cours"},
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_course",
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer ce cours"}]
 
         filtre = {"portal_type": "JalonCours"}
         if onglet == "1":
