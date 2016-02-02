@@ -34,24 +34,24 @@
     <metal:macro define-macro="texte_a_trous">
         <div class="texte_a_trous">
             <div>
-              Les questions à poser doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
+              Les questions à poser (les "trous") doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
               Par exemple, en tapant
             </div>
             <div><code class="indicateur">Napoléon Bonaparte est né à <span class="strong">??Ajaccio??</span> et mort sur l'île <span class="strong">??Sainte-Hélène??</span></code>,</div>
             <div>
-              Vous obtiendrez ceci: <br/>
+              Vous obtiendrez ceci :<br/>
               <blockquote>Napoléon Bonaparte est né à <input class="disabled mini"/> et mort sur l'île <input class="disabled mini"/></blockquote>
             </div>
+
             <hr/>
             <div>
               Chaque "trou" peut présenter une liste de choix s'il contient plusieurs éléments séparés par des virgules.<br/>
               La bonne réponse étant alors toujours la première de la liste.
             </div>
-
             <div>
                 Par exemple, en tapant
                 <code class="indicateur">Napoléon Bonaparte est né
-                    à <span class="strong">??Ajaccio,Bastia??</span> et mort sur
+                    à <span class="strong">??Ajaccio, Bastia??</span> et mort sur
                     l'île <span class="strong">??Sainte-Hélène, d'Elbe??</span>
                 </code>, <br />
                 Vous obtiendrez ceci :<br/>
@@ -101,6 +101,14 @@
                             onclick="this.select();"
                             tal:content="QCM_parsed/code_source | string:Enregistrez votre exercice pour afficher son code source."
                             readonly="readonly" />
+                </div>
+                <div class="text-right">
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       class="button small"
+                       tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_wims&amp;formulaire=exporter_exo">
+                         <i class="fa fa-download fa-fw no-pad"></i>
+                         <tal:block i18n:translate="">Exporter</tal:block>
+                    </a>
                 </div>
             </div>
         </dd>
@@ -153,7 +161,7 @@
                         </blockquote>
                         Attention. Ce mode a quelques inconvénients :
                         <ul>
-                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML : 
+                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML :
                                 <ul><li><code>&amp;#123;</code> pour l'accolade ouvrante {</li>
                                 <li><code>&amp;#125;</code> pour l'accolade fermante }</li></ul>
                             </li>
@@ -208,12 +216,12 @@
             <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
             <p i18n:translate="">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
             <p i18n:translate="">N'hésitez-pas à
-                <strong tal:define="admin_email here/email_from_address;
+                <strong tal:define="admin_link here/portal_jalon_properties/getLienContact;
                                     object_title here/Title;
                                     site_title python:here.getInfosConnexion()['site'];
                                     abs_url here/absolute_url;">
                     <a i18n:translate="contact_site_admin"
-                       tal:attributes="href string:mailto:${admin_email}?subject=[${site_title}] Accès non autorisé&amp;body=%0DDécrivez précisément votre souci : %0D%0DURL : ${abs_url}%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
+                       tal:attributes="href string:${admin_link}?subject=[${site_title}] Accès non autorisé&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
                 en décrivant au maximum votre souci, si vous pensez que c'est une erreur.
             </p>
         </div>

@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+
+<tal:define define="pod request/pod;
+                    video python:context.searchElasticsearch('video', pod);
+                    expiration_date python:context.getExpirationDate(pod)">
+    <h2>
+        <tal:replace replace="video/title"/> : Autoriser le streaming
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h4>
+        <strong>Auteur :</strong> <tal:block replace="video/owner_full_name"/>
+    </h4>
+
+    <div class="panel radius"
+         tal:condition="not:video/text"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel radius"
+         tal:content="structure video/text"
+         tal:condition="video/text">
+         Description
+    </div>
+
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/modify_streaming_script">
+
+        <div class="text-center" i18n:translate="">
+            <strong>Date d'expiration des droits de streaming de la vidéo</strong>
+        </div>
+
+        <div id="archetypes-fieldname-expiration_date" class="field">
+
+            <div class="formControls">
+                <input id="datetime-expiration_date" name="datetime-expiration_date" type="datetime"
+                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                       tal:attributes="value expiration_date"/>
+            </div>
+
+        </div>
+
+        <input type="hidden" name="pod" tal:attributes="value request/pod"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:block define="script1 string:setDateTimePicker('datetime-expiration_date');">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer">
+    </script>
+
+</tal:define>
+
+</metal:core>
+
+</body>
+
+</html>

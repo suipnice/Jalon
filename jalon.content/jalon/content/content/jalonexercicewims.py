@@ -108,8 +108,8 @@ class JalonExerciceWims(ATDocumentBase):
                                  "accolade"     : "2",
                                  },
                             "texteatrous":
-                                {"type_rep": "atext",
-                                 "donnees": "Le texte ci-dessous est incomplet. Remplissez les trous.\n\
+                                {"type_rep"     : "atext",
+                                 "donnees"      : "Le texte ci-dessous est incomplet. Remplissez les trous.\n\
 <br/>\nL'Université de Nice fut officiellement instituée par décret du 23 octobre ??1965??.\n\
 Néanmoins, ses racines historiques remontent au XVIIème siècle, avec le fameux ??Collegium jurisconsultorum niciensium, Collegius niciensius??\n\
 crée en ??1639?? par les Princes de Savoie ; il comprenait un important corps de jurisconsultes et sa notoriété dura jusqu'au rattachement de Nice à la France, en ??1860,1870,1850,1840??.\n\
@@ -118,9 +118,9 @@ Au XVIIème siècle, une École de ??Médecine, Couture, Danse, Chimie?? dispens
                                  "credits"         : "",
                                  },
                             "marqueruntexte":
-                                {"minmark": "1",
-                                 "maxmark": "8",
-                                 "data": "{Jack,Jean,Louis,Michel,Pierre} ??et,est?? forain, il \n\
+                                {"minmark"  : "1",
+                                 "maxmark"  : "8",
+                                 "data"     : "{Jack,Jean,Louis,Michel,Pierre} ??et,est?? forain, il \n\
 ??{tien,tiens} ,tient?? ??un,une?? baraque de tir ??a,à?? la noix de coco.\n\
 ??Ont,On?? ??trouvent,trouve?? des ??Baraque,Baraques?? à noix de Coco dans ??tous,toutes?? les foires.\n\
 Les ??,gens?? ??arrive,arrivent??, ??donne,donnent?? des ??,sous??\n\
@@ -146,71 +146,72 @@ Les ??,dunes?? ??son,sont?? des collines de ??,sable?? que le vent ??à,a??\n\
 Les ??grains,graines?? de ??{certain,certaine,certains} ,certaines??\n\
 plantes ??reste,restent?? sous le ??sole,sol?? du désert pendant des années.\n\
 ??{Ils,Elle} ,Elles?? ??ce,se?? ??met,mettent?? ??a,à?? ??{poussées,poussée,poussés} ,pousser?? dès qu'il y a ??une,un?? orage.\n;",
-                                 "pre": "Marquez les fautes d'orthographe dans le texte ci-dessous.",
-                                 "post": "",
-                                 "options": "split"
+                                 "pre"      : "Marquez les fautes d'orthographe dans le texte ci-dessous.",
+                                 "post"     : "",
+                                 "options"  : "split"
                                  },
                             "marquerparpropriete":
-                                {"explain": "Parmi les joueurs de football ci-dessous, marquez ceux qui sont dans l'équipe \prop.",
-                                 "prop": "française, italienne, allemande",
-                                 "data": "Fabien Barthez , francaise\nLilian Thuram , francaise\nClaude Makélélé , francaise\nZinedine Zidane , francaise\nFranck Ribéry , francaise\nThierry Henry , francaise\nDavid Trézéguet , francaise\n\
+                                {"explain"      : "Parmi les joueurs de football ci-dessous, marquez ceux qui sont dans l'équipe \prop.",
+                                 "prop"         : "française, italienne, allemande",
+                                 "data"         : "Fabien Barthez , francaise\nLilian Thuram , francaise\nClaude Makélélé , francaise\nZinedine Zidane , francaise\nFranck Ribéry , francaise\nThierry Henry , francaise\nDavid Trézéguet , francaise\n\
 Gianluigi Buffon , italienne\nMorgan De Sanctis , italienne\nAngelo Peruzzi , italienne\nChristian Abbiati , italienne\nMarco Amelia , italienne\n\
 Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\nPhilipp Lahm , allemande\nArne Friedrich , allemande\n",
-                                 "tot": "12",
-                                 "mingood": "1",
-                                 "minbad": "4",
-                                 "options": "split",
-                                 "presentation": "liste"
+                                 "tot"          : "12",
+                                 "mingood"      : "1",
+                                 "minbad"       : "4",
+                                 "options"      : "split",
+                                 "presentation" : "liste"
                                  },
                             "questiontextuelletolerante":
-                                {"len": "20",
-                                 "data": "l'intensité est : ??ampère??;\nla tension est : ??volt??;\nla résistance est : ??ohm??;\nla capacité d'un condensateur est : ??farad??. Son symbole est : ??F??;\nl'inductance d'un solénoïde est : ??henri??;\nla puissance dissipée sur une composante est : ??watt??;\nla fréquence est : ??hertz??. Son symbole est : ??Hz??;",
-                                 "atype": "atext",
-                                 "include_good": "oui",
-                                 "words": "electricite electrique circuit composante intensite courant tension charge resistor resistance diode transistor condensateur capacite solenoide inductance puissance frequence",
-                                 "pre": "En électricité, l'unité de base pour mesurer ",
-                                 "post": "."
+                                {"len"          : "20",
+                                 "data"         : "l'intensité est : ??ampère??;\nla tension est : ??volt??;\nla résistance est : ??ohm??;\nla capacité d'un condensateur est : ??farad??. Son symbole est : ??F??;\nl'inductance d'un solénoïde est : ??henri??;\nla puissance dissipée sur une composante est : ??watt??;\nla fréquence est : ??hertz??. Son symbole est : ??Hz??;",
+                                 "atype"        : "atext",
+                                 "include_good" : "oui",
+                                 "words"        : "electricite electrique circuit composante intensite courant tension charge resistor resistance diode transistor condensateur capacite solenoide inductance puissance frequence",
+                                 "pre"          : "En électricité, l'unité de base pour mesurer ",
+                                 "post"         : "."
                                  },
                             "taperlemotassocie":
-                                {"size": "20",
-                                 "words": "bambou,bambous\nbijou,bijoux\ncadeau,cadeaux\ncaillou,cailloux\ncheval,chevaux\nchou,choux\nciel,cieux\nclou,clous",
-                                 "type_rep": "atext",
-                                 "explain": "Tapez le pluriel du nom \\name :",
+                                {"size"     : "20",
+                                 "words"    : "bambou,bambous\nbijou,bijoux\ncadeau,cadeaux\ncaillou,cailloux\ncheval,chevaux\nchou,choux\nciel,cieux\nclou,clous",
+                                 "type_rep" : "atext",
+                                 "explain"  : "Tapez le pluriel du nom \\name :",
                                  },
                             "reordonner":
-                                {"tot": "6",
-                                 "size": "80x50",
-                                 "data": "Mercure, Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune",
-                                 "explain": "Mettre les planètes suivantes du système solaire dans le bon ordre, avec la plus proche du Soleil en premier."
+                                {"tot"      : "6",
+                                 "size"     : "80x50",
+                                 "data"     : "Mercure, Vénus, Terre, Mars, Jupiter, Saturne, Uranus, Neptune",
+                                 "explain"  : "Mettre les planètes suivantes du système solaire dans le bon ordre, avec la plus proche du Soleil en premier."
                                  },
                             "correspondance":
-                                {"tot": "6",
-                                 "sizev": "50",
-                                 "sizer": "250",
-                                 "sizel": "250",
+                                {"tot"             : "6",
+                                 "sizev"           : "50",
+                                 "sizer"           : "250",
+                                 "sizel"           : "250",
                                  "feedback_general": "",
-                                 "data": "L'Allemagne, Berlin\nL'Australie, Canberra\nLe Canada, Ottawa\nLa Chine, Beijing\nL'Espagne, Madrid\nLes Etats-Unis, Washington\nLa France, Paris\nLa Grande Bretagne, Londres\nL'Inde, New Delhi\nL'Indonésie, Jakarta\nL'Italie, Rome\nLe Japon, Tokyo\nLa Russie, Moscou",
-                                 "explain": "Établissez la correspondance entre les pays et leurs capitales.",
+                                 "data"            : "L'Allemagne, Berlin\nL'Australie, Canberra\nLe Canada, Ottawa\nLa Chine, Beijing\nL'Espagne, Madrid\nLes Etats-Unis, Washington\nLa France, Paris\nLa Grande Bretagne, Londres\nL'Inde, New Delhi\nL'Indonésie, Jakarta\nL'Italie, Rome\nLe Japon, Tokyo\nLa Russie, Moscou",
+                                 "explain"         : "Établissez la correspondance entre les pays et leurs capitales.",
                                  "accolade"        : "1",
                                  },
                             "classerparpropriete":
-                                {"tot": "8",
-                                 "max1": "4",
-                                 "size1": "120x120",
-                                 "prop": "Oiseau,Mammifère",
-                                 "data": "L'aigle,Oiseau\nL'albatros,Oiseau\nL'alouette,Oiseau\nLe canard,Oiseau\nLe corbeau,Oiseau\nLe faucon,Oiseau\nLe goéland,Oiseau\n\nLe lion,Mammifère\nL'éléphant,Mammifère\nLe chat <img src='http://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Black_hills_cat-tochichi.jpg/120px-Black_hills_cat-tochichi.jpg' alt='photo d'un chat'/>,Mammifère\nLe cheval,Mammifère\nLe chien,Mammifère\nLe cochon,Mammifère\nLa vache,Mammifère",
-                                 "shuffle": "shuffle",
-                                 "explain": "Classez les animaux ci-dessous selon leurs catégories.",
-                                 "post": "",
-                                 "estun": "est un",
-                                 "noclass": "n'appartient à aucune catégorie",
+                                {"tot"      : "8",
+                                 "max1"     : "4",
+                                 "size1"    : "120x120",
+                                 "prop"     : "Oiseau, Mammifère",
+                                 "data"     : "L'aigle, Oiseau\nL'albatros, Oiseau\nL'alouette, Oiseau\nLe canard, Oiseau\nLe corbeau, Oiseau\nLe faucon, Oiseau\nLe goéland, Oiseau\n\
+\nLe lion, Mammifère\nL'éléphant, Mammifère\nLe chat <img src='http://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Black_hills_cat-tochichi.jpg/120px-Black_hills_cat-tochichi.jpg' alt='photo d'un chat'/>, Mammifère\nLe cheval, Mammifère\nLe chien, Mammifère\nLe cochon, Mammifère\nLa vache, Mammifère",
+                                 "shuffle"  : "shuffle",
+                                 "explain"  : "Classez les animaux ci-dessous selon leurs catégories.",
+                                 "post"     : "",
+                                 "estun"    : "est un",
+                                 "noclass"  : "n'appartient à aucune catégorie",
                                  "feedback_general": ""
                                  },
                             "vraifauxmultiples":
-                                {"tot": "4",
-                                 "mintrue": "1",
-                                 "minfalse": "1",
-                                 "datatrue": "À tension égale, le courant passant par un résistor est inversement proportionnel à sa résistance.\nÀ courant égal, la tension sur un résistor est proportionnelle à sa résistance.\nLe courant passant par un résistor est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré de la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré du courant.",
+                                {"tot"      : "4",
+                                 "mintrue"  : "1",
+                                 "minfalse" : "1",
+                                 "datatrue" : "À tension égale, le courant passant par un résistor est inversement proportionnel à sa résistance.\nÀ courant égal, la tension sur un résistor est proportionnelle à sa résistance.\nLe courant passant par un résistor est proportionnel à la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré de la tension appliquée.\nLa puissance dissipée par un résistor est proportionnelle au carré du courant.",
                                  "datafalse": "À tension alternative égale, le courant passant par un condensateur est inversement proportionnel à la capacité.\n\
 À tension alternative égale, le courant passant par un condensateur est indépendant de la capacité.\n\
 À tension alternative égale, le courant passant par un solénoïde est proportionnel à l'inductance.\n\
@@ -224,8 +225,8 @@ La puissance dissipée par un condensateur est proportionnelle {à,au carré de}
 La puissance dissipée par un condensateur est proportionnelle {au,au carré du} courant.\n\
 La puissance dissipée par un solénoïde idéal est proportionnelle {à,au carré de} la tension appliquée.\n\
 La puissance dissipée par un solénoïde idéal est proportionnelle {au,au carré du} courant.",
-                                 "options": "split",
-                                 "explain": "Parmi les affirmations suivantes, cochez les phrases vraies.",
+                                 "options"         : "split",
+                                 "explain"         : "Parmi les affirmations suivantes, cochez les phrases vraies.",
                                  "accolade"        : "1",
                                  "feedback_general": "",
                                  "credits"         : "",
@@ -252,8 +253,8 @@ Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Franci
                                  "feedback_general" : "",
                                  "type_rep"         : "atext",
                                  "credits"          : "",
-                                 "hint"            : "",
-                                 "help"            : "",
+                                 "hint"             : "",
+                                 "help"             : "",
                                  },
                              "qcmsuite":
                                 {"list_id_questions": "data1 data2",
@@ -418,9 +419,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             source = source.replace("*-*", "\\")
 
             # iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €
-            source = source.replace("€", "&euro;")
-            source = source.replace("œ", "&oelig;")
-            source = source.replace("’", "&rsquo;")
+            source = jalon_utils.convertUTF8ToHTMLEntities(source)
+
             #try:
             # on ne peux pas empecher la creation d'un exercice pour une erreur d'encodage. on ignore donc les caracteres non reconnus.
             source = source.decode("utf-8").encode("iso-8859-1", "ignore")
@@ -505,6 +505,37 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/lister_modules_wims", "message": "demande une Liste de modules wims publiés ", "requete": dico})
 
+    def getExoXML(self, formatXML="OLX", version="latest"):
+        """Appelle la fonction getExoXML de jalonexportswims."""
+        import jalonexportswims
+        return jalonexportswims.getExoXML(context=self, formatXML=formatXML, version=version)
+
+    def getExoZIP(self, filename_path, exo_donnees):
+        """Appelle la fonction getExoXML de jalonexportswims."""
+        import jalonexportswims
+        return jalonexportswims.getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
+
+    def getListeExports(self):
+        u""" fournit la liste des formats exportables a partir du modèle courant."""
+        liste_formats = {"qcmsimple":                  ["QTI", "OLX", "OEF"],
+                         "equation":                   ["OEF"],
+                         "texteatrous":                ["OEF"],
+                         "marqueruntexte":             ["OEF"],
+                         "marquerparpropriete":        ["OEF"],
+                         "questiontextuelletolerante": ["OEF"],
+                         "taperlemotassocie":          ["OEF"],
+                         "reordonner":                 ["OEF"],
+                         "correspondance":             ["OEF"],
+                         "classerparpropriete":        ["OEF"],
+                         "vraifauxmultiples":          ["OEF"],
+                         "texteatrousmultiples":       ["OEF"],
+                         "qcmsuite":                   ["QTI", "OEF"]
+                         }
+        if self.modele in liste_formats:
+            return liste_formats[self.modele]
+        else:
+            return []
+
     def getModule(self, authMember, module_path):
         """retourne toutes les infos disponibles pour le module "module_path"."""
         dico = {"job": "getmodule", "option": module_path, "code": authMember}
@@ -536,6 +567,25 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         return input_data
 
+    def getExoOEF(self, modele, authMember, requete={}):
+        """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
+        fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
+        try:
+            retour = json.loads(fichier)
+            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
+            # autre erreur possible : l'exercice demandé a disparu de WIMS.
+
+            self.aq_parent.wims("verifierRetourWims", {"rep": fichier,
+                                                       "fonction": "jalonexercicewims.py/getExoWims",
+                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
+                                                       "jalon_request": requete
+                                                       })
+            return None
+        except:
+            # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
+            return fichier
+
     def getExoWims(self, modele, authMember, requete={}):
         """permet de parser le code source d'un exercice WIMS."""
         #LOG.info("[getExoWims] modele = %s" % modele)
@@ -557,25 +607,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     requete["options_checkbox"] = 1
             return requete
 
-        file = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
-        try:
-            retour = json.loads(file)
-            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
-            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
-            # autre erreur possible : l'exercice demandé a disparu de WIMS.
-
-            self.aq_parent.wims("verifierRetourWims", {"rep": file,
-                                                       "fonction": "jalonexercicewims.py/getExoWims",
-                                                       "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
-                                                       "jalon_request": requete
-                                                       })
+        fichier = self.getExoOEF(modele, authMember, requete)
+        if fichier is None:
             return None
-        except:
-            pass
+
         if modele == "exercicelibre":
-            return {"exercicelibre": file}
+            return {"exercicelibre": fichier}
         else:
-            retour = {"code_source": file}
+            retour = {"code_source": fichier}
             variables_parse = {"qcmsimple": {"enonce":           "text{explain",
                                              "bonnesrep":        "matrix{datatrue",
                                              "mauvaisesrep":     "matrix{datafalse",
@@ -696,7 +735,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 for lettre in lettres:
                     variables_parse["equation"]["param_%s" % lettre] = "real{%s" % lettre
 
-            file = file.replace("\n", "_ENDLINE_")
+            fichier = fichier.replace("\n", "_ENDLINE_")
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
@@ -714,7 +753,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
                 m = re.compile(pattern)
-                recherche = m.search(file)
+                recherche = m.search(fichier)
                 #LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
                 if recherche is not None:
                     variable = recherche.group(1)
@@ -749,7 +788,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 i = 0
                 pattern = 'textarea="(.*?)"_ENDLINE_'
                 m = re.compile(pattern)
-                recherche = m.search(file)
+                recherche = m.search(fichier)
                 variable = recherche.group(1)
                 variable = variable.replace("_ENDLINE_", "")
                 list_id_questions = variable.split(" ")
@@ -757,7 +796,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 for id_question in list_id_questions:
                     pattern = "text{%s=(.*?)}_ENDLINE_" % id_question
                     m = re.compile(pattern)
-                    recherche = m.search(file)
+                    recherche = m.search(fichier)
                     variable = recherche.group(1)
                     variable = variable.replace("_ENDLINE_", "\n")
 

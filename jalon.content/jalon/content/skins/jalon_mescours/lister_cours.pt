@@ -34,7 +34,7 @@
                 <tal:listing condition="folderContents">
                     <table class="listing">
                     <thead>
-                        <tr>  
+                        <tr>
                             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="titre"
                                 title="Trier selon le titre" i18n:attributes="title">
                                 <span>
@@ -71,7 +71,7 @@
                         <tr tal:define="oddrow repeat/item/odd"
                             tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
                             <td class="titre show-for-medium-up">
-                              <a tal:attributes="href string:${item/absolute_url}/view" 
+                              <a tal:attributes="href string:${item/absolute_url}/view"
                                  title="Voir le cours"
                                  i18n:attributes="title"
                                  tal:content="item/Title"/>
@@ -91,7 +91,7 @@
                                       i18n:attributes="value string:label_${etudiant};"/>
                             </td>
                             <td>
-                                <a tal:attributes="href string:${item/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=dupliquer&amp;manager=1" 
+                                <a tal:attributes="href string:${item/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=dupliquer&amp;manager=1"
                                    title="Dupliquer le cours" class="button small"
                                    data-reveal-id="reveal-course_create" data-reveal-ajax="true">
                                     <i class="fa fa-code-fork"></i>

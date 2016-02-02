@@ -36,7 +36,7 @@ if context.isAuteurs(authMember_id):
         utilisateur = authMember_id
 
     # On supprime les activités WIMS
-    resultat = context.supprimerActivitesWims(utilisateur=utilisateur)
+    resultat = context.supprimerActivitesWims(utilisateur=utilisateur, request=context.REQUEST)
     if resultat > 0:
         message = u"<strong>%s</strong> activité(s) WIMS a(ont) bien été supprimée(s) du cours « <strong>%s</strong> »." % (resultat, titre_cours)
         context.plone_utils.addPortalMessage(_(message), "info")
@@ -51,4 +51,4 @@ else:
 if "came_from" in context.REQUEST and context.REQUEST["came_from"] == "cours_plan_view":
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
-    context.REQUEST.RESPONSE.redirect(context.aq_parent.absolute_url())
+    context.REQUEST.RESPONSE.redirect("%s?onglet=%s" % (context.aq_parent.absolute_url(), context.REQUEST["onglet"]))

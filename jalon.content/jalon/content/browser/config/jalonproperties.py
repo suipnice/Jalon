@@ -19,6 +19,10 @@ from DateTime import DateTime
 import json
 import copy
 
+# Messages de debug :
+from logging import getLogger
+LOG = getLogger('[JalonProperties]')
+
 
 class JalonProperties(SimpleItem):
 
@@ -242,10 +246,10 @@ class JalonProperties(SimpleItem):
     _lien_aide_plan = '<div class="flex-video"><iframe src="//www.youtube.com/embed/Z10V-BMXuec?list=PLV8G_tL0jD2LmZ79s0D-4EkeCVgQTvWfo" frameborder="0" allowfullscreen></iframe></div>\n<p>Cette vidéo disparaîtra automatiquement quand vous aurez ajouté des éléments à votre cours.</p>'
     _activer_guide_anti_spam = "1"
     _message_guide_anti_spam = """<h3>Pour être sûr(e) de recevoir les courriels de vos enseignants</h3>
-<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur jalon@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
+<p>Si vous avez fait le choix de rediriger votre courriel @etu.unice.fr vers une autre adresse, vous devez effectuer les réglages permettant d'autoriser le serveur jalon.unice.fr et l'expéditeur noreply@jalon.unice.fr à vous envoyer des courriels et à ne pas les considérer comme du spam.</p>
 <dl>
     <dt>Google Mail :</dt>
-    <dd>ajoutez jalon@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
+    <dd>ajoutez noreply@jalon.unice.fr dans vos contacts gmail afin que les messages de cet expéditeur ne soient plus considérés comme du spam.</dd>
     <dt>Hotmail :</dt>
     <dd>rendez-vous dans la rubrique filtre et ajoutez @jalon.unice.fr dans la liste des serveurs expéditeurs autorisés.</dd>
     <dt>Autres :</dt>
@@ -284,6 +288,7 @@ class JalonProperties(SimpleItem):
     _lien_assitance = "https://sourcesup.renater.fr/forum/forum.php?thread_id=3460&forum_id=2232&group_id=832"
     _activer_video = 0
     _url_video = ""
+    _activer_vod = 0
 
     # Gestion du bloc "Réaseaux sociaux"
     _COMPTE_TWITTER = ""
@@ -561,6 +566,18 @@ class JalonProperties(SimpleItem):
                 val = int(val)
             setattr(self, "_%s" % key, val)
 
+    def getLienContact(self):
+        """ Fournit un lien pour contacter l'administrateur du site."""
+        if self._activer_lien_contact:
+            lien_contact = self._lien_contact
+        else:
+            if self._activer_email_erreur:
+                lien_contact = "mailto:%s" % self._adresse_email_erreur
+            else:
+                portal = getUtility(IPloneSiteRoot)
+                lien_contact = "mailto:%s" % portal.getProperty("email_from_address")
+        return lien_contact
+
     #--------------------------------#
     # Fonctions du bloc Didacticiels #
     #--------------------------------#
@@ -635,21 +652,22 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_fichiers"                 : self._activer_fichiers,
-                    "activer_presentations_sonorisees" : self._activer_presentations_sonorisees,
-                    "activer_exercices_wims"           : self._activer_exercices_wims,
-                    "activer_liens"                    : self._activer_liens,
-                    "activer_liens_catalogue_bu"       : self._activer_liens_catalogue_bu,
-                    "activer_tags_catalogue_bu"        : self._activer_tags_catalogue_bu,
-                    "activer_lille1pod"                : self._activer_lille1pod,
-                    "activer_termes_glossaire"         : self._activer_termes_glossaire,
-                    "activer_webconferences"           : self._activer_webconferences,
-                    "activer_lien_intracursus"         : self._activer_lien_intracursus,
-                    "lien_intracursus"                 : self._lien_intracursus,
-                    "activer_lien_assistance"          : self._activer_lien_assistance,
-                    "lien_assitance"                   : self._lien_assitance,
-                    "activer_video"                    : self._activer_video,
-                    "url_video"                        : self._url_video}
+            return {"activer_fichiers":                  self._activer_fichiers,
+                    "activer_presentations_sonorisees":  self._activer_presentations_sonorisees,
+                    "activer_exercices_wims":            self._activer_exercices_wims,
+                    "activer_liens":                     self._activer_liens,
+                    "activer_liens_catalogue_bu":        self._activer_liens_catalogue_bu,
+                    "activer_tags_catalogue_bu":         self._activer_tags_catalogue_bu,
+                    "activer_lille1pod":                 self._activer_lille1pod,
+                    "activer_termes_glossaire":          self._activer_termes_glossaire,
+                    "activer_webconferences":            self._activer_webconferences,
+                    "activer_lien_intracursus":          self._activer_lien_intracursus,
+                    "lien_intracursus":                  self._lien_intracursus,
+                    "activer_lien_assistance":           self._activer_lien_assistance,
+                    "lien_assitance":                    self._lien_assitance,
+                    "activer_video":                     self._activer_video,
+                    "url_video":                         self._url_video,
+                    "activer_vod":                       self._activer_vod}
 
     def getGridMonEspace(self, key=None):
         return [{"espace":      "fichiers",
@@ -684,9 +702,14 @@ class JalonProperties(SimpleItem):
                  "icone":       "fa fa-headphones"},
                 {"espace":      "video",
                  "titre":       "Vidéos",
-                 "activer":     True,
+                 "activer":     self._activer_lille1pod,
                  "repertoire":  "Video",
-                 "icone":       "fa fa-youtube-play"}]
+                 "icone":       "fa fa-youtube-play"},
+                {"espace":      "vod",
+                 "titre":       "VOD",
+                 "activer":     self._activer_vod,
+                 "repertoire":  "VOD",
+                 "icone":       "fa fa-video-camera"}]
 
     def setPropertiesMonEspace(self, form):
         for key in form.keys():
@@ -963,10 +986,10 @@ class JalonProperties(SimpleItem):
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         portal_elasticsearch.setPropertiesElasticsearch(propertiesElasticsearch)
 
-    def searchElasticsearch(self):
+    def searchElasticsearch(self, type_search=None, term_search=None, page=1):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
-        return portal_elasticsearch.searchElasticsearch()
+        return portal_elasticsearch.searchElasticsearch(type_search, term_search, page)
 
     def isElasticsearch(self):
         portal = self.portal_url.getPortalObject()
@@ -974,14 +997,62 @@ class JalonProperties(SimpleItem):
         if portal_jalon_elasticsearch:
             elasticsearch_properties = portal_jalon_elasticsearch.getPropertiesElasticsearch()
             if not elasticsearch_properties["url_connexion"] or elasticsearch_properties["url_connexion"] == "http://domainname.com/":
-                return {"module"  : False,
-                        "message" : "Le module Elasticsearch de Jalon n'est pas configuré"}
+                return {"module":  False,
+                        "message": "Le module Elasticsearch de Jalon n'est pas configuré"}
             else:
-                return {"module"  : True,
-                        "message" : "Test"}
+                return {"module":  True,
+                        "message": "Test"}
         else:
-            return {"module"  : False,
-                    "message" : "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Elasticsearch installé dans Jalon"}
+
+    #----------------#
+    # Fonction Wowza #
+    #----------------#
+    def isVOD(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if portal_jalon_wowza:
+            wowza_properties = portal_jalon_wowza.getWowzaProperties()
+            if not wowza_properties["wowza_server"] or wowza_properties["wowza_server"] == "http://domainname.com":
+                return {"module":  False,
+                        "message": "Le module Wowza de Jalon n'est pas configuré"}
+            else:
+                return {"module":  True,
+                        "message": "Test"}
+        else:
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Wowza installé dans Jalon"}
+
+    def getWowzaProperties(self):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getWowzaProperties()
+
+    def setWowzaProperties(self, wowzaProperties):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        portal_jalon_wowza.setWowzaProperties(wowzaProperties)
+
+    def searchExtraits(self, page, term_search):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.searchExtraits(page, term_search)
+
+    def getExpirationDate(self, pod):
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.getStreamingAvailable(pod)
+
+    def modifyStreaming(self, params):
+        LOG.info("----- modifyStreaming -----")
+        LOG.info(params)
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        if "datetime-expiration_date" in params:
+            portal_jalon_wowza.modifyStreaming(params["pod"], params["datetime-expiration_date"])
+        else:
+            portal_jalon_wowza.modifyStreaming(params["pod"])
 
     #-------------------------------#
     # Fonction Communication NodeJS #

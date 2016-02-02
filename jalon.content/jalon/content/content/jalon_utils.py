@@ -59,7 +59,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         if not remote_addr:
             remote_addr = request['REMOTE_ADDR']
 
-        if session_keep == True:
+        if session_keep is True:
             #Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
             # Attention : ici il faudrait vérifier sur WIMS que la session ouverte était bien celle de l'utilisateur courant.
             wims_session = request.get('wims_session', None)
@@ -81,6 +81,13 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         message = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
         mess_type = "error"
         if quser != 'supervisor':
+
+            if "in an exam session started on another IP" in rep["message"]:
+                message = _(u"Vous tentez de vous connecter à un examen commencé sur une machine différente.<br/>\n\
+                Veuillez retourner sur la machine où vous avez commencé votre examen pour pouvoir le finir.")
+                #mess_title = "Impossible d'accéder à cet examen."
+                context.plone_utils.addPortalMessage(message, type=mess_type)
+                return None
 
             dico_ETU = getInfosMembre(quser)
 
@@ -105,7 +112,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
         else:
             # L'authentification du supervisor a planté => WIMS doit être indisponible.
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            return None
+            return user
     rep["url_connexion"] = url_connexion
     return rep
 
@@ -134,6 +141,22 @@ def encodeUTF8(itemAEncoder):
         return [str(encoder).encode("utf-8") for encoder in itemAEncoder]
     except:
         return itemAEncoder
+
+
+def convertUTF8ToHTMLEntities(source):
+    u""" iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €."""
+    source = source.replace("€", "&euro;")
+    source = source.replace("œ", "&oelig;")
+    source = source.replace("’", "&rsquo;")
+    return source
+
+
+def convertHTMLEntitiesToUTF8(source):
+    u""" Pour éviter d'avoir des erreur XML 'unrecognized entity', on reconvertit en UTF-8."""
+    source = source.replace("&euro;", "€")
+    source = source.replace("&oelig;", "œ")
+    source = source.replace("&rsquo;", "’")
+    return source
 
 
 def envoyerMail(form):
@@ -1031,6 +1054,11 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                               "url":   url_portal},
                              {"titre": _(u"Vidéos"),
                               "icone": "fa fa-youtube-play"}],
+           "VOD":           [{"titre": _(u"Mon espace"),
+                              "icone": "fa fa-home",
+                              "url":   url_portal},
+                             {"titre": _(u"VOD"),
+                              "icone": "fa fa-video-camera"}],
            authMemberId:   [{"titre": _(u"Mes cours"),
                              "icone": "fa fa-university"}],
            "etudiants":    [{"titre": _(u"Mes étudiants"),
@@ -1046,6 +1074,16 @@ def getFilAriane(portal, folder, authMemberId, page=None):
                  "icone": "fa fa-youtube-play",
                  "url": folder.absolute_url()},
                 {"titre": _(u"Rechercher une vidéo"),
+                 "icone": "fa fa-search"}]
+
+    if page == "search_vod":
+        return [{"titre": _(u"Mon espace"),
+                 "icone": "fa fa-home",
+                 "url":   url_portal},
+                {"titre": _(u"VOD"),
+                 "icone": "fa fa-video-camera",
+                 "url": folder.absolute_url()},
+                {"titre": _(u"Rechercher une VOD"),
                  "icone": "fa fa-search"}]
 
     if not folder.getId() in fil:
@@ -1139,6 +1177,11 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
             if typeElement in ["Lecteurexportable", "Video"]:
                 retour["urlElement"] = element.getLecteurExportable()
                 retour["auteurVideoElement"] = element.getVideoauteurname()
+                retour["videothumbnail"] = element.getVideothumbnail()
+            if typeElement == "VOD":
+                retour["urlElement"] = element.getId().split("-")[-1]
+                retour["auteurVideoElement"] = element.getVideoauteurname()
+                retour["videothumbnail"] = element.getVideothumbnail()
             if typeElement == "Lienweb":
                 urlWEB = element.getURLWEB()
                 if not "://" in urlWEB:
@@ -1218,7 +1261,12 @@ def getJalonMenu(context, portal_url, user, request):
                                           "icone":   "fa fa-youtube-play",
                                           "title":   _(u"Vidéos"),
                                           "href":    "%s/Members/%s/Video" % (portal_url, member_id),
-                                          "activer": True}],
+                                          "activer": activer["activer_video"]},
+                                         {"id":      "vod",
+                                          "icone":   "fa fa-video-camera",
+                                          "title":   _(u"VOD"),
+                                          "href":    "%s/Members/%s/VOD" % (portal_url, member_id),
+                                          "activer": activer["activer_vod"]}],
                            "is_visible": is_personnel},
                           {"id"      : "mes-cours",
                            "class"   : class_cours,

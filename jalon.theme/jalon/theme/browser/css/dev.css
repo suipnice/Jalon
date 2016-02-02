@@ -4,18 +4,17 @@
 
     Feuille de style de developpement :
 
-        - ajoutez ici les modifs CSS souhaitees pour l'affichage des templates sur lesquels
-          vous travaillez ;
-        - utilisez de nouvelles classes ou ID inutilisées dans les autres templates afin d'etre
-          sur de ne rien casser ;
-        - précisez en commentaire le chemin/du/template cible ;
-        - pour qu'elle soit chargee, decommentez le bloc « CSS Dev » lignes 91-93 de
-          « theme/skins/jalon_theme_custom_templates/head_macro.pt ».
+        - ajoutez ici les definitions CSS necessaires pour l'affichage des templates sur lesquels
+          vous travaillez, en attendant leur integration dans les fichiers geres par CodeKit ;
+        - utilisez de nouvelles classes ou ID inutilisees ailleurs afin de ne rien casser ;
+        - precisez en commentaire le chemin/du/template concerne ;
+        - pour qu'elle soit chargee, decommentez le bloc « CSS dev » du fichier de template
+          « theme/skins/jalon_theme_custom_templates/head_macro.pt » (lignes 91-93).
 */
 
 
 /*
-    rappel du style "sup" présent sur le plan du cours  sur la barres d'onglets de la doite de dépots
+    rappel du style "sup" présent sur le plan du cours sur la barre d'onglets de la boite de dépots
     fichier cours_boite_view
 */
 #boite .sup {
@@ -63,23 +62,6 @@
 }
 
 /*----------*/
-/* Permet d'avoir un affichage similaire sur Firefox et Safari,
-     avec un checkbox et le label qui le suit toujours sur la même ligne, meme sur petits écrans.
-     J'appelle la classe "confirm_button" dans l'idée de la génériser
-      à d'éventuels futurs checkbox de confirmation d'actions de formulaire.
-     C'est pour le moment utilisé dans jalon/content/skins/jalon_mescours/macro_mescours.pt :
-     ligne 693 : "confirm-suppr_WIMS"
-*/
-.confirm_check input[type="checkbox"]{
-    /* permet d'éviter un espace indésirable dans le cas ou le label suivant se retrouve sur 2 lignes*/
-    margin-bottom:0;
-}
-.confirm_check input[type="checkbox"]+label{
-    /* important pour WebKit (Safari) */
-    display:inline;
-}
-
-/*----------*/
 /*La classe "debug" permet d'afficher des elements à l'écran pendant les tests, avec une couleur bien criarde,
  histoire de ne pas oublier de les retirer avant de faire un commit !*/
 .debug{
@@ -88,6 +70,7 @@
     border-width: 1px;
     padding:3px;
 }
+
 
 /*----------*/
 /* la classe "disabled" indique un element de formulaire non accessible à l'utilisateur connecté.
@@ -117,7 +100,7 @@
 }
 
 /*
-    css utilsé dans les indicateurs du cours
+    css utilsés dans les indicateurs du cours
     fichier : macro_cours_indicateurs
     macro   : indicateurs_ressources
 */

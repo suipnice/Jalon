@@ -43,7 +43,9 @@
                  data-options="close_on_background_click: true;" >
                 <h2>La (Les) bonne(s) réponse(s) <a class="close-reveal-modal"></a></h2>
                 <div>Au moins une bonne réponse. On peut en placer plusieurs (une par ligne) pour tirer au hasard.</div>
-                <div>Évitez les phrases trop longues. Le point-virgule est interdit.</div>
+                <div>Évitez les phrases trop longues.<br/>
+                La virgule et le point-virgule sont interdits.</div>
+                <hr/>
                 <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
             </div>
             <div class="formHelp texte_icone icone_information"> Écrire une réponse par ligne.</div>
@@ -72,8 +74,9 @@
                     Donnez-en un maximum.<br/>
                     Vous pouvez en donner plus que le nombre de choix à présenter. Une combinaison aléatoire sera alors effectuée.<br/>
                     Évitez les phrases trop longues.<br/>
-                    Ne tapez aucun point-virgule.<br/>
+                    Ne tapez aucune virgule ni point-virgule.
                 </div>
+                <hr/>
                 <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
             </div>
             <div class="formHelp texte_icone icone_information"> Écrire une réponse par ligne. </div>

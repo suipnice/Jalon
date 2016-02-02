@@ -29,7 +29,7 @@
         </tal:block>
 
         <tal:listing condition="folderContents">
-
+            <tal:comment replace="nothing"><!-- folderContents.length déclenche un "DeprecationWarning" quand "les 20 derniers" est coché, car dans ce cas getFolderContents renvoit un objet "Batch", mais uniquement dans ce cas... :/ --></tal:comment>
             <tal:define define="nb_affiche python:len(folderContents)">
 
                     <div class="el_counter show-for-small-only">
@@ -171,7 +171,7 @@
                                                 <tal:block condition="python:item['getModele']=='externe'" i18n:translate="">Voir</tal:block>
                                             </a>
                                         </li>
-                                        <li tal:condition="python:item['getModele']!='externe'">
+                                        <li tal:condition="python:item['getModele'] != 'externe'">
                                             <a tal:attributes="href string:${item/getURL}?mode=examen">
                                                 <i class="fa fa-eye fa-fw no-pad"></i>
                                                 <tal:block i18n:translate="">Voir en Examen</tal:block>
@@ -196,7 +196,15 @@
                                                 <tal:block i18n:translate="">Étiqueter</tal:block>
                                             </a>
                                         </li>
-                                        <li >
+                                        <li tal:condition="python:item['getModele'] != 'groupe'">
+                                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                                               tal:attributes="href string:${item/getURL}/folder_form?macro=macro_wims&amp;formulaire=exporter_exo">
+                                                <i class="fa fa-download fa-fw no-pad"></i>
+                                                <tal:block i18n:translate="">Exporter</tal:block>
+                                            </a>
+                                        </li>
+
+                                        <li tal:condition="python:context.test(len(item.getRawRelatedItems) == 0, 1, 0)">
                                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                                                tal:attributes="href string:${item/getURL}/folder_form?macro=macro_wims&amp;formulaire=supprimer_exo">
                                                 <i class="fa fa-trash-o fa-fw no-pad no-pad"></i>

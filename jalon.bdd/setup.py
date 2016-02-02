@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.3'
+version = '2.3.1'
 
 setup(name='jalon.bdd',
       version=version,

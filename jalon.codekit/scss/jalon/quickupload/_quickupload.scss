@@ -1,0 +1,149 @@
+.quick-uploader {
+    position: relative;
+    //padding-bottom: 0 !important;
+    margin-bottom: rem-calc( 5 );
+
+    #label-upload,
+    .pannelHeader {
+        display: none !important;
+    }
+
+    .qq-upload-drop-area {
+        position: relative;
+        border: 0 none;
+        background-color: transparent;
+        display: block !important;
+        line-height: ( $button-sml * 4 ) + $button-font-sml;
+        width: auto;
+        min-height: 0;
+        padding: 0 0 0 7rem;
+
+        span {
+            position: relative;
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+            text-align: left;
+            top: 0;
+            font-size: 80%;
+            border: $panel-border-size $panel-border-style $panel-border-color;
+            border-radius: 5px;
+            background-color: $panel-bg;
+
+            &:before {
+                content: "\25BD";
+                display: block;
+                float: left;
+                color: $primary-color;
+                font-size: 200%;
+                margin: rem-calc( -3 8 0 10 );
+            }
+        }
+
+        &.qq-upload-drop-area-active span {
+            background-color: scale-color( $success-color, $lightness: 66% );
+
+            &:before { content: "\25B7"; }
+        }
+    }
+
+    .qq-upload-list {
+        margin: rem-calc( 0 0 7 );
+
+        li {
+            position: relative;
+            clear: both;
+            display: block;
+            list-style: none outside none;
+            background-color: #F5F5F5;
+            border: 1px solid $microformat-border-color;
+            margin: rem-calc( 8 0 0 0 );
+            padding: rem-calc( 8 );
+            font-size: 90%;
+            border-radius: 5px;
+
+            .qq-upload-cancel {
+                position: absolute;
+                top: rem-calc( -5 );
+                right: rem-calc( 3 );
+                background-image: none;
+                background-color: transparent;
+
+                &:before {
+                    font-size: 200%;
+                    line-height: 120%;
+                    font-weight: bold;
+                    content: "\00d7";
+                }
+            }
+
+            .uploadField {
+                width: 90%;
+
+                label {
+                    float: left;
+                }
+
+                input[type=text].file_title_field {
+                    margin: 0;
+                    padding: rem-calc( 0 0 0 3 );
+                    height: 1.5rem;
+                }
+            }
+
+            .qq-upload-infos {
+
+                span {
+
+                    &:not(.qq-upload-file) {
+                        padding-left: .8em;
+                    }
+
+                    &.qq-upload-file {
+                        font-size: 80%;
+                        font-weight: bold;
+                        font-style: italic;
+                    }
+
+                    &.qq-upload-spinner {
+                        display: none;
+                        background: url("++resource++quickupload_static/loading.gif");
+                        width:15px;
+                        height:15px;
+                        vertical-align:text-bottom;
+                        margin-left: 10px;
+                    }
+
+                    &.qq-upload-failed-text { display: none; }
+                }
+            }
+        }
+    }
+
+    .qq-upload-button,
+    .button {
+        @include button-base( );
+        @include button-style( $button_primary-color, $button-radius, false );
+        @include single-transition( background-color );
+    }
+
+    .button {
+        @include button-size( $button-sml, false );
+    }
+
+    .qq-upload-button {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        @include button-size( $button-med, false );
+    }
+
+    .uploadifybuttons {
+        display: none;
+        text-align: center;
+    }
+
+}
+
+

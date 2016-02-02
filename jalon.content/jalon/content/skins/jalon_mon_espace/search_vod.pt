@@ -1,0 +1,210 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+    <tal:define define="pageCours string:search_vod">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title"
+          tal:define="type_search request/type_search | nothing;
+                      term_search request/term_search | nothing;">
+
+        <h2 class="texte_icone icone_recherche">
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Rechercher un contenu dans le catalogue de vidéos à la demande et l'ajouter à votre espace</tal:block>
+        </h2>
+
+        <form id="js-podFilterSelector" method="POST"
+              tal:attributes="action string:${context/absolute_url}/search_vod;
+                              data-term_search_label1 string:Filtrer par mot-clé ou auteur;
+                              data-term_search_label2 string:Filtrer par mot-clé;
+                              data-term_search_placeholder1 string:Entrez un mot-clé ou un nom d'auteur…;
+                              data-term_search_placeholder2 string:Entrez un mot-clé…";
+              i18n:attributes="data-term_search_label1;
+                               data-term_search_label2;
+                               data-term_search_placeholder1;
+                               data-term_search_placeholder2">
+
+            <div class="field">
+
+                <label id="term_search_label" for="term_search" i18n:translate="">Filtrer par mot-clé ou auteur</label>
+                <input type="text" id="term_search" name="term_search" class="blurrable"
+                       size="30" maxlength="255"
+                       placeholder="Entrez un mot-clé ou un nom d'auteur…"
+                       tal:attributes="value term_search"
+                       i18n:attributes="placeholder" />
+
+            </div>
+
+            <div class="formControls">
+
+                <button type="submit" class="button small expand radius"
+                        name="form.button.save">
+                    <i class="fa fa-search"></i>
+                    <tal:block i18n:translate="">Rechercher</tal:block>
+                </button>
+
+            </div>
+
+            <tal:block define="script string:setPodFilterSelector()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+        </form>
+
+        <h2 class="texte_icone icone_resultats"
+            i18n:translate="">
+            Résultats de la recherche
+        </h2>
+
+    <tal:define define="page python:int(request.get('page', 1));
+                        videos python:context.searchVod(page, term_search)">
+        <div id="js-update_target">
+
+            <div class="panel callout radius"
+                tal:condition="not:videos/liste_videos">
+                <i class="fa fa-info-circle no-pad"></i>
+                <tal:block i18n:translate="">La recherche n'a donné aucun résultat.</tal:block>
+            </div>
+
+        <tal:isContent condition="videos/liste_videos">
+
+            <div class="el_counter show-for-medium-up">
+                <tal:block i18n:translate="">contenus</tal:block>
+                <tal:replace replace="videos/first"/>
+                <tal:block i18n:translate="">à</tal:block>
+                <tal:replace replace="videos/last"/>
+                <tal:block i18n:translate="">sur</tal:block>
+                <tal:replace replace="videos/count"/>
+            </div>
+
+            <ul id="elasticsearch" class="small-block-grid-4">
+                <li tal:repeat="video videos/liste_videos">
+                    <div class="panel callout radius">
+
+                        <div>
+                    <tal:comment replace="nothing"><!--
+
+                            <i class="fa fa-lock"
+                               title="Ce contenu est protégé par un mot de passe."
+                               i18n:attributes="title"></i>
+
+                    --></tal:comment>
+                        </div>
+
+                        <h4 tal:attributes="title video/title">
+
+                            <i tal:attributes="class video/css_class;
+                                               title video/expiration_date"
+                               i18n:attributes="title"></i>
+                            <tal:block replace="python:context.getShortText(video['title'], 20)"/>
+                        </h4>
+
+                        <p>
+                            <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
+                        </p>
+
+                        <a title="Voir la vidéo"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/video_pod?pod=${video/id}"
+                           i18n:attributes="title"
+                           i18n:translate="">
+                            <div class="flex-video">
+                                <img tal:attributes="src video/thumbnail"/>
+                            </div>
+                        </a>
+
+                        <div class="text-center">
+                            <a class="button tiny create" title="Ajouter à Mon espace"
+                               tal:attributes="href string:${context/absolute_url}/ajouterressource_script?formulaire=ajout-vod&amp;video_id=${video/id}&amp;authMember=${user/getId}"
+                               tal:condition="video/is_streaming"
+                               i18n:attributes="title">
+                                <i class="fa fa-plus-circle"></i>
+                                <tal:block i18n:translate="">Ajouter</tal:block>
+                            </a>
+                            <a class="button tiny" title="Demander la mise à disposition"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/ask_streaming?pod=${video/id}"
+                               tal:condition="not:video/is_streaming"
+                               i18n:attributes="title">
+                                <i class="fa fa-envelope"></i>
+                                <tal:block i18n:translate="">Demander</tal:block>
+                            </a>
+                        </div>
+
+                    </div>
+                </li>
+            </ul>
+
+            <div id="pagination-container"
+                 tal:define="nb_pages videos/nb_pages"
+                 tal:condition="python:context.test(nb_pages > 1, 1, 0)">
+
+                <div class="panel callout radius text-left">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="">Pour vous rendre directement sur une page, entrez son n° ci-dessous et validez en appuyant sur « Entrée ».</tal:block>
+                </div>
+
+                <div class="panel warning radius text-left"
+                     tal:condition="not:is_owner">
+                    <i class="fa fa-exclamation-triangle no-pad"></i>
+                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
+                </div>
+
+                <tal:condition condition="python:page-1 > 0">
+                    <a id="pagination-prev" class="button tiny"
+                       tal:define="page_prec python:page - 1"
+                       tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_prec}"
+                       i18n:translate="">
+                        <span>Précédent</span>
+                    </a>
+                </tal:condition>
+
+                <tal:condition condition="python:page < nb_pages">
+                    <a id="pagination-next" class="button tiny"
+                       tal:define="page_suiv python:page + 1"
+                       tal:attributes="href string:${context/absolute_url}/${template/id}?page=${page_suiv}"
+                       i18n:translate="">
+                        <span>Suivant</span>
+                    </a>
+                </tal:condition>
+
+                <form id="pagination-page_number" method="post"
+                      tal:attributes="action string:${context/absolute_url}/${template/id};
+                                      data-page_change_msg1 string:Attention : les sélections ne sont pas conservées lors des changements de page.;
+                                      data-page_change_msg2 string:Changer de page tout de même ?"
+                      i18n:attributes="data-page_change_msg1; data-page_change_msg2">
+                    <input type="number" name="page"
+                           min="1" step="1" size="4" maxlenght="4"
+                           tal:attributes="value page;
+                                           max videos/nb_pages" />
+                    / <tal:block content="nb_pages" />
+                </form>
+
+            </div>
+
+        </tal:isContent>
+
+        </div>
+
+    </tal:define>
+
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

@@ -234,6 +234,57 @@
 
 
 <!--
+        Video
+-->
+<metal:macro define-macro="VOD">
+
+<tal:define define="secure_streaming_url python:context.isStreamingAuthorized(element['urlElement'], request)">
+    <tal:condition condition="secure_streaming_url">
+    <link href="http://vjs.zencdn.net/5.4.6/video-js.css" rel="stylesheet">
+
+    <h3>
+        <tal:replace replace="element/titreElement" />
+    </h3>
+
+    <h4>
+        <strong>Auteur :</strong> <tal:block replace="element/auteurVideoElement"/>
+    </h4>
+
+    <div class="panel radius"
+         tal:condition="not:element/descriptionElement"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="element/descriptionElement"
+         tal:content="structure element/descriptionElement" />
+
+    <div class="flex-video">
+    <center>
+        <video id="example_video_1" class="video-js vjs-default-skin" controls preload="none"
+               width="480" height="360" tal:attributes="poster element/videothumbnail" data-setup="{}">
+            <source tal:attributes="src secure_streaming_url" type='rtmp/mp4' />
+        </video>
+    </center>
+    </div>
+
+    <script src="http://vjs.zencdn.net/5.4.6/video.js"></script>
+
+    <script charset="UTF-8"
+            tal:content="structure string:removePlayerOnClose()" />
+    </tal:condition>
+
+    <div class="panel radius alert"
+         tal:condition="not:secure_streaming_url">
+        <strong>Attention : </strong> La vidéo que vous tentez de consulter n'est plus disponible et vous devez être en France pour la consulter.
+    </div>
+</tal:define>
+
+</metal:macro>
+
+
+<!--
         Catalogue BU
 -->
 <metal:macro define-macro="CatalogueBU">
