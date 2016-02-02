@@ -368,7 +368,6 @@ class JalonCours(ATFolder):
 
     def getAffElement(self, idElement, attribut):
         #self.plone_log("getAffElement")
-        #infos_element = self.getInfosElementCours(idElement)
         infos_element = self.getElementCours(idElement)
         if infos_element:
             if infos_element[attribut] != "":
@@ -395,12 +394,6 @@ class JalonCours(ATFolder):
         except:
             idMember = authMember
         if idMember and not "@" in idMember:
-            #membership = getToolByName(portal, "portal_membership")
-            #member = membership.getMemberById(idMember)
-            #diplomes = authMember.getProperty("unsdiplomes", [])
-            #if diplomes is None:
-            #    diplomes = []
-
             if portal_jalon_bdd.getTypeBDD() == "apogee":
                 COD_ETU = member.getProperty("supannEtuId", member.getProperty("supannAliasLogin"))
             if portal_jalon_bdd.getTypeBDD() == "sqlite":
@@ -417,7 +410,6 @@ class JalonCours(ATFolder):
             ##self.plone_log(publics)
             if not publics:
                 #pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
-                #annonces.append(annonce)
                 suite = 0
             if suite and ("colecteurs*-*colecteurs" in publics) and (idMember in self.getCoLecteurs()):
                 annonces.append(annonce)
@@ -680,9 +672,6 @@ class JalonCours(ATFolder):
         for acces in listeAcces:
             type, code = acces.split("*-*")
             if type == "etape":
-                #suite au probleme de DAEU-B ce conditionnement à été créé pour cette fonction
-                #ainsi que pour getInfosListeAcces et dans jalonfoler getInfosApogee et getListeCours
-                #retour = apogee.getInfosEtape(*code.rsplit("-", 1))
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
@@ -739,9 +728,6 @@ class JalonCours(ATFolder):
         for acces in listeAcces:
             type, code = acces.split("*-*")
             if type == "etape":
-                #suite au probleme de DAEU-B ce conditionnement à été créé pour cette fonction
-                #ainsi que pour getInfosListeAcces et dans jalonfoler getInfosApogee et getListeCours
-                #retour = apogee.getInfosEtape(*code.rsplit("-", 1))
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
@@ -2437,7 +2423,7 @@ class JalonCours(ATFolder):
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
 
     def retirerElement(self, idElement):
-        #self.plone_log("retirerElement")
+        #LOG.info("----- retirerElement -----")
         elements_glossaire = list(self.getGlossaire())
         if idElement in elements_glossaire:
             elements_glossaire.remove(idElement)
@@ -2459,7 +2445,7 @@ class JalonCours(ATFolder):
 
     def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
-        #LOG.info("retirerElementPlan")
+        #LOG.info("----- retirerElementPlan -----")
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())

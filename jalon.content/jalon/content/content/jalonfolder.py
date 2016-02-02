@@ -35,11 +35,11 @@ from logging import getLogger
 LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
+#LOG.debug('debug message')
+#LOG.info('info message')
+#LOG.warn('warn message')
+#LOG.error('error message')
+#LOG.critical('critical message')
 """
 
 JalonFolderSchema = ATFolderSchema.copy() + atpublic.Schema((
@@ -190,15 +190,9 @@ class JalonFolder(ATFolder):
         classe = self.getComplement()
         if not classe:
             #1er  cas : Aucune classe n'existe pour cet utilisateur
-
-            #member = self.portal_membership.getMemberById(authMember)
             member = self.getInfosMembre(authMember)
             auth_email = member["email"]
             fullname = member["fullname"]
-            #if not fullname:
-            #    fullname = member.getProperty("displayName")
-            #if not auth_email:
-            #    auth_email = str(member.getProperty("mail"))
             groupement = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
             if groupement["status"] == "OK":
                 idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
@@ -214,8 +208,6 @@ class JalonFolder(ATFolder):
         else:
             #2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
             #print "Classe %s" % self.getComplement()
-            #exercices={}
-            #try:
             exercices = self.wims("getExercicesWims",
                                   {"authMember": authMember,
                                    "qclass": "%s_1" % self.getComplement(),
@@ -304,7 +296,7 @@ class JalonFolder(ATFolder):
                         self.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
                         obj = getattr(self, idobj)
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
-                        LOG.info(video)
+                        #LOG.info(video)
                         param = {"Title":                video["title"],
                                  "TypeRessourceExterne": "Video",
                                  "Videourl":             video["full_url"],
@@ -326,7 +318,7 @@ class JalonFolder(ATFolder):
         return c
 
     def getMesCoursView(self, user, tab=None):
-        LOG.info("----- getMesCoursView -----")
+        #LOG.info("----- getMesCoursView -----")
 
         folder_link = self.absolute_url()
         is_manager = user.has_role("Manager")
@@ -364,7 +356,7 @@ class JalonFolder(ATFolder):
                 "tabs_list":    tabs_list}
 
     def getInfosCours(self, cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list):
-        LOG.info("----- getInfosCours -----")
+        #LOG.info("----- getInfosCours -----")
 
         cours_infos = {"id":                cours_brain.getId,
                        "title":             cours_brain.Title,
@@ -391,7 +383,7 @@ class JalonFolder(ATFolder):
         return cours_infos
 
     def getListeCoursEns(self, onglet, member):
-        LOG.info("----- getListeCoursEns -----")
+        #LOG.info("----- getListeCoursEns -----")
         """ Renvoi la liste des cours pour authMember."""
         courses_list = []
         courses_ids_list = []
@@ -494,11 +486,6 @@ class JalonFolder(ATFolder):
         #self.plone_log("getInfosMembre")
         return jalon_utils.getInfosMembre(username)
 
-    #[DEPRECATED]
-    #getDisplayName() permet d'obtenir le nom (+prenom) d'un utilisateur
-    #def getDisplayName(self, user_id, request=None, portal=None):
-    #    return jalon_utils.getDisplayName(user_id, request, portal)
-
     def getPropertiesMessages(self, key=None):
         jalon_properties = self.portal_jalon_properties
         return jalon_properties.getPropertiesMessages(key)
@@ -530,7 +517,6 @@ class JalonFolder(ATFolder):
 
         if categorie == "1":
             dicoUE = {}
-            #groupes = portal_jalon_bdd.getGroupesEtudiant(COD_ETU)
             #pour les nouveaux étudiant qui n'ont pas encore de diplome
             if not diplomes:
                 listeCours = []
@@ -864,16 +850,6 @@ class JalonFolder(ATFolder):
                              "affichage": _(u"Lien catalogue"),
                              "aide":      _(u"Trouver une oeuvre ou une revue dans le catalogue de la BU"),
                              "checked":   checked})
-        """
-        if jalon_properties["activer_lille1pod"]:
-            checked = ""
-            if len(typeLien) == 0:
-                checked = "checked"
-            typeLien.append({"macro":     "ajout-elasticsearch",
-                             "affichage": _(u"Lien UNSPOD"),
-                             "aide":      _(u"Trouver une vidéo dans UNSPOD"),
-                             "checked":   checked})
-        """
         return typeLien
 
     def getShortText(self, text, limit=75):
@@ -940,31 +916,6 @@ class JalonFolder(ATFolder):
         else:
             for mot in mots:
                 retour.append({"tag": urllib.quote(mot), "titre": mot})
-        """
-        if self.getId() == "Wims":
-            tags = self.getTagsWims()
-            for mot in mots:
-                try:
-                    retour.append({"tag": urllib.quote(mot), "titre": tags[mot]})
-                except:
-                    retour.append({"tag": urllib.quote(mot), "titre": mot})
-
-        if not self.getId() in ["Webconference", "Sonorisation", "Wims"]:
-            for mot in mots:
-                retour.append({"tag": urllib.quote(mot), "titre": mot})
-        """
-
-        """# DEBUG start
-        print "\n••• getTag •••\n"
-        print "self.id ->", self.getId()
-        print "tag ->", tag
-        print "mots ->", mots
-        print "retour ->", retour
-        print "\n"
-        # DEBUG end"""
-
-        #self.plone_log( retour )
-
         return retour
 
     def ajouterTag(self, tag):
@@ -1052,8 +1003,6 @@ class JalonFolder(ATFolder):
                  "Description":            cours.Description(),
                  "Elements_glossaire":     cours.getGlossaire(),
                  "Elements_bibliographie": cours.getBibliographie(),
-                 # ListClasse ne passe pas via setproperties : "AttributeError: 'dict' object has no attribute 'strip'""
-                 #"Listeclasses":           new_listeClasses
                  }
         duplicata.setProperties(param)
         duplicata.setElementsCours(infos_element)
@@ -1304,8 +1253,6 @@ class JalonFolder(ATFolder):
         """
 
         listeSubject = list(self.Subject())
-        #etiquette = jalon_utils.getDisplayName(user_source)
-        #etiquette = etiquette.encode("utf-8")
         etiquette = jalon_utils.getInfosMembre(user_source)["fullname"]
 
         authMember = self.aq_parent.getId()
@@ -1544,7 +1491,7 @@ class JalonFolder(ATFolder):
         jalon_properties = getToolByName(self, "portal_jalon_properties")
         return jalon_properties.getJalonPhoto(user_id)
 
-    #   Suppression marquage HTML
+    #Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
 
