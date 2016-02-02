@@ -323,7 +323,7 @@ class JalonFolder(ATFolder):
         folder_link = self.absolute_url()
         is_manager = user.has_role("Manager")
         actions_list = [{"css_class":   "button create expand",
-                         "action_link": "%s/folder_form?macro=macro_mescours&amp;formulaire=ajout-cours" % folder_link,
+                         "action_link": "%s/folder_form?macro=macro_mescours_actions&amp;formulaire=add_course" % folder_link,
                          "action_icon": "fa fa-plus-circle",
                          "action_name": "Créer un cours"},
                         {"css_class":   "button",
@@ -337,18 +337,23 @@ class JalonFolder(ATFolder):
             tab = "1" if self.getComplement() == "True" else "2"
         tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
                       "tab_link":  "%s?onglet=1" % folder_link,
+                      "tab_icon":  "fa fa-star fa-fw",
                       "tab_name":  "Favoris"},
                      {"css_class": "button small selected" if tab == "2" else "button small secondary",
                       "tab_link":  "%s?onglet=2" % folder_link,
+                      "tab_icon":  "fa fa-user fa-fw",
                       "tab_name":  "Auteur"},
                      {"css_class": "button small selected" if tab == "3" else "button small secondary",
                       "tab_link":  "%s?onglet=3" % folder_link,
+                      "tab_icon":  "fa fa-users fa-fw",
                       "tab_name":  "Co-auteur"},
                      {"css_class": "button small selected" if tab == "4" else "button small secondary",
                       "tab_link":  "%s?onglet=4" % folder_link,
+                      "tab_icon":  "fa fa-graduation-cap fa-fw",
                       "tab_name":  "Lecteur"},
                      {"css_class": "button small selected" if tab == "5" else "button small secondary",
                       "tab_link":  "%s?onglet=5" % folder_link,
+                      "tab_icon":  "fa fa-folder fa-fw",
                       "tab_name":  "Archives"}]
         return {"tab":          tab,
                 "is_manager":   is_manager,
@@ -430,8 +435,14 @@ class JalonFolder(ATFolder):
             courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
             courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            del actions_list[1]
+            del actions_list[-1]
         if onglet == "4":
             courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[-1]
         if onglet == "5":
             filtre["getArchive"] = member_id
             courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
