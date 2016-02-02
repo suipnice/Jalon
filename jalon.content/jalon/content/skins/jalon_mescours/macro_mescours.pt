@@ -22,12 +22,12 @@
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main id="mes_cours" class="row" role="main" aria-labelledby="page_title"
-          tal:define="onglet request/onglet | string:2;
-                      mescours_view python:context.getMesCoursView(onglet, user)">
+          tal:define="tab request/onglet | nothing;
+                      mescours_view python:context.getMesCoursView(user, tab);
+                      onglet mescours_view/tab">
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
 
-        <section class="show-for-medium-up medium-12 columns"
-                 tal:define="is_manager python:user.has_role('Manager')">
+        <section class="show-for-medium-up medium-12 columns">
             <nav id="item-adder">
                 <ul class="button-group expand radius even-2"
                     tal:omit-tag="not:mescours_view/is_manager">

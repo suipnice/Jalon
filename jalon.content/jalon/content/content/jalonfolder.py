@@ -325,7 +325,7 @@ class JalonFolder(ATFolder):
         c = a.difference(b)
         return c
 
-    def getMesCoursView(self, tab, user):
+    def getMesCoursView(self, user, tab=None):
         LOG.info("----- getMesCoursView -----")
 
         folder_link = self.absolute_url()
@@ -341,6 +341,8 @@ class JalonFolder(ATFolder):
         if not is_manager:
             del actions_list[-1]
 
+        if not tab:
+            tab = "1" if self.getComplement() == "True" else "2"
         tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
                       "tab_link":  "%s?onglet=1" % folder_link,
                       "tab_name":  "Favoris"},
@@ -356,7 +358,8 @@ class JalonFolder(ATFolder):
                      {"css_class": "button small selected" if tab == "5" else "button small secondary",
                       "tab_link":  "%s?onglet=5" % folder_link,
                       "tab_name":  "Archives"}]
-        return {"is_manager":   is_manager,
+        return {"tab":          tab,
+                "is_manager":   is_manager,
                 "actions_list": actions_list,
                 "tabs_list":    tabs_list}
 
@@ -390,9 +393,9 @@ class JalonFolder(ATFolder):
     def getListeCoursEns(self, onglet, member):
         LOG.info("----- getListeCoursEns -----")
         """ Renvoi la liste des cours pour authMember."""
-        cours_list = []
-        cours_ids_list = []
-        cours_list_filter = []
+        courses_list = []
+        courses_ids_list = []
+        courses_list_filter = []
         member_id = member.getId()
         member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
@@ -419,39 +422,43 @@ class JalonFolder(ATFolder):
         filtre = {"portal_type": "JalonCours"}
         if onglet == "1":
             filtre["Subject"] = member_id
-            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
-            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
             actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
                                "action_icon": "fa fa-star-o fa-fw warning",
                                "action_name": "Retirer des favoris"}
+            if len(courses_list):
+                self.setComplement("True")
+            else:
+                self.setComplement("False")
         if onglet == "2":
-            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
-            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
         if onglet == "4":
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
         if onglet == "5":
             filtre["getArchive"] = member_id
-            cours_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
-            cours_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
-            cours_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
             actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
                                 "action_icon": "fa fa-folder-open fa-fw warning",
                                 "action_name": "Désarchiver ce cours"}
         authors_dict = {}
-        for cours_brain in cours_list:
-            if not cours_brain.getId in cours_ids_list:
+        for cours_brain in courses_list:
+            if not cours_brain.getId in courses_ids_list:
                 if not onglet in ["1", "5"]:
                     if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
-                        cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                        courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 else:
-                    cours_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
-                cours_ids_list.append(cours_brain.getId)
-        return list(cours_list_filter)
+                    courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                courses_ids_list.append(cours_brain.getId)
+        return list(courses_list_filter)
 
     def getInfosApogee(self, code, type):
         portal = self.portal_url.getPortalObject()
