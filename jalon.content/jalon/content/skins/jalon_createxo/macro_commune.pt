@@ -216,12 +216,11 @@
             <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
             <p i18n:translate="">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
             <p i18n:translate="">N'hésitez-pas à
-                <strong tal:define="admin_link here/portal_jalon_properties/getLienContact;
+                <strong tal:define="contact_link here/portal_jalon_properties/getLienContact;
                                     object_title here/Title;
-                                    site_title python:here.getInfosConnexion()['site'];
                                     abs_url here/absolute_url;">
                     <a i18n:translate="contact_site_admin"
-                       tal:attributes="href string:${admin_link}?subject=[${site_title}] Accès non autorisé&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
+                       tal:attributes="href string:${contact_link/contact_link}?subject=[${contact_link/portal_title}] Accès non autorisé&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
                 en décrivant au maximum votre souci, si vous pensez que c'est une erreur.
             </p>
         </div>

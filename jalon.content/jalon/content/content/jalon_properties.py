@@ -12,7 +12,6 @@ from twython import Twython, TwythonError
 from ..browser.interfaces import IJalonProperties
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
 
 from DateTime import DateTime
 
@@ -325,199 +324,36 @@ class JalonProperties(SimpleItem):
         self._categories = {1: {"title": _(u"Mes formations"), "users": ['all']},
                             2: {"title": _(u"Inscription par mot de passe"), "users": ['all']}}
 
+    #-------------#
+    # utilitaires #
+    #-------------#
     def getJalonProperty(self, key):
         return getattr(self, "_%s" % key)
 
-    # -----------------------#
-    # Gestion des catégories #
-    #------------------------#
-    def getCategorie(self, key=None):
-        if key:
-            return self._categories.get(int(key), None)
-        return dict(self._categories)
+    def test(self, condition, valeurVrai, valeurFaux):
+        return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
-    def getClefCategories(self):
-        clefs = self._categories.keys()[:]
-        clefs.sort(lambda x, y: cmp(int(x), int(y)))
-        return clefs
+    def getShortText(self, text, limit=75):
+        return jalon_utils.getShortText(text, limit)
 
-    def setCategories(self, categories):
-        if type(self._categories).__name__ != "PersistentMapping":
-            self._categories = PersistentDict(categories)
+    def getJalonPhoto(self, user_id):
+        if self._activer_stockage_photo:
+            portal = self.portal_url.getPortalObject()
+            return "%s/etudiants/%s" % (portal.absolute_url(), user_id)
         else:
-            self._categories = categories
+            return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
-    def getUsersCategorie(self, clef):
-        categorie = self.getCategorie(int(clef))
-        if categorie["users"] == ["all"]:
-            return ["all"]
-        return self.getInfosUsers(categorie["users"])
+    def getMonEspace(self):
+        LOG.info("----- getMonEspace -----")
+        return {"grid":        self.getGridMonEspace(),
+                "maintenance": self.getPropertiesMaintenance(),
+                "vidercache":  self.getJalonProperty("annoncer_vider_cache"),
+                "messages":    self.getPropertiesMessages()}
 
-    def setUsersCategorie(self, form):
-        categories = copy.deepcopy(self.getCategorie())
-        if "all" in form:
-            categories[int(form["clef"])]["users"] = ["all"]
-        else:
-            users = []
-            if "users-actu" in form:
-                users = form["users-actu"]
-            if "username" in form:
-                usernames = form["username"].split(",")
-                if usernames != ['']:
-                    for username in usernames:
-                        if not username in users:
-                            users.append(username)
-            categories[int(form["clef"])]["users"] = users
-        self.setCategories(categories)
-
-    def getInfosUsers(self, users):
-        infosUsers = []
-        for user in users:
-            result = self.rechercherUtilisateur(user, "Personnel", match=True, attribut="supannAliasLogin")
-            infosUsers.append(json.loads(result)[0])
-        infosUsers.sort(lambda x, y: cmp(x["name"], y["name"]))
-        return infosUsers
-
-    def creerCategorie(self, title):
-        clefs = copy.deepcopy(self.getClefCategories())
-        clef = int(clefs[-1]) + 1
-        categories = self.getCategorie()
-        categories[clef] = {"title": title, "users": []}
-        self.setCategories(categories)
-
-    def renommerCategorie(self, clef, title):
-        categories = copy.deepcopy(self.getCategorie())
-        categories[int(clef)]["title"] = title
-        self.setCategories(categories)
-
-    #--------------------#
-    # Gestion du Podcast #
-    #--------------------#
-    def getVariablesPodcast(self):
-        return {"activerPodcasts": self._activerPodcasts,
-                "uploadPodcasts":  self._uploadPodcasts,
-                "dnsPodcasts":     self._dnsPodcasts}
-
-    def setVariablesPodcast(self, podcasts):
-        if "activerPodcasts" in podcasts:
-            self._activerPodcasts = podcasts["activerPodcasts"]
-        self._uploadPodcasts = podcasts["uploadPodcasts"]
-        self._dnsPodcasts = podcasts["dnsPodcasts"]
-
-    def getUsersPodcast(self, tiny=None):
-        if tiny:
-            return self._dicoUsersPodcast.keys()
-        listeUsers = []
-        for user in self._dicoUsersPodcast.keys():
-            listeUsers.append({"id": user,
-                               "fullname": jalon_utils.getInfosMembre(user)["fullname"]})
-        listeUsers.sort(lambda x, y: cmp(x["fullname"], y["fullname"]))
-        return listeUsers
-
-    def setDicoUsersPodcast(self, dicoUsersPodcast):
-        if type(self._dicoUsersPodcast).__name__ != "PersistentMapping":
-            self._dicoUsersPodcast = PersistentDict(dicoUsersPodcast)
-        else:
-            self._dicoUsersPodcast = dicoUsersPodcast
-
-    def setUsersPodcast(self, form):
-        dicoUsersPodcast = self._dicoUsersPodcast
-        if "username" in form:
-            usernames = form["username"].split(",")
-            if usernames != ['']:
-                for username in usernames:
-                    if not username in dicoUsersPodcast.keys():
-                        dicoUsersPodcast[username] = {}
-                self.setDicoUsersPodcast(dicoUsersPodcast)
-
-    def setUsersiTunesU(self, auteurCours):
-        dicoUsersPodcast = self._dicoUsersPodcast
-        if not auteurCours in dicoUsersPodcast:
-            dicoUsersPodcast[auteurCours] = []
-            self.setDicoUsersPodcast(dicoUsersPodcast)
-
-    def setCoursUser(self, auteurCours, idCours):
-        dicoUsersPodcast = self._dicoUsersPodcast
-        listeCours = dicoUsersPodcast[auteurCours]
-        if not idCours in listeCours:
-            listeCours.append(idCours)
-            dicoUsersPodcast[auteurCours] = listeCours
-            self.setDicoUsersPodcast(dicoUsersPodcast)
-
-    def getCoursUser(self, user):
-        retour = []
-        portal = self.aq_parent
-        listeCours = self._dicoUsersPodcast[user]
-        dicoLibCatITunesU = self._dicoLibCatITunesU
-        repCours = getattr(getattr(portal, "cours"), user)
-        for idCours in listeCours:
-            cours = getattr(repCours, idCours, None)
-            if cours:
-                catiTunesU = cours.getCatiTunesU()
-                if catiTunesU:
-                    catPrinCours = dicoLibCatITunesU[catiTunesU[:3]]
-                    catSecCours = dicoLibCatITunesU[catiTunesU]
-                else:
-                    catPrinCours = "Erreur : catégorie à redéfinir"
-                    catSecCours = ""
-                retour.append({"idCours"      : idCours,
-                               "titreCours"   : cours.Title(),
-                               "etatCours"    : cours.isDiffuseriTunesU(),
-                               "catPrinCours" : catPrinCours,
-                               "catSecCours"  : catSecCours,
-                               "urlCours"     : cours.absolute_url()})
-
-        retour.sort(lambda x, y: cmp(x["titreCours"], y["titreCours"]))
-        return retour
-
-    def getAffCatiTunesUCours(self, idCatiTunesU):
-        dicoLibCatITunesU = self._dicoLibCatITunesU
-        catPrinCours = dicoLibCatITunesU[idCatiTunesU[:3]]
-        catSecCours = dicoLibCatITunesU[idCatiTunesU]
-        return "%s / %s" % (catPrinCours, catSecCours)
-
-    def validerCoursiTunesU(self, idCours, auteurCours):
-        portal = self.aq_parent
-        repCours = getattr(getattr(portal, "cours"), auteurCours)
-        cours = getattr(repCours, idCours, None)
-        if idCours:
-            cours.setProperties({"diffusioniTunesU": True})
-            cours.setProperties({"DateDerniereModif": DateTime()})
-            infosMembre = jalon_utils.getInfosMembre(auteurCours)
-            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
-                                     "objet"  : "Validation de votre demande iTunesU",
-                                     "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU a été validé dans la catégorie : \"%s\".\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
-
-    def rejeterCoursiTunesU(self, idCours, auteurCours):
-        portal = self.aq_parent
-        repCours = getattr(getattr(portal, "cours"), auteurCours)
-        cours = getattr(repCours, idCours, None)
-        if idCours:
-            infosMembre = jalon_utils.getInfosMembre(auteurCours)
-            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
-                                     "objet"  : "Rejet de votre demande iTunesU",
-                                     "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU dans la catégorie : \"%s\" a été rejeté.\n\nNous vous remercions de votre compréhension,\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
-            cours.setProperties({"DiffusioniTunesU": False})
-            cours.setProperties({"CatiTunesU": ""})
-            cours.setProperties({"DateDerniereModif": DateTime()})
-            dicoUsersPodcast = self._dicoUsersPodcast
-            listeCours = dicoUsersPodcast[auteurCours]
-            listeCours.remove(idCours)
-            dicoUsersPodcast[auteurCours] = listeCours
-            self.setDicoUsersPodcast(dicoUsersPodcast)
-
-    def getCatITunesU(self):
-        return self._catITunesU
-
-    def getPropertiesCatiTunesU(self):
-        return {"dicoLibCatITunesU" : self._dicoLibCatITunesU,
-                "catITunesU"        : self._catITunesU,
-                "ordreCatiTunesU"   : self._ordreCatiTunesU}
-
-    def getListeCatITunesU(self):
-        listeCatITunesU = self._catITunesU.keys()
-        listeCatITunesU.sort()
-        return listeCatITunesU
+    def generatePageMonEspace(self):
+        LOG.info("----- generatePageMonEspace -----")
+        macro_mon_espace_grid = self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")
+        LOG.info(macro_mon_espace_grid)
 
     #------------------------#
     # Fonctions de connexion #
@@ -568,15 +404,17 @@ class JalonProperties(SimpleItem):
 
     def getLienContact(self):
         """ Fournit un lien pour contacter l'administrateur du site."""
+        portal = self.portal_url.getPortalObject()
+        portal_title = portal.Title()
         if self._activer_lien_contact:
             lien_contact = self._lien_contact
         else:
             if self._activer_email_erreur:
                 lien_contact = "mailto:%s" % self._adresse_email_erreur
             else:
-                portal = getUtility(IPloneSiteRoot)
                 lien_contact = "mailto:%s" % portal.getProperty("email_from_address")
-        return lien_contact
+        return {"portal_title": portal_title,
+                "contact_link":  lien_contact}
 
     #--------------------------------#
     # Fonctions du bloc Didacticiels #
@@ -606,19 +444,21 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_message_general"    : self._activer_message_general,
-                    "message_general"            : self._message_general,
-                    "activer_bie"                : self._activer_bie,
-                    "bie_message"                : self._bie_message,
-                    "activer_message_enseignant" : self._activer_message_enseignant,
-                    "message_enseignant"         : self._message_enseignant}
+            return {"activer_message_general":    self._activer_message_general,
+                    "message_general":            self._message_general,
+                    "activer_bie":                self._activer_bie,
+                    "bie_message":                self._bie_message,
+                    "activer_message_enseignant": self._activer_message_enseignant,
+                    "message_enseignant":         self._message_enseignant}
 
     def setPropertiesMessages(self, form):
+        LOG.info("----- setPropertiesMessages -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
+        self.generatePageMonEspace()
 
     #-----------------------------#
     # Fonctions du bloc Courriels #
@@ -858,13 +698,13 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_ldap"           : self._activer_ldap,
-                    "base_ldap"              : self._base_ldap,
-                    "schema_ldap"            : self._schema_ldap,
-                    "fiche_ldap"             : self._fiche_ldap,
-                    "activer_trombinoscope"  : self._activer_trombinoscope,
-                    "activer_stockage_photo" : self._activer_stockage_photo,
-                    "lien_trombinoscope"     : self._lien_trombinoscope}
+            return {"activer_ldap":           self._activer_ldap,
+                    "base_ldap":              self._base_ldap,
+                    "schema_ldap":            self._schema_ldap,
+                    "fiche_ldap":             self._fiche_ldap,
+                    "activer_trombinoscope":  self._activer_trombinoscope,
+                    "activer_stockage_photo": self._activer_stockage_photo,
+                    "lien_trombinoscope":     self._lien_trombinoscope}
 
     def setPropertiesDonneesUtilisateurs(self, form):
         for key in form.keys():
@@ -878,19 +718,13 @@ class JalonProperties(SimpleItem):
 
     def rechercherUtilisateur(self, username, typeUser, match=False, attribut="displayName"):
         """recherche un Utilisateur."""
-        portal = self.portal_url.getPortalObject()
-
-        #self.plone_log("[JalonProperties.py] self.isLDAP = %s" % self.isLDAP())
-
         if self.isLDAP():
-            jalon_configuration = IJalonConfigurationControlPanel(portal)
-            schema = jalon_configuration.get_schema_ldap()
-            if schema == "supann":
+            if self._schema_ldap == "supann":
                 ldap = "ldap-plugin"
                 if typeUser == "Etudiant":
                     ldap = "ldap-plugin-etu"
                 return self.rechercherUserLDAPSupann(username, attribut, ldap, match)
-            if schema == "eduPerson":
+            if self._schema_ldap == "eduPerson":
                 return self.rechercherUserLDAPEduPerson(username, attribut, "ldap-plugin", match)
         else:
             portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
@@ -964,7 +798,7 @@ class JalonProperties(SimpleItem):
                 "url_news_maintenance":       self._url_news_maintenance}
 
     def setPropertiesMaintenance(self, form):
-        #self.plone_log("setPropertiesMaintenance")
+        LOG.info("----- setPropertiesMaintenance -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_") or key.startswith("annoncer_"):
@@ -972,6 +806,7 @@ class JalonProperties(SimpleItem):
             if key.startswith("date_"):
                 val = DateTime(val)
             setattr(self, "_%s" % key, val)
+        self.generatePageMonEspace()
 
     #------------------------#
     # Fonction Elasticsearch #
@@ -1054,6 +889,197 @@ class JalonProperties(SimpleItem):
         else:
             portal_jalon_wowza.modifyStreaming(params["pod"])
 
+    # -----------------------#
+    # Gestion des catégories #
+    #------------------------#
+    def getCategorie(self, key=None):
+        if key:
+            return self._categories.get(int(key), None)
+        return dict(self._categories)
+
+    def getClefCategories(self):
+        clefs = self._categories.keys()[:]
+        clefs.sort(lambda x, y: cmp(int(x), int(y)))
+        return clefs
+
+    def setCategories(self, categories):
+        if type(self._categories).__name__ != "PersistentMapping":
+            self._categories = PersistentDict(categories)
+        else:
+            self._categories = categories
+
+    def getUsersCategorie(self, clef):
+        categorie = self.getCategorie(int(clef))
+        if categorie["users"] == ["all"]:
+            return ["all"]
+        return self.getInfosUsers(categorie["users"])
+
+    def setUsersCategorie(self, form):
+        categories = copy.deepcopy(self.getCategorie())
+        if "all" in form:
+            categories[int(form["clef"])]["users"] = ["all"]
+        else:
+            users = []
+            if "users-actu" in form:
+                users = form["users-actu"]
+            if "username" in form:
+                usernames = form["username"].split(",")
+                if usernames != ['']:
+                    for username in usernames:
+                        if not username in users:
+                            users.append(username)
+            categories[int(form["clef"])]["users"] = users
+        self.setCategories(categories)
+
+    def getInfosUsers(self, users):
+        infosUsers = []
+        for user in users:
+            result = self.rechercherUtilisateur(user, "Personnel", match=True, attribut="supannAliasLogin")
+            infosUsers.append(json.loads(result)[0])
+        infosUsers.sort(lambda x, y: cmp(x["name"], y["name"]))
+        return infosUsers
+
+    def creerCategorie(self, title):
+        clefs = copy.deepcopy(self.getClefCategories())
+        clef = int(clefs[-1]) + 1
+        categories = self.getCategorie()
+        categories[clef] = {"title": title, "users": []}
+        self.setCategories(categories)
+
+    def renommerCategorie(self, clef, title):
+        categories = copy.deepcopy(self.getCategorie())
+        categories[int(clef)]["title"] = title
+        self.setCategories(categories)
+
+    #--------------------#
+    # Gestion du Podcast #
+    #--------------------#
+    def getVariablesPodcast(self):
+        return {"activerPodcasts": self._activerPodcasts,
+                "uploadPodcasts":  self._uploadPodcasts,
+                "dnsPodcasts":     self._dnsPodcasts}
+
+    def setVariablesPodcast(self, podcasts):
+        if "activerPodcasts" in podcasts:
+            self._activerPodcasts = podcasts["activerPodcasts"]
+        self._uploadPodcasts = podcasts["uploadPodcasts"]
+        self._dnsPodcasts = podcasts["dnsPodcasts"]
+
+    def getUsersPodcast(self, tiny=None):
+        if tiny:
+            return self._dicoUsersPodcast.keys()
+        listeUsers = []
+        for user in self._dicoUsersPodcast.keys():
+            listeUsers.append({"id": user,
+                               "fullname": jalon_utils.getInfosMembre(user)["fullname"]})
+        listeUsers.sort(lambda x, y: cmp(x["fullname"], y["fullname"]))
+        return listeUsers
+
+    def setDicoUsersPodcast(self, dicoUsersPodcast):
+        if type(self._dicoUsersPodcast).__name__ != "PersistentMapping":
+            self._dicoUsersPodcast = PersistentDict(dicoUsersPodcast)
+        else:
+            self._dicoUsersPodcast = dicoUsersPodcast
+
+    def setUsersPodcast(self, form):
+        dicoUsersPodcast = self._dicoUsersPodcast
+        if "username" in form:
+            usernames = form["username"].split(",")
+            if usernames != ['']:
+                for username in usernames:
+                    if not username in dicoUsersPodcast.keys():
+                        dicoUsersPodcast[username] = {}
+                self.setDicoUsersPodcast(dicoUsersPodcast)
+
+    def setUsersiTunesU(self, auteurCours):
+        dicoUsersPodcast = self._dicoUsersPodcast
+        if not auteurCours in dicoUsersPodcast:
+            dicoUsersPodcast[auteurCours] = []
+            self.setDicoUsersPodcast(dicoUsersPodcast)
+
+    def setCoursUser(self, auteurCours, idCours):
+        dicoUsersPodcast = self._dicoUsersPodcast
+        listeCours = dicoUsersPodcast[auteurCours]
+        if not idCours in listeCours:
+            listeCours.append(idCours)
+            dicoUsersPodcast[auteurCours] = listeCours
+            self.setDicoUsersPodcast(dicoUsersPodcast)
+
+    def getCoursUser(self, user):
+        retour = []
+        portal = self.aq_parent
+        listeCours = self._dicoUsersPodcast[user]
+        dicoLibCatITunesU = self._dicoLibCatITunesU
+        repCours = getattr(getattr(portal, "cours"), user)
+        for idCours in listeCours:
+            cours = getattr(repCours, idCours, None)
+            if cours:
+                catiTunesU = cours.getCatiTunesU()
+                if catiTunesU:
+                    catPrinCours = dicoLibCatITunesU[catiTunesU[:3]]
+                    catSecCours = dicoLibCatITunesU[catiTunesU]
+                else:
+                    catPrinCours = "Erreur : catégorie à redéfinir"
+                    catSecCours = ""
+                retour.append({"idCours"      : idCours,
+                               "titreCours"   : cours.Title(),
+                               "etatCours"    : cours.isDiffuseriTunesU(),
+                               "catPrinCours" : catPrinCours,
+                               "catSecCours"  : catSecCours,
+                               "urlCours"     : cours.absolute_url()})
+
+        retour.sort(lambda x, y: cmp(x["titreCours"], y["titreCours"]))
+        return retour
+
+    def getAffCatiTunesUCours(self, idCatiTunesU):
+        dicoLibCatITunesU = self._dicoLibCatITunesU
+        catPrinCours = dicoLibCatITunesU[idCatiTunesU[:3]]
+        catSecCours = dicoLibCatITunesU[idCatiTunesU]
+        return "%s / %s" % (catPrinCours, catSecCours)
+
+    def validerCoursiTunesU(self, idCours, auteurCours):
+        portal = self.aq_parent
+        repCours = getattr(getattr(portal, "cours"), auteurCours)
+        cours = getattr(repCours, idCours, None)
+        if idCours:
+            cours.setProperties({"diffusioniTunesU": True})
+            cours.setProperties({"DateDerniereModif": DateTime()})
+            infosMembre = jalon_utils.getInfosMembre(auteurCours)
+            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
+                                     "objet"  : "Validation de votre demande iTunesU",
+                                     "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU a été validé dans la catégorie : \"%s\".\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
+
+    def rejeterCoursiTunesU(self, idCours, auteurCours):
+        portal = self.aq_parent
+        repCours = getattr(getattr(portal, "cours"), auteurCours)
+        cours = getattr(repCours, idCours, None)
+        if idCours:
+            infosMembre = jalon_utils.getInfosMembre(auteurCours)
+            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
+                                     "objet"  : "Rejet de votre demande iTunesU",
+                                     "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU dans la catégorie : \"%s\" a été rejeté.\n\nNous vous remercions de votre compréhension,\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
+            cours.setProperties({"DiffusioniTunesU": False})
+            cours.setProperties({"CatiTunesU": ""})
+            cours.setProperties({"DateDerniereModif": DateTime()})
+            dicoUsersPodcast = self._dicoUsersPodcast
+            listeCours = dicoUsersPodcast[auteurCours]
+            listeCours.remove(idCours)
+            dicoUsersPodcast[auteurCours] = listeCours
+            self.setDicoUsersPodcast(dicoUsersPodcast)
+
+    def getCatITunesU(self):
+        return self._catITunesU
+
+    def getPropertiesCatiTunesU(self):
+        return {"dicoLibCatITunesU" : self._dicoLibCatITunesU,
+                "catITunesU"        : self._catITunesU,
+                "ordreCatiTunesU"   : self._ordreCatiTunesU}
+
+    def getListeCatITunesU(self):
+        listeCatITunesU = self._catITunesU.keys()
+        listeCatITunesU.sort()
+        return listeCatITunesU
+
     #-------------------------------#
     # Fonction Communication NodeJS #
     #-------------------------------#
@@ -1066,19 +1092,3 @@ class JalonProperties(SimpleItem):
         portal = self.portal_url.getPortalObject()
         portal_jalon_communication = getattr(portal, "portal_jalon_communication", None)
         portal_jalon_communication.setPropertiesCommunication(propertiesCommunication)
-
-    #-------------#
-    # utilitaires #
-    #-------------#
-    def test(self, condition, valeurVrai, valeurFaux):
-        return jalon_utils.test(condition, valeurVrai, valeurFaux)
-
-    def getShortText(self, text, limit=75):
-        return jalon_utils.getShortText(text, limit)
-
-    def getJalonPhoto(self, user_id):
-        if self._activer_stockage_photo:
-            portal = self.portal_url.getPortalObject()
-            return "%s/etudiants/%s" % (portal.absolute_url(), user_id)
-        else:
-            return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)

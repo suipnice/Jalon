@@ -4,10 +4,6 @@ from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
 from Products.CMFCore.utils import getToolByName
 
-from jalon.content.browser.config.jalonconfig import IJalonConfigControlPanel
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
-from jalon.content.browser.config.jalonmaintenance import IJalonMaintenanceControlPanel
-
 from jalon.content.content import jalon_utils
 
 
@@ -19,15 +15,6 @@ class FirstPage(BrowserView):
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
-
-    #def getMaintenance(self, portal):
-    #    return IJalonMaintenanceControlPanel(portal).getMaintenance()
-
-    def getInformation(self, portal):
-        return IJalonMaintenanceControlPanel(portal).getInformation()
-
-    def getViderCache(self, portal):
-        return IJalonMaintenanceControlPanel(portal).getViderCache()
 
     def getConnexion(self):
         portal_state = getMultiAdapter((self.context, self.request),

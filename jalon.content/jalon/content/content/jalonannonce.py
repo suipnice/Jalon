@@ -10,8 +10,6 @@ from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonAnnonce
 
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
-
 import jalon_utils
 
 JalonAnnonceSchema = ATDocumentSchema.copy() + Schema((

@@ -591,13 +591,12 @@ En entrée :
         <div class="panel warning radius"
              tal:define="error_type string:wims_bad_conf;
                          message infosNotes/message;
-                         admin_link here/portal_jalon_properties/getLienContact;
-                         site_title python:here.getInfosConnexion()['site'];
+                         contact_link here/portal_jalon_properties/getLienContact;
                          abs_url here/absolute_url;">
             <tal:block i18n:translate="">
                 Connexion au serveur WIMS impossible.
                 Veuillez <a i18n:translate="contact_site_admin"
-                            tal:attributes="href string:${admin_link}?subject=[${site_title}] Connexion WIMS impossible&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a>.
+                            tal:attributes="href string:${contact_link/contact_link}?subject=[${contact_link/portal_title}] Connexion WIMS impossible&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a>.
             </tal:block>
             <pre tal:content="message"/>
         </div>

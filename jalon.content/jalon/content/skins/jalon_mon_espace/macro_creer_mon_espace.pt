@@ -487,22 +487,31 @@
             </label>
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error" />
-            <select id="modele" name="modele"
-                    tal:define="modeles context/getModelesWims">
-                <tal:optgroup define="listCat python:modeles.keys();
-                                      listCatTem python:listCat.sort()"
-                              repeat="group listCat">
-                <optgroup tal:attributes="label group"
-                          i18n:attributes="label">
-                    <tal:option repeat="option python:modeles[group]">
-                    <option tal:attributes="value option/value"
-                            tal:content="option/title"
-                            i18n:translate="" />
-                    </tal:option>
+            <select id="modele" name="modele">
+                <optgroup label="1 Modeles simples">
+                    <option value="qcmsimple">Question simple</option>
+                    <option value="equation">Equation</option>
+                    <option value="texteatrous">Texte a trous</option>
+                    <option value="marqueruntexte">Marquer un texte</option>
+                    <option value="marquerparpropriete">Marquer par propriete</option>
+                    <option value="questiontextuelletolerante">Question textuelle tolerante</option>
+                    <option value="taperlemotassocie">Taper le mot associe</option>
                 </optgroup>
-                </tal:optgroup>
+                <optgroup label="2 : Modeles a base de 'glisser/deposer'">
+                    <option value="reordonner">Reordonner</option>
+                    <option value="correspondance">Correspondance</option>
+                    <option value="classerparpropriete">Classer par propriete</option>
+                </optgroup>
+                <optgroup label="3 : Modeles avances">
+                    <option value="vraifauxmultiples">Vrai / Faux multiples</option>
+                    <option value="texteatrousmultiples">Textes a trous multiples</option>
+                    <option value="exercicelibre">Exercice libre (mode brut)</option>
+                    <option value="qcmsuite">QCM à la suite</option>
+                </optgroup>
+                <optgroup label="4 : Modeles Tiers">
+                    <option value="externe">Exercice de la base WIMS</option>
+                </optgroup>
             </select>
-
         </div>
 
         <input type="hidden" name="form.submitted" value="1" />
