@@ -14,6 +14,14 @@
    />
 
   <browser:page
+      name="mon_espace_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+      template="templates/mon_espace/mon_espace_view.pt"
+      permission="zope2.View"
+      class=".scripts.first_page.FirstPage"
+   />
+
+  <browser:page
       name="jalonfolder_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
       template="templates/jalon_folder.pt"

@@ -68,14 +68,11 @@
             </h2>
         </div>
 
-        <nav class="small-12 columns"
-             tal:define="global increment python:0">
-
+        <nav class="small-12 columns">
             <tal:repeat repeat="block grid">
             <a tal:condition="block/activer"
                tal:attributes="class string:button res-${block/espace};
-                               href string:${context/absolute_url}/Members/${user/getId}/${block/repertoire}"
-               tal:define="global increment python:increment + 1">
+                               href string:${context/absolute_url}/Members/${user/getId}/${block/repertoire}">
                 <i tal:attributes="class block/icone"></i><tal:replace replace="block/titre"/>
             </a>
             </tal:repeat>
