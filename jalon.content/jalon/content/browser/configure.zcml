@@ -57,13 +57,6 @@
    />
 
   <browser:page
-      name="cours_acces_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonCours"
-      template="templates/cours_acces_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
       name="exercicewims_view"
       for="jalon.content.interfaces.jaloninterface.IJalonExerciceWims"
       template="templates/exercicewims_view.pt"
