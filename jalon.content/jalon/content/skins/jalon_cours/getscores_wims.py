@@ -32,7 +32,7 @@ if context.isAuteurs(authMember_id):
 
 
     # On demande les notes à WIMS
-    #resultat = context.supprimerActivitesWims(utilisateur=utilisateur, request=context.REQUEST)
+    resultat = context.getScoresWims(utilisateur=utilisateur, request=context.REQUEST)
     if resultat > 0:
         message = u"<strong>%s</strong> activité(s) WIMS a(ont) bien été téléchargée(s) du cours « <strong>%s</strong> »." % (resultat, titre_cours)
         context.plone_utils.addPortalMessage(_(message), "info")

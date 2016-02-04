@@ -2340,21 +2340,19 @@ class JalonCours(ATFolder):
 
     def getScoresWims(self, utilisateur="All", request=None):
         u"""Télécharger les notes de tous les examens WIMS créées par 'utilisateur' dans le cours."""
+        authMember = self.portal_membership.getAuthenticatedMember().getId()
 
         listeClasses = list(self.getListeClasses())
 
-        dico = listeClasses[0]
+        dicoClasses = listeClasses[0]
         #self.plone_log("[jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
-        for auteur in dico:
+        for auteur in dicoClasses:
             if utilisateur == "All" or utilisateur == auteur:
-                removing_classes.append(dico[auteur])
+                dico = {"qclass": class_id, "code": authMember}
+                rep = self.wims("getToutesLesNotes", dico)
+                #self.aq_parent.delClassesWims(removing_classes, request)
+        #self.plone_log("[jaloncours/getScoresWims] Nouvelle liste :'%s'" % new_listeClasses)
 
-
-        # Et enfin remettre à zero la liste des classes du cours.
-        #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
-        self.setListeClasses(new_listeClasses)
-
-        # Renvoit le nombre d'activités supprimées.
         return len(liste_activitesWIMS)
 
     def supprimerActivitesWims(self, utilisateur="All", request=None):
