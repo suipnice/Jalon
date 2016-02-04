@@ -288,6 +288,18 @@ form {
     div.switch { margin: 0; padding: 0; }
     div.switch label { margin-bottom: 0 !important; }
     div.switch input:disabled + label { background-color: scale-color( $secondary-color, $lightness: 30% ); }
+
+    // Défilement de tableaux
+    .table-overflow_container {
+        overflow: auto;
+        border: $table-border-style $table-border-size $table-border-color;
+        margin-bottom: 1.25rem;
+
+        & > table {
+            border: 0;
+            margin-bottom: 0;
+        }
+    }
 }
 
 #wims-edit form {

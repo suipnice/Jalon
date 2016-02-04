@@ -471,7 +471,7 @@
         <thead tal:define="head_table infos_tableau/head_table">
             <tr>
                 <th tal:repeat="tr head_table"
-                    tal:attributes="class tr/css_class; 
+                    tal:attributes="class tr/css_class;
                                     title tr/attr_title;
                                     data-sort tr/data-sort"
                     data-tooltip>
@@ -747,87 +747,89 @@
                   tal:define="listeEtudiants context/getOrdreEtudiants;"
                   tal:attributes="action string:${context/absolute_url}/enregistrer_comp_script"
                   tal:condition="is_personnel">
-                <table summary="Liste des compétences"
-                       tal:define="ordre context/getOrdreCompetences">
-                    <thead>
-                        <tr>
-                            <th class="sort has-tip" data-tooltip data-sort="etudiant"
-                                title="Cliquer pour trier selon l'étudiant"
-                                i18n:attributes="title">
-                                <span>
-                                    <i class="fa fa-sort"></i>
-                                    <i class="fa fa-sort-asc"></i>
-                                    <i class="fa fa-sort-desc"></i>
-                                    <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
-                                </span>
-                            </th>
-                        <tal:repeat repeat="index ordre">
-                            <th tal:define="competence python:dicoCompetences[index]">
-                                <tal:replace tal:replace="competence/titre">Titre de la compétence</tal:replace>
-                            </th>
+                <div class="table-overflow_container">
+                    <table summary="Liste des compétences"
+                           tal:define="ordre context/getOrdreCompetences">
+                        <thead>
+                            <tr>
+                                <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                                    title="Cliquer pour trier selon l'étudiant"
+                                    i18n:attributes="title">
+                                    <span>
+                                        <i class="fa fa-sort"></i>
+                                        <i class="fa fa-sort-asc"></i>
+                                        <i class="fa fa-sort-desc"></i>
+                                        <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                                    </span>
+                                </th>
+                            <tal:repeat repeat="index ordre">
+                                <th tal:define="competence python:dicoCompetences[index]">
+                                    <tal:replace tal:replace="competence/titre">Titre de la compétence</tal:replace>
+                                </th>
+                            </tal:repeat>
+                            </tr>
+                        </thead>
+                        <tfoot></tfoot>
+                        <tbody class="list"
+                               tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                            <tr tal:condition="not:listeEtudiants">
+                                <td tal:attributes="colspan python:(len(ordre) + 1)">
+                                    <strong i18n:translate="">Aucun étudiant à évaluer</strong>
+                                </td>
+                            </tr>
+                        <tal:repeat repeat="etudiant listeEtudiants">
+                            <tr tal:define="compEtu python:compEtudiants[etudiant['id']]">
+                                <td class="etudiant">
+                                    <span class="hide" tal:content="etudiant/nom" />
+                                    <tal:replace replace="etudiant/nom" />
+                                    <input type="hidden" name="etudiants.id:records"
+                                           tal:attributes="value etudiant/id" />
+                                </td>
+                            <tal:repeat repeat="index ordre">
+                                <td tal:attributes="class string:competence-${index}"
+                                    tal:define="competence python:dicoCompetences[index]">
+                                    <span class="hide" tal:content="competence/evaluation" />
+                                <tal:condition condition="python:competence['evaluation'] == 'libre'">
+                                    <input type="text"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           value python:compEtu[index] if index in compEtu else 'À acquérir'" />
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'validation'">
+                                    <input type="checkbox"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           checked python:compEtu[index] if index in compEtu else ''"
+                                           value="checked" />
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'gradation'">
+                                    <select tal:attributes="name string:etudiants.${index}:records">
+                                        <option value="acquerir"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquerir' else ''">
+                                            À acquérir
+                                        </option>
+                                        <option value="encours"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'encours' else ''">
+                                            En cours d'acquisition
+                                        </option>
+                                        <option value="acquise"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquise' else ''">
+                                            Acquis
+                                        </option>
+                                    </select>
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'note'">
+                                    <input type="number"
+                                           min="0" max="100" step="any" style="width:3em;"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           value python:compEtu[index] if index in compEtu else 'Non évalué';
+                                                           max competence/note_max | string:100"/>&nbsp;/&nbsp;<tal:replace replace="competence/note_max" />
+                                </tal:condition>
+                                </td>
+                            </tal:repeat>
+                            </tr>
                         </tal:repeat>
-                        </tr>
-                    </thead>
-                    <tfoot></tfoot>
-                    <tbody class="list"
-                           tal:define="compEtudiants python:dict(context.getCompEtudiants())">
-                        <tr tal:condition="not:listeEtudiants">
-                            <td tal:attributes="colspan python:(len(ordre) + 1)">
-                                <strong i18n:translate="">Aucun étudiant à évaluer</strong>
-                            </td>
-                        </tr>
-                    <tal:repeat repeat="etudiant listeEtudiants">
-                        <tr tal:define="compEtu python:compEtudiants[etudiant['id']]">
-                            <td class="etudiant">
-                                <span class="hide" tal:content="etudiant/nom" />
-                                <tal:replace replace="etudiant/nom" />
-                                <input type="hidden" name="etudiants.id:records"
-                                       tal:attributes="value etudiant/id" />
-                            </td>
-                        <tal:repeat repeat="index ordre">
-                            <td tal:attributes="class string:competence-${index}"
-                                tal:define="competence python:dicoCompetences[index]">
-                                <span class="hide" tal:content="competence/evaluation" />
-                            <tal:condition condition="python:competence['evaluation'] == 'libre'">
-                                <input type="text"
-                                       tal:attributes="name string:etudiants.${index}:records;
-                                                       value python:compEtu[index] if index in compEtu else 'À acquérir'" />
-                            </tal:condition>
-                            <tal:condition condition="python:competence['evaluation'] == 'validation'">
-                                <input type="checkbox"
-                                       tal:attributes="name string:etudiants.${index}:records;
-                                                       checked python:compEtu[index] if index in compEtu else ''"
-                                       value="checked" />
-                            </tal:condition>
-                            <tal:condition condition="python:competence['evaluation'] == 'gradation'">
-                                <select tal:attributes="name string:etudiants.${index}:records">
-                                    <option value="acquerir"
-                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquerir' else ''">
-                                        À acquérir
-                                    </option>
-                                    <option value="encours"
-                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'encours' else ''">
-                                        En cours d'acquisition
-                                    </option>
-                                    <option value="acquise"
-                                            tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquise' else ''">
-                                        Acquis
-                                    </option>
-                                </select>
-                            </tal:condition>
-                            <tal:condition condition="python:competence['evaluation'] == 'note'">
-                                <input type="number"
-                                       min="0" max="100" step="any" style="width:3em;"
-                                       tal:attributes="name string:etudiants.${index}:records;
-                                                       value python:compEtu[index] if index in compEtu else 'Non évalué';
-                                                       max competence/note_max | string:100"/>&nbsp;/&nbsp;<tal:replace replace="competence/note_max" />
-                            </tal:condition>
-                            </td>
-                        </tal:repeat>
-                        </tr>
-                    </tal:repeat>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="text-center">
                     <button type="submit" class="button small"
                             tal:condition="listeEtudiants">
