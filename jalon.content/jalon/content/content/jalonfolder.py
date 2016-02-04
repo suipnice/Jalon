@@ -236,7 +236,7 @@ class JalonFolder(ATFolder):
                 else:
                     exercices_wims = exercices["exotitlelist"]
                 if len(exercices_jalon) < len(exercices_wims):
-                    liste_modeles = self.getListeModelesWims()  # n'existe plus
+                    liste_modeles = self.wims("getWimsProperty", "modele_wims").keys()
                     #On recupere les exos de wims pour les créer sur jalon
                     for exo_wims in exercices_wims:
                         exo_ok = False
@@ -1330,7 +1330,7 @@ class JalonFolder(ATFolder):
         return deleted_classes
 
     def delExoWims(self, paths):
-        """ delExoWims() : suppression (coté wims) de la liste des exercices donné en "paths" """
+        u""" suppression (coté wims) de la liste des exercices donné en "paths"."""
         for path in paths:
             exo_id = path.split("/")[-1]
             exo = getattr(self, exo_id)
