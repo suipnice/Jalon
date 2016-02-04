@@ -117,10 +117,9 @@
 
   <!-- jalon control panel form view -->
   <browser:page
-    name="jalon-configuration"
+    name="jalon_properties"
     for="jalon.content.browser.interfaces.IJalonProperties"
-    class=".scripts.config.JalonConfiguration"
-    template="templates/jalon_configuration.pt"
+    template="templates/jalon_properties.pt"
     permission="cmf.ManagePortal"/>
 
 </configure>
