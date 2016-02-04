@@ -8,8 +8,6 @@ from zope.interface import classProvides
 from AccessControl import ClassSecurityInfo
 
 from jalon.primo.interfaces.utility import IPrimo, IPrimoLayout
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
-
 
 from OFS.SimpleItem import SimpleItem
 
@@ -23,7 +21,7 @@ import xml.dom.minidom as minidom
 
 # Messages de debug :
 from logging import getLogger
-LOG = getLogger( '[jalon.primo.utility]' )
+LOG = getLogger('[jalon.primo.utility]')
 """
 # Log examples :
 LOG.debug('debug message')
@@ -194,12 +192,13 @@ class Primo(SimpleItem):
 
     #recupére differents éléments génériques defini par l'administrateur dans les configs Jalon
     def getGenerique(self, generique):
-        portal = self.portal_url.getPortalObject()
-        jalon_conf = IJalonConfigurationControlPanel(portal)
-        if generique == "etablissement":
-            return jalon_conf.get_etablissement()
-        else:
-            return ""
+        return jalon_conf.get_etablissement()
+        #portal = self.portal_url.getPortalObject()
+        #jalon_conf = IJalonConfigurationControlPanel(portal)
+        #if generique == "etablissement":
+        #    return jalon_conf.get_etablissement()
+        #else:
+        #    return ""
 
     def supprimerAccent(self, ligne):
         """ supprime les accents du texte source """

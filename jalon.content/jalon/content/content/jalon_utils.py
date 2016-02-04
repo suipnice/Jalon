@@ -6,8 +6,6 @@ from zope.component import getUtility
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.CMFCore.utils import getToolByName
 
-from jalon.content.browser.config.jalonconfig import IJalonConfigControlPanel
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_encode
 
@@ -25,7 +23,6 @@ import email.Utils
 from urlparse import urlparse
 import urllib
 import urllib2
-import feedparser
 import locale
 import json
 import re
@@ -263,12 +260,6 @@ def envoyerMailErreur(form):
             s.close()
 
 
-def getAttributConf(attribut):
-    portal = getUtility(IPloneSiteRoot)
-    jalon_conf = IJalonConfigControlPanel(portal)
-    return jalon_conf.__getattribute__("get_%s" % attribut)()
-
-
 def getJalonProperty(key):
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
@@ -462,14 +453,6 @@ def getFicheAnnuaire(valeur, base=None):
     if not base:
         base = getBaseAnnuaire()
     return "".join([base['base'], valeur[base["variable"]], base["fin"]])
-
-
-def getInfosConnexion():
-    portal = getUtility(IPloneSiteRoot)
-    jalon_configuration = IJalonConfigurationControlPanel(portal)
-    return {"site":          portal.Title(),
-            "lien_sesame":   jalon_configuration.get_lien_sesame(),
-            "etablissement": jalon_configuration.get_etablissement()}
 
 
 def getInfosMembre(username):
@@ -724,22 +707,6 @@ def jalon_unquote(decode):
 
 def jalon_urlencode(chaine):
     return urllib.urlencode(chaine)
-
-
-def jalon_rss():
-    portal = getUtility(IPloneSiteRoot)
-    jalon_conf = IJalonConfigControlPanel(portal)
-    url_maj = jalon_conf.get_url_maj()
-    try:
-        f = feedparser.parse(url_maj)
-    except:
-        print "Une erreur"
-        return None
-
-    if len(f['entries']) > 0:
-        return f['entries'][0]
-    print "Aucune entrées"
-    return None
 
 
 def isAfficherElement(affElement, masquerElement):

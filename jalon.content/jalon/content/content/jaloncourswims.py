@@ -15,7 +15,6 @@ from persistent.dict import PersistentDict
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonCoursWims
-from jalon.content.browser.config.jalonconfig import IJalonConfigControlPanel
 
 # Messages de debug :
 from logging import getLogger
@@ -1297,8 +1296,8 @@ class JalonCoursWims(ATDocument):
 
     def wims(self, methode, param):
         """permet d'appeler la methode definie en parametre depuis le connecteur wims, en lui envoyant le dico "param"."""
-        wims = getToolByName(self, jalon_utils.getAttributConf("wims_connecteur"))
-        return wims.__getattribute__(methode)(param)
+        #LOG.info("----- wims -----")
+        return self.portal_wims.__getattribute__(methode)(param)
 
     def majActiviteWims(self):
         u""" Mise à jour des activités WIMS.

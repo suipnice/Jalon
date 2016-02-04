@@ -2217,9 +2217,8 @@ class JalonCours(ATFolder):
         return idElement
 
     def connect(self, methode, param):
-        #self.plone_log("connect")
-        connect = getToolByName(self, jalon_utils.getAttributConf("webconference_connecteur"))
-        return connect.__getattribute__(methode)(param)
+        #LOG.info("----- connect -----")
+        return self.portal_connect.__getattribute__(methode)(param)
 
     def detacherElement(self, ressource, createur, repertoire):
         #self.plone_log("detacherElement")
@@ -2559,10 +2558,6 @@ class JalonCours(ATFolder):
     def getParamMooc(self):
         #self.plone_log("getParamMooc")
         return urllib2.quote("".join(["?action=mooc&amp;idcours=", self.getId(), "&auteur=", self.Creator(), "&amp;came_from=", self.absolute_url()]))
-
-    def getInfosConnexion(self):
-        #self.plone_log("getInfosConnexion")
-        return jalon_utils.getInfosConnexion()
 
     def isLDAP(self):
         #self.plone_log("isLDAP")
