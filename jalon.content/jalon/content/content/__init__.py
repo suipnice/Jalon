@@ -11,3 +11,4 @@ import jalonfile
 import jalonforum
 import jalonannonce
 import jalon_encode
+import jalon_properties

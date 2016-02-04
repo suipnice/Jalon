@@ -9,7 +9,7 @@ from Products.CMFCore.utils import getToolByName
 
 from twython import Twython, TwythonError
 
-from ..interfaces import IJalonProperties
+from ..browser.interfaces import IJalonProperties
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel

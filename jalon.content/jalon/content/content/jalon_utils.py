@@ -938,61 +938,61 @@ def getFilAriane(portal, folder, authMemberId, page=None):
         if page == "gestion_connexion":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Connexion à Jalon"),
                           "icone": "fa fa-key"})
         if page == "gestion_mon_espace":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Gestion \"Mon Espace\""),
                           "icone": "fa fa-home"})
         if page == "gestion_mes_cours":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Gestion des Cours"),
                           "icone": "fa fa-university"})
         if page == "gestion_infos":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Liens d'informations"),
                           "icone": "fa fa-external-link-square"})
         if page == "gestion_didacticiels":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Didacticiels"),
                           "icone": "fa fa-life-ring"})
         if page == "gestion_messages":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Diffusion de messages"),
                           "icone": "fa fa-bullhorn"})
         if page == "gestion_email":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Courriels"),
                           "icone": "fa fa-envelope-o"})
         if page == "gestion_donnees_utilisateurs":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Données utilisateurs"),
                           "icone": "fa fa-users"})
         if page == "gestion_ga":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Google Analytics"),
                           "icone": "fa fa-line-chart"})
         if page == "gestion_maintenance":
             liste.append({"titre": _(u"Configuration de Jalon"),
                           "icone": "fa fa-cogs",
-                          "url"  : "%s/@@jalon-configuration" % folder.absolute_url()})
+                          "url"  : "%s/@@jalon_properties" % folder.absolute_url()})
             liste.append({"titre": _(u"Maintenance"),
                           "icone": "fa fa-umbrella"})
         return liste
@@ -1312,7 +1312,7 @@ def getJalonMenu(context, portal_url, user, request):
                            "class"   : "has-dropdown not-click",
                            "icone"   : "fa fa-cogs",
                            "title"   : _(u"Configuration"),
-                           "href"    : "%s/portal_jalon_properties/@@jalon-configuration" % portal_url,
+                           "href"    : "%s/portal_jalon_properties/@@jalon_properties" % portal_url,
                            "sub_menu": [{"id"   : "gestion_connexion",
                                          "icone": "fa fa-key",
                                          "title": _(u"Connexion à Jalon"),
