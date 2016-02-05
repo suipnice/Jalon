@@ -22,6 +22,14 @@
    />
 
   <browser:page
+      name="mes_fichiers_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+      template="templates/mon_espace/mes_fichiers_view.pt"
+      permission="zope2.View"
+      class=".scripts.mes_fichiers_view.MesFichiersView"
+   />
+
+  <browser:page
       name="jalonfolder_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
       template="templates/jalon_folder.pt"
