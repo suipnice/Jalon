@@ -96,6 +96,22 @@ class Wims(SimpleItem):
     min_login_len = 4
     max_login_len = 24
 
+    modele_wims = {"qcmsimple":                  "Question simple",
+                   "equation":                   "Equation",
+                   "texteatrous":                "Texte a trous",
+                   "marqueruntexte":             "Marquer un texte",
+                   "marquerparpropriete":        "Marquer par propriete",
+                   "questiontextuelletolerante": "Question textuelle tolerante",
+                   "taperlemotassocie":          "Taper le mot associe",
+                   "reordonner":                 "Reordonner",
+                   "correspondance":             "Correspondance",
+                   "classerparpropriete":        "Classer par propriete",
+                   "vraifauxmultiples":          "Vrai / Faux multiples",
+                   "texteatrousmultiples":       "Textes a trous multiples",
+                   "exercicelibre":              "Exercice libre (mode brut)",
+                   "qcmsuite":                   "QCM à la suite",
+                   "externe":                    "Exercice de la base WIMS"}
+
     def getWimsProperty(self, key):
         u""" obtient les propriétés."""
         return getattr(self, "%s" % key)

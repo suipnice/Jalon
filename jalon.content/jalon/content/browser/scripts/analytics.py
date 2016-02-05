@@ -6,8 +6,6 @@ from plone.app.layout.viewlets.common import ViewletBase
 
 from jalon.content.content import jalon_encode
 
-from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
-
 
 class JalonAnalytics(ViewletBase):
     """Class pour le first_page"""

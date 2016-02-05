@@ -1,0 +1,51 @@
+<tal:define define="infos_mon_espace context/getMonEspace">
+
+    <tal:comment replace="nothing">!-- Bloc annonce prévision maintenance --</tal:comment>
+    <div class="small-12 columns"
+         tal:condition="maintenance/annoncer_maintenance">
+        <metal:macro use-macro="context/connexion/macros/annoncer-maintenance-jalon"></metal:macro>
+    </div>
+
+    <tal:comment replace="nothing">!-- Bloc annonce vider cache navigateur --</tal:comment>
+    <div class="small-12 columns"
+         tal:condition="infos_mon_espace/vidercache">
+        <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
+    </div>
+
+    <tal:comment replace="nothing">!-- Bloc message de session --</tal:comment>
+    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+        Message de session
+    </metal:macro>
+
+    <tal:comment replace="nothing">!-- Bloc feedback WIMS ? --</tal:comment>
+    <div class="small-12 columns"
+         tal:condition="message"
+         tal:define="message request/message | nothing">
+         <metal:macro use-macro="context/macro_messages/macros/messages"></metal:macro>
+    </div>
+
+    <tal:comment replace="nothing">!-- Bloc message général et message enseignant --</tal:comment>
+    <div class="small-12 columns"
+             tal:condition="python:messages['activer_message_general'] or messages['activer_message_enseignant']">
+        <div class="panel warning radius"
+             tal:condition="messages/activer_message_general">
+            <span tal:content="structure messages/message_general"/>
+        </div>
+
+        <div class="panel warning radius"
+             tal:condition="messages/activer_message_enseignant">
+            <span tal:content="structure messages/message_enseignant"/>
+        </div>
+    </div>
+
+    <tal:comment replace="nothing">!-- Grille d'accès à mon espace --</tal:comment>
+    <nav class="small-12 columns">
+        <tal:repeat repeat="block grid">
+        <a tal:condition="block/activer"
+           tal:attributes="class string:button res-${block/espace};
+                           href string:${context/absolute_url}/Members/${user/getId}/${block/repertoire}">
+            <i tal:attributes="class block/icone"></i><tal:replace replace="block/titre"/>
+        </a>
+        </tal:repeat>
+    </nav>
+</tal:define>

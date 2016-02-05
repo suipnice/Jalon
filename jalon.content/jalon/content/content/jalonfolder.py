@@ -13,8 +13,6 @@ from plone.portlets.interfaces import IPortletManager, ILocalPortletAssignmentMa
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonFolder
-from jalon.content.browser.config.jalonconfig import IJalonConfigControlPanel
-#from jalon.content.browser.config.jalonconfiguration import IJalonConfigurationControlPanel
 
 from Acquisition import aq_inner
 from DateTime import DateTime
@@ -22,12 +20,9 @@ from DateTime import DateTime
 import locale
 import json
 import urllib
-import urllib2
 import random
 import jalon_utils
 import string
-import jalonressourceexterne
-import cStringIO
 import os
 import copy
 
@@ -241,7 +236,7 @@ class JalonFolder(ATFolder):
                 else:
                     exercices_wims = exercices["exotitlelist"]
                 if len(exercices_jalon) < len(exercices_wims):
-                    liste_modeles = self.getListeModelesWims()
+                    liste_modeles = self.wims("getWimsProperty", "modele_wims").keys()
                     #On recupere les exos de wims pour les créer sur jalon
                     for exo_wims in exercices_wims:
                         exo_ok = False
@@ -806,36 +801,11 @@ class JalonFolder(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
-    def getListeModelesWims(self):
-        modeles = []
-        modeles_conf = jalon_utils.getAttributConf("wims_modele")
-        for element in modeles_conf:
-            try:
-                idmodele, titremodele, catmodele = element.split("*-*")
-                modeles.append(idmodele)
-            except:
-                pass
-        return modeles
+    def getLocaleDate(self, date, format="%d/%m/%Y"):
+        return jalon_utils.getLocaleDate(date, format)
 
-    def getLocaleDate( self, date, format = "%d/%m/%Y" ):
-        return jalon_utils.getLocaleDate( date, format )
-
-    def getConnectDate(self, data, sortable = False):
-        return jalon_utils.getConnectDate( data, sortable )
-
-    def getModelesWims(self):
-        modeles = {}
-        modeles_conf = jalon_utils.getAttributConf("wims_modele")
-        for element in modeles_conf:
-            try:
-                idmodele, titremodele, catmodele = element.split("*-*")
-                if not catmodele in modeles:
-                    modeles[catmodele] = [{"value": idmodele, "title": titremodele}]
-                else:
-                    modeles[catmodele].append({"value": idmodele, "title": titremodele})
-            except:
-                pass
-        return modeles
+    def getConnectDate(self, data, sortable=False):
+        return jalon_utils.getConnectDate(data, sortable)
 
     def getPhotoTrombi(self, login):
         return jalon_utils.getPhotoTrombi(login)
@@ -1009,9 +979,8 @@ class JalonFolder(ATFolder):
                     new_listeClasses[index][auteur] = rep_wims["new_class"]
                 else:
                     portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
-                    admin_link = portal_jalon_properties.getLienContact()
-                    site_title = self.getInfosConnexion()['site']
-                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (admin_link, site_title, idcours, idobj)
+                    contact_link = portal_jalon_properties.getLienContact()
+                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (contact_link["contact_link"], contact_link["portal_title"], idcours, idobj)
                     message = _(u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
                     self.plone_utils.addPortalMessage(message, type='error')
         #LOG.info('new_listeClasses : %s' % new_listeClasses)
@@ -1172,8 +1141,8 @@ class JalonFolder(ATFolder):
     #   Utilitaire Connect   #
     #------------------------#
     def connect(self, methode, param):
-        connect = getToolByName(self, jalon_utils.getAttributConf("%s_connecteur" % self.getId().lower()))
-        return connect.__getattribute__(methode)(param)
+        #LOG.info("----- connect -----")
+        return self.portal_connect.__getattribute__(methode)(param)
 
     def getSessionConnect(self, authMember):
         motdepasse = self.getComplement()
@@ -1243,9 +1212,9 @@ class JalonFolder(ATFolder):
     #   Utilitaires Wims   #
     #----------------------#
     def wims(self, methode, param):
-        u""" Lien vers la fonction wims du connecteur dédié."""
-        wims = getToolByName(self, jalon_utils.getAttributConf("wims_connecteur"))
-        return wims.__getattribute__(methode)(param)
+        """ Lien vers la fonction wims du connecteur dédié """
+        #LOG.info("----- wims -----")
+        return self.portal_wims.__getattribute__(methode)(param)
 
     def transfererExosWIMS(self, user_source):
         u"""Transfert des exercices WIMS d'un prof "user_source" vers le jalonfolder courant.
@@ -1368,17 +1337,9 @@ class JalonFolder(ATFolder):
             exo.delExoWims()
 
     def getTagsWims(self):
-        u""" Fournit une liste des étiquettes des modeles d'exercices WIMS."""
-        tags = {"groupe": "Groupe d'exercices"}
-        modeles_conf = jalon_utils.getAttributConf("wims_modele")
-        for element in modeles_conf:
-            try:
-                idmodele, titremodele, catmodele = element.split("*-*")
-                if not idmodele in tags:
-                    tags[idmodele] = titremodele
-            except:
-                pass
-        return tags
+        modele_wims = self.wims("getWimsProperty", "modele_wims")
+        modele_wims["groupe"] = "Groupe d'exercices"
+        return modele_wims
 
     #----------------------#
     #   Utilitaire Primo   #
@@ -1495,9 +1456,6 @@ class JalonFolder(ATFolder):
 
     def envoyerMailErreur(self, form):
         jalon_utils.envoyerMailErreur(form)
-
-    def getInfosConnexion(self):
-        return jalon_utils.getInfosConnexion()
 
     def getFilAriane(self, portal, folder, authMemberId, pageCours=None):
         return jalon_utils.getFilAriane(portal, folder, authMemberId, pageCours)
