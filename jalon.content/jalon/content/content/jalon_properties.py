@@ -344,7 +344,7 @@ class JalonProperties(SimpleItem):
             return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
     def getMonEspace(self):
-        LOG.info("----- getMonEspace -----")
+        #LOG.info("----- getMonEspace -----")
         return {"site":        self.aq_parent.Title(),
                 "grid":        self.getGridMonEspace(),
                 "maintenance": self.getPropertiesMaintenance(),
@@ -352,9 +352,11 @@ class JalonProperties(SimpleItem):
                 "messages":    self.getPropertiesMessages()}
 
     def generatePageMonEspace(self):
-        LOG.info("----- generatePageMonEspace -----")
-        macro_mon_espace_grid = self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")()
-        LOG.info(macro_mon_espace_grid)
+        #LOG.info("----- generatePageMonEspace -----")
+        macro_mon_espace_grid_generate = ["<metal:macro define-macro=\"mon_espace_grid\">"]
+        macro_mon_espace_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")())
+        macro_mon_espace_grid_generate.append("</metal:macro>")
+        self.restrictedTraverse("mon_espace/macro_mon_espace_grid").pt_edit("\n".join(macro_mon_espace_grid_generate), "text/html", "utf-8")
 
     #------------------------#
     # Fonctions de connexion #
@@ -558,6 +560,7 @@ class JalonProperties(SimpleItem):
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
+        self.generatePageMonEspace()
 
     def isAdobeConnect(self):
         portal = self.portal_url.getPortalObject()
@@ -565,14 +568,14 @@ class JalonProperties(SimpleItem):
         if connect:
             url_connexion = connect.getConnectProperty("url_connexion")
             if not url_connexion or url_connexion == "http://domainname.com/api/xml":
-                return {"module"  : False,
-                        "message" : "Le module Adobe Connect de Jalon n'est pas configuré"}
+                return {"module":  False,
+                        "message": "Le module Adobe Connect de Jalon n'est pas configuré"}
             else:
-                return {"module"  : True,
-                        "message" : "Test"}
+                return {"module":  True,
+                        "message": "Test"}
         else:
-            return {"module"  : False,
-                    "message" : "Vous n'avez pas de module Adobe Connect installé dans Jalon"}
+            return {"module":  False,
+                    "message": "Vous n'avez pas de module Adobe Connect installé dans Jalon"}
 
     def getPropertiesAdobeConnect(self):
         portal = self.portal_url.getPortalObject()
