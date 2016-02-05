@@ -1,4 +1,6 @@
-<tal:define define="infos_mon_espace context/getMonEspace">
+<tal:define define="infos_mon_espace context/getMonEspace;
+                    maintenance infos_mon_espace/maintenance;
+                    messages infos_mon_espace/messages">
 
     <tal:comment replace="nothing">!-- Bloc annonce prévision maintenance --</tal:comment>
     <div class="small-12 columns"
@@ -10,18 +12,6 @@
     <div class="small-12 columns"
          tal:condition="infos_mon_espace/vidercache">
         <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
-    </div>
-
-    <tal:comment replace="nothing">!-- Bloc message de session --</tal:comment>
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
-        Message de session
-    </metal:macro>
-
-    <tal:comment replace="nothing">!-- Bloc feedback WIMS ? --</tal:comment>
-    <div class="small-12 columns"
-         tal:condition="message"
-         tal:define="message request/message | nothing">
-         <metal:macro use-macro="context/macro_messages/macros/messages"></metal:macro>
     </div>
 
     <tal:comment replace="nothing">!-- Bloc message général et message enseignant --</tal:comment>
@@ -40,7 +30,7 @@
 
     <tal:comment replace="nothing">!-- Grille d'accès à mon espace --</tal:comment>
     <nav class="small-12 columns">
-        <tal:repeat repeat="block grid">
+        <tal:repeat repeat="block infos_mon_espace/grid">
         <a tal:condition="block/activer"
            tal:attributes="class string:button res-${block/espace};
                            href string:${context/absolute_url}/Members/${user/getId}/${block/repertoire}">

@@ -21,6 +21,19 @@
                 <tal:block i18n:translate="">Mon espace</tal:block>
             </h2>
         </div>
+
+        <tal:comment replace="nothing">!-- Bloc message de session --</tal:comment>
+        <metal:macro use-macro="context/macro_global_statusmessage/macros/portal_message">
+            Message de session
+        </metal:macro>
+
+        <tal:comment replace="nothing">!-- Bloc feedback WIMS --</tal:comment>
+        <div class="small-12 columns"
+             tal:condition="message"
+             tal:define="message request/message | nothing">
+             <metal:macro use-macro="context/macro_messages/macros/messages"></metal:macro>
+        </div>
+
         <metal:macro use-macro="context/macro_mon_espace_grid/macros/mon_espace_grid">
             Grille des bulles "Mon espace"
         </metal:macro>

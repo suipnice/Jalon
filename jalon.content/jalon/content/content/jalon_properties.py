@@ -345,14 +345,15 @@ class JalonProperties(SimpleItem):
 
     def getMonEspace(self):
         LOG.info("----- getMonEspace -----")
-        return {"grid":        self.getGridMonEspace(),
+        return {"site":        self.aq_parent.Title(),
+                "grid":        self.getGridMonEspace(),
                 "maintenance": self.getPropertiesMaintenance(),
                 "vidercache":  self.getJalonProperty("annoncer_vider_cache"),
                 "messages":    self.getPropertiesMessages()}
 
     def generatePageMonEspace(self):
         LOG.info("----- generatePageMonEspace -----")
-        macro_mon_espace_grid = self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")
+        macro_mon_espace_grid = self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")()
         LOG.info(macro_mon_espace_grid)
 
     #------------------------#
