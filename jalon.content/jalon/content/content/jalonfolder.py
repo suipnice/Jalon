@@ -1015,6 +1015,7 @@ class JalonFolder(ATFolder):
         #dico_espaces contiendra les espaces enseignants précédement chargés, afin d'optimiser le traitement.
         dico_espaces = {}
 
+        new_infos_element = copy.deepcopy(infos_element)
         for key in infos_element:
             #LOG.info('[dupliquerCours] KEY : %s' % key)
             duplicataObjet = None
@@ -1057,10 +1058,10 @@ class JalonFolder(ATFolder):
                 else:
                     duplicataObjet = "Invalide"
                     #On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
-                    del infos_element[key]
-                    duplicata.setElementsCours(infos_element)
-                    #On retire également l'objet des infos_elementdu cours d'origine, afin de corriger le bug.
-                    cours.setElementsCours(infos_element)
+                    del new_infos_element[key]
+                    duplicata.setElementsCours(new_infos_element)
+                    #On retire également l'objet des infos_element du cours d'origine, afin de corriger le bug.
+                    cours.setElementsCours(new_infos_element)
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
                     self.wims("verifierRetourWims", {"rep": rep,
                                                      "fonction": "jalonfolder.py/dupliquerCours",
