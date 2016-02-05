@@ -1225,7 +1225,7 @@ def getJalonMenu(context, portal_url, user, request):
                                           "icone":   "fa fa-youtube-play",
                                           "title":   _(u"Vidéos"),
                                           "href":    "%s/Members/%s/Video" % (portal_url, member_id),
-                                          "activer": activer["activer_video"]},
+                                          "activer": activer["activer_lille1pod"]},
                                          {"id":      "vod",
                                           "icone":   "fa fa-video-camera",
                                           "title":   _(u"VOD"),
