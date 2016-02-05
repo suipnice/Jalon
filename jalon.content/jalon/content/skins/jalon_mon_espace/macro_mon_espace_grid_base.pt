@@ -33,7 +33,7 @@
         <tal:repeat repeat="block infos_mon_espace/grid">
         <a tal:condition="block/activer"
            tal:attributes="class string:button res-${block/espace};
-                           href string:${context/absolute_url}/Members/${user/getId}/${block/repertoire}">
+                           href string:${container/aq_parent/absolute_url}/mon_espace/${block/repertoire}">
             <i tal:attributes="class block/icone"></i><tal:replace replace="block/titre"/>
         </a>
         </tal:repeat>

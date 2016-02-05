@@ -346,7 +346,7 @@ class JalonProperties(SimpleItem):
     def getMonEspace(self):
         #LOG.info("----- getMonEspace -----")
         return {"site":        self.aq_parent.Title(),
-                "grid":        self.getGridMonEspace(),
+                "grid":        self.getGridMonEspaceNew(),
                 "maintenance": self.getPropertiesMaintenance(),
                 "vidercache":  self.getJalonProperty("annoncer_vider_cache"),
                 "messages":    self.getPropertiesMessages()}
@@ -552,6 +552,48 @@ class JalonProperties(SimpleItem):
                  "titre":       "VOD",
                  "activer":     self._activer_vod,
                  "repertoire":  "VOD",
+                 "icone":       "fa fa-video-camera"}]
+
+    def getGridMonEspaceNew(self, key=None):
+        return [{"espace":      "fichiers",
+                 "titre":       "Fichiers",
+                 "activer":     self._activer_fichiers,
+                 "repertoire":  "mes_fichiers",
+                 "icone":       "fa fa-files-o"},
+                {"espace":      "connect",
+                 "titre":       "Présentations sonorisées",
+                 "activer":     self._activer_presentations_sonorisees,
+                 "repertoire":  "mes_presentations_sonorisees",
+                 "icone":       "fa fa-microphone"},
+                {"espace":      "wims",
+                 "titre":       "Exercices Wims",
+                 "activer":     self._activer_exercices_wims,
+                 "repertoire":  "mes_exercices_wims",
+                 "icone":       "fa fa-random"},
+                {"espace":      "liens",
+                 "titre":       "Ressources externes",
+                 "activer":     self._activer_liens,
+                 "repertoire":  "mes_ressources_externes",
+                 "icone":       "fa fa-external-link"},
+                {"espace":      "glossaire",
+                 "titre":       "Termes de glossaire",
+                 "activer":     self._activer_termes_glossaire,
+                 "repertoire":  "mes_termes_glossaire",
+                 "icone":       "fa fa-font"},
+                {"espace":      "connect",
+                 "titre":       "Webconférences",
+                 "activer":     self._activer_webconferences,
+                 "repertoire":  "mes_webconferences",
+                 "icone":       "fa fa-headphones"},
+                {"espace":      "video",
+                 "titre":       "Vidéos",
+                 "activer":     self._activer_lille1pod,
+                 "repertoire":  "mes_videos_pod",
+                 "icone":       "fa fa-youtube-play"},
+                {"espace":      "vod",
+                 "titre":       "VOD",
+                 "activer":     self._activer_vod,
+                 "repertoire":  "mes_vods",
                  "icone":       "fa fa-video-camera"}]
 
     def setPropertiesMonEspace(self, form):
