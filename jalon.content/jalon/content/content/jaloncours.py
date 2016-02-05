@@ -564,10 +564,11 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         folder_dict = {"Fichiers":                "Fichiers",
                        "JalonRessourceExterne":   "Externes",
+                       "Video":                   "Video",
                        "JalonTermeGlossaire":     "Glossaire",
                        "JalonExerciceWims":       "Wims",
                        "Presentationssonorisees": "Sonorisation",
-                       "Webconferences":          "Webconference"}
+                       "Webconference":           "Externes"}
         if repertoire:
             home = getattr(getattr(portal.Members, authMember), folder_dict[repertoire])
         else:
@@ -1110,7 +1111,7 @@ class JalonCours(ATFolder):
             retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
         if mon_espace["activer_webconferences"]:
             retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone": "fa fa-headphones fa-fw"})
-        if mon_espace["activer_video"]:
+        if mon_espace["activer_lille1pod"]:
             retour["espace"].append({"rubrique": "Video", "titre": "Vidéos", "icone": "fa fa-youtube-play fa-fw"})
         if mon_espace["activer_vod"]:
             retour["espace"].append({"rubrique": "VOD", "titre": "VOD", "icone": "fa fa-video-camera fa-fw"})
