@@ -51,10 +51,10 @@ class MesFichiersView(BrowserView):
             pass
         if len(selected_tags_list) == 1:
             is_one_tag = True
-            one_tag = {"tag_id": selected_tags_list[-1],
+            one_tag = {"tag_id": urllib.quote(selected_tags_list[-1]),
                        "tag_title": tags_dict[selected_tags_list[-1]]}
 
-        #is_no_files = is_no_tag and not:my_files_list
+        # is_no_files = is_no_tag and not:my_files_list
         nb_display_files = len(my_files_list)
         nb_files = len(folder.objectIds())
 
@@ -84,7 +84,7 @@ class MesFichiersView(BrowserView):
         return {"tags_dict": tags_dict,
                 "tags_list": tags_list}
 
-    #def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
+    # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyFilesList(self, folder, selected_tags_list):
         dico = {"portal_type": ["File", "Image", "Document"]}
 
