@@ -29,7 +29,7 @@ class MesFichiersView(BrowserView):
         portal = portal_state.portal()
 
         folder = getattr(portal.Members, user.getId()).Fichiers
-        selected_tags_list = self.getSelectedTags(folder)
+        selected_tags_list = folder.getSelectedTags().split(",")
 
         tags = self.getTags(folder, selected_tags_list)
         tags_dict = tags["tags_dict"]
@@ -83,31 +83,6 @@ class MesFichiersView(BrowserView):
                              "tag_css":   "filter-button fixed_filter selected" if "last" in selected_tags_list else "filter-button fixed_filter unselected"})
         return {"tags_dict": tags_dict,
                 "tags_list": tags_list}
-
-    def getSelectedTags(self, folder):
-        LOG.info("----- getSelectedTags -----")
-        # Init
-        tags = {}
-        selected_tags_list = ""
-        spaceName = self.context.getId().lower()
-        if self.request.SESSION.has_key('tags'):
-            tags = self.request.SESSION.get('tags')
-        # Traitement
-        if self.request.form.has_key('subject'):
-            # Enregistrement de la sélection
-            selected_tags_list = self.request.form['subject']
-            tags[spaceName] = selected_tags_list
-            self.request.SESSION.set('tags', tags)
-            LOG.info(tags)
-        else:
-            # Pas de sélection
-            if spaceName in tags:
-                # Enregistrement existant -> chargement
-                selected_tags_list = tags[spaceName]
-            else:
-                # Pas d'enregistrement -> défaut
-                selected_tags_list = "last"
-        return selected_tags_list.split(",")
 
     #def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyFilesList(self, folder, selected_tags_list):

@@ -840,6 +840,9 @@ class JalonFolder(ATFolder):
         #self.plone_log("getPlainShortText")
         return jalon_utils.getPlainShortText(html, limit)
 
+    #---------------------------------#
+    # OLD TAG -> DELETE WHEN FINISHED #
+    #---------------------------------#
     def getSelectedTab(self, cle="onglet", defaut=""):
         # Init
         tabs = {}
@@ -860,6 +863,41 @@ class JalonFolder(ATFolder):
                 defaut = tabs[spaceName]
         return defaut
 
+    def ajouterTag(self, tag):
+        if not tag in self.Subject():
+            tags = list(self.Subject())
+            tags.append(tag)
+            self.setSubject(tuple(tags))
+            self.reindexObject()
+
+    #---------------------------------#
+    # NEW TAG                         #
+    #---------------------------------#
+    def getSelectedTags(self):
+        LOG.info("----- getSelectedTags -----")
+        # Init
+        tags = {}
+        subjects = ""
+        spaceName = self.getId().lower()
+        if self.REQUEST.SESSION.has_key('tags'):
+            tags = self.REQUEST.SESSION.get('tags')
+        # Traitement
+        if self.REQUEST.form.has_key('subject'):
+            # Enregistrement de la sélection
+            subjects = self.REQUEST.form['subject']
+            tags[spaceName] = subjects
+            self.REQUEST.SESSION.set('tags', tags)
+            LOG.info(tags)
+        else:
+            # Pas de sélection
+            if spaceName in tags:
+                # Enregistrement existant -> chargement
+                subjects = tags[spaceName]
+            else:
+                # Pas d'enregistrement -> défaut
+                subjects = "last"
+        return subjects
+
     def getTag(self):
         retour = []
         mots = list(self.Subject())
@@ -875,13 +913,6 @@ class JalonFolder(ATFolder):
             for mot in mots:
                 retour.append({"tag": urllib.quote(mot), "titre": mot})
         return retour
-
-    def ajouterTag(self, tag):
-        if not tag in self.Subject():
-            tags = list(self.Subject())
-            tags.append(tag)
-            self.setSubject(tuple(tags))
-            self.reindexObject()
 
     def addTagFolder(self, tag):
         portal = self.portal_url.getPortalObject()
@@ -910,6 +941,20 @@ class JalonFolder(ATFolder):
             folder.setSubject(tuple(tags))
             folder.reindexObject()
 
+            # Mise à jour des sélections enregistrées en session
+            tags_in_session = self.REQUEST.SESSION.get('tags')
+            spaceName = folder.getId().lower()
+            selected = tags_in_session[spaceName].split(",")
+            try:
+                selected.remove(tag)
+            except ValueError:
+                pass
+            tags_in_session[spaceName] = ','.join(selected)
+            self.REQUEST.SESSION.set('tags', tags_in_session)
+
+    #--------#
+    # DIVERS #
+    #--------#
     def ajouterUtilisateurJalon(self, form):
         portal = self.portal_url.getPortalObject()
         portal_registration = getToolByName(portal, 'portal_registration')
