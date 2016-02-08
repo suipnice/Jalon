@@ -87,6 +87,9 @@ class JalonFolder(ATFolder):
         super(JalonFolder, self).__init__(*args, **kwargs)
         self.uploader_id = self._uploader_id()
 
+    #---------------------#
+    # Installation method #
+    #---------------------#
     def addSubJalonFolder(self, memberid):
         addSubJalonFolder(self, memberid)
 
@@ -96,20 +99,9 @@ class JalonFolder(ATFolder):
         blacklist.setBlacklistStatus("context", True)
         self.reindexObject()
 
-    def getItemSize(self, item_size):
-        """ Convert "Human friendly" file size into original size, in bytes."""
-        display_size = item_size.split(" ")
-        # if the size is a float, then make it an int
-        # happens for large files
-        try:
-            size = float(display_size[0])
-        except (ValueError, TypeError):
-            size = 0
-        units = display_size[-1]
-        if units in SIZE_CONST:
-            size = size * SIZE_CONST[units]
-        return size
-
+    #--------------------#
+    # My Space Utilities #
+    #--------------------#
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
         """Fourni la liste des elements d'un jalonfolder."""
         dico = {"portal_type": typeR}
@@ -305,13 +297,26 @@ class JalonFolder(ATFolder):
                 #Supprimer toutes les vidéos
                 pass
 
-    def DEBUG(self):
-        a = set([1, 2, 3, 4])
-        b = set([3, 4, 5, 6])
+    def getItemSize(self, item_size):
+        """ Convert "Human friendly" file size into original size, in bytes."""
+        display_size = item_size.split(" ")
+        # if the size is a float, then make it an int
+        # happens for large files
+        try:
+            size = float(display_size[0])
+        except (ValueError, TypeError):
+            size = 0
+        units = display_size[-1]
+        if units in SIZE_CONST:
+            size = size * SIZE_CONST[units]
+        return size
 
-        c = a.difference(b)
-        return c
+    def isObjectAttached(self, object):
+        return True if len(object.getRelatedItems()) else False
 
+    #----------------------#
+    # My Courses utilities #
+    #----------------------#
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
 
@@ -467,34 +472,6 @@ class JalonFolder(ATFolder):
                 courses_ids_list.append(cours_brain.getId)
         return {"is_courses_list": True,
                 "courses_list":    list(courses_list_filter)}
-
-    def getInfosApogee(self, code, type):
-        portal = self.portal_url.getPortalObject()
-        bdd = getToolByName(portal, "portal_jalon_bdd")
-        if type == "etape":
-            retour = self.encodeUTF8(bdd.getInfosEtape(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-        if type in ["ue", "uel"]:
-            retour = self.encodeUTF8(bdd.getInfosELP2(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-        if type == "groupe":
-            retour = self.encodeUTF8(bdd.getInfosGPE(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-
-    # getInfosMembre recupere les infos sur les personnes.
-    def getInfosMembre(self, username):
-        #self.plone_log("getInfosMembre")
-        return jalon_utils.getInfosMembre(username)
-
-    def getPropertiesMessages(self, key=None):
-        jalon_properties = self.portal_jalon_properties
-        return jalon_properties.getPropertiesMessages(key)
 
     def getCours(self, categorie="1", authMember=None):
         if authMember.has_role("EtudiantJalon"):
@@ -738,6 +715,33 @@ class JalonFolder(ATFolder):
                 else:
                     dicoAccess[code]["listeCours"].append(cours.Title)
         return dicoAccess
+
+    #-----------------------#
+    # My Students Utilities #
+    #-----------------------#
+    def getInfosApogee(self, code, type):
+        portal = self.portal_url.getPortalObject()
+        bdd = getToolByName(portal, "portal_jalon_bdd")
+        if type == "etape":
+            retour = self.encodeUTF8(bdd.getInfosEtape(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+        if type in ["ue", "uel"]:
+            retour = self.encodeUTF8(bdd.getInfosELP2(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+        if type == "groupe":
+            retour = self.encodeUTF8(bdd.getInfosGPE(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+
+    # getInfosMembre recupere les infos sur les personnes.
+    def getInfosMembre(self, username):
+        #self.plone_log("getInfosMembre")
+        return jalon_utils.getInfosMembre(username)
 
     def getListeEtudiants(self, code, typeCode):
         bdd = getToolByName(self, "portal_jalon_bdd")
@@ -1465,6 +1469,10 @@ class JalonFolder(ATFolder):
     #-----------------#
     #   Utilitaires   #
     #-----------------#
+    def getPropertiesMessages(self, key=None):
+        jalon_properties = self.portal_jalon_properties
+        return jalon_properties.getPropertiesMessages(key)
+
     def getJalonProperty(self, info):
         return jalon_utils.getJalonProperty(info)
 

@@ -7,8 +7,7 @@
 
 <body>
     <metal:main fill-slot="content"
-                tal:define="errors options/state/getErrors | nothing;
-                            object_tags context/Subject;
+                tal:define="object_tags context/Subject;
                             resName python:context.aq_parent.getShortText(context.Title(), 80)">
 
     <h2>

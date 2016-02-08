@@ -170,7 +170,7 @@
                     </li>
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${file/getURL}/folder_form?macro=macro_form&amp;formulaire=detacher">
+                           tal:attributes="href string:${file/getURL}/detach_object_form">
                             <i class="fa fa-chain-broken fa-fw no-pad"></i>
                             <tal:block i18n:translate="">Détacher</tal:block>
                         </a>
