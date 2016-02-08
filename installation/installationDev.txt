@@ -1,0 +1,27 @@
+A l'installation de cette branche créer en zmi un script python avec le code suivant, l'exécuter une seule fois pour créer la nouvelle structure
+
+portal = context.portal_url.getPortalObject()
+
+portal.invokeFactory(type_name='JalonFolder', id="mon_espace")
+mon_espace = getattr(portal, "mon_espace")
+mon_espace.manage_addProperty("layout", "mon_espace_view", "string")
+mon_espace.setTitle("Mon espace")
+mon_espace.reindexObject()
+
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_fichiers")
+mes_fichiers = getattr(mon_espace, "mes_fichiers")
+mes_fichiers.setLayout("mes_fichiers_view")
+mes_fichiers.setTitle("Mes fichiers")
+mes_fichiers.reindexObject()
+
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_presentations_sonorisees")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_exercices_wims")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_ressources_externes")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_termes_glossaire")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_webconferences")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_videos_pod")
+mon_espace.invokeFactory(type_name='JalonFolder', id="mes_vods")
+
+return "OK"
+
+Puis aller dans le dossier mon espace, taper manage_access dans l'url et cocher la ligne "Add portal content" pour le rôle "Personnel"
