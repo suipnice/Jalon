@@ -30,21 +30,6 @@
 <!--
         Affichage des étiquettes
 -->
-<metal:macro define-macro="tag_new">
-    <li tal:repeat="tag tags_list">
-        <a tal:attributes="id tag/tag_id;
-                           class tag/tag_css">
-           <i class="fa fa-circle no-pad"></i>
-           <i class="fa fa-circle-thin no-pad"></i>
-           <tal:block tal:content="tag/tag_title" />
-        </a>
-    </li>
-</metal:macro>
-
-
-<!--
-        Affichage des étiquettes
--->
 <metal:macro define-macro="tag">
 
     <tal:block tal:define="tags tags | context/getTag">

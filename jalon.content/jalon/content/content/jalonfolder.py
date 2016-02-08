@@ -860,29 +860,6 @@ class JalonFolder(ATFolder):
                 defaut = tabs[spaceName]
         return defaut
 
-    def getSelectedTags(self):
-        # Init
-        tags = {}
-        subjects = ""
-        spaceName = self.getId().lower()
-        if self.REQUEST.SESSION.has_key('tags'):
-            tags = self.REQUEST.SESSION.get('tags')
-        # Traitement
-        if self.REQUEST.form.has_key('subject'):
-            # Enregistrement de la sélection
-            subjects = self.REQUEST.form['subject']
-            tags[spaceName] = subjects
-            self.REQUEST.SESSION.set('tags', tags)
-        else:
-            # Pas de sélection
-            if spaceName in tags:
-                # Enregistrement existant -> chargement
-                subjects = tags[spaceName]
-            else:
-                # Pas d'enregistrement -> défaut
-                subjects = "last"
-        return subjects
-
     def getTag(self):
         retour = []
         mots = list(self.Subject())
@@ -916,6 +893,20 @@ class JalonFolder(ATFolder):
         if not tag in folder.Subject():
             tags = list(folder.Subject())
             tags.append(tag)
+            folder.setSubject(tuple(tags))
+            folder.reindexObject()
+
+    def deleteTagFolder(self, tag):
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers": "Fichiers"}
+        folder = getattr(home, folder_dict[self.getId()])
+
+        tags = list(folder.Subject())
+        if tag in tags:
+            tags.remove(tag)
             folder.setSubject(tuple(tags))
             folder.reindexObject()
 

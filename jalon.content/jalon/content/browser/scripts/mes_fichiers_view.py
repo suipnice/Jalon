@@ -24,7 +24,7 @@ class MesFichiersView(BrowserView):
         return portal_state.anonymous()
 
     def getMyFilesView(self, user):
-        #LOG.info("----- getMyFilesView -----")
+        LOG.info("----- getMyFilesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
@@ -85,10 +85,11 @@ class MesFichiersView(BrowserView):
                 "tags_list": tags_list}
 
     def getSelectedTags(self, folder):
+        LOG.info("----- getSelectedTags -----")
         # Init
         tags = {}
         selected_tags_list = ""
-        spaceName = folder.getId().lower()
+        spaceName = self.context.getId().lower()
         if self.request.SESSION.has_key('tags'):
             tags = self.request.SESSION.get('tags')
         # Traitement
@@ -97,6 +98,7 @@ class MesFichiersView(BrowserView):
             selected_tags_list = self.request.form['subject']
             tags[spaceName] = selected_tags_list
             self.request.SESSION.set('tags', tags)
+            LOG.info(tags)
         else:
             # Pas de sélection
             if spaceName in tags:
