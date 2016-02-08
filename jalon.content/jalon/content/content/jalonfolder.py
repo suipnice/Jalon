@@ -906,6 +906,19 @@ class JalonFolder(ATFolder):
             self.setSubject(tuple(tags))
             self.reindexObject()
 
+    def addTagFolder(self, tag):
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers": "Fichiers"}
+        folder = getattr(home, folder_dict[self.getId()])
+        if not tag in folder.Subject():
+            tags = list(folder.Subject())
+            tags.append(tag)
+            folder.setSubject(tuple(tags))
+            folder.reindexObject()
+
     def ajouterUtilisateurJalon(self, form):
         portal = self.portal_url.getPortalObject()
         portal_registration = getToolByName(portal, 'portal_registration')

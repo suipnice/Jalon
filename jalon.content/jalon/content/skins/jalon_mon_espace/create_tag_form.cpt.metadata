@@ -3,9 +3,9 @@ title=Formulaire
 border=None
 
 [validators]
-validators=valider_form
+validators=validate_my_space
 
 [actions]
 action.failure = traverse_to:string:create_tag_form
 
-action.success-tag = traverse_to:string:create_tag
+action.success_create_tag= traverse_to:string:create_tag

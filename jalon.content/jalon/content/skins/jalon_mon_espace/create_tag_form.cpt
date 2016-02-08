@@ -15,16 +15,10 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <tal:comment replace="nothing"><!--
-
     Sans vérif. côté serveur :
-
           tal:attributes="action string:${context/absolute_url}/create_tag"
-
     Avec :
-
           tal:attributes="action string:${context/absolute_url}/${template/id}"
-
-
     --></tal:comment>
     <form id="js-createTag" method="post"
           tal:attributes="action string:${context/absolute_url}/${template/id};
@@ -42,11 +36,11 @@
         </div>
 
         <input type="hidden" name="form.submitted" value="1" />
-        <input type="hidden" name="formulaire" value="tag" />
+        <input type="hidden" name="validate_key" value="create_tag" />
 
         <div class="formControls">
             <button type="submit" class="button small create radius"
-                    name="form.button.save">
+                    name="form.button.create_tag">
                 <i class="fa fa-plus-circle"></i>
                 <tal:block i18n:translate="">Créer l'étiquette</tal:block>
             </button>
