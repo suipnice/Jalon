@@ -295,9 +295,9 @@
             </label>
 
             <select name="file_format" id="format">
-              <option value="csv" selected="selected" i18n:translate="">CSV (Comma Separated Values)</option>
+              <option value="csv" selected="selected" i18n:translate="">CSV (Comma Separated Values : valeurs séparées par une virgule)</option>
               <option value="xls" i18n:translate="">CSV pour Excel français (les valeurs sont séparées par des points-virgules, et le séparateur décimal est une virgule)</option>
-              <option value="tsv" i18n:translate="">TSV (Tab Separated Values)</option>
+              <option value="tsv" i18n:translate="">TSV (Tab Separated Values : valeurs séparées par une tabulation)</option>
             </select>
         </div>
 
