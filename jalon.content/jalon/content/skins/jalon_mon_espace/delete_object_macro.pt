@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="is_object_attached">
+    <div class="panel radius callout">
+        La ressource "<tal:raplace replace="context/Title"/> est attachée à : 
+        <ul>
+            <li tal:repeat="cours context/getRelatedItems">
+                <tal:block tal:content="cours/Title" />
+            </li>
+        </ul>
+        vous ne pouvez pas la supprimer.
+    </div>
+</metal:macro>
+
+<metal:macro define-macro="isnt_object_attached">
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+    <form id="js-itemSuppressor" method="POST"
+          tal:attributes="action string:${context/aq_parent/absolute_url}/delete_object_script;
+                          data-item_name resName;
+                          data-success_msg string:a été supprimé.";
+                          i18n:attributes="data-success_msg">
+
+        <input type="hidden" name="paths:list" tal:attributes="value python:'/'.join(list(context.getPhysicalPath()))"/>
+        <input type="hidden" name="orig_template" tal:attributes="value context/aq_parent/absolute_url"/>
+
+        <input tal:replace="structure context/@@authenticator/authenticator" />
+
+        <div class="formControls">
+            <button type="submit" class="button small alert radius">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setItemSuppressor()">
+    </script>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>
