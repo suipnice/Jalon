@@ -29,7 +29,7 @@ if context.isAuteurs(authMember.getId()):
     if resultatWIMS:
         compteur = 0
         for userWims in resultatWIMS:
-            if resultatWIMS[userWims]["cleaned"] != None:
+            if resultatWIMS[userWims]["cleaned"] is not None:
                 compteur = compteur + resultatWIMS[userWims]["cleaned"]
             else:
                 message = u"Une erreur est survenue lors de la purge des activités WIMS"

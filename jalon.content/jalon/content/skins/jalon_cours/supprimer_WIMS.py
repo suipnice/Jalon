@@ -44,7 +44,7 @@ if context.isAuteurs(authMember_id):
 else:
     message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
     context.plone_utils.addPortalMessage(_(message), "alert")
-    context.envoyerMailErreur({"objet"  : "Unauthorized access to purger_activites",
+    context.envoyerMailErreur({"objet"  : "Unauthorized access to supprimer_WIMS",
                                "message": "<p>Suspicion de fraude de l'utilisateur <strong>%s</strong></p><div>%s</div>" % (authMember_id, context.REQUEST)})
 
 
