@@ -16,17 +16,17 @@
   <browser:page
       name="mon_espace_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
-      template="templates/mon_espace/mon_espace_view.pt"
+      template="templates/my_space/my_space_view.pt"
       permission="zope2.View"
-      class=".scripts.mon_espace_view.MonEspaceView"
+      class=".scripts.my_space_view.MySpaceView"
    />
 
   <browser:page
       name="mes_fichiers_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
-      template="templates/mon_espace/mes_fichiers_view.pt"
+      template="templates/my_space/my_files_view.pt"
       permission="zope2.View"
-      class=".scripts.mes_fichiers_view.MesFichiersView"
+      class=".scripts.my_files_view.MyFilesView"
    />
 
   <browser:page

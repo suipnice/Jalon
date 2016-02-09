@@ -1,5 +1,6 @@
 from first_page import FirstPage
-from mon_espace_view import MonEspaceView
+from my_space_view import MySpaceView
+from my_files_view import MyFilesView
 from analytics import JalonAnalytics
 from categories import JalonCategorie
 from podcasts import JalonPodcast
