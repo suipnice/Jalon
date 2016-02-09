@@ -315,7 +315,7 @@ class JalonFolder(ATFolder):
         return size
 
     def isObjectAttached(self, object):
-        return True if len(object.getRelatedItems()) else False
+        return "is_object_attached" if len(object.getRelatedItems()) else "isnt_object_attached"
 
     #----------------------#
     # My Courses utilities #

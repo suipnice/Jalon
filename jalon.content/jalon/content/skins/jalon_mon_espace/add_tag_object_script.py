@@ -16,10 +16,7 @@ except:
 context.setSubject(tags_list)
 context.reindexObject()
 
-redirection = context.absolute_url()
-# context.REQUEST.RESPONSE.redirect(redirection)
-
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
-    context.REQUEST.RESPONSE.redirect(redirection)
+    context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
     return context.restrictedTraverse("mon_espace/mes_fichiers")()
