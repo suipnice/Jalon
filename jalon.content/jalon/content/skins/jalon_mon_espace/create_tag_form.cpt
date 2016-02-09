@@ -16,7 +16,7 @@
     </h2>
     <tal:comment replace="nothing"><!--
     Sans vérif. côté serveur :
-          tal:attributes="action string:${context/absolute_url}/create_tag"
+          tal:attributes="action string:${context/absolute_url}/create_tag_script"
     Avec :
           tal:attributes="action string:${context/absolute_url}/${template/id}"
     --></tal:comment>

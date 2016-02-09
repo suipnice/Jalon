@@ -163,7 +163,7 @@
                     </li>
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${file/getURL}/add_tag_form">
+                           tal:attributes="href string:${file/getURL}/add_tag_object_form">
                             <i class="fa fa-tag fa-fw no-pad"></i>
                             <tal:block i18n:translate="">Étiqueter</tal:block>
                         </a>
