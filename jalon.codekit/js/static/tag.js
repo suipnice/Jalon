@@ -246,8 +246,7 @@ function setActionBatch( ) {
 
         event.preventDefault( );
 
-        var param = "etiqueter_script:method=" + $tagForm.find( '[type="submit"]' ).attr( 'value' );
-        param += "&lots=lots";
+        var param = "lots=lots";
 
         $tagForm.find( 'a.selected' ).each( function( index ) {
             param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
@@ -275,8 +274,7 @@ function setActionBatch( ) {
 
         var $form = $( this );
         var tags = [ ];
-        var param = "desetiqueter_script:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&lots=lots";
+        var param = "lots=lots";
 
         Foundation.utils.S( '#js-tag_filter a.selected' ).each( function( index ) {
             tags.push( $( this ).attr( 'id' ) );
@@ -343,8 +341,7 @@ function setActionBatch( ) {
 
         var $form = $( this );
         var nonSup = "";
-        var param = "folder_delete:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
+        var param = $form.serialize( );
 
         Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
             if ( !$( this ).data( 'attached' ) ) {

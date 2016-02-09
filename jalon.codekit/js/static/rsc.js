@@ -283,10 +283,8 @@ function setResDetacher( ) {
 
         event.preventDefault( );
 
-        //var $form = $( this );
         var courseNames = [ ];
-        var param = "detacher_script:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
+        var param = $form.serialize( );
 
         $form.find( 'a.selected' ).each( function( index ) {
             param += '&listeCours:list=' + $( this ).attr( 'id' );
