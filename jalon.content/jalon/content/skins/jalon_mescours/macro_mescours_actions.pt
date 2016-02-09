@@ -296,7 +296,7 @@
 
             <select name="file_format" id="format">
               <option value="csv" selected="selected" i18n:translate="">CSV (Comma Separated Values)</option>
-              <option value="xls" i18n:translate="">CSV pour Excel français (les valeurs sont séparées par des points-virgules)</option>
+              <option value="xls" i18n:translate="">CSV pour Excel français (les valeurs sont séparées par des points-virgules, et le séparateur décimal est une virgule)</option>
               <option value="tsv" i18n:translate="">TSV (Tab Separated Values)</option>
             </select>
         </div>
@@ -467,8 +467,8 @@
          tal:define="admin_link here/portal_jalon_properties/getLienContact;
                      site_title admin_link/portal_title;">
         <i class="fa fa-exclamation-triangle no-pad"></i>
-        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à contacter</tal:block>
-        <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS" i18n:translate="">l'administrateur</a>
+        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à </tal:block>
+        <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS" i18n:translate="">contacter l'administrateur</a>
         <tal:block i18n:translate="">si vous pensez que ce n'est pas le cas.</tal:block>
     </div>
 
