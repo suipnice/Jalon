@@ -239,10 +239,9 @@ function setItemSuppressor( ) {
         event.preventDefault( );
 
         var $form = $( this );
-        var param = "folder_delete:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
 
-        $.post( $form.attr( 'action' ), param ).done( function( data ) {
+        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
             $( '#js-update_target' ).empty( ).html( data );
             $form.parent( '.reveal-modal' ).foundation( 'reveal', 'close' );
             setAlertBox( 'success', " « " + $form.data( 'item_name' ) + " » " + $form.data( 'success_msg' ) );
