@@ -193,7 +193,7 @@
         Formulaire d'etiquetage par lot
     </metal:macro>
 
-    <metal:macro use-macro="context/multiple_objects_form/macros/remove_tags_objects">
+    <metal:macro use-macro="python:context.multiple_objects_form.macros.get(my_files_view['is_selected_tags'])">
         Confirmation de désétiquetage par lot
     </metal:macro>
 

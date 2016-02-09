@@ -50,7 +50,10 @@ class MyFilesView(MySpaceView):
             one_tag = {"tag_id": urllib.quote(selected_tags_list[-1]),
                        "tag_title": tags_dict[selected_tags_list[-1]]}
 
-        # is_no_files = is_no_tag and not:my_files_list
+        is_selected_tags = "remove_tags_objects" if selected_tags_list != ["last"] and len(selected_tags_list) >= 1 else "isnt_selected_tags"
+        LOG.info(selected_tags_list)
+        LOG.info(is_selected_tags)
+
         nb_display_files = len(my_files_list)
         nb_files = len(folder.objectIds())
 
@@ -58,6 +61,7 @@ class MyFilesView(MySpaceView):
                 "is_no_files":      is_no_files,
                 "is_one_tag":       is_one_tag,
                 "one_tag":          one_tag,
+                "is_selected_tags": is_selected_tags,
                 "my_files_list":    my_files_list,
                 "nb_display_files": nb_display_files,
                 "nb_files":         nb_files,

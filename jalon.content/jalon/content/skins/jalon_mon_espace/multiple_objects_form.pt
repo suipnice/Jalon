@@ -49,6 +49,22 @@
     </metal:macro>
 
 
+    <metal:macro define-macro="isnt_selected_tags">
+
+        <div id="untag_sel" class="reveal-modal medium" 
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+            <h2>
+                <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <div class="panel radius callout">
+                Vous devez au minimum sélectionner une étiquette pour pouvoir désétiqueter.
+            </div>
+        </div>
+    </metal:macro>
+
+
     <metal:macro define-macro="remove_tags_objects">
         <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
         <div id="untag_sel" class="reveal-modal medium" 
