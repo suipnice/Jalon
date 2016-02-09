@@ -4,8 +4,10 @@ Remplacer les fichiers :
         cp ./casclient.py /home/zope/Plone/buildout-cache/eggs/anz.casclient-1.1.1-py2.7.egg/anz/casclient/
     - session.py dans le buildout-cache - plone.session - plugins
         cp ./session.py /home/zope/Plone/buildout-cache/eggs/plone.session-3.5.6-py2.7.egg/plone/session/plugins/
+    - quick_upload.py dans le buildout-cache - collective.quickupload - browser
+        cp ./quick_upload.py /home/zope/Plone/buildout-cache/eggs/collective.quickupload-1.7.0-py2.7.egg/collective/quickupload/browser/
     - uploadcapable.py dans le buildout-cache - collective.quickupload - browser
-        cp ./uploadcapable.py /home/zope/Plone/buildout-cache/eggs/collective.quickupload-1.8.0-py2.7.egg/collective/quickupload/browser/
+        cp ./uploadcapable.py /home/zope/Plone/buildout-cache/eggs/collective.quickupload-1.7.0-py2.7.egg/collective/quickupload/browser/
     - utils.py dans le buildout-cache - Products.PloneBoard - browser
         cp ./utils.py /home/zope/Plone/buildout-cache/eggs/Products.Ploneboard-3.5-py2.7.egg/Products/Ploneboard/browser/
 

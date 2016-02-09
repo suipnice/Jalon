@@ -67,10 +67,11 @@ class QuickUploadCapableFileFactory(object):
     def __init__(self, context):
         self.context = aq_inner(context)
 
-    def __call__(self, filename, title, description, content_type, data, portal_type):
-        if portal_type != "Image":
-            portal_type = "File"
-        context = aq_inner(self.context)
+    def __call__(self, filename, title, description, content_type, data, portal_type):é
+        portal_type = "Image" if portal_type == "Image" else "File"
+        #context = aq_inner(self.context)
+        portal = self.context.portal_url.getPortalObject()
+        context = getattr(getattr(portal.Members, authenticated_user.getId()), "Fichiers")
         error = ''
         result = {}
         result['success'] = None
