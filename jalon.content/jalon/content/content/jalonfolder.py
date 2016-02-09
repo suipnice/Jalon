@@ -1337,7 +1337,8 @@ class JalonFolder(ATFolder):
             exo = getattr(self, exo_id)
             exo.delExoWims()
 
-    def getTagsWims(self):
+    def getModelesWims(self):
+        u""" Fournit le dico complet des modèles d'exercices WIMS (groupe compris)."""
         modele_wims = self.wims("getWimsProperty", "modele_wims")
         modele_wims["groupe"] = "Groupe d'exercices"
         return modele_wims
