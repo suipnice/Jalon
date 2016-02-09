@@ -189,15 +189,15 @@
     </tbody>
     </table>
 
-    <metal:macro use-macro="context/macro_form/macros/etiqueter-lots">
+    <metal:macro use-macro="context/multiple_objects_form/macros/add_tags_objects">
         Formulaire d'etiquetage par lot
     </metal:macro>
 
-    <metal:macro use-macro="context/macro_form/macros/desetiqueter-lots">
+    <metal:macro use-macro="context/multiple_objects_form/macros/remove_tags_objects">
         Confirmation de désétiquetage par lot
     </metal:macro>
 
-    <metal:macro use-macro="context/macro_form/macros/supprimer-lots">
+    <metal:macro use-macro="context/multiple_objects_form/macros/delete_objects">
         Confirmation suppression par lot
     </metal:macro>
 
