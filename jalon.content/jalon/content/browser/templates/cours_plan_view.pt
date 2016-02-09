@@ -172,6 +172,12 @@
                     <ul id="course-options" data-dropdown-content class="f-dropdown">
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours_actions&amp;formulaire=get_wims_scores&amp;came_from=cours_plan_view">
+                                <i class="fa fa-download fa-fw"></i><tal:block i18n:translate="">Télécharger les notes WIMS</tal:block>
+                            </a>
+                        </li>
+                        <li>
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                                tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours_actions&amp;formulaire=purge_course&amp;came_from=cours_plan_view">
                                 <i class="fa fa-filter fa-fw"></i><tal:block i18n:translate="">Purger les travaux étudiants</tal:block>
                             </a>

@@ -232,7 +232,7 @@ class JalonProperties(SimpleItem):
     _activer_lien_sesame = 1
     _lien_sesame = "http://ent.unice.fr"
     _activer_lien_contact = 1
-    _lien_contact = "http://unice.fr/contacts"
+    _lien_contact = "http://unice.fr/contact-info"
     _activer_lien_mention = 1
     _lien_mention = "http://unice.fr/mentions-legales"
     _activer_lien_credit = 1

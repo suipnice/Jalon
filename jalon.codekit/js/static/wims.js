@@ -28,14 +28,19 @@ function setWimsExportAccordionRadio( accordionID ) {
             switchButtonEnabledState( $submitButton, false );
         }
     });
+}
+
+/* Permet a la fois de fermer une fenetre modale lors d'un téléchargement,
+   et d'afficher le message indiqué dans l'attribiut "data-success_msg" du formulaire. */
+function closeDownloadModal( formID ) {
+
+    var $form= Foundation.utils.S( '#' + formID );
 
     $form.submit( function( event ) {
 
         Foundation.utils.S( '#reveal-main' ).foundation( 'reveal', 'close' );
         setAlertBox( 'info', $form.data( 'success_msg' ) );
     } );
-
-
 }
 
 

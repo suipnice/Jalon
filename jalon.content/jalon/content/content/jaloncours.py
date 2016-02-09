@@ -2338,6 +2338,62 @@ class JalonCours(ATFolder):
 
         return retour
 
+    def getScoresWims(self, auteur, authMember, request=None, file_format="csv"):
+        u"""Télécharger les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
+        #self.plone_log("[jaloncours/getScoresWims]")
+        dicoClasses = list(self.getListeClasses())[0]
+
+        liste_activitesWIMS = []
+
+        for idElement in self.objectIds():
+
+            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
+                activite = getattr(self, idElement)
+
+                if auteur == "All" or activite.getCreateur() == auteur:
+                    if activite.typeWims == "Examen":
+                        if activite.idExam:
+                            # On ne demande que les examens créés coté WIMS
+                            liste_activitesWIMS.append("exam%s" % activite.getIdExam())
+                    elif activite.isActif():
+                        # Pour les feuilles, on ne demande que les actives.
+                        liste_activitesWIMS.append("sheet%s" % activite.getIdFeuille())
+        retour = {}
+        if len(liste_activitesWIMS) > 0:
+            #self.plone_log("[jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
+            #for user in dicoClasses:
+            #    if auteur == "All" or user == auteur:
+            if auteur in dicoClasses:
+                dico = {"qclass": dicoClasses[auteur],
+                        "code": authMember,
+                        "job": "getcsv",
+                        "format": file_format,
+                        "option": " ".join(liste_activitesWIMS)}
+                #self.plone_log("[jaloncours/getScoresWims] callJob dico :'%s'" % dico)
+                rep_wims = self.wims("callJob", dico)
+
+                try:
+                    # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
+                    retour = json.loads(rep_wims)
+                    self.plone_log("[jaloncours/getScoresWims] ERREUR WIMS / retour = %s" % retour)
+
+                    self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                     "fonction": "jaloncours.py/getScoresWims",
+                                                     "message": "Impossible de télécharger les notes (demandeur = %s)" % authMember,
+                                                     "jalon_request": request
+                                                     })
+                except:
+                    if file_format == "xls":
+                        # Pour le format xls, on remplace le séparateur décimal (.) par une virgule.
+                        rep_wims = rep_wims.replace(".", ",")
+                    # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
+                    retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": rep_wims}
+
+        else :
+            retour = {"status": "not_relevant", "nb_activity": len(liste_activitesWIMS)}
+
+        return retour
+
     def supprimerActivitesWims(self, utilisateur="All", request=None):
         u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
         # Retire du plan toutes les activités de l'utilisateur "utilisateur"

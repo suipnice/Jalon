@@ -1209,9 +1209,9 @@ class JalonFolder(ATFolder):
     def isSameServer(self, url1, url2):
         return jalon_utils.isSameServer(url1, url2)
 
-    #---------------------#
-    #   Utilitaire Wims   #
-    #---------------------#
+    #----------------------#
+    #   Utilitaires Wims   #
+    #----------------------#
     def wims(self, methode, param):
         """ Lien vers la fonction wims du connecteur dédié """
         #LOG.info("----- wims -----")
@@ -1331,7 +1331,7 @@ class JalonFolder(ATFolder):
         return deleted_classes
 
     def delExoWims(self, paths):
-        u""" suppression (coté wims) de la liste des exercices donné en "paths"."""
+        u""" Suppression (coté wims) de la liste des exercices donnés en "paths"."""
         for path in paths:
             exo_id = path.split("/")[-1]
             exo = getattr(self, exo_id)

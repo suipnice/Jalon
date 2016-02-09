@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Gestion des elements de type Feuille et Examen WIMS dans un cours Jalon."""
+""" Gestion des elements de type Feuille (autoevaluation) et Examen WIMS dans un cours Jalon."""
 
 from zope.interface import implements
 
@@ -1056,6 +1056,10 @@ class JalonCoursWims(ATDocument):
             return jalon_utils.convertLangToWIMS(site_lang)
         else:
             return self.getWims_lang()
+
+    def isActif(self):
+        u""" Permet de savoir si l'activité courante est active (affichée ou masquée)."""
+        return self.isAfficherElement(self.dateAff, self.dateMasq)["val"] == 1
 
     def isAfficherElement(self, affElement, masquerElement):
         """isAfficherElement."""
