@@ -75,7 +75,7 @@
             </h2>
 
             <form method="POST"
-                  tal:attributes="action string:${context/absolute_url};
+                  tal:attributes="action string:${context/absolute_url}/remove_tags_objects_script;
                                   data-success_msg string:Le désétiquetage demandé a été effectué.;
                                   data-untag_msg string:L'ensemble des étiquettes actives :;
                                   data-s_untag_msg string:… ne sera plus associé à la ressource sélectionnée :;
