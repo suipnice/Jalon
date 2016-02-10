@@ -103,7 +103,7 @@
             </h2>
 
             <form method="POST"
-                  tal:attributes="action string:${context/absolute_url};
+                  tal:attributes="action string:${context/absolute_url}/delete_object_script;
                                   data-success_msg string:La suppression demandée a été effectuée.;
                                   data-all_att_msg string:Suppression impossible :;
                                   data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;
@@ -120,8 +120,7 @@
                 <input type="hidden" name="orig_template" tal:attributes="value context/absolute_url"/>
                 <input tal:replace="structure context/@@authenticator/authenticator" />
                 <div class="formControls">
-                    <button type="submit" class="button small alert radius"
-                            name="folder_delete:method">
+                    <button type="submit" class="button small alert radius">
                         <i class="fa fa-trash-o"></i>
                         <tal:block i18n:translate="">Supprimer</tal:block>
                     </button>

@@ -121,7 +121,8 @@
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/file/index};
                                            value string:${my_files_view/folder_path}/${file/getId};
-                                           data-res_name python:context.getShortText(file['Title'])" />
+                                           data-res_name python:context.getShortText(file['Title']);
+                                           data-attached python:context.test(len(file.getRawRelatedItems) > 0, '1', '')" />
                     <label tal:attributes="for string:switch-${repeat/file/index}"></label>
                 </div>
             </td>
