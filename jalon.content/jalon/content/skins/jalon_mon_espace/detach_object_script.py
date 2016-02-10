@@ -42,4 +42,4 @@ if request.has_key("listeCours"):
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
-    return context.restrictedTraverse("mon_espace/mes_fichiers")()
+    return context.restrictedTraverse(context.getMySpaceFolder())()

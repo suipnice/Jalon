@@ -17,6 +17,6 @@ context.setSubject(tags_list)
 context.reindexObject()
 
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
-    context.REQUEST.RESPONSE.redirect(context.absolute_url())
+    context.REQUEST.RESPONSE.redirect(context.aq_parent.absolute_url())
 else:
-    return context.restrictedTraverse("mon_espace/mes_fichiers")()
+    return context.restrictedTraverse(context.aq_parent.getMySpaceFolder())()

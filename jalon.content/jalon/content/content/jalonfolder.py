@@ -83,6 +83,8 @@ class JalonFolder(ATFolder):
     meta_type = 'JalonFolder'
     schema = JalonFolderSchema
 
+    folder_my_space_dict = {"Fichiers": "mon_espace/mes_fichiers"}
+
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
         self.uploader_id = self._uploader_id()
@@ -102,6 +104,10 @@ class JalonFolder(ATFolder):
     #--------------------#
     # My Space Utilities #
     #--------------------#
+    def getMySpaceFolder(self):
+        LOG.info("----- getMySpaceFolder -----")
+        return self.folder_my_space_dict[self.getId()]
+
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
         """Fourni la liste des elements d'un jalonfolder."""
         dico = {"portal_type": typeR}
