@@ -15,7 +15,7 @@
 
     <tal:block define="folderContents python:context.getContents(subject=subjects, typeR='JalonExerciceWims', authMember=user.getId(), repertoire=context.getId());
                        erreur python:context.erreurWIMS(folderContents);
-                       listeModeles python:context.getTagsWims();
+                       listeModeles python:context.getModelesWims();
                        total_elements python:len(context.objectIds());">
 
         <tal:block define="tagList python:context.tagFormat(subjects)"

@@ -1,4 +1,4 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="jalon.wims">
@@ -14,7 +14,7 @@
         for="*"
         class=".browser.WimsBrowserView"
         permission="cmf.ModifyPortalContent">
-        <browser:page attribute="save" name="wims-save" /> 
+        <browser:page attribute="save" name="wims-save" />
     </browser:pages>
 
     <browser:resourceDirectory
