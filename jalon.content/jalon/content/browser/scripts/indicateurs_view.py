@@ -166,7 +166,9 @@ class IndicateursView(BrowserView):
         box_dict = {"1": "Fichiers",
                     "2": "Presentations sonorisees",
                     "3": "Externes",
-                    "4": "Webconferences"}
+                    "4": "Webconference",
+                    "5": "Video",
+                    "6": "VOD"}
         cours_url = self.context.absolute_url()
         box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=1" % cours_url,
