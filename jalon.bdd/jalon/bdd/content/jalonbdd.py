@@ -1178,34 +1178,39 @@ class JalonBDD(SimpleItem):
 
         session = self.getSessionMySQL()
         elements_consultation = jalon_mysql.getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list)
+
         for ligne in elements_consultation.all():
             #LOG.info(ligne)
-            try:
-                consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
-                if not consultation_dict[ligne[0]] in consultations_list:
-                    consultations_list.append(consultation_dict[ligne[0]])
-            except:
-                pass
+            #try:
+            consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_year"] = ligne[2]
+            if not consultation_dict[ligne[0]] in consultations_list:
+                consultations_list.append(consultation_dict[ligne[0]])
+            #except:
+            #    pass
         #LOG.info(consultation_dict)
 
         elements_consultation_month_before = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, monthPrec, yearPrec, elements_list)
         for ligne in elements_consultation_month_before.all():
-            try:
-                consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
-            except:
-                pass
+            #try:
+            consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_month_before"] = ligne[2]
+            #except:
+            #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+            #    pass
 
         elements_consultation_month = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year, elements_list)
         for ligne in elements_consultation_month.all():
-            try:
-                consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
-            except:
-                pass
+            #try:
+            consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_month"] = ligne[2]
+            #except:
+            #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
 
         #LOG.info(consultations_list)
         for consultation in consultations_list:
-            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
-            if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
+            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_freq_month"] < consultation["nb_freq_month_before"] else "fa fa-arrow-up no-pad success"
+            if consultation["nb_freq_month"] == consultation["nb_freq_month_before"]:
                 consultation["icon"] = "fa fa-arrow-right no-pad"
         return consultations_list
 
