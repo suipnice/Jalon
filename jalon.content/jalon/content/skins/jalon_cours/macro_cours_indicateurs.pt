@@ -60,7 +60,7 @@
             </table>
             <h2>
                 <i class="fa fa-bar-chart"></i>
-                Graphe des sonsultations de l'année universitaire courante par mois
+                Graphe des consultations de l'année universitaire courante par mois
             </h2>
             <tal:replace replace="structure onglet_view/graph"/>
             <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>
