@@ -27,7 +27,7 @@
 
     <main role="main" class="row" aria-labelledby="page_title"
           tal:define="modele context/getModele;
-                     portal_lang portal_state/language">
+                      portal_lang portal_state/language">
 
         <div id="js-alert_box" class="small-12 columns"
              tal:condition="not:param_wims">

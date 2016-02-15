@@ -46,8 +46,15 @@ if context.isPersonnel(authMember):
         #message = u"Les notes des activités WIMS du cours « <strong>%s</strong> » ont bien été téléchargées ." % (titre_cours)
         #context.plone_utils.addPortalMessage(_(message), "info")
         filename = "%s.%s" % (context.getId(), dico_format[file_format][0])
-        request.RESPONSE.setHeader('content-type', "text/%s" % dico_format[file_format][1])
+        if file_format == "xls":
+            #Comme Excel (francais) ne prend pas automatiquement l'utf-8, on réencode en iso pour lui.
+            charset = "Windows-1252"
+            resultat["data"] = resultat["data"].decode("utf-8").encode(charset)
+        else:
+            charset = "utf-8"
+        request.RESPONSE.setHeader('content-type', "text/%s; charset=%s" % (dico_format[file_format][1], charset))
         request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
+
         return resultat["data"]
     elif resultat["status"] == "not_relevant":
         message = _(u"Votre cours ne contient aucun examen ou autoévaluation active créé(s) par l'utilisateur « <strong>%s</strong> ».<br/>\

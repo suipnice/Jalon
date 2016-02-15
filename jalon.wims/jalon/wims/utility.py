@@ -7,7 +7,7 @@ from zope.interface import classProvides
 
 from AccessControl import ClassSecurityInfo
 
-from jalon.wims.interfaces.utility import IWims, IWimsLayout, IWimsClasse, IWimsModele
+from jalon.wims.interfaces.utility import IWims, IWimsLayout, IWimsClasse
 
 from OFS.SimpleItem import SimpleItem
 
@@ -51,7 +51,6 @@ class Wims(SimpleItem):
     classProvides(
         IWimsLayout,
         IWimsClasse,
-        IWimsModele,
     )
     security = ClassSecurityInfo()
 
@@ -73,25 +72,7 @@ class Wims(SimpleItem):
     donnees_superviseur = FieldProperty(IWimsClasse['donnees_superviseur'])
     donnees_exercice = FieldProperty(IWimsClasse['donnees_exercice'])
 
-    qcmsimple = FieldProperty(IWimsModele['qcmsimple'])
-    equation = FieldProperty(IWimsModele['equation'])
-    texteatrous = FieldProperty(IWimsModele['texteatrous'])
-    marqueruntexte = FieldProperty(IWimsModele['marqueruntexte'])
-    marquerparpropriete = FieldProperty(IWimsModele['marquerparpropriete'])
-    questiontextuelletolerante = FieldProperty(IWimsModele['questiontextuelletolerante'])
-    taperlemotassocie = FieldProperty(IWimsModele['taperlemotassocie'])
-    reordonner = FieldProperty(IWimsModele['reordonner'])
-    correspondance = FieldProperty(IWimsModele['correspondance'])
-    classerparpropriete = FieldProperty(IWimsModele['classerparpropriete'])
-    vraifauxmultiples = FieldProperty(IWimsModele['vraifauxmultiples'])
-    texteatrousmultiples = FieldProperty(IWimsModele['texteatrousmultiples'])
-    qcmsuite = FieldProperty(IWimsModele['qcmsuite'])
-    exercicelibre = FieldProperty(IWimsModele['exercicelibre'])
-
-    #debug = []
-
     # Parametres globaux
-    # session = None
     expiration_date = u"30000101"
     min_login_len = 4
     max_login_len = 24
