@@ -118,7 +118,7 @@
     border-style: solid;
     border-width: 0;
     font-size: 90%;
-    width: 24%;
+    width: 32%;
     cursor: pointer;
     display: inline-block !important;
     font-family: Tahoma,Verdana,Helvetica,Arial,sans-serif;
@@ -172,7 +172,6 @@
     border-radius: 5px;
     color: #333;
     margin-bottom: 0.5rem !important;
-    width: 24%;
 }
 
 #cours_indicateurs nav .off:hover {
@@ -186,7 +185,6 @@
     border-radius: 5px;
     color: #fff;
     margin-bottom: 0.5rem !important;
-    width: 24%;
 }
 
 #cours_indicateurs nav .selected:hover {

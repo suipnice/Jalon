@@ -183,7 +183,15 @@ class IndicateursView(BrowserView):
                     {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=4" % cours_url,
                      "icon":      "fa-headphones",
-                     "link_text": "Webconférences"}]
+                     "link_text": "Webconférences"},
+                    {"css_class": "button radius%s" % (" selected" if box == "5" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=2&box=5" % cours_url,
+                     "icon":      "fa-youtube-play",
+                     "link_text": "Vidéos"},
+                    {"css_class": "button radius%s" % (" selected" if box == "6" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=2&box=6" % cours_url,
+                     "icon":      "fa-video-camera",
+                     "link_text": "VOD"}]
         element_id = self.request.get("element_id", None)
         thead_th_list = [{"data-sort": "nb_cons_month_before",
                           "th_title":  "les consultations du mois précédent",
