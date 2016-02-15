@@ -24,6 +24,7 @@
             </h2>
             <tal:replace replace="structure onglet_view/frequentation_graph"/>
             <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
+            <tal:comment replace="nothing">
             <h2>
                 <i class="fa fa-table"></i>
                 Consultations sur l'année universitaire courante par public
@@ -58,9 +59,10 @@
                     </tal:repeat>
                 </tbody>
             </table>
+            </tal:comment>
             <h2>
                 <i class="fa fa-bar-chart"></i>
-                Graphe des consultations de l'année universitaire courante par mois
+                Fréquentation étudiantes de l'année universitaire en cours par mois
             </h2>
             <tal:replace replace="structure onglet_view/graph"/>
             <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>

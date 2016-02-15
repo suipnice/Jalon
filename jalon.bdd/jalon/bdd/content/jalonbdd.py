@@ -1119,6 +1119,14 @@ class JalonBDD(SimpleItem):
                 consultation["icon"] = "fa fa-arrow-right no-pad"
         return consultations_list
 
+    def getConsultationByCoursByUniversityYearByDate(self, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
+        LOG.info("----- getConsultationByCoursByUniversityYear -----")
+        if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
+            DATE_CONS_YEAR = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
+        return consultationCours
+
     def getConsultationByCoursByYearForGraph(self, ID_COURS, year=None):
         #LOG.info("----- getConsultationByCoursByYearForGraph -----")
         if not year or year == '0':
@@ -1135,12 +1143,12 @@ class JalonBDD(SimpleItem):
         consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year)
         return consultationCours
 
-    def getFrequentationByCoursByUniversityYearForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
-        LOG.info("----- getFrequentationByCoursByUniversityYearForGraph -----")
+    def getFrequentationByCoursByUniversityYearByDateForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
+        LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
-        consultationCours = jalon_mysql.getFrequentationByCoursByUniversityYearForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR)
+        consultationCours = jalon_mysql.getFrequentationByCoursByUniversityYearByDateForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR)
         return consultationCours
 
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):

@@ -164,12 +164,32 @@ def getConsultationByCoursByYearForGraph(session, ID_COURS, year='%'):
 def getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year):
     LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
-    nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
+    nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(func.disctinct(COC.SESAME_ETU)), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
+    #nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     return nbConsultations
 
 
-def getFrequentationByCoursByUniversityYearForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR):
-    LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+def getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
+    LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
+    COC = aliased(tables.ConsultationCoursMySQL)
+
+    filter_date = func.MONTH(COC.DATE_CONS)
+    if FILTER_DATE:
+        filter_date = func.date(COC.DATE_CONS)
+
+    if PUBLIC_CONS:
+        nbConsultations = session.query(filter_date, func.count(func.distinct(COC.SESAME_ETU))).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(filter_date)
+    else:
+        nbConsultations = session.query(filter_date, func.count(func.distinct(COC.SESAME_ETU)), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(filter_date, COC.PUBLIC_CONS)
+
+    #nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(func.distinct(COC.SESAME_ETU)), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
+    #nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
+
+    return nbConsultations
+
+
+def getFrequentationByCoursByUniversityYearByDateForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR):
+    LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.date(COC.DATE_CONS), func.count(func.distinct(COC.SESAME_ETU))).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(func.date(COC.DATE_CONS))
     #nbConsultations = session.query(func.date(COC.DATE_CONS), func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(func.date(COC.DATE_CONS))
