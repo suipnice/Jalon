@@ -1119,6 +1119,14 @@ class JalonBDD(SimpleItem):
                 consultation["icon"] = "fa fa-arrow-right no-pad"
         return consultations_list
 
+    def getConsultationByCoursByUniversityYearByDate(self, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
+        LOG.info("----- getConsultationByCoursByUniversityYear -----")
+        if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
+            DATE_CONS_YEAR = DateTime().year()
+        session = self.getSessionMySQL()
+        consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
+        return consultationCours
+
     def getConsultationByCoursByYearForGraph(self, ID_COURS, year=None):
         #LOG.info("----- getConsultationByCoursByYearForGraph -----")
         if not year or year == '0':
@@ -1135,12 +1143,12 @@ class JalonBDD(SimpleItem):
         consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year)
         return consultationCours
 
-    def getFrequentationByCoursByUniversityYearForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
-        LOG.info("----- getFrequentationByCoursByUniversityYearForGraph -----")
+    def getFrequentationByCoursByUniversityYearByDateForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
+        LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
-        consultationCours = jalon_mysql.getFrequentationByCoursByUniversityYearForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR)
+        consultationCours = jalon_mysql.getFrequentationByCoursByUniversityYearByDateForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR)
         return consultationCours
 
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
@@ -1170,10 +1178,12 @@ class JalonBDD(SimpleItem):
 
         session = self.getSessionMySQL()
         elements_consultation = jalon_mysql.getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list)
+
         for ligne in elements_consultation.all():
             #LOG.info(ligne)
             #try:
             consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_year"] = ligne[2]
             if not consultation_dict[ligne[0]] in consultations_list:
                 consultations_list.append(consultation_dict[ligne[0]])
             #except:
@@ -1184,6 +1194,7 @@ class JalonBDD(SimpleItem):
         for ligne in elements_consultation_month_before.all():
             #try:
             consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_month_before"] = ligne[2]
             #except:
             #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
             #    pass
@@ -1192,13 +1203,14 @@ class JalonBDD(SimpleItem):
         for ligne in elements_consultation_month.all():
             #try:
             consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
+            consultation_dict[ligne[0]]["nb_freq_month"] = ligne[2]
             #except:
             #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
 
         #LOG.info(consultations_list)
         for consultation in consultations_list:
-            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
-            if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
+            consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_freq_month"] < consultation["nb_freq_month_before"] else "fa fa-arrow-up no-pad success"
+            if consultation["nb_freq_month"] == consultation["nb_freq_month_before"]:
                 consultation["icon"] = "fa fa-arrow-right no-pad"
         return consultations_list
 

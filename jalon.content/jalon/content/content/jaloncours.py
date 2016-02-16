@@ -2766,6 +2766,11 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByDate(self.getId())
 
+    def getConsultationByCoursByUniversityYearByDate(self, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
+        #LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearByDate(self.getId(), DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
+
     def getConsultationByCoursByYearForGraph(self):
         #self.plone_log("getConsultationByCoursByYearForGraph")
         portal = self.portal_url.getPortalObject()
@@ -2776,10 +2781,10 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
 
-    def getFrequentationByCoursByUniversityYearForGraph(self, PUBLIC_CONS):
+    def getFrequentationByCoursByUniversityYearByDateForGraph(self, PUBLIC_CONS):
         #self.plone_log("getFrequentationByCoursByUniversityYearForGraph")
         portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearForGraph(self.getId(), PUBLIC_CONS)
+        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearByDateForGraph(self.getId(), PUBLIC_CONS)
 
     def getConsultationElementsByCours(self, elements_list, elements_dict):
         #self.plone_log("getConsultationElementsByCours")

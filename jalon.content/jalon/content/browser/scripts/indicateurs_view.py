@@ -129,7 +129,7 @@ class IndicateursView(BrowserView):
             nb_element_by_type[type_element] += 1
 
         graph = ""
-        requete = self.context.getConsultationByCoursByUniversityYearForGraph().all()
+        requete = self.context.getConsultationByCoursByUniversityYearByDate(None, False, False).all()
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -143,9 +143,10 @@ class IndicateursView(BrowserView):
                 pass
             graph = self.context.genererGraphIndicateurs(requete_dict)
 
-        requete2 = self.context.getFrequentationByCoursByUniversityYearForGraph("Etudiant").all()
-        LOG.info(requete2)
         frequentation_graph = ""
+        requete2 = self.context.getConsultationByCoursByUniversityYearByDate(None, True, "Etudiant").all()
+        #requete2 = self.context.getFrequentationByCoursByUniversityYearByDate("Etudiant").all()
+        LOG.info(requete2)
         if requete2:
             requete_dict = dict(requete2)
             frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
@@ -156,9 +157,19 @@ class IndicateursView(BrowserView):
                 "modified":            jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
                 "thead_th_list":       thead_th_list,
                 "nb_element_by_type":  nb_element_by_type,
+                "graph":               graph,
+                "frequentation_graph": frequentation_graph}
+
+        """
+        return {"macro":               "indicateurs_generalite",
+                "created":             jalon_utils.getLocaleDate(self.context.created(), "%d/%m/%Y à %H:%M"),
+                "modified":            jalon_utils.getLocaleDate(self.context.modified(), "%d/%m/%Y à %H:%M"),
+                "thead_th_list":       thead_th_list,
+                "nb_element_by_type":  nb_element_by_type,
                 "cours_consultation":  self.context.getConsultation(),
                 "graph":               graph,
                 "frequentation_graph": frequentation_graph}
+        """
 
     def getIndicateursRessourcesView(self):
         #LOG.info("----- getIndicateursRessourcesView -----")
@@ -166,7 +177,9 @@ class IndicateursView(BrowserView):
         box_dict = {"1": "Fichiers",
                     "2": "Presentations sonorisees",
                     "3": "Externes",
-                    "4": "Webconferences"}
+                    "4": "Webconference",
+                    "5": "Video",
+                    "6": "VOD"}
         cours_url = self.context.absolute_url()
         box_list = [{"css_class": "button radius%s" % (" selected" if box == "1" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=1" % cours_url,
@@ -183,7 +196,15 @@ class IndicateursView(BrowserView):
                     {"css_class": "button radius%s" % (" selected" if box == "4" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=2&box=4" % cours_url,
                      "icon":      "fa-headphones",
-                     "link_text": "Webconférences"}]
+                     "link_text": "Webconférences"},
+                    {"css_class": "button radius%s" % (" selected" if box == "5" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=2&box=5" % cours_url,
+                     "icon":      "fa-youtube-play",
+                     "link_text": "Vidéos"},
+                    {"css_class": "button radius%s" % (" selected" if box == "6" else " off"),
+                     "link_url":  "%s/cours_indicateurs_view?onglet=2&box=6" % cours_url,
+                     "icon":      "fa-video-camera",
+                     "link_text": "VOD"}]
         element_id = self.request.get("element_id", None)
         thead_th_list = [{"data-sort": "nb_cons_month_before",
                           "th_title":  "les consultations du mois précédent",
