@@ -18,7 +18,7 @@
 
     <h2>
         <i class="fa fa-table"></i>
-        Consultations sur l'année universitaire courante
+        Fréquentation sur l'année universitaire courante
     </h2>
     <table summary="Consultations du cours pour le mois courant">
         <thead>
@@ -43,12 +43,19 @@
             <tal:repeat repeat="elements_consultation onglet_view/elements_consultation">
             <tr>
                 <td class="title" tal:content="elements_consultation/element_titre"/>
-                <td class="nb_cons_month_before" tal:content="elements_consultation/nb_cons_month_before"/>
+                <td class="nb_cons_month_before">
+                    <tal:replace replace="elements_consultation/nb_freq_month_before"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_month_before"/> <i class="fa fa-table" title="consultation(s)"></i>
+                </td>
                 <td class="nb_cons_month">
                     <i tal:attributes="class elements_consultation/icon"></i>
-                    <span tal:content="elements_consultation/nb_cons_month"/>
+                    <tal:replace replace="elements_consultation/nb_freq_month"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_month"/> <i class="fa fa-table" title="consultation(s)"></i>
                 </td>
-                <td class="nb_cons_year" tal:content="elements_consultation/nb_cons_year"/>
+                <td class="nb_cons_year">
+                    <tal:replace replace="elements_consultation/nb_freq_year"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_year"/> <i class="fa fa-table" title="consultation(s)"></i>
+                </td>
                 <td>
                     <a class="button small" tal:attributes="href string:${onglet_view/box_url}&amp;element_id=${elements_consultation/element_id}">
                         <i class="fa fa-arrow-right no-pad"></i>

@@ -1260,7 +1260,7 @@ En entrée :
 
 <tal:define define="folderContents python:context.getContents(subject=subjects, typeR='JalonExerciceWims', authMember=user.getId());
                     erreur python:context.erreurWIMS(folderContents);
-                    listeModeles python:context.getTagsWims();">
+                    listeModeles python:context.getModelesWims();">
 
     <div class="panel callout radius"
          tal:condition="not:folderContents"
