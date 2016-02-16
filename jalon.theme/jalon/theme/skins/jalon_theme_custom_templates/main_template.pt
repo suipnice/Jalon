@@ -52,7 +52,9 @@
 
         <!-- Top Bar -->
         <tal:condition condition="not:python:user.has_role('Anonymous')">
-            <metal:head use-macro="context/jalon_top_bar/macros/jalon-top-bar"></metal:head>
+            <tal:define define="top_bar_file python:context.getTopBarFile(user)">
+                <metal:head use-macro="python:getattr(context.top_bar, top_bar_file).macros.get('top_bar')"></metal:head>
+            </tal:define>
         </tal:condition>
 
         <!-- Contenu -->

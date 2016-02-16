@@ -12,5 +12,5 @@ form = context.REQUEST.form
 redirection = "%s/gestion_mon_espace?gestion=%s" % (context.absolute_url(), form["gestion"])
 del form["form.button.save"]
 del form["gestion"]
-context.setPropertiesMonEspace(form)
+context.setPropertiesMonEspace(form, context.REQUEST)
 context.REQUEST.RESPONSE.redirect(redirection)

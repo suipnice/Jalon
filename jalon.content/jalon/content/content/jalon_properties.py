@@ -343,31 +343,24 @@ class JalonProperties(SimpleItem):
         else:
             return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
-    def getTopBar(self):
+    def getTopBarMenuLeft(self, user_role):
         LOG.info("----- getTopBar -----")
-        member_id = user.getId()
-        is_etudiant = user.has_role(["Etudiant", "EtudiantJalon"])
-        is_manager = user.has_role(["Manager"])
-        is_secretaire = user.has_role(["Secretaire"])
+        menu_left = []
         is_personnel = user_role in ["Personnel", "Secretaire", "Manager"]
-
-        portal_url = self.portal_url.getPortalObject().absolute_url()
-
-        menu = {"menu_left": []}
 
         menu_my_space = None
         if is_personnel:
             menu_my_space = {"id":        "mon_espace",
                              "class":     "has-dropdown not-click",
-                             "icone":     "fa fa-home",
+                             "icon":      "fa fa-home",
                              "title":     _(u"Mon espace"),
-                             "href":      "mon_espace",
+                             "link":      "mon_espace",
                              "sub_menu":  []}
 
             for sub_menu in self.getGridMonEspaceNew():
-                if sub_menu["activer"]:
-                    menu_my_space[sub_menu].append(sub_menu)
-                menu["menu_left"].append(menu_my_space)
+                if sub_menu["activated"]:
+                    menu_my_space["sub_menu"].append(sub_menu)
+            menu_left.append(menu_my_space)
 
         sub_menu_mes_cours = []
         sub_menu_mes_cours_class = ""
@@ -378,127 +371,101 @@ class JalonProperties(SimpleItem):
 
             for id_categorie in liste_id_categorie:
                 sub_menu_mes_cours.append({"id":      "cat%s" % id_categorie,
-                                           "icone":   "fa fa-book",
+                                           "icon":    "fa fa-book",
                                            "title":   jalon_categories[id_categorie]['title'],
-                                           "href":    "mes_cours?categorie=%s" % id_categorie})
+                                           "link":    "mes_cours?categorie=%s" % id_categorie})
             if sub_menu_mes_cours:
                 sub_menu_mes_cours_class = "has-dropdown not-click"
 
-        menu["menu_left"].append({"id":       "mes-cours",
-                                  "class":    sub_menu_mes_cours_class,
-                                  "icone":    "fa fa-university",
-                                  "title":    _(u"Mes cours"),
-                                  "href":     "mes_cours",
-                                  "sub_menu": sub_menu_mes_cours})
+        menu_left.append({"id":       "mes-cours",
+                          "class":    sub_menu_mes_cours_class,
+                          "icon":     "fa fa-university",
+                          "title":    _(u"Mes cours"),
+                          "link":     "mes_cours",
+                          "sub_menu": sub_menu_mes_cours})
 
         if is_personnel:
-            menu["menu_left"].append({"id":       "mes_etudiants",
-                                      "class":    "",
-                                      "icone":    "fa fa-users",
-                                      "title":    _(u"Mes étudiants"),
-                                      "href":     "mes_etudiants",
-                                      "sub_menu": []})
+            menu_left.append({"id":       "mes_etudiants",
+                              "class":    "",
+                              "icon":     "fa fa-users",
+                              "title":    _(u"Mes étudiants"),
+                              "link":     "mes_etudiants",
+                              "sub_menu": []})
 
-        if user.has_role(["Manager"]):
-            menu["menu_left"].append({"id":       "gestion_pedagogique",
-                                      "class":    "has-dropdown not-click",
-                                      "icone":    "fa fa-database",
-                                      "title":    _(u"Gestion pédagogique"),
-                                      "href":     "portal_jalon_bdd/@@jalon-bdd",
-                                      "sub_menu": [{"id":    "gestion_bdd",
-                                                    "icone": "fa fa-list",
-                                                    "title": _(u"Offre de formations"),
-                                                    "href":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_bdd"},
-                                                   {"id":    "gestion_utilisateurs",
-                                                    "icone": "fa fa-users",
-                                                    "title": _(u"Utilsateurs"),
-                                                    "href":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_utilisateurs"},
-                                                   {"id":    "gestion_connexion_bdd",
-                                                    "icone": "fa fa-key",
-                                                    "title": _(u"Propriétés"),
-                                                    "href":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_connexion_bdd"}]})
+        if user_role == "Manager":
+            menu_left.append({"id":       "gestion_pedagogique",
+                              "class":    "has-dropdown not-click",
+                              "icon":    "fa fa-database",
+                              "title":    _(u"Gestion pédagogique"),
+                              "link":     "portal_jalon_bdd/@@jalon-bdd",
+                              "sub_menu": [{"id":    "gestion_bdd",
+                                            "icon":  "fa fa-list",
+                                            "title": _(u"Offre de formations"),
+                                            "link":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_bdd"},
+                                           {"id":    "gestion_utilisateurs",
+                                            "icon":  "fa fa-users",
+                                            "title": _(u"Utilsateurs"),
+                                            "link":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_utilisateurs"},
+                                           {"id":    "gestion_connexion_bdd",
+                                            "icon": "fa fa-key",
+                                            "title": _(u"Propriétés"),
+                                            "link":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_connexion_bdd"}]})
 
-        menu = {"left_menu": [{"id"      : "gestion_pedagogique",
-                               "class"   : "",
-                               "icone"   : "fa fa-database",
-                               "title"   : _(u"Gestion pédagogique"),
-                               "href"    : "%s/portal_jalon_bdd/gestion_utilisateurs" % portal_url,
-                               "sub_menu": [],
-                               "is_visible": is_secretaire},
-                              {"id"      : "configuration",
-                               "class"   : "has-dropdown not-click",
-                               "icone"   : "fa fa-cogs",
-                               "title"   : _(u"Configuration"),
-                               "href"    : "%s/portal_jalon_properties/@@jalon_properties" % portal_url,
-                               "sub_menu": [{"id"   : "gestion_connexion",
-                                             "icone": "fa fa-key",
-                                             "title": _(u"Connexion à Jalon"),
-                                             "href" : "%s/portal_jalon_properties/gestion_connexion" % portal_url,
-                                             "activer": True},
-                                            {"id"   : "gestion_mon_espace",
-                                             "icone": "fa fa-home",
-                                             "title": _(u"Gestion \"Mon Espace\""),
-                                             "href" : "%s/portal_jalon_properties/gestion_mon_espace" % portal_url,
-                                             "activer": True},
-                                            {"id"   : "gestion_mes_cours",
-                                             "icone": "fa fa-university",
-                                             "title": _(u"Gestion des cours"),
-                                             "href" : "%s/portal_jalon_properties/gestion_mes_cours" % portal_url,
-                                             "activer": True},
-                                            {"id"   : "gestion_infos",
-                                             "icone": "fa fa-external-link-square",
-                                             "title": _(u"Liens d'informations"),
-                                             "href" : "%s/portal_jalon_properties/gestion_infos" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_didacticiels",
-                                             "icone"  : "fa fa-life-ring",
-                                             "title"  : _(u"Didacticiels"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_didacticiels" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_messages",
-                                             "icone"  : "fa fa-bullhorn",
-                                             "title"  : _(u"Diffusion de messages"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_messages" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_email",
-                                             "icone"  : "fa fa-envelope-o",
-                                             "title"  : _(u"Courriels"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_email" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_donnees_utilisateurs",
-                                             "icone"  : "fa fa-users",
-                                             "title"  : _(u"Données utilisateurs"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_donnees_utilisateurs" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_ga",
-                                             "icone"  : "fa fa-line-chart",
-                                             "title"  : _(u"Google Analytics"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_ga" % portal_url,
-                                             "activer": True},
-                                            {"id"     : "gestion_maintenance",
-                                             "icone"  : "fa fa-umbrella",
-                                             "title"  : _(u"Maintenance"),
-                                             "href"   : "%s/portal_jalon_properties/gestion_maintenance" % portal_url,
-                                             "activer": True}
-                                           ],
-                              "is_visible": is_manager},
-                             ],
-                "right_menu" : [{"id"      : "deconnexion",
-                                 "class"   : "",
-                                 "icone"   : "fa fa-sign-out fa-fw",
-                                 "title"   : _(u"Deconnexion"),
-                                 "href"    : "%s/logout" % portal_url,
-                                 "sub_menu": []}
-                               ]
-               }
+            menu_left.append({"id":       "configuration",
+                              "class":    "has-dropdown not-click",
+                              "icon":     "fa fa-cogs",
+                              "title":    _(u"Configuration"),
+                              "link":     "portal_jalon_properties/@@jalon_properties",
+                              "sub_menu": [{"id":    "gestion_connexion",
+                                            "icon":  "fa fa-key",
+                                            "title": _(u"Connexion à Jalon"),
+                                            "link":  "portal_jalon_properties/gestion_connexion"},
+                                           {"id":    "gestion_mon_espace",
+                                            "icon":  "fa fa-home",
+                                            "title": _(u"Gestion \"Mon Espace\""),
+                                            "link":  "/portal_jalon_properties/gestion_mon_espace"},
+                                           {"id":    "gestion_mes_cours",
+                                            "icon":  "fa fa-university",
+                                            "title": _(u"Gestion des cours"),
+                                            "link":  "portal_jalon_properties/gestion_mes_cours"},
+                                           {"id":    "gestion_infos",
+                                            "icon":  "fa fa-external-link-square",
+                                            "title": _(u"Liens d'informations"),
+                                            "link":  "portal_jalon_properties/gestion_infos"},
+                                           {"id":    "gestion_didacticiels",
+                                            "icon":  "fa fa-life-ring",
+                                            "title": _(u"Didacticiels"),
+                                            "link":  "portal_jalon_properties/gestion_didacticiels"},
+                                           {"id":    "gestion_messages",
+                                            "icon":  "fa fa-bullhorn",
+                                            "title": _(u"Diffusion de messages"),
+                                            "link":  "portal_jalon_properties/gestion_messages"},
+                                           {"id":    "gestion_email",
+                                            "icon":  "fa fa-envelope-o",
+                                            "title": _(u"Courriels"),
+                                            "link":  "portal_jalon_properties/gestion_email"},
+                                           {"id":     "gestion_donnees_utilisateurs",
+                                            "icon":  "fa fa-users",
+                                            "title": _(u"Données utilisateurs"),
+                                            "link":  "portal_jalon_properties/gestion_donnees_utilisateurs"},
+                                           {"id":     "gestion_ga",
+                                            "icon":  "fa fa-line-chart",
+                                            "title": _(u"Google Analytics"),
+                                            "link":  "portal_jalon_properties/gestion_ga"},
+                                           {"id":     "gestion_maintenance",
+                                            "icon": "fa fa-umbrella",
+                                            "title": _(u"Maintenance"),
+                                            "link":  "portal_jalon_properties/gestion_maintenance"}]})
 
+        if user_role == "Secretaire":
+            menu_left.append({"id":       "gestion_pedagogique",
+                              "class":    "",
+                              "icon":     "fa fa-database",
+                              "title":    _(u"Gestion pédagogique"),
+                              "link":     "/portal_jalon_bdd/gestion_utilisateurs",
+                              "sub_menu": []})
 
-
-
-
-
-        
-        return menu
+        return menu_left
 
     def getMonEspace(self):
         #LOG.info("----- getMonEspace -----")
@@ -508,12 +475,35 @@ class JalonProperties(SimpleItem):
                 "vidercache":  self.getJalonProperty("annoncer_vider_cache"),
                 "messages":    self.getPropertiesMessages()}
 
-    def generatePageMonEspace(self):
+    def generatePageMonEspace(self, request):
         #LOG.info("----- generatePageMonEspace -----")
         macro_mon_espace_grid_generate = ["<metal:macro define-macro=\"mon_espace_grid\">"]
         macro_mon_espace_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")())
         macro_mon_espace_grid_generate.append("</metal:macro>")
         self.restrictedTraverse("mon_espace/macro_mon_espace_grid").pt_edit("\n".join(macro_mon_espace_grid_generate), "text/html", "utf-8")
+
+        top_bar_base = self.restrictedTraverse("portal_jalon_properties/top_bar_base").PrincipiaSearchSource()
+
+        request.set("left_menu", self.getTopBarMenuLeft('Manager'))
+        top_bar_menu_left_base = self.restrictedTraverse("portal_jalon_properties/top_bar_menu_left_base")(REQUEST=request)
+        top_bar_manager = top_bar_base.replace("*****left_menu*****", top_bar_menu_left_base)
+        self.restrictedTraverse("top_bar/top_bar_manager").pt_edit(top_bar_manager, "text/html", "utf-8")
+
+        request.set("left_menu", self.getTopBarMenuLeft('Personnel'))
+        top_bar_menu_left_base = self.restrictedTraverse("portal_jalon_properties/top_bar_menu_left_base")(REQUEST=request)
+        top_bar_personnel = top_bar_base.replace("*****left_menu*****", top_bar_menu_left_base)
+        self.restrictedTraverse("top_bar/top_bar_personnel").pt_edit(top_bar_personnel, "text/html", "utf-8")
+
+        request.set("left_menu", self.getTopBarMenuLeft('Secretaire'))
+        top_bar_menu_left_base = self.restrictedTraverse("portal_jalon_properties/top_bar_menu_left_base")(REQUEST=request)
+        top_bar_secretaire = top_bar_base.replace("*****left_menu*****", top_bar_menu_left_base)
+        self.restrictedTraverse("top_bar/top_bar_secretaire").pt_edit(top_bar_secretaire, "text/html", "utf-8")
+
+        request.set("left_menu", self.getTopBarMenuLeft('Etudiant'))
+        top_bar_menu_left_base = self.restrictedTraverse("portal_jalon_properties/top_bar_menu_left_base")(REQUEST=request)
+        top_bar_etudiant = top_bar_base.replace("*****left_menu*****", top_bar_menu_left_base)
+        self.restrictedTraverse("top_bar/top_bar_etudiant").pt_edit(top_bar_etudiant, "text/html", "utf-8")
+        self.restrictedTraverse("top_bar/top_bar_etudiantjalon").pt_edit(top_bar_etudiant, "text/html", "utf-8")
 
     #------------------------#
     # Fonctions de connexion #
@@ -712,54 +702,54 @@ class JalonProperties(SimpleItem):
                  "icone":       "fa fa-video-camera"}]
 
     def getGridMonEspaceNew(self, key=None):
-        return [{"espace":      "fichiers",
-                 "titre":       "Fichiers",
-                 "activer":     self._activer_fichiers,
-                 "repertoire":  "mon_espace/mes_fichiers",
-                 "icone":       "fa fa-files-o"},
-                {"espace":      "connect",
-                 "titre":       "Présentations sonorisées",
-                 "activer":     self._activer_presentations_sonorisees,
-                 "repertoire":  "mon_espace/mes_presentations_sonorisees",
-                 "icone":       "fa fa-microphone"},
-                {"espace":      "wims",
-                 "titre":       "Exercices Wims",
-                 "activer":     self._activer_exercices_wims,
-                 "repertoire":  "mon_espace/mes_exercices_wims",
-                 "icone":       "fa fa-random"},
-                {"espace":      "liens",
-                 "titre":       "Ressources externes",
-                 "activer":     self._activer_liens,
-                 "repertoire":  "mon_espace/mes_ressources_externes",
-                 "icone":       "fa fa-external-link"},
-                {"espace":      "glossaire",
-                 "titre":       "Termes de glossaire",
-                 "activer":     self._activer_termes_glossaire,
-                 "repertoire":  "mon_espace/mes_termes_glossaire",
-                 "icone":       "fa fa-font"},
-                {"espace":      "connect",
-                 "titre":       "Webconférences",
-                 "activer":     self._activer_webconferences,
-                 "repertoire":  "mon_espace/mes_webconferences",
-                 "icone":       "fa fa-headphones"},
-                {"espace":      "video",
-                 "titre":       "Vidéos",
-                 "activer":     self._activer_lille1pod,
-                 "repertoire":  "mon_espace/mes_videos_pod",
-                 "icone":       "fa fa-youtube-play"},
-                {"espace":      "vod",
-                 "titre":       "VOD",
-                 "activer":     self._activer_vod,
-                 "repertoire":  "mon_espace/mes_vods",
-                 "icone":       "fa fa-video-camera"}]
+        return [{"css":       "fichiers",
+                 "title":     "Fichiers",
+                 "activated": self._activer_fichiers,
+                 "link":      "mon_espace/mes_fichiers",
+                 "icon":      "fa fa-files-o"},
+                {"css":       "connect",
+                 "title":     "Présentations sonorisées",
+                 "activated": self._activer_presentations_sonorisees,
+                 "link":      "mon_espace/mes_presentations_sonorisees",
+                 "icon":      "fa fa-microphone"},
+                {"css":       "wims",
+                 "title":     "Exercices Wims",
+                 "activated": self._activer_exercices_wims,
+                 "link":      "mon_espace/mes_exercices_wims",
+                 "icon":      "fa fa-random"},
+                {"css":       "liens",
+                 "title":     "Ressources externes",
+                 "activated": self._activer_liens,
+                 "link":      "mon_espace/mes_ressources_externes",
+                 "icon":      "fa fa-external-link"},
+                {"css":       "glossaire",
+                 "title":     "Termes de glossaire",
+                 "activated": self._activer_termes_glossaire,
+                 "link":      "mon_espace/mes_termes_glossaire",
+                 "icon":      "fa fa-font"},
+                {"css":       "connect",
+                 "title":     "Webconférences",
+                 "activated": self._activer_webconferences,
+                 "link":      "mon_espace/mes_webconferences",
+                 "icon":      "fa fa-headphones"},
+                {"css":       "video",
+                 "title":     "Vidéos",
+                 "activated": self._activer_lille1pod,
+                 "link":      "mon_espace/mes_videos_pod",
+                 "icon":      "fa fa-youtube-play"},
+                {"css":       "vod",
+                 "title":     "VOD",
+                 "activated": self._activer_vod,
+                 "link":      "mon_espace/mes_vods",
+                 "icon":      "fa fa-video-camera"}]
 
-    def setPropertiesMonEspace(self, form):
+    def setPropertiesMonEspace(self, form, request):
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
-        self.generatePageMonEspace()
+        self.generatePageMonEspace(request)
 
     def isAdobeConnect(self):
         portal = self.portal_url.getPortalObject()

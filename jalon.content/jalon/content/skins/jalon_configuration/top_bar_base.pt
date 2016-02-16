@@ -1,0 +1,40 @@
+<metal:macro define-macro="top_bar">
+    <nav class="top-bar" data-topbar="data-topbar" role="navigation" aria-label="Navigation principale">
+
+        <ul class="title-area">
+            <li class="name">
+                <h1>
+                    <a tal:attributes="href portal_url">
+                        <tal:replace replace="portal_state/portal_title" />
+                    </a>
+                </h1>
+            </li>
+            <li class="toggle-topbar menu-icon">
+                <a href="#"><span>Menu</span></a>
+            </li>
+        </ul>
+        <section class="top-bar-section">
+
+*****left_menu*****
+
+            <ul class="right">
+                <li class="has-dropdown">
+                    <a>
+                        <i class="fa fa-user"></i>
+                        <tal:replace replace="context/getAuthenticatedName" />
+                    </a>
+                    <ul class="dropdown">
+                        <li>
+                            <a tal:attributes="href string:${portal_url}/logout">
+                                <i class="fa fa-sign-out fa-fw"></i>
+                                Déconnexion
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+    </nav>
+
+</metal:macro>
