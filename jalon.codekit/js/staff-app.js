@@ -17,6 +17,12 @@
 //@codekit-prepend "static/wims.js";    // WIMS
 
 
+/*
+    Localisation datetimepicker
+*/
+
+jQuery.datetimepicker.setLocale('fr');
+
 
 /***************************************************************************************************
 
