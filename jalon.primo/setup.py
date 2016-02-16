@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.2.1r181'
+version = '2.2.2'
 
 setup(name='jalon.primo',
       version=version,
