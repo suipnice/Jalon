@@ -94,10 +94,10 @@ class MyCoursesView(BrowserView):
         member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
 
-        actions_list = [{"action_link":  "/add_favorite_course_form?course_id=",
+        actions_list = [{"action_link": "/add_favorite_course_form?course_id=",
                          "action_icon": "fa fa-star fa-fw",
                          "action_name": "Ajouter aux favoris"},
-                        {"action_link":  "/duplicate_course_form?course_id=",
+                        {"action_link": "/duplicate_course_form?course_id=",
                          "action_icon": "fa fa-code-fork fa-fw",
                          "action_name": "Dupliquer"},
                         {"action_link": "/purge_course_form?tab=%s&amp;course_id=" % tab,
@@ -106,7 +106,7 @@ class MyCoursesView(BrowserView):
                         {"action_link": "/delete_wims_activity_form?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer les activités WIMS"},
-                        {"action_link": "/add_archive_archive_form?course_id=",
+                        {"action_link": "/add_archive_course_form?course_id=",
                          "action_icon": "fa fa-folder fa-fw",
                          "action_name": "Archiver ce cours"},
                         {"action_link": "/delete_course_form?tab=%s&amp;course_id=" % tab,
@@ -122,7 +122,7 @@ class MyCoursesView(BrowserView):
             courses_list.extend(list(portal_catalog.searchResults(
                 portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
             courses_list.extend(list(folder.getFolderContents(contentFilter=filtre)))
-            actions_list[0] = {"action_link":  "/remove_favorite_course_form?course_id=",
+            actions_list[0] = {"action_link": "/remove_favorite_course_form?course_id=",
                                "action_icon": "fa fa-star-o fa-fw warning",
                                "action_name": "Retirer des favoris"}
             if len(courses_list):
@@ -153,8 +153,8 @@ class MyCoursesView(BrowserView):
                 portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
             courses_list.extend(list(portal_catalog.searchResults(
                 portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
-            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
-            actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
+            courses_list.extend(list(folder.getFolderContents(contentFilter=filtre)))
+            actions_list[-2] = {"action_link": "/remove_archive_course_form?course_id=",
                                 "action_icon": "fa fa-folder-open fa-fw warning",
                                 "action_name": "Désarchiver ce cours"}
 
