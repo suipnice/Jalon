@@ -112,7 +112,7 @@
                         tal:attributes="id string:drop-${repeat/course/index}">
                         <li tal:repeat="action course/course_actions_list">
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${course/course_link}${action/action_link}${course/course_id}">
+                               tal:attributes="href string:${context/absolute_url}${action/action_link}${course/course_id}">
                                 <i tal:attributes="class action/action_icon"></i>
                                 <tal:block tal:content="action/action_name" i18n:translate=""/>
                             </a>

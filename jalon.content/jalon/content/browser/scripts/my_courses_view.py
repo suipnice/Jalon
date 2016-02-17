@@ -36,14 +36,13 @@ class MyCoursesView(BrowserView):
         LOG.info("----- getMyCoursesView -----")
 
         folder = jalon_utils.getCourseUserFolder(self.context, user.getId())
-        folder_link = folder.absolute_url()
         context_link = self.context.absolute_url()
 
         is_manager = user.has_role("Manager")
         is_student = user.has_role("Etudiant") or user.has_role("EtudiantJalon")
 
         actions_list = [{"css_class":   "button create expand",
-                         "action_link": "%s/create_course_form" % folder_link,
+                         "action_link": "%s/create_course_form" % context_link,
                          "action_icon": "fa fa-plus-circle",
                          "action_name": "Créer un cours"},
                         {"css_class":   "button",
@@ -53,6 +52,8 @@ class MyCoursesView(BrowserView):
         if not is_manager:
             del actions_list[-1]
 
+        if "tab" in self.request:
+            tab = self.request["tab"]
         if not tab:
             tab = "1" if folder.getComplement() == "True" else "2"
         tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",

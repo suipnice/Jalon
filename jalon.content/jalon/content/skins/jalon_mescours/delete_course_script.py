@@ -12,6 +12,7 @@ from Products.CMFPlone import PloneMessageFactory as _
 #from OFS.ObjectManager import BeforeDeleteException
 
 req = context.REQUEST
+#req.set("tab", "2")
 course_id = req.form["course_id"]
 course_user_folder = context.getCourseUserFolder(req.form["user_id"])
 

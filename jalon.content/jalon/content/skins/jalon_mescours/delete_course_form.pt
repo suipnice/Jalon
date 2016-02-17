@@ -35,6 +35,8 @@
                           data-success_msg string:a été supprimé.";
                           i18n:attributes="data-success_msg">
 
+        <input type="hidden" name="tab"
+               tal:attributes="value request/tab"/>
         <input type="hidden" name="user_id"
                tal:attributes="value user_id"/>
         <input type="hidden" name="course_id"
