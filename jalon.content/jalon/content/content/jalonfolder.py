@@ -327,6 +327,9 @@ class JalonFolder(ATFolder):
     #----------------------#
     # My Courses utilities #
     #----------------------#
+    def getCourseUserFolder(self, user_id):
+        return jalon_utils.getCourseUserFolder(self, user_id)
+
     def modifyFavoriteCourse(self, user_id, course_id):
         LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
@@ -358,6 +361,12 @@ class JalonFolder(ATFolder):
             archives.remove(user_id)
         course.setArchive(tuple(archives))
         course.setProperties({"DateDerniereModif": DateTime()})
+
+    def getDataCourseDelete(self, user_id, course_id):
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course = getattr(course_user_folder, course_id)
+        return {"course_name":     self.getShortText(course.Title(), 80),
+                "is_course_owner": course.isCourseOwner(user_id)}
 
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
@@ -1462,7 +1471,7 @@ class JalonFolder(ATFolder):
         deleted_classes = []
         for classe in listClasses:
             dico = {"job": "delclass", "code":
-                self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
+                    self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
             rep_wims = self.wims("callJob", dico)
             rep_wims = self.wims("verifierRetourWims",
                                  {"rep": rep_wims,
