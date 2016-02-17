@@ -94,36 +94,35 @@ class MyCoursesView(BrowserView):
         member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
 
-        actions_list = [{"action_url":  "/add_course_favorite_script?course_id=",
+        actions_list = [{"action_link":  "/add_course_favorite_script?course_id=",
                          "action_icon": "fa fa-star fa-fw",
                          "action_name": "Ajouter aux favoris"},
-                        {"action_url":  "/duplicate_course_script?course_id=",
+                        {"action_link":  "/duplicate_course_script?course_id=",
                          "action_icon": "fa fa-code-fork fa-fw",
                          "action_name": "Dupliquer"},
-                        {"action_url": "/purge_course_script?tab=%s&amp;course_id=" % tab,
+                        {"action_link": "/purge_course_script?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-filter fa-fw",
                          "action_name": "Purger les travaux étudiants"},
-                        {"action_url": "/delete_wims_activity_script?tab=%s&amp;course_id=" % tab,
+                        {"action_link": "/delete_wims_activity_script?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer les activités WIMS"},
-                        {"action_url": "/add_archive_archive_script?course_id=",
+                        {"action_link": "/add_archive_archive_script?course_id=",
                          "action_icon": "fa fa-folder fa-fw",
                          "action_name": "Archiver ce cours"},
-                        {"action_url": "/delete_course_script?tab=%s&amp;course_id=" % tab,
+                        {"action_link": "/delete_course_script?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer ce cours"}]
 
         filtre = {"portal_type": "JalonCours"}
         if tab == "1":
             filtre["Subject"] = member_id
-            courses_list = list(portal_catalog.searchResults(
-                portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
             courses_list.extend(list(portal_catalog.searchResults(
                 portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
             courses_list.extend(list(portal_catalog.searchResults(
                 portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
             courses_list.extend(list(folder.getFolderContents(contentFilter=filtre)))
-            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
+            actions_list[0] = {"action_link":  "/remove_course_favorite_script?course_id=",
                                "action_icon": "fa fa-star-o fa-fw warning",
                                "action_name": "Retirer des favoris"}
             if len(courses_list):
@@ -168,16 +167,16 @@ class MyCoursesView(BrowserView):
             return {"is_courses_list": False,
                     "message": messages_dict[tab]}
         authors_dict = {}
-        for cours_brain in courses_list:
-            if not cours_brain.getId in courses_ids_list:
+        for course_brain in courses_list:
+            if not course_brain.getId in courses_ids_list:
                 if not tab in ["1", "5"]:
-                    if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
+                    if (not member_id in course_brain.Subject) and (not member_id in course_brain.getArchive):
                         courses_list_filter.append(
-                            self.getCourseData(cours_brain, authors_dict, member_id, member_login_time, tab, actions_list))
+                            self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
                 else:
                     courses_list_filter.append(
-                        self.getCourseData(cours_brain, authors_dict, member_id, member_login_time, tab, actions_list))
-                courses_ids_list.append(cours_brain.getId)
+                        self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
+                courses_ids_list.append(course_brain.getId)
         return {"is_courses_list": True,
                 "courses_list":    list(courses_list_filter)}
 
