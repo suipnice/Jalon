@@ -54,7 +54,7 @@ class MyCoursesView(BrowserView):
             del actions_list[-1]
 
         if not tab:
-            tab = "1" if self.context.getComplement() == "True" else "2"
+            tab = "1" if folder.getComplement() == "True" else "2"
         tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
                       "tab_link":  "%s?tab=1" % context_link,
                       "tab_icon":  "fa fa-star fa-fw",
