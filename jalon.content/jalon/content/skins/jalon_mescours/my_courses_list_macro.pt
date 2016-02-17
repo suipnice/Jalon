@@ -87,7 +87,7 @@
                           tal:content="course/course_short_description" />
                     <span tal:on-error="nothing">
                         <tal:block i18n:translate="">par</tal:block>
-                        <strong tal:content="course/course_name_auteur_cours" />
+                        <strong tal:content="course/course_author_name" />
                     </span>
                 </td>
                 <td class="new show-for-medium-up">

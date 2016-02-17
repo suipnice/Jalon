@@ -183,26 +183,26 @@ class MyCoursesView(BrowserView):
     def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list):
         LOG.info("----- getCourseData -----")
 
-        cours_infos = {"course_id":                course_brain.getId,
-                       "course_title":             course_brain.Title,
-                       "course_short_title":       jalon_utils.getShortText(course_brain.Title),
-                       "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
-                       "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
-                       "course_modified":          course_brain.modified,
-                       "course_link":              course_brain.getURL,
-                       "course_is_etudiants":      "fa fa-check fa-lg no-pad success" if len(course_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
-                       "course_is_password":       "fa fa-check fa-lg no-pad success" if course_brain.getLibre else "fa fa-times fa-lg no-pad warning",
-                       "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
-                       "course_actions_list":      actions_list}
+        course_infos = {"course_id":                course_brain.getId,
+                        "course_title":             course_brain.Title,
+                        "course_short_title":       jalon_utils.getShortText(course_brain.Title),
+                        "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
+                        "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
+                        "course_modified":          course_brain.modified,
+                        "course_link":              course_brain.getURL,
+                        "course_is_etudiants":      "fa fa-check fa-lg no-pad success" if len(course_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
+                        "course_is_password":       "fa fa-check fa-lg no-pad success" if course_brain.getLibre else "fa fa-times fa-lg no-pad warning",
+                        "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
+                        "course_actions_list":      actions_list}
         if tab != "2":
-            cours_author = course_brain.getAuteurPrincipal
-            if not cours_author:
-                cours_author = course_brain.Creator
-            if cours_author in authors_dict:
-                cours_infos["course_author_name"] = authors_dict[cours_author]
+            course_author = course_brain.getAuteurPrincipal
+            if not course_author:
+                course_author = course_brain.Creator
+            if course_author in authors_dict:
+                course_infos["course_author_name"] = authors_dict[course_author]
             else:
-                course_author_name = jalon_utils.getInfosMembre(cours_author)["fullname"]
-                authors_dict[cours_author] = course_author_name
-                cours_infos["course_author_name"] = course_author_name
+                course_author_name = jalon_utils.getInfosMembre(course_author)["fullname"]
+                authors_dict[course_author] = course_author_name
+                course_infos["course_author_name"] = course_author_name
 
-        return cours_infos
+        return course_infos
