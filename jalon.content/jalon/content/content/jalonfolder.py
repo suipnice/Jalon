@@ -397,7 +397,7 @@ class JalonFolder(ATFolder):
 
         return cours_infos
 
-    def getListeCoursEns(self, onglet, member):
+    def getListeCoursEns(self, member, onglet):
         #LOG.info("----- getListeCoursEns -----")
         """ Renvoi la liste des cours pour authMember."""
         courses_list = []

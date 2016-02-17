@@ -72,7 +72,8 @@
                     </a>
                 </li>
             </ul>
-            <div id="js-update_target">
+            <div id="js-update_target"
+                 tal:define="folderContents python:context.getListeCoursEns(user, onglet);">
                 <metal:macro use-macro="context/macro_mescours_liste/macros/mescours_liste">
                     Macro d'affichage de la liste des cours
                 </metal:macro>
@@ -91,7 +92,8 @@
 </tal:condition>
 
 <tal:condition condition="is_ajax">
-    <tal:define define="onglet request/onglet | string:2">
+    <tal:define define="onglet request/onglet | string:2;
+                        folderContents python:context.getListeCoursEns(user, onglet);">
     <metal:macro use-macro="context/macro_mescours_liste/macros/mescours_liste">
         Macro d'affichage de la liste des cours
     </metal:macro>

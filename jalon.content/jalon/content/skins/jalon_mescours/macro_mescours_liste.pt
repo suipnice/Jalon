@@ -12,8 +12,6 @@
 
 <metal:macro define-macro="mescours_liste">
 
-<tal:define define="folderContents python:context.getListeCoursEns(onglet, user);">
-
     <div class="panel callout radius"
          tal:condition="not:folderContents/is_courses_list">
         <i class="fa fa-info-circle no-pad"></i>
@@ -147,7 +145,6 @@
         </script>
     </tal:condition>
 </tal:condition>
-</tal:define>
 
 </metal:macro>
 

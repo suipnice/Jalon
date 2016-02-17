@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="tab request/onglet | nothing;
+                        my_courses_view python:view.getMyCoursesView(user, tab);
+                        onglet my_courses_view/tab">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+        <section class="show-for-medium-up medium-12 columns"
+                 tal:condition="not:my_courses_view/is_student">
+            <nav id="item-adder">
+                <ul class="button-group expand radius even-2"
+                    tal:omit-tag="not:my_courses_view/is_manager">
+                    <li tal:repeat="action my_courses_view/actions_list"
+                        tal:omit-tag="not:my_courses_view/is_manager">
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="class action/css_class;
+                                           href action/action_link">
+                           <i tal:attributes="class action/action_icon"></i>
+                           <tal:block tal:replace="action/action_name"
+                                      i18n:translate=""/>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="js-list-cours" class="small-12 columns">
+            <h2 id="js-update_title">
+                <i class="fa fa-briefcase"></i><tal:block i18n:translate="">Mes cours</tal:block>
+            </h2>
+            <span class="title-legend show-for-medium-up">
+                <i class="fa fa-bell-o no-pad"></i> = <tal:block i18n:translate="">Nouveauté(s) depuis votre dernière connexion</tal:block>
+            </span>
+            <ul id="mescours_button-group" class="button-group radius even-5"
+                tal:condition="not:my_courses_view/is_student">
+                <li tal:repeat="tab my_courses_view/tabs_list">
+                    <a tal:attributes="class tab/css_class;
+                                       href tab/tab_link"
+                       i18n:translate="">
+                        <i tal:attributes="class tab/tab_icon"></i>
+                        <tal:block replace="tab/tab_name"
+                                   i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+            <div id="js-update_target"
+                 tal:define="folderContents my_courses_view/courses_list">
+                <metal:macro use-macro="context/macro_mescours_liste/macros/mescours_liste">
+                    Macro d'affichage de la liste des cours
+                </metal:macro>
+            </div>
+        </section>
+    </main>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+
+</metal:core>
+
+</body>
+
+</html>

@@ -14,6 +14,14 @@
    />
 
   <browser:page
+      name="mes_cours_view"
+      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+      template="templates/my_courses/my_courses_view.pt"
+      permission="zope2.View"
+      class=".scripts.my_courses_view.MyCoursesView"
+   />
+
+  <browser:page
       name="mon_espace_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
       template="templates/my_space/my_space_view.pt"
