@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
+from Products.Five.browser import BrowserView
+from Products.CMFCore.utils import getToolByName
 
-import urllib
+from jalon.content.content import jalon_utils
 
 from logging import getLogger
 LOG = getLogger('[MyCoursesView]')
@@ -55,30 +56,154 @@ class MyCoursesView(BrowserView):
         if not tab:
             tab = "1" if self.context.getComplement() == "True" else "2"
         tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
-                      "tab_link":  "%s?onglet=1" % context_link,
+                      "tab_link":  "%s?tab=1" % context_link,
                       "tab_icon":  "fa fa-star fa-fw",
                       "tab_name":  "Favoris"},
                      {"css_class": "button small selected" if tab == "2" else "button small secondary",
-                      "tab_link":  "%s?onglet=2" % context_link,
+                      "tab_link":  "%s?tab=2" % context_link,
                       "tab_icon":  "fa fa-user fa-fw",
                       "tab_name":  "Auteur"},
                      {"css_class": "button small selected" if tab == "3" else "button small secondary",
-                      "tab_link":  "%s?onglet=3" % context_link,
+                      "tab_link":  "%s?tab=3" % context_link,
                       "tab_icon":  "fa fa-users fa-fw",
                       "tab_name":  "Co-auteur"},
                      {"css_class": "button small selected" if tab == "4" else "button small secondary",
-                      "tab_link":  "%s?onglet=4" % context_link,
+                      "tab_link":  "%s?tab=4" % context_link,
                       "tab_icon":  "fa fa-graduation-cap fa-fw",
                       "tab_name":  "Lecteur"},
                      {"css_class": "button small selected" if tab == "5" else "button small secondary",
-                      "tab_link":  "%s?onglet=5" % context_link,
+                      "tab_link":  "%s?tab=5" % context_link,
                       "tab_icon":  "fa fa-folder fa-fw",
                       "tab_name":  "Archives"}]
 
-        courses_list = folder.getListeCoursEns(user, tab)
+        courses_list = self.getTeacherCoursesList(user, tab, folder)
         return {"tab":          tab,
                 "is_manager":   is_manager,
                 "is_student":   is_student,
                 "actions_list": actions_list,
                 "tabs_list":    tabs_list,
                 "courses_list": courses_list}
+
+    def getTeacherCoursesList(self, member, tab, folder):
+        LOG.info("----- getListeCoursEns -----")
+        """ Renvoi la liste des cours pour authMember."""
+        courses_list = []
+        courses_ids_list = []
+        courses_list_filter = []
+        member_id = member.getId()
+        member_login_time = member.getProperty('login_time', None)
+        portal_catalog = getToolByName(self, "portal_catalog")
+
+        actions_list = [{"action_url":  "/add_course_favorite_script?course_id=",
+                         "action_icon": "fa fa-star fa-fw",
+                         "action_name": "Ajouter aux favoris"},
+                        {"action_url":  "/duplicate_course_script?course_id=",
+                         "action_icon": "fa fa-code-fork fa-fw",
+                         "action_name": "Dupliquer"},
+                        {"action_url": "/purge_course_script?tab=%s&amp;course_id=" % tab,
+                         "action_icon": "fa fa-filter fa-fw",
+                         "action_name": "Purger les travaux étudiants"},
+                        {"action_url": "/delete_wims_activity_script?tab=%s&amp;course_id=" % tab,
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer les activités WIMS"},
+                        {"action_url": "/add_archive_archive_script?course_id=",
+                         "action_icon": "fa fa-folder fa-fw",
+                         "action_name": "Archiver ce cours"},
+                        {"action_url": "/delete_course_script?tab=%s&amp;course_id=" % tab,
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer ce cours"}]
+
+        filtre = {"portal_type": "JalonCours"}
+        if tab == "1":
+            filtre["Subject"] = member_id
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(folder.getFolderContents(contentFilter=filtre)))
+            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
+                               "action_icon": "fa fa-star-o fa-fw warning",
+                               "action_name": "Retirer des favoris"}
+            if len(courses_list):
+                folder.setComplement("True")
+            else:
+                folder.setComplement("False")
+        if tab == "2":
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id))
+            courses_list.extend(list(folder.getFolderContents(contentFilter=filtre)))
+        if tab == "3":
+            courses_list.extend(
+                list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            del actions_list[1]
+            del actions_list[-1]
+        if tab == "4":
+            courses_list.extend(
+                list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[-1]
+        if tab == "5":
+            filtre["getArchive"] = member_id
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
+                                "action_icon": "fa fa-folder-open fa-fw warning",
+                                "action_name": "Désarchiver ce cours"}
+
+        messages_dict = {"1": "Vous n'avez aucun cours en favoris.",
+                         "2": "Vous n'avez pas encore de cours dans Jalon. Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.",
+                         "3": "Vous n'êtes co-auteur d'aucun cours.",
+                         "4": "Vous n'êtes lecteur d'aucun cours.",
+                         "5": "Vous n'avez aucun cours en archives."}
+        if not courses_list:
+            return {"is_courses_list": False,
+                    "message": messages_dict[tab]}
+        authors_dict = {}
+        for cours_brain in courses_list:
+            if not cours_brain.getId in courses_ids_list:
+                if not tab in ["1", "5"]:
+                    if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
+                        courses_list_filter.append(
+                            self.getCourseData(cours_brain, authors_dict, member_id, member_login_time, tab, actions_list))
+                else:
+                    courses_list_filter.append(
+                        self.getCourseData(cours_brain, authors_dict, member_id, member_login_time, tab, actions_list))
+                courses_ids_list.append(cours_brain.getId)
+        return {"is_courses_list": True,
+                "courses_list":    list(courses_list_filter)}
+
+    def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list):
+        LOG.info("----- getCourseData -----")
+
+        cours_infos = {"course_id":                course_brain.getId,
+                       "course_title":             course_brain.Title,
+                       "course_short_title":       jalon_utils.getShortText(course_brain.Title),
+                       "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
+                       "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
+                       "course_modified":          course_brain.modified,
+                       "course_link":              course_brain.getURL,
+                       "course_is_etudiants":      "fa fa-check fa-lg no-pad success" if len(course_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
+                       "course_is_password":       "fa fa-check fa-lg no-pad success" if course_brain.getLibre else "fa fa-times fa-lg no-pad warning",
+                       "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
+                       "course_actions_list":      actions_list}
+        if tab != "2":
+            cours_author = course_brain.getAuteurPrincipal
+            if not cours_author:
+                cours_author = course_brain.Creator
+            if cours_author in authors_dict:
+                cours_infos["course_author_name"] = authors_dict[cours_author]
+            else:
+                course_author_name = jalon_utils.getInfosMembre(cours_author)["fullname"]
+                authors_dict[cours_author] = course_author_name
+                cours_infos["course_author_name"] = course_author_name
+
+        return cours_infos
