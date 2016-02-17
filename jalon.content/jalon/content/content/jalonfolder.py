@@ -327,6 +327,23 @@ class JalonFolder(ATFolder):
     #----------------------#
     # My Courses utilities #
     #----------------------#
+    def modifyFavoriteCourse(self, user_id, course_id):
+        LOG.info("----- modifyFavorite -----")
+
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course = getattr(course_user_folder, course_id)
+        favorites = list(course.Subject())
+        if not user_id in favorites:
+            favorites.append(user_id)
+            archives = list(course.getArchive())
+            if user_id in archives:
+                archives.remove(user_id)
+                course.setArchive(tuple(archives))
+        else:
+            favorites.remove(user_id)
+        course.setSubject(tuple(favorites))
+        course.setProperties({"DateDerniereModif": DateTime()})
+
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
 
