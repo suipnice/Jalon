@@ -5,6 +5,7 @@
 
   <!-- File System Directory Views registration -->
   <cmf:registerDirectory name="jalon_theme_general"/>
+  <cmf:registerDirectory name="jalon_theme_my_space"/>
   <cmf:registerDirectory name="jalon_theme_custom_templates"/>
   <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
 

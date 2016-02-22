@@ -1,0 +1,43 @@
+<metal:macro define-macro="delete_tag">
+
+    <tal:block condition="is_one_tag">
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Il n'y a aucune ressource avec l'étiquette</tal:block>
+            « <strong tal:content="one_tag/tag_title" /> ».
+        </div>
+
+        <form id="js-delTag" method="POST"
+              tal:attributes="action string:${context/absolute_url}/delete_tag_script;
+                              data-tag_name string:${one_tag/tag_title};
+                              data-success_msg_pre string:L'étiquette;
+                              data-success_msg_post string:a été supprimée."
+              i18n:attributes="data-success_msg_pre; data-success_msg_post">
+            <input type="hidden" name="tag_id" tal:attributes="value one_tag/tag_id" />
+            <button type="submit" class="button expand alert radius">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer l'étiquette</tal:block> « <strong tal:content="python:context.getShortText(one_tag['tag_title'], 20)" /> »
+            </button>
+        </form>
+
+        <tal:condition condition="is_ajax">
+            <script charset="UTF-8"
+                    tal:content="structure string:delTag()">
+            </script>
+        </tal:condition>
+
+        <tal:condition condition="not:is_ajax">
+            <tal:jsBuffer define="script string:delTag();
+                                  addJsContent python:jsBuffer.addJS(script)" />
+        </tal:condition>
+
+    </tal:block>
+
+    <tal:block condition="not:is_one_tag">
+        <div class="panel callout radius"
+             i18n:translate="">
+            Il n'y a aucune ressource avec cette association d'étiquettes.
+        </div>
+    </tal:block>
+
+</metal:macro>

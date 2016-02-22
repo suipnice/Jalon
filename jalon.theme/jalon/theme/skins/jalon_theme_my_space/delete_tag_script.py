@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## Controller Python Script "delete_tag"
+## Controller Python Script "delete_tag_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -11,7 +11,7 @@
 #context = context
 
 # Suppression de l'étiquette
-tag_id = context.REQUEST.form["tag_id"]
+tag_id = context.REQUEST["tag_id"]
 context.deleteTagFolder(tag_id)
 
 context.REQUEST.RESPONSE.redirect(context.absolute_url())

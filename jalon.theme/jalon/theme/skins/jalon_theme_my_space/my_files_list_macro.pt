@@ -234,7 +234,7 @@
     <tal:listing condition="not:my_files_view/my_files_list">
         <tal:define define="is_one_tag my_files_view/is_one_tag;
                             one_tag my_files_view/one_tag">
-        <metal:macro use-macro="context/macro_tag/macros/delete_tag">
+        <metal:macro use-macro="context/delete_tag_macro/macros/delete_tag">
             Supprimer un tag
         </metal:macro>
         </tal:define>

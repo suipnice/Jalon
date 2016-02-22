@@ -67,8 +67,7 @@ class MyFilesView(MySpaceView):
         nb_display_files = len(my_files_list)
         nb_files = len(folder.objectIds())
 
-        return {"breadcrumbs":      self.getBreadcrumbs(),
-                "tags_list":        tags_list,
+        return {"tags_list":        tags_list,
                 "is_no_files":      is_no_files,
                 "is_one_tag":       is_one_tag,
                 "one_tag":          one_tag,

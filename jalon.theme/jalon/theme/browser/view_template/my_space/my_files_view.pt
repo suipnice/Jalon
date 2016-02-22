@@ -9,13 +9,15 @@
 <body>
 
 <metal:core fill-slot="content"
-            tal:define="my_files_view python:view.getMyFilesView(user);
-                        breadcrumbs my_files_view/breadcrumbs">
+            tal:define="my_files_view python:view.getMyFilesView(user)">
+
+    <tal:condition condition="not:is_ajax">
+
+    <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
-
-    <tal:condition condition="not:is_ajax">
+    </tal:define>
 
     <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
     <div id="reveal-main" class="reveal-modal medium" 
