@@ -3,6 +3,8 @@
 from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
 
+from jalon.content import contentMessageFactory as _
+
 import urllib
 
 from logging import getLogger
@@ -23,6 +25,11 @@ class MySpaceView(BrowserView):
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
+
+    def getBreadcrumbs(self):
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  self.context.absolute_url()}]
 
     def getTags(self, folder, selected_tags_list):
         tags_dict = {"last": "Les 20 derniers"}

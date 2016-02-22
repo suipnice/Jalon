@@ -8,8 +8,9 @@
 
 <body>
 
-<metal:core fill-slot="content">
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+<metal:core fill-slot="content"
+            tal:define="breadcrumbs view/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
 

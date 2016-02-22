@@ -1,0 +1,14 @@
+<metal:macro define-macro="breadcrumbs">
+    <div id="breadcrumb">
+        <div class="row">
+            <span tal:repeat="crumb breadcrumbs">
+                <i tal:attributes="class string:${crumb/icon} no-pad"></i>
+                <a tal:attributes="href crumb/link"
+                   tal:content="crumb/title"
+                   tal:on-error="string:<span id='breadcrumbs-current'>${crumb/title}</span>"/>
+                <i class="fa fa-angle-double-right no-pad"
+                   tal:condition="not:repeat/crumb/end"></i>
+            </span>
+        </div>
+    </div>
+</metal:macro>
