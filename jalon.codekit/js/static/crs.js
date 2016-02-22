@@ -37,7 +37,6 @@ function setCourseDuplicator( ) {
 
 /*
     Filtrage des cours favoris
-*/
 
 function setFavoritesFilter( ) {
 
@@ -81,6 +80,7 @@ function setFavoritesFilter( ) {
 
     } );
 }
+*/
 
 
 

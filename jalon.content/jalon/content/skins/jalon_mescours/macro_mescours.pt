@@ -18,7 +18,7 @@
 
 <tal:condition condition="not:is_ajax">
 
-    <div id="reveal-main" class="reveal-modal medium" 
+    <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main id="mes_cours" class="row" role="main" aria-labelledby="page_title"
@@ -53,14 +53,16 @@
             <span class="title-legend show-for-medium-up">
                 <i class="fa fa-bell-o no-pad"></i> = <tal:block i18n:translate="">Nouveauté(s) depuis votre dernière connexion</tal:block>
             </span>
-        <tal:comment replace="nothing">
+
+        <tal:comment replace="nothing"><!--
             <a tal:attributes="data-href string:${context/absolute_url}/?subject=;
                                class python:context.test(subjects == 'favori', 'filter-button fixed_filter selected', 'filter-button fixed_filter unselected')">
                <i class="fa fa-circle no-pad"></i>
                <i class="fa fa-circle-thin no-pad"></i>
                <tal:block i18n:translate="">Favoris</tal:block>
             </a>
-        </tal:comment>
+        --></tal:comment>
+
             <ul id="mescours_button-group" class="button-group radius even-5">
                 <li tal:repeat="tab mescours_view/tabs_list">
                     <a tal:attributes="class tab/css_class;
@@ -80,14 +82,14 @@
         </section>
     </main>
 
-    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
-
-    <tal:comment replace="nothing">
+    <tal:comment replace="nothing"><!--
         <tal:block define="script string:setFavoritesFilter()">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-            <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
         </tal:block>
-    </tal:comment>
+    --></tal:comment>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+
 </tal:condition>
 
 <tal:condition condition="is_ajax">
