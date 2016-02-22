@@ -3,6 +3,8 @@
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
 
+from jalon.content import contentMessageFactory as _
+
 import urllib
 
 from logging import getLogger
@@ -18,6 +20,14 @@ class MyFilesView(MySpaceView):
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
+
+    def getBreadcrumbs(self):
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  self.context.aq_parent.absolute_url()},
+                {"title": _(u"Fichiers"),
+                 "icon":  "fa fa-files-o",
+                 "link":  self.context.absolute_url()}]
 
     def getMyFilesView(self, user):
         LOG.info("----- getMyFilesView -----")
@@ -57,7 +67,8 @@ class MyFilesView(MySpaceView):
         nb_display_files = len(my_files_list)
         nb_files = len(folder.objectIds())
 
-        return {"tags_list":        tags_list,
+        return {"breadcrumbs":      self.getBreadcrumbs(),
+                "tags_list":        tags_list,
                 "is_no_files":      is_no_files,
                 "is_one_tag":       is_one_tag,
                 "one_tag":          one_tag,

@@ -9,8 +9,9 @@
 <body>
 
 <metal:core fill-slot="content"
-            tal:define="my_files_view python:view.getMyFilesView(user)">
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+            tal:define="my_files_view python:view.getMyFilesView(user);
+                        breadcrumbs my_files_view/breadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
 
