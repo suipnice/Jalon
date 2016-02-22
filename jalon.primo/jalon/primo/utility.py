@@ -178,12 +178,12 @@ class Primo(SimpleItem):
 
     def rechercherRecordById(self, recordid):
         params = {"institution": self.getGenerique("etablissement"),
-                    "onCampus": "false",
-                    "query": "rid,contains,%s" % recordid,
-                    "indx": "1",
-                    "bulkSize": "10",
-                    "dym": "true",
-                    "lang": "fre"}
+                  "onCampus": "false",
+                  "query": "rid,contains,%s" % recordid,
+                  "indx": "1",
+                  "bulkSize": "10",
+                  "dym": "true",
+                  "lang": "fre"}
         resultat = self.requete("search/brief", params)
         try:
             return resultat[0]
@@ -192,13 +192,9 @@ class Primo(SimpleItem):
 
     #recupére differents éléments génériques defini par l'administrateur dans les configs Jalon
     def getGenerique(self, generique):
-        return jalon_conf.get_etablissement()
-        #portal = self.portal_url.getPortalObject()
-        #jalon_conf = IJalonConfigurationControlPanel(portal)
-        #if generique == "etablissement":
-        #    return jalon_conf.get_etablissement()
-        #else:
-        #    return ""
+        return "UNS"
+        portal_jalon_properties = self.portal_jalon_properties
+        return portal_jalon_properties.getJalonProperty("etablissement")
 
     def supprimerAccent(self, ligne):
         """ supprime les accents du texte source """
