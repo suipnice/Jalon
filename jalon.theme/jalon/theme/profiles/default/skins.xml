@@ -24,6 +24,9 @@
     <object name="jalon_theme_my_space"
             meta_type="Filesystem Directory View"
             directory="jalon.theme:skins/jalon_theme_my_space"/>
+    <object name="jalon_theme_my_courses"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_my_courses"/>
     <object name="jalon_theme_custom_templates"
             meta_type="Filesystem Directory View"
             directory="jalon.theme:skins/jalon_theme_custom_templates"/>
@@ -48,8 +51,10 @@
                insert-after="custom"/>
         <layer name="jalon_theme_my_space"
                insert-after="jalon_theme_general"/>
-        <layer name="jalon_theme_custom_templates"
+        <layer name="jalon_theme_my_courses"
                insert-after="jalon_theme_my_space"/>
+        <layer name="jalon_theme_custom_templates"
+               insert-after="jalon_theme_my_courses"/>
         <layer name="jalon_theme_dynamic_script"
                insert-after="jalon_theme_custom_templates"/>
     </skin-path>

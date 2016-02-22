@@ -4,6 +4,7 @@ from zope.component import getMultiAdapter
 from Products.Five.browser import BrowserView
 from Products.CMFCore.utils import getToolByName
 
+from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 
 from logging import getLogger
@@ -24,6 +25,11 @@ class MyCoursesView(BrowserView):
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
+
+    def getBreadcrumbs(self):
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  self.context.absolute_url()}]
 
     def getUserFolder(self, user_id):
         LOG.info("----- getUserFolder -----")
