@@ -333,10 +333,12 @@
 
     <script charset="UTF-8"
             tal:content="structure string:setSortableList('js-list-students',['id','name','email'],'name','asc')"
-            tal:condition="personnel"/>
+            tal:condition="personnel">
+    </script>
     <script charset="UTF-8"
             tal:content="structure string:setSortableList('js-list-students',['name','email'],'name','asc')"
-            tal:condition="not:personnel"/>
+            tal:condition="not:personnel">
+    </script>
     </tal:define>
 
 </metal:macro>
@@ -437,7 +439,8 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setUESendMail()" />
+            tal:content="structure string:setUESendMail()">
+    </script>
 
 </metal:macro>
 
@@ -835,9 +838,8 @@
             </tal:repeat>
         </tbody>
     </table>
-    <tal:block define="script1 string:setSortableList('js-list-etudiants',['nom','prenom', 'univ', 'con_prec','con_sel','annee'],'nom','asc');
-                       script2 string:setFavoriteState()">
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+    <tal:block define="script string:setSortableList('js-list-etudiants',['nom','prenom', 'univ', 'con_prec','con_sel','annee'],'nom','asc')">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
     </tal:block>
     </section>
 </metal:macro>
