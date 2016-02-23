@@ -321,13 +321,9 @@ function setSelectionForm( ) {
             for ( var i = 0; i < selectedItems; i++ ) {
                 selectedList.options[ i ].selected = true;
             }
-
-            return true;
-
-        } else {
-
-            return false;
         }
+
+        event.returnValue = true;
 
     }, false );
 
