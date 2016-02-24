@@ -40,18 +40,47 @@ class MyAdobeConnectRecordingView(MySpaceView):
         portal_connect = portal.portal_connect
 
         user_id = user.getId()
-        folder_id = self.folder_dict[self.context.getId()]
+        context_id = self.context.getId()
+        folder_id = self.folder_dict[context_id]
         folder = getattr(getattr(portal.Members, user_id), folder_id)
         adobe_connect_session = self.getSessionConnect(user, folder, portal_connect)
         adobe_connect_reunion = self.getAdobeConnectReunion(user, folder, portal_connect)
 
-        item_adder = {"item_adder_link": "",
-                      "item_adder_name": "",
-                      "item_adder_p":    ""}
+        item_adder_p = adobe_connect_reunion["adobe_connect_reunion_link"]
+        item_adder_name = "Se connecter à votre salle virtuelle"
+        if context_id == "mes_presentations_sonorisees":
+            item_adder_p = False
+            item_adder_name = "Créer une présentation sonorisée"
+
+        item_adder = {"item_adder_link": "%s?session=%s" % (adobe_connect_reunion["adobe_connect_reunion_link"], adobe_connect_session),
+                      "item_adder_name": item_adder_name,
+                      "item_adder_p":    item_adder_p}
+
+        selected_tags_list = folder.getSelectedTags().split(",")
+
+        tags = self.getTags(folder, selected_tags_list)
+        tags_dict = tags["tags_dict"]
+        tags_list = tags["tags_list"]
+
+        my_adobe_connect_recording_list = self.getMyAdobeConnectRecordingList(folder, adobe_connect_reunion["adobe_connect_reunion_id"], selected_tags_list, portal_connect)
+
+        one_and_selected_tag = self.getOneAndSelectedTag(my_adobe_connect_recording_list, selected_tags_list, tags_dict)
+
+        nb_display_items = len(my_adobe_connect_recording_list)
+        nb_items = len(folder.objectIds())
 
         return {"adobe_connect_session": adobe_connect_session,
                 "adobe_connect_reunion": adobe_connect_reunion,
-                "item_adder":            item_adder}
+                "item_adder":            item_adder,
+                "tags_list":             tags_list,
+                "is_no_items":           one_and_selected_tag["is_no_items"],
+                "is_one_tag":            one_and_selected_tag["is_one_tag"],
+                "one_tag":               one_and_selected_tag["one_tag"],
+                "is_selected_tags":      one_and_selected_tag["is_selected_tags"],
+                "my_items_list":         my_adobe_connect_recording_list,
+                "nb_display_items":      nb_display_items,
+                "nb_items":              nb_items,
+                "folder_path":           "/".join(folder.getPhysicalPath())}
 
     def getSessionConnect(self, user, folder, portal_connect):
         LOG.info("----- getSessionConnect -----")
@@ -123,3 +152,27 @@ class MyAdobeConnectRecordingView(MySpaceView):
 
         return {"adobe_connect_reunion_id":   adobe_connect_reunion["id"],
                 "adobe_connect_reunion_link": adobe_connect_reunion["url"]}
+
+    # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
+    def getMyAdobeConnectRecordingList(self, folder, adobe_connect_reunion_id, selected_tags_list, portal_connect):
+        LOG.info("----- getMyAdobeConnectRecordingList -----")
+        if not selected_tags_list or selected_tags_list == "last":
+            reindex = False
+            jalon_recording_list = folder.objectIds()
+            adobe_connect_recording_list = portal_connect.rechercherEnregistrements({'id': adobe_connect_reunion_id})
+            for recording in adobe_connect_recording_list:
+                if not recording["id"] in jalon_recording_list:
+                    recording_id = folder.invokeFactory(type_name='JalonConnect', id=recording["id"])
+                    recording_object = getattr(self, recording_id)
+                    recording_object.setProperties({"Title":     recording["title"],
+                                                    "DateAjout": str(recording["created"]),
+                                                    "DateUS":    recording["dateUS"],
+                                                    "Duree":     recording["duration"],
+                                                    "UrlEnr":    recording["url"]})
+                    recording_object.reindexObject()
+                    reindex = True
+            if reindex:
+                folder.reindexObject()
+
+        content_filter = {"portal_type": ["JalonConnect"]}
+        return self.getItemsList(folder, selected_tags_list, content_filter)
