@@ -83,7 +83,7 @@ class JalonFolder(ATFolder):
     meta_type = 'JalonFolder'
     schema = JalonFolderSchema
 
-    folder_my_space_dict = {"Fichiers": "mon_espace/mes_fichiers",
+    folder_my_space_dict = {"Fichiers":     "mon_espace/mes_fichiers",
                             "Sonorisation": "mon_espace/mes_presentations_sonorisees"}
 
     def __init__(self, *args, **kwargs):

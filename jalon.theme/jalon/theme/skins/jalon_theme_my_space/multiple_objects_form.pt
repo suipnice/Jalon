@@ -103,7 +103,7 @@
             </h2>
 
             <form method="POST"
-                  tal:attributes="action string:${context/absolute_url}/delete_object_script;
+                  tal:attributes="action string:${my_view/folder_link}/delete_object_script;
                                   data-success_msg string:La suppression demandée a été effectuée.;
                                   data-all_att_msg string:Suppression impossible :;
                                   data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;

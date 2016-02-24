@@ -56,7 +56,8 @@ class MyFilesView(MySpaceView):
                 "my_items_list":    my_files_list,
                 "nb_display_items": nb_display_items,
                 "nb_items":         nb_items,
-                "folder_path":      "/".join(folder.getPhysicalPath())}
+                "folder_path":      "/".join(folder.getPhysicalPath()),
+                "folder_link":      folder.absolute_url()}
 
     # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyFilesList(self, folder, selected_tags_list):

@@ -89,7 +89,8 @@ class MyAdobeConnectRecordingView(MySpaceView):
                 "my_items_list":         my_adobe_connect_recording_list,
                 "nb_display_items":      nb_display_items,
                 "nb_items":              nb_items,
-                "folder_path":           "/".join(folder.getPhysicalPath())}
+                "folder_path":           "/".join(folder.getPhysicalPath()),
+                "folder_link":           folder.absolute_url()}
 
     def getSessionConnect(self, user, folder, portal_connect):
         LOG.info("----- getSessionConnect -----")
