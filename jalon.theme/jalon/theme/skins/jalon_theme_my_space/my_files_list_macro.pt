@@ -19,15 +19,15 @@
         <tal:block i18n:translate="">Pour sélectionner des fichiers à ajouter à vos ressources, cliquez sur le bouton « Parcourir » ci-dessus (ou glissez-déposez les fichiers sur la barre adjacente).</tal:block>
     </div>
 
-    <tal:listing condition="my_files_view/my_files_list">
+    <tal:listing condition="my_files_view/my_items_list">
     <div class="el_counter">
-        <tal:block replace="my_files_view/nb_display_files" />
+        <tal:block replace="my_files_view/nb_display_items" />
         <tal:block i18n:translate="">sur</tal:block> 
-        <tal:block replace="my_files_view/nb_files" />
+        <tal:block replace="my_files_view/nb_items" />
     </div>
 
     <script charset="UTF-8"
-            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_files_view/nb_display_files}" />
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_files_view/nb_display_items}" />
 
     <table summary="Liste des fichiers">
     <thead>
@@ -113,7 +113,7 @@
         </tr>
     </tfoot>
     <tbody class="list">
-    <tal:entry repeat="file my_files_view/my_files_list">
+    <tal:entry repeat="file my_files_view/my_items_list">
         <tr>
             <td class="show-for-medium-up">
                 <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
@@ -231,7 +231,7 @@
     </tal:define>
     </tal:listing>
 
-    <tal:listing condition="not:my_files_view/my_files_list">
+    <tal:listing condition="not:my_files_view/my_items_list">
         <tal:define define="is_one_tag my_files_view/is_one_tag;
                             one_tag my_files_view/one_tag">
         <metal:macro use-macro="context/delete_tag_macro/macros/delete_tag">

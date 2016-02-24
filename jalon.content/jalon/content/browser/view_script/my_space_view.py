@@ -72,3 +72,31 @@ class MySpaceView(BrowserView):
                 "is_one_tag":       is_one_tag,
                 "one_tag":          one_tag,
                 "is_selected_tags": is_selected_tags}
+
+    def getItemsList(self, folder, selected_tags_list, content_filter):
+        if selected_tags_list and selected_tags_list != ["last"]:
+            last = False
+            subjects = []
+            if "last" in selected_tags_list:
+                selected_tags_list.remove("last")
+                last = True
+            for tag in selected_tags_list:
+                subjects.append(urllib.quote(tag))
+            if len(subjects) > 1:
+                content_filter['Subject'] = {'query': subjects, 'operator': 'and'}
+            else:
+                content_filter['Subject'] = subjects[0]
+            if last:
+                content_filter["sort_on"] = "modified"
+                content_filter["sort_order"] = "descending"
+                return folder.getFolderContents(contentFilter=content_filter, batch=True, b_size=20)
+            else:
+                return folder.getFolderContents(contentFilter=content_filter)
+        elif selected_tags_list == ["last"]:
+            content_filter["sort_on"] = "modified"
+            content_filter["sort_order"] = "descending"
+            return folder.getFolderContents(contentFilter=content_filter, batch=True, b_size=20)
+        else:
+            content_filter["sort_on"] = "modified"
+            content_filter["sort_order"] = "descending"
+            return folder.getFolderContents(contentFilter=content_filter)

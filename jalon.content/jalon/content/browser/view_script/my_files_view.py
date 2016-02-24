@@ -45,46 +45,20 @@ class MyFilesView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_files_list, selected_tags_list, tags_dict)
 
-        nb_display_files = len(my_files_list)
-        nb_files = len(folder.objectIds())
+        nb_display_items = len(my_files_list)
+        nb_items = len(folder.objectIds())
 
         return {"tags_list":        tags_list,
                 "is_no_items":      one_and_selected_tag["is_no_items"],
                 "is_one_tag":       one_and_selected_tag["is_one_tag"],
                 "one_tag":          one_and_selected_tag["one_tag"],
                 "is_selected_tags": one_and_selected_tag["is_selected_tags"],
-                "my_files_list":    my_files_list,
-                "nb_display_files": nb_display_files,
-                "nb_files":         nb_files,
+                "my_items_list":    my_files_list,
+                "nb_display_items": nb_display_items,
+                "nb_items":         nb_items,
                 "folder_path":      "/".join(folder.getPhysicalPath())}
 
     # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyFilesList(self, folder, selected_tags_list):
-        dico = {"portal_type": ["File", "Image", "Document"]}
-
-        if selected_tags_list and selected_tags_list != ["last"]:
-            last = False
-            subjects = []
-            if "last" in selected_tags_list:
-                selected_tags_list.remove("last")
-                last = True
-            for tag in selected_tags_list:
-                subjects.append(urllib.quote(tag))
-            if len(subjects) > 1:
-                dico['Subject'] = {'query': subjects, 'operator': 'and'}
-            else:
-                dico['Subject'] = subjects[0]
-            if last:
-                dico["sort_on"] = "modified"
-                dico["sort_order"] = "descending"
-                return folder.getFolderContents(contentFilter=dico, batch=True, b_size=20)
-            else:
-                return folder.getFolderContents(contentFilter=dico)
-        elif selected_tags_list == ["last"]:
-            dico["sort_on"] = "modified"
-            dico["sort_order"] = "descending"
-            return folder.getFolderContents(contentFilter=dico, batch=True, b_size=20)
-        else:
-            dico["sort_on"] = "modified"
-            dico["sort_order"] = "descending"
-            return folder.getFolderContents(contentFilter=dico)
+        content_filter = {"portal_type": ["File", "Image", "Document"]}
+        return self.getItemsList(folder, selected_tags_list, content_filter)
