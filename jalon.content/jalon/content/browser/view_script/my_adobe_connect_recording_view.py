@@ -11,11 +11,11 @@ import random
 import string
 
 from logging import getLogger
-LOG = getLogger('[MyFilesView]')
+LOG = getLogger('[MyAdobeConnectRecordingView]')
 
 
 class MyAdobeConnectRecordingView(MySpaceView):
-    """ Class View du fichier mes_fichiers_view.pt
+    """ Class View du fichier my_adobe_connect_recording_view.pt
     """
 
     def __init__(self, context, request):

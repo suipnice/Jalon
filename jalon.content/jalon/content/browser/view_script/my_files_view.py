@@ -12,7 +12,7 @@ LOG = getLogger('[MyFilesView]')
 
 
 class MyFilesView(MySpaceView):
-    """ Class View du fichier mes_fichiers_view.pt
+    """ Class View du fichier my_files_view.pt
     """
 
     def __init__(self, context, request):
