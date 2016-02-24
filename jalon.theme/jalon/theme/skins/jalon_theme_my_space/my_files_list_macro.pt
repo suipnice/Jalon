@@ -13,21 +13,21 @@
 <metal:macro define-macro="my_files_list">
 
     <div class="panel callout radius"
-         tal:condition="my_files_view/is_no_items">
+         tal:condition="my_view/is_no_items">
         <i class="fa fa-info-circle no-pad"></i>
         <strong i18n:translate="">Il n'y a aucune ressource de type « Fichier » dans votre espace.</strong><br />
         <tal:block i18n:translate="">Pour sélectionner des fichiers à ajouter à vos ressources, cliquez sur le bouton « Parcourir » ci-dessus (ou glissez-déposez les fichiers sur la barre adjacente).</tal:block>
     </div>
 
-    <tal:listing condition="my_files_view/my_items_list">
+    <tal:listing condition="my_view/my_items_list">
     <div class="el_counter">
-        <tal:block replace="my_files_view/nb_display_items" />
+        <tal:block replace="my_view/nb_display_items" />
         <tal:block i18n:translate="">sur</tal:block> 
-        <tal:block replace="my_files_view/nb_items" />
+        <tal:block replace="my_view/nb_items" />
     </div>
 
     <script charset="UTF-8"
-            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_files_view/nb_display_items}" />
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}" />
 
     <table summary="Liste des fichiers">
     <thead>
@@ -113,14 +113,14 @@
         </tr>
     </tfoot>
     <tbody class="list">
-    <tal:entry repeat="file my_files_view/my_items_list">
+    <tal:entry repeat="file my_view/my_items_list">
         <tr>
             <td class="show-for-medium-up">
                 <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
                      i18n:attributes="title">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/file/index};
-                                           value string:${my_files_view/folder_path}/${file/getId};
+                                           value string:${my_view/folder_path}/${file/getId};
                                            data-res_name python:context.getShortText(file['Title']);
                                            data-attached python:context.test(len(file.getRawRelatedItems) > 0, '1', '')" />
                     <label tal:attributes="for string:switch-${repeat/file/index}"></label>
@@ -194,7 +194,7 @@
         Formulaire d'etiquetage par lot
     </metal:macro>
 
-    <metal:macro use-macro="python:context.multiple_objects_form.macros.get(my_files_view['is_selected_tags'])">
+    <metal:macro use-macro="python:context.multiple_objects_form.macros.get(my_view['is_selected_tags'])">
         Confirmation de désétiquetage par lot
     </metal:macro>
 
@@ -231,9 +231,9 @@
     </tal:define>
     </tal:listing>
 
-    <tal:listing condition="not:my_files_view/my_items_list">
-        <tal:define define="is_one_tag my_files_view/is_one_tag;
-                            one_tag my_files_view/one_tag">
+    <tal:listing condition="not:my_view/my_items_list">
+        <tal:define define="is_one_tag my_view/is_one_tag;
+                            one_tag my_view/one_tag">
         <metal:macro use-macro="context/delete_tag_macro/macros/delete_tag">
             Supprimer un tag
         </metal:macro>

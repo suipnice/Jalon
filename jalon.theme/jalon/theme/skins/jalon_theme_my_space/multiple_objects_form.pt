@@ -25,7 +25,7 @@
                   i18n:attributes="data-success_msg; data-s_tag_msg; data-p_tag_msg">
 
                 <ul>
-                    <li tal:repeat="tag my_files_view/tags_list">
+                    <li tal:repeat="tag my_view/tags_list">
                         <a class="filter-button unselected"
                            tal:attributes="id tag/tag_id"
                            tal:condition="repeat/tag/index">
