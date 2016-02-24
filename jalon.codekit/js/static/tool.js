@@ -32,6 +32,8 @@ function instantiateCKEditor( textareaID ) {
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
             // Remove the advanced link tab in link popup.
             removeDialogTabs: 'link:advanced',
+            // Do not convert non-ascii chars to HTML entities.
+            entities: false,
         } );
 
         return textareaID;

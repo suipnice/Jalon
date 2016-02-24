@@ -152,11 +152,12 @@ function setSelectionForm( ) {
             sourceList.removeChild( sourceList.options[ sourceList.options.selectedIndex ] );
             targetList.options[ ( targetList.length ) ] = option;
 
+            /*
             if ( selectedList.length < 1 ) {
                 submitButton.setAttribute( 'disabled', "disabled" );
             } else {
                 submitButton.removeAttribute( 'disabled' );
-            }
+            } //*/
 
             _sortOptions( targetList );
 
@@ -311,6 +312,8 @@ function setSelectionForm( ) {
 
     selectionForm.addEventListener( 'submit', function( event ) {
 
+        submitButton.setAttribute( 'disabled', "disabled" );
+
         var selectedItems = selectedList.length;
 
         if ( selectedItems > 0 ) {
@@ -318,13 +321,9 @@ function setSelectionForm( ) {
             for ( var i = 0; i < selectedItems; i++ ) {
                 selectedList.options[ i ].selected = true;
             }
-
-            return true;
-
-        } else {
-
-            return false;
         }
+
+        event.returnValue = true;
 
     }, false );
 

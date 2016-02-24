@@ -560,15 +560,15 @@ class JalonCours(ATFolder):
         return ""
 
     def getContents(self, subject, typeR, authMember, repertoire=None, categorie=None):
-        #LOG.info("----- getContents -----")
+        #self.plone_log("getContents")
         portal = self.portal_url.getPortalObject()
         folder_dict = {"Fichiers":                "Fichiers",
-                       "Video":                   "Video",
-                       "Webconference":           "Webconference",
-                       "Presentationssonorisees": "Webconference",
                        "JalonRessourceExterne":   "Externes",
+                       "Video":                   "Video",
                        "JalonTermeGlossaire":     "Glossaire",
-                       "JalonExerciceWims":       "Wims"}
+                       "JalonExerciceWims":       "Wims",
+                       "Presentationssonorisees": "Sonorisation",
+                       "Webconference":           "Webconference"}
         if repertoire:
             home = getattr(getattr(portal.Members, authMember), folder_dict[repertoire])
         else:

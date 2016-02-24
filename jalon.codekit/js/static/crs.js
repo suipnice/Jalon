@@ -37,7 +37,6 @@ function setCourseDuplicator( ) {
 
 /*
     Filtrage des cours favoris
-*/
 
 function setFavoritesFilter( ) {
 
@@ -81,6 +80,7 @@ function setFavoritesFilter( ) {
 
     } );
 }
+*/
 
 
 
@@ -88,7 +88,6 @@ function setFavoritesFilter( ) {
     Bascule de cours favoris
 
     http://tice221.unice.fr:8080/jalon/cours/ppomedio/Cours-ppomedio-20140117155843/setFavori?fav=Oui
-*/
 
 function setFavoriteState( ) {
 
@@ -117,20 +116,7 @@ function setFavoriteState( ) {
                 message += $favSwitch.data( 'success_msg_post_nofav' );
             }
 
-            /* Requete Ajax sans rafraîchissement
-            $.ajax( {
-                url: $favSwitch.attr( 'href' ),
-            } )
-            .done( function( data ) {
-                // Maj marquage
-                $favSwitch.children( 'i.fa' ).toggleClass( "fa-star fa-star-o" );
-                // Affichage du message
-                setAlertBox( 'success', message );
-                // Deverrouilage
-                isRefreshing = false;
-            } ); //*/
-
-            //* Requete Ajax + effets
+            // Requete Ajax + effets
             $title.html( MSG_LOADING );
             $updateTarget.fadeTo( 200, 0.33, function( ) {
                 $updateTarget.load( $favSwitch.attr( 'href' ), function( ) {
@@ -141,11 +127,12 @@ function setFavoriteState( ) {
                         isRefreshing = false;                       // Deverrouilage
                     } );
                 } );
-            } ); //*/
+            } );
         }
 
     } );
 }
+*/
 
 
 

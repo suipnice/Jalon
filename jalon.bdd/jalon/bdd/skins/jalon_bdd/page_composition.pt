@@ -109,7 +109,7 @@
                tal:content="dico/libelle"/>
             </li>
         </ul>
-        <br/>
+
         <div class="panel callout radius"
              tal:condition="not:TYP_ELP_SELECT"
              i18n:translate="">
@@ -219,7 +219,8 @@
                    tal:attributes="value string:${context/aq_parent/absolute_url}/@@jalon-bdd" />
 
             <div class="text-center">
-                <button type="submit" class="button small radius" disabled="disabled">
+                <!--button type="submit" class="button small radius" disabled="disabled"-->
+                <button type="submit" class="button small radius">
                     <i class="fa fa-check-circle"></i>
                     <tal:block i18n:translate="">Enregistrer</tal:block>
                 </button>

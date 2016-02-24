@@ -28,6 +28,7 @@ function instantiateForumCKEditor( textareaID ) {
             removePlugins: 'image,elementspath',
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
             removeDialogTabs: 'link:advanced',
+            entities: false,
         } );
 
         return textareaID;
