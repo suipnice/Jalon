@@ -47,3 +47,28 @@ class MySpaceView(BrowserView):
                              "tag_css":   "filter-button fixed_filter selected" if "last" in selected_tags_list else "filter-button fixed_filter unselected"})
         return {"tags_dict": tags_dict,
                 "tags_list": tags_list}
+
+    def getOneAndSelectedTag(self, items_list, selected_tags_list, tags_dict):
+        is_no_items = False
+        if not items_list:
+            if "last" in selected_tags_list:
+                selected_tags_list.remove("last")
+            is_no_items = True if len(selected_tags_list) == 0 else False
+
+        one_tag = ""
+        is_one_tag = False
+        try:
+            selected_tags_list.remove("")
+        except:
+            pass
+        if len(selected_tags_list) == 1:
+            is_one_tag = True
+            one_tag = {"tag_id": urllib.quote(selected_tags_list[-1]),
+                       "tag_title": tags_dict[selected_tags_list[-1]]}
+
+        is_selected_tags = "remove_tags_objects" if selected_tags_list != ["last"] and len(selected_tags_list) >= 1 else "isnt_selected_tags"
+
+        return {"is_no_items":      is_no_items,
+                "is_one_tag":       is_one_tag,
+                "one_tag":          one_tag,
+                "is_selected_tags": is_selected_tags}

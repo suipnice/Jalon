@@ -13,7 +13,7 @@
 <metal:macro define-macro="my_files_list">
 
     <div class="panel callout radius"
-         tal:condition="my_files_view/is_no_files">
+         tal:condition="my_files_view/is_no_items">
         <i class="fa fa-info-circle no-pad"></i>
         <strong i18n:translate="">Il n'y a aucune ressource de type « Fichier » dans votre espace.</strong><br />
         <tal:block i18n:translate="">Pour sélectionner des fichiers à ajouter à vos ressources, cliquez sur le bouton « Parcourir » ci-dessus (ou glissez-déposez les fichiers sur la barre adjacente).</tal:block>

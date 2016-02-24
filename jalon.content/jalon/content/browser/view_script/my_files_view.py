@@ -43,35 +43,16 @@ class MyFilesView(MySpaceView):
 
         my_files_list = self.getMyFilesList(folder, selected_tags_list)
 
-        is_no_files = False
-        if not my_files_list:
-            if "last" in selected_tags_list:
-                selected_tags_list.remove("last")
-            is_no_files = True if len(selected_tags_list) == 0 else False
-
-        one_tag = ""
-        is_one_tag = False
-        try:
-            selected_tags_list.remove("")
-        except:
-            pass
-        if len(selected_tags_list) == 1:
-            is_one_tag = True
-            one_tag = {"tag_id": urllib.quote(selected_tags_list[-1]),
-                       "tag_title": tags_dict[selected_tags_list[-1]]}
-
-        is_selected_tags = "remove_tags_objects" if selected_tags_list != ["last"] and len(selected_tags_list) >= 1 else "isnt_selected_tags"
-        LOG.info(selected_tags_list)
-        LOG.info(is_selected_tags)
+        one_and_selected_tag = self.getOneAndSelectedTag(my_files_list, selected_tags_list, tags_dict)
 
         nb_display_files = len(my_files_list)
         nb_files = len(folder.objectIds())
 
         return {"tags_list":        tags_list,
-                "is_no_files":      is_no_files,
-                "is_one_tag":       is_one_tag,
-                "one_tag":          one_tag,
-                "is_selected_tags": is_selected_tags,
+                "is_no_items":      one_and_selected_tag["is_no_items"],
+                "is_one_tag":       one_and_selected_tag["is_one_tag"],
+                "one_tag":          one_and_selected_tag["one_tag"],
+                "is_selected_tags": one_and_selected_tag["is_selected_tags"],
                 "my_files_list":    my_files_list,
                 "nb_display_files": nb_display_files,
                 "nb_files":         nb_files,
