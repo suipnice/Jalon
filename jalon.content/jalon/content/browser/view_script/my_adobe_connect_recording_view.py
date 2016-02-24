@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from zope.component import getMultiAdapter
-from my_space_view import MySpaceView
 
+from urlparse import urlparse
+
+from my_space_view import MySpaceView
 from jalon.content import contentMessageFactory as _
 
 import random
 import string
-import urllib
 
 from logging import getLogger
 LOG = getLogger('[MyFilesView]')
@@ -66,6 +67,12 @@ class MyAdobeConnectRecordingView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_adobe_connect_recording_list, selected_tags_list, tags_dict)
 
+        no_items_strong = "Il n'y a aucune webconférence dans votre espace."
+        no_items_button = "Pour en ajouter, connectez vous à votre salle virtuelle en cliquant sur la barre ci-dessus."
+        if one_and_selected_tag["is_no_items"] and context_id == "mes_presentations_sonorisees":
+            no_items_strong = "Il n'y a aucune présentation sonorisée dans votre espace."
+            no_items_button = "Pour en ajouter, cliquez sur la barre « Créer une présentation sonorisée » ci-dessus."
+
         nb_display_items = len(my_adobe_connect_recording_list)
         nb_items = len(folder.objectIds())
 
@@ -74,6 +81,8 @@ class MyAdobeConnectRecordingView(MySpaceView):
                 "item_adder":            item_adder,
                 "tags_list":             tags_list,
                 "is_no_items":           one_and_selected_tag["is_no_items"],
+                "no_items_strong":       no_items_strong,
+                "no_items_button":       no_items_button,
                 "is_one_tag":            one_and_selected_tag["is_one_tag"],
                 "one_tag":               one_and_selected_tag["one_tag"],
                 "is_selected_tags":      one_and_selected_tag["is_selected_tags"],
@@ -176,3 +185,9 @@ class MyAdobeConnectRecordingView(MySpaceView):
 
         content_filter = {"portal_type": ["JalonConnect"]}
         return self.getItemsList(folder, selected_tags_list, content_filter)
+
+    def isSameServer(self, url1, url2):
+        u"""Renvoit TRUE si le serveur de l'url "url1" est identique à celui de l'URL "url2"."""
+        server1 = urlparse(url1)
+        server2 = urlparse(url2)
+        return server1.netloc == server2.netloc
