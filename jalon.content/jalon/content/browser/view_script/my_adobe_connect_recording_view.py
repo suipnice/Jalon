@@ -165,14 +165,14 @@ class MyAdobeConnectRecordingView(MySpaceView):
     # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyAdobeConnectRecordingList(self, folder, adobe_connect_reunion_id, selected_tags_list, portal_connect):
         LOG.info("----- getMyAdobeConnectRecordingList -----")
-        if not selected_tags_list or selected_tags_list == "last":
+        if (not selected_tags_list) or selected_tags_list == ["last"]:
             reindex = False
             jalon_recording_list = folder.objectIds()
             adobe_connect_recording_list = portal_connect.rechercherEnregistrements({'id': adobe_connect_reunion_id})
             for recording in adobe_connect_recording_list:
                 if not recording["id"] in jalon_recording_list:
                     recording_id = folder.invokeFactory(type_name='JalonConnect', id=recording["id"])
-                    recording_object = getattr(self, recording_id)
+                    recording_object = getattr(folder, recording_id)
                     recording_object.setProperties({"Title":     recording["title"],
                                                     "DateAjout": str(recording["created"]),
                                                     "DateUS":    recording["dateUS"],

@@ -99,6 +99,14 @@
 
     </tal:condition>
 
+    <tal:condition condition="is_ajax">
+
+        <metal:macro use-macro="context/my_adobe_connect_recording_list_macro/macros/my_adobe_connect_recording_list">
+            Macro d'affichage de la liste des fichiers
+        </metal:macro>
+
+    </tal:condition>
+
 </metal:core>
 
 </body>
