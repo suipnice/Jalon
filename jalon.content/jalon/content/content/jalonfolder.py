@@ -83,8 +83,9 @@ class JalonFolder(ATFolder):
     meta_type = 'JalonFolder'
     schema = JalonFolderSchema
 
-    folder_my_space_dict = {"Fichiers":     "mon_espace/mes_fichiers",
-                            "Sonorisation": "mon_espace/mes_presentations_sonorisees"}
+    folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
+                            "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
+                            "Webconference": "mon_espace/mes_webconferences"}
 
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
@@ -1002,7 +1003,8 @@ class JalonFolder(ATFolder):
         home = getattr(portal.Members, member_id)
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
-                       "mes_presentations_sonorisees": "Sonorisation"}
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])
         if not tag in folder.Subject():
             tags = list(folder.Subject())
@@ -1016,8 +1018,9 @@ class JalonFolder(ATFolder):
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
 
-        folder_dict = {"mes_fichiers": "Fichiers",
-                       "mes_presentations_sonorisees": "Sonorisation"}
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])
 
         tags = list(folder.Subject())

@@ -44,6 +44,12 @@
                   template="view_template/my_space/my_adobe_connect_recording_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="mes_webconferences_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
+                  template="view_template/my_space/my_adobe_connect_recording_view.pt"
+                  permission="zope2.View"/>
+
     <browser:page name="mes_cours_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_courses_view.MyCoursesView"
