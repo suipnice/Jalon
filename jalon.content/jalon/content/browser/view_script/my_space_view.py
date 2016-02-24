@@ -74,6 +74,7 @@ class MySpaceView(BrowserView):
                 "is_selected_tags": is_selected_tags}
 
     def getItemsList(self, folder, selected_tags_list, content_filter):
+        LOG.info("----- getItemsList -----")
         if selected_tags_list and selected_tags_list != ["last"]:
             last = False
             subjects = []

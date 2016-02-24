@@ -1015,7 +1015,8 @@ class JalonFolder(ATFolder):
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
 
-        folder_dict = {"mes_fichiers": "Fichiers"}
+        folder_dict = {"mes_fichiers": "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation"}
         folder = getattr(home, folder_dict[self.getId()])
 
         tags = list(folder.Subject())
