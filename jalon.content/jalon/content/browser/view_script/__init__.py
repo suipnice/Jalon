@@ -1,3 +1,5 @@
 from my_space_view import MySpaceView
 from my_files_view import MyFilesView
+from my_external_resources_view import MyExternalResourcesView
+from my_adobe_connect_recording_view import MyAdobeConnectRecordingView
 from my_courses_view import MyCoursesView

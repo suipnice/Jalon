@@ -38,6 +38,12 @@
                   template="view_template/my_space/my_files_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="mes_ressources_externes_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_external_resources_view.MyExternalResourcesView"
+                  template="view_template/my_space/my_external_resources_view.pt"
+                  permission="zope2.View"/>
+
     <browser:page name="mes_presentations_sonorisees_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
