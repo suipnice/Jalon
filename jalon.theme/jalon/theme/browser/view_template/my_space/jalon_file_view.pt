@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:replace replace="context/Title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius"
+         tal:condition="not:context/Description"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="context/Description"
+         tal:content="structure python:context.Description().replace('\n', '<br/>')" />
+
+    <a class="button expand success"
+       tal:attributes="href string:${context/absolute_url}/at_download/file">
+        <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce fichier</tal:block>
+    </a>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -25,7 +25,7 @@
                                directory="images"
                                layer=".interfaces.IThemeSpecific"/>
 
-    <!-- View Definition -->
+    <!-- MySpace View Definition -->
     <browser:page name="mon_espace_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_space_view.MySpaceView"
@@ -36,6 +36,21 @@
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_files_view.MyFilesView"
                   template="view_template/my_space/my_files_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_file_view"
+                  for="plone.app.blob.interfaces.IATBlobFile"
+                  template="view_template/my_space/jalon_file_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_image_view"
+                  for="plone.app.blob.interfaces.IATBlobImage"
+                  template="view_template/my_space/jalon_image_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_page_view"
+                  for="Products.ATContentTypes.interfaces.IATDocument"
+                  template="view_template/my_space/jalon_file_view.pt"
                   permission="zope2.View"/>
 
     <browser:page name="mes_ressources_externes_view"
@@ -56,6 +71,7 @@
                   template="view_template/my_space/my_adobe_connect_recording_view.pt"
                   permission="zope2.View"/>
 
+    <!-- MyCoursesView Definition -->
     <browser:page name="mes_cours_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_courses_view.MyCoursesView"
