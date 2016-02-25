@@ -54,6 +54,7 @@ class MyExternalResourcesView(MySpaceView):
             nb_button_action += 1
         if nb_button_action == 2:
             is_two_actions = True
+
         selected_tags_list = folder.getSelectedTags().split(",")
 
         tags = self.getTags(folder, selected_tags_list)

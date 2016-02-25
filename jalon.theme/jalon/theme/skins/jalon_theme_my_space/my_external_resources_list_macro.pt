@@ -10,7 +10,7 @@
 
 <metal:content-core fill-slot="content">
 
-<metal:macro define-macro="my_external_resources">
+<metal:macro define-macro="my_external_resources_list">
 
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
