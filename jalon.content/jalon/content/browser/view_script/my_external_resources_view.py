@@ -44,13 +44,13 @@ class MyExternalResourcesView(MySpaceView):
             item_adder_list.append({"action_name":      "Créer un lien",
                                     "action_icon":      "fa fa-plus-circle",
                                     "action_css_class": "button expand create",
-                                    "action_link":      "create_external_resources_form"})
+                                    "action_link":      "create_external_resource_form"})
             nb_button_action += 1
         if jalon_properties["activer_liens_catalogue_bu"]:
             item_adder_list.append({"action_name":      "Rechercher et ajouter depuis le catalogue BU",
                                     "action_icon":      "fa fa-plus-circle",
                                     "action_css_class": "button expand create",
-                                    "action_link":      "create_external_resources_form"})
+                                    "action_link":      "create_external_resource_form"})
             nb_button_action += 1
         if nb_button_action == 2:
             is_two_actions = True

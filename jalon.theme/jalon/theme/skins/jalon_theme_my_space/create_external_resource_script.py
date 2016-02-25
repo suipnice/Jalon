@@ -1,4 +1,4 @@
-## Controller Python Script "create_external_resources_script"
+## Controller Python Script "create_external_resource_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
