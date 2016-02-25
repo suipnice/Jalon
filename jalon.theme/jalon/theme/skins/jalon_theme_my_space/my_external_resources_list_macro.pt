@@ -122,7 +122,7 @@
                 <span class="hide" tal:content="item/Title"/>
                 <a title="Voir la ressource externe"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/element_view?idElement=${item/getId}"
+                   tal:attributes="href item/getURL"
                    tal:content="python:here.getShortText(item['Title'])"
                    i18n:attributes="title"/>
                 <span class="show-for-medium-up"

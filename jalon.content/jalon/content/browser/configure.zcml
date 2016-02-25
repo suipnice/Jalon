@@ -56,13 +56,6 @@
    />
 
   <browser:page
-      name="ressource_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonRessourceExterne"
-      template="templates/ressource_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
     name="jalon_ploneboard_view"
     for="Products.Ploneboard.interfaces.IPloneboard"
     class="Products.Ploneboard.browser.board.BoardView"
