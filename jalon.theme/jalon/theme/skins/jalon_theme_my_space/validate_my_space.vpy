@@ -19,7 +19,8 @@ validate_key = form["validate_key"]
 
 validate_dict = {"create_tag":               ["title"],
                  "create_external_resource": ["title", "urlbiblio"],
-                 "edit_file":                ["title"]}
+                 "edit_file":                ["title"],
+                 "edit_external_resource":   ["title", "urlbiblio"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:
