@@ -53,6 +53,12 @@
                   template="view_template/my_space/jalon_file_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="mes_presentations_sonorisees_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
+                  template="view_template/my_space/my_adobe_connect_recording_view.pt"
+                  permission="zope2.View"/>
+
     <browser:page name="mes_ressources_externes_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_external_resources_view.MyExternalResourcesView"
@@ -64,10 +70,10 @@
                   template="view_template/my_space/jalon_external_resource_view.pt"
                   permission="zope2.View"/>
 
-    <browser:page name="mes_presentations_sonorisees_view"
+    <browser:page name="mes_termes_glossaire_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
-                  class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
-                  template="view_template/my_space/my_adobe_connect_recording_view.pt"
+                  class="jalon.content.browser.view_script.my_glossary_terms_view.MyGlossaryTermsView"
+                  template="view_template/my_space/my_glossary_terms_view.pt"
                   permission="zope2.View"/>
 
     <browser:page name="mes_webconferences_view"

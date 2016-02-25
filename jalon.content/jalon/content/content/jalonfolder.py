@@ -84,8 +84,9 @@ class JalonFolder(ATFolder):
     schema = JalonFolderSchema
 
     folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
-                            "Externes":      "mon_espace/mes_ressources_externes",
                             "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
+                            "Externes":      "mon_espace/mes_ressources_externes",
+                            "Glossaire":      "mon_espace/mes_termes_glossaire",
                             "Webconference": "mon_espace/mes_webconferences"}
 
     def __init__(self, *args, **kwargs):
@@ -1009,8 +1010,9 @@ class JalonFolder(ATFolder):
         home = getattr(portal.Members, member_id)
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
-                       "mes_ressources_externes":      "Externes",
                        "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
                        "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])
         if not tag in folder.Subject():
@@ -1026,8 +1028,9 @@ class JalonFolder(ATFolder):
         home = getattr(portal.Members, member_id)
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
-                       "mes_ressources_externes":      "Externes",
                        "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
                        "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])
 

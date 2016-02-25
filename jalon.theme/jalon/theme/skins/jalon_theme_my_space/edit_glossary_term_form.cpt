@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="errors options/state/getErrors | nothing">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier le terme de glossaire</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-glossaryEditor" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-placeholder string:Saisie obligatoire;
+                          data-success_msg_pre string:Le terme de glossaire;
+                          data-success_msg_post string:a été édité."
+          i18n:attributes="data-placeholder; data-success_msg_pre; data-success_msg_post">
+
+        <tal:repeat repeat="attribut context/getAttributsType">
+            <metal:field use-macro="python:context.widget(attribut, mode='edit')" />
+        </tal:repeat>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="validate_key" value="edit_glossary_term"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setGlossaryEditor()"></script>
+
+</metal:content-core>
+
+</body>
+
+</html>
