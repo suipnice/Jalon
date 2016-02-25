@@ -8,7 +8,8 @@
 
 <body>
 
-<metal:content-core fill-slot="content">
+<metal:content-core fill-slot="content"
+                    tal:define="errors options/state/getErrors | nothing">
 
     <h2>
         <i class="fa fa-external-link"></i><tal:block i18n:translate="">Créer un lien</tal:block>
