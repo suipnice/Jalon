@@ -84,6 +84,7 @@ class JalonFolder(ATFolder):
     schema = JalonFolderSchema
 
     folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
+                            "Externes":      "mon_espace/mes_ressources_externes",
                             "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
                             "Webconference": "mon_espace/mes_webconferences"}
 
@@ -109,6 +110,11 @@ class JalonFolder(ATFolder):
     def getMySpaceFolder(self):
         LOG.info("----- getMySpaceFolder -----")
         return self.folder_my_space_dict[self.getId()]
+
+    def getMySubSpaceFolder(self, user_id, folder_id):
+        LOG.info("----- getMySubSpaceFolder -----")
+        portal = self.portal_url.getPortalObject()
+        return getattr(getattr(portal.Members, user_id), folder_id)
 
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
         """Fourni la liste des elements d'un jalonfolder."""
@@ -1003,6 +1009,7 @@ class JalonFolder(ATFolder):
         home = getattr(portal.Members, member_id)
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_ressources_externes":      "Externes",
                        "mes_presentations_sonorisees": "Sonorisation",
                        "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])
@@ -1019,6 +1026,7 @@ class JalonFolder(ATFolder):
         home = getattr(portal.Members, member_id)
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_ressources_externes":      "Externes",
                        "mes_presentations_sonorisees": "Sonorisation",
                        "mes_webconferences":           "Webconference"}
         folder = getattr(home, folder_dict[self.getId()])

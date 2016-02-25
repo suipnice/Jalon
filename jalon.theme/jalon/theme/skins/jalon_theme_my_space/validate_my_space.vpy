@@ -17,7 +17,8 @@ error = False
 form = context.REQUEST.form
 validate_key = form["validate_key"]
 
-validate_dict = {"create_tag": ["validate_key"]}
+validate_dict = {"create_tag":               ["title"],
+                 "create_external_resource": ["title", "urlbiblio"]}
 
 retour = context.absolute_url()
 
