@@ -21,7 +21,7 @@ properties_dict = {"Title":                form["title"],
                    "TypeRessourceExterne": "",
                    "Description":          form["description"]}
 
-if "iframe" in form["urlbiblio"] or "embed" in form["urlbiblio"] or "iframe" in form["urlbiblio"]:
+if "iframe" in form["urlbiblio"] or "embed" in form["urlbiblio"]:
     properties_dict["TypeRessourceExterne"] = "Lecteur exportable"
     properties_dict["Lecteur"] = form["urlbiblio"]
 else:

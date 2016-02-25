@@ -16,7 +16,10 @@
     </h2>
 
     <form method="POST" id="js-webLinkCreator"
-          tal:attributes="action string:${context/absolute_url}/${template/id}">
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le lien;
+                          data-success_msg_post string:a été créé."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
 
         <div tal:define="error errors/title | nothing"
              tal:attributes="class python:context.test(error, 'error field', 'field')">

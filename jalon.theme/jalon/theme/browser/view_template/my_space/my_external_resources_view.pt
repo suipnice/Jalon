@@ -39,7 +39,7 @@
                         tal:omit-tag="not:my_view/is_two_actions">
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="class action/action_css_class;
-                                           href action/action_link">
+                                           href string:${context/absolute_url}/${action/action_link}">
                            <i tal:attributes="class action/action_icon"></i>
                            <tal:block tal:replace="action/action_name"
                                       i18n:translate=""/>
