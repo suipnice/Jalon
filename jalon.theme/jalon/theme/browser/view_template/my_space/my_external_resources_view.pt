@@ -32,13 +32,21 @@
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
 
         <section class="show-for-medium-up medium-12 columns">
-            <div id="item-adder">
-                <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/create_external_resources_form">
-                   <i class="fa fa-plus-circle"></i>
-                   <tal:block i18n:translate="">Créer un lien vers une ressource externe</tal:block>
-                </a>
-            </div>
+            <nav id="item-adder">
+                <ul class="button-group expand radius even-2"
+                    tal:omit-tag="not:my_view/is_two_actions">
+                    <li tal:repeat="action my_view/item_adder_list"
+                        tal:omit-tag="not:my_view/is_two_actions">
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="class action/action_css_class;
+                                           href action/action_link">
+                           <i tal:attributes="class action/action_icon"></i>
+                           <tal:block tal:replace="action/action_name"
+                                      i18n:translate=""/>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </section>
 
         <section class="small-12 columns">

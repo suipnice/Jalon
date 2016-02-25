@@ -35,6 +35,25 @@ class MyExternalResourcesView(MySpaceView):
         portal = portal_state.portal()
 
         folder = getattr(portal.Members, user.getId()).Externes
+
+        nb_button_action = 0
+        is_two_actions = False
+        item_adder_list = []
+        jalon_properties = portal.portal_jalon_properties.getPropertiesMonEspace()
+        if jalon_properties["activer_liens"]:
+            item_adder_list.append({"action_name":      "Créer un lien",
+                                    "action_icon":      "fa fa-plus-circle",
+                                    "action_css_class": "button expand create",
+                                    "action_link":      "%s/create_external_resources_form" % folder.absolute_url()})
+            nb_button_action += 1
+        if jalon_properties["activer_liens_catalogue_bu"]:
+            item_adder_list.append({"action_name":      "Rechercher et ajouter depuis le catalogue BU",
+                                    "action_icon":      "fa fa-plus-circle",
+                                    "action_css_class": "button expand create",
+                                    "action_link":      "%s/create_external_resources_form" % folder.absolute_url()})
+            nb_button_action += 1
+        if nb_button_action == 2:
+            is_two_actions = True
         selected_tags_list = folder.getSelectedTags().split(",")
 
         tags = self.getTags(folder, selected_tags_list)
@@ -48,7 +67,9 @@ class MyExternalResourcesView(MySpaceView):
         nb_display_items = len(my_external_resources_list)
         nb_items = len(folder.objectIds())
 
-        return {"tags_list":        tags_list,
+        return {"is_two_actions":   is_two_actions,
+                "item_adder_list":  item_adder_list,
+                "tags_list":        tags_list,
                 "is_no_items":      one_and_selected_tag["is_no_items"],
                 "is_one_tag":       one_and_selected_tag["is_one_tag"],
                 "one_tag":          one_and_selected_tag["one_tag"],
