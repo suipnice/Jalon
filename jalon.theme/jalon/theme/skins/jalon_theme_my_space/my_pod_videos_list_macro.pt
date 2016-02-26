@@ -78,9 +78,8 @@
                         </a>
                     </li>
                     <li tal:condition="not:is_owner">
-                        <a target="_blank"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${item/getURL}/folder_form?macro=macro_form&amp;formulaire=supprimer">
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${item/getURL}/delete_object_form">
                             <i class="fa fa-trash-o fa-fw no-pad"></i>
                             <tal:block i18n:translate="">Supprimer</tal:block>
                         </a>
