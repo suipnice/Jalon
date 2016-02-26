@@ -42,11 +42,11 @@ class MyGlossaryTermsView(MySpaceView):
         tags_dict = tags["tags_dict"]
         tags_list = tags["tags_list"]
 
-        my_external_resources_list = self.getMyGlossaryTermsList(folder, selected_tags_list)
+        my_glossary_terms_list = self.getMyGlossaryTermsList(folder, selected_tags_list)
 
-        one_and_selected_tag = self.getOneAndSelectedTag(my_external_resources_list, selected_tags_list, tags_dict)
+        one_and_selected_tag = self.getOneAndSelectedTag(my_glossary_terms_list, selected_tags_list, tags_dict)
 
-        nb_display_items = len(my_external_resources_list)
+        nb_display_items = len(my_glossary_terms_list)
         nb_items = len(folder.objectIds())
 
         return {"tags_list":        tags_list,
@@ -54,7 +54,7 @@ class MyGlossaryTermsView(MySpaceView):
                 "is_one_tag":       one_and_selected_tag["is_one_tag"],
                 "one_tag":          one_and_selected_tag["one_tag"],
                 "is_selected_tags": one_and_selected_tag["is_selected_tags"],
-                "my_items_list":    my_external_resources_list,
+                "my_items_list":    my_glossary_terms_list,
                 "nb_display_items": nb_display_items,
                 "nb_items":         nb_items,
                 "folder_path":      "/".join(folder.getPhysicalPath()),
