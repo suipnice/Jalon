@@ -85,6 +85,7 @@ class JalonFolder(ATFolder):
 
     folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
                             "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
+                            "Wims":          "mon_espace/mes_exercices_wims",
                             "Externes":      "mon_espace/mes_ressources_externes",
                             "Glossaire":     "mon_espace/mes_termes_glossaire",
                             "Webconference": "mon_espace/mes_webconferences",
@@ -1023,6 +1024,7 @@ class JalonFolder(ATFolder):
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
                        "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
                        "mes_ressources_externes":      "Externes",
                        "mes_termes_glossaire":         "Glossaire",
                        "mes_webconferences":           "Webconference",
@@ -1042,6 +1044,7 @@ class JalonFolder(ATFolder):
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
                        "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
                        "mes_ressources_externes":      "Externes",
                        "mes_termes_glossaire":         "Glossaire",
                        "mes_webconferences":           "Webconference",
