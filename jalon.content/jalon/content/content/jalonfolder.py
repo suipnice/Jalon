@@ -86,8 +86,9 @@ class JalonFolder(ATFolder):
     folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
                             "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
                             "Externes":      "mon_espace/mes_ressources_externes",
-                            "Glossaire":      "mon_espace/mes_termes_glossaire",
-                            "Webconference": "mon_espace/mes_webconferences"}
+                            "Glossaire":     "mon_espace/mes_termes_glossaire",
+                            "Webconference": "mon_espace/mes_webconferences",
+                            "Video":         "mon_espace/mes_videos_pod"}
 
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
@@ -1024,7 +1025,8 @@ class JalonFolder(ATFolder):
                        "mes_presentations_sonorisees": "Sonorisation",
                        "mes_ressources_externes":      "Externes",
                        "mes_termes_glossaire":         "Glossaire",
-                       "mes_webconferences":           "Webconference"}
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
         if not tag in folder.Subject():
             tags = list(folder.Subject())
@@ -1042,7 +1044,8 @@ class JalonFolder(ATFolder):
                        "mes_presentations_sonorisees": "Sonorisation",
                        "mes_ressources_externes":      "Externes",
                        "mes_termes_glossaire":         "Glossaire",
-                       "mes_webconferences":           "Webconference"}
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
 
         tags = list(folder.Subject())

@@ -58,7 +58,7 @@
                        tal:attributes="value term_search"
                        i18n:attributes="placeholder" />
 
-                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+                <input type="hidden" name="member_id" tal:attributes="value user/getId" />
 
             </div>
 
@@ -108,7 +108,7 @@
             </div>
 
             <form id="js-podContentsList" name="element_add" method="POST"
-                  tal:attributes="action string:${context/absolute_url}/ajouterressource_script">
+                  tal:attributes="action string:${context/absolute_url}/add_pod_videos_script">
 
                 <div class="panel callout radius"
                      tal:condition="not:is_owner">
@@ -127,13 +127,11 @@
                         <div tal:attributes="class python:context.test(is_owner, 'panel callout radius', 'panel radius')">
 
                             <div>
-                        <tal:comment replace="nothing"><!--
-
+                            <tal:comment replace="nothing"><!--
                                 <i class="fa fa-lock"
                                    title="Ce contenu est protégé par un mot de passe."
                                    i18n:attributes="title"></i>
-
-                        --></tal:comment>
+                            --></tal:comment>
                                 <div class="switch tiny round right"
                                      title="Sélectionner / désélectionner ce contenu"
                                      i18n:attributes="title"
@@ -172,7 +170,7 @@
                                 </a>
                                 <a class="button tiny create" title="Ajouter la vidéo"
                                    tal:condition="not:is_owner"
-                                   tal:attributes="href string:${context/absolute_url}/ajouterressource_script?formulaire=ajout-elasticsearch&amp;video_id=${video/id}&amp;authMember=${user/getId}"
+                                   tal:attributes="href string:${context/absolute_url}/add_pod_videos_script?video_id=${video/id}&amp;member_id=${user/getId}"
                                    i18n:attributes="title">
                                     <i class="fa fa-plus-circle"></i>
                                     <tal:block i18n:translate="">Ajouter</tal:block>
@@ -183,9 +181,7 @@
                     </li>
                 </ul>
 
-                <input type="hidden" name="macro" value="macro_creer_mon_espace" />
-                <input type="hidden" name="formulaire" value="ajout-elasticsearch" />
-                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+                <input type="hidden" name="member_id" tal:attributes="value user/getId" />
 
                 <div class="formControls"
                      tal:condition="python:videos and not is_owner">
