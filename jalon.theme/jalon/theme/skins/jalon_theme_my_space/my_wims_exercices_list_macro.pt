@@ -130,8 +130,7 @@
             <td class="title">
                 <span class="hide" tal:content="item/Title" />
                 <a title="Voir l'exercice"
-                   data-reveal-id="reveal-main_xlarge" data-reveal-ajax="true"
-                   tal:attributes="href string:${item/getURL}/view"
+                   tal:attributes="href string:${item/getURL}"
                    tal:content="python:here.getShortText(item['Title'])"
                    i18n:attributes="title" />
             </td>
