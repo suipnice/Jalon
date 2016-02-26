@@ -25,7 +25,7 @@ class MyExternalResourcesView(MySpaceView):
         return [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
-                {"title": _(u"Ressources externes"),
+                {"title": _(u"Mes ressources externes"),
                  "icon":  "fa fa-external-link",
                  "link":  self.context.absolute_url()}]
 

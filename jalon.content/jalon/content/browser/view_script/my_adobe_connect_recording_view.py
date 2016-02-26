@@ -30,7 +30,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
         return [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
-                {"title": _(u"Présentations sonorisées"),
+                {"title": _(u"Mes présentations sonorisées"),
                  "icon":  "fa fa-microphone",
                  "link":  self.context.absolute_url()}]
 

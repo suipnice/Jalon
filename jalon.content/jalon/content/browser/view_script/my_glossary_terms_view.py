@@ -25,7 +25,7 @@ class MyGlossaryTermsView(MySpaceView):
         return [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
-                {"title": _(u"Terme de glossaire"),
+                {"title": _(u"Mes termes de glossaire"),
                  "icon":  "fa fa-font",
                  "link":  self.context.absolute_url()}]
 
