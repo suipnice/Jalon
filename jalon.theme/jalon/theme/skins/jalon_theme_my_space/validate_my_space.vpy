@@ -18,6 +18,7 @@ form = context.REQUEST.form
 validate_key = form["validate_key"]
 
 validate_dict = {"create_tag":               ["title"],
+                 "create_wims_exercice":     ["title"],
                  "create_external_resource": ["title", "urlbiblio"],
                  "create_glossary_term":     ["title", "description"],
                  "edit_file":                ["title"],

@@ -146,7 +146,7 @@ class MyWimsExercicesView(MySpaceView):
                                 model = "exercicelibre"
                             # CREATION de l'exercice %s sur Jalon " % exo_wims["id"]
                             object_id = folder.invokeFactory(type_name='JalonExerciceWims', id=wims_exercice["id"])
-                            object_created = getattr(self, object_id)
+                            object_created = getattr(folder, object_id)
                             object_created.setProperties({"Title":  wims_exercice["title"],
                                                           "Modele": model})
             else:
