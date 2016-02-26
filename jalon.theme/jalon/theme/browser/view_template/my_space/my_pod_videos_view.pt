@@ -68,9 +68,26 @@
             <h2 id="js-update_title">
                 <i class="fa fa fa-youtube-play"></i><tal:replace replace="context/Title" i18n:translate=""/>
             </h2>
+            <div id="js-update_target"
+                 tal:attributes="data-href string:${context/absolute_url}">
+                <metal:macro use-macro="context/my_pod_videos_list_macro/macros/my_pod_videos_list">
+                    Macro d'affichage de la liste des ressources externes
+                </metal:macro>
+            </div>
         </section>
+
     </main>
 
+    <tal:block define="script string:setTagFilter()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+    </tal:condition>
+
+    <tal:condition condition="is_ajax">
+    <metal:macro use-macro="context/my_pod_videos_list_macro/macros/my_pod_videos_list">
+        Macro d'affichage de la liste des fichiers
+    </metal:macro>
     </tal:condition>
 
 </metal:core>

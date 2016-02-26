@@ -34,7 +34,8 @@ class MyPodVideosView(MySpaceView):
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
-        folder = getattr(portal.Members, user.getId()).Video
+        member_id = user.getId()
+        folder = getattr(portal.Members, member_id).Video
 
         selected_tags_list = folder.getSelectedTags().split(",")
 
@@ -42,4 +43,72 @@ class MyPodVideosView(MySpaceView):
         tags_dict = tags["tags_dict"]
         tags_list = tags["tags_list"]
 
-        return {"tags_list":        tags_list}
+        my_pod_videos_list = self.getMyPodVideosList(folder, selected_tags_list, member_id, portal)
+
+        one_and_selected_tag = self.getOneAndSelectedTag(my_pod_videos_list, selected_tags_list, tags_dict)
+
+        nb_display_items = len(my_pod_videos_list)
+        nb_items = len(folder.objectIds())
+
+        return {"tags_list":        tags_list,
+                "is_no_items":      one_and_selected_tag["is_no_items"],
+                "is_one_tag":       one_and_selected_tag["is_one_tag"],
+                "one_tag":          one_and_selected_tag["one_tag"],
+                "is_selected_tags": one_and_selected_tag["is_selected_tags"],
+                "my_items_list":    my_pod_videos_list,
+                "nb_display_items": nb_display_items,
+                "nb_items":         nb_items,
+                "folder_path":      "/".join(folder.getPhysicalPath()),
+                "folder_link":      folder.absolute_url()}
+
+    def getMyPodVideosList(self, folder, selected_tags_list, member_id, portal):
+        if selected_tags_list == ["last"]:
+            self.updateJalonVideos(folder, portal, member_id)
+        content_filter = {"portal_type": ["JalonRessourceExterne"]}
+        return self.getItemsList(folder, selected_tags_list, content_filter)
+
+    def updateJalonVideos(self, folder, portal, member_id):
+        jalon_videos_id = set([object_id.split("-")[-1] for object_id in folder.objectIds()])
+
+        portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
+        response_elasticsearch = portal_elasticsearch.searchElasticsearch("mes_videos", "", 1)
+
+        nb_pages = response_elasticsearch["nb_pages"]
+        if nb_pages:
+            dico_videos_pod = {}
+            videos_ids = []
+            for video in response_elasticsearch["liste_videos"]:
+                videos_ids.append(video["id"])
+                dico_videos_pod[video["id"]] = video
+
+            if nb_pages > 1:
+                for page in range(2, nb_pages):
+                    response_elasticsearch = portal_elasticsearch.searchElasticsearch("mes_videos", "", page)
+                    for video in response_elasticsearch["liste_videos"]:
+                        videos_ids.append(video["id"])
+                        dico_videos_pod[video["id"]] = video
+
+            videos_ids = set(videos_ids)
+            #videos_del = jalon_videos_id.difference(videos_ids)
+
+            videos_add = videos_ids.difference(jalon_videos_id)
+            for video_id in videos_add:
+                video = dico_videos_pod[video_id]
+                object_id = "Externe-%s-%s" % (member_id, video_id)
+                object_video = getattr(folder, object_id, None)
+                if not object_video:
+                    folder.invokeFactory(type_name='JalonRessourceExterne', id=object_id)
+                    object_video = getattr(folder, object_id)
+                    video = portal_elasticsearch.searchElasticsearch(type_search="video", term_search=video_id)
+                    param = {"Title":                video["title"],
+                             "TypeRessourceExterne": "Video",
+                             "Videourl":             video["full_url"],
+                             "Description":          video["text"],
+                             "Lecteur":              video["iframe"],
+                             "Videoauteur":          video["owner"],
+                             "Videoauteurname":      video["owner_full_name"],
+                             "Videothumbnail":       video["thumbnail"]}
+                    object_video.setProperties(param)
+        elif jalon_videos_id:
+            # Supprimer toutes les vidéos
+            pass
