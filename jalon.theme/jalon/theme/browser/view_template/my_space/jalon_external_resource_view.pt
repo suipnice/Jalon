@@ -17,6 +17,10 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <div tal:condition="python:external_resource_type == 'Video'">
+        <strong>Auteur :</strong> <tal:block replace="context/getVideoauteurname"/>
+    </div>
+
     <div class="panel radius"
          tal:condition="not:context/Description"
          i18n:translate="">
@@ -33,7 +37,7 @@
         <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
     </a>
 
-    <tal:condition condition="python:external_resource_type == 'Lecteur exportable'">
+    <tal:condition condition="python:external_resource_type in ['Lecteur exportable', 'Video']">
     <div class="flex-video"
          tal:content="structure context/getLecteurExportable" />
 
