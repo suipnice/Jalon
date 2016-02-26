@@ -333,6 +333,17 @@ class JalonFolder(ATFolder):
         LOG.info("----- isObjectAttached -----")
         return "is_object_attached" if len(object_context.getRelatedItems()) else "isnt_object_attached"
 
+    def getSearchPodVideosBreadcrumbs(self):
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  self.aq_parent.absolute_url()},
+                {"title": _(u"Mes vidéos POD"),
+                 "icon":  "fa fa-youtube-play",
+                 "link":  self.absolute_url()},
+                {"title": _(u"Rechercher une vidéo sur POD"),
+                 "icon":  "fa fa-search",
+                 "link":  "%s/search_pod_videos_form" % self.absolute_url()}]
+
     #----------------------#
     # My Courses utilities #
     #----------------------#

@@ -36,7 +36,7 @@
                 <ul class="button-group even-2 radius">
                     <li>
                         <a class="button create"
-                           tal:attributes="href string:${context/absolute_url}/videos_pod">
+                           tal:attributes="href string:${context/absolute_url}/search_pod_videos_form">
                            <i class="fa fa-plus-circle no-pad"></i>
                            <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
                         </a>
