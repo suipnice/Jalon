@@ -130,7 +130,7 @@
             <td class="title">
                 <span class="hide" tal:content="item/Title" />
                 <a title="Voir l'exercice"
-                   tal:attributes="href string:${item/getURL}"
+                   tal:attributes="href string:${item/getURL}/view"
                    tal:content="python:here.getShortText(item['Title'])"
                    i18n:attributes="title" />
             </td>
@@ -141,12 +141,6 @@
                 </a>
                 <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                     tal:attributes="id string:drop-${repeat/item/index}">
-                    <li>
-                        <a tal:attributes="href string:${item/getURL}">
-                            <i class="fa fa-eye fa-fw no-pad"></i>
-                            <tal:block i18n:translate="">Voir</tal:block>
-                        </a>
-                    </li>
                     <li>
                         <a tal:condition="python:item['getModele'] != 'groupe'"
                            tal:attributes="href string:${item/getURL}/exercicewims_edit">
