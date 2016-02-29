@@ -65,6 +65,5 @@ if came_from and not next:
     # redirect immediately
     return REQUEST.RESPONSE.redirect(came_from)
 else:
-    context.plone_log("else")
     state.set(came_from=came_from, next=next)
     return state

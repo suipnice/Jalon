@@ -21,6 +21,9 @@
     <object name="jalon_theme_general"
             meta_type="Filesystem Directory View"
             directory="jalon.theme:skins/jalon_theme_general"/>
+    <object name="jalon_theme_connexion"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_connexion"/>
     <object name="jalon_theme_my_space"
             meta_type="Filesystem Directory View"
             directory="jalon.theme:skins/jalon_theme_my_space"/>
@@ -52,8 +55,10 @@
     <skin-path name="Jalon" based-on="Plone Default">
         <layer name="jalon_theme_general"
                insert-after="custom"/>
-        <layer name="jalon_theme_my_space"
+        <layer name="jalon_theme_connexion"
                insert-after="jalon_theme_general"/>
+        <layer name="jalon_theme_my_space"
+               insert-after="jalon_theme_connexion"/>
         <layer name="jalon_theme_my_space_wims_createxo"
                insert-after="jalon_theme_my_space"/>
         <layer name="jalon_theme_my_courses"
