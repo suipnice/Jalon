@@ -10,6 +10,9 @@
 
 <metal:core fill-slot="main">
 
+<tal:unauthorized condition="python:user.has_role('Anonymous')"
+                  define="no_return context/redirect_unauthorized"/>
+
 <style type="text/css">
 #jalon_configuration .discreet
 {

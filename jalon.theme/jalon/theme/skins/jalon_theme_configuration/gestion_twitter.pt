@@ -7,6 +7,9 @@
 
 <body>
     <metal:main fill-slot="main">
+<tal:unauthorized condition="python:user.has_role('Anonymous')"
+                  define="no_return context/redirect_unauthorized"/>
+
         <div id="content-core">
             <div id="tableau">
                 <h2 i18n:translate="">Configuration de l'accés à Twitter</h2>
