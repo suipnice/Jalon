@@ -42,6 +42,9 @@
     <object name="jalon_theme_dynamic_script"
         meta_type="Filesystem Directory View"
         directory="jalon.theme:skins/jalon_theme_dynamic_script"/>
+    <object name="jalon_theme_configuration"
+        meta_type="Filesystem Directory View"
+        directory="jalon.theme:skins/jalon_theme_configuration"/>
 
     <!-- A skin-path in this file corresponds to a Skin Selection in the
          'Properties' tab of the portal_skins tool, in the ZMI.
@@ -72,6 +75,8 @@
                insert-after="jalon_theme_my_courses"/>
         <layer name="jalon_theme_dynamic_script"
                insert-after="jalon_theme_custom_templates"/>
+        <layer name="jalon_theme_configuration"
+               insert-after="jalon_theme_dynamic_script"/>
     </skin-path>
 
 </object>
