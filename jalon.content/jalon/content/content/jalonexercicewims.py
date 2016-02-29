@@ -77,6 +77,24 @@ class JalonExerciceWims(ATDocumentBase):
     schema['text'].required = False
     schema['text'].mode = "r"
 
+    def getBreadcrumbs(self):
+        portal_url = self.portal_url.getPortalObject().absolute_url()
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  "%s/mon_espace" % portal_url},
+                {"title": _(u"Mes exercices WIMS"),
+                 "icon":  "fa fa-random",
+                 "link":  "%s/mon_espace/mes_exercices_wims" % portal_url},
+                {"title": self.Title(),
+                 "icon":  "fa fa-random",
+                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()}]
+
+    def getEditWimsExerciceMacroName(self):
+        edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
+        if self.getModele() == "externe":
+            edit_wims_exercice_macro_name = "edit_wims_exercice_externe"
+        return edit_wims_exercice_macro_name
+
     def getVariablesDefaut(self, modele):
         """ #getVariablesDefaut permet de lister les valeurs par defaut a definir en fonction du modele d'exercice."""
         variables_defaut = {"qcmsimple":
