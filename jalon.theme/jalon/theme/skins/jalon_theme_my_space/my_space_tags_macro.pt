@@ -1,3 +1,38 @@
+<!--
+        Affichage des étiquettes
+-->
+<metal:macro define-macro="tags_list">
+    <li tal:repeat="tag tags_list">
+        <a tal:attributes="id tag/tag_id;
+                           class tag/tag_css">
+           <i class="fa fa-circle no-pad"></i>
+           <i class="fa fa-circle-thin no-pad"></i>
+           <tal:block tal:content="tag/tag_title" />
+        </a>
+    </li>
+</metal:macro>
+
+
+<!--
+        Créer une étiquette
+-->
+<metal:macro define-macro="add_tag">
+    <li class="show-for-medium-up">
+        <a data-reveal-id="reveal-create_tag" data-reveal-ajax="true"
+           tal:attributes="href string:${context/absolute_url}/create_tag_form"
+           class="button tiny create">
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Créer une étiquette</tal:block>
+        </a>
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="reveal-create_tag" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    </li>
+</metal:macro>
+
+
+<!--
+        Supprimer une étiquette
+-->
 <metal:macro define-macro="delete_tag">
 
     <tal:block condition="is_one_tag">
