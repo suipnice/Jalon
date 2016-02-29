@@ -104,9 +104,12 @@
 </tal:block>
 
 
-<tal:block condition="not:anonymous"
-           define="no_return python:context.redirection_folder_script(user)"/>
+<tal:condition condition="not:anonymous">
+    <tal:redirect define="no_return python:context.redirection_folder_script(user)"/>
+</tal:condition>
 
 </metal:core>
-    </body>
+
+</body>
+
 </html>
