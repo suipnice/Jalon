@@ -130,6 +130,7 @@
             <td class="title">
                 <span class="hide" tal:content="item/Title" />
                 <a title="Voir l'exercice"
+                   data-reveal-id="reveal-main_xlarge" data-reveal-ajax="true"
                    tal:attributes="href string:${item/getURL}/view"
                    tal:content="python:here.getShortText(item['Title'])"
                    i18n:attributes="title" />
@@ -142,8 +143,8 @@
                 <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                     tal:attributes="id string:drop-${repeat/item/index}">
                     <li>
-                        <a tal:condition="python:item['getModele'] != 'groupe'"
-                           tal:attributes="href string:${item/getURL}/exercicewims_edit">
+                        <a tal:attributes="href string:${item/getURL}/exercicewims_edit"
+                           tal:condition="python:item['getModele'] != 'groupe'">
                             <i class="fa fa-pencil fa-fw no-pad"></i>
                             <tal:replace replace="python:'Modifier' if item['getModele'] != 'externe' else 'Changer'"/>
                         </a>

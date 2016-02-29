@@ -22,6 +22,8 @@
     <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
     <div id="reveal-main" class="reveal-modal medium" 
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_xlarge" class="reveal-modal xlarge" 
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_no_deletion">
         Macro d'affichage des messages en reveal
