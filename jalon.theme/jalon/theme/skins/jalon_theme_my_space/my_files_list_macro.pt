@@ -131,7 +131,7 @@
                 <span tal:content="python:context.getLocaleDate(item['ModificationDate'])"/>
             </td>
             <td class="filetype">
-                <i tal:attributes="class python:'fa fa-2x %s' % (context.typefichier_script(item['getIcon']))"></i>
+                <i tal:attributes="class python:'fa fa-2x %s' % (context.get_type_fichier_script(item['getIcon']))"></i>
             </td>
             <td class="title">
                 <span class="hide" tal:content="item/Title" />
