@@ -205,8 +205,8 @@ class MyCoursesView(BrowserView):
         diploma_list = []
         authors_dict = {}
         portal = self.context.portal_url.getPortalObject()
-        portal_catalog = getToolByName(portal, "portal_catalog")
-        portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
+        portal_catalog = portal.portal_catalog
+        portal_jalon_bdd = portal.portal_jalon_bdd
 
         user_id = member.getId()
         member_login_time = member.getProperty('login_time', None)
@@ -228,23 +228,23 @@ class MyCoursesView(BrowserView):
                 return {"is_diploma_list": True,
                         "diploma_list":    diploma_list}
 
-            educational_unity_dict = {}
+            #educational_unity_dict = {}
             for user_diploma_id in user_diploma_list:
                 educational_unity_list = []
                 user_diploma_data = portal_jalon_bdd.getVersionEtape(user_diploma_id)
                 if user_diploma_data:
-                    educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
-                                                                              "libelle": user_diploma_data[0]}
+                    #educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
+                    #                                                          "libelle": user_diploma_data[0]}
                     educational_unity_list.append("etape*-*%s" % user_diploma_id)
-
                     user_educational_registration_list = portal_jalon_bdd.getInscriptionPedago(user_id, user_diploma_id)
                     if not user_educational_registration_list:
                         user_educational_registration_list = portal_jalon_bdd.getUeEtape(user_diploma_id)
                     for user_educational_registration in user_educational_registration_list:
                         ELP = "*-*".join([user_educational_registration["TYP_ELP"], user_educational_registration["COD_ELP"]])
-                        if not ELP in educational_unity_dict:
-                            educational_unity_dict[ELP] = {"type":    user_educational_registration["TYP_ELP"],
-                                                           "libelle": user_educational_registration["LIB_ELP"]}
+                        #if not ELP in educational_unity_dict:
+                        if not ELP in educational_unity_list:
+                            #educational_unity_dict[ELP] = {"type":    user_educational_registration["TYP_ELP"],
+                            #                               "libelle": user_educational_registration["LIB_ELP"]}
                             educational_unity_list.append(ELP)
                     educational_unity_list.append(user_id)
 
@@ -303,12 +303,13 @@ class MyCoursesView(BrowserView):
         if not course_author_id:
             course_author_id = course_brain.Creator
         if not course_author_id in authors_dict:
-            course_author_data = jalon_utils.getInfosMembre(course_author_id)
-            authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
-                                              "course_author_email": course_author_data["email"]}
-
+            authors_dict[course_author_id] = jalon_utils.getInfosMembre(course_author_id)["fullname"]
+            #course_author_data = jalon_utils.getInfosMembre(course_author_id)
+            #authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
+                                              #"course_author_email": course_author_data["email"]}
         course_data["course_author_id"] = course_author_id
-        course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
-        course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
+        course_data["course_author_name"] = authors_dict[course_author_id]
+        #course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
+        #course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
 
         return course_data
