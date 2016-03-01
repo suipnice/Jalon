@@ -6,10 +6,11 @@
       i18n:domain="jalon.content">
 
 <body>
-    <metal:main fill-slot="content"
-                tal:define="user_id user/getId;
-                            course_id request/course_id | nothing;
-                            course_data python:context.getDataCourseFormAction(user_id, course_id)">
+
+<metal:main fill-slot="content"
+            tal:define="user_id user/getId;
+                        course_id request/course_id | nothing;
+                        course_data python:context.getDataCourseFormAction(user_id, course_id)">
 
     <h2>
         <tal:block i18n:translate="">Purger le cours</tal:block>

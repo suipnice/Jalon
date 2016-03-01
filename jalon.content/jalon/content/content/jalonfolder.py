@@ -390,11 +390,11 @@ class JalonFolder(ATFolder):
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseFormAction(user_id, course_id)
 
-    def getDataCourseDeleteWimsActivity(self, user_id, course_id):
-        LOG.info("----- getDataCourseDeleteWimsActivity -----")
+    def getDataCourseWimsActivity(self, user_id, course_id):
+        LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course_object = getattr(course_user_folder, course_id)
-        return course_object.getDataCourseDeleteWimsActivity(user_id, course_id)
+        return course_object.getDataCourseWimsActivity(user_id, course_id)
 
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")

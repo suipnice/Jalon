@@ -1,0 +1,127 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="user_id user/getId;
+                        course_id request/course_id | nothing;
+                        course_data python:context.getDataCourseWimsActivity(user_id, course_id);
+                        personnel python:context.isPersonnel(user)">
+
+    <h2>
+        <tal:block i18n:translate="">Télécharger les notes des activités WIMS du cours</tal:block>
+        « <tal:block replace="course_data/course_name"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius"
+         tal:condition="not:personnel">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
+    </div>
+
+    <tal:condition condition="personnel">
+
+    <tal:condition condition="personnel">
+    <div class="panel warning radius"
+         tal:condition="not:course_data/wims_classe_list"
+         tal:define="admin_link here/portal_jalon_properties/getLienContact;
+                     site_title admin_link/portal_title;">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à télécharger. N'hésitez-pas à </tal:block>
+        <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS"
+           i18n:translate="">
+            contacter l'administrateur
+        </a>
+        <tal:block i18n:translate="">si vous pensez que ce n'est pas le cas.</tal:block>
+    </div>
+
+    <tal:condition condition="course_data/wims_classe_list">
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Cette fonction vous permet de télécharger toutes les notes <u>des examens</u>, ainsi que <u>des autoévaluations affichées</u> dans le cours.</tal:block>
+    </div>
+
+    <form method="POST" id="js-getScoresWIMS-form"
+          tal:attributes="action string:${context/absolute_url}/download_wims_score_script"
+          data-success_msg="Votre fichier est en cours de téléchargement…"
+          i18n:attributes="data-success_msg">
+
+        <span i18n:translate="">Télécharger les notes des activités créés par :</span>
+        <div class="panel radius">
+            <ul tal:repeat="wims_class_list course_data/wims_classe_list">
+                <tal:repeat repeat="wims_class_author_id wims_class_list">
+                    <li tal:define="user_index repeat/wims_class_author_id/index">
+                        <input type="radio" name="utilisateur"
+                               tal:attributes="value wims_class_author_id;
+                                               id string:utilisateur_${wims_class_author_id};
+                                               checked python:context.test(user_index == 0, 'checked', '');"/>
+                        <label tal:attributes="for string:utilisateur_${wims_class_author_id}">
+                            <i class="fa fa-user fa-fw"></i>
+                            <span tal:content="python:context.getInfosMembre(wims_class_author_id)['fullname']"/>
+                            <span tal:condition="python:wims_class_author_id == user_id">(moi)</span>
+                        </label>
+                    </li>
+                </tal:repeat>
+            </ul>
+        </div>
+
+        <div class="panel radius">
+            <label for="format">
+                <span class="has-tip"
+                      data-tooltip="csv_tooltip" aria-haspopup="true" 
+                      title="Un fichier CSV est un fichier tableur, contenant des données sur chaque ligne séparés par un caractère de séparation (généralement une virgule, un point-virgule ou une tabulation). Il peut être lu avec un tableur tel que Microsoft Excel (payant), Excel Viewer (gratuit), LibreOffice/OpenOffice (gratuits/libres)..."
+                      i18n:translate="" i18n:attributes="title">
+                    Format du fichier :
+                </span>
+            </label>
+
+            <select name="file_format" id="format">
+                <option value="csv" selected="selected"
+                        i18n:translate="">
+                    CSV (Comma Separated Values : valeurs séparées par une virgule)
+                </option>
+                <option value="xls"
+                        i18n:translate="">
+                    CSV pour Excel français (les valeurs sont séparées par des points-virgules, et le séparateur décimal est une virgule)
+                </option>
+                <option value="tsv" 
+                        i18n:translate="">
+                    TSV (Tab Separated Values : valeurs séparées par une tabulation)
+                </option>
+            </select>
+        </div>
+
+        <div class="formControls">
+            <button class="button small close-download-modal" type="submit">
+                <i class="fa fa-download"></i>
+                <tal:block i18n:translate="">Télécharger</tal:block>
+            </button>
+        </div>
+
+        <div class="panel callout radius hide">
+            <i class="fa fa-refresh fa-spin"></i>
+            <tal:block i18n:translate="">Merci de patienter. Cette opération peut prendre quelques minutes…</tal:block>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+        tal:content="structure string:closeDownloadModal('js-getScoresWIMS-form')"></script>
+    </tal:condition>
+
+    </tal:condition>
+
+    </tal:condition>
+
+</metal:main>
+
+</body>
+
+</html>

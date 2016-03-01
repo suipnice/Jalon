@@ -6,10 +6,12 @@
       i18n:domain="jalon.content">
 
 <body>
-    <metal:main fill-slot="content"
-                tal:define="user_id user/getId;
-                            course_id request/course_id;
-                            course_data python:context.getDataCourseFormAction(user_id, course_id)">
+
+<metal:main fill-slot="content"
+            tal:define="user_id user/getId;
+                        course_id request/course_id;
+                        course_data python:context.getDataCourseFormAction(user_id, course_id)">
+
     <h2><tal:block i18n:translate="">Dupliquer le cours</tal:block>
         « <tal:block replace="course_data/course_name"/> »
         <a class="close-reveal-modal"></a>

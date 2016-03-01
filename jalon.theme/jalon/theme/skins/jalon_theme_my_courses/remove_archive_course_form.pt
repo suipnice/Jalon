@@ -6,7 +6,8 @@
       i18n:domain="jalon.content">
 
 <body>
-    <metal:main fill-slot="content">
+
+<metal:main fill-slot="content">
 
     <h2>
         <tal:block i18n:translate="">Désarchiver ce cours</tal:block>
@@ -29,7 +30,8 @@
         </div>
     </form>
 
-    </metal:main>
+</metal:main>
+
 </body>
 
 </html>

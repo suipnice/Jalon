@@ -2326,8 +2326,8 @@ class JalonCours(ATFolder):
         return {"course_name":     self.getShortText(self.Title(), 80),
                 "is_course_owner": self.isCourseOwner(user_id)}
 
-    def getDataCourseDeleteWimsActivity(self, user_id, course_id):
-        LOG.info("----- getDataCourseDeleteWimsActivity -----")
+    def getDataCourseWimsActivity(self, user_id, course_id):
+        LOG.info("----- getDataCourseWimsActivity -----")
         wims_classe_list = self.getListeClasses()
         can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
 

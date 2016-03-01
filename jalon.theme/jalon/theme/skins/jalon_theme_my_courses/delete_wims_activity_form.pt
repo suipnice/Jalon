@@ -10,8 +10,8 @@
 <metal:main fill-slot="content"
             tal:define="user_id user/getId;
                         course_id request/course_id | nothing;
-                        course_data python:context.getDataCourseDeleteWimsActivity(user_id, course_id);
-                        personnel python:context.isPersonnel(user);">
+                        course_data python:context.getDataCourseWimsActivity(user_id, course_id);
+                        personnel python:context.isPersonnel(user)">
 
     <h2>
         <tal:block i18n:translate="">Supprimer les activités WIMS du cours</tal:block>

@@ -12,7 +12,7 @@
             tal:define="dossier python:context.getId();
                         isManager python:user.has_role('Manager')">
 
-<tal:condition condition="isManager">
+    <tal:condition condition="isManager">
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         Page d'affichage du fil d'ariane
     </metal:macro>
@@ -96,9 +96,9 @@
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
         </tal:block>
         </section>
-    </main>
 
-</tal:condition>
+    </main>
+    </tal:condition>
 
 </metal:core>
 
