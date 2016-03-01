@@ -1,0 +1,157 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="user_id user/getId;
+                        course_id request/course_id | nothing;
+                        course_data python:context.getDataCourseDeleteWimsActivity(user_id, course_id);
+                        personnel python:context.isPersonnel(user);">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer les activités WIMS du cours</tal:block>
+        « <tal:block replace="course_data/course_name"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius"
+         tal:condition="not:personnel">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
+    </div>
+
+    <tal:condition condition="personnel">
+    <div class="panel warning radius"
+         tal:condition="not:course_data/wims_classe_list"
+         tal:define="admin_link here/portal_jalon_properties/getLienContact;
+                     site_title admin_link/portal_title;">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à </tal:block>
+        <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS"
+           i18n:translate="">
+            contacter l'administrateur
+        </a>
+        <tal:block i18n:translate="">si vous pensez que ce n'est pas le cas.</tal:block>
+    </div>
+
+    <tal:condition condition="course_data/wims_classe_list">
+
+    <div class="panel alert radius"
+         tal:condition="not:course_data/can_delete">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        Vous n'êtes pas l'auteur de ce cours et vous ne pouvez pas supprimer les activités WIMS réalisées par les co-auteurs. Contactez l'auteur de ce cours
+        <a tal:attributes="href course_data/course_author_record_user_link" target="_blank"
+           tal:content="course_data/course_author_fullname" />)
+        pour lui demander de le faire.
+    </div>
+
+    <tal:condition condition="course_data/can_delete">
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">
+            Pour des raisons techniques il est impossible de supprimer de manière individuelle une activité WIMS (auto-évaluation ou examen). Cette fonction permet toutefois de supprimer toutes les auto-évaluations et examens WIMS de ce cours.
+        </tal:block>
+    </div>
+
+    <form id="js-supprActWIMS-form" method="POST"
+          tal:attributes="action string:${context/absolute_url}/delete_wims_activity_script">
+        <div class="panel radius">
+            <span i18n:translate="">Supprimer toutes les activités Wims créées par :</span>
+            <ul tal:repeat="wims_class_list course_data/wims_classe_list">
+                <li tal:attributes="class course_data/can_delete_all_wims_classes_css">
+                    <input type="radio" name="utilisateur" id="utilisateur_All" value="All"
+                           tal:attributes="disabled course_data/can_delete_all_wims_classes_css"/>
+                    <label for="utilisateur_All">
+                        <i class="fa fa-users fa-fw"></i> Tous les auteurs
+                    </label>
+                    <div class="formHelp texte_icone icone_information"
+                         style="margin-left:4.5em;"
+                         tal:condition="course_data/is_course_author">
+                        Le cours ne contiendra plus aucune autoévaluation ni examen WIMS.
+                    </div>
+                </li>
+                <tal:repeat repeat="wims_class_author_id wims_class_list">
+                    <li tal:define="is_disabled python:context.test(course_data['is_course_author'] or wims_class_author_id == user_id, '', 'disabled')"
+                        tal:attributes="class is_disabled">
+                        <input type="radio" name="utilisateur"
+                               tal:attributes="value wims_class_author_id;
+                                               id string:utilisateur_${wims_class_author_id};
+                                               checked python:context.test(wims_class_author_id == user_id, 'checked', '');
+                                               disabled is_disabled"/>
+                        <label tal:attributes="for string:utilisateur_${wims_class_author_id}">
+                            <i class="fa fa-user fa-fw"></i>
+                            <span tal:content="python:context.getInfosMembre(wims_class_author_id)['fullname']"/>
+                            <span tal:condition="course_data/is_course_author">(moi)</span>
+                        </label>
+                    </li>
+                </tal:repeat>
+            </ul>
+            <div class="texte_icone icone_information"
+                 tal:condition="not:course_data/is_course_author">
+                Seul l'auteur du cours peut supprimer les activités de ses coauteurs.
+             </div>
+        </div>
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">
+                <i class="fa fa-exclamation-triangle no-pad alert"></i> Attention :
+            </strong>
+            <tal:block i18n:translate="">
+                la suppression est définitive. Si vous ne souhaitez retirer que les notes, annulez et cliquez plutôt sur "Purger".
+            </tal:block><br />
+            <tal:block i18n:translate="">
+                Assurez-vous d'avoir au moins téléchargé une copie des notes des étudiants avant de continuer.
+            </tal:block>
+        </div>
+
+        <input type="hidden" name="tab"
+               tal:attributes="value request/tab"
+               tal:condition="request/tab | nothing"/>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user_id"/>
+        <input type="hidden" name="course_id"
+               tal:attributes="value course_id"
+               tal:condition="course_id"/>
+
+        <div class="formControls">
+            <label for="confirm-suppr_WIMS">
+                <input id="confirm-suppr_WIMS" type="checkbox" style="margin-bottom:0;"/>
+                <tal:block i18n:translate="">
+                    Je confirme vouloir <u>supprimer</u> toutes les activités WIMS créées par le ou les auteurs selectionné(s).
+                </tal:block>
+            </label>
+            <button class="button small alert" type="submit" disabled="true">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Tout supprimer</tal:block>
+            </button>
+        </div>
+
+        <div class="panel callout radius hide">
+            <i class="fa fa-refresh fa-spin"></i>
+            <tal:block i18n:translate="">
+                Merci de patienter. Cette opération peut prendre quelques minutes...
+            </tal:block>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:enableSubmitButtonIfCheckboxTicked('js-supprActWIMS-form')"></script>
+    <script charset="UTF-8"
+            tal:content="structure string:displayMessageOnSubmit('js-supprActWIMS-form')"></script>
+    </tal:condition>
+
+    </tal:condition>
+
+    </tal:condition>
+
+</metal:main>
+
+</body>
+
+</html>

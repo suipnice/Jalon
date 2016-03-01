@@ -387,9 +387,35 @@ class JalonFolder(ATFolder):
     def getDataCourseFormAction(self, user_id, course_id):
         LOG.info("----- getDataCourseFormAction -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        course = getattr(course_user_folder, course_id)
-        return {"course_name":     self.getShortText(course.Title(), 80),
-                "is_course_owner": course.isCourseOwner(user_id)}
+        course_object = getattr(course_user_folder, course_id)
+        return {"course_name":     self.getShortText(course_object.Title(), 80),
+                "is_course_owner": course_object.isCourseOwner(user_id)}
+
+    def getDataCourseDeleteWimsActivity(self, user_id, course_id):
+        LOG.info("----- getDataCourseDeleteWimsActivity -----")
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course_object = getattr(course_user_folder, course_id)
+
+        wims_classe_list = course_object.getListeClasses()
+        can_delete = True if user_id in wims_classe_list[0] or course_object.isAuteur(user_id) else False
+
+        course_author_data = course_object.getAuteur()
+
+        #à finir ne tiens pas compte de si pas d'annuaire LDAP
+        record_user_book_base = course_object.getBaseAnnuaire()
+        course_author_record_user_link = course_object.getFicheAnnuaire(course_author_data, record_user_book_base)
+
+        is_course_author = course_object.isAuteur(user_id)
+        can_delete_all_wims_classes_css = "" if is_course_author else "disabled"
+
+        return {"course_name":                     self.getShortText(course_object.Title(), 80),
+                "is_course_owner":                 course_object.isCourseOwner(user_id),
+                "wims_classe_list":                wims_classe_list,
+                "can_delete":                      can_delete,
+                "course_author_fullname":          course_author_data["fullname"],
+                "course_author_record_user_link":  course_author_record_user_link,
+                "is_course_author":                is_course_author,
+                "can_delete_all_wims_classes_css": can_delete_all_wims_classes_css}
 
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
