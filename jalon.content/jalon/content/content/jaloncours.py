@@ -2321,6 +2321,34 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
         return self.getPlanCours(True)
 
+    def getDataCourseFormAction(self, user_id, course_id):
+        LOG.info("----- getDataCourseFormAction -----")
+        return {"course_name":     self.getShortText(self.Title(), 80),
+                "is_course_owner": self.isCourseOwner(user_id)}
+
+    def getDataCourseDeleteWimsActivity(self, user_id, course_id):
+        LOG.info("----- getDataCourseDeleteWimsActivity -----")
+        wims_classe_list = self.getListeClasses()
+        can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
+
+        course_author_data = self.getAuteur()
+
+        #à finir ne tiens pas compte de si pas d'annuaire LDAP
+        record_user_book_base = self.getBaseAnnuaire()
+        course_author_record_user_link = self.getFicheAnnuaire(course_author_data, record_user_book_base)
+
+        is_course_author = self.isAuteur(user_id)
+        can_delete_all_wims_classes_css = "" if is_course_author else "disabled"
+
+        return {"course_name":                     self.getShortText(self.Title(), 80),
+                "is_course_owner":                 self.isCourseOwner(user_id),
+                "wims_classe_list":                wims_classe_list,
+                "can_delete":                      can_delete,
+                "course_author_fullname":          course_author_data["fullname"],
+                "course_author_record_user_link":  course_author_record_user_link,
+                "is_course_author":                is_course_author,
+                "can_delete_all_wims_classes_css": can_delete_all_wims_classes_css}
+
     def purgerActivitesWims(self):
         u"""Supprime l'ensemble des travaux effectués dans toutes les activités Wims d'un cours."""
         #self.plone_log("purgerActivitesWims")
