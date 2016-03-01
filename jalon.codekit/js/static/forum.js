@@ -20,15 +20,12 @@ function instantiateForumCKEditor( textareaID ) {
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
                 { 'name': "links",       'groups': [ "links" ] },
-                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
                 { 'name': "paragraph",   'groups': [ "blocks" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
-                //{ 'name': "document",    'groups': [ "mode" ] },
+                //{ 'name': "document",    'groups': [ "mode" ] }
             ],
-            removePlugins: 'image,elementspath',
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
-            removeDialogTabs: 'link:advanced',
-            entities: false,
+            removeDialogTabs: 'link:advanced'
         } );
 
         return textareaID;

@@ -17,23 +17,15 @@ function instantiateCKEditor( textareaID ) {
         CKEDITOR.replace( textareaID, {
             customConfig: '',
             language: 'fr',
-            // Define the toolbar groups as it is a more accessible solution.
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
                 { 'name': "links",       'groups': [ "links" ] },
-                //{ 'name': "paragraph",   'groups': [ "list", "blocks" ] },
                 { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
-                //{ 'name': "document",    'groups': [ "mode" ] },
+                //{ 'name': "document",    'groups': [ "mode" ] }
             ],
-            // Remove unwanted plug-ins.
-            removePlugins: 'image,elementspath',
-            // Remove the redundant buttons from toolbar groups defined above.
             removeButtons: 'Strike,Subscript,Superscript,Anchor',
-            // Remove the advanced link tab in link popup.
-            removeDialogTabs: 'link:advanced',
-            // Do not convert non-ascii chars to HTML entities.
-            entities: false,
+            removeDialogTabs: 'link:advanced'
         } );
 
         return textareaID;

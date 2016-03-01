@@ -116,8 +116,6 @@ form {
             display: block;
             font-weight: normal;
             font-style: italic;
-            //font-size: $base-font-size * .9;
-            //line-height: $base-line-height * .9;
             font-size: rem-calc( 11 );
             line-height: rem-calc( 13 );
             padding-bottom: rem-calc( 4 );
@@ -147,17 +145,10 @@ form {
             padding: rem-calc( 3 6 );
             font-size: $base-font-size * .8;
             line-height: $base-line-height * .9;
-            height: $base-line-height;
         }
 
-        input[type="text"],
+        input[type="text"]:not(#termeRecherche),
         textarea { margin-bottom: 0; }
-
-        //textarea { height: 5em; }
-
-        //select { width: auto; }
-
-        //input[type="radio"] { display: inline-block; }
 
         &.ArchetypesStringWidget  {
             label { display: inline; }
