@@ -384,8 +384,8 @@ class JalonFolder(ATFolder):
         course.setArchive(tuple(archives))
         course.setProperties({"DateDerniereModif": DateTime()})
 
-    def getDataCourseDeleteOrDuplicate(self, user_id, course_id):
-        LOG.info("----- getDataCourseDeleteOrDuplicate -----")
+    def getDataCourseFormAction(self, user_id, course_id):
+        LOG.info("----- getDataCourseFormAction -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         return {"course_name":     self.getShortText(course.Title(), 80),

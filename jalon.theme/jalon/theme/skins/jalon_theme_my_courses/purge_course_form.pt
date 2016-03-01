@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="content"
+                tal:define="user_id user/getId;
+                            course_id request/course_id | nothing;
+                            course_data python:context.getDataCourseFormAction(user_id, course_id)">
+
+    <h2>
+        <tal:block i18n:translate="">Purger le cours</tal:block>
+        « <tal:block replace="course_data/course_name"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius">
+        <tal:block i18n:translate="">Ceci supprimera tous les travaux réalisés par les étudiants dans les activités de ce cours (en laissant ces dernières intactes et attachées au cours). Ceci permet de réinitialiser le cours lors d'un changement d'année scolaire, par exemple.</tal:block>
+    </div>
+
+    <div class="panel alert radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">cette opération est définitive.</tal:block><br />
+        <strong i18n:translate="">Assurez-vous d'avoir téléchargé une copie des travaux des étudiants avant de continuer.</strong><br />
+    </div>
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Cette opération peut prendre quelques minutes, merci de patienter.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/purge_course_script"
+          method="POST">
+
+        <input type="hidden" name="tab"
+               tal:attributes="value request/tab"
+               tal:condition="request/tab | nothing"/>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user_id"/>
+        <input type="hidden" name="course_id"
+               tal:attributes="value course_id"
+               tal:condition="course_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-filter"></i>
+                <tal:block i18n:translate="">Purger le cours</tal:block>
+            </button>
+        </div>
+    </form>
+
+    </metal:main>
+</body>
+
+</html>
