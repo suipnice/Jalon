@@ -9,21 +9,21 @@
     <metal:main fill-slot="content"
                 tal:define="user_id user/getId;
                             course_id request/course_id;
-                            course_data_delete python:context.getDataCourseDelete(user_id, course_id)">
+                            course_data python:context.getDataCourseDeleteOrDuplicate(user_id, course_id)">
 
     <h2><tal:block i18n:translate="">Supprimer</tal:block>
-        « <tal:block content="course_data_delete/course_name" /> »
+        « <tal:block content="course_data/course_name" /> »
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <tal:condition condition="not:course_data_delete/is_course_owner">
+    <tal:condition condition="not:course_data/is_course_owner">
     <div class="panel warning radius">
         <strong i18n:translate="">Attention :</strong>
         Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le supprimer.
     </div>
     </tal:condition>
 
-    <tal:condition condition="course_data_delete/is_course_owner">
+    <tal:condition condition="course_data/is_course_owner">
     <div class="panel alert radius">
         <i class="fa fa-exclamation-triangle no-pad"></i>
         <strong i18n:translate="">Attention :</strong>
@@ -31,7 +31,7 @@
     </div>
     <form id="js-itemSuppressor" method="POST"
           tal:attributes="action string:${context/absolute_url}/delete_course_script;
-                          data-item_name course_data_delete/course_name;
+                          data-item_name course_data/course_name;
                           data-success_msg string:a été supprimé.";
                           i18n:attributes="data-success_msg">
 

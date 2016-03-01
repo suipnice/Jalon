@@ -1,0 +1,119 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="main"
+            tal:define="dossier python:context.getId();
+                        isManager python:user.has_role('Manager');
+                        info_user python:context.getIndividu(context.getId(), 'dict');
+                        auteur_fullname string:${info_user/nom} ${info_user/prenom}">
+
+    <tal:condition condition="isManager">
+
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
+
+        <section id="js-list-cours" class="show-for-medium-up medium-12 columns">
+            <h2 i18n:translate="">
+                Liste des cours de <tal:replace replace="auteur_fullname"/>
+            </h2>
+
+            <tal:block define="folderContents context/objectValues">
+                <tal:block condition="not:folderContents">
+                    <div class="listing_vide" i18n:translate="">Aucun élément</div>
+                </tal:block>
+                <tal:listing condition="folderContents">
+                    <table class="listing">
+                    <thead>
+                        <tr>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="titre"
+                                title="Trier selon le titre" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Titre</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_etu"
+                                title="Trier selon l'accès étudiant" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Accès étudiant</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_ano"
+                                title="Trier selon l'accès anonyme" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Accès anonyme</tal:block>
+                                </span>
+                            </th>
+                            <th i18n:translate="">Action</th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody class="list">
+                        <tal:entry repeat="item folderContents">
+                        <tr tal:define="oddrow repeat/item/odd"
+                            tal:attributes="class python:context.test(oddrow, 'even', 'odd')">
+                            <td class="titre show-for-medium-up">
+                              <a tal:attributes="href string:${item/absolute_url}/view"
+                                 title="Voir le cours"
+                                 i18n:attributes="title"
+                                 tal:content="item/Title"/>
+                            </td>
+                            <td class="acc_etu show-for-medium-up"
+                                tal:define="etudiants item/getRechercheAcces">
+                                <span tal:define="etudiant python:context.test(len(etudiants) > 0, 'Oui', 'Non')"
+                                      tal:attributes="class python:context.test(etudiant == 'Oui', 'indicateur couleur6', 'indicateur couleur4')"
+                                      tal:content="etudiant"
+                                      i18n:attributes="value string:label_${etudiant};"/>
+                            </td>
+                            <td class="acc_ano show-for-medium-up"
+                                tal:define="typeCours item/getAcces">
+                                <span tal:define="etudiant python:context.test(typeCours == 'Public', 'Oui', 'Non')"
+                                      tal:attributes="class python:context.test(etudiant == 'Oui', 'indicateur couleur6', 'indicateur couleur4')"
+                                      tal:content="etudiant"
+                                      i18n:attributes="value string:label_${etudiant};"/>
+                            </td>
+                            <td>
+                                <a tal:attributes="href string:${item/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=dupliquer&amp;manager=1"
+                                   title="Dupliquer le cours" class="button small"
+                                   data-reveal-id="reveal-course_create" data-reveal-ajax="true">
+                                    <i class="fa fa-code-fork"></i>
+                                    <tal:block i18n:translate="">Dupliquer</tal:block>
+                                </a>
+                            </td>
+                        </tr>
+                        </tal:entry>
+                    </tbody>
+                    </table>
+                    <div id="reveal-course_create" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+                </tal:listing>
+            </tal:block>
+        <tal:block define="script1 string:setSortableList('js-list-cours',['titre','acc_etu','acc_ano'],'titre')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+        </tal:block>
+        </section>
+    </main>
+
+    </tal:condition>
+</metal:core>
+
+</body>
+
+</html>

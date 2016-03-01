@@ -384,7 +384,8 @@ class JalonFolder(ATFolder):
         course.setArchive(tuple(archives))
         course.setProperties({"DateDerniereModif": DateTime()})
 
-    def getDataCourseDelete(self, user_id, course_id):
+    def getDataCourseDeleteOrDuplicate(self, user_id, course_id):
+        LOG.info("----- getDataCourseDeleteOrDuplicate -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         return {"course_name":     self.getShortText(course.Title(), 80),
@@ -1100,7 +1101,7 @@ class JalonFolder(ATFolder):
                     dico[idFichier]["titreElement"] = fichier.Title()
                     item.setInfosElement(dico)
 
-    def dupliquerCours(self, idcours, creator, manager):
+    def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
         # LOG.info("[dupliquerCours]")
         import time
@@ -1110,10 +1111,7 @@ class JalonFolder(ATFolder):
             home = getattr(self.aq_parent, manager)
             home_id = home.getId()
 
-        if home_id == creator:
-            cours = getattr(self, idcours)
-        else:
-            cours = getattr(getattr(self.aq_parent, creator), idcours)
+        cours = getattr(self, idcours)
         infos_element = copy.deepcopy(cours.getElementCours())
 
         try:
