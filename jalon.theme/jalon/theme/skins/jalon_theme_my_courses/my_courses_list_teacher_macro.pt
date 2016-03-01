@@ -13,12 +13,12 @@
 <metal:macro define-macro="my_courses_list">
 
     <div class="panel callout radius"
-         tal:condition="not:my_courses_list/is_courses_list">
+         tal:condition="not:my_courses_dict/is_courses_list">
         <i class="fa fa-info-circle no-pad"></i>
-        <tal:replace replace="my_courses_list/message"/>
+        <tal:replace replace="my_courses_dict/message"/>
     </div>
 
-<tal:condition condition="my_courses_list/is_courses_list">
+<tal:condition condition="my_courses_dict/is_courses_list">
     <table summary="Liste des cours de la catégorie">
         <thead>
             <tr>
@@ -75,7 +75,7 @@
         </thead>
         <tfoot></tfoot>
         <tbody class="list">
-            <tr tal:repeat="course my_courses_list/courses_list">
+            <tr tal:repeat="course my_courses_dict/courses_list">
                 <td class="title">
                     <span class="hide" tal:content="course/course_title" />
                     <a title="Ouvrir le cours"
@@ -91,7 +91,7 @@
                     </span>
                 </td>
                 <td class="new show-for-medium-up">
-                    <span class="hide" tal:content="course/course_modified" />
+                    <span class="hide" tal:content="course/course_modified"/>
                     <i tal:attributes="class course/course_is_nouveau"></i>
                 </td>
                 <td class="acc_etu show-for-medium-up">

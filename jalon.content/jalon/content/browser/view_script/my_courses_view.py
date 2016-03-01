@@ -47,52 +47,65 @@ class MyCoursesView(BrowserView):
         is_manager = user.has_role("Manager")
         is_student = user.has_role("Etudiant") or user.has_role("EtudiantJalon")
 
-        actions_list = [{"css_class":   "button create expand",
-                         "action_link": "%s/create_course_form" % context_link,
-                         "action_icon": "fa fa-plus-circle",
-                         "action_name": "Créer un cours"},
-                        {"css_class":   "button",
-                         "action_link": "%s/choose_author_page" % context_link,
-                         "action_icon": "fa fa-code-fork",
-                         "action_name": "Dupliquer un cours"}]
-        if not is_manager:
-            del actions_list[-1]
+        is_message_cache = self.context.getJalonProperty('annoncer_vider_cache')
 
-        if "tab" in self.request:
-            tab = self.request["tab"]
-        if not tab:
-            tab = "1" if folder.getComplement() == "True" else "2"
-        tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
-                      "tab_link":  "%s?tab=1" % context_link,
-                      "tab_icon":  "fa fa-star fa-fw",
-                      "tab_name":  "Favoris"},
-                     {"css_class": "button small selected" if tab == "2" else "button small secondary",
-                      "tab_link":  "%s?tab=2" % context_link,
-                      "tab_icon":  "fa fa-user fa-fw",
-                      "tab_name":  "Auteur"},
-                     {"css_class": "button small selected" if tab == "3" else "button small secondary",
-                      "tab_link":  "%s?tab=3" % context_link,
-                      "tab_icon":  "fa fa-users fa-fw",
-                      "tab_name":  "Co-auteur"},
-                     {"css_class": "button small selected" if tab == "4" else "button small secondary",
-                      "tab_link":  "%s?tab=4" % context_link,
-                      "tab_icon":  "fa fa-graduation-cap fa-fw",
-                      "tab_name":  "Lecteur"},
-                     {"css_class": "button small selected" if tab == "5" else "button small secondary",
-                      "tab_link":  "%s?tab=5" % context_link,
-                      "tab_icon":  "fa fa-folder fa-fw",
-                      "tab_name":  "Archives"}]
+        tabs_list = []
+        actions_list = []
+        if is_student:
+            my_courses_macro = "my_courses_list_student_macro"
+            tab = tab if tab else "1"
+            courses_dict = self.getStudentCoursesList(user, tab, folder)
+        else:
+            my_courses_macro = "my_courses_list_teacher_macro"
+            actions_list = [{"css_class":   "button create expand",
+                             "action_link": "%s/create_course_form" % context_link,
+                             "action_icon": "fa fa-plus-circle",
+                             "action_name": "Créer un cours"},
+                            {"css_class":   "button",
+                             "action_link": "%s/choose_author_page" % context_link,
+                             "action_icon": "fa fa-code-fork",
+                             "action_name": "Dupliquer un cours"}]
+            if not is_manager:
+                del actions_list[-1]
 
-        courses_list = self.getTeacherCoursesList(user, tab, folder)
-        return {"tab":          tab,
-                "is_manager":   is_manager,
-                "is_student":   is_student,
-                "actions_list": actions_list,
-                "tabs_list":    tabs_list,
-                "courses_list": courses_list}
+            if "tab" in self.request:
+                tab = self.request["tab"]
+            if not tab:
+                tab = "1" if folder.getComplement() == "True" else "2"
+            tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
+                          "tab_link":  "%s?tab=1" % context_link,
+                          "tab_icon":  "fa fa-star fa-fw",
+                          "tab_name":  "Favoris"},
+                         {"css_class": "button small selected" if tab == "2" else "button small secondary",
+                          "tab_link":  "%s?tab=2" % context_link,
+                          "tab_icon":  "fa fa-user fa-fw",
+                          "tab_name":  "Auteur"},
+                         {"css_class": "button small selected" if tab == "3" else "button small secondary",
+                          "tab_link":  "%s?tab=3" % context_link,
+                          "tab_icon":  "fa fa-users fa-fw",
+                          "tab_name":  "Co-auteur"},
+                         {"css_class": "button small selected" if tab == "4" else "button small secondary",
+                          "tab_link":  "%s?tab=4" % context_link,
+                          "tab_icon":  "fa fa-graduation-cap fa-fw",
+                          "tab_name":  "Lecteur"},
+                         {"css_class": "button small selected" if tab == "5" else "button small secondary",
+                          "tab_link":  "%s?tab=5" % context_link,
+                          "tab_icon":  "fa fa-folder fa-fw",
+                          "tab_name":  "Archives"}]
+
+            courses_dict = self.getTeacherCoursesList(user, tab, folder)
+
+        return {"is_message_cache": is_message_cache,
+                "my_courses_macro": my_courses_macro,
+                "tab":              tab,
+                "is_manager":       is_manager,
+                "is_student":       is_student,
+                "actions_list":     actions_list,
+                "tabs_list":        tabs_list,
+                "courses_dict":     courses_dict}
 
     def getTeacherCoursesList(self, member, tab, folder):
-        LOG.info("----- getListeCoursEns -----")
+        LOG.info("----- getTeacherCoursesList -----")
         """ Renvoi la liste des cours pour authMember."""
         courses_list = []
         courses_ids_list = []
@@ -187,29 +200,115 @@ class MyCoursesView(BrowserView):
         return {"is_courses_list": True,
                 "courses_list":    list(courses_list_filter)}
 
+    def getStudentCoursesList(self, member, tab, folder):
+        LOG.info("----- getStudentCoursesList -----")
+        diploma_list = []
+        authors_dict = {}
+        portal = self.context.portal_url.getPortalObject()
+        portal_catalog = getToolByName(portal, "portal_catalog")
+        portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
+
+        user_id = member.getId()
+        member_login_time = member.getProperty('login_time', None)
+
+        if tab == "1":
+            user_diploma_list = []
+            for diploma_data in portal_jalon_bdd.getInscriptionIND(user_id, "etape"):
+                user_diploma_list.append(diploma_data["COD_ELP"])
+
+            if not user_diploma_list:
+                # pour les nouveaux étudiant qui n'ont pas encore de diplome
+                courses_list = []
+                search_courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=user_id))
+                for course_brain in search_courses_list:
+                    course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
+                    #course_data["course_access"] = ["Invité"]
+                    courses_list.append(course_data)
+                diploma_list.append({"diploma_course_list": courses_list})
+                return {"is_diploma_list": True,
+                        "diploma_list":    diploma_list}
+
+            educational_unity_dict = {}
+            for user_diploma_id in user_diploma_list:
+                educational_unity_list = []
+                user_diploma_data = portal_jalon_bdd.getVersionEtape(user_diploma_id)
+                if user_diploma_data:
+                    educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
+                                                                              "libelle": user_diploma_data[0]}
+                    educational_unity_list.append("etape*-*%s" % user_diploma_id)
+
+                    user_educational_registration_list = portal_jalon_bdd.getInscriptionPedago(user_id, user_diploma_id)
+                    if not user_educational_registration_list:
+                        user_educational_registration_list = portal_jalon_bdd.getUeEtape(user_diploma_id)
+                    for user_educational_registration in user_educational_registration_list:
+                        ELP = "*-*".join([user_educational_registration["TYP_ELP"], user_educational_registration["COD_ELP"]])
+                        if not ELP in educational_unity_dict:
+                            educational_unity_dict[ELP] = {"type":    user_educational_registration["TYP_ELP"],
+                                                           "libelle": user_educational_registration["LIB_ELP"]}
+                            educational_unity_list.append(ELP)
+                    educational_unity_list.append(user_id)
+
+                    query = {"query":    educational_unity_list,
+                             "operator": "or"}
+                    course_list = []
+                    course_brain_list = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=query))
+                    for course_brain in course_brain_list:
+                        #course_access_list = []
+                        course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
+                        #for course_access in course_brain.getListeAcces:
+                        #    if course_access in educational_unity_dict:
+                        #        course_access_list.append("%s : %s" % (educational_unity_dict[course_access]['type'], educational_unity_dict[course_access]['libelle']))
+                        #if user_id in course_brain.getGroupe:
+                        #    course_access_list.append("Invité")
+                        #try:
+                        #    if user_id in course_brain.getInscriptionsLibres:
+                        #        course_access_list.append("Inscription par mot de passe")
+                        #except:
+                        #    pass
+                        #course_data["course_access"] = course_access_list
+                        course_list.append(course_data)
+                    diploma_list.append({"diploma_name":        user_diploma_data[0],
+                                         "diploma_course_list": course_list})
+        else:
+            course_list = []
+            course_brain_list = list(portal_catalog.searchResults(portal_type="JalonCours", getCategorieCours=tab))
+            for course_brain in course_brain_list:
+                course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
+                course_list.append(course_data)
+            diploma_list.append({"diploma_course_list": course_list})
+
+        if diploma_list:
+            return {"is_diploma_list": True,
+                    "diploma_list":    diploma_list}
+        else:
+            return {"is_diploma_list": False,
+                    "message":         "Vous n'êtes inscrit(e) à aucun diplôme."}
+
     def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list):
         LOG.info("----- getCourseData -----")
+        course_data = {"course_id":                course_brain.getId,
+                       "course_title":             course_brain.Title,
+                       "course_short_title":       jalon_utils.getShortText(course_brain.Title),
+                       "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
+                       "course_creator":           course_brain.Creator,
+                       "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
+                       "course_modified":          course_brain.modified,
+                       "course_link":              course_brain.getURL,
+                       "course_is_etudiants":      "fa fa-check fa-lg no-pad success" if len(course_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
+                       "course_is_password":       "fa fa-check fa-lg no-pad success" if course_brain.getLibre else "fa fa-times fa-lg no-pad warning",
+                       "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
+                       "course_actions_list":      actions_list}
 
-        course_infos = {"course_id":                course_brain.getId,
-                        "course_title":             course_brain.Title,
-                        "course_short_title":       jalon_utils.getShortText(course_brain.Title),
-                        "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
-                        "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
-                        "course_modified":          course_brain.modified,
-                        "course_link":              course_brain.getURL,
-                        "course_is_etudiants":      "fa fa-check fa-lg no-pad success" if len(course_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
-                        "course_is_password":       "fa fa-check fa-lg no-pad success" if course_brain.getLibre else "fa fa-times fa-lg no-pad warning",
-                        "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
-                        "course_actions_list":      actions_list}
-        if tab != "2":
-            course_author = course_brain.getAuteurPrincipal
-            if not course_author:
-                course_author = course_brain.Creator
-            if course_author in authors_dict:
-                course_infos["course_author_name"] = authors_dict[course_author]
-            else:
-                course_author_name = jalon_utils.getInfosMembre(course_author)["fullname"]
-                authors_dict[course_author] = course_author_name
-                course_infos["course_author_name"] = course_author_name
+        course_author_id = course_brain.getAuteurPrincipal
+        if not course_author_id:
+            course_author_id = course_brain.Creator
+        if not course_author_id in authors_dict:
+            course_author_data = jalon_utils.getInfosMembre(course_author_id)
+            authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
+                                              "course_author_email": course_author_data["email"]}
 
-        return course_infos
+        course_data["course_author_id"] = course_author_id
+        course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
+        course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
+
+        return course_data

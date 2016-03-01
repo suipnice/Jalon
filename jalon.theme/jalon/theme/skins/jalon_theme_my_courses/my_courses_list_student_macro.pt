@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="my_courses_list">
+
+    <div class="panel callout radius"
+         tal:condition="not:my_courses_dict/is_diploma_list">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:replace replace="my_courses_dict/message"/>
+    </div>
+
+    <section id="js-list-cours_etu" class="small-12 columns">
+        <tal:repeat repeat="diploma my_courses_dict/diploma_list">
+        <h3 tal:on-error="nothing">
+            <i class="fa fa-university"></i><tal:block tal:content="diploma/diploma_name" />
+        </h3>
+        <div class="panel warning radius"
+             tal:condition="not:diploma/diploma_course_list">
+            <tal:block i18n:translate="">Aucun cours de disponible.</tal:block>
+        </div>
+        <table summary="Liste des cours"
+               tal:condition="diploma/diploma_course_list">
+        <thead>
+            <tr>
+                <th class="sort has-tip" data-sort="new" data-tooltip
+                    title="Trier selon les nouveautés"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <span class="fa fa-bell-o no-pad"></span>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip" data-sort="title" data-tooltip 
+                    title="Trier selon le titre du cours"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre du cours</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left has-tip show-for-medium-up" data-sort="author" data-tooltip
+                    title="Trier selon l'auteur" 
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Auteur</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        <tr tal:repeat="course_data diploma/diploma_course_list">
+            <td class="new">
+                <span class="hide" tal:content="course_data/course_modified"/>
+                <i tal:attributes="class course_data/course_is_nouveau"></i>
+            </td>
+            <td class="title">
+                <span class="hide"
+                      tal:content="course_data/course_title"/>
+                <a title="Voir le cours"
+                   tal:attributes="href course_data/course_link"
+                   tal:content="course_data/course_title"
+                   i18n:attributes="title" />
+                <span class="hide-for-medium-up">
+                    <tal:block i18n:translate="">par</tal:block>
+                    <tal:replace replace="course_data/course_author_name"/>
+                </span>
+                <span class="show-for-medium-up"
+                      tal:condition="course_data/course_short_description"
+                      tal:content="course_data/course_short_description"/>
+            </td>
+            <!--td class="title"
+                            tal:condition="isInscriptionMotDePasse">
+                            <span class="hide"
+                                  tal:content="cours/title" />
+                            <a title="S'inscrire au cours"
+                               data-reveal-id="reveal-course_list" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_acces&amp;formulaire=inscription-cours&amp;idcours=${cours/id}&amp;createur=${cours/createur}&amp;auteur=${cours/idauteur}"
+                               tal:content="cours/title"
+                               i18n:attributes="title" />
+                            <span class="show-for-medium-up"
+                                  tal:condition="cours/description"
+                                  tal:content="python:here.getShortText(cours['description'], 210)" />
+            </td-->
+            <td class="author show-for-medium-up">
+                <span tal:content="course_data/course_author_name"/>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+        </tal:repeat>
+    </section>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

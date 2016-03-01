@@ -9,10 +9,10 @@
 <body>
 
 <metal:core fill-slot="content"
-            tal:define="tab request/tab | nothing;
+            tal:define="tab request/tab | request/categorie | nothing;
                         my_courses_view python:view.getMyCoursesView(user, tab);
                         tab my_courses_view/tab;
-                        my_courses_list my_courses_view/courses_list">
+                        my_courses_dict my_courses_view/courses_dict">
 
     <tal:condition condition="not:is_ajax">
     
@@ -28,6 +28,16 @@
     <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
 
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+        <div class="small-12 columns"
+             tal:condition="my_courses_view/is_message_cache">
+
+            <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
+
+            <tal:block define="script string:alterAlertBox()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+        </div>
 
         <section class="show-for-medium-up medium-12 columns"
                  tal:condition="not:my_courses_view/is_student">
@@ -50,7 +60,7 @@
 
         <section id="js-list-cours" class="small-12 columns">
             <h2 id="js-update_title">
-                <i class="fa fa-briefcase"></i><tal:block i18n:translate="">Mes cours</tal:block>
+                <i class="fa fa-university"></i><tal:block i18n:translate="">Mes cours</tal:block>
             </h2>
             <span class="title-legend show-for-medium-up">
                 <i class="fa fa-bell-o no-pad"></i> = <tal:block i18n:translate="">Nouveauté(s) depuis votre dernière connexion</tal:block>
@@ -68,7 +78,7 @@
                 </li>
             </ul>
             <div id="js-update_target">
-                <metal:macro use-macro="context/my_courses_list_macro/macros/my_courses_list">
+                <metal:macro use-macro="python:getattr(context, my_courses_view['my_courses_macro']).macros.get('my_courses_list')">
                     Macro d'affichage de la liste des cours
                 </metal:macro>
             </div>
