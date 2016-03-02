@@ -18,14 +18,19 @@ function instantiateCKEditor( textareaID ) {
             customConfig: '',
             language: 'fr',
             toolbarGroups: [
+                //{ 'name': "document",    'groups': [ "mode" ] },
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
+                { 'name': "clipboard",   'groups': [ "clipboard", "undo" ] },
                 { 'name': "links",       'groups': [ "links" ] },
                 { 'name': "paragraph",   'groups': [ "list" ] },
-                { 'name': "insert",      'groups': [ "insert" ] },
-                //{ 'name': "document",    'groups': [ "mode" ] }
+                { 'name': "insert",      'groups': [ "insert" ] }
             ],
-            removeButtons: 'Strike,Subscript,Superscript,Anchor',
-            removeDialogTabs: 'link:advanced'
+            removeButtons: 'Cut,Copy,Undo,Redo,Strike,Subscript,Superscript,Anchor',
+            removeDialogTabs: 'link:advanced',
+            pasteFromWordPromptCleanup: false,
+            pasteFromWordRemoveStyles: true,
+            pasteFromWordRemoveFontStyles: true,
+            pasteFromWordNumberedHeadingToList: true
         } );
 
         return textareaID;
