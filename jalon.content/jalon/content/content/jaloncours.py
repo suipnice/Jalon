@@ -285,6 +285,18 @@ class JalonCours(ATFolder):
         self._elements_cours[infos_element["idElement"]] = dico
         self.setElementsCours(self._elements_cours)
 
+    def getCoursePasswordBreadcrumbs(self):
+        portal_link = self.portal_url.getPortalObject().absolute_url()
+        return[{"title": _(u"Mes cours"),
+                "icon":  "fa fa-university",
+                "link":  "%s/mes_cours" % portal_link},
+               {"title": _(u"Accès par mot de passe"),
+                "icon":  "fa fa-key",
+                "link":  "%s/mes_cours?categorie=2" % portal_link},
+               {"title": _(u"Vérification du mot de passe"),
+                "icon":  "fa fa-search",
+                "link":  "%s/check_course_password_form" % self.absolute_url()}]
+
     def getTwitterCours(self, key=None):
         #self.plone_log("getTwitterCours")
         if not "dateMAJ" in self._twitter_cours:

@@ -52,9 +52,10 @@ class MyCoursesView(BrowserView):
         tabs_list = []
         actions_list = []
         if is_student:
+            is_tab_password = True if tab == "2" else False
             my_courses_macro = "my_courses_list_student_macro"
             tab = tab if tab else "1"
-            courses_dict = self.getStudentCoursesList(user, tab, folder)
+            courses_dict = self.getStudentCoursesList(user, tab, folder, is_tab_password)
         else:
             my_courses_macro = "my_courses_list_teacher_macro"
             actions_list = [{"css_class":   "button create expand",
@@ -200,7 +201,7 @@ class MyCoursesView(BrowserView):
         return {"is_courses_list": True,
                 "courses_list":    list(courses_list_filter)}
 
-    def getStudentCoursesList(self, member, tab, folder):
+    def getStudentCoursesList(self, member, tab, folder, is_tab_password):
         LOG.info("----- getStudentCoursesList -----")
         diploma_list = []
         authors_dict = {}
@@ -273,7 +274,7 @@ class MyCoursesView(BrowserView):
             course_list = []
             course_brain_list = list(portal_catalog.searchResults(portal_type="JalonCours", getCategorieCours=tab))
             for course_brain in course_brain_list:
-                course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
+                course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [], is_tab_password)
                 course_list.append(course_data)
             diploma_list.append({"diploma_course_list": course_list})
 
@@ -284,7 +285,7 @@ class MyCoursesView(BrowserView):
             return {"is_diploma_list": False,
                     "message":         "Vous n'êtes inscrit(e) à aucun diplôme."}
 
-    def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list):
+    def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list, is_tab_password=False):
         LOG.info("----- getCourseData -----")
         course_data = {"course_id":                course_brain.getId,
                        "course_title":             course_brain.Title,
@@ -299,6 +300,8 @@ class MyCoursesView(BrowserView):
                        "course_is_public":         "fa fa-check fa-lg no-pad success" if course_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
                        "course_actions_list":      actions_list}
 
+        if is_tab_password:
+            course_data["course_link"] = "%s/check_course_password_form" % course_data["course_link"]()
         course_author_id = course_brain.getAuteurPrincipal
         if not course_author_id:
             course_author_id = course_brain.Creator
