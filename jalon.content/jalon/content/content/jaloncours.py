@@ -263,6 +263,8 @@ class JalonCours(ATFolder):
     def checkCourseAuthorized(self, user, request):
         LOG.info("----- checkCourseAuthorized -----")
         LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
+        if self.getLibre():
+            return True
         if user.has_role(["Manager", "Owner"]):
             return True
         if user.has_role(["Personnel", "Secretaire"]):
