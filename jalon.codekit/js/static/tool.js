@@ -25,6 +25,7 @@ function instantiateCKEditor( textareaID ) {
                 { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] }
             ],
+            removePlugins: 'base64image',
             removeButtons: 'Cut,Copy,Undo,Redo,Strike,Subscript,Superscript,Anchor',
             removeDialogTabs: 'link:advanced',
             pasteFromWordPromptCleanup: false,
