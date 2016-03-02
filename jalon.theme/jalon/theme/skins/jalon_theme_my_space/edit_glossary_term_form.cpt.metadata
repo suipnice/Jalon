@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_my_space
+
+[actions]
+action.failure = traverse_to:string:edit_glossary_term_form
+
+action.success_edit_glossary_term = traverse_to:string:edit_glossary_term_script

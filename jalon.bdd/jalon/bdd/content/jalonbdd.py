@@ -1024,7 +1024,7 @@ class JalonBDD(SimpleItem):
         return listeCours
 
     def getConsultationByCoursByDate(self, ID_COURS, month=None, year=None):
-        LOG.info("----- getConsultationByCoursByDate -----")
+        #LOG.info("----- getConsultationByCoursByDate -----")
         consultation_dict = {}
         for public in self._public_bdd:
             consultation_dict[public] = {"public":               public,
@@ -1050,9 +1050,9 @@ class JalonBDD(SimpleItem):
             session = self.getSessionMySQL()
 
             consultationCours = jalon_mysql.getConsultationByCoursByUniversityYear(session, ID_COURS, year)
-            LOG.info("Consultation Année Courant")
+            #LOG.info("Consultation Année Courant")
             for ligne in consultationCours.all():
-                LOG.info(ligne)
+                #LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
                     if not consultation_dict[ligne[0]] in consultations_list:
@@ -1062,9 +1062,9 @@ class JalonBDD(SimpleItem):
             #LOG.info(consultation_dict)
 
             consultationCoursPrec = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
-            LOG.info("Consultation Mois Précédent")
+            #LOG.info("Consultation Mois Précédent")
             for ligne in consultationCoursPrec.all():
-                LOG.info(ligne)
+                #LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
                 except:
@@ -1072,9 +1072,9 @@ class JalonBDD(SimpleItem):
                     pass
 
             consultationCours = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, month, year)
-            LOG.info("Consultation Mois Courant")
+            #LOG.info("Consultation Mois Courant")
             for ligne in consultationCours.all():
-                LOG.info(ligne)
+                #LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
                 except:
@@ -1120,7 +1120,7 @@ class JalonBDD(SimpleItem):
         return consultations_list
 
     def getConsultationByCoursByUniversityYearByDate(self, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
-        LOG.info("----- getConsultationByCoursByUniversityYear -----")
+        #LOG.info("----- getConsultationByCoursByUniversityYear -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
@@ -1136,7 +1136,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getConsultationByCoursByUniversityYearForGraph(self, ID_COURS, year=None):
-        LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+        #LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
@@ -1144,7 +1144,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getFrequentationByCoursByUniversityYearByDateForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
-        LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
+        #LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
@@ -1444,8 +1444,8 @@ class JalonBDD(SimpleItem):
         return dico[type]
 
     def genererFrequentationGraph(self, dates_dict, DATE_CONS_YEAR=None):
-        LOG.info("----- genererFrequentationGraph -----")
-        LOG.info(dates_dict)
+        #LOG.info("----- genererFrequentationGraph -----")
+        #LOG.info(dates_dict)
 
         graph = ['<script type="text/javascript">']
         graph.append("""var chart = AmCharts.makeChart("frequentationchartdiv", {
@@ -1532,7 +1532,7 @@ class JalonBDD(SimpleItem):
         date_value = []
         for dt in rrule.rrule(rrule.DAILY, dtstart=date_start, until=date_stop):
             date = dt.date()
-            LOG.info(date)
+            #LOG.info(date)
             frequentation = dates_dict[date] if date in dates_dict else 0
             date_value.append("""{"date": "%s", "value": %s}""" % (date, frequentation))
         graph.append(",\n".join(date_value))
@@ -1545,7 +1545,7 @@ class JalonBDD(SimpleItem):
                             chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
                         }""")
         graph.append("</script>")
-        LOG.info("\n".join(graph))
+        #LOG.info("\n".join(graph))
         return "\n".join(graph)
 
     def isBDD(self):

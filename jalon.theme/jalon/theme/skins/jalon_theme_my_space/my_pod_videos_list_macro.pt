@@ -1,0 +1,120 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="my_pod_videos_list">
+
+    <div class="panel callout radius"
+         tal:condition="my_view/is_no_items">
+        <i class="fa fa-info-circle no-pad"></i>
+        <strong i18n:translate="">Il n'y a aucune vidéo à la demande dans votre espace.</strong><br/>
+        <tal:block i18n:translate="">Pour en ajouter, cliquez sur la bouton « Rechercher une vidéo et l'ajouter à votre espace VOD » ci-dessus.</tal:block>
+    </div>
+
+    <tal:listing condition="my_view/my_items_list">
+    <div class="el_counter">
+        <tal:block replace="my_view/nb_display_items"/>
+        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block replace="my_view/nb_items"/>
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
+
+    <ul id="elasticsearch" class="small-block-grid-4">
+        <li tal:repeat="item my_view/my_items_list">
+            <div class="panel callout radius">
+                <h4>
+                    <a class="dropdown right" data-options="align:left"
+                       tal:attributes="data-dropdown string:drop-${repeat/item/index}">
+                        <i class="fa fa-cog fa-lg no-pad"></i>
+                    </a>
+                    <tal:comment replace="nothing"><!--
+                    <i class="fa fa-lock right"
+                       title="Ce contenu est protégé par un mot de passe."
+                       i18n:attributes="title"></i>
+                    --></tal:comment>
+                    <span tal:attributes="title item/Title"
+                          tal:content="python:context.getShortText(item.Title, 20)"/>
+                </h4>
+                <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                    tal:define="is_owner python:context.test(user.getId() == item.getVideoauteur, True, False)"
+                    tal:attributes="id string:drop-${repeat/item/index}">
+                    <li tal:condition="is_owner">
+                        <a title="Modifier la vidéo sur POD"
+                           target="_blank"
+                           tal:attributes="href string:${context/absolute_url}/${item/getId}/cas_pod_login/edit"
+                           i18n:attributes="title">
+                            <i class="fa fa-pencil fa-lg fa-fw no-pad"></i>Modifier
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${item/getURL}/add_tag_object_form">
+                            <i class="fa fa-tag fa-fw no-pad"></i>
+                            <tal:block i18n:translate="">Étiqueter</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${item/getURL}/detach_object_form">
+                            <i class="fa fa-chain-broken fa-fw no-pad"></i>
+                            <tal:block i18n:translate="">Détacher</tal:block>
+                        </a>
+                    </li>
+                    <li tal:condition="is_owner">
+                        <a target="_blank"
+                           tal:attributes="href string:${context/absolute_url}/${item/getId}/cas_pod_login/delete">
+                            <i class="fa fa-trash-o fa-fw no-pad"></i>
+                            <tal:block i18n:translate="">Supprimer</tal:block>
+                        </a>
+                    </li>
+                    <li tal:condition="not:is_owner">
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${item/getURL}/delete_object_form">
+                            <i class="fa fa-trash-o fa-fw no-pad"></i>
+                            <tal:block i18n:translate="">Supprimer</tal:block>
+                        </a>
+                    </li>
+                </ul>
+                <p>
+                    <strong>Auteur :</strong> <tal:replace replace="item/getVideoauteurname"/>
+                </p>
+                <a title="Voir la vidéo"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${item/getURL}/view"
+                   i18n:attributes="title"
+                   i18n:translate="">
+                    <div class="flex-video">
+                        <img tal:attributes="src item/getVideothumbnail"/>
+                    </div>
+                </a>
+            </div>
+        </li>
+    </ul>
+    </tal:listing>
+
+    <tal:listing condition="not:my_view/my_items_list">
+        <tal:define define="is_one_tag my_view/is_one_tag;
+                            one_tag my_view/one_tag">
+        <metal:macro use-macro="context/my_space_tags_macro/macros/delete_tag">
+            Supprimer un tag
+        </metal:macro>
+        </tal:define>
+    </tal:listing>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!--
+        Affichage des étiquettes
+-->
+<metal:macro define-macro="tags_list">
+    <li tal:repeat="tag tags_list">
+        <a tal:attributes="id tag/tag_id;
+                           class tag/tag_css">
+           <i class="fa fa-circle no-pad"></i>
+           <i class="fa fa-circle-thin no-pad"></i>
+           <tal:block tal:content="tag/tag_title" />
+        </a>
+    </li>
+</metal:macro>
+
+
+<!--
+        Créer une étiquette
+-->
+<metal:macro define-macro="add_tag">
+    <li class="show-for-medium-up">
+        <a data-reveal-id="reveal-create_tag" data-reveal-ajax="true"
+           tal:attributes="href string:${context/absolute_url}/create_tag_form"
+           class="button tiny create">
+            <i class="fa fa-plus-circle no-pad"></i>
+            <tal:block i18n:translate="">Créer une étiquette</tal:block>
+        </a>
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="reveal-create_tag" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    </li>
+</metal:macro>
+
+
+<!--
+        Supprimer une étiquette
+-->
+<metal:macro define-macro="delete_tag">
+
+    <tal:block condition="is_one_tag">
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Il n'y a aucune ressource avec l'étiquette</tal:block>
+            « <strong tal:content="one_tag/tag_title" /> ».
+        </div>
+
+        <form id="js-delTag" method="POST"
+              tal:attributes="action string:${context/absolute_url}/delete_tag_script;
+                              data-tag_name string:${one_tag/tag_title};
+                              data-success_msg_pre string:L'étiquette;
+                              data-success_msg_post string:a été supprimée."
+              i18n:attributes="data-success_msg_pre; data-success_msg_post">
+            <input type="hidden" name="tag_id" tal:attributes="value one_tag/tag_id" />
+            <button type="submit" class="button expand alert radius">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer l'étiquette</tal:block> « <strong tal:content="python:context.getShortText(one_tag['tag_title'], 20)" /> »
+            </button>
+        </form>
+
+        <tal:condition condition="is_ajax">
+            <script charset="UTF-8"
+                    tal:content="structure string:delTag()">
+            </script>
+        </tal:condition>
+
+        <tal:condition condition="not:is_ajax">
+            <tal:jsBuffer define="script string:delTag();
+                                  addJsContent python:jsBuffer.addJS(script)" />
+        </tal:condition>
+
+    </tal:block>
+
+    <tal:block condition="not:is_one_tag">
+        <div class="panel callout radius"
+             i18n:translate="">
+            Il n'y a aucune ressource avec cette association d'étiquettes.
+        </div>
+    </tal:block>
+
+</metal:macro>

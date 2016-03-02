@@ -119,24 +119,27 @@ function delTag( ) {
 
         var $form = $( this );
         var $updateTarget = Foundation.utils.S( '#js-update_target' );
-        var subject = $form.find( 'input[name="subject"]' ).attr( 'value' );
-        var param = "supprimer_tag:method=" + $form.find( '[type="submit"]' ).attr( 'value' ) + "&subject=" + subject;
-
         var $title = Foundation.utils.S( '#js-update_title' );
         var titleOrgHtml = $title.html( );
 
         $title.html( MSG_LOADING );
+
         $updateTarget.fadeTo( 200, 0.33, function( ) {
-            $.post( $form.attr( 'action' ), param ).done( function( data ) {
-                //Foundation.utils.S( '#' + encodeURIComponent( subject ) ).parent( 'li' ).remove( );
-                //* Pb jQuery ou Foundation (encodage caract. accentues) -> suppression directement en JS
-                var eLi = document.getElementById( encodeURIComponent( subject ) ).parentNode;
+
+            $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
+                // Suppression du bouton de l'etiquette en JS pur car jQuery et Foundation
+                // ne tolerent pas le caractere « % » dans les ID...
+                var eLi = document.getElementById( document.getElementsByName( 'tag_id' )[0].value ).parentNode;
                 eLi.parentNode.removeChild( eLi );
-                //*/
+
                 $updateTarget.empty( ).html( data );
+
                 $updateTarget.fadeTo( 200, 1, function( ) {
+
                     $title.html( titleOrgHtml );
-                    setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + subject + ' » ' + $form.data( 'success_msg_post' ) );
+                    setAlertBox( 'success', $form.data( 'success_msg_pre' )
+                            + ' « ' + $form.data( 'tag_name' ) + ' » ' + $form.data( 'success_msg_post' ) );
                 } );
             } );
         } );
@@ -243,8 +246,7 @@ function setActionBatch( ) {
 
         event.preventDefault( );
 
-        var param = "etiqueter_script:method=" + $tagForm.find( '[type="submit"]' ).attr( 'value' );
-        param += "&lots=lots";
+        var param = "lots=lots";
 
         $tagForm.find( 'a.selected' ).each( function( index ) {
             param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
@@ -272,8 +274,7 @@ function setActionBatch( ) {
 
         var $form = $( this );
         var tags = [ ];
-        var param = "desetiqueter_script:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&lots=lots";
+        var param = "lots=lots";
 
         Foundation.utils.S( '#js-tag_filter a.selected' ).each( function( index ) {
             tags.push( $( this ).attr( 'id' ) );
@@ -340,8 +341,7 @@ function setActionBatch( ) {
 
         var $form = $( this );
         var nonSup = "";
-        var param = "folder_delete:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
+        var param = $form.serialize( );
 
         Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
             if ( !$( this ).data( 'attached' ) ) {

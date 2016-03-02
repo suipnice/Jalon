@@ -8,8 +8,11 @@
 
 <body>
 
-<metal:core fill-slot="content"
-            tal:define="plan context/getPlan;
+<metal:core fill-slot="content">
+
+    <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
+
+    <tal:define define="plan context/getPlan;
                         page string:cours_plan_view;
                         section string:plan;
                         mtool context/@@plone_tools/membership;
@@ -172,19 +175,19 @@
                     <ul id="course-options" data-dropdown-content class="f-dropdown">
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours_actions&amp;formulaire=get_wims_scores&amp;came_from=cours_plan_view">
+                               tal:attributes="href string:${context/absolute_url}/download_wims_score_form">
                                 <i class="fa fa-download fa-fw"></i><tal:block i18n:translate="">Télécharger les notes WIMS</tal:block>
                             </a>
                         </li>
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours_actions&amp;formulaire=purge_course&amp;came_from=cours_plan_view">
+                               tal:attributes="href string:${context/absolute_url}/purge_course_form">
                                 <i class="fa fa-filter fa-fw"></i><tal:block i18n:translate="">Purger les travaux étudiants</tal:block>
                             </a>
                         </li>
                         <li>
                             <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_wims_activity&amp;came_from=cours_plan_view">
+                               tal:attributes="href string:${context/absolute_url}/delete_wims_activity_form">
                                 <i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="">Supprimer les activités WIMS</tal:block>
                             </a>
                         </li>
@@ -460,11 +463,7 @@
             tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
             tal:content="jsTranslate/getJsTranslate"></script>
 
-    <tal:comment replace="nothing"><!--
-    <tal:define define="script string:setPlanLegend()">
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-    </tal:define>
-    --></tal:comment>
+</tal:define>
 
 </metal:core>
 </body>

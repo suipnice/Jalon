@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="content"
+                tal:define="object_tags context/Subject;
+                            resName python:context.aq_parent.getShortText(context.Title(), 80)">
+
+    <h2>
+        <tal:block i18n:translate="">Étiqueter la ressource</tal:block>
+         « <tal:block content="resName" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-resTagger" method="POST"
+          tal:define="tags context/aq_parent/Subject"
+          tal:attributes="action string:${context/absolute_url}/add_tag_object_script;
+                          data-res_name resName;
+                          data-success_msg_pre string:L'étiquetage de la ressource;
+                          data-success_msg_post string:a été modifié."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+        <div class="panel callout radius"
+             i18n:translate="">
+            Sélectionnez le jeu d'étiquettes à associer à cette ressource.
+        </div>
+        <ul>
+            <li tal:repeat="tag tags">
+                <a tal:define="quotedTag python:context.jalon_quote(tag)"
+                   tal:attributes="id quotedTag;
+                                   class python:context.test(quotedTag in object_tags, 'filter-button selected', 'filter-button unselected')">
+                   <i class="fa fa-circle no-pad"></i>
+                   <i class="fa fa-circle-thin no-pad"></i>
+                   <tal:block tal:content="tag" />
+                </a>
+            </li>
+        </ul>
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-tag"></i>
+                <tal:block i18n:translate="">Étiqueter</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setResTagger()">
+    </script>
+
+    </metal:main>
+</body>
+
+</html>

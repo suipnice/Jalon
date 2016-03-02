@@ -1,0 +1,100 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="tab request/tab | request/categorie | nothing;
+                        my_courses_view python:view.getMyCoursesView(user, tab);
+                        tab my_courses_view/tab;
+                        my_courses_dict my_courses_view/courses_dict">
+
+    <tal:condition condition="not:is_ajax">
+    
+    <tal:define define="breadcrumbs view/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium" 
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+
+        <div class="small-12 columns"
+             tal:condition="my_courses_view/is_message_cache">
+
+            <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
+
+            <tal:block define="script string:alterAlertBox()">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+        </div>
+
+        <section class="show-for-medium-up medium-12 columns"
+                 tal:condition="not:my_courses_view/is_student">
+            <nav id="item-adder">
+                <ul class="button-group expand radius even-2"
+                    tal:omit-tag="not:my_courses_view/is_manager">
+                    <li tal:repeat="action my_courses_view/actions_list"
+                        tal:omit-tag="not:my_courses_view/is_manager">
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="class action/css_class;
+                                           href action/action_link">
+                           <i tal:attributes="class action/action_icon"></i>
+                           <tal:block tal:replace="action/action_name"
+                                      i18n:translate=""/>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </section>
+
+        <section id="js-list-cours" class="small-12 columns">
+            <h2 id="js-update_title">
+                <i class="fa fa-university"></i><tal:block i18n:translate="">Mes cours</tal:block>
+            </h2>
+            <span class="title-legend show-for-medium-up">
+                <i class="fa fa-bell-o no-pad"></i> = <tal:block i18n:translate="">Nouveauté(s) depuis votre dernière connexion</tal:block>
+            </span>
+            <ul id="mescours_button-group" class="button-group radius even-5"
+                tal:condition="not:my_courses_view/is_student">
+                <li tal:repeat="tab my_courses_view/tabs_list">
+                    <a tal:attributes="class tab/css_class;
+                                       href tab/tab_link"
+                       i18n:translate="">
+                        <i tal:attributes="class tab/tab_icon"></i>
+                        <tal:block replace="tab/tab_name"
+                                   i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+            <div id="js-update_target">
+                <metal:macro use-macro="python:getattr(context, my_courses_view['my_courses_macro']).macros.get('my_courses_list')">
+                    Macro d'affichage de la liste des cours
+                </metal:macro>
+            </div>
+        </section>
+    </main>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+    </tal:condition>
+
+    <tal:condition condition="is_ajax">
+        <metal:macro use-macro="context/my_courses_list_macro/macros/my_courses_list">
+            Macro d'affichage de la liste des cours
+        </metal:macro>
+    </tal:condition>
+</metal:core>
+
+</body>
+
+</html>

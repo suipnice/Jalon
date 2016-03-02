@@ -3,52 +3,112 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="jalon.theme">
 
-  <!-- 'Jalon' Zope 3 browser layer
-    Register views, viewlets and resources for this layer to make sure
-    they only apply to the 'Jalon' theme.
-    You can also use this layer to override default Plone browser views
-    and viewlets only within the 'Jalon' theme.
-  -->
-  <interface
-      interface=".interfaces.IThemeSpecific"
-      type="zope.publisher.interfaces.browser.IBrowserSkinType"
-      name="Jalon"
-      />
+    <!-- Theme Definition -->
+    <interface interface=".interfaces.IThemeSpecific"
+               type="zope.publisher.interfaces.browser.IBrowserSkinType"
+               name="Jalon"/>
 
-  <!-- Zope 3 browser resources -->
+    <!-- Directory Registrery -->
+    <browser:resourceDirectory name="jalon.theme.stylesheets"
+                               directory="css"
+                               layer=".interfaces.IThemeSpecific"/>
 
-  <!-- Resource directory for images
-    See jalon/theme/browser/images/README.txt
-    for more information about registering images as Zope 3 browser
-    resources.
-  -->
-  <browser:resourceDirectory
-      name="jalon.theme.images"
-      directory="images"
-      />
+    <browser:resourceDirectory name="jalon.theme.javascript"
+                               directory="scripts"
+                               layer=".interfaces.IThemeSpecific"/>
 
-  <!-- Resource directory for stylesheets
-    See jalon/theme/browser/stylesheets/README.txt
-    for more information about registering stylesheets as Zope 3 browser
-    resources.
-  -->
+    <browser:resourceDirectory name="jalon.theme.fonts"
+                               directory="fonts"
+                               layer=".interfaces.IThemeSpecific"/>
 
-  <browser:resourceDirectory
-      name="jalon.theme.stylesheets"
-      directory="css"
-      layer=".interfaces.IThemeSpecific"
-      />
+    <browser:resourceDirectory name="jalon.theme.images"
+                               directory="images"
+                               layer=".interfaces.IThemeSpecific"/>
 
-  <browser:resourceDirectory
-      name="jalon.theme.javascript"
-      directory="scripts"
-      layer=".interfaces.IThemeSpecific"
-      />
+    <!-- MySpace View Definition -->
+    <browser:page name="mon_espace_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_space_view.MySpaceView"
+                  template="view_template/my_space/my_space_view.pt"
+                  permission="zope2.View"/>
 
-  <browser:resourceDirectory
-      name="jalon.theme.fonts"
-      directory="fonts"
-      layer=".interfaces.IThemeSpecific"
-      />
+    <browser:page name="mes_fichiers_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_files_view.MyFilesView"
+                  template="view_template/my_space/my_files_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_file_view"
+                  for="plone.app.blob.interfaces.IATBlobFile"
+                  template="view_template/my_space/jalon_file_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_image_view"
+                  for="plone.app.blob.interfaces.IATBlobImage"
+                  template="view_template/my_space/jalon_image_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_page_view"
+                  for="Products.ATContentTypes.interfaces.IATDocument"
+                  template="view_template/my_space/jalon_file_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_presentations_sonorisees_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
+                  template="view_template/my_space/my_adobe_connect_recording_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_exercices_wims_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_wims_exercices_view.MyWimsExercicesView"
+                  template="view_template/my_space/my_wims_exercices_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_wims_exercice_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonExerciceWims"
+                  template="view_template/my_space/jalon_wims_exercice_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_ressources_externes_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_external_resources_view.MyExternalResourcesView"
+                  template="view_template/my_space/my_external_resources_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_external_resource_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonRessourceExterne"
+                  template="view_template/my_space/jalon_external_resource_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_termes_glossaire_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_glossary_terms_view.MyGlossaryTermsView"
+                  template="view_template/my_space/my_glossary_terms_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_glossary_term_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonTermeGlossaire"
+                  template="view_template/my_space/jalon_glossary_term_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_webconferences_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_adobe_connect_recording_view.MyAdobeConnectRecordingView"
+                  template="view_template/my_space/my_adobe_connect_recording_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="mes_videos_pod_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_pod_videos_view.MyPodVideosView"
+                  template="view_template/my_space/my_pod_videos_view.pt"
+                  permission="zope2.View"/>
+
+    <!-- MyCoursesView Definition -->
+    <browser:page name="mes_cours_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_courses_view.MyCoursesView"
+                  template="view_template/my_courses/my_courses_view.pt"
+                  permission="zope2.View"/>
 
 </configure>

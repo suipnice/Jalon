@@ -4,10 +4,14 @@
     i18n_domain="jalon.theme">
 
   <!-- File System Directory Views registration -->
-  <!-- <cmf:registerDirectory name="jalon_theme_custom_images"/> -->
-  <cmf:registerDirectory name="jalon_theme_custom_templates"/>
+  <cmf:registerDirectory name="jalon_theme_general"/>
+  <cmf:registerDirectory name="jalon_theme_connexion"/>
+  <cmf:registerDirectory name="jalon_theme_unauthorized_template"/>
+  <cmf:registerDirectory name="jalon_theme_my_space"/>
+  <cmf:registerDirectory name="jalon_theme_my_space_wims_createxo"/>
+  <cmf:registerDirectory name="jalon_theme_my_courses"/>
   <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
-  <cmf:registerDirectory name="jalon_theme_styles"/>
+  <cmf:registerDirectory name="jalon_theme_configuration"/>
 
   <!-- Note: This could also be done for all folders at once
        by replacing the previous lines with this one:

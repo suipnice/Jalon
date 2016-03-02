@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="user_id user/getId;
+                        course_id request/course_id;
+                        course_data python:context.getDataCourseFormAction(user_id, course_id)">
+
+    <h2><tal:block i18n:translate="">Dupliquer le cours</tal:block>
+        « <tal:block replace="course_data/course_name"/> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:condition condition="not:course_data/is_course_owner">
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le dupliquer.
+    </div>
+    </tal:condition>
+
+    <tal:condition condition="course_data/is_course_owner">
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Dupliquer un cours crée un nouveau cours avec le même nom suivi de l'indication</tal:block> « <strong>Duplicata</strong> ».<br />
+        <tal:block i18n:translate="">Le duplicata contient tous les éléments du cours à l'exception des dépôts des étudiants (dans les boîtes de dépôt) et des notes d'auto-évaluations et d'examens WIMS.</tal:block>
+    </div>
+
+    <form id="js-courseDuplicator" method="POST"
+          tal:define="manager request/manager | nothing"
+          tal:attributes="action string:${context/absolute_url}/duplicate_course_script;
+                          data-course_name course_data/course_name;
+                          data-success_msg_pre string:Le cours;
+                          data-success_msg_post string:a été dupliqué."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <input type="hidden" name="tab"
+               tal:attributes="value request/tab"/>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user_id"/>
+        <input type="hidden" name="course_id"
+               tal:attributes="value course_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small">
+                <i class="fa fa-code-fork"></i>
+                <tal:block i18n:translate="">Dupliquer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setCourseDuplicator()">
+    </script>
+    </tal:condition>
+
+    </metal:main>
+
+</body>
+
+</html>

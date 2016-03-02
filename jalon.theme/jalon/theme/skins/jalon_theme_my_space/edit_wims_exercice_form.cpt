@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<!-- exercicewims_edit.cpt : Page d'edition globale de tout exercice WIMS (equivalent au Createxo de WIMS)-->
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        can_view python:context.checkRoles(user, context, action='view');">
+
+    <metal:macro use-macro="context/edit_wims_exercice_macro/macros/edit_wims_exercice_css">
+        bloc css exercice WIMS
+    </metal:macro>
+
+    <tal:define define="breadcrumbs context/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title"
+          tal:define="edit_wims_exercice_macro_name context/getEditWimsExerciceMacroName">
+
+        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+            Message de session
+        </metal:macro>
+
+        <metal:macro use-macro="context/macro_messages/macros/messages">
+            Encart d'affichage des messages de feedback
+        </metal:macro>
+
+        <!-- id="wims-edit" -->
+        <section id="wims-edit" class="small-12 columns"
+                 tal:define="modele context/getModele;
+                             QCM_parsed python:context.getExoWims(modele, user.getId(), request)";
+                 tal:attributes="data-modele modele"
+                 tal:condition="can_view">
+
+            <div data-alert="data-alert" class="alert-box alert radius"
+                 tal:condition="not:QCM_parsed"
+                 i18n:translate="">
+                <!-- 2 cas possibles : exercice supprimé coté WIMS, ou WIMS inaccessible -->
+                <tal:block i18n:translate="">Une erreur est survenue. Le serveur WIMS est peut-être injoignable. Veuillez réessayer ultérieurement.</tal:block>
+                <a class="close"></a>
+            </div>
+
+        <metal:macro use-macro="python:context.edit_wims_exercice_macro.macros[edit_wims_exercice_macro_name]" />
+
+        <tal:block define="script string:preventMultipleFormSubmits('wims-edit');">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+
+        </section>
+
+        <section id="wims-edit" class="small-12 columns"
+                 tal:condition="not:can_view">
+            <metal:macro use-macro="context/macro_commune/macros/cannot_view" />
+        </section>
+    </main>
+
+</metal:main>
+</body>
+</html>

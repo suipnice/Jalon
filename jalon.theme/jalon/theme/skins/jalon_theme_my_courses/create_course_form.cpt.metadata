@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_create_course
+
+[actions]
+action.failure = traverse_to:string:create_course_form
+action.success = traverse_to:string:create_course_script

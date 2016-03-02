@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-""" Jalon utilities. """
-
 from zope.component import getUtility
 
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -31,14 +29,6 @@ import copy
 # Messages de debug :
 from logging import getLogger
 LOG = getLogger('[jalon_utils]')
-"""
-# Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
-"""
 
 
 def authUser(context, quser=None, qclass=None, request=None, session_keep=False):
@@ -284,40 +274,6 @@ def getClefsDico(dico):
     clefs.sort()
     return clefs
 
-
-""" [DEPRECATED]
-
-def getDisplayName(user_id, request=None, portal=None):
-    #""
-    getDisplayName permet d'obtenir le nom (+prenom) d'un utilisateur.
-
-    maintenant, il faut utiliser getInfosMembre(user_id)
-    # nb : request est utilisé dans le cas d'utilisateurs sygefor
-
-    #""
-    if portal == None:
-        portal = getUtility(IPloneSiteRoot)
-    member = portal.portal_membership.getMemberById(user_id)
-    fullname = None
-    if member:
-        if member.has_role(["Personnel", "Etudiant", "Manager"]):
-            fullname = member.getProperty("fullname")
-        if (not fullname) and member.has_role(["Personnel", "Etudiant"]):
-            fullname = member.getProperty("displayName")
-        if not fullname:
-            sygefor = getattr(portal.acl_users, "sygefor", None)
-            if sygefor:
-                result = sygefor.getPropertiesForUser(user_id, request)
-                if result:
-                    fullname = result.getProperty("fullname")
-            if not fullname:
-                fullname = "%s %s" % (user_id, user_id)
-    else:
-        fullname = "utilisateur introuvable"
-    return fullname
-"""
-
-
 def getIndividu(sesame, type=None, portal=None):
     u""" getIndividu renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
 
@@ -500,6 +456,12 @@ def getInfosMembre(username):
             "email":    email,
             "prenom":   prenom,
             "nom":      nom}
+
+
+def getCourseUserFolder(context, user_id):
+    #LOG.info("----- getUserFolder -----")
+    portal = context.portal_url.getPortalObject()
+    return getattr(portal.cours, user_id)
 
 
 def rechercherUtilisateur(username, typeUser, match=False, isJson=True):

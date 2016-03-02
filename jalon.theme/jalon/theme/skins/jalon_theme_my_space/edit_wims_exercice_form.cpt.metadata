@@ -1,0 +1,12 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_wims_exercice
+
+[actions]
+action.failure=traverse_to:string:edit_wims_exercice_form
+action.canceled=redirect_to:string:../
+
+action.success = traverse_to:string:edit_wims_exercice_script

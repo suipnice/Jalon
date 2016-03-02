@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="attributs python:['description', 'image', 'file'];
+                                errors options/state/getErrors | nothing">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier le fichier</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-fileEditor" method="post" enctype="multipart/form-data"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-res_name python:context.aq_parent.getShortText(context.Title(), 80);
+                          data-placeholder string:Saisie obligatoire;
+                          data-success_msg_pre string:La ressource;
+                          data-success_msg_post string:a été éditée."
+          i18n:attributes="data-placeholder; data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;
+                         arch_class string:field ArchetypesStringWidget;"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <input type="text" maxlength="255" size="30"
+                   id="title" name="title"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value context/Title | request/title"/>
+        </div>
+
+        <tal:repeat repeat="attribut attributs">
+        <tal:condition condition="python:context.getField(attribut)">
+            <metal:field use-macro="python:context.widget(attribut, mode='edit')">Widget Template</metal:field>
+        </tal:condition>
+        </tal:repeat>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="validate_key" value="edit_file"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setFileEditor()"></script>
+
+</metal:content-core>
+
+</body>
+
+</html>

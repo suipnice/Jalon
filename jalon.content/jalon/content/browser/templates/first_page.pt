@@ -104,22 +104,12 @@
 </tal:block>
 
 
-<tal:block condition="not:anonymous"
-           define="infos_mon_espace view/getMonEspace;
-                   maintenance infos_mon_espace/maintenance;
-                   messages infos_mon_espace/messages;
-                   vidercache infos_mon_espace/vidercache;
-                   dossier context/getId;
-                   is_personnel python:user.has_role(['Personnel', 'Manager', 'Secretaire']);
-                   titre nothing">
-
-    <metal:macro use-macro="context/macro_mon_espace/macros/mon_espace">
-        Mon espace
-    </metal:macro>
-
-</tal:block>
-
+<tal:condition condition="not:anonymous">
+    <tal:redirect define="no_return python:context.redirection_folder_script(user)"/>
+</tal:condition>
 
 </metal:core>
-    </body>
+
+</body>
+
 </html>
