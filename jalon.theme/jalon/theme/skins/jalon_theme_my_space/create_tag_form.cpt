@@ -1,0 +1,58 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing">
+
+    <h2>
+        <tal:block i18n:translate="">Créer une étiquette</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <tal:comment replace="nothing"><!--
+    Sans vérif. côté serveur :
+          tal:attributes="action string:${context/absolute_url}/create_tag_script"
+    Avec :
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+    --></tal:comment>
+    <form id="js-createTag" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:L'étiquette;
+                          data-success_msg_post string:a été créée."
+          tal:define="error errors/title | nothing"
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" name="title" maxlength="20"
+                   required="required"
+                   placeholder="Saisie obligatoire (20 caractères maximum)" i18n:attributes="placeholder" />
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="validate_key" value="create_tag" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius"
+                    name="form.button.create_tag">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer l'étiquette</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:createTag()">
+    </script>
+
+</metal:main>
+
+</body>
+</html>

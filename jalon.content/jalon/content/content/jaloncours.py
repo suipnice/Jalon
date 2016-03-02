@@ -260,6 +260,22 @@ class JalonCours(ATFolder):
         else:
             self._elements_cours = elements_cours
 
+    def checkCourseAuthorized(self, user, request):
+        #LOG.info("----- checkCourseAuthorized -----")
+        #LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
+        if self.getLibre():
+            return True
+        if user.has_role(["Manager", "Owner"]):
+            return True
+        if user.has_role(["Personnel", "Secretaire"]):
+            user_id = user.getId()
+            if self.isAuteurs(user_id):
+                return True
+            if self.isCoLecteurs(user_id):
+                return True
+        if not self.getId() in request.SESSION.get("course_authorized_list", []):
+            request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
+
     def getProprietesVideo(self, id_video):
         infos_element = self.getElementCours(id_video)
         video_title = infos_element["titreElement"]
@@ -284,6 +300,18 @@ class JalonCours(ATFolder):
             dico["complementElement"]["value"] = True
         self._elements_cours[infos_element["idElement"]] = dico
         self.setElementsCours(self._elements_cours)
+
+    def getCoursePasswordBreadcrumbs(self):
+        portal_link = self.portal_url.getPortalObject().absolute_url()
+        return[{"title": _(u"Mes cours"),
+                "icon":  "fa fa-university",
+                "link":  "%s/mes_cours" % portal_link},
+               {"title": _(u"Accès par mot de passe"),
+                "icon":  "fa fa-key",
+                "link":  "%s/mes_cours?categorie=2" % portal_link},
+               {"title": _(u"Vérification du mot de passe"),
+                "icon":  "fa fa-search",
+                "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
     def getTwitterCours(self, key=None):
         #self.plone_log("getTwitterCours")
@@ -2320,6 +2348,34 @@ class JalonCours(ATFolder):
         self.plan = tuple(plan)
         self.setProperties({"DateDerniereModif": DateTime()})
         return self.getPlanCours(True)
+
+    def getDataCourseFormAction(self, user_id, course_id):
+        #LOG.info("----- getDataCourseFormAction -----")
+        return {"course_name":     self.getShortText(self.Title(), 80),
+                "is_course_owner": self.isCourseOwner(user_id)}
+
+    def getDataCourseWimsActivity(self, user_id, course_id):
+        #LOG.info("----- getDataCourseWimsActivity -----")
+        wims_classe_list = self.getListeClasses()
+        can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
+
+        course_author_data = self.getAuteur()
+
+        #à finir ne tiens pas compte de si pas d'annuaire LDAP
+        record_user_book_base = self.getBaseAnnuaire()
+        course_author_record_user_link = self.getFicheAnnuaire(course_author_data, record_user_book_base)
+
+        is_course_author = self.isAuteur(user_id)
+        can_delete_all_wims_classes_css = "" if is_course_author else "disabled"
+
+        return {"course_name":                     self.getShortText(self.Title(), 80),
+                "is_course_owner":                 self.isCourseOwner(user_id),
+                "wims_classe_list":                wims_classe_list,
+                "can_delete":                      can_delete,
+                "course_author_fullname":          course_author_data["fullname"],
+                "course_author_record_user_link":  course_author_record_user_link,
+                "is_course_author":                is_course_author,
+                "can_delete_all_wims_classes_css": can_delete_all_wims_classes_css}
 
     def purgerActivitesWims(self):
         u"""Supprime l'ensemble des travaux effectués dans toutes les activités Wims d'un cours."""

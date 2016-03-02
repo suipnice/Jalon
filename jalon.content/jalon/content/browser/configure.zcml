@@ -14,14 +14,6 @@
    />
 
   <browser:page
-      name="mon_espace_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
-      template="templates/mon_espace/mon_espace_view.pt"
-      permission="zope2.View"
-      class=".scripts.mon_espace_view.MonEspaceView"
-   />
-
-  <browser:page
       name="jalonfolder_view"
       for="jalon.content.interfaces.jaloninterface.IJalonFolder"
       template="templates/jalon_folder.pt"
@@ -60,13 +52,6 @@
       name="exercicewims_view"
       for="jalon.content.interfaces.jaloninterface.IJalonExerciceWims"
       template="templates/exercicewims_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
-      name="ressource_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonRessourceExterne"
-      template="templates/ressource_view.pt"
       permission="zope2.View"
    />
 

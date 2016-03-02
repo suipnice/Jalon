@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="external_resource_type context/getTypeRessourceExterne">
+
+    <h2>
+        <tal:replace replace="context/Title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div tal:condition="python:external_resource_type == 'Video'">
+        <strong>Auteur :</strong> <tal:block replace="context/getVideoauteurname"/>
+    </div>
+
+    <div class="panel radius"
+         tal:condition="not:context/Description"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel radius"
+         tal:condition="context/Description"
+         tal:content="structure python:context.Description().replace('\n', '<br/>')"></div>
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href context/getURLLien"
+       tal:condition="python:external_resource_type == 'Lien web'">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
+    </a>
+
+    <tal:condition condition="python:external_resource_type in ['Lecteur exportable', 'Video']">
+    <div class="flex-video"
+         tal:content="structure context/getLecteurExportable" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:removePlayerOnClose()"></script>
+    </tal:condition>
+
+</metal:main>
+
+</body>
+
+</html>

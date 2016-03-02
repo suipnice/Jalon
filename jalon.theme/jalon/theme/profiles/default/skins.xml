@@ -1,56 +1,77 @@
 <?xml version="1.0"?>
 <!-- This file holds the setup configuration for the portal_skins tool -->
 
-<!-- Change the value of these parameters to modify portal_skins behavior:
-     - allow_any: change it to True if you want users to be able to select the
-       skin to use from their personal preferences management page. In the
-       ZMI, this value is known as 'Skin flexibility'.
-     - cookie_persistence: change it to True if you want to make the skin cookie
-       persist indefinitely. In the ZMI, this value is known as 'Skin Cookie
-       persistence'.
-       -->
-<object name="portal_skins" allow_any="False" cookie_persistence="False"
-   default_skin="Jalon">
+    <!-- Change the value of these parameters to modify portal_skins behavior:
+        - allow_any: change it to True if you want users to be able to select the
+          skin to use from their personal preferences management page. In the
+          ZMI, this value is known as 'Skin flexibility'.
+        - cookie_persistence: change it to True if you want to make the skin cookie
+          persist indefinitely. In the ZMI, this value is known as 'Skin Cookie
+          persistence'.
+    -->
+    <object name="portal_skins"
+            allow_any="False"
+            cookie_persistence="False"
+            default_skin="Jalon">
 
- <!-- This list registers the folders that are stored in the skins directory
+    <!-- This list registers the folders that are stored in the skins directory
       of your product (on the filesystem) as Filesystem Directory Views within
       the portal_skins tool, so that they become usable as skin layers.
-      -->
- <!--object name="jalon_theme_custom_images"
-    meta_type="Filesystem Directory View"
-    directory="jalon.theme:skins/jalon_theme_custom_images"/-->
- <object name="jalon_theme_custom_templates"
-    meta_type="Filesystem Directory View"
-    directory="jalon.theme:skins/jalon_theme_custom_templates"/>
- <object name="jalon_theme_dynamic_script"
-    meta_type="Filesystem Directory View"
-    directory="jalon.theme:skins/jalon_theme_dynamic_script"/>
- <object name="jalon_theme_styles"
-    meta_type="Filesystem Directory View"
-    directory="jalon.theme:skins/jalon_theme_styles"/>
+    -->
+    <object name="jalon_theme_general"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_general"/>
+    <object name="jalon_theme_connexion"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_connexion"/>
+    <object name="jalon_theme_unauthorized_template"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_unauthorized_template"/>
+    <object name="jalon_theme_my_space"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_my_space"/>
+    <object name="jalon_theme_my_space_wims_createxo"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_my_space_wims_createxo"/>
+    <object name="jalon_theme_my_courses"
+            meta_type="Filesystem Directory View"
+            directory="jalon.theme:skins/jalon_theme_my_courses"/>
+    <object name="jalon_theme_dynamic_script"
+        meta_type="Filesystem Directory View"
+        directory="jalon.theme:skins/jalon_theme_dynamic_script"/>
+    <object name="jalon_theme_configuration"
+        meta_type="Filesystem Directory View"
+        directory="jalon.theme:skins/jalon_theme_configuration"/>
 
- <!-- A skin-path in this file corresponds to a Skin Selection in the
-     'Properties' tab of the portal_skins tool, in the ZMI.
-     You can define for each new skin path the layers that it holds. A new
-     skin can be based on another existing one by using the 'based-on'
-     attribute.
-     The definition of a layer accepts these parameters:
-       - name: quite self explanatory, the name of the layer.
-       - insert-before: name of the layer before which it must be added.
-       - insert-after: name of the layer after which it must be added.
-       Note: insert-before (and -after) accepts the value "*" which means
-       "all".
-       -->
+    <!-- A skin-path in this file corresponds to a Skin Selection in the
+         'Properties' tab of the portal_skins tool, in the ZMI.
+         You can define for each new skin path the layers that it holds. A new
+         skin can be based on another existing one by using the 'based-on'
+         attribute.
+         The definition of a layer accepts these parameters:
+           - name: quite self explanatory, the name of the layer.
+           - insert-before: name of the layer before which it must be added.
+           - insert-after: name of the layer after which it must be added.
+        Note: insert-before (and -after) accepts the value "*" which means "all".
+    -->
 
-<skin-path name="Jalon" based-on="Plone Default">
-    <!--layer name="jalon_theme_custom_images"
-           insert-after="custom"/-->
-    <layer name="jalon_theme_custom_templates"
-           insert-after="custom"/>
-    <layer name="jalon_theme_dynamic_script"
-           insert-after="jalon_theme_custom_templates"/>
-    <layer name="jalon_theme_styles"
-           insert-after="jalon_theme_dynamic_script"/>
-</skin-path>
+    <skin-path name="Jalon" based-on="Plone Default">
+        <layer name="jalon_theme_general"
+               insert-after="custom"/>
+        <layer name="jalon_theme_connexion"
+               insert-after="jalon_theme_general"/>
+        <layer name="jalon_theme_unauthorized_template"
+               insert-after="jalon_theme_connexion"/>
+        <layer name="jalon_theme_my_space"
+               insert-after="jalon_theme_unauthorized_template"/>
+        <layer name="jalon_theme_my_space_wims_createxo"
+               insert-after="jalon_theme_my_space"/>
+        <layer name="jalon_theme_my_courses"
+               insert-after="jalon_theme_my_space_wims_createxo"/>
+        <layer name="jalon_theme_dynamic_script"
+               insert-after="jalon_theme_my_space_wims_createxo"/>
+        <layer name="jalon_theme_configuration"
+               insert-after="jalon_theme_dynamic_script"/>
+    </skin-path>
 
 </object>

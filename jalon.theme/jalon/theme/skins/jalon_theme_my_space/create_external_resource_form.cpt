@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="errors options/state/getErrors | nothing">
+
+    <h2>
+        <i class="fa fa-external-link"></i><tal:block i18n:translate="">Créer un lien</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" id="js-webLinkCreator"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le lien;
+                          data-success_msg_post string:a été créé."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div tal:define="error errors/title | nothing"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <input id="title" name="title" type="text" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder"/>
+        </div>
+
+        <div class="field">
+            <label for="description" class="formQuestion" i18n:translate="label_description">
+                Description
+            </label>
+            <div class="fieldErrorBox"></div>
+            <textarea id="description" cols="40" name="description" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format"/>
+        </div>
+
+        <div tal:define="error errors/urlbiblio | nothing"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="urlbiblio" class="formQuestion" i18n:translate="label_lecteur_exportable">
+                URL ou Lecteur exportable
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <textarea id="urlbiblio" cols="40" name="urlbiblio" rows="5"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="requet/urlbiblio | nothing"/></textarea>
+        </div>
+
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="validate_key" value="create_external_resource"/>
+        <input type="hidden" name="member_id" tal:attributes="value user/getId"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-webLinkCreator','reveal-main')" />
+
+</metal:content-core>
+
+</body>
+
+</html>

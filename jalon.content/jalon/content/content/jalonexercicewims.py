@@ -11,15 +11,7 @@ from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonExerciceWims
 
 from logging import getLogger
-LOG = getLogger('jalonExerciceWims')
-"""
-# Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
-"""
+LOG = getLogger('[JalonExerciceWims]')
 
 from urlparse import urlparse
 
@@ -76,6 +68,24 @@ class JalonExerciceWims(ATDocumentBase):
     schema['description'].mode = "r"
     schema['text'].required = False
     schema['text'].mode = "r"
+
+    def getBreadcrumbs(self):
+        portal_url = self.portal_url.getPortalObject().absolute_url()
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  "%s/mon_espace" % portal_url},
+                {"title": _(u"Mes exercices WIMS"),
+                 "icon":  "fa fa-random",
+                 "link":  "%s/mon_espace/mes_exercices_wims" % portal_url},
+                {"title": self.Title(),
+                 "icon":  "fa fa-random",
+                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()}]
+
+    def getEditWimsExerciceMacroName(self):
+        edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
+        if self.getModele() == "externe":
+            edit_wims_exercice_macro_name = "edit_wims_exercice_externe"
+        return edit_wims_exercice_macro_name
 
     def getVariablesDefaut(self, modele):
         """ #getVariablesDefaut permet de lister les valeurs par defaut a definir en fonction du modele d'exercice."""
@@ -325,7 +335,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             else:
                 param = self.getVariablesDefaut(modele)
             if param is None:
-                LOG.error("addExoWims / getVariablesDefaut return None")
+                #LOG.error("addExoWims / getVariablesDefaut return None")
                 return None
 
         #Cas d'une modification (ou d'un import)
@@ -572,7 +582,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
             retour = json.loads(fichier)
-            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            #LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
 

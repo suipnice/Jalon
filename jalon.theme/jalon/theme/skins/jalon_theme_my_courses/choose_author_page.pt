@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content"
+            tal:define="dossier python:context.getId();
+                        isManager python:user.has_role('Manager')">
+
+    <tal:condition condition="isManager">
+    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+
+    <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
+
+        <section id="js-list-auteur" class="show-for-medium-up medium-12 columns">
+            <h2 i18n:translate="">Sélectionner un enseignant pour accéder à ses cours</h2>
+
+            <tal:define define="sesame_list python:context.aq_parent.objectIds();
+                                info_sesame_list python:context.getIndividus(sesame_list, 'listdict')">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nom"
+                                title="Trier selon le nom" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">NOM Prénom</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="type"
+                                title="Trier selon le type" i18n:attributes="data-title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Type</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="sesame"
+                                title="Trier selon l'identifiant" i18n:attributes="data-title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Identifiant</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="email"
+                                title="Trier selon l'adresse de courriel" i18n:attributes="data-title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Courriel</tal:block>
+                                </span>
+                            </th>
+                            <th i18n:translate="">Action</th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody class="list">
+                        <tal:repeat repeat="info_sesame info_sesame_list">
+                        <tr tal:condition="python:context.test(info_sesame['type'] != 'Etudiant', 1, 0)">
+                            <td class="nom">
+                                <tal:block tal:content="python:info_sesame['nom'].upper()" />
+                                <tal:block tal:content="python:info_sesame['prenom'].capitalize()" />
+                            </td>
+                            <td class="type show-for-medium-up" tal:content="info_sesame/type"/>
+                            <td class="sesame show-for-medium-up" tal:content="info_sesame/sesame"/>
+                            <td class="email show-for-medium-up">
+                                <a tal:attributes="href string:mailto:${info_sesame/email}" tal:content="info_sesame/email" />
+                            </td>
+                            <td>
+                                <a class="button small"
+                                   tal:define="parent_url python:context.aq_parent.absolute_url()"
+                                   tal:attributes="href string:${parent_url}/${info_sesame/sesame}/choose_course_page">
+                                    <i class="fa fa-align-justify"></i>
+                                    <tal:block i18n:translate="">Voir les cours</tal:block>
+                                </a>
+                            </td>
+                        </tr>
+                        </tal:repeat>
+                    </tbody>
+                </table>
+            </tal:define>
+        <tal:block define="script1 string:setSortableList('js-list-auteur',['nom','type','sesame','email'],'nom')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+        </tal:block>
+        </section>
+
+    </main>
+    </tal:condition>
+
+</metal:core>
+
+</body>
+
+</html>

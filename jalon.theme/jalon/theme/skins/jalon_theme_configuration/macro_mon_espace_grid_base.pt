@@ -1,0 +1,41 @@
+<tal:define define="infos_mon_espace context/getMonEspace;
+                    maintenance infos_mon_espace/maintenance;
+                    messages infos_mon_espace/messages">
+
+    <tal:comment replace="nothing">!-- Bloc annonce prévision maintenance --</tal:comment>
+    <div class="small-12 columns"
+         tal:condition="maintenance/annoncer_maintenance">
+        <metal:macro use-macro="context/connexion/macros/annoncer-maintenance-jalon"></metal:macro>
+    </div>
+
+    <tal:comment replace="nothing">!-- Bloc annonce vider cache navigateur --</tal:comment>
+    <div class="small-12 columns"
+         tal:condition="infos_mon_espace/vidercache">
+        <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
+    </div>
+
+    <tal:comment replace="nothing">!-- Bloc message général et message enseignant --</tal:comment>
+    <div class="small-12 columns"
+             tal:condition="python:messages['activer_message_general'] or messages['activer_message_enseignant']">
+        <div class="panel warning radius"
+             tal:condition="messages/activer_message_general">
+            <span tal:content="structure messages/message_general"/>
+        </div>
+
+        <div class="panel warning radius"
+             tal:condition="messages/activer_message_enseignant">
+            <span tal:content="structure messages/message_enseignant"/>
+        </div>
+    </div>
+
+    <tal:comment replace="nothing">!-- Grille d'accès à mon espace --</tal:comment>
+    <nav class="small-12 columns">
+        <tal:repeat repeat="block infos_mon_espace/grid">
+        <a tal:condition="block/activated"
+           tal:attributes="class string:button res-${block/css};
+                           href string:${container/aq_parent/absolute_url}/${block/link}">
+            <i tal:attributes="class block/icon"></i><tal:replace replace="block/title"/>
+        </a>
+        </tal:repeat>
+    </nav>
+</tal:define>

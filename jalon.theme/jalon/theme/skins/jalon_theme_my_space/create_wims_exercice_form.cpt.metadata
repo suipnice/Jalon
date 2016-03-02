@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_my_space
+
+[actions]
+action.failure = traverse_to:string:create_wims_exercice_form
+
+action.success_create_wims_exercice = traverse_to:string:create_wims_exercice_script

@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing">
+
+    <h2><tal:block i18n:translate="">Créer un cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-courseCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le cours;
+                          data-success_msg_post string:a été créé."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="archetypes-fieldname-title"
+                tal:define="error errors/title | nothing;
+                            arch_class string:field"
+                tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+            <input type="text" id="title" name="title" maxlength="255" size="30"
+                   tal:attributes="value request/title | nothing"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   required="required" />
+        </div>
+
+        <div id="archetypes-fieldname-description"
+             tal:define="error errors/description | nothing;
+                         arch_class string:field"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+              <label for="description" i18n:translate="">Description</label>
+              <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+              <textarea id="description" name="description" rows="7"><tal:block replace="request/description | nothing"/></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="user_id" tal:attributes="value user/getId" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-courseCreator','reveal-main','description')" />
+
+    </metal:main>
+</body>
+
+</html>

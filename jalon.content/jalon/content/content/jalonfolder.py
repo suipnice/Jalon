@@ -83,10 +83,21 @@ class JalonFolder(ATFolder):
     meta_type = 'JalonFolder'
     schema = JalonFolderSchema
 
+    folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
+                            "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
+                            "Wims":          "mon_espace/mes_exercices_wims",
+                            "Externes":      "mon_espace/mes_ressources_externes",
+                            "Glossaire":     "mon_espace/mes_termes_glossaire",
+                            "Webconference": "mon_espace/mes_webconferences",
+                            "Video":         "mon_espace/mes_videos_pod"}
+
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
         self.uploader_id = self._uploader_id()
 
+    #---------------------#
+    # Installation method #
+    #---------------------#
     def addSubJalonFolder(self, memberid):
         addSubJalonFolder(self, memberid)
 
@@ -96,19 +107,17 @@ class JalonFolder(ATFolder):
         blacklist.setBlacklistStatus("context", True)
         self.reindexObject()
 
-    def getItemSize(self, item_size):
-        """ Convert "Human friendly" file size into original size, in bytes."""
-        display_size = item_size.split(" ")
-        # if the size is a float, then make it an int
-        # happens for large files
-        try:
-            size = float(display_size[0])
-        except (ValueError, TypeError):
-            size = 0
-        units = display_size[-1]
-        if units in SIZE_CONST:
-            size = size * SIZE_CONST[units]
-        return size
+    #--------------------#
+    # My Space Utilities #
+    #--------------------#
+    def getMySpaceFolder(self):
+        #LOG.info("----- getMySpaceFolder -----")
+        return self.folder_my_space_dict[self.getId()]
+
+    def getMySubSpaceFolder(self, user_id, folder_id):
+        #LOG.info("----- getMySubSpaceFolder -----")
+        portal = self.portal_url.getPortalObject()
+        return getattr(getattr(portal.Members, user_id), folder_id)
 
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
         """Fourni la liste des elements d'un jalonfolder."""
@@ -179,45 +188,47 @@ class JalonFolder(ATFolder):
                 reindex = True
         if reindex:
             self.reindexObject()
-        #return self.getFolderContents(contentFilter=dico)
+        # return self.getFolderContents(contentFilter=dico)
 
     def getContentsWims(self, authMember):
         classe = self.getComplement()
         if not classe:
-            #1er  cas : Aucune classe n'existe pour cet utilisateur
+            # 1er  cas : Aucune classe n'existe pour cet utilisateur
             member = self.getInfosMembre(authMember)
             auth_email = member["email"]
             fullname = member["fullname"]
-            groupement = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
+            groupement = self.wims("creerClasse", {
+                                   "authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
             if groupement["status"] == "OK":
-                idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
+                idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email":
+                                     auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
                 if idClasse:
                     self.complement = str(groupement["class_id"])
                     return []
             else:
-                #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-                #print "[jalonfolder.py/getContents] Creation du groupement impossible"
-                #print " Reponse WIMS : %s" % groupement
-                #print "*****                                                 *****"
+                # print "*****    Mauvais parametrage de votre connexion WIMS  *****"
+                # print "[jalonfolder.py/getContents] Creation du groupement impossible"
+                # print " Reponse WIMS : %s" % groupement
+                # print "*****                                                 *****"
                 return {"erreur": "wims_bad_conf"}
         else:
-            #2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
-            #print "Classe %s" % self.getComplement()
+            # 2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
+            # print "Classe %s" % self.getComplement()
             exercices = self.wims("getExercicesWims",
                                   {"authMember": authMember,
                                    "qclass": "%s_1" % self.getComplement(),
                                    "jalon_URL": self.absolute_url()
                                    })
             if exercices["status"] == "ERROR":
-                #en cas d'indisponibilite, le code retour de WIMS donne un type "HTTPError"
+                # en cas d'indisponibilite, le code retour de WIMS donne un type "HTTPError"
                 if "type" in exercices:
                     return {"erreur": "wims_unavailable"}
                 else:
                     return {"erreur": "wims_bad_conf"}
-            #except:
+            # except:
             #   mail_body = "*****    WIMS indisponible ou Mauvais parametrage de La connexion WIMS  *****\n"
             #   mail_body += "[jalonfolder.py/getContents] getExercicesWims\n"
-            #   mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
+            # mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
             #   mail_body += " authMember : %s \n" % authMember
             #   mail_body += " qclass : %s_1 \n" % self.getComplement()
             #   mail_body += "*****                                                                   *****\n"
@@ -237,7 +248,7 @@ class JalonFolder(ATFolder):
                     exercices_wims = exercices["exotitlelist"]
                 if len(exercices_jalon) < len(exercices_wims):
                     liste_modeles = self.wims("getWimsProperty", "modele_wims").keys()
-                    #On recupere les exos de wims pour les créer sur jalon
+                    # On recupere les exos de wims pour les créer sur jalon
                     for exo_wims in exercices_wims:
                         exo_ok = False
                         for exo_jalon in exercices_jalon:
@@ -247,17 +258,18 @@ class JalonFolder(ATFolder):
                             modele = exo_wims["id"].split("-")[0]
                             if modele not in liste_modeles:
                                 modele = "exercicelibre"
-                            #CREATION de l'exercice %s sur Jalon " % exo_wims["id"]
-                            idobj = self.invokeFactory(type_name='JalonExerciceWims', id=exo_wims["id"])
+                            # CREATION de l'exercice %s sur Jalon " % exo_wims["id"]
+                            idobj = self.invokeFactory(
+                                type_name='JalonExerciceWims', id=exo_wims["id"])
                             obj = getattr(self, idobj)
                             obj.setProperties({"Title": exo_wims["title"],
                                                "Modele": modele})
             else:
                 #*****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
                 # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
-                #print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-                #print "[jalonfolder.py] getExercicesWims : %s" % exercices
-                #print "*****                                                *****"
+                # print "*****    Mauvais parametrage de votre connexion WIMS  *****"
+                # print "[jalonfolder.py] getExercicesWims : %s" % exercices
+                # print "*****                                                *****"
                 return "wims_unavailable"
 
     def getContentsVideo(self, member_id, maj_video):
@@ -291,7 +303,7 @@ class JalonFolder(ATFolder):
                         self.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
                         obj = getattr(self, idobj)
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
-                        #LOG.info(video)
+                        # #LOG.info(video)
                         param = {"Title":                video["title"],
                                  "TypeRessourceExterne": "Video",
                                  "Videourl":             video["full_url"],
@@ -302,15 +314,87 @@ class JalonFolder(ATFolder):
                                  "Videothumbnail":       video["thumbnail"]}
                         obj.setProperties(param)
             elif jalon_videos_id:
-                #Supprimer toutes les vidéos
+                # Supprimer toutes les vidéos
                 pass
 
-    def DEBUG(self):
-        a = set([1, 2, 3, 4])
-        b = set([3, 4, 5, 6])
+    def getItemSize(self, item_size):
+        """ Convert "Human friendly" file size into original size, in bytes."""
+        display_size = item_size.split(" ")
+        # if the size is a float, then make it an int
+        # happens for large files
+        try:
+            size = float(display_size[0])
+        except (ValueError, TypeError):
+            size = 0
+        units = display_size[-1]
+        if units in SIZE_CONST:
+            size = size * SIZE_CONST[units]
+        return size
 
-        c = a.difference(b)
-        return c
+    def isObjectAttached(self, object_context):
+        #LOG.info("----- isObjectAttached -----")
+        return "is_object_attached" if len(object_context.getRelatedItems()) else "isnt_object_attached"
+
+    def getSearchPodVideosBreadcrumbs(self):
+        return [{"title": _(u"Mon espace"),
+                 "icon":  "fa fa-home",
+                 "link":  self.aq_parent.absolute_url()},
+                {"title": _(u"Mes vidéos POD"),
+                 "icon":  "fa fa-youtube-play",
+                 "link":  self.absolute_url()},
+                {"title": _(u"Rechercher une vidéo sur POD"),
+                 "icon":  "fa fa-search",
+                 "link":  "%s/search_pod_videos_form" % self.absolute_url()}]
+
+    #----------------------#
+    # My Courses utilities #
+    #----------------------#
+    def getCourseUserFolder(self, user_id):
+        return jalon_utils.getCourseUserFolder(self, user_id)
+
+    def modifyFavoriteCourse(self, user_id, course_id):
+        #LOG.info("----- modifyFavorite -----")
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course = getattr(course_user_folder, course_id)
+        favorites = list(course.Subject())
+        if not user_id in favorites:
+            favorites.append(user_id)
+            archives = list(course.getArchive())
+            if user_id in archives:
+                archives.remove(user_id)
+                course.setArchive(tuple(archives))
+        else:
+            favorites.remove(user_id)
+        course.setSubject(tuple(favorites))
+        course.setProperties({"DateDerniereModif": DateTime()})
+
+    def modifyArchiveCourse(self, user_id, course_id):
+        #LOG.info("----- modifyFavorite -----")
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course = getattr(course_user_folder, course_id)
+        archives = list(course.getArchive())
+        if not user_id in archives:
+            archives.append(user_id)
+            favorites = list(course.Subject())
+            if user_id in favorites:
+                favorites.remove(user_id)
+                course.setSubject(tuple(favorites))
+        else:
+            archives.remove(user_id)
+        course.setArchive(tuple(archives))
+        course.setProperties({"DateDerniereModif": DateTime()})
+
+    def getDataCourseFormAction(self, user_id, course_id):
+        #LOG.info("----- getDataCourseFormAction -----")
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course_object = getattr(course_user_folder, course_id)
+        return course_object.getDataCourseFormAction(user_id, course_id)
+
+    def getDataCourseWimsActivity(self, user_id, course_id):
+        #LOG.info("----- getDataCourseWimsActivity -----")
+        course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
+        course_object = getattr(course_user_folder, course_id)
+        return course_object.getDataCourseWimsActivity(user_id, course_id)
 
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
@@ -382,7 +466,7 @@ class JalonFolder(ATFolder):
 
         return cours_infos
 
-    def getListeCoursEns(self, onglet, member):
+    def getListeCoursEns(self, member, onglet):
         #LOG.info("----- getListeCoursEns -----")
         """ Renvoi la liste des cours pour authMember."""
         courses_list = []
@@ -414,9 +498,12 @@ class JalonFolder(ATFolder):
         filtre = {"portal_type": "JalonCours"}
         if onglet == "1":
             filtre["Subject"] = member_id
-            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
             courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
             actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
                                "action_icon": "fa fa-star-o fa-fw warning",
@@ -426,23 +513,29 @@ class JalonFolder(ATFolder):
             else:
                 self.setComplement("False")
         if onglet == "2":
-            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id))
             courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
         if onglet == "3":
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            courses_list.extend(
+                list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
             del actions_list[1]
             del actions_list[-1]
         if onglet == "4":
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            courses_list.extend(
+                list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
             del actions_list[1]
             del actions_list[1]
             del actions_list[1]
             del actions_list[-1]
         if onglet == "5":
             filtre["getArchive"] = member_id
-            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
-            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
+            courses_list = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
             courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
             actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
                                 "action_icon": "fa fa-folder-open fa-fw warning",
@@ -461,40 +554,14 @@ class JalonFolder(ATFolder):
             if not cours_brain.getId in courses_ids_list:
                 if not onglet in ["1", "5"]:
                     if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
-                        courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                        courses_list_filter.append(
+                            self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 else:
-                    courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                    courses_list_filter.append(
+                        self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 courses_ids_list.append(cours_brain.getId)
         return {"is_courses_list": True,
                 "courses_list":    list(courses_list_filter)}
-
-    def getInfosApogee(self, code, type):
-        portal = self.portal_url.getPortalObject()
-        bdd = getToolByName(portal, "portal_jalon_bdd")
-        if type == "etape":
-            retour = self.encodeUTF8(bdd.getInfosEtape(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-        if type in ["ue", "uel"]:
-            retour = self.encodeUTF8(bdd.getInfosELP2(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-        if type == "groupe":
-            retour = self.encodeUTF8(bdd.getInfosGPE(code))
-            if not retour:
-                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-            return list(retour)
-
-    # getInfosMembre recupere les infos sur les personnes.
-    def getInfosMembre(self, username):
-        #self.plone_log("getInfosMembre")
-        return jalon_utils.getInfosMembre(username)
-
-    def getPropertiesMessages(self, key=None):
-        jalon_properties = self.portal_jalon_properties
-        return jalon_properties.getPropertiesMessages(key)
 
     def getCours(self, categorie="1", authMember=None):
         if authMember.has_role("EtudiantJalon"):
@@ -523,10 +590,11 @@ class JalonFolder(ATFolder):
 
         if categorie == "1":
             dicoUE = {}
-            #pour les nouveaux étudiant qui n'ont pas encore de diplome
+            # pour les nouveaux étudiant qui n'ont pas encore de diplome
             if not diplomes:
                 listeCours = []
-                liste = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=authMember.getId()))
+                liste = list(portal_catalog.searchResults(
+                    portal_type="JalonCours", getRechercheAcces=authMember.getId()))
                 for cours in liste:
                     auteur = cours.getAuteurPrincipal
                     if not auteur:
@@ -561,13 +629,15 @@ class JalonFolder(ATFolder):
                     for inscription in inscription_pedago:
                         ELP = "*-*".join([inscription["TYP_ELP"], inscription["COD_ELP"]])
                         if not ELP in dicoUE:
-                            dicoUE[ELP] = {"type": inscription["TYP_ELP"], "libelle": inscription["LIB_ELP"]}
+                            dicoUE[ELP] = {
+                                "type": inscription["TYP_ELP"], "libelle": inscription["LIB_ELP"]}
                             listeUE.append(ELP)
 
                     listeUE.append(authMember.getId())
                     query = {'query': listeUE, 'operator': 'or'}
                     listeCours = []
-                    liste = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=query))
+                    liste = list(portal_catalog.searchResults(
+                        portal_type="JalonCours", getRechercheAcces=query))
                     for cours in liste:
                         listeAcces = []
                         auteur = cours.getAuteurPrincipal
@@ -581,7 +651,8 @@ class JalonFolder(ATFolder):
 
                         for acces in cours.getListeAcces:
                             if acces in dicoUE:
-                                listeAcces.append("%s : %s" % (dicoUE[acces]['type'], dicoUE[acces]['libelle']))
+                                listeAcces.append(
+                                    "%s : %s" % (dicoUE[acces]['type'], dicoUE[acces]['libelle']))
                         if authMember.getId() in cours.getGroupe:
                             listeAcces.append("Invité")
                         try:
@@ -602,7 +673,8 @@ class JalonFolder(ATFolder):
                     listeDiplome.append({"libelle":  etape[0], "listeCours": listeCours})
         else:
             listeCours = []
-            liste = list(portal_catalog.searchResults(portal_type="JalonCours", getCategorieCours=categorie))
+            liste = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCategorieCours=categorie))
             for cours in liste:
                 auteur = cours.getAuteurPrincipal
                 if not auteur:
@@ -639,7 +711,8 @@ class JalonFolder(ATFolder):
         listeCours = []
         listeDiplome = []
         if categorie == "1":
-            liste = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=authMember.getId()))
+            liste = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getRechercheAcces=authMember.getId()))
             for cours in liste:
                 auteur = cours.getAuteurPrincipal
                 if not auteur:
@@ -662,7 +735,8 @@ class JalonFolder(ATFolder):
             listeDiplome.append({"libelle": "Mes cours", "listeCours": listeCours})
         else:
             listeCours = []
-            liste = list(portal_catalog.searchResults(portal_type="JalonCours", getCategorieCours=categorie))
+            liste = list(portal_catalog.searchResults(
+                portal_type="JalonCours", getCategorieCours=categorie))
             for cours in liste:
                 auteur = cours.getAuteurPrincipal
                 if not auteur:
@@ -696,11 +770,14 @@ class JalonFolder(ATFolder):
     def getListeCours(self, authMember):
         portal = self.portal_url.getPortalObject()
         portal_catalog = getToolByName(portal, "portal_catalog")
-        listeCours = list(portal_catalog.searchResults(portal_type="JalonCours", Creator=authMember))
-        listeCoursAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMember))
+        listeCours = list(
+            portal_catalog.searchResults(portal_type="JalonCours", Creator=authMember))
+        listeCoursAuteur = list(
+            portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMember))
         if listeCoursAuteur:
             listeCours.extend(listeCoursAuteur)
-        listeCoursCoAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMember))
+        listeCoursCoAuteur = list(
+            portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMember))
         if listeCoursCoAuteur:
             listeCours.extend(listeCoursCoAuteur)
 
@@ -713,19 +790,22 @@ class JalonFolder(ATFolder):
                     if type == "etape":
                         retour = bdd.getInfosEtape(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce diplôme." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     if type in ["ue", "uel"]:
                         retour = bdd.getInfosELP2(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     if type == "groupe":
                         retour = bdd.getInfosGPE(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce groupe." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     nbSeances = 0
@@ -739,6 +819,33 @@ class JalonFolder(ATFolder):
                     dicoAccess[code]["listeCours"].append(cours.Title)
         return dicoAccess
 
+    #-----------------------#
+    # My Students Utilities #
+    #-----------------------#
+    def getInfosApogee(self, code, type):
+        portal = self.portal_url.getPortalObject()
+        bdd = getToolByName(portal, "portal_jalon_bdd")
+        if type == "etape":
+            retour = self.encodeUTF8(bdd.getInfosEtape(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+        if type in ["ue", "uel"]:
+            retour = self.encodeUTF8(bdd.getInfosELP2(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+        if type == "groupe":
+            retour = self.encodeUTF8(bdd.getInfosGPE(code))
+            if not retour:
+                return ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+            return list(retour)
+
+    # getInfosMembre recupere les infos sur les personnes.
+    def getInfosMembre(self, username):
+        # self.plone_log("getInfosMembre")
+        return jalon_utils.getInfosMembre(username)
+
     def getListeEtudiants(self, code, typeCode):
         bdd = getToolByName(self, "portal_jalon_bdd")
         listeEtudiant = bdd.rechercherUtilisateurs(code, "Etudiant", True)
@@ -748,7 +855,8 @@ class JalonFolder(ATFolder):
         listeEtudiant = self.getListeEtudiants(cod_etp, cod_vrs_vet)
         TSV = ["\t".join(["NOM", "PRENOM", "SESAME", "NUMERO ETUDIANT", "COURRIEL"])]
         for etudiant in listeEtudiant:
-            TSV.append("\t".join([etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"], etudiant["SESAME_ETU"], str(etudiant["COD_ETU"]), etudiant["EMAIL_ETU"]]))
+            TSV.append("\t".join([etudiant["LIB_NOM_PAT_IND"], etudiant["LIB_PR1_IND"], etudiant[
+                       "SESAME_ETU"], str(etudiant["COD_ETU"]), etudiant["EMAIL_ETU"]]))
         return "\n".join(TSV)
 
     def getListeEtudiantsXLS(self, cod_etp):
@@ -837,9 +945,12 @@ class JalonFolder(ATFolder):
         return jalon_utils.getShortText(text, limit)
 
     def getPlainShortText(self, html, limit=75):
-        #self.plone_log("getPlainShortText")
+        # self.plone_log("getPlainShortText")
         return jalon_utils.getPlainShortText(html, limit)
 
+    #---------------------------------#
+    # OLD TAG -> DELETE WHEN FINISHED #
+    #---------------------------------#
     def getSelectedTab(self, cle="onglet", defaut=""):
         # Init
         tabs = {}
@@ -860,7 +971,18 @@ class JalonFolder(ATFolder):
                 defaut = tabs[spaceName]
         return defaut
 
+    def ajouterTag(self, tag):
+        if not tag in self.Subject():
+            tags = list(self.Subject())
+            tags.append(tag)
+            self.setSubject(tuple(tags))
+            self.reindexObject()
+
+    #---------------------------------#
+    # NEW TAG                         #
+    #---------------------------------#
     def getSelectedTags(self):
+        #LOG.info("----- getSelectedTags -----")
         # Init
         tags = {}
         subjects = ""
@@ -873,6 +995,7 @@ class JalonFolder(ATFolder):
             subjects = self.REQUEST.form['subject']
             tags[spaceName] = subjects
             self.REQUEST.SESSION.set('tags', tags)
+            #LOG.info(tags)
         else:
             # Pas de sélection
             if spaceName in tags:
@@ -891,7 +1014,8 @@ class JalonFolder(ATFolder):
             for mot in mots:
                 locale.setlocale(locale.LC_ALL, 'fr_FR')
                 try:
-                    retour.append({"tag": urllib.quote(mot), "titre": DateTime(mot).strftime("%B %Y")})
+                    retour.append(
+                        {"tag": urllib.quote(mot), "titre": DateTime(mot).strftime("%B %Y")})
                 except:
                     retour.append({"tag": urllib.quote(mot), "titre": mot})
         else:
@@ -899,19 +1023,67 @@ class JalonFolder(ATFolder):
                 retour.append({"tag": urllib.quote(mot), "titre": mot})
         return retour
 
-    def ajouterTag(self, tag):
-        if not tag in self.Subject():
-            tags = list(self.Subject())
-            tags.append(tag)
-            self.setSubject(tuple(tags))
-            self.reindexObject()
+    def addTagFolder(self, tag):
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
 
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
+        folder = getattr(home, folder_dict[self.getId()])
+        if not tag in folder.Subject():
+            tags = list(folder.Subject())
+            tags.append(tag)
+            folder.setSubject(tuple(tags))
+            folder.reindexObject()
+
+    def deleteTagFolder(self, tag):
+        tag = urllib.unquote(tag)
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
+        folder = getattr(home, folder_dict[self.getId()])
+
+        tags = list(folder.Subject())
+        if tag in tags:
+            tags.remove(tag)
+            folder.setSubject(tuple(tags))
+            folder.reindexObject()
+
+            # Mise à jour des sélections enregistrées en session
+            tags_in_session = self.REQUEST.SESSION.get('tags')
+            spaceName = folder.getId().lower()
+            selected = tags_in_session[spaceName].split(",")
+            try:
+                selected.remove(tag)
+            except ValueError:
+                pass
+            tags_in_session[spaceName] = ','.join(selected)
+            self.REQUEST.SESSION.set('tags', tags_in_session)
+
+    #--------#
+    # DIVERS #
+    #--------#
     def ajouterUtilisateurJalon(self, form):
         portal = self.portal_url.getPortalObject()
         portal_registration = getToolByName(portal, 'portal_registration')
         portal_membership = getToolByName(portal, 'portal_membership')
         password = portal_registration.generatePassword()
-        portal_membership.addMember(form["login"], password, ("EtudiantJalon", "Member",), "", {"fullname": form["fullname"], "email": form["email"]})
+        portal_membership.addMember(form["login"], password, ("EtudiantJalon", "Member",), "", {
+                                    "fullname": form["fullname"], "email": form["email"]})
         portal_registration.registeredNotify(form["login"])
 
     def majFichier(self, fichier):
@@ -934,9 +1106,9 @@ class JalonFolder(ATFolder):
                     dico[idFichier]["titreElement"] = fichier.Title()
                     item.setInfosElement(dico)
 
-    def dupliquerCours(self, idcours, creator, manager):
+    def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
-        #LOG.info("[dupliquerCours]")
+        # #LOG.info("[dupliquerCours]")
         import time
         home = self
         home_id = self.getId()
@@ -944,17 +1116,16 @@ class JalonFolder(ATFolder):
             home = getattr(self.aq_parent, manager)
             home_id = home.getId()
 
-        if home_id == creator:
-            cours = getattr(self, idcours)
-        else:
-            cours = getattr(getattr(self.aq_parent, creator), idcours)
+        cours = getattr(self, idcours)
         infos_element = copy.deepcopy(cours.getElementCours())
 
         try:
-            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
+            idobj = home.invokeFactory(
+                type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
         except:
             time.sleep(1)
-            idobj = home.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
+            idobj = home.invokeFactory(
+                type_name='JalonCours', id="Cours-%s-%s" % (home_id, DateTime().strftime("%Y%m%d%H%M%S")))
         duplicata = getattr(home, idobj)
 
         # On duplique chaque classe de la liste getListeClasses() coté Wims,
@@ -968,7 +1139,8 @@ class JalonFolder(ATFolder):
             new_listeClasses.append({})
             for auteur in dico:
                 classe_id = dico[auteur]
-                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe_id}
+                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember(
+                    ).getId(), "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
                 rep_wims = self.wims("verifierRetourWims",
                                      {"rep": rep_wims,
@@ -980,8 +1152,10 @@ class JalonFolder(ATFolder):
                 else:
                     portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
                     contact_link = portal_jalon_properties.getLienContact()
-                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (contact_link["contact_link"], contact_link["portal_title"], idcours, idobj)
-                    message = _(u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
+                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
+                        contact_link["contact_link"], contact_link["portal_title"], idcours, idobj)
+                    message = _(
+                        u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
                     self.plone_utils.addPortalMessage(message, type='error')
         #LOG.info('new_listeClasses : %s' % new_listeClasses)
 
@@ -1012,7 +1186,8 @@ class JalonFolder(ATFolder):
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 
-        #dico_espaces contiendra les espaces enseignants précédement chargés, afin d'optimiser le traitement.
+        # dico_espaces contiendra les espaces enseignants précédement chargés,
+        # afin d'optimiser le traitement.
         dico_espaces = {}
 
         new_infos_element = copy.deepcopy(infos_element)
@@ -1038,7 +1213,8 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents.
                     infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(
+                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1053,14 +1229,18 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents et exercices.
                     infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(
+                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(
+                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
-                    #On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le cours dupliqué.
+                    # On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le
+                    # cours dupliqué.
                     del new_infos_element[key]
                     duplicata.setElementsCours(new_infos_element)
-                    #On retire également l'objet des infos_element du cours d'origine, afin de corriger le bug.
+                    # On retire également l'objet des infos_element du cours d'origine, afin
+                    # de corriger le bug.
                     cours.setElementsCours(new_infos_element)
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
                     self.wims("verifierRetourWims", {"rep": rep,
@@ -1070,7 +1250,8 @@ class JalonFolder(ATFolder):
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
-                    self.associerCoursListeObjets(duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(
+                        duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
 
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)
@@ -1095,7 +1276,7 @@ class JalonFolder(ATFolder):
                 repertoire = dicoRep[repertoire]
             if "*-*" in id_objet:
                 id_objet = id_objet.replace("*-*", ".")
-            #On en profite pour remplir "dico_espaces", qui nous permettra d'éviter de trop nombreux appels à "getattr",
+            # On en profite pour remplir "dico_espaces", qui nous permettra d'éviter de trop nombreux appels à "getattr",
             # afin d'optimiser la tache pour des cours avec beacoup d'objets.
             createur = infos_objet["createurElement"]
             if createur not in dico_espaces:
@@ -1149,7 +1330,8 @@ class JalonFolder(ATFolder):
         motdepasse = self.getComplement()
         self.connect('connexion', {})
         if not motdepasse:
-            motdepasse = ''.join([random.choice(string.ascii_letters + string.digits) for i in range(8)])
+            motdepasse = ''.join(
+                [random.choice(string.ascii_letters + string.digits) for i in range(8)])
             self.setComplement(motdepasse)
             liste = ["Webconference", "Sonorisation"]
             liste.remove(self.getId())
@@ -1162,7 +1344,8 @@ class JalonFolder(ATFolder):
                 fullname = member.getProperty("displayName")
             if not auth_email:
                 auth_email = member.getProperty("mail")
-            self.connect('creerUser', {'userid': authMember, "password": motdepasse, "fullname": fullname, "email": auth_email})
+            self.connect('creerUser', {
+                         'userid': authMember, "password": motdepasse, "fullname": fullname, "email": auth_email})
         else:
             self.connect('majPasswordUser', {'userid': authMember, "password": motdepasse})
         return self.connect('genererSessionUser', {'userid': authMember, "password": motdepasse})
@@ -1189,7 +1372,8 @@ class JalonFolder(ATFolder):
                 fullname = member.getProperty("fullname")
                 if not fullname:
                     fullname = member.getProperty("displayName")
-                reunion = self.connect('creerReunion', {'userid': authMember, "password": motdepasse, "fullname": fullname, "modele": modele, "repertoire": self.getId()})
+                reunion = self.connect('creerReunion', {
+                                       'userid': authMember, "password": motdepasse, "fullname": fullname, "modele": modele, "repertoire": self.getId()})
                 self.plone_log("reunion")
                 self.plone_log(reunion)
             else:
@@ -1226,13 +1410,14 @@ class JalonFolder(ATFolder):
         #       return dossierWIMS.transfererExosWIMS("id_source")
 
         """
-        #On verifie que self est bien un dossier wims.
+        # On verifie que self est bien un dossier wims.
         if self.getId() != "Wims":
             return {"status": "ERROR", "message": "Cette fonction doit etre appelee depuis un dossier WIMS"}
         portal = self.portal_url.getPortalObject()
         source = getattr(getattr(portal.Members, user_source), "Wims")
 
-        # On demande la liste des exercices WIMS, ce qui aura pour conséquence la création du groupement si celui-ci n'existait pas.
+        # On demande la liste des exercices WIMS, ce qui aura pour conséquence la
+        # création du groupement si celui-ci n'existait pas.
         listeExos = source.objectValues("JalonExerciceWims")
 
         """
@@ -1264,14 +1449,17 @@ class JalonFolder(ATFolder):
                 newExo.setProperties({"Qnum":         exercice.getQnum(),
                                       "ListeIdsExos": exercice.getListeIdsExos()})
                 listeSeries.append(idExo)
-                # on reporte le traitement à plus tard. il faut d'abord que tous les exos soient importés.
+                # on reporte le traitement à plus tard. il faut d'abord que tous les exos
+                # soient importés.
 
             # Cas classique : on ajoute l'exercice côté WIMS
             else:
-                fichierWims = self.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % source.getComplement(), "qexo": idExo, "code": authMember})
+                fichierWims = self.wims("callJob", {
+                                        "job": "getexofile", "qclass": "%s_1" % source.getComplement(), "qexo": idExo, "code": authMember})
                 try:
                     retourWIMS = json.loads(fichierWims)
-                    # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
+                    # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être
+                    # indisponible.
                     return {"status": "ERROR", "message": "jalonfolder/transfererExosWIMS : Impossible d'ajouter un exercice", "nbExos": nbExos, "user_source": user_source, "user_dest": authMember, "retourWIMS": retourWIMS}
                 except:
                     pass
@@ -1288,14 +1476,15 @@ class JalonFolder(ATFolder):
             subject.append(urllib.quote(etiquette))
             newExo.setSubject(subject)
 
-            #Mise à jour des étiquettes du parent
+            # Mise à jour des étiquettes du parent
             if not etiquette in listeSubject:
                 listeSubject.append(etiquette)
             newExo.reindexObject()
 
             nbExos = nbExos + 1
 
-        # on reparcourt uniquement les groupes d'exercices, pour pouvoir mettre a jour les "relatedItems"
+        # on reparcourt uniquement les groupes d'exercices, pour pouvoir mettre a
+        # jour les "relatedItems"
         for groupe in listeSeries:
             objetGroupe = getattr(self, groupe)
             listeExosGroupe = objetGroupe.getListeIdsExos()
@@ -1318,7 +1507,8 @@ class JalonFolder(ATFolder):
         """ Supprime l'ensemble des classes WIMS de "listClasses"."""
         deleted_classes = []
         for classe in listClasses:
-            dico = {"job": "delclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
+            dico = {"job": "delclass", "code":
+                    self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe}
             rep_wims = self.wims("callJob", dico)
             rep_wims = self.wims("verifierRetourWims",
                                  {"rep": rep_wims,
@@ -1417,6 +1607,10 @@ class JalonFolder(ATFolder):
     #-----------------#
     #   Utilitaires   #
     #-----------------#
+    def getPropertiesMessages(self, key=None):
+        jalon_properties = self.portal_jalon_properties
+        return jalon_properties.getPropertiesMessages(key)
+
     def getJalonProperty(self, info):
         return jalon_utils.getJalonProperty(info)
 
@@ -1469,11 +1663,11 @@ class JalonFolder(ATFolder):
         jalon_properties = getToolByName(self, "portal_jalon_properties")
         return jalon_properties.getJalonPhoto(user_id)
 
-    #Suppression marquage HTML
+    # Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
 
-    #supprimerCaractereSpeciaux
+    # supprimerCaractereSpeciaux
     def supprimerCaractereSpeciaux(self, chaine):
         return jalon_utils.supprimerCaractereSpeciaux(chaine)
 

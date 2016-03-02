@@ -1,0 +1,24 @@
+<tal:define define="portal_url container/aq_parent/absolute_url;
+                    left_menu request/left_menu">
+            <ul class="left">
+            <tal:repeat repeat="left_menu_li left_menu">
+                <li tal:attributes="class left_menu_li/class">
+                    <a tal:attributes="href string:${portal_url}/${left_menu_li/link}">
+                        <i tal:attributes="class left_menu_li/icon"></i>
+                        <tal:replace replace="left_menu_li/title" />
+                    </a>
+                    <ul class="dropdown"
+                        tal:condition="left_menu_li/sub_menu">
+                        <tal:repeat repeat="sub_menu_li left_menu_li/sub_menu">
+                        <li>
+                            <a tal:attributes="href string:${portal_url}/${sub_menu_li/link}">
+                                <i tal:attributes="class sub_menu_li/icon"></i>
+                                <tal:replace replace="sub_menu_li/title" />
+                            </a>
+                        </li>
+                        </tal:repeat>
+                    </ul>
+                </li>
+            </tal:repeat>
+            </ul>
+</tal:define>

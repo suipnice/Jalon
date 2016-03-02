@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_my_space
+
+[actions]
+action.failure = traverse_to:string:create_tag_form
+
+action.success_create_tag= traverse_to:string:create_tag_script

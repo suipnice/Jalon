@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="main">
+
+<tal:unauthorized condition="python:user.has_role('Anonymous')">
+    <tal:redirect define="no_return context/redirect_unauthorized"/>
+</tal:unauthorized>
+
+<div id="content-core">
+    <div id="tableau">
+        <h2 i18n:translate="">Configuration de l'accés à Twitter</h2>
+        <div class="visualClear"></div>
+        <form tal:attributes="action string:${context/absolute_url}/saveConfigTwitter"
+              method="post"
+              tal:define="twitter context/getPropertiesTwitter">
+            <div class="field ArchetypesStringWidget">
+                <label for="COMPTE_TWITTER" i18n:translate="COMPTE_TWITTER">
+                    Compte Twitter
+                </label>
+                <br />
+                <input type="text" name="COMPTE_TWITTER"
+                       maxlength="255" size="30"
+                       tal:attributes="value twitter/COMPTE_TWITTER | nothing" />
+            </div>
+            <div class="field ArchetypesStringWidget">
+                <label for="APP_KEY" i18n:translate="APP_KEY">
+                    Clef de l'application (générée par Twitter)
+                </label>
+                <br />
+                <input type="text" name="APP_KEY"
+                       maxlength="255" size="30"
+                       tal:attributes="value twitter/APP_KEY | nothing" />
+            </div>
+            <div class="field ArchetypesStringWidget">
+                <label for="APP_SECRET" i18n:translate="APP_SECRET">
+                    Secret de l'application (généré par Twitter)
+                </label>
+                <br />
+                <input type="text" name="APP_SECRET"
+                       maxlength="255" size="30"
+                       tal:attributes="value twitter/APP_SECRET | nothing" />
+            </div>
+            <div class="field ArchetypesStringWidget">
+                <label for="OAUTH_TOKEN" i18n:translate="OAUTH_TOKEN">
+                    Clef de l'authentification (générée par Twitter)
+                </label>
+                <br />
+                <input type="text" name="OAUTH_TOKEN"
+                       maxlength="255" size="30"
+                       tal:attributes="value twitter/OAUTH_TOKEN | nothing" />
+            </div>
+            <div class="field ArchetypesStringWidget">
+                <label for="OAUTH_TOKEN_SECRET" i18n:translate="OAUTH_TOKEN_SECRET">
+                    Secret de l'authentification (généré par Twitter)
+                </label>
+                <br />
+                <input type="text" name="OAUTH_TOKEN_SECRET"
+                       maxlength="255" size="30"
+                       tal:attributes="value twitter/OAUTH_TOKEN_SECRET | nothing" />
+            </div>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <input class="context" type="submit" name="form.button.save" value="Save" i18n:attributes="value label_save;"/>
+            <input class="standalone" type="submit" name="form.button.cancel" value="Cancel" i18n:attributes="value label_cancel;"/>
+        </div>
+    </form>
+    </div>
+</div>
+
+</metal:main>
+
+</body>
+
+</html>

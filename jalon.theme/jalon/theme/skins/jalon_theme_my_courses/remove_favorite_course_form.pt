@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:block i18n:translate="">Retirer des favoris</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form method="POST"
+          tal:attributes="action string:${context/absolute_url}/modify_favorite_course_script">
+        <div class="panel warning radius">
+            Retirer un cours des favoris le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
+        </div>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+        <input type="hidden" name="course_id"
+               tal:attributes="value request/course_id"/>
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-star-o"></i>
+                <tal:block i18n:translate="">Retirer des favoris</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

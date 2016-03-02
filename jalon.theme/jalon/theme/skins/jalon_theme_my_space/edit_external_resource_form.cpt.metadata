@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_my_space
+
+[actions]
+action.failure = traverse_to:string:edit_external_resource_form
+
+action.success_edit_external_resource = traverse_to:string:edit_external_resource_script

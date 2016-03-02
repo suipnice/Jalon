@@ -1,5 +1,4 @@
 from first_page import FirstPage
-from mon_espace_view import MonEspaceView
 from analytics import JalonAnalytics
 from podcasts import JalonPodcast
 from search import SearchView

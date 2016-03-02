@@ -239,10 +239,9 @@ function setItemSuppressor( ) {
         event.preventDefault( );
 
         var $form = $( this );
-        var param = "folder_delete:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
 
-        $.post( $form.attr( 'action' ), param ).done( function( data ) {
+        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
             $( '#js-update_target' ).empty( ).html( data );
             $form.parent( '.reveal-modal' ).foundation( 'reveal', 'close' );
             setAlertBox( 'success', " « " + $form.data( 'item_name' ) + " » " + $form.data( 'success_msg' ) );
@@ -284,10 +283,8 @@ function setResDetacher( ) {
 
         event.preventDefault( );
 
-        //var $form = $( this );
         var courseNames = [ ];
-        var param = "detacher_script:method=" + $form.find( '[type="submit"]' ).attr( 'value' );
-        param += "&" + $form.serialize( );
+        var param = $form.serialize( );
 
         $form.find( 'a.selected' ).each( function( index ) {
             param += '&listeCours:list=' + $( this ).attr( 'id' );

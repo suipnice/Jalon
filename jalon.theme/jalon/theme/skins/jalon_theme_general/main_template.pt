@@ -1,0 +1,146 @@
+<metal:page define-macro="master"
+            tal:define="portal_state context/@@plone_portal_state;
+                        portal_url portal_state/portal_url;
+                        ajax_http_x_requested_with request/HTTP_X_REQUESTED_WITH | nothing;
+                        ajax_load request/ajax_load | nothing;
+                        ajax_include_head request/ajax_include_head | nothing;
+                        is_ajax python:ajax_http_x_requested_with or ajax_load;
+                        jsBuffer context/JSBuffer;
+                        jsTranslate context/JSTranslate">
+
+<tal:condition condition="not:is_ajax">
+
+<tal:doctype tal:replace="structure string:&lt;!DOCTYPE html&gt;" />
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html tal:define="context_state context/@@plone_context_state;
+                  plone_view context/@@plone;
+                  lang portal_state/language;
+                  view nocall:view | nocall: plone_view;
+                  dummy python: plone_view.mark_view(view);
+                  checkPermission nocall: context/portal_membership/checkPermission;
+                  site_properties context/portal_properties/site_properties;
+                  dummy python:request.RESPONSE.setHeader('X-UA-Compatible', 'IE=edge,chrome=1');
+                  navroot portal_state/navigation_root_url;"
+      tal:attributes="lang lang;" class="no-js">
+
+<tal:comments replace="nothing">
+    <metal:cache use-macro="context/global_cache_settings/macros/cacheheaders">
+        Get the global cache headers located in global_cache_settings.
+    </metal:cache>
+</tal:comments>
+
+    <metal:head use-macro="context/head_macro/macros/head"></metal:head>
+
+    <body tal:define="isRTL portal_state/is_rtl;
+                      body_class python:plone_view.bodyClass(template, view);
+                      role python:test(user.has_role('Anonymous')==0, 'role-authenticated', 'role-anonymous')"
+        tal:attributes="class python:'%s %s antialiased' % (body_class, role);
+                        dir python:isRTL and 'rtl' or 'ltr'">
+
+<tal:comment replace="nothing"><!--
+        Slot "ent_body" pour affichage ENT
+--></tal:comment>
+
+<metal:slot define-slot="ent_body">
+
+<tal:comment replace="nothing"><!--
+        <header class="sticky" role="banner" aria-labelledby="page_title"
+                tal:condition="not:python:user.has_role('Anonymous')">
+            <tal:replace tal:replace="structure provider:plone.portalheader" />
+        </header>
+--></tal:comment>
+
+        <!-- Top Bar -->
+        <tal:condition condition="not:python:user.has_role('Anonymous')">
+            <tal:define define="top_bar_file python:context.getTopBarFile(user)">
+                <metal:head use-macro="python:getattr(context.top_bar, top_bar_file).macros.get('top_bar')"></metal:head>
+            </tal:define>
+        </tal:condition>
+
+        <!-- Contenu -->
+        <metal:slot define-slot="content">
+            <metal:macro define-macro="content">
+                <metal:slot define-slot="body">
+                    <metal:bodytext define-slot="main">
+                        <metal:slot define-slot="content-core">
+                            <!-- structure de base -->
+                        </metal:slot>
+                    </metal:bodytext>
+                </metal:slot>
+            </metal:macro>
+        </metal:slot>
+
+        <!-- Footer -->
+        <metal:head use-macro="context/footer_macro/macros/footer"></metal:head>
+
+    <tal:comment replace="nothing"><!--
+        Scripts
+            - generic libraries & frameworks
+            - l10n messages
+            - application-wide
+            - specific to “ non-student ” roles
+            - specific to “ manager ” roles
+            - extra JS library(ies) loader
+            - optionnal JS “ dev ” file
+            - direct JS buffer
+            - “ doc. ready ” JS buffer
+    --></tal:comment>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/post.min.js"></script>
+        <script charset="UTF-8"
+                tal:define="tmp python:jsTranslate.addJsTranslate([('CLOSE_REVEAL_TITLE','Cliquez pour fermer.'),('MSG_LOADING_TEXT','Actualisation en cours…'),('MSG_LOADING_OK_TEXT','Actualisation réussie !'),('MSG_TAP2CLOSE_TEXT','Toucher pour fermer'),('MSG_FORM_VALIDATION_ERROR','Votre saisie est erronée.'),('MSG_FORUM_NO_EMPTY_CONVERSATION','Ce forum ne contient aucune conversation sans réponse.')])"
+                tal:content="jsTranslate/getJsTranslate"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/app.min.js"></script>
+    <tal:isNotStudent condition="python:user.has_role(['Personnel', 'Manager', 'Secretaire'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-post.min.js"></script>
+        <script charset="UTF-8"
+                tal:content="structure string:var ABSOLUTE_URL = '${context/absolute_url}'"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-app.min.js"></script>
+    </tal:isNotStudent>
+    <tal:isManagerOrSecretary condition="python:user.has_role(['Manager', 'Secretaire'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/man_sec-app.min.js"></script>
+    </tal:isManagerOrSecretary>
+    <tal:block define="extraFiles python:jsBuffer.getExtraFiles()"
+               condition="extraFiles">
+        <tal:repeat repeat="extraFile extraFiles">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/${extraFile}"></script>
+        </tal:repeat>
+    </tal:block>
+        <!-- JS dev
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/dev.js"></script> -->
+        <script charset="UTF-8"
+                tal:define="directBuffer python:jsBuffer.getDirectBuffer()"
+                tal:condition="directBuffer"
+                tal:content="structure directBuffer"></script>
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getBuffer()"
+                tal:condition="buffer"
+                tal:content="structure buffer"></script>
+
+    <tal:block replace="structure python:context.getGoogleAnalytics_script(user)" />
+
+</metal:slot>
+
+    </body>
+
+</html>
+
+</tal:condition>
+
+
+<tal:condition condition="is_ajax">
+
+    <metal:slot define-slot="content">
+        Chargement en AJAX
+    </metal:slot>
+
+</tal:condition>
+
+
+</metal:page>

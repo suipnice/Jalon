@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content">
+
+<metal:macro define-macro="isnt_object_attached">
+    <div class="panel radius callout">
+        La ressource "<tal:raplace replace="context/Title"/> n'est attaché à aucun cours, vous pouvez la supprimer.
+    </div>
+</metal:macro>
+
+<metal:macro define-macro="is_object_attached">
+    <div class="panel callout radius"
+         i18n:translate="">
+        Sélectionnez les cours / activités desquels vous souhaitez détacher cette ressource.
+    </div>
+
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">les étudiants n'auront plus accès à cette ressource depuis les cours / activités sélectionnés.</tal:block>
+    </div>
+
+    <form id="js-resDetacher" method="POST"
+          tal:attributes="action string:${context/aq_parent/absolute_url}/detach_object_script;
+                          data-res_name resName;
+                          data-success_msg_pre string:La ressource;
+                          data-success_msg_post string:a été détachée de l'ensemble de cours suivant"
+          i18n:attributes="data-res_name; data-success_msg_pre; data-success_msg_post;">
+
+        <ul>
+            <li tal:repeat="cours context/getRelatedItems">
+                <a class="filter-button warning unselected"
+                   tal:attributes="id python:'/'.join(cours.getPhysicalPath());
+                                   data-course_name cours/Title">
+                    <i class="fa fa-circle no-pad"></i>
+                    <i class="fa fa-circle-thin no-pad"></i>
+                    <tal:block tal:content="cours/Title" />
+                </a>
+            </li>
+        </ul>
+
+        <input type="hidden" name="ressource" tal:attributes="value context/getId"/>
+        <input type="hidden" name="repertoire" tal:attributes="value context/aq_parent/getId"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small warning radius">
+                <i class="fa fa-chain-broken"></i>
+                <tal:block i18n:translate="">Détacher</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setResDetacher()">
+    </script>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

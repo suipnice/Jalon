@@ -1,0 +1,136 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="content">
+
+    <metal:macro define-macro="add_tags_objects">
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="tag_sel" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+            <h2>
+                <tal:block i18n:translate="">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <form method="POST"
+                  tal:attributes="action string:${context/absolute_url}/add_tags_objects_script;
+                                  data-success_msg string:L'ensemble sélectionné a été étiqueté.;
+                                  data-s_tag_msg string:Choisissez une ou plusieurs étiquettes à associer à la ressource sélectionnée :;
+                                  data-p_tag_msg string:Choisissez une ou plusieurs étiquettes à associer aux ressources sélectionnées :"
+                  i18n:attributes="data-success_msg; data-s_tag_msg; data-p_tag_msg">
+
+                <ul>
+                    <li tal:repeat="tag my_view/tags_list">
+                        <a class="filter-button unselected"
+                           tal:attributes="id tag/tag_id"
+                           tal:condition="repeat/tag/index">
+                            <i class="fa fa-circle no-pad"></i>
+                            <i class="fa fa-circle-thin no-pad"></i>
+                            <tal:block tal:content="tag/tag_title" />
+                        </a>
+                    </li>
+                </ul>
+
+                <!--input type="hidden" name="lots" value="lots" /-->
+                <div class="formControls">
+                    <button type="submit" class="button small radius"
+                            name="etiqueter_script:method">
+                        <i class="fa fa-tag"></i>
+                        <tal:block i18n:translate="">Étiqueter</tal:block>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </metal:macro>
+
+
+    <metal:macro define-macro="isnt_selected_tags">
+
+        <div id="untag_sel" class="reveal-modal medium" 
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+            <h2>
+                <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <div class="panel radius callout">
+                Vous devez au minimum sélectionner une étiquette pour pouvoir désétiqueter.
+            </div>
+        </div>
+    </metal:macro>
+
+
+    <metal:macro define-macro="remove_tags_objects">
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="untag_sel" class="reveal-modal medium" 
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+            <h2>
+                <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <form method="POST"
+                  tal:attributes="action string:${context/absolute_url}/remove_tags_objects_script;
+                                  data-success_msg string:Le désétiquetage demandé a été effectué.;
+                                  data-untag_msg string:L'ensemble des étiquettes actives :;
+                                  data-s_untag_msg string:… ne sera plus associé à la ressource sélectionnée :;
+                                  data-p_untag_msg string:… ne sera plus associé aux ressources sélectionnées :"
+                  i18n:attributes="data-success_msg; data-untag_msg; data-s_untag_msg; data-p_untag_msg">
+                <div class="formControls">
+                    <button type="submit" class="button small warning radius"
+                            name="desetiqueter_script:method">
+                        <i class="fa fa-minus-circle"></i>
+                        <tal:block i18n:translate="">Désétiqueter</tal:block>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </metal:macro>
+
+
+    <metal:macro define-macro="delete_objects">
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="del_sel" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+            <h2>
+                <tal:block i18n:translate="">Supprimer l'ensemble des ressources sélectionnées</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <form method="POST"
+                  tal:attributes="action string:${my_view/folder_link}/delete_object_script;
+                                  data-success_msg string:La suppression demandée a été effectuée.;
+                                  data-all_att_msg string:Suppression impossible :;
+                                  data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;
+                                  data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs cours.;
+                                  data-s_supp_msg string:La ressource suivante va être supprimée :;
+                                  data-p_supp_msg string:Les ressources suivantes vont être supprimées :;
+                                  data-s_att_msg string:La ressource suivante, attachée à un ou plusieurs cours, ne sera pas supprimée :;
+                                  data-p_att_msg string:Les ressources suivantes, attachées à un ou plusieurs cours, ne seront pas supprimées :"
+                  i18n:attributes="data-success_msg; data-all_att_msg; data-s_all_att_msg; data-p_all_att_msg; data-s_supp_msg; data-s_att_msg; data-p_supp_msg; data-p_att_msg">
+                <div class="panel alert radius"
+                     i18n:translate="">
+                    <strong>Attention :</strong> cette opération est définitive.
+                </div>
+                <input type="hidden" name="orig_template" tal:attributes="value context/absolute_url"/>
+                <input tal:replace="structure context/@@authenticator/authenticator" />
+                <div class="formControls">
+                    <button type="submit" class="button small alert radius">
+                        <i class="fa fa-trash-o"></i>
+                        <tal:block i18n:translate="">Supprimer</tal:block>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </metal:macro>
+
+</metal:main>
+
+</body>
+
+</html>
