@@ -7,5 +7,14 @@ Pour la mise à jour de structure de Jalon voici les étapes à suivre après la
     - Dans la menu déroulant choisir Jalon Theme
     - Cochez la case "Skins Tool" puis validez
     - Toujours en ZMI, dans jalon, cliquez sur zzz_add_new_structure puis sur l'onglet "Test"
-
+    - Toujours en ZMI, dans jalon, allez dans le portal_skins
+    - Supprimer les répertoire :
+        - jalon_configuration
+        - jalon_connexion
+        - jalon_createxo
+        - jalon_theme_ckeditor
+        - jalon_theme_custom
+        - jalon_theme_styles
+    - Dans l'onglet Properties, dans le textarea associé au nom Jalon, supprimer les même noms
+ 
 Félicitation votre Jalon est à jour
