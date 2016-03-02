@@ -212,6 +212,7 @@ class MyCoursesView(BrowserView):
         user_id = member.getId()
         member_login_time = member.getProperty('login_time', None)
 
+        course_authorized_list = []
         if tab == "1":
             user_diploma_list = []
             for diploma_data in portal_jalon_bdd.getInscriptionIND(user_id, "etape"):
@@ -225,13 +226,16 @@ class MyCoursesView(BrowserView):
                     course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
                     #course_data["course_access"] = ["Invité"]
                     courses_list.append(course_data)
+                    course_authorized_list.append(course_data["course_id"])
                 diploma_list.append({"diploma_course_list": courses_list})
+                self.request.SESSION.set("course_authorized_list", course_authorized_list)
+                LOG.info(course_authorized_list)
                 return {"is_diploma_list": True,
                         "diploma_list":    diploma_list}
 
             #educational_unity_dict = {}
+            educational_unity_list = []
             for user_diploma_id in user_diploma_list:
-                educational_unity_list = []
                 user_diploma_data = portal_jalon_bdd.getVersionEtape(user_diploma_id)
                 if user_diploma_data:
                     #educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
@@ -276,8 +280,12 @@ class MyCoursesView(BrowserView):
             for course_brain in course_brain_list:
                 course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [], is_tab_password)
                 course_list.append(course_data)
+                if tab != "2":
+                    course_authorized_list.append(course_data["course_id"])
             diploma_list.append({"diploma_course_list": course_list})
 
+        self.request.SESSION.set("course_authorized_list", course_authorized_list)
+        LOG.info(course_authorized_list)
         if diploma_list:
             return {"is_diploma_list": True,
                     "diploma_list":    diploma_list}

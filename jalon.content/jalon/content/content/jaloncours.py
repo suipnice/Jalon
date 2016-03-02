@@ -260,6 +260,20 @@ class JalonCours(ATFolder):
         else:
             self._elements_cours = elements_cours
 
+    def checkCourseAuthorized(self, user, request):
+        LOG.info("----- checkCourseAuthorized -----")
+        LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
+        if user.has_role(["Manager", "Owner"]):
+            return True
+        if user.has_role(["Personnel", "Secretaire"]):
+            user_id = user.getId()
+            if self.isAuteurs(user_id):
+                return True
+            if self.isCoLecteurs(user_id):
+                return True
+        if not self.getId() in request.SESSION.get("course_authorized_list", []):
+            request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
+
     def getProprietesVideo(self, id_video):
         infos_element = self.getElementCours(id_video)
         video_title = infos_element["titreElement"]
