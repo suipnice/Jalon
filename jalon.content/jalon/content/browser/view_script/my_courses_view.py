@@ -219,7 +219,7 @@ class MyCoursesView(BrowserView):
                 user_diploma_list.append(diploma_data["COD_ELP"])
 
             if not user_diploma_list:
-                # pour les nouveaux étudiant qui n'ont pas encore de diplome
+                # pour les nouveaux étudiant qui n'ont pas encore de diplome ou les étudiants invités par email
                 courses_list = []
                 search_courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=user_id))
                 for course_brain in search_courses_list:
