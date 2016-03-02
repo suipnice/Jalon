@@ -111,11 +111,11 @@ class JalonFolder(ATFolder):
     # My Space Utilities #
     #--------------------#
     def getMySpaceFolder(self):
-        LOG.info("----- getMySpaceFolder -----")
+        #LOG.info("----- getMySpaceFolder -----")
         return self.folder_my_space_dict[self.getId()]
 
     def getMySubSpaceFolder(self, user_id, folder_id):
-        LOG.info("----- getMySubSpaceFolder -----")
+        #LOG.info("----- getMySubSpaceFolder -----")
         portal = self.portal_url.getPortalObject()
         return getattr(getattr(portal.Members, user_id), folder_id)
 
@@ -303,7 +303,7 @@ class JalonFolder(ATFolder):
                         self.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
                         obj = getattr(self, idobj)
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
-                        # LOG.info(video)
+                        # #LOG.info(video)
                         param = {"Title":                video["title"],
                                  "TypeRessourceExterne": "Video",
                                  "Videourl":             video["full_url"],
@@ -332,7 +332,7 @@ class JalonFolder(ATFolder):
         return size
 
     def isObjectAttached(self, object_context):
-        LOG.info("----- isObjectAttached -----")
+        #LOG.info("----- isObjectAttached -----")
         return "is_object_attached" if len(object_context.getRelatedItems()) else "isnt_object_attached"
 
     def getSearchPodVideosBreadcrumbs(self):
@@ -353,7 +353,7 @@ class JalonFolder(ATFolder):
         return jalon_utils.getCourseUserFolder(self, user_id)
 
     def modifyFavoriteCourse(self, user_id, course_id):
-        LOG.info("----- modifyFavorite -----")
+        #LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         favorites = list(course.Subject())
@@ -369,7 +369,7 @@ class JalonFolder(ATFolder):
         course.setProperties({"DateDerniereModif": DateTime()})
 
     def modifyArchiveCourse(self, user_id, course_id):
-        LOG.info("----- modifyFavorite -----")
+        #LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         archives = list(course.getArchive())
@@ -385,13 +385,13 @@ class JalonFolder(ATFolder):
         course.setProperties({"DateDerniereModif": DateTime()})
 
     def getDataCourseFormAction(self, user_id, course_id):
-        LOG.info("----- getDataCourseFormAction -----")
+        #LOG.info("----- getDataCourseFormAction -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseFormAction(user_id, course_id)
 
     def getDataCourseWimsActivity(self, user_id, course_id):
-        LOG.info("----- getDataCourseWimsActivity -----")
+        #LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseWimsActivity(user_id, course_id)
@@ -982,7 +982,7 @@ class JalonFolder(ATFolder):
     # NEW TAG                         #
     #---------------------------------#
     def getSelectedTags(self):
-        LOG.info("----- getSelectedTags -----")
+        #LOG.info("----- getSelectedTags -----")
         # Init
         tags = {}
         subjects = ""
@@ -995,7 +995,7 @@ class JalonFolder(ATFolder):
             subjects = self.REQUEST.form['subject']
             tags[spaceName] = subjects
             self.REQUEST.SESSION.set('tags', tags)
-            LOG.info(tags)
+            #LOG.info(tags)
         else:
             # Pas de sélection
             if spaceName in tags:
@@ -1108,7 +1108,7 @@ class JalonFolder(ATFolder):
 
     def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
-        # LOG.info("[dupliquerCours]")
+        # #LOG.info("[dupliquerCours]")
         import time
         home = self
         home_id = self.getId()

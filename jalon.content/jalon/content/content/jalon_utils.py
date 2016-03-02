@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-""" Jalon utilities. """
-
 from zope.component import getUtility
 
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -31,14 +29,6 @@ import copy
 # Messages de debug :
 from logging import getLogger
 LOG = getLogger('[jalon_utils]')
-"""
-# Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
-"""
 
 
 def authUser(context, quser=None, qclass=None, request=None, session_keep=False):
@@ -469,7 +459,7 @@ def getInfosMembre(username):
 
 
 def getCourseUserFolder(context, user_id):
-    LOG.info("----- getUserFolder -----")
+    #LOG.info("----- getUserFolder -----")
     portal = context.portal_url.getPortalObject()
     return getattr(portal.cours, user_id)
 

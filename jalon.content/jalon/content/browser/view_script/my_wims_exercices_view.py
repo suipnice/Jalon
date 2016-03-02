@@ -5,8 +5,6 @@ from my_space_view import MySpaceView
 
 from jalon.content import contentMessageFactory as _
 
-import urllib
-
 from logging import getLogger
 LOG = getLogger('[MyWimsExercicesView]')
 
@@ -30,7 +28,7 @@ class MyWimsExercicesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyWimsExercicesView(self, user):
-        LOG.info("----- getMyWimsExercicesView -----")
+        #LOG.info("----- getMyWimsExercicesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

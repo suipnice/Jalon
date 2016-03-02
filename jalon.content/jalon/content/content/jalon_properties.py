@@ -344,7 +344,7 @@ class JalonProperties(SimpleItem):
             return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
     def getTopBarMenuLeft(self, user_role):
-        LOG.info("----- getTopBar -----")
+        #LOG.info("----- getTopBar -----")
         menu_left = []
         is_personnel = user_role in ["Personnel", "Secretaire", "Manager"]
 
@@ -602,7 +602,7 @@ class JalonProperties(SimpleItem):
                     "message_enseignant":         self._message_enseignant}
 
     def setPropertiesMessages(self, form):
-        LOG.info("----- setPropertiesMessages -----")
+        #LOG.info("----- setPropertiesMessages -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
@@ -991,7 +991,7 @@ class JalonProperties(SimpleItem):
                 "url_news_maintenance":       self._url_news_maintenance}
 
     def setPropertiesMaintenance(self, form):
-        LOG.info("----- setPropertiesMaintenance -----")
+        #LOG.info("----- setPropertiesMaintenance -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_") or key.startswith("annoncer_"):
@@ -1073,8 +1073,8 @@ class JalonProperties(SimpleItem):
         return portal_jalon_wowza.getStreamingAvailable(pod)
 
     def modifyStreaming(self, params):
-        LOG.info("----- modifyStreaming -----")
-        LOG.info(params)
+        #LOG.info("----- modifyStreaming -----")
+        #LOG.info(params)
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         if "datetime-expiration_date" in params:

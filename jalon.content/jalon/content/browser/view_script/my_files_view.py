@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
 
 from jalon.content import contentMessageFactory as _
-
-import urllib
 
 from logging import getLogger
 LOG = getLogger('[MyFilesView]')
@@ -30,7 +27,7 @@ class MyFilesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyFilesView(self, user):
-        LOG.info("----- getMyFilesView -----")
+        #LOG.info("----- getMyFilesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

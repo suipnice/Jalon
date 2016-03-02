@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
 
 from jalon.content import contentMessageFactory as _
-
-import urllib
 
 from logging import getLogger
 LOG = getLogger('[MyGlossaryTermsView]')
@@ -30,7 +27,7 @@ class MyGlossaryTermsView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyGlossaryTermsView(self, user):
-        LOG.info("----- getMyGlossaryTermsView -----")
+        #LOG.info("----- getMyGlossaryTermsView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

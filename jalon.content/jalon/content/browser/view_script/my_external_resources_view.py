@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
 
 from jalon.content import contentMessageFactory as _
-
-import urllib
 
 from logging import getLogger
 LOG = getLogger('[MyExternalResourcesView]')
@@ -30,7 +27,7 @@ class MyExternalResourcesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyExternalResourcesView(self, user):
-        LOG.info("----- getMyExternalResourcesView -----")
+        #LOG.info("----- getMyExternalResourcesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

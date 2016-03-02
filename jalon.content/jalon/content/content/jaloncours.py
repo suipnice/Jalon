@@ -261,8 +261,8 @@ class JalonCours(ATFolder):
             self._elements_cours = elements_cours
 
     def checkCourseAuthorized(self, user, request):
-        LOG.info("----- checkCourseAuthorized -----")
-        LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
+        #LOG.info("----- checkCourseAuthorized -----")
+        #LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
         if self.getLibre():
             return True
         if user.has_role(["Manager", "Owner"]):
@@ -2350,12 +2350,12 @@ class JalonCours(ATFolder):
         return self.getPlanCours(True)
 
     def getDataCourseFormAction(self, user_id, course_id):
-        LOG.info("----- getDataCourseFormAction -----")
+        #LOG.info("----- getDataCourseFormAction -----")
         return {"course_name":     self.getShortText(self.Title(), 80),
                 "is_course_owner": self.isCourseOwner(user_id)}
 
     def getDataCourseWimsActivity(self, user_id, course_id):
-        LOG.info("----- getDataCourseWimsActivity -----")
+        #LOG.info("----- getDataCourseWimsActivity -----")
         wims_classe_list = self.getListeClasses()
         can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
 

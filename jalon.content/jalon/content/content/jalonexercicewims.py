@@ -11,15 +11,7 @@ from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonExerciceWims
 
 from logging import getLogger
-LOG = getLogger('jalonExerciceWims')
-"""
-# Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
-"""
+LOG = getLogger('[JalonExerciceWims]')
 
 from urlparse import urlparse
 
@@ -343,7 +335,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             else:
                 param = self.getVariablesDefaut(modele)
             if param is None:
-                LOG.error("addExoWims / getVariablesDefaut return None")
+                #LOG.error("addExoWims / getVariablesDefaut return None")
                 return None
 
         #Cas d'une modification (ou d'un import)
@@ -590,7 +582,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
             retour = json.loads(fichier)
-            LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            #LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
 
