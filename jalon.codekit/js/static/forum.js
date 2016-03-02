@@ -19,13 +19,18 @@ function instantiateForumCKEditor( textareaID ) {
             language: 'fr',
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
+                { 'name': "clipboard",   'groups': [ "clipboard", "undo" ] },
                 { 'name': "links",       'groups': [ "links" ] },
                 { 'name': "paragraph",   'groups': [ "blocks" ] },
                 { 'name': "insert",      'groups': [ "insert" ] },
                 //{ 'name': "document",    'groups': [ "mode" ] }
             ],
-            removeButtons: 'Strike,Subscript,Superscript,Anchor',
-            removeDialogTabs: 'link:advanced'
+            removeButtons: 'Cut,Copy,Undo,Redo,Strike,Subscript,Superscript,Anchor',
+            removeDialogTabs: 'link:advanced',
+            pasteFromWordPromptCleanup: false,
+            pasteFromWordRemoveStyles: true,
+            pasteFromWordRemoveFontStyles: true,
+            pasteFromWordNumberedHeadingToList: true
         } );
 
         return textareaID;
