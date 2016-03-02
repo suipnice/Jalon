@@ -1,12 +1,9 @@
 Pour la mise à jour de structure de Jalon voici les étapes à suivre après la mise à jour du dépôt depuis developp :
-    - Déposer le fichier zzz_add_new_structure dans VOTRE_INSTANCE_PLONE/var/instance/import
-    - Connectez vous à la ZMI, dans jalon, cliquez sur importer en bas de pas, sélectionnez "zzz_add_new_structure" dans la liste puis validé
-    - Toujours en ZMI, dans jalon, cliquez sur portal_setup, onglet import
-    - Dans la menu déroulant choisir Jalon Content
-    - Cochez les cases "Types Tool" et "Skins Tool" puis validez
+    - Connectez vous à la ZMI, dans jalon, cliquez sur portal_setup, onglet import
     - Dans la menu déroulant choisir Jalon Theme
-    - Cochez la case "Skins Tool" puis validez
-    - Toujours en ZMI, dans jalon, cliquez sur zzz_add_new_structure puis sur l'onglet "Test"
+    - Cochez la case "Skins Tool" puis cliquez sur "Imported selected steps"
+    - Dans la menu déroulant choisir Jalon Content
+    - Cochez les cases "Types Tool" et "Skins Tool" puis cliquez sur "Imported selected steps"
     - Toujours en ZMI, dans jalon, allez dans le portal_skins
     - Supprimer les répertoire :
         - jalon_configuration
@@ -16,5 +13,8 @@ Pour la mise à jour de structure de Jalon voici les étapes à suivre après la
         - jalon_theme_custom
         - jalon_theme_styles
     - Dans l'onglet Properties, dans le textarea associé au nom Jalon, supprimer les même noms
- 
+    - Déposer le fichier zzz_add_new_structure.zexp dans VOTRE_INSTANCE_PLONE/var/instance/import
+    - Connectez vous à la ZMI, dans jalon, cliquez sur importer en bas de pas, sélectionnez "zzz_add_new_structure" dans la liste puis validé
+    - Toujours en ZMI, dans jalon, cliquez sur zzz_add_new_structure puis sur l'onglet "Test"
+
 Félicitation votre Jalon est à jour

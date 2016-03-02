@@ -11,7 +11,7 @@ from Products.CMFCore.utils import getToolByName
 
 request = container.REQUEST
 portal = context.portal_url.getPortalObject()
-mt = getToolByName( context, 'portal_membership')
+mt = getToolByName(context, 'portal_membership')
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 
 redirection = "%s?came_from=" % portal.absolute_url()
