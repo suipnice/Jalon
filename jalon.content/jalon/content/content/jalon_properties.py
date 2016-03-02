@@ -423,7 +423,7 @@ class JalonProperties(SimpleItem):
                                            {"id":    "gestion_mon_espace",
                                             "icon":  "fa fa-home",
                                             "title": _(u"Gestion \"Mon Espace\""),
-                                            "link":  "/portal_jalon_properties/gestion_mon_espace"},
+                                            "link":  "portal_jalon_properties/gestion_mon_espace"},
                                            {"id":    "gestion_mes_cours",
                                             "icon":  "fa fa-university",
                                             "title": _(u"Gestion des cours"),
