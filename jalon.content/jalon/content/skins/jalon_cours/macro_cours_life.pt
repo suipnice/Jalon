@@ -263,7 +263,7 @@
             <a href="#course_life-forum">
                 <span tal:content="dicoForums/nbForums" />
                 <i class="fa fa-comments fa-2x"></i>
-                <tal:replace i18n:translate="">Forum</tal:replace>
+                <tal:replace i18n:translate="">Forums</tal:replace>
             </a>
         </li>
 
