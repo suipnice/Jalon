@@ -6,11 +6,11 @@
     <cmf:registerDirectory name="jalon_content"/>
     <cmf:registerDirectory name="jalon_mon_espace"/>
     <cmf:registerDirectory name="jalon_cours"/>
-    <cmf:registerDirectory name="jalon_mes_etudiants"/>
 
     <cmf:registerDirectory name="jalon_content_connexion"/>
     <cmf:registerDirectory name="jalon_content_my_space"/>
     <cmf:registerDirectory name="jalon_content_my_courses"/>
+    <cmf:registerDirectory name="jalon_content_my_students"/>
     <cmf:registerDirectory name="jalon_content_configuration"/>
 
 </configure>
