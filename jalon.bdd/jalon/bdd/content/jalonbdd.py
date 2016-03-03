@@ -320,6 +320,10 @@ class JalonBDD(SimpleItem):
         if self._typeBDD == "sqlite":
             return jalonsqlite.getInfosELP2(session, COD_ELP)
 
+    def getELPData(self, COD_ELP):
+        session = self.getSession()
+        return jalonsqlite.getELPData(session, COD_ELP)
+
     def getInscriptionPedago(self, COD_ETU, COD_ELP):
         session = self.getSession()
         if self._typeBDD == "sqlite":

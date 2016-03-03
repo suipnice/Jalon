@@ -172,6 +172,12 @@ def getInfosELP2(session, COD_ELP):
     return recherche.first()
 
 
+def getELPData(session, COD_ELP):
+    ELP = aliased(tables.ElementPedagogiSQLITE)
+    recherche = session.query(ELP.LIB_ELP, ELP.TYP_ELP, ELP.COD_ELP, ELP.COD_GPE, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens"), ELP.DATE_CREATION, ELP.DATE_MODIF).filter(ELP.COD_ELP == COD_ELP)
+    return recherche.first()
+
+
 def getInscriptionPedago(session, SESAME_ETU, COD_ELP, COD_VRS_VET=None):
     ICE = aliased(tables.IndContratElpSQLITE)
     ELP = aliased(tables.ElementPedagogiSQLITE)

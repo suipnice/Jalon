@@ -770,14 +770,11 @@ class JalonFolder(ATFolder):
     def getListeCours(self, authMember):
         portal = self.portal_url.getPortalObject()
         portal_catalog = getToolByName(portal, "portal_catalog")
-        listeCours = list(
-            portal_catalog.searchResults(portal_type="JalonCours", Creator=authMember))
-        listeCoursAuteur = list(
-            portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMember))
+        listeCours = list(portal_catalog.searchResults(portal_type="JalonCours", Creator=authMember))
+        listeCoursAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMember))
         if listeCoursAuteur:
             listeCours.extend(listeCoursAuteur)
-        listeCoursCoAuteur = list(
-            portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMember))
+        listeCoursCoAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMember))
         if listeCoursCoAuteur:
             listeCours.extend(listeCoursCoAuteur)
 
@@ -790,22 +787,19 @@ class JalonFolder(ATFolder):
                     if type == "etape":
                         retour = bdd.getInfosEtape(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce diplôme." %
-                                code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
                         else:
                             elem = list(retour)
                     if type in ["ue", "uel"]:
                         retour = bdd.getInfosELP2(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." %
-                                code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
                         else:
                             elem = list(retour)
                     if type == "groupe":
                         retour = bdd.getInfosGPE(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce groupe." %
-                                code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
                         else:
                             elem = list(retour)
                     nbSeances = 0

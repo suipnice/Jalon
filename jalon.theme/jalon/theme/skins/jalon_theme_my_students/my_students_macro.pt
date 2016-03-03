@@ -1,0 +1,151 @@
+<!--
+        Mes etudiants
+-->
+<metal:macro define-macro="my_students">
+
+    <main role="main" class="row" aria-labelledby="page_title">
+
+        <section id="js-list-etudiants" class="small-12 columns">
+            <h2 id="js-update_title">
+                <i class="fa fa-users"></i>
+                <tal:block i18n:translate="">Étudiants attachés à mes cours via l'offre de formation</tal:block>
+            </h2>
+
+            <div id="js-update_target">
+                <div class="panel callout radius"
+                     tal:condition="not:my_view/access_dict">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <strong i18n:translate="">Aucun étudiant n'a accès à vos cours pour l'instant.</strong><br/>
+                    <tal:block i18n:translate="">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
+                </div>
+
+                <tal:condition condition="my_view/access_dict">
+                <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+                <div id="reveal-etudiants" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+                <table summary="Liste des cours de la catégorie">
+                    <thead>
+                        <tr>
+                            <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le diplôme, l'UE, le groupe…" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Diplôme / UE / groupe…</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="rank" title="Trier selon le classement" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Classement</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="code" title="Trier selon le code" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Code</tal:block>
+                                </span>
+                            </th>
+                            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="number" title="Trier selon l'effectif'" i18n:attributes="title">
+                                <span>
+                                    <i class="fa fa-sort"></i>
+                                    <i class="fa fa-sort-asc"></i>
+                                    <i class="fa fa-sort-desc"></i>
+                                    <tal:block i18n:translate="">Eff.</tal:block>
+                                </span>
+                            </th>
+                            <th class="att_number show-for-medium-up" i18n:translate="">Cours attachés</th>
+                            <th class="action" data-tooltip title="Actions" i18n:attributes="title">
+                                <i class="fa fa-cog fa-lg no-pad"></i>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody class="list"
+                           tal:define="access_dict my_view/access_dict">
+                    <tal:boucle repeat="access_key python:access_dict.keys()">
+                        <tr tal:define="access python:access_dict[access_key]">
+                            <td class="title">
+                                <tal:block content="access/access_title" />
+                                <span class="show-for-small-only">
+                                    <tal:block i18n:translate="">Code</tal:block>
+                                    <tal:replace content="access/access_code"/>
+                                    <br /><tal:block i18n:translate="">Effectif</tal:block>
+                                    <tal:block content="access/access_students"/>
+                                </span>
+                            </td>
+                            <td class="rank show-for-medium-up">
+                                <span class="label tiny bkgrnd" 
+                                      tal:content="access/access_type"/>
+                            </td>
+                            <td class="code show-for-medium-up"
+                                tal:content="access/access_code"/>
+                            <td class="number show-for-medium-up"
+                                tal:content="access/access_students"/>
+                            <td class="show-for-medium-up">
+                                <a class="button tiny round"
+                                   tal:attributes="data-reveal-id string:reveal-cours_att-${repeat/access_key/index}"
+                                   tal:content="python:len(access['access_course_list'])" />
+                                <div class="reveal-modal medium"
+                                     data-reveal="data-reveal" data-options="close_on_background_click: true;"
+                                     tal:attributes="id string:reveal-cours_att-${repeat/access_key/index}">
+                                    <h2><tal:block i18n:translate="">Cours attachés</tal:block>
+                                        <a class="close-reveal-modal"></a>
+                                    </h2>
+                                    <div>
+                                        <ul>
+                                            <tal:block repeat="course access/access_course_list">
+                                                <li tal:content="course"/>
+                                            </tal:block>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <a class="dropdown" data-options="align:left"
+                                   tal:attributes="data-dropdown string:drop-${repeat/access_key/index}">
+                                    <i class="fa fa-cog fa-lg no-pad"></i>
+                                </a>
+                                <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                    tal:attributes="id string:drop-${repeat/access_key/index}">
+                                    <li class="show-for-medium-up">
+                                        <a data-reveal-id="reveal-etudiants" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=listing&amp;code=${access/access_code}&amp;type=${access/access_type}">
+                                            <i class="fa fa-align-justify fa-fw"></i>
+                                            <tal:block i18n:translate="">Liste</tal:block>
+                                        </a>
+                                    </li>
+                                    <li tal:condition="python:context.getJalonProperty('activer_trombinoscope')">
+                                        <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${access/access_code}&amp;type=${access/access_type}">
+                                            <i class="fa fa-camera-retro fa-fw"></i>
+                                            <tal:block i18n:translate="">Trombinoscope</tal:block>
+                                        </a>
+                                    </li>
+                                    <li class="show-for-medium-up">
+                                        <a data-reveal-id="reveal-etudiants" data-reveal-ajax="true"
+                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=ecrire&amp;code=${access/access_code}&amp;type=${access/access_type}">
+                                            <i class="fa fa-pencil-square-o fa-fw"></i>
+                                            <tal:block i18n:translate="">Écrire</tal:block>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tal:boucle>
+                    </tbody>
+                </table>
+
+                <tal:block define="script1 string:setSortableList('js-list-etudiants',['title','rank','code','number'],'title','asc')">
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+                </tal:block>
+
+            </tal:condition>
+            </div>
+        </section>
+    </main>
+
+</metal:macro>
