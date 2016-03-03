@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+
+<tal:define define="breadcrumbs view/getBreadcrumbs">
+<metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+    Page d'affichage du fil d'ariane
+</metal:macro>
+</tal:define>
+
+<div id="reveal-main" class="reveal-modal medium" 
+     data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+<main role="main" class="row" aria-labelledby="page_title">
+
+    <section id="js-list-etudiants" class="small-12 columns">
+        <h2 id="js-update_title">
+            <i class="fa fa-users"></i>
+            <tal:block i18n:translate="">Étudiants attachés à mes cours via l'offre de formation</tal:block>
+        </h2>
+    </section>
+
+</main>
+
+</metal:core>
+
+</body>
+
+</html>

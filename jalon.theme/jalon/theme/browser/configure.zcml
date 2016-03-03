@@ -111,4 +111,11 @@
                   template="view_template/my_courses/my_courses_view.pt"
                   permission="zope2.View"/>
 
+    <!-- MyStudentsView Definition -->
+    <browser:page name="mes_etudiants_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.my_students_view.MyStudentsView"
+                  template="view_template/my_students/my_students_view.pt"
+                  permission="zope2.View"/>
+
 </configure>
