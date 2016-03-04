@@ -70,6 +70,48 @@
                     Affichage de la barre d'ajout
                 </metal:macro>
                 </tal:condition>
+
+                <div class="panel radius show-for-medium-up"
+                     tal:condition="my_view/is_personnel">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="aide_plan">
+                        Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
+                    </tal:block>
+                </div>
+
+                <ol id="course_plan-plan">
+                    <tal:condition condition="not:my_view/has_course_map">
+                    <li class="panel callout radius">
+                        <h4>
+                            <i class="fa fa-info-circle"></i>
+                            <tal:block i18n:translate="legende">Aucune ressource n'est accessible dans ce cours.</tal:block>
+                        </h4>
+                    </li>
+                    <li tal:replace="structure my_view/is_course_map_help_text"
+                        tal:condition="my_view/is_course_map_help"/>
+                    </tal:condition>
+                    <tal:condition condition="my_view/has_course_map">
+                    <tal:define define="plancours my_view/course_map">
+                    <metal:macro use-macro="context/macro_cours_plan/macros/afficher-plan">
+                        Affichage du plan du cours
+                    </metal:macro>
+                    </tal:define>
+                    </tal:condition>
+                </ol>
+
+                <div class="panel radius show-for-medium-up"
+                      tal:condition="my_view/is_personnel">
+                    <i class="fa fa-info-circle no-pad"></i>
+                    <tal:block i18n:translate="aide_plan">
+                        Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
+                    </tal:block>
+                </div>
+                <a class="button tiny radius expand"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page">
+                    <i class="fa fa-info-circle"></i>
+                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
+                </a>
             </div>
 
             <div class="row">

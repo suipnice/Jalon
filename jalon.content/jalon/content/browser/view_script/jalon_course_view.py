@@ -67,6 +67,15 @@ class JalonCourseView(BrowserView):
 
         course_map_item_adder = self.getCourseItemAdderList(course_link)
 
+        has_course_map = self.context.getPlan()
+
+        course_news = self.context.getActualitesCours()
+        course_map = self.context.getPlanCours(is_personnel, user.getId(), course_news['listeActu'])
+
+        course_map_help = self.context.getAidePlan()
+        is_course_map_help = ['activer_aide_plan'] and is_personnel and mode_etudiant != 'true'
+        course_map_help_text = course_map_help["lien_aide_plan"]
+
         course_bibliography_dict = self.context.getGloBib('bibliographie')
         course_bibliography_letter_list = course_bibliography_dict.keys()
         course_bibliography_letter_list.sort()
@@ -131,8 +140,6 @@ class JalonCourseView(BrowserView):
                                        "action_name": "Voir"}]
 
         course_life_tabs_list = []
-
-        course_news = self.context.getActualitesCours()
         course_life_tabs_list.append({"tab_link":   "#course_life-historique",
                                       "tab_number": course_news["nbActu"],
                                       "tab_icon":   "fa fa-bell fa-2x",
@@ -164,6 +171,10 @@ class JalonCourseView(BrowserView):
                 "course_coauthor_list":            course_coauthor_list,
                 "course_map_action_list":          course_map_action_list,
                 "course_map_item_adder":           course_map_item_adder,
+                "has_course_map":                  has_course_map,
+                "course_map":                      course_map,
+                "is_course_map_help":              is_course_map_help,
+                "course_map_help_text":            course_map_help_text,
                 "course_has_bibliography":         course_has_bibliography,
                 "course_bibliography_dict":        course_bibliography_dict,
                 "course_bibliography_letter_list": course_bibliography_letter_list,
