@@ -52,9 +52,21 @@ class JalonCourseView(BrowserView):
                 course_coauthor_list.append({"course_coauthor_name": course_coauthor["fullname"],
                                              "course_coauthor_link": "mailto:%s" % course_coauthor["email"]})
 
-        return {"is_personnel":              self.context.isPersonnel(user, mode_etudiant),
-                "is_public":                 "success" if course_acces == "Public" else "disabled",
-                "course_short_description":  self.context.getDescriptionCourte(),
-                "course_author_name":        course_author["fullname"],
-                "course_author_link":        course_author_link,
-                "course_coauthor_list":      course_coauthor_list}
+        course_link = self.context.absolute_url()
+        course_map_action_list = [{"action_link": "%s/download_wims_score_form" % course_link,
+                                   "action_icon": "fa fa-download fa-fw",
+                                   "action_name": "Télécharger les notes WIMS"},
+                                  {"action_link": "%s/purge_course_form" % course_link,
+                                   "action_icon": "fa fa-filter fa-fw",
+                                   "action_name": "Purger les travaux étudiants"},
+                                  {"action_link": "%s/delete_wims_activity_form" % course_link,
+                                   "action_icon": "fa fa-trash-o  fa-fw",
+                                   "action_name": "Supprimer les activités WIMS"}]
+
+        return {"is_personnel":             self.context.isPersonnel(user, mode_etudiant),
+                "is_public":                "success" if course_acces == "Public" else "disabled",
+                "course_short_description": self.context.getDescriptionCourte(),
+                "course_author_name":       course_author["fullname"],
+                "course_author_link":       course_author_link,
+                "course_coauthor_list":     course_coauthor_list,
+                "course_map_action_list":   course_map_action_list}

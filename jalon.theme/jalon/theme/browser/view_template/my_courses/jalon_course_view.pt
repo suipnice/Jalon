@@ -41,6 +41,29 @@
 
         <section id="course_plan" class="medium-8 small-12 columns">
             <metal:macro use-macro="here/course_informations_macro/macros/course_informations">Block au dessus du plan</metal:macro>
+
+            <div class="row">
+                <span class="right" tal:condition="my_view/is_personnel">
+                    <a class="dropdown"
+                       data-options="align:bottom" data-dropdown="course-options">
+                        <i class="fa fa-cog fa-lg"></i>
+                    </a>
+                    <ul id="course-options" class="f-dropdown" data-dropdown-content>
+                        <li tal:repeat="course_map_action my_view/course_map_action_list">
+                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                               tal:attributes="href course_map_action/action_link">
+                                <i tal:attributes="class course_map_action/action_icon"></i>
+                                <tal:replace replace="course_map_action/action_name"
+                                     i18n:translate=""/>
+                            </a>
+                        </li>
+                    </ul>
+                </span>
+                <h2 id="js-update_title">
+                    <i class="fa fa-sitemap no-pad"></i>
+                    <tal:block i18n:translate="">Plan du cours</tal:block>
+                </h2>
+            </div>
         </section>
 
     </main>
