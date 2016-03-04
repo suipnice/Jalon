@@ -35,18 +35,26 @@ class JalonCourseView(BrowserView):
     def getCourseView(self, user, mode_etudiant):
         course_acces = self.context.getAcces()
 
-        return {"is_personnel": self.isPersonnel(user, mode_etudiant),
-                "is_public":    "success" if course_acces == "Public" else "disabled"}
+        course_author = self.context.getAuteur()
+        course_author_link = "mailto:%s" % course_author['email']
+        is_ladp_actived = self.context.isLDAP()
+        if is_ladp_actived:
+            base_user_book = self.context.getBaseAnnuaire()
+            course_author_link = self.context.getFicheAnnuaire(course_author, base_user_book)
 
-    def isPersonnel(self, user, mode_etudiant="false"):
-        #self.plone_log("jaloncours/isPersonnel")
-        if mode_etudiant == "true":
-            #self.plone_log("isPersonnel = False (mode étudiant)")
-            return False
-        if user.has_role("Manager"):
-            #self.plone_log("isPersonnel = True (manager role)")
-            return True
-        if user.has_role("Personnel") and self.context.isCoAuteurs(user.getId()):
-            #self.plone_log("isPersonnel = True (Personnel & iscoAuteurs)")
-            return True
-        return False
+        course_coauthor_list = []
+        if is_ladp_actived:
+            for course_coauthor in self.context.getCoAuteursCours():
+                course_coauthor_list.append({"course_coauthor_name": course_coauthor["fullname"],
+                                             "course_coauthor_link": self.context.getFicheAnnuaire(course_coauthor, base_user_book)})
+        else:
+            for course_coauthor in self.context.getCoAuteursCours():
+                course_coauthor_list.append({"course_coauthor_name": course_coauthor["fullname"],
+                                             "course_coauthor_link": "mailto:%s" % course_coauthor["email"]})
+
+        return {"is_personnel":              self.context.isPersonnel(user, mode_etudiant),
+                "is_public":                 "success" if course_acces == "Public" else "disabled",
+                "course_short_description":  self.context.getDescriptionCourte(),
+                "course_author_name":        course_author["fullname"],
+                "course_author_link":        course_author_link,
+                "course_coauthor_list":      course_coauthor_list}
