@@ -6,4 +6,5 @@ from my_external_resources_view import MyExternalResourcesView
 from my_glossary_terms_view import MyGlossaryTermsView
 from my_pod_videos_view import MyPodVideosView
 from my_courses_view import MyCoursesView
+from jalon_course_view import JalonCourseView
 from my_students_view import MyStudentsView
