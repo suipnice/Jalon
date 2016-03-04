@@ -10,12 +10,11 @@
 
 <metal:core fill-slot="content"
             tal:define="mode_etudiant request/mode_etudiant | nothing;
-                        my_view python:view.getCourseView(user, mode_etudiant)">
+                        my_view python:view.getCourseView(user, mode_etudiant);
+                        mtool context/@@plone_tools/membership">
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
     <tal:define define="no_return python:context.insererConsultation(user, 'Cours', '')"/>
-
-    <tal:condition condition="not:is_ajax">
     
     <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
@@ -86,9 +85,25 @@
             </div>
         </section>
 
-    </main>
+        <aside id="course_life" class="medium-4 small-12 columns">
 
-    </tal:condition>
+            <tal:condition condition="my_view/is_course_author">
+            <metal:macro use-macro="context/course_life_macro/macros/display_mod">
+                Mode Enseignant / Etudiant
+            </metal:macro>
+            </tal:condition>
+
+            <metal:macro use-macro="context/course_life_macro/macros/display_students">
+                Affichage des participants au cours
+            </metal:macro>
+
+            <metal:macro use-macro="context/course_life_macro/macros/course_life">
+                Affichage de la vie du cours
+            </metal:macro>
+
+        </aside>
+
+    </main>
 
 </metal:core>
 
