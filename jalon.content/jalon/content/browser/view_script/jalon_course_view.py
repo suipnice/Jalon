@@ -68,6 +68,11 @@ class JalonCourseView(BrowserView):
         course_bibliography_letter_list.sort()
         course_has_bibliography = len(course_bibliography_letter_list)
 
+        course_glossary_dict = self.context.getGloBib('glossaire')
+        course_glossary_letter_list = course_glossary_dict.keys()
+        course_glossary_letter_list.sort()
+        course_has_glossary = len(course_glossary_letter_list)
+
         return {"is_personnel":                    self.context.isPersonnel(user, mode_etudiant),
                 "is_public":                       "success" if course_acces == "Public" else "disabled",
                 "course_short_description":        self.context.getDescriptionCourte(),
@@ -75,6 +80,9 @@ class JalonCourseView(BrowserView):
                 "course_author_link":              course_author_link,
                 "course_coauthor_list":            course_coauthor_list,
                 "course_map_action_list":          course_map_action_list,
-                "course_bibliography_dict":        course_bibliography_dict,
                 "course_has_bibliography":         course_has_bibliography,
-                "course_bibliography_letter_list": course_bibliography_letter_list}
+                "course_bibliography_dict":        course_bibliography_dict,
+                "course_bibliography_letter_list": course_bibliography_letter_list,
+                "course_has_glossary":             course_has_glossary,
+                "course_glossary_dict":            course_glossary_dict,
+                "course_glossary_letter_list":     course_glossary_letter_list}

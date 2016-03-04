@@ -76,6 +76,14 @@
                     </metal:macro>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="small-12 colmuns">
+                    <metal:macro use-macro="context/course_glossary_macro/macros/display_glossary">
+                        Affichage du glossarie
+                    </metal:macro>
+                </div>
+            </div>
         </section>
 
     </main>
