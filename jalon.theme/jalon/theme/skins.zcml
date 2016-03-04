@@ -10,6 +10,7 @@
   <cmf:registerDirectory name="jalon_theme_my_space"/>
   <cmf:registerDirectory name="jalon_theme_my_space_wims_createxo"/>
   <cmf:registerDirectory name="jalon_theme_my_courses"/>
+  <cmf:registerDirectory name="jalon_theme_course"/>
   <cmf:registerDirectory name="jalon_theme_my_students"/>
   <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
   <cmf:registerDirectory name="jalon_theme_configuration"/>

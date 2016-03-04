@@ -27,6 +27,10 @@
             meta_type="Filesystem Directory View"
             directory="jalon.content:skins/jalon_content_my_courses"/>
 
+    <object name="jalon_content_course"
+            meta_type="Filesystem Directory View"
+            directory="jalon.content:skins/jalon_content_course"/>
+
     <object name="jalon_content_my_students"
             meta_type="Filesystem Directory View"
             directory="jalon.content:skins/jalon_content_my_students"/>
@@ -51,6 +55,7 @@
         <layer name="jalon_content_connexion" insert-after="jalon_theme_connexion"/>
         <layer name="jalon_content_my_space" insert-after="jalon_theme_my_space"/>
         <layer name="jalon_content_my_courses" insert-after="jalon_theme_my_courses"/>
+        <layer name="jalon_content_course" insert-after="jalon_theme_course"/>
         <layer name="jalon_content_my_students" insert-after="jalon_theme_my_students"/>
         <layer name="jalon_content_configuration" insert-after="jalon_theme_configuration"/>
 
