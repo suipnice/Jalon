@@ -1,0 +1,57 @@
+<metal:macro define-macro="display_bibliography">
+<h2>
+    <i class="fa fa-book"></i><tal:block i18n:translate="">Bibliographie</tal:block>
+    <a class="button tiny radius show-for-medium-up" data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+       tal:condition="my_view/is_personnel"
+       tal:attributes="href string:${context/absolute_url}/course_add_bibliography_element_form">
+        <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Attacher une ressource externe</tal:block>
+    </a>
+</h2>
+
+<div class="panel callout radius"
+     tal:condition="not:my_view/course_has_bibliography"
+     i18n:translate="label_bibliographie_vide">
+    La bibliographie de ce cours ne contient aucun élément.
+</div>
+
+<dl class="panel callout radius accordion" data-accordion="data-accordion"
+    tal:condition="my_view/course_has_bibliography">
+    <dd class="accordion-navigation"
+        tal:repeat="bibliography_letter my_view/course_bibliography_letter_list">
+
+        <a tal:attributes="href string:#bib-${bibliography_letter}"
+           tal:define="bibliography_letter_lenght python:len(my_view['course_bibliography_dict'][bibliography_letter])">
+            <span class="label round" tal:content="bibliography_letter" />
+            <tal:replace replace="bibliography_letter_lenght" />
+            <tal:block tal:condition="python:bibliography_letter_lenght == 1" i18n:translate="">élément</tal:block>
+            <tal:block tal:condition="python:bibliography_letter_lenght > 1" i18n:translate="">éléments</tal:block>
+        </a>
+
+        <div class="content"
+             tal:define="cours context/getId"
+             tal:attributes="id string:bib-${bibliography_letter}">
+
+            <ul tal:define="course_bibliography_element_list python:course_bibliography_dict[bibliography_letter];
+                            no_return python:course_bibliography_element_list.sort(lambda x,y: cmp(x['titreElement'], y['titreElement']))">
+                <li tal:repeat="course_bibliography_element course_bibliography_element_list">
+                    <tal:define define="res_name python:context.getShortText(course_bibliography_element['titreElement'], 80)">
+                    <a class="right" title="Détacher du cours"
+                       data-reveal-ajax="true" data-reveal-id="reveal-main_second"
+                       tal:attributes="href string:${context/absolute_url}/course_bibliography_remove_form"
+                       tal:condition="my_view/is_personnel"
+                       i18n:attributes="title">
+                       <i class="fa fa-chain-broken fa-fw warning"></i>
+                    </a>
+
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="title string:Voir la ressource « ${course_bibliography_element/titreElement} »;
+                                       href course_bibliography_element/urlElement">
+                        <tal:replace replace="res_name" />
+                    </a>
+                    </tal:define>
+                </li>
+            </ul>
+        </div>
+    </dd>
+</dl>
+</metal:macro>

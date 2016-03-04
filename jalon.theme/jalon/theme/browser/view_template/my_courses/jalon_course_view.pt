@@ -64,6 +64,18 @@
                     <tal:block i18n:translate="">Plan du cours</tal:block>
                 </h2>
             </div>
+
+            <div class="row panel callout radius">
+                ----- ***** PLAN ICI ***** -----
+            </div>
+
+            <div class="row">
+                <div class="small-12 colmuns">
+                    <metal:macro use-macro="context/course_bibliography_macro/macros/display_bibliography">
+                        Affichage de la bibliographie
+                    </metal:macro>
+                </div>
+            </div>
         </section>
 
     </main>

@@ -634,11 +634,14 @@ class JalonCours(ATFolder):
             elements = self.getBibliographie()
         if elements:
             infos_element = self.getElementCours()
+
+        portal_link = self.portal_url.getPortalObject().absolute_url()
         for idElement in elements:
             info_element = infos_element.get(idElement)
             if info_element:
                 info_element["idElement"] = idElement
                 lettre = info_element["titreElement"][0].upper()
+                info_element["urlElement"] = "%s/Members/Externes/%s/%s" % (portal_link, idElement, info_element["createurElement"])
                 if not lettre in dicoLettres:
                     dicoLettres[lettre] = [info_element]
                 else:

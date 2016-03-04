@@ -63,10 +63,18 @@ class JalonCourseView(BrowserView):
                                    "action_icon": "fa fa-trash-o  fa-fw",
                                    "action_name": "Supprimer les activités WIMS"}]
 
-        return {"is_personnel":             self.context.isPersonnel(user, mode_etudiant),
-                "is_public":                "success" if course_acces == "Public" else "disabled",
-                "course_short_description": self.context.getDescriptionCourte(),
-                "course_author_name":       course_author["fullname"],
-                "course_author_link":       course_author_link,
-                "course_coauthor_list":     course_coauthor_list,
-                "course_map_action_list":   course_map_action_list}
+        course_bibliography_dict = self.context.getGloBib('bibliographie')
+        course_bibliography_letter_list = course_bibliography_dict.keys()
+        course_bibliography_letter_list.sort()
+        course_has_bibliography = len(course_bibliography_letter_list)
+
+        return {"is_personnel":                    self.context.isPersonnel(user, mode_etudiant),
+                "is_public":                       "success" if course_acces == "Public" else "disabled",
+                "course_short_description":        self.context.getDescriptionCourte(),
+                "course_author_name":              course_author["fullname"],
+                "course_author_link":              course_author_link,
+                "course_coauthor_list":            course_coauthor_list,
+                "course_map_action_list":          course_map_action_list,
+                "course_bibliography_dict":        course_bibliography_dict,
+                "course_has_bibliography":         course_has_bibliography,
+                "course_bibliography_letter_list": course_bibliography_letter_list}
