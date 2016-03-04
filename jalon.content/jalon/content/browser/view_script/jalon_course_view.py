@@ -65,6 +65,8 @@ class JalonCourseView(BrowserView):
                                    "action_icon": "fa fa-trash-o  fa-fw",
                                    "action_name": "Supprimer les activités WIMS"}]
 
+        course_map_item_adder = self.getCourseItemAdderList(course_link)
+
         course_bibliography_dict = self.context.getGloBib('bibliographie')
         course_bibliography_letter_list = course_bibliography_dict.keys()
         course_bibliography_letter_list.sort()
@@ -161,6 +163,7 @@ class JalonCourseView(BrowserView):
                 "course_author_link":              course_author_link,
                 "course_coauthor_list":            course_coauthor_list,
                 "course_map_action_list":          course_map_action_list,
+                "course_map_item_adder":           course_map_item_adder,
                 "course_has_bibliography":         course_has_bibliography,
                 "course_bibliography_dict":        course_bibliography_dict,
                 "course_bibliography_letter_list": course_bibliography_letter_list,
@@ -185,3 +188,90 @@ class JalonCourseView(BrowserView):
                 "course_news_title":               course_news_title,
                 "course_advert":                   course_advert,
                 "course_forums":                   course_forums}
+
+    def getCourseItemAdderList(self, course_link):
+        item_adder_list = self.getCourseItemAdderMenuList(course_link)
+        return [{"menu_adder_class":         "button small course-title dropdown",
+                 "menu_adder_data-dropdown": "add-title-text",
+                 "menu_adder_icon":          "fa fa-paragraph",
+                 "menu_adder_name":          "Titre / texte",
+                 "menu_adder_items":         [{"item_link": "%s/cours_plan_form?typeElement=Titre" % self.context.absolute_url(),
+                                               "item_icon": "fa fa-paragraph fa-fw",
+                                               "item_name": "Titre"},
+                                              {"item_link": "%s/cours_plan_form?typeElement=TexteLibre" % self.context.absolute_url(),
+                                               "item_icon": "fa fa-align-justify fa-fw",
+                                               "item_name": "Texte libre"}]},
+                {"menu_adder_class":         "button small course-space_el dropdown",
+                 "menu_adder_data-dropdown": "add-space_el",
+                 "menu_adder_icon":          "fa fa-home",
+                 "menu_adder_name":          "De mon espace",
+                 "menu_adder_items":         item_adder_list["my_space"]},
+                {"menu_adder_class":         "button small course-activity dropdown",
+                 "menu_adder_data-dropdown": "add-activity",
+                 "menu_adder_icon":          "fa fa-random",
+                 "menu_adder_name":          "Activité",
+                 "menu_adder_items":         item_adder_list["activity"]},
+                {"menu_adder_class":         "button small course-direct dropdown",
+                 "menu_adder_data-dropdown": "add-direct",
+                 "menu_adder_icon":          "fa fa-cloud-upload",
+                 "menu_adder_name":          "Ajout rapide",
+                 "menu_adder_items":         item_adder_list["add"]}]
+
+    def getCourseItemAdderMenuList(self, course_link):
+        portal = self.context.portal_url.getPortalObject()
+        portal_link = portal.absolute_url()
+        my_space = portal.portal_jalon_properties.getPropertiesMonEspace()
+
+        item_adder_list = {"my_space": [],
+                           "activity": [],
+                           "add":      []}
+        # Menu Mon Espace
+        if my_space["activer_fichiers"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_fichiers/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-files-o fa-fw",
+                                                "item_name": "Fichiers"})
+        if my_space["activer_presentations_sonorisees"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_presentations_sonorisees/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-microphone fa-fw",
+                                                "item_name": "Présentations sonorisées"})
+        if my_space["activer_liens"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_ressources_externes/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-external-link fa-fw",
+                                                "item_name": "Ressources externes"})
+        if my_space["activer_webconferences"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_webconferences/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-headphones fa-fw",
+                                                "item_name": "Webconférence"})
+        if my_space["activer_lille1pod"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_videos_pod/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-youtube-play fa-fw",
+                                                "item_name": "Vidéos"})
+        if my_space["activer_vod"]:
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_vods/course_add_view" % portal_link,
+                                                "item_icon": "fa fa-video-camera fa-fw",
+                                                "item_name": "VOD"})
+        # Menu Activités
+        item_adder_list["activity"].append({"item_link": "%s/create_deposit_box_form" % course_link,
+                                            "item_icon": "fa fa-fw fa-inbox",
+                                            "item_name": "Boite de dépôts"})
+        if my_space["activer_exercices_wims"]:
+            item_adder_list["activity"].append({"item_link": "%s/create_self_evaluation_form" % course_link,
+                                                "item_icon": "fa fa-fw fa-gamepad",
+                                                "item_name": "Auto évaluation WIMS"})
+            item_adder_list["activity"].append({"item_link": "%s/create_examination_form" % course_link,
+                                                "item_icon": "fa fa-fw fa-graduation-cap",
+                                                "item_name": "Examen WIMS"})
+        if my_space["activer_webconferences"]:
+            item_adder_list["activity"].append({"item_link": "%s/activate_webconference_form" % course_link,
+                                                "item_icon": "fa fa-fw fa-globe",
+                                                "item_name": "Salle virtuelle"})
+        # Menu Ajout rapide
+        if my_space["activer_fichiers"]:
+            item_adder_list["add"].append({"item_link": "%s/create_and_add_course_file_form" % course_link,
+                                           "item_icon": "fa fa-files-o fa-fw",
+                                           "item_name": "Fichiers"})
+        if my_space["activer_liens"]:
+            item_adder_list["add"].append({"item_link": "%s/create_and_add_course_external_resource_form" % course_link,
+                                           "item_icon": "fa fa-external-link fa-fw",
+                                           "item_name": "Ressources externes"})
+        return item_adder_list

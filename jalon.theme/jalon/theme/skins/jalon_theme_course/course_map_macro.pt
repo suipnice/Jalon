@@ -1,0 +1,28 @@
+<metal:macro define-macro="course_map_item_adder">
+<h3 class="show-for-medium-up">
+    <i class="fa fa-plus-circle"></i>
+    <tal:block i18n:translate="">Ajouter des éléments</tal:block>
+</h3>
+<nav id="item-adder">
+    <ul class="button-group radius">
+        <li tal:repeat="item_adder my_view/course_map_item_adder">
+            <a tal:attributes="class item_adder/menu_adder_class;
+                               data-dropdown item_adder/menu_adder_data-dropdown"
+                               data-options="align:bottom">
+                <i tal:attributes="class item_adder/menu_adder_icon"></i>
+                <tal:replace replace="item_adder/menu_adder_name" i18n:translate=""/>
+            </a>
+            <ul tal:attributes="id item_adder/menu_adder_data-dropdown" 
+                class="f-dropdown" data-dropdown-content>
+                <li tal:repeat="menu_adder_item item_adder/menu_adder_items">
+                    <a tal:attributes="href menu_adder_item/item_link"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true">
+                        <i tal:attributes="class menu_adder_item/item_icon"></i>
+                        <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+</metal:macro>

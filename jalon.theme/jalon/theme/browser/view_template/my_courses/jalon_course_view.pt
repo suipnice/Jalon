@@ -65,7 +65,11 @@
             </div>
 
             <div class="row panel callout radius">
-                ----- ***** PLAN ICI ***** -----
+                <tal:condition condition="my_view/is_personnel">
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
+                    Affichage de la barre d'ajout
+                </metal:macro>
+                </tal:condition>
             </div>
 
             <div class="row">
