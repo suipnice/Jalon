@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Ajouter des co-auteurs</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Un co-auteur du cours dispose des droits de modifications sur la totalité de cours.</tal:block>
+    </div>
+    <form id="js-coAuthorMod" method="POST"
+          tal:define="mode_etudiant request/mode_etudiant | nothing;
+                      personnel python:context.isPersonnel(user, mode_etudiant);"
+          tal:attributes="action string:${context/absolute_url}/add_course_coauthor_script"
+          tal:condition="personnel">
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Recherchez un personnel de l'Université dans l'annuaire</h3>
+        <div class="field">
+            <label for="input-coauteurs"
+                   i18n:translate="">Nom ou identifiant</label>
+            <input type="text" id="input-coauteurs" name="username" />
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setCoAuthorReaderMod()"></script>
+
+    </form>
+
+<tal:define define="coAuteurs context/getCoAuteursCours">
+
+    <div class="panel callout radius"
+         tal:condition="not:coAuteurs">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Ce cours n'a aucun co-auteur.</tal:block>
+    </div>
+
+    <tal:isCoAuteurs condition="coAuteurs">
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Co-auteurs de ce cours</h3>
+
+    <div class="panel radius bkgrnd"
+         tal:condition="coAuteurs">
+        <tal:repeat repeat="coAuteur coAuteurs">
+            <tal:define define="is_last repeat/coAuteur/end;
+                                itemNbr repeat/coAuteur/length;">
+                <tal:block tal:content="coAuteur/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                <tal:comment replace="nothing"><!--
+                    Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                --></tal:comment>
+
+            </tal:define>
+        </tal:repeat>
+    </div>
+
+    </tal:isCoAuteurs>
+
+</tal:define>
+
+</metal:main>
+
+</body>
+
+</html>

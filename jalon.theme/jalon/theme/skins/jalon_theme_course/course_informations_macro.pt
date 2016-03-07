@@ -60,14 +60,28 @@
         </div>
         <div class="panel bkgrnd radius">
             <tal:personnel condition="my_view/is_personnel">
-            <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-               tal:attributes="href string:${context/absolute_url}/add_course_coauthor_form">
-                <i class="fa fa-trash fa-lg alert"></i>
-            </a>
-            <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-               tal:attributes="href string:${context/absolute_url}/remove_course_coauthor_form">
-                <i class="fa fa-plus-circle fa-lg"></i>
-            </a>
+            <span class="right" tal:condition="my_view/is_personnel">
+                <a class="dropdown"
+                   data-options="align:bottom" data-dropdown="course-coauthor">
+                    <i class="fa fa-cog fa-lg"></i>
+                </a>
+                <ul id="course-coauthor" class="f-dropdown" data-dropdown-content>
+                    <li>
+                        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/add_course_coauthor_form">
+                            <i class="fa fa-plus-circle fa-fw"></i>
+                            <tal:block i18n:translate="">Ajouter</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${context/absolute_url}/remove_course_coauthor_form">
+                            <i class="fa fa-trash fa-fw alert"></i>
+                            <tal:block i18n:translate="">Supprimer</tal:block>
+                        </a>
+                    </li>
+                </ul>
+            </span>
             </tal:personnel>
             <dl>
                 <dt>

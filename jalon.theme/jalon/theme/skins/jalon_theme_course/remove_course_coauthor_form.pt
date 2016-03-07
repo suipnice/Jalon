@@ -1,0 +1,62 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Supprimer des co-auteurs</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-coAuthorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/remove_course_coauthor_script"
+          tal:define="coAuteurs context/getCoAuteursCours">
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Co-auteurs</h3>
+        <div class="panel callout radius"
+             tal:condition="not:coAuteurs"
+             i18n:translate="">
+            Aucun
+        </div>
+
+        <tal:condition condition="coAuteurs">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les co-auteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table>
+            <tr tal:repeat="coAuteur coAuteurs">
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="auteur-actu:list" checked="checked"
+                               tal:attributes="id string:switch_reveal-${repeat/coAuteur/index};
+                                               value coAuteur/id" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_reveal-${repeat/coAuteur/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="text-left" tal:content="coAuteur/fullname" />
+            </tr>
+        </table>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+        </tal:condition>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>
