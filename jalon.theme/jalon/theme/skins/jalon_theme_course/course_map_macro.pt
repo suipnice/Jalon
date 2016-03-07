@@ -1,4 +1,5 @@
 <metal:macro define-macro="course_map_item_adder">
+<div class="panel bkgrnd radius show-for-medium-up">
 <h3 class="show-for-medium-up">
     <i class="fa fa-plus-circle"></i>
     <tal:block i18n:translate="">Ajouter des éléments</tal:block>
@@ -25,4 +26,5 @@
         </li>
     </ul>
 </nav>
+</div>
 </metal:macro>

@@ -80,6 +80,12 @@
                         Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
                     </tal:block>
                 </div>
+                <a class="button tiny radius expand"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page">
+                    <i class="fa fa-info-circle"></i>
+                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
+                </a>
 
                 <ol id="course_plan-plan">
                     <tal:condition condition="not:my_view/has_course_map">
