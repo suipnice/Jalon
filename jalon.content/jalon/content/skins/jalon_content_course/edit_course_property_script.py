@@ -10,6 +10,10 @@
 
 form = context.REQUEST.form
 
-context.setAttributCours({form["course_property"]: form[form["course_property"]]})
+course_property = form["course_property"]
+context.setAttributCours({course_property: form[course_property]})
 
-return context.absolute_url()
+if course_property in ["acces"]:
+    context.REQUEST.RESPONSE.redirect(context.absolute_url())
+else:
+    return context.absolute_url()

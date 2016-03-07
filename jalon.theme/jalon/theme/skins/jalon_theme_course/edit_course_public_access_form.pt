@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:block i18n:translate="">Accès libre</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:define define="acces context/getAcces;
+                        is_public python:context.test(acces == 'Public', 1, 0)">
+    <form tal:attributes="action string:${context/absolute_url}/edit_course_property_script" method="POST">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">L'accès libre (public, anonyme…) permet la consultation du cours sans authentification pour toute personne possédant son adresse (URL).</tal:block>
+            <tal:comment replace="nothing"><!--
+            <tal:block i18n:translate="">Il s'agit d'un pré-requis pour une publication du cours sur iTunesU.</tal:block>
+            --></tal:comment>
+        </div>
+
+        <div class="panel warning radius">
+            <i class="fa fa-exclamation-triangle no-pad"></i>
+            <tal:block i18n:translate="">L'accès public ne permet pas d'accéder aux activités pédagogiques : ces dernières ne sont accessibles qu'après authentification.</tal:block>
+        </div>
+
+        <div id="formControls" class="formControls">
+
+            <tal:comment replace="nothing"><!--
+            <div class="switch activator">
+                <input id="testSwitch" name="testSwitch" type="checkbox"
+                       tal:attributes="checked python:context.test(is_public, 'checked', '')" />
+                <label for="testSwitch">
+                    <span class="switch-on">Activé</span>
+                    <span class="switch-off">Désactivé</span>
+                </label>
+            </div>
+            --></tal:comment>
+
+            <input type="radio" name="acces" id="acces_public" value="Public"
+                   tal:attributes="checked is_public" />
+            <label for="acces_public" class="success"
+                   i18n:translate="">Activer</label>
+
+            <input type="radio" name="acces" id="acces_etudiants" value="Aux étudiants"
+                   tal:attributes="checked not:is_public" />
+            <label for="acces_etudiants" class="warning"
+                   i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="course_property" value="acces"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <div class="panel radius callout"
+         tal:condition="is_public">
+        Toute personne possédant l'adresse ci-dessous peut accéder au cours (les activités pédagogiques liées nécessiteront une authentification).
+        <div class="panel radius bkgrnd text-center">
+            <strong tal:content="string:${portal_state/portal_url}/public/${context/getLienCourt}"/>
+        </div>
+    </div>
+
+    </tal:define>
+</metal:main>
+
+</body>
+
+</html>
