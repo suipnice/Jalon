@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing">
+
+    <h2>
+        <tal:block i18n:translate="">Modifier le titre du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-courseTitleMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};">
+
+        <div tal:define="error errors/title | nothing;"
+            tal:attributes="class python:context.test(error, 'error', '')">
+
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error"/>
+            <input type="text" id="title" name="title" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | context/Title"
+                   i18n:attributes="placeholder"/>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="course_property" value="title"/>
+        <input type="hidden" name="validate_key" value="edit_course_title"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setRevealFormNewPage('js-courseTitleMod','reveal-course_access')"></script>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

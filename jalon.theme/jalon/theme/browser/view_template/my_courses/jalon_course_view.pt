@@ -39,7 +39,9 @@
         <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
 
         <section id="course_plan" class="medium-8 small-12 columns">
-            <metal:macro use-macro="here/course_informations_macro/macros/course_informations">Block au dessus du plan</metal:macro>
+            <metal:macro use-macro="here/course_informations_macro/macros/course_informations">
+                Block au dessus du plan
+            </metal:macro>
 
             <div class="row">
                 <span class="right" tal:condition="my_view/is_personnel">
