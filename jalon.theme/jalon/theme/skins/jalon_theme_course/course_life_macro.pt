@@ -126,7 +126,7 @@
                 <h4 tal:replace="my_view/course_news_title"
                     i18n:translate=""/>
                 <dl>
-                    <tal:block repeat="news my_view/course_news">
+                    <tal:block repeat="news my_view/course_news/listeActu">
                     <dt>
                         <span class="label bkgrnd"
                               tal:content="python:context.getLocaleDate(news['date'])" />
