@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-info-circle"></i><tal:block i18n:translate="legende">Légende du plan du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div id="course_plan-legend"
+         tal:define="mode_etudiant request/mode_etudiant | nothing;
+                     personnel python:context.isPersonnel(user, mode_etudiant);
+                     anonymous python:user.has_role('Anonymous');">
+
+        <dl class="typeElement type_Titre">
+            <dt i18n:translate="">Titre</dt>
+        </dl>
+        <dl class="typeElement type_Activite">
+            <dt i18n:translate="">Activité pédagogique</dt>
+                <dd class="type_Examen" i18n:translate="">Examen</dd>
+                <dd class="type_AutoEvaluation" i18n:translate="">Auto-évaluation</dd>
+                <dd class="type_BoiteDepot" i18n:translate="">Boite de dépôt</dd>
+                <dd class="type_SalleVirtuelle" i18n:translate="">Salle virtuelle</dd>
+        </dl>
+        <dl class="typeElement type_Mon_Espace">
+            <dt i18n:translate="">Ressource ou complément</dt>
+                <dd class="type_File" i18n:translate="">Fichier</dd>
+                <dd class="type_Image" i18n:translate="">Image</dd>
+                <dd class="type_Video" i18n:translate="">Ressource Pod</dd>
+                <dd class="type_Lienweb" i18n:translate="">Ressource externe</dd>
+                <dd class="type_Lecteurexportable" i18n:translate="">Lecteur exportable</dd>
+                <dd class="type_CatalogueBU" i18n:translate="">Catalogue BU</dd>
+                <dd class="type_Presentationssonorisees" i18n:translate="">Présentation sonorisée</dd>
+                <dd class="type_Webconference" i18n:translate="">Webconférence</dd>
+        </dl>
+        <dl>
+            <tal:condition condition="personnel">
+            <dt>
+                <i class="fa fa-eye-slash fa-lg fa-fw"></i><tal:block i18n:translate="">Élément non visible par les étudiants</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-calendar-o success fa-lg fa-fw"></i><tal:block i18n:translate="">Affichage programmé (date au survol de l'icône)</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-calendar-o alert fa-lg fa-fw"></i><tal:block i18n:translate="">Masquage programmé (date au survol de l'icône)</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-hand-o-left fa-lg fa-fw"></i><tal:block i18n:translate="">Élément signalé aux étudiants (indication au survol de l'icône)</tal:block>
+            </dt>
+            </tal:condition>
+            <tal:condition condition="python:not personnel and not anonymous">
+            <dt>
+                <i class="fa fa-check-square-o fa-lg fa-fw"></i><tal:block i18n:translate="">Élément marqué comme "lu"</tal:block>
+            </dt>
+            <dt>
+                <i class="fa fa-hand-o-left fa-lg fa-fw"></i><tal:block i18n:translate="">Élément signalé par l'enseignant (indication au survol de l'icône)</tal:block>
+            </dt>
+            </tal:condition>
+            <tal:condition condition="not:anonymous">
+            <dt>
+                <i class="fa fa-bell-o fa-lg fa-fw"></i><tal:block i18n:translate="">Nouveauté depuis votre dernière connexion</tal:block>
+            </dt>
+            </tal:condition>
+        </dl>
+    </div>
+
+</metal:main>
+
+</body>
+
+</html>
