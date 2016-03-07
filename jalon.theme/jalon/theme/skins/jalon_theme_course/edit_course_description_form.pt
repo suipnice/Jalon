@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier la description du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="cours_edit_form" name="cours_edit_form" method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_course_property_script"
+          tal:define="errors python:{}">
+
+        <metal:field use-macro="python:context.widget('description', mode='edit')">Body text</metal:field>
+
+        <input type="hidden" name="course_property" value="description"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:instantiateCKEditor('description')"></script>
+
+</metal:main>
+
+</body>
+
+</html>
