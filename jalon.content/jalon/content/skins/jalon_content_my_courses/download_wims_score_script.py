@@ -15,15 +15,21 @@ u""" Script pour télécharger les notes de l'ensemble des activités WIMS d'un 
 #from jalon.content import contentMessageFactory as _
 from Products.CMFPlone import PloneMessageFactory as _
 
-#### On commence par s'assurer que c'est bien un coauteur qui lance la commande.
 request = context.REQUEST
-authMember = request["AUTHENTICATED_USER"]
-authMember_id = authMember.getId()
+user_id = request.form["user_id"]
+
+if "course_id" in request.form:
+    course_id = request.form["course_id"]
+    course_user_folder = context.getCourseUserFolder(user_id)
+    course_object = getattr(course_user_folder, course_id)
+    redirection = "%s?tab=%s" % (context.absolute_url(), request.form["tab"])
+else:
+    course_object = context
+    redirection = context.absolute_url()
 
 
-if context.isPersonnel(authMember):
-
-    titre_cours = context.aq_parent.getShortText(context.Title()).decode("utf-8")
+if course_object.isAuteurs(user_id):
+    titre_cours = course_object.getShortText(course_object.Title()).decode("utf-8")
 
     if "utilisateur" in request:
         utilisateur = request["utilisateur"]
@@ -32,20 +38,18 @@ if context.isPersonnel(authMember):
         message = u"Vous n'avez selectionné aucun utilisateur."
         context.plone_utils.addPortalMessage(_(message), "info")
 
-    file_format = "csv"
-    if "file_format" in request:
-        file_format = request["file_format"]
+    file_format = "csv" if "file_format" not in request.form else request["file_format"]
 
     dico_format = {"csv": ["csv", "csv"],
                    "tsv": ["tsv", "tab-separated-values"],
                    "xls": ["csv", "csv"]}
 
     # On demande les notes à WIMS
-    resultat = context.getScoresWims(auteur=utilisateur, authMember=authMember_id, request=request, file_format=file_format)
+    resultat = course_object.getScoresWims(auteur=utilisateur, authMember=user_id, request=request, file_format=file_format)
     if resultat["status"] == "OK":
         #message = u"Les notes des activités WIMS du cours « <strong>%s</strong> » ont bien été téléchargées ." % (titre_cours)
         #context.plone_utils.addPortalMessage(_(message), "info")
-        filename = "%s.%s" % (context.getId(), dico_format[file_format][0])
+        filename = "%s.%s" % (course_object.getId(), dico_format[file_format][0])
         if file_format == "xls":
             #Comme Excel (francais) ne prend pas automatiquement l'utf-8, on réencode en iso pour lui.
             charset = "Windows-1252"
@@ -69,4 +73,4 @@ else:
     context.envoyerMailErreur({"objet"  : "Unauthorized access to getscores_wims",
                                "message": "<p>Suspicion de fraude de l'utilisateur <strong>%s</strong></p><div>%s</div>" % (authMember_id, request)})
 
-request.RESPONSE.redirect(context.absolute_url())
+request.RESPONSE.redirect(redirection)

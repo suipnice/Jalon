@@ -98,6 +98,15 @@
             </select>
         </div>
 
+        <input type="hidden" name="tab"
+               tal:attributes="value request/tab"
+               tal:condition="request/tab | nothing"/>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user_id"/>
+        <input type="hidden" name="course_id"
+               tal:attributes="value course_id"
+               tal:condition="course_id"/>
+
         <div class="formControls">
             <button class="button small close-download-modal" type="submit">
                 <i class="fa fa-download"></i>
