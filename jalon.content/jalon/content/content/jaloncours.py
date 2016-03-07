@@ -517,6 +517,20 @@ class JalonCours(ATFolder):
         #self.plone_log("getAuteurs")
         return {"principal": self.getAuteur(), "coAuteurs": self.getCoAuteursCours()}
 
+    def getAuthorForm(self):
+        course_author = self.getAuteur()
+        course_creator = self.getCreateur()
+
+        course_author_dict = {"course_author_name":  course_author["fullname"],
+                              "course_creator_name": course_creator["fullname"]}
+
+        if self.isLDAP():
+            ldap_base = context.getBaseAnnuaire()
+            course_author_dict["course_author_link"] = self.getFicheAnnuaire(course_author, ldap_base)
+            course_author_dict["course_creator_link"] = self.getFicheAnnuaire(course_creator, ldap_base)
+
+        return course_author_dict
+
     def getAffCategorieCours(self):
         #self.plone_log("getAffCategorieCours")
         categories = self.getJalonCategories()

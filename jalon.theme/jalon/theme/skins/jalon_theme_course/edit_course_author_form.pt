@@ -1,0 +1,71 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier l'auteur</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius warning"
+         tal:define="course_author_dict context/getAuthorForm">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">
+            vous allez changer l'auteur du cours affiché aux étudiants. Le créateur n'est pas modifiable.
+        </tal:block>
+        <div>
+            <strong i18n:translate="">Auteur actuel :</strong>
+            <a target="_blank"
+               tal:attributes="href course_author_dict/course_author_link"
+               tal:content="course_author_dict/course_author_name"
+               tal:on-error="course_author_dict/course_author_name"/>
+        </div>
+        <div>
+            <strong i18n:translate="">Créateur du cours (non modifiable) :</strong>
+            <a target="_blank"
+               tal:attributes="href course_author_dict/course_creator_link"
+               tal:content="course_author_dict/course_creator_name"
+               tal:on-error="course_author_dict/course_creator_name"/>
+        </div>
+    </div>
+
+    <form id="js-authorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/edit_course_author_script">
+
+        <h3>
+            <i class="fa fa-search"></i>
+            <tal:block i18n:translate="">Recherchez un personnel de l'Université dans l'annuaire</tal:block>
+        </h3>
+        <label for="input-auteurs"
+               i18n:translate="">Nom ou identifiant</label>
+        <input type="text" id="input-auteurs" name="username" required="required"/>
+
+        <input type="hidden" name="auteurs" value="auteur" />
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">L'auteur actuel sera remplacé.</tal:block>
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setAuthorMod()"></script>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>
