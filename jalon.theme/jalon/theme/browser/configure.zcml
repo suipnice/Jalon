@@ -117,6 +117,19 @@
                   template="view_template/my_courses/jalon_course_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="course_add_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.course_add_view.CourseAddView"
+                  template="view_template/jalon_course/course_add_view.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="course_add_view_ajax"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFolder"
+                  class="jalon.content.browser.view_script.course_add_view.CourseAddView"
+                  template="view_template/jalon_course/course_add_view_ajax.pt"
+                  permission="zope2.View"/>
+
+
     <!-- MyStudentsView Definition -->
     <browser:page name="mes_etudiants_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"

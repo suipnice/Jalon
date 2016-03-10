@@ -8,7 +8,7 @@
 
 <body>
 
-<metal:core fill-slot="content"
+<metal:main fill-slot="content"
             tal:define="mode_etudiant request/mode_etudiant | nothing;
                         my_view python:view.getCourseView(user, mode_etudiant);
                         mtool context/@@plone_tools/membership">
@@ -67,6 +67,12 @@
             </div>
 
             <div class="row panel callout radius">
+                <a class="button tiny radius expand"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
+                    <i class="fa fa-info-circle"></i>
+                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
+                </a>
                 <tal:condition condition="my_view/is_personnel">
                 <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
                     Affichage de la barre d'ajout
@@ -80,12 +86,6 @@
                         Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
                     </tal:block>
                 </div>
-                <a class="button tiny radius expand"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
-                    <i class="fa fa-info-circle"></i>
-                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
-                </a>
 
                 <ol id="course_plan-plan">
                     <tal:condition condition="not:my_view/has_course_map">
@@ -173,7 +173,7 @@
                 tal:content="jsTranslate/getJsTranslate"></script>
     </tal:block>
 
-</metal:core>
+</metal:main>
 
 </body>
 

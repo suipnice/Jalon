@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="course_path request/course_path;
+                        my_view python:view.getCourseAddView(user, course_path);
+                        course_map_form python:view.getCourseMapForm(course_path)">
+
+    <h2>
+        <tal:block i18n:translate="">Attacher un élément de « Mon Espace »</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h3>
+
+    <ul id="js-tag_filter"
+        tal:define="tags_list my_view/tags_list">
+        <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list" />
+    </ul>
+
+    <div id="js-list-ressource">
+        <h3 id="js-update_title">
+            <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+        </h3>
+
+        <form id="js-attachmentCreator" method="POST">
+            <div id="js-popup-update_target"
+                 tal:attributes="data-href string:${context/absolute_url}/course_add_view_ajax?course_path=${course_path}">
+                <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_course_items']" />
+            </div>
+
+            <!--metal:macro use-macro="context/course_map_macro/macros/course_map_form"/-->
+
+            <!--metal:macro use-macro="context/macro_cours/macros/affichage-bouton-ajout">
+                Macro d'affichage de la liste en fonction de la variable espace
+            </metal:macro-->
+
+        </form>
+
+        <script charset="UTF-8"
+                tal:content="my_view/course_add_js"></script>
+    </div>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -65,7 +65,8 @@ class JalonCourseView(BrowserView):
                                    "action_icon": "fa fa-trash-o  fa-fw",
                                    "action_name": "Supprimer les activités WIMS"}]
 
-        course_map_item_adder = self.getCourseItemAdderList(course_link)
+        course_path = self.context.getPhysicalPath()
+        course_map_item_adder = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]))
 
         has_course_map = self.context.getPlan()
 
@@ -200,8 +201,8 @@ class JalonCourseView(BrowserView):
                 "course_advert":                   course_advert,
                 "course_forums":                   course_forums}
 
-    def getCourseItemAdderList(self, course_link):
-        item_adder_list = self.getCourseItemAdderMenuList(course_link)
+    def getCourseItemAdderList(self, course_link, course_path):
+        item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path)
         return [{"menu_adder_class":         "button small course-title dropdown",
                  "menu_adder_data-dropdown": "add-title-text",
                  "menu_adder_icon":          "fa fa-paragraph",
@@ -228,7 +229,7 @@ class JalonCourseView(BrowserView):
                  "menu_adder_name":          "Ajout rapide",
                  "menu_adder_items":         item_adder_list["add"]}]
 
-    def getCourseItemAdderMenuList(self, course_link):
+    def getCourseItemAdderMenuList(self, course_link, course_path):
         portal = self.context.portal_url.getPortalObject()
         portal_link = portal.absolute_url()
         my_space = portal.portal_jalon_properties.getPropertiesMonEspace()
@@ -238,7 +239,7 @@ class JalonCourseView(BrowserView):
                            "add":      []}
         # Menu Mon Espace
         if my_space["activer_fichiers"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_fichiers/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_fichiers/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-files-o fa-fw",
                                                 "item_name": "Fichiers"})
         if my_space["activer_presentations_sonorisees"]:
