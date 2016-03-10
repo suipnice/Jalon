@@ -95,7 +95,7 @@
     </tbody>
     </table>
 
-    <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+    <tal:define define="script1 string:setBatchSelect('js-attachmentCreator');
                         script2 string:setSortableList('js-list-ressource',['date','filetype','title'],'date','desc')">
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />

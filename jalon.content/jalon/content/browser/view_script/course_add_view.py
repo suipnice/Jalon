@@ -14,6 +14,7 @@ class CourseAddView(MySpaceView):
                                          "macro_file":           "add_course_file_macro",
                                          "portal_type":          ["File", "Image", "Document"],
                                          "course_add_list_icon": "fa fa-files-o",
+                                         "is_display_hide":      True,
                                          "course_add_js":        "setAttachmentCreator()"},
                         "glossaire":    {"course_add_js": "setTagFilter(True)"},
                         "biblio":       {"course_add_js": "setTagFilter(True)"}}
@@ -63,8 +64,10 @@ class CourseAddView(MySpaceView):
                 "nb_display_items":     nb_display_items,
                 "nb_items":             nb_items,
                 "course_add_list":      course_add_list,
-                "course_object":        course_object,
+                "course_map":           course_object.getPlanPlat(),
+                "is_display_hide":      course_add_dict["is_display_hide"],
                 "course_add_js":        course_add_dict["course_add_js"]}
 
-    def getCourseMapForm(course_path):
-        return ""
+    def getCourseMapForm(self, course_path):
+        #LOG.info("----- getCourseMapForm -----")
+        return self.context.restrictedTraverse("cours/%s/course_map_form" % course_path)()
