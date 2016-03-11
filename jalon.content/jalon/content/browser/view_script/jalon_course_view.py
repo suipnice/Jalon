@@ -247,19 +247,19 @@ class JalonCourseView(BrowserView):
                                                 "item_icon": "fa fa-microphone fa-fw",
                                                 "item_name": "Présentations sonorisées"})
         if my_space["activer_liens"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_ressources_externes/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_ressources_externes/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-external-link fa-fw",
                                                 "item_name": "Ressources externes"})
         if my_space["activer_webconferences"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_webconferences/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_webconferences/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-headphones fa-fw",
                                                 "item_name": "Webconférence"})
         if my_space["activer_lille1pod"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_videos_pod/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_videos_pod/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-youtube-play fa-fw",
                                                 "item_name": "Vidéos"})
         if my_space["activer_vod"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_vods/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_vods/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-video-camera fa-fw",
                                                 "item_name": "VOD"})
         # Menu Activités
