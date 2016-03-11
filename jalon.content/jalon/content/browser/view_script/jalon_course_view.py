@@ -243,7 +243,7 @@ class JalonCourseView(BrowserView):
                                                 "item_icon": "fa fa-files-o fa-fw",
                                                 "item_name": "Fichiers"})
         if my_space["activer_presentations_sonorisees"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_presentations_sonorisees/course_add_view" % portal_link,
+            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_presentations_sonorisees/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-microphone fa-fw",
                                                 "item_name": "Présentations sonorisées"})
         if my_space["activer_liens"]:

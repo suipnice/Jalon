@@ -10,12 +10,24 @@ class CourseAddView(MySpaceView):
     """ Class View du fichier my_files_view.pt
     """
 
-    _course_add_dict = {"mes_fichiers": {"folder_id":            "Fichiers",
-                                         "macro_file":           "add_course_file_macro",
-                                         "portal_type":          ["File", "Image", "Document"],
-                                         "course_add_list_icon": "fa fa-files-o",
-                                         "is_display_hide":      True,
-                                         "course_add_js":        "setAttachmentCreator()"},
+    _course_add_dict = {"mes_fichiers":                 {"folder_id":            "Fichiers",
+                                                         "macro_file":           "add_course_file_macro",
+                                                         "portal_type":          ["File", "Image", "Document"],
+                                                         "course_add_list_icon": "fa fa-files-o",
+                                                         "is_display_hide":      True,
+                                                         "course_add_js":        "setAttachmentCreator()"},
+                        "mes_presentations_sonorisees": {"folder_id":            "Sonorisation",
+                                                         "macro_file":           "add_course_adobe_connect_recording_macro",
+                                                         "portal_type":          ["JalonConnect"],
+                                                         "course_add_list_icon": "fa fa-microphone",
+                                                         "is_display_hide":      True,
+                                                         "course_add_js":        "setAttachmentCreator()"},
+                        "mes_webconferences":           {"folder_id":            "Webconference",
+                                                         "macro_file":           "add_course_adobe_connect_recording_macro",
+                                                         "portal_type":          ["JalonConnect"],
+                                                         "course_add_list_icon": "fa fa-headphones",
+                                                         "is_display_hide":      True,
+                                                         "course_add_js":        "setAttachmentCreator()"},
                         "glossaire":    {"course_add_js": "setTagFilter(True)"},
                         "biblio":       {"course_add_js": "setTagFilter(True)"}}
 

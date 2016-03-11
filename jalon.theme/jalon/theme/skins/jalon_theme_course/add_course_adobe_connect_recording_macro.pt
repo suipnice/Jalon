@@ -1,0 +1,107 @@
+<metal:macro define-macro="add_course_items">
+
+    <div class="panel callout radius"
+         tal:condition="my_view/is_no_items">
+        <i class="fa fa-info-circle no-pad"></i>
+        <strong i18n:translate="">Il n'y a aucune ressource de type « Enregistrement Adobe Connect » dans votre espace.</strong><br />
+        <tal:block i18n:translate="">Rendez-vous dans votre espace de Présentations sonorisées  ou Webconférences pour en ajouter.</tal:block>
+        <a class="button radius"
+           tal:attributes="href my_view/folder_link"
+           tal:content="my_view/folder_title"/>
+    </div>
+
+    <tal:listing condition="my_view/course_add_list">
+    <div class="el_counter">
+        <tal:block replace="my_view/nb_display_items" />
+        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block replace="my_view/nb_items" />
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
+
+    <table summary="Liste des enregistrements Adobe Connect">
+    <thead>
+        <tr>
+            <th class="checkall show-for-medium-up">
+                <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                     i18n:attributes="title">
+                    <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                    <label for="switch-all"></label>
+                </div>
+            </th>
+            <th class="sort show-for-medium-up" data-sort="date" title="Trier selon la date"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Date</tal:block>
+                </span>
+            </th>
+            <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Titre / Adresse</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up" data-sort="length" title="Trier selon la durée"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Durée</tal:block>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="list"
+           tal:define="user_id user/getId">
+        <tal:entry repeat="item my_view/course_add_list">
+        <tr>
+            <td class="show-for-medium-up"
+                tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
+                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                     tal:condition="not:attached"
+                     i18n:attributes="title">
+                    <input type="checkbox" name="paths:list"
+                           tal:attributes="id string:switch-${repeat/item/index};
+                                           value python:'*-*'.join([item.getId, item.Type, item.Title.decode('utf-8'), user_id]);
+                                           data-res_name python:here.getShortText(item['Title']);
+                                           data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '')"/>
+                    <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                </div>
+                <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+            </td>
+            <td class="date show-for-medium-up">
+                <span class="hide" tal:content="python:context.getConnectDate(item['getDateAjout'], True)"/>
+                <span tal:content="python:context.getConnectDate(item['getDateAjout'])"/>
+            </td>
+            <td class="title">
+                <span class="hide" tal:content="item/Title"/>
+                <strong tal:content="item/Title"/>
+                <span class="show-for-medium-up"
+                      tal:content="item/getUrlEnr"/>
+            </td>
+            <td class="length show-for-medium-up" tal:content="item/getDuree"/>
+        </tr>
+        </tal:entry>
+    </tbody>
+    </table>
+
+    <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                       script2 string:setSortableList('js-list-ressource',['date','title','length'],'date','desc')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)"/>
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)"/>
+    </tal:define>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer"></script>
+
+    </tal:listing>
+</metal:macro>
