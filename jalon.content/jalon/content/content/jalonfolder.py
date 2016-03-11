@@ -1385,13 +1385,14 @@ class JalonFolder(ATFolder):
             self.connect("supprimerEnregistrement", {"idEnregistrement": idConnect})
 
     def isSameServer(self, url1, url2):
+        """ renvoit true si url1 pointe sur le meme serveur qu'url2. """
         return jalon_utils.isSameServer(url1, url2)
 
     #----------------------#
     #   Utilitaires Wims   #
     #----------------------#
     def wims(self, methode, param):
-        """ Lien vers la fonction wims du connecteur dédié """
+        """ Lien vers la fonction WIMS du connecteur. """
         #LOG.info("----- wims -----")
         return self.portal_wims.__getattribute__(methode)(param)
 
@@ -1465,7 +1466,7 @@ class JalonFolder(ATFolder):
                         "qclass": "%s_1" % self.getComplement()}
                 json.loads(self.wims("callJob", dico))
 
-            self.setTagDefaut(newExo)
+            #self.setTagDefaut(newExo)
             subject = list(newExo.Subject())
             subject.append(urllib.quote(etiquette))
             newExo.setSubject(subject)
