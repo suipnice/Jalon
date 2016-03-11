@@ -25,13 +25,15 @@ function setTagFilter( inPopup ) {
 
             // Init. cibles
             var $tagButton = $( this );
-            var $updateTarget, $title;
+            var $updateTarget, $title, $submitButton;
             if ( inReveal ) {
                 $updateTarget = Foundation.utils.S( '#js-popup-update_target' );
                 $title = Foundation.utils.S( '#js-popup-update_title' );
+                $submitButton = $updateTarget.parent( 'form' ).find( 'button[type=submit]' );
             } else {
                 $updateTarget = Foundation.utils.S( '#js-update_target' );
                 $title = Foundation.utils.S( '#js-update_title' );
+                $submitButton = false;
             }
 
             // Mise a jour de l'etat
@@ -58,6 +60,10 @@ function setTagFilter( inPopup ) {
                         $title.html( titleOrgHtml );
                         // Forcage de la perte du focus pour le bouton (chgmt de couleur)
                         $tagButton.blur( );
+                        // Desactivation du bouton "submit" le cas echeant.
+                        if ( $submitButton ) {
+                            $submitButton.prop( 'disabled', true );
+                        }
                         // Deverrouilage
                         isRefreshing = false;
                     } );
