@@ -26,7 +26,7 @@
     </ul>
 
     <div id="js-list-ressource">
-        <h3 id="js-update_title">
+        <h3 id="js-popup-update_title">
             <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
         </h3>
 
