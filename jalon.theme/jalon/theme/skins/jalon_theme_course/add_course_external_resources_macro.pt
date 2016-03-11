@@ -3,7 +3,7 @@
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
         <i class="fa fa-info-circle no-pad"></i>
-        <strong i18n:translate="">Il n'y a aucune ressource de type « Ressource externe » dans votre espace.</strong><br />
+        <strong i18n:translate="">Il n'y a aucune ressource de type « Ressource externe » dans votre espace.</strong><br/>
         <tal:block i18n:translate="">Rendez-vous dans votre espace de ressources externes pour en ajouter.</tal:block>
         <a class="button radius"
            tal:attributes="href my_view/folder_link"
@@ -11,11 +11,15 @@
     </div>
 
     <tal:listing condition="my_view/course_add_list">
+
     <div class="el_counter">
-        <tal:block replace="my_view/nb_display_items" />
+        <tal:block replace="my_view/nb_display_items"/>
         <tal:block i18n:translate="">sur</tal:block> 
-        <tal:block replace="my_view/nb_items" />
+        <tal:block replace="my_view/nb_items"/>
     </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
 
     <table summary="Liste des ressources externes">
     <thead>
@@ -23,7 +27,7 @@
             <th class="checkall show-for-medium-up">
                 <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
                      i18n:attributes="title">
-                    <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                    <input type="checkbox" id="switch-all" name="checkall" role="paths:list"/>
                     <label for="switch-all"></label>
                 </div>
             </th>
@@ -66,32 +70,39 @@
                      i18n:attributes="title">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
-                                           value python:'*-*'.join([item.getId, item.getTypeRessourceExterne, item.Title.decode('utf-8'), user.getId()])" />
+                                           value python:'*-*'.join([item.getId, item.getTypeRessourceExterne, item.Title.decode('utf-8'), user.getId()])"/>
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
                 <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
             </td>
             <td class="date show-for-medium-up">
-                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
-                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
+                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')"/>
+                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])"/>
             </td>
             <td class="type">
-                <span class="label bkgrnd" tal:content="item/getTypeRessourceExterne" />
+                <span class="label bkgrnd" tal:content="item/getTypeRessourceExterne"/>
             </td>
             <td class="title">
-                <span class="hide" tal:content="item/Title" />
+                <span class="hide" tal:content="item/Title"/>
                 <strong tal:content="python:here.getShortText(item['Title'])"
-                        i18n:attributes="title" />
+                        i18n:attributes="title"/>
                 <span class="show-for-medium-up"
                       tal:condition="item/Description"
-                      tal:content="python:here.getShortText(item['Description'], 160)" />
+                      tal:content="python:here.getShortText(item['Description'], 160)"/>
             </td>
         </tr>
     </tbody>
     </table>
 
+    <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+                        script2 string:setSortableList('js-list-ressource',['date','type','title'],'date','desc')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)"/>
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)"/>
+    </tal:define>
+
     <script charset="UTF-8"
-            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer"></script>
     </tal:listing>
 
 </metal:macro>
