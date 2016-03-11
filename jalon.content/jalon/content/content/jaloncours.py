@@ -235,6 +235,14 @@ class JalonCours(ATFolder):
     _elements_cours = {}
     _twitter_cours = {}
 
+    _folder_my_space_dict = {"mes_fichiers":                 "Fichiers",
+                             "mes_presentations_sonorisees": "Sonorisation",
+                             "mes_exercices_wims":           "Wims",
+                             "mes_ressources_externes":      "Externes",
+                             "mes_termes_glossaire":         "Glossaire",
+                             "mes_webconferences":           "Webconference",
+                             "mes_videos_pod":               "Video"}
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
@@ -259,6 +267,10 @@ class JalonCours(ATFolder):
             self._elements_cours = PersistentDict(elements_cours)
         else:
             self._elements_cours = elements_cours
+
+    def getMySpaceFolder(self, user_id, folder_id):
+        #LOG.info("----- getMySpaceFolder -----")
+        return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
 
     def checkCourseAuthorized(self, user, request):
         #LOG.info("----- checkCourseAuthorized -----")
@@ -2187,7 +2199,6 @@ class JalonCours(ATFolder):
         #self.setProperties({"DateDerniereModif": DateTime()})
 
     def setPosition(self, idElement, listeElement, liste_titres):
-        #self.plone_log("setPosition")
         if len(liste_titres) > 1:
             for element in listeElement:
                 if element["idElement"] == liste_titres[0]:
@@ -2223,6 +2234,90 @@ class JalonCours(ATFolder):
                 infos_element[idElement]["complementElement"] = complementElement
             self.setElementsCours(infos_element)
         #self.setProperties({"DateDerniereModif": DateTime()})
+
+    def addMySpaceItem(self, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        LOG.info("----- addMySpaceItem -----")
+        item_id_no_dot = item_id.replace(".", "*-*")
+        if self.isInPlan(item_id_no_dot):
+            return None
+
+        item_object = getattr(folder_object, item_id)
+
+        if display_items:
+            cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
+            if cours_state == "published":
+                objet_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
+                if cours_state != objet_state:
+                    portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
+            dicoActu = {"reference":      item_id_no_dot,
+                        "code":           "dispo",
+                        "dateActivation": display_items}
+            self.setActuCours(dicoActu)
+        item_object_related = item_object.getRelatedItems()
+        if not self in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+        course_related = self.getRelatedItems()
+        # tester sans le getId
+        if not item_object.getId() in course_related:
+            course_related.append(item_object)
+            self.setRelatedItems(course_related)
+
+        complement_element = None
+        if item_type in ["Video", "VOD"]:
+            complement_element = {"value":  display_in_plan,
+                                  "auteur": item_object.getVideoauteurname(),
+                                  "image":  item_object.getVideothumbnail()}
+
+        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+        self.addItemInCourseMap(item_id_no_dot, map_position)
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        LOG.info("----- addItemProperty -----")
+        parent = self.getParentPlanElement(item_id, 'racine', '')
+        if parent and parent['idElement'] != 'racine':
+            is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
+            if not is_display_parent['val']:
+                display_item = ""
+
+        items_properties = self.getElementCours()
+        if not item_id in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            self.setElementsCours(items_properties)
+
+    def addItemInCourseMap(self, item_id, map_position):
+        LOG.info("----- addItemInCourseMap -----")
+        course_map = list(self.getPlan())
+
+        item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": idElement}
+
+        if map_position == "debut_racine":
+            course_map.insert(0, item_properties)
+        else:
+            course_title_list = map_position.split("*-*")
+            self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
+
+        self.plan = tuple(course_map)
+
+    def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
+        LOG.info("----- setCourseMapPosition -----")
+        if len(course_title_list) > 1:
+            for item in items_list:
+                if item["idElement"] == course_title_list[0]:
+                    self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
+        else:
+            for item in items_list:
+                if item["idElement"] == course_title_list[0]:
+
+                    item["listeElement"].append(item_properties)
+                    break
 
     def authUser(self, quser=None, qclass=None, request=None):
         #self.plone_log("authUser")

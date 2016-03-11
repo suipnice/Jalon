@@ -1,6 +1,6 @@
 <div class="field">
     <label for="position">Positionner dans le plan</label>
-    <select id="position" name="position">
+    <select id="position" name="map_position">
         <option value="debut_racine">
             Au début du plan
         </option>

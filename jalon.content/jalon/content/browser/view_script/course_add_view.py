@@ -7,7 +7,7 @@ LOG = getLogger('[CourseAddView]')
 
 
 class CourseAddView(MySpaceView):
-    """ Class View du fichier my_files_view.pt
+    """ Class View du fichier course_add_view.pt
     """
 
     _course_add_dict = {"mes_fichiers":                 {"folder_id":            "Fichiers",
