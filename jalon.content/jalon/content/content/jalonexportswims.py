@@ -61,10 +61,12 @@ def getExoXML(context, formatXML="OLX", version="latest"):
     # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
     # Plus d'infos sur le format IMS QTI : https://webapps.ph.ed.ac.uk/qtiworks
     # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/30/en/Moodle_XML_format
+    # Plus d'infos sur le format "Flow Lesson Builder 2" (.fll) : impossible de trouver des infos sur ce format... :/ - http://www.turningtechnologies.eu/downloads/
 
     """
     """
     Imports supportés par TurningPoint 5.3 :
+    # Attention : TurningPoint 5 n'est plus supporté par Turning Techs depuis janvier 2016...
     # Un document Word (.doc,.docx) doit contenir le texte de la question en titre 1 et le texte de la réponse en titre 2.
         Seules les questions à choix multiples peuvent être importées.
         Le type de question peut être modifié après l'importation.
@@ -103,7 +105,9 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
         #Format Moodle XML
         elif formatXML == "Moodle_XML":
-            exoXML = __qcmsimple_to_moodleXML(parsed_exo)
+            if modele == "qcmsimple":
+                exoXML = __qcmsimple_to_moodleXML(parsed_exo)
+
         #Format QTI
         elif formatXML == "QTI":
             if version == "1.1":
@@ -166,6 +170,29 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                     exoXML = __qcmsuite_to_qti_21(exoXML, parsed_exo)
                 else:
                     exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
+
+        #Format "Flow Lecon", généré par "Lesson Builder" de Turning Technologies
+        elif formatXML == "FLL":
+            #<TestDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            exoXML = ET.Element("TestDefinition",
+                         attrib={"xmlns:xsd"         : "http://www.w3.org/2001/XMLSchema",
+                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance"
+                                 })
+
+            elementXML = ET.SubElement(exoXML, "name")
+            elementXML.text = u"Leçon importée de Jalon"
+            elementXML = ET.SubElement(exoXML, "description")
+            elementXML.text = u"Leçon importée depuis un exercice WIMS sous Jalon 4.5"
+            elementXML = ET.SubElement(exoXML, "author")
+            elementXML.text = demandeur.getId()
+            # Il faut donner un temps superieur au temps total des questions (unité : s)
+            elementXML = ET.SubElement(exoXML, "lessonMaxTime")
+            elementXML.text = "30"
+            elementXML = ET.SubElement(exoXML, "shuffleQuestions")
+            elementXML.text = "true"
+
+            if modele == "qcmsimple":
+                exoXML = __qcmsimple_to_FlowXML(exoXML, parsed_exo)
 
         else:
             exoXML = ET.Element("error")
@@ -266,11 +293,11 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
             elementXML = ET.SubElement(exoXML, "targetedfeedbackset")
             if parsed_exo["feedback_mauvais"] != "":
                 feedback = ET.SubElement(elementXML, "targetedfeedback", attrib={"explanation-id": "incorrect"})
-                chaine = '<div class="detailed-targeted-feedback feedback-hint-incorrect"><div class="hint-label">Incorrect :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_mauvais"]
+                chaine = '<div class="detailed-targeted-feedback feedback-hint-incorrect"><div class="hint-label">Incorrect :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_mauvais"]
                 feedback.append(ET.fromstring(chaine, parser=parser_lxml))
             if parsed_exo["feedback_bon"] != "":
                 feedback = ET.SubElement(elementXML, "targetedfeedback", attrib={"explanation-id": "correct"})
-                chaine = '<div class="detailed-targeted-feedback feedback-hint-correct"><div class="hint-label">Correct :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_bon"]
+                chaine = '<div class="detailed-targeted-feedback feedback-hint-correct"><div class="hint-label">Correct :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_bon"]
                 feedback.append(ET.fromstring(chaine, parser=parser_lxml))
 
     if parsed_exo["feedback_general"] != "":
@@ -374,32 +401,9 @@ def __qcmsimple_to_qti_121(exoXML, parsed_exo):
     elementXML = ET.SubElement(element_resprocessing, "outcomes")
     elementXML = ET.SubElement(elementXML, "decvar")
 
-    nb_rep = 0
-
-    dico_reponses = {}
-    ## Correct answers
-    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
-    for ligne in liste_bons:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-
-        dico_reponses[rep_id] = {"type": "Correct",
-                                 "data": ligne,
-                                 "value": "1",  # On donne "+1" par bonne réponse.
-                                 "feedbacktype": "Response"}
-    ## Incorrect answers
-    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
-    for ligne in liste_mauvais:
-        nb_rep = nb_rep + 1
-        rep_id = "rep_%s" % nb_rep
-        dico_reponses[rep_id] = {"type": "Incorrect",
-                                 "data": ligne,
-                                 "value": "0",  # On donne "0" par mauvaise réponse.
-                                 "feedbacktype": "Solution"}
-
     # Vu que TurningPoint 5 est incapable de faire de l'aléatoire, on mélange les propositions...
-    rep_items = dico_reponses.items()
-    shuffle(rep_items)
+    rep_items = __randomize_responses_qcmsimple(parsed_exo["bonnesrep"], parsed_exo["mauvaisesrep"])
+
     for rep_id, rep_item in rep_items:
         elementXML = ET.SubElement(element_renderchoice,
                                    "response_label",
@@ -423,9 +427,13 @@ def __qcmsimple_to_qti_121(exoXML, parsed_exo):
                                    attrib={"action": "Add"})
 
         elementXML.text = rep_item["value"]
+        if rep_item["value"] == "0":
+            feedbacktype = "Solution"
+        else:
+            feedbacktype = "Response"
         elementXML = ET.SubElement(element_respcondition,
                                    "displayfeedback",
-                                   attrib={"feedbacktype": rep_item["feedbacktype"],
+                                   attrib={"feedbacktype": feedbacktype,
                                            "linkrefid":    rep_item["type"]})
 
     ## Feedbacks ##
@@ -610,6 +618,128 @@ def __qcmsimple_to_moodleXML(parsed_exo):
     """
 
 
+def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
+    """Modele "QCM Simple" vers le format XML Flow Lecon (.fll)."""
+    elementXML = ET.SubElement(exoXML, "questions")
+    element_question = ET.SubElement(elementXML, "QuestionDefinition")
+
+    elementXML = ET.SubElement(element_question, "qExternalId")
+    elementXML.text = "1"
+
+    elementXML = ET.SubElement(element_question, "qInternalId")
+    elementXML.text = parsed_exo["id"]
+
+    elementXML = ET.SubElement(element_question, "qname")
+    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["titre"].decode("utf-8")
+
+    elementXML = ET.SubElement(element_question, "questionMaxTime")
+    elementXML.text = "30"
+
+    elementXML = ET.SubElement(element_question, "useLetters")
+    elementXML.text = "true"
+
+    # nombre de points de la question
+    elementXML = ET.SubElement(element_question, "grade")
+    elementXML.text = "1"
+
+    # Types : {0:"Radio Button", 1:"Checkbox", 5:"vrai/faux", ... ?}
+    elementXML = ET.SubElement(element_question, "questionType")
+
+    if parsed_exo["options_checkbox"] == 1:
+        elementXML.text = "1"
+    else:
+        elementXML.text = "0"
+
+    elementXML = ET.SubElement(element_question, "allowPartialCredit")
+    if parsed_exo["options_split"] == 1:
+        elementXML.text = "true"
+    else:
+        elementXML.text = "false"
+
+    elementAnswers = ET.SubElement(element_question, "questionAnswers")
+
+    # Vu que Lesson Builder 2 est incapable de faire de l'aléatoire, on mélange les propositions...
+    rep_items = __randomize_responses_qcmsimple(parsed_exo["bonnesrep"], parsed_exo["mauvaisesrep"])
+    liste_questions = []
+    nb_rep = 0
+    for rep_id, rep_item in rep_items:
+    #for ligne in liste_bons:
+        if nb_rep <= len(alphabet):
+            elementReponse = ET.SubElement(elementAnswers, "answer")
+            elementXML = ET.SubElement(elementReponse, "aId")
+            elementXML.text = "%s" % nb_rep
+            elementXML = ET.SubElement(elementReponse, "aKey")
+            elementXML.text = alphabet[nb_rep]
+            #elementXML = ET.SubElement(elementReponse, "aText")
+            #elementXML.text = alphabet[nb_rep]
+            elementXML = ET.SubElement(elementReponse, "isCorrect")
+            if rep_item["value"] == "1":
+                elementXML.text = "true"
+            else:
+                elementXML.text = "false"
+            liste_questions.append("<li>%s - %s</li>" % (alphabet[nb_rep], rep_item["data"]))
+            nb_rep = nb_rep + 1
+
+    elementXML = ET.SubElement(element_question, "questionContent")
+
+    ### On intègre les proposition dans l'enoncé pour les faire apparaitre.
+    # Pour le moment, un bug d'affichage dans Flow empeche d'utiliser les puces autres que numériques pour les <ol>...
+    #questionContent = "<div class=\"oef_explain\" style=\"font-size:24px;\">%s</div><ol type=\"A\" style=\"list-style-type: upper-alpha;font-size:24px;\">%s</ol>" % (parsed_exo["enonce"].decode("utf-8"), "\n".join(liste_questions))
+    questionContent = "<div class=\"oef_explain\" style=\"font-size:24px;\">%s</div><ul style=\"font-size:24px;\">%s</ul>" % (parsed_exo["enonce"].decode("utf-8"), "\n".join(liste_questions))
+
+    elementXML.text = "<![CDATA[%s]]>" % questionContent
+
+    # Il semblerait que questionContentType = 6 correspondrait a du contenu HTML
+    elementXML = ET.SubElement(element_question, "questionContentType")
+    elementXML.text = "6"
+    return exoXML
+    #elementXML = ET.SubElement(element_question, "advancedMode")
+    #elementXML.text = "false"
+
+    """  Checkbox :
+      <questionType>1</questionType>
+      <questionMaxTime>30</questionMaxTime>
+      <useLetters>true</useLetters>
+      <allowChangeAnswer>false</allowChangeAnswer>
+
+      <advancedMode>false</advancedMode>
+      <rightAnswerTolerance>0</rightAnswerTolerance>
+      <grade>1</grade>
+      <penalty>0</penalty>
+      <questionAnswers>
+        <answer>
+          <aId>0</aId>
+          <aKey>A</aKey>
+          <aPercentValue>50</aPercentValue>
+          <aText>A</aText>
+          <isCorrect>true</isCorrect>
+        </answer>
+        <answer>
+          <aId>1</aId>
+          <aKey>B</aKey>
+          <aPercentValue>0</aPercentValue>
+          <aText>B</aText>
+          <isCorrect>false</isCorrect>
+        </answer>
+        <answer>
+          <aId>2</aId>
+          <aKey>C</aKey>
+          <aPercentValue>50</aPercentValue>
+          <aText>C</aText>
+          <isCorrect>true</isCorrect>
+        </answer>
+        <answer>
+          <aId>3</aId>
+          <aKey>D</aKey>
+          <aPercentValue>0</aPercentValue>
+          <aText>D</aText>
+          <isCorrect>false</isCorrect>
+        </answer>
+      </questionAnswers>
+    </QuestionDefinition>
+    """
+
+
 def __qcmsuite_to_qti_121(exoXML, parsed_exo):
     u""" Modele "QCM à la suite" vers QTI 1.2.1 (principalement pour TurningPoint 5)."""
     for index, id_question in enumerate(parsed_exo["list_id_questions"]):
@@ -672,9 +802,9 @@ def __qcmsuite_to_qti_121(exoXML, parsed_exo):
                                          "value":       value,
                                          "feedbacktype": "Response"}
 
-        # Vu que TurningPoint 5 est incapable de faire de l'aléatoire, on mélange les propositions...
         rep_items = dico_reponses.items()
         shuffle(rep_items)
+
         for rep_id, rep_item in rep_items:
             elementXML = ET.SubElement(element_renderchoice,
                                        "response_label",
@@ -780,3 +910,40 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
             elementXML.text = parsed_exo["feedback%s" % index].decode("utf-8")
         elementXML = ET.SubElement(assessmentItem, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
     return exoXML
+
+
+def __randomize_responses_qcmsimple(liste_bons, liste_mauvais):
+    ### Renvoit un tuple mélangeant les 2 listes en parametres
+
+    liste_bons = liste_bons.decode("utf-8").split("\n")
+    liste_mauvais = liste_mauvais.decode("utf-8").split("\n")
+
+    dico_reponses = {}
+    nb_rep = 0
+    ## Correct answers
+    for ligne in liste_bons:
+        rep = ligne.strip()
+        if rep != "":
+            nb_rep = nb_rep + 1
+            rep_id = "rep_%s" % nb_rep
+
+            dico_reponses[rep_id] = {"type": "Correct",
+                                     "data": rep,
+                                     "value": "1",  # On donne "+1" par bonne réponse.
+                                     }
+    ## Incorrect answers
+    liste_mauvais
+    for ligne in liste_mauvais:
+        rep = ligne.strip()
+        if rep != "":
+            nb_rep = nb_rep + 1
+            rep_id = "rep_%s" % nb_rep
+            dico_reponses[rep_id] = {"type": "Incorrect",
+                                     "data": rep,
+                                     "value": "0",  # On donne "0" par mauvaise réponse.
+                                     }
+
+    # Vu que TurningPoint 5 est incapable de faire de l'aléatoire, on mélange les propositions...
+    rep_items = dico_reponses.items()
+    shuffle(rep_items)
+    return rep_items

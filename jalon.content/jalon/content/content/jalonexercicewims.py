@@ -527,7 +527,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def getListeExports(self):
         u""" fournit la liste des formats exportables a partir du modèle courant."""
-        liste_formats = {"qcmsimple":                  ["QTI", "OLX", "OEF"],
+        liste_formats = {"qcmsimple":                  ["QTI", "OLX", "OEF", "FLL"],
                          "equation":                   ["OEF"],
                          "texteatrous":                ["OEF"],
                          "marqueruntexte":             ["OEF"],

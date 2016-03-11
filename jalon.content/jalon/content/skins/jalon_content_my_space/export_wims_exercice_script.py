@@ -47,6 +47,14 @@ elif file_format == "OEF":
     request.RESPONSE.setHeader('content-type', "text/plain")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
     return context.getExoOEF(modele, authMember, request)
+
+elif file_format == "FLL":
+    filename = "%s.fll" % context.getId()
+    request.RESPONSE.setHeader('content-type', "application/xml")
+    request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
+    # Ici, context doit etre un jalonexercicewims
+    return context.getExoXML(file_format, version)
+
 else:
     filename = "%s_WIMS_%s.xml" % (modele, file_format)
     request.RESPONSE.setHeader('content-type', "application/xml")

@@ -1,4 +1,4 @@
-Pour la mise à jour de structure de Jalon voici les étapes à suivre après la mise à jour du dépôt depuis developp :
+Pour la mise à jour de structure de Jalon, voici les étapes à suivre après la mise à jour du dépôt depuis 'develop' :
     - Connectez vous à la ZMI, dans jalon, cliquez sur portal_setup, onglet import
     - Dans la menu déroulant choisir Jalon Theme
     - Cochez la case "Skins Tool" puis cliquez sur "Imported selected steps"
