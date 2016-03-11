@@ -11,13 +11,13 @@ class CourseAddView(MySpaceView):
     """
 
     _course_add_dict = {"mes_fichiers":                 {"folder_id":            "Fichiers",
-                                                         "macro_file":           "add_course_file_macro",
+                                                         "macro_file":           "add_course_files_macro",
                                                          "portal_type":          ["File", "Image", "Document"],
                                                          "course_add_list_icon": "fa fa-files-o",
                                                          "is_display_hide":      True,
                                                          "course_add_js":        "setAttachmentCreator()"},
                         "mes_ressources_externes":      {"folder_id":            "Externes",
-                                                         "macro_file":           "add_course_external_resource_macro",
+                                                         "macro_file":           "add_course_external_resources_macro",
                                                          "portal_type":          ["JalonRessourceExterne"],
                                                          "course_add_list_icon": "fa fa-external-link",
                                                          "is_display_hide":      True,
