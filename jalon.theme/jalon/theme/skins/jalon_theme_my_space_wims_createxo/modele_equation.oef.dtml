@@ -16,8 +16,8 @@ $math_help
 Enlevez l'entête ci-dessus si vous détruisez les balises pour le modèle !
 (Ce sont les lignes qui commencent par un ':'.)
 Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
-:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
 
+:%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
 :\title{$$title$$}
 :\author{$$author$$}
 :\email{$$email$$}
@@ -45,7 +45,7 @@ Toutes les fonctions usuelles sont reconnues. On utilise les variables de \a à 
 \real{ans=$$equation$$}
 
 :Le texte qui explique ce qu'il faut faire.
-Notons que la syntaxe \(...) fait afficher une formule mathématique comme il faut. (mode latec)
+Notons que la syntaxe \(...) fait afficher une formule mathématique comme il faut. (mode LaTeX)
 $embraced_randitem
 \text{explain=asis($$enonce$$)}
 

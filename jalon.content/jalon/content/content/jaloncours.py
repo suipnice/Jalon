@@ -1736,9 +1736,10 @@ class JalonCours(ATFolder):
             self.reindexObject()
         #self.plone_log("setProperties (End)")
 
-    def setTagDefaut(self):
-        #self.plone_log("setTagDefaut")
-        return ""
+# Deprecated ?
+#    def setTagDefaut(self):
+#        #self.plone_log("setTagDefaut")
+#        return ""
 
     def delAccesApogee(self, elements):
         #self.plone_log("delAccesApogee")
@@ -2419,12 +2420,13 @@ class JalonCours(ATFolder):
             #self.plone_log("[jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
             #for user in dicoClasses:
             #    if auteur == "All" or user == auteur:
+            columns = "login,name,%s" % (",".join(liste_activitesWIMS))
             if auteur in dicoClasses:
                 dico = {"qclass": dicoClasses[auteur],
                         "code": authMember,
                         "job": "getcsv",
                         "format": file_format,
-                        "option": " ".join(liste_activitesWIMS)}
+                        "option": columns}
                 #self.plone_log("[jaloncours/getScoresWims] callJob dico :'%s'" % dico)
                 rep_wims = self.wims("callJob", dico)
 
@@ -2432,7 +2434,10 @@ class JalonCours(ATFolder):
                     # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
                     retour = json.loads(rep_wims)
                     self.plone_log("[jaloncours/getScoresWims] ERREUR WIMS / retour = %s" % retour)
-
+                    # Une des erreurs possible, c'est un trop grand nombre :
+                    # * d'eleves dans la classe (>400 ?)
+                    # * d'activités dans la classe (>64 ?)
+                    # * une combinaison des 2 ?
                     self.wims("verifierRetourWims", {"rep": rep_wims,
                                                      "fonction": "jaloncours.py/getScoresWims",
                                                      "message": "Impossible de télécharger les notes (demandeur = %s)" % authMember,

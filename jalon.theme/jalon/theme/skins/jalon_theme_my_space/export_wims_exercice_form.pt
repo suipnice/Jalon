@@ -47,6 +47,20 @@
                     </ul>
                 </div>
             </dd>
+            <dd class="accordion-navigation" tal:condition="python:'FLL' in listeExports">
+                <a href="#FLL">Flow Lesson <span class="label">Utilisable dans 'Lesson Builder' de Turning Technologies</span></a>
+                <div id="FLL" class="content">
+                    <ul>
+                        <li>
+                            <input type="radio" id="FLL_default" value="default" name="version"/>
+                            <label for="FLL_default">
+                                Format Flow Lesson (.fll) de Lesson Builder 2.0
+                                <span class="label secondary"><a href="http://help.turningtechnologies.com/flow/#Flow/LessonBuilder/LessonBuilder.htm" target="_blank">En savoir plus sur « Flow &amp; Lesson Builder 2.0 »</a></span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
             <dd class="accordion-navigation" tal:condition="python:'OLX' in listeExports">
                 <a href="#OLX">edX <span class="label">Utilisable dans le LMS edX</span></a>
                 <div id="OLX" class="content">
@@ -80,7 +94,7 @@
 
         <div class="panel warning radius formHelp" i18n:translate="" tal:condition="python:len(listeExports)>1">
             <i class="fa fa-exclamation-triangle no-pad"></i>
-            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez,seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
+            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez, seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
         </div>
 
         <div class="formControls">

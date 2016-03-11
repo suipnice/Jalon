@@ -46,15 +46,15 @@ WIMS divisera automatiquement votre exercice en étapes en fonction du nombre to
 
 :Texte pour le feedback "La bonne réponse"
 
-\text{qcm_prompt2=La(les) bonne(s) réponse(s) étaient :}
+\text{qcm_prompt2=La(les) bonne(s) réponse(s) étaient :}
 
 :Texte pour le feedback "Réponse correcte"
 
-\text{good_answer_text=Bonne réponse !}
+\text{good_answer_text=Bonne réponse !}
 
 :Texte pour le feedback "Réponse incorrecte"
 
-\text{bad_answer_text=Mauvaise réponse !}
+\text{bad_answer_text=Mauvaise réponse !}
 
 :Texte pour le feedback "Réponse incomplète"
 
@@ -85,7 +85,7 @@ Le mode "2 colonnes" permet d'économiser du papier pour des questions courtes.
 \text{columns=$$columns$$}
 
 :Questions
-<p>Entrez ici la question à poser, selon le format suivant :</p>
+<p>Entrez ici la question à poser, selon le format suivant :</p>
 <ol>
 <li>La première ligne contient l'énoncé de la question.</li>
 <li>La seconde ligne représente un feedback, qui sera affiché après validation des réponses
@@ -99,9 +99,9 @@ Numéro(s) de la (des) bonne(s) réponse(s)
 Proposition n°1
 Proposition n°2
 Proposition n°3</pre></div>
-<p class="oef_indbad"><strong>Attention :</strong> les point-virgules sont interdits ici.</p>
+<p class="oef_indbad"><strong>Attention :</strong> les point-virgules sont interdits ici.</p>
 <hr/>
-<p><em>Facultatif :</em> Vous pouvez éventuellement ajouter une premiere ligne qui contiendra des variables permettant d'insérer un titre, une image, du son. (nb : vous devez être dans une classe ou un module pour pouvoir transférer ces fichiers). Dans ce cas, ce sera la seconde ligne qui représentera l'énoncé, et ainsi de suite....</p>
+<p><em>Facultatif :</em> Vous pouvez éventuellement ajouter une premiere ligne qui contiendra des variables permettant d'insérer un titre, une image, du son. (nb : vous devez être dans une classe ou un module pour pouvoir transférer ces fichiers). Dans ce cas, ce sera la seconde ligne qui représentera l'énoncé, et ainsi de suite....</p>
 <div style="border-left:2px solid orange;width:45em;background-color:white;padding:1em .5em;">Exemple : <br/>
 <pre>Qtitle="Titre de la question n°2" Qimage="image.jpg" Qaudio="son.mp3"
 Énoncé de la Question n°2
@@ -431,8 +431,6 @@ $$boucle_matrix_rep$$
 }
 \text{REP=wims(replace internal " by $$quot; in \REP)}
 
-\matrix{explication2 = \explication2}
-
 \for{u = 1 to \N}{
   \text{H = \CNT[\step-1;\u]}
   \text{test1 = wims(listuniq \REP[\H;],\CHOIX[\H;\rep[\H;]])}
@@ -458,33 +456,3 @@ $$boucle_matrix_rep$$
 \text{nstep = \v >= \percent ? \STEPS[\step;]:}
 
 $$boucle_condition_questions$$
-
-\text{test=wims(rows2lines \explication)}
-\text{test=wims(lines2items \test)}
-\text{test=wims(items2words \test)}
-\text{test=wims(nospace \test)}
-feedback{1=1}{\explication
-   \if{\test notsametext}{
-     <div class="reponse"><ol>
-      \for{w = 1 to \MAX}{
-        \if{\explication[\w;] notsametext }
-         {<li style="list-style:decimal;" value="\w">\explication[\w;] </li>}
-     }
-     </ol>
-    </div>
-  }
-}
-{<ol>
-  \for{ t = 1 to \N}{
-    \if{\CNT[\step;\t] != }{
-  <li style="list-style:decimal;" value="\CNT[\step;\t]"> <b>\question[\N*(\step-1) + \t;]</b>
-  <div class="question"><ol>
-   \for{s=1 to \CNT_choix[\N*(\step-1) + \t]}{
-   <li>\embed{\STEPS[\step;\t] , \s }</li>
-    }
-   </ol>
-   </div>
-   </li>}
- }
-</ol>
-}
