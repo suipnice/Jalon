@@ -61,8 +61,7 @@
     </thead>
     <tbody class="list"
            tal:define="user_id user/getId">
-        <tal:entry repeat="item my_view/course_add_list">
-        <tr>
+        <tr tal:repeat="item my_view/course_add_list">
             <td class="show-for-medium-up"
                 tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
                 <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
@@ -89,7 +88,6 @@
             </td>
             <td class="length show-for-medium-up" tal:content="item/getDuree"/>
         </tr>
-        </tal:entry>
     </tbody>
     </table>
 
