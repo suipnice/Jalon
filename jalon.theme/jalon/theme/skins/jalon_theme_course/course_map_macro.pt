@@ -30,3 +30,90 @@
 </div>
 
 </metal:macro>
+
+<metal:macro define-macro="display_course_map">
+    <ol tal:attributes="id course_map/ol_css_id;
+                        class course_map/ol_css_class">
+    <tal:repeat repeat="element course_map/course_map_items_list">
+        <li tal:attributes="id element/item_css_id;
+                            class element/item_css_class">
+            <span>
+                <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
+                   tal:condition="element/is_item_new"></i>
+                <i tal:attributes="class element/is_display_item_icon;
+                                   title element/is_display_item_text"
+                   tal:condition="element/is_display_item_bool"></i>
+                <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
+                   tal:attributes="title element/item_comment_jalonner"
+                   tal:condition="element/is_item_jalonner"></i>
+
+                <a tal:attributes="href element/url_element | nothing;
+                                   class string:typeElementTitre"
+                   title="Voir cet élément du plan"
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:content="element/item_title"
+                   tal:omit-tag="element/is_item_title_or_text"
+                   i18n:attributes="title"/>
+
+                <tal:condition condition="element/is_item_title">
+                <tal:define define="course_map python:context.getCourseMapItems(element['liste_elements_plan'], user.getId(), my_view['is_personnel'], my_view['course_news']['listeActu']);">
+                <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
+                    Affichage du plan du cours NEW
+                </metal:macro>
+                </tal:define>
+                </tal:condition>
+            </span>
+        </li>
+    </tal:repeat>
+    </ol>
+</metal:macro>
+
+<!-- Version avec booleen expand à définir avant l'appel 
+    <metal:macro define-macro="display_course_map">
+    <ol tal:attributes="class course_map/is_course_map_sortable">
+    <tal:repeat repeat="element course_map/course_map_items_list">
+        <li tal:attributes="id element/id_css;
+                            class element/class_css">
+            <tal:condition condition="not:my_view/is_personnel">
+            <a tal:attributes="href string:${context/absolute_url}/marquer_element_script?element=${element/id};
+                              class element/coche_css"
+               tal:condition="not:element/is_title">
+                <i tal:attributes="class element/icon_coche"></i>
+            </a>
+            </tal:condition>
+            <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
+               tal:condition="element/is_nouveau"></i>
+             <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right"
+                data-tooltip
+                tal:attributes="title element/commentaire_jalonner"
+                tal:condition="element/is_jalonner"></i>
+        <tal:condition condition="element/is_title_or_text">
+            <tal:replace replace="structure element/title"/>
+            <tal:condition condition="element/is_title">
+            <br/>
+            <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_cours_plan&amp;macro=affichage_elements_titre&amp;id_titre=${element/id}&amp;mode_etudiant=${mode_etudiant}" 
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:condition="not:expand_titre">
+               |___-> VOIR
+            </a>
+            <tal:condition condition="expand_titre">
+            <tal:define define="course_map python:context.getCourseMapItems(element['liste_elements_plan'], user.getId(), my_view['is_personnel']);">
+            <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
+                Affichage du plan du cours NEW
+            </metal:macro>
+            </tal:define>
+            </tal:condition>
+            </tal:condition>
+        </tal:condition>
+        <tal:condition condition="not:element/is_title_or_text">
+            <a tal:attributes="href element/url_element"
+               title="Voir cet élément du plan"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               i18n:attributes="title"
+               tal:content="element/title"/>
+        </tal:condition>
+        </li>
+    </tal:repeat>
+    </ol>
+</metal:macro>
+-->

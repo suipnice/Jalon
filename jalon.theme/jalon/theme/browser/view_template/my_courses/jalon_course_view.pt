@@ -87,7 +87,7 @@
                     </tal:block>
                 </div>
 
-                <ol id="course_plan-plan">
+                <!--ol id="course_plan-plan">
                     <tal:condition condition="not:my_view/has_course_map">
                     <li class="panel callout radius">
                         <h4>
@@ -105,7 +105,14 @@
                     </metal:macro>
                     </tal:define>
                     </tal:condition>
-                </ol>
+                </ol-->
+
+                <tal:define define="course_map my_view/course_map;
+                                    expand_titre python:True">
+                <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
+                    Affichage du plan du cours NEW
+                </metal:macro>
+                </tal:define>
 
                 <div class="panel radius show-for-medium-up"
                       tal:condition="my_view/is_personnel">

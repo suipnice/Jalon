@@ -912,66 +912,99 @@ class JalonCours(ATFolder):
                 plat.extend(self.getPlanPlat(titre["listeElement"]))
         return plat
 
-    def getCourseMap(self, user_id, is_personnel=False, course_actuality_list=None):
+    def getCourseMap(self, user_id, is_personnel, course_actuality_list):
         LOG.info("----- getCourseMap -----")
-        if course_actuality_list is None:
-            course_actuality_list = self.getActualitesCours(True)["listeActu"]
-        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list)
+        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, True)
 
-    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel=False, course_actuality_list=None):
-        plan_affichage = []
-        if liste_actualites is None:
-            liste_actualites = self.getActualitesCours(True)["listeActu"]
+    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel, course_actuality_list, is_map_top_level=False):
+        ol_css_id = ""
+        ol_css_class = ""
+        if is_map_top_level:
+            ol_css_id = "course_plan-plan"
+            ol_css_class = "ui-sortable"
+
         id_jalonner = ""
-        commentaire_jalonner = ""
+        commentaire_id_jalonner = ""
         if len(self.getAvancementPlan()):
             id_jalonner = self.getAvancementPlan()[0]
-        for element_base in liste_elements_plan:
-            is_titre = False
-            is_titre_or_texte = False
-            type_css = "element"
+            try:
+                commentaire_id_jalonner = self.getAvancementPlan()[1]
+                commentaire_id_jalonner = commentaire_id_jalonner.replace("'", "’")
+            except:
+                commentaire_id_jalonner = "Élément jalonné par l&rsquo;enseignant"
+
+        course_map_list = []
+        for course_map_item in course_map_items_list:
+            is_title = False
+            item_css_class = "element"
+            course_map_sub_items_list = []
+            if "listeElement" in course_map_item:
+                is_title = True
+                item_css_class = "chapitre"
+                course_map_sub_items_list = course_map_item["listeElement"]
+
+            is_title_or_text = False
             coche_css = "decoche right"
             icon_coche = "fa fa-square-o fa-fw fa-lg no-pad"
-            is_jalonner = False
-            liste_elements_plan = []
-            infos_element = self.getElementCours(element_base["idElement"])
-            if "listeElement" in element_base:
-                is_titre = True
-                type_css = "chapitre"
-                liste_elements_plan = element_base["listeElement"]
-            if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
-                is_titre_or_texte = True
-            if "marque" in infos_element and id_member in infos_element["marque"]:
+            item_properties = self.getElementCours(course_map_item["idElement"])
+            if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
+                is_title_or_text = True
+            if "marque" in item_properties and id_member in item_properties["marque"]:
                 coche_css = "coche right"
                 icon_coche = "fa fa-check-square-o fa-fw fa-lg no-pad"
-            if element_base["idElement"] == id_jalonner:
+
+            is_display_item_bool = False
+            is_display_item_icon = ""
+            is_display_item_text = ""
+            is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+            if is_display_item["icon"]:
+                is_display_item_bool = True
+                is_display_item_icon = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
+                is_display_item_text = is_display_item["legende"]
+
+            is_jalonner = False
+            commentaire_jalonner = ""
+            if course_map_item["idElement"] == id_jalonner:
                 is_jalonner = True
-                try:
-                    commentaire_jalonner = self.getAvancementPlan()[1]
-                    commentaire_jalonner = commentaire_jalonner.replace("'", "’")
-                except:
-                    commentaire_jalonner = "Élément jalonné par l&rsquo;enseignant"
-            url_element = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), element_base["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]))
-            element = {"id":                   element_base["idElement"],
-                       "id_css":               "%s-%s" % (type_css, element_base["idElement"]),
-                       "class_css":            "%s%s" % (infos_element["typeElement"].replace(" ", ""), " nouveau" if id_member and self.isNouveau(infos_element, liste_actualites) else ""),
-                       "is_titre":             is_titre,
-                       "is_titre_or_texte":    is_titre_or_texte,
-                       "title":                infos_element["titreElement"],
-                       "coche_css":            coche_css,
-                       "icon_coche":           icon_coche,
-                       "is_nouveau":           True if id_member and self.isNouveau(infos_element, liste_actualites) else False,
-                       "is_jalonner":          is_jalonner,
-                       "commentaire_jalonner": commentaire_jalonner,
-                       "url_element":          url_element,
-                       "liste_elements_plan":  liste_elements_plan,
-                       "element":              infos_element}
-            plan_affichage.append(element)
-        return plan_affichage
+                commentaire_jalonner = commentaire_id_jalonner
+
+            #class_css = item_properties["typeElement"].replace(" ", "")
+            is_nouveau = False
+            if self.isNouveau(item_properties, course_actuality_list):
+                is_nouveau = True
+
+            url_element = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
+            element = {"item_id":               course_map_item["idElement"],
+                       "item_css_id":           "%s-%s" % (item_css_class, course_map_item["idElement"]),
+                       "item_css_class":        "%s sortable" % item_css_class if is_personnel else item_css_class,
+                       "is_item_title":         is_title,
+                       "is_item_title_or_text": is_title_or_text,
+                       "is_display_item_bool":  is_display_item_bool,
+                       "is_display_item_icon":  is_display_item_icon,
+                       "is_display_item_text":  is_display_item_text,
+                       "item_title":            item_properties["titreElement"],
+                       "coche_css":             coche_css,
+                       "icon_coche":            icon_coche,
+                       "is_item_new":           is_nouveau,
+                       "is_item_jalonner":      is_jalonner,
+                       "item_comment_jalonner": commentaire_jalonner,
+                       "url_element":           url_element,
+                       "liste_elements_plan":   course_map_sub_items_list,
+                       "element":               item_properties}
+
+            if is_title_or_text:
+                del element["url_element"]
+
+            course_map_list.append(element)
+
+        return {"ol_css_id":              ol_css_id,
+                "ol_css_class":           ol_css_class,
+                "course_map_items_list":  course_map_list}
 
     def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
         #self.plone_log("----- getPlanCours (Start) -----")
         #self.plone_log("***** listeActualites : %s" % str(listeActualites))
+        LOG.info(self.getPlan())
         html = []
         i = 0
         if listeActualites is None:
