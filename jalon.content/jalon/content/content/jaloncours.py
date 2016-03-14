@@ -2089,9 +2089,10 @@ class JalonCours(ATFolder):
             idElement = "racine"
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
-        #self.plone_log("getParentPlanElement")
+        LOG.info("----- getParentPlanElement -----")
         if idParent == "racine":
             listeElement = self.plan
+        LOG.info("***** listeElement : %s" % str(listeElement))
         for element in listeElement:
             if idElement == element["idElement"]:
                 if idParent == "racine":
@@ -2272,33 +2273,8 @@ class JalonCours(ATFolder):
                                   "auteur": item_object.getVideoauteurname(),
                                   "image":  item_object.getVideothumbnail()}
 
-        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
         self.addItemInCourseMap(item_id_no_dot, map_position)
-
-    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
-        LOG.info("----- addItemProperty -----")
-        parent = self.getParentPlanElement(item_id, 'racine', '')
-        if parent and parent['idElement'] != 'racine':
-            is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
-            if not is_display_parent['val']:
-                display_item = ""
-
-        items_properties = self.getElementCours()
-        if not item_id in items_properties:
-            items_properties[item_id] = {"titreElement":    item_title,
-                                         "typeElement":     item_type,
-                                         "createurElement": item_creator,
-                                         "affElement":      display_item,
-                                         "masquerElement":  ""}
-            if display_item:
-                dicoActu = {"reference":      item_id,
-                            "code":           "dispo",
-                            "dateActivation": display_item}
-                self.setActuCours(dicoActu)
-
-            if complement_element:
-                items_properties[item_id]["complementElement"] = complement_element
-            self.setElementsCours(items_properties)
+        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemInCourseMap(self, item_id, map_position):
         LOG.info("----- addItemInCourseMap -----")
@@ -2319,18 +2295,41 @@ class JalonCours(ATFolder):
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
         LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
-            for item in course_title_list:
-                LOG.info("***** item : %s" % str(item))
-                item_title = course_title_list[0]
-                LOG.info("***** item_title (avant if) : %s" % item_title)
-                if item["idElement"] == item_title:
-                    LOG.info("***** item_title (dans if) : %s" % item_title)
+            for item in items_list:
+                if item["idElement"] == course_title_list[0]:
                     self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
         else:
             for item in items_list:
                 if item["idElement"] == course_title_list[0]:
                     item["listeElement"].append(item_properties)
                     break
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        LOG.info("----- addItemProperty -----")
+        parent = self.getParentPlanElement(item_id, 'racine', '')
+        LOG.info("***** parent : %s" % str(parent))
+        if parent and parent['idElement'] != 'racine':
+            is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
+            LOG.info("***** is_display_parent : %s" % str(is_display_parent))
+            if not is_display_parent['val']:
+                display_item = ""
+
+        items_properties = self.getElementCours()
+        if not item_id in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+            if display_item:
+                dicoActu = {"reference":      item_id,
+                            "code":           "dispo",
+                            "dateActivation": display_item}
+                self.setActuCours(dicoActu)
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            self.setElementsCours(items_properties)
 
     def authUser(self, quser=None, qclass=None, request=None):
         #self.plone_log("authUser")
