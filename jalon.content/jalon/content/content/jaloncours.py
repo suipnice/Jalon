@@ -928,6 +928,23 @@ class JalonCours(ATFolder):
         #self.plone_log("----- getPlanCours (End) -----")
         return "\n".join(html)
 
+    def setPlanCours(self, plan):
+        #self.plone_log("setPlanCours")
+        self.plan = tuple(plan)
+
+    def getCourseMap(self, is_personnel, user_id, course_actuality_list):
+        LOG.info("----- getCourseMap -----")
+        course_map = []
+        index = 0
+        if course_actuality_list is None:
+            course_actuality_list = self.getActualitesCours(True)["listeActu"]
+        for course_map_first_level in self.plan:
+            course_map_item = self.getCourseMapItem(course_map_first_level, index, is_personnel, user_id, course_actuality_list)
+            if course_map_item:
+                course_map.append(course_map_item)
+            index = index + 1
+        return "\n".join(course_map)
+
     def getPlanChapitre(self, element, index, personnel, authMember, listeActualites):
         #self.plone_log("getPlanChapitre")
         idEpingler = commentaireEpingler = ""
@@ -1403,6 +1420,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def setCoursePublicAccess(self, course_public_access):
+        LOG.info("----- setCoursePublicAccess -----")
         if self.getAcces() != course_public_access:
             portal = self.portal_url.getPortalObject()
             portal_workflow = getToolByName(portal, "portal_workflow")
@@ -1451,7 +1469,7 @@ class JalonCours(ATFolder):
         self.setAcces(course_public_access)
 
     def setAttributCours(self, form):
-        #self.plone_log("setAttributCours")
+        LOG.info("----- setAttributCours -----")
         for key in form.keys():
             if key == "libre":
                 if not self.getLienMooc():
@@ -1465,29 +1483,29 @@ class JalonCours(ATFolder):
                 else:
                     self.setCategorie("1")
             method_name = "set%s" % key.capitalize()
-            if key == "catiTunesU":
-                method_name = "setCatiTunesU"
-                self.portal_jalon_properties.setUsersiTunesU(self.Creator())
-                self.portal_jalon_properties.setCoursUser(self.Creator(), self.getId())
+            #if key == "catiTunesU":
+            #    method_name = "setCatiTunesU"
+            #    self.portal_jalon_properties.setUsersiTunesU(self.Creator())
+            #    self.portal_jalon_properties.setCoursUser(self.Creator(), self.getId())
 
-            if key == "diffusioniTunesU":
-                method_name = "setDiffusioniTunesU"
+            #if key == "diffusioniTunesU":
+            #    method_name = "setDiffusioniTunesU"
+
             try:
                 self.__getattribute__(method_name)(form[key])
             except AttributeError:
-                #self.plone_log("Erreur %s : %s" % (str(method_name), str(form[key])))
                 pass
 
-            if key == "catiTunesU":
-                portal = self.portal_url.getPortalObject()
-                infosMembre = jalon_utils.getInfosMembre(self.Creator())
-                jalon_utils.envoyerMail({"objet":   "Demande de publication sur iTunesU",
-                                         "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
+            #if key == "catiTunesU":
+            #    portal = self.portal_url.getPortalObject()
+            #    infosMembre = jalon_utils.getInfosMembre(self.Creator())
+            #    jalon_utils.envoyerMail({"objet":   "Demande de publication sur iTunesU",
+            #                             "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
 
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def setGroupePerso(self, REQUEST):
-        #self.plone_log("setGroupePerso")
+        LOG.info("----- setGroupePerso -----")
         form = REQUEST.form
         etudiants = []
         if form["typeGroupe"] == "groupe":
@@ -1536,7 +1554,7 @@ class JalonCours(ATFolder):
         return None
 
     def modifyFavorite(self, user_id):
-        #self.plone_log("----- modifyFavorite -----")
+        LOG.info("----- modifyFavorite -----")
         subjects = list(self.Subject())
         if not user_id in subjects:
             subjects.append(user_id)
@@ -1550,7 +1568,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def modifyArchive(self, user_id):
-        #self.plone_log("----- modifyArchive -----")
+        LOG.info("----- modifyArchive -----")
         archives = list(self.getArchive())
         if not user_id in archives:
             archives.append(user_id)
@@ -1564,7 +1582,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def setLecture(self, lu, idElement, authMember):
-        #self.plone_log("setLecture")
+        LOG.info("----- setLecture -----")
         dico = self.getElementCours(idElement)
         if not self.isAfficherElement(dico["affElement"], dico["masquerElement"])["val"]:
             return None
@@ -1584,6 +1602,7 @@ class JalonCours(ATFolder):
         self.setElementsCours(self._elements_cours)
 
     def marquerElement(self, idElement, marquer=None):
+        LOG.info("----- marquerElement -----")
         dico = self.getElementCours(idElement)
         id_auth_member = self.portal_membership.getAuthenticatedMember().getId()
         if "marque" in dico:
@@ -1597,12 +1616,8 @@ class JalonCours(ATFolder):
         self.setElementsCours(self._elements_cours)
 
     def setListeClasses(self, valeur):
-        #self.plone_log("setListeClasses")
+        LOG.info("----- setListeClasses -----")
         self.listeclasses = tuple(valeur)
-
-    def setPlanCours(self, plan):
-        #self.plone_log("setPlanCours")
-        self.plan = tuple(plan)
 
     def setProperties(self, dico):
         #self.plone_log("setProperties (Start)")
@@ -1612,11 +1627,6 @@ class JalonCours(ATFolder):
             #self.plone_log("DateDerniereModif")
             self.reindexObject()
         #self.plone_log("setProperties (End)")
-
-# Deprecated ?
-#    def setTagDefaut(self):
-#        #self.plone_log("setTagDefaut")
-#        return ""
 
     def delAccesApogee(self, elements):
         #self.plone_log("delAccesApogee")
