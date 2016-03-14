@@ -2256,14 +2256,15 @@ class JalonCours(ATFolder):
                 objet_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
                 if cours_state != objet_state:
                     portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
+
         item_object_related = item_object.getRelatedItems()
         if not self in item_object_related:
             item_object_related.append(self)
             item_object.setRelatedItems(item_object_related)
             item_object.reindexObject()
+
         course_related = self.getRelatedItems()
-        # tester sans le getId
-        if not item_object.getId() in course_related:
+        if not item_object in course_related:
             course_related.append(item_object)
             self.setRelatedItems(course_related)
 
