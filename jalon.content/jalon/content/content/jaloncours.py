@@ -2319,8 +2319,12 @@ class JalonCours(ATFolder):
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
         LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
-            for item in items_list:
-                if item["idElement"] != course_title_list[0]:
+            for item in course_title_list:
+                LOG.info("***** item : %s" % str(item))
+                item_title = course_title_list[0]
+                LOG.info("***** item_title (avant if) : %s" % item_title)
+                if item["idElement"] == item_title:
+                    LOG.info("***** item_title (dans if) : %s" % item_title)
                     self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
         else:
             for item in items_list:
