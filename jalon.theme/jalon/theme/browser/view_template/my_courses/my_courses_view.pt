@@ -89,7 +89,7 @@
     </tal:condition>
 
     <tal:condition condition="is_ajax">
-        <metal:macro use-macro="context/my_courses_list_macro/macros/my_courses_list">
+        <metal:macro use-macro="python:getattr(context, my_courses_view['my_courses_macro']).macros.get('my_courses_list')">
             Macro d'affichage de la liste des cours
         </metal:macro>
     </tal:condition>
