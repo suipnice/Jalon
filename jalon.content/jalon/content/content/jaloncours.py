@@ -272,6 +272,11 @@ class JalonCours(ATFolder):
         #LOG.info("----- getMySpaceFolder -----")
         return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
 
+    def getMySubSpaceFolder(self, user_id, folder_id, portal):
+        #LOG.info("----- getMySubSpaceFolder -----")
+        #portal = self.portal_url.getPortalObject()
+        return getattr(getattr(portal.Members, user_id), folder_id)
+
     def checkCourseAuthorized(self, user, request):
         #LOG.info("----- checkCourseAuthorized -----")
         #LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
@@ -2236,7 +2241,7 @@ class JalonCours(ATFolder):
             self.setElementsCours(infos_element)
         #self.setProperties({"DateDerniereModif": DateTime()})
 
-    def addMySpaceItem(self, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
         LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
         if self.isInPlan(item_id_no_dot):
@@ -2244,16 +2249,12 @@ class JalonCours(ATFolder):
 
         item_object = getattr(folder_object, item_id)
 
-        if display_items:
+        if display_item:
             cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
             if cours_state == "published":
                 objet_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
                 if cours_state != objet_state:
                     portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
-            dicoActu = {"reference":      item_id_no_dot,
-                        "code":           "dispo",
-                        "dateActivation": display_items}
-            self.setActuCours(dicoActu)
         item_object_related = item_object.getRelatedItems()
         if not self in item_object_related:
             item_object_related.append(self)
@@ -2281,6 +2282,11 @@ class JalonCours(ATFolder):
             is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
             if not is_display_parent['val']:
                 display_item = ""
+            else:
+                dicoActu = {"reference":      item_id,
+                            "code":           "dispo",
+                            "dateActivation": display_item}
+                self.setActuCours(dicoActu)
 
         items_properties = self.getElementCours()
         if not item_id in items_properties:
@@ -2297,10 +2303,12 @@ class JalonCours(ATFolder):
         LOG.info("----- addItemInCourseMap -----")
         course_map = list(self.getPlan())
 
-        item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": idElement}
+        item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": item_id}
 
         if map_position == "debut_racine":
             course_map.insert(0, item_properties)
+        elif map_position == "fin_racine":
+            course_map.append(item_properties)
         else:
             course_title_list = map_position.split("*-*")
             self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
@@ -2311,12 +2319,11 @@ class JalonCours(ATFolder):
         LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
             for item in items_list:
-                if item["idElement"] == course_title_list[0]:
+                if item["idElement"] != course_title_list[0]:
                     self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
         else:
             for item in items_list:
                 if item["idElement"] == course_title_list[0]:
-
                     item["listeElement"].append(item_properties)
                     break
 

@@ -95,8 +95,8 @@
                             <tal:block i18n:translate="legende">Aucune ressource n'est accessible dans ce cours.</tal:block>
                         </h4>
                     </li>
-                    <li tal:replace="structure my_view/is_course_map_help_text"
-                        tal:condition="my_view/is_course_map_help"/>
+                    <li tal:replace="structure my_view/course_map_help_text"
+                        tal:condition="my_view/is_course_map_help_text"/>
                     </tal:condition>
                     <tal:condition condition="my_view/has_course_map">
                     <tal:define define="plancours my_view/course_map">

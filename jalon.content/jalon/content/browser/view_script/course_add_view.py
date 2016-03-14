@@ -90,6 +90,8 @@ class CourseAddView(MySpaceView):
                 "course_add_list":      course_add_list,
                 "course_map":           course_object.getPlanPlat(),
                 "is_display_hide":      course_add_dict["is_display_hide"],
+                "folder_id":            course_add_dict["folder_id"],
+                "course_link":          course_object.absolute_url(),
                 "course_add_js":        course_add_dict["course_add_js"]}
 
     def getCourseMapForm(self, course_path):
