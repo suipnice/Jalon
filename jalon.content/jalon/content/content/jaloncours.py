@@ -912,6 +912,63 @@ class JalonCours(ATFolder):
                 plat.extend(self.getPlanPlat(titre["listeElement"]))
         return plat
 
+    def getCourseMap(self, user_id, is_personnel=False, course_actuality_list=None):
+        LOG.info("----- getCourseMap -----")
+        if course_actuality_list is None:
+            course_actuality_list = self.getActualitesCours(True)["listeActu"]
+        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list)
+
+    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel=False, course_actuality_list=None):
+        plan_affichage = []
+        if liste_actualites is None:
+            liste_actualites = self.getActualitesCours(True)["listeActu"]
+        id_jalonner = ""
+        commentaire_jalonner = ""
+        if len(self.getAvancementPlan()):
+            id_jalonner = self.getAvancementPlan()[0]
+        for element_base in liste_elements_plan:
+            is_titre = False
+            is_titre_or_texte = False
+            type_css = "element"
+            coche_css = "decoche right"
+            icon_coche = "fa fa-square-o fa-fw fa-lg no-pad"
+            is_jalonner = False
+            liste_elements_plan = []
+            infos_element = self.getElementCours(element_base["idElement"])
+            if "listeElement" in element_base:
+                is_titre = True
+                type_css = "chapitre"
+                liste_elements_plan = element_base["listeElement"]
+            if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
+                is_titre_or_texte = True
+            if "marque" in infos_element and id_member in infos_element["marque"]:
+                coche_css = "coche right"
+                icon_coche = "fa fa-check-square-o fa-fw fa-lg no-pad"
+            if element_base["idElement"] == id_jalonner:
+                is_jalonner = True
+                try:
+                    commentaire_jalonner = self.getAvancementPlan()[1]
+                    commentaire_jalonner = commentaire_jalonner.replace("'", "’")
+                except:
+                    commentaire_jalonner = "Élément jalonné par l&rsquo;enseignant"
+            url_element = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), element_base["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]))
+            element = {"id":                   element_base["idElement"],
+                       "id_css":               "%s-%s" % (type_css, element_base["idElement"]),
+                       "class_css":            "%s%s" % (infos_element["typeElement"].replace(" ", ""), " nouveau" if id_member and self.isNouveau(infos_element, liste_actualites) else ""),
+                       "is_titre":             is_titre,
+                       "is_titre_or_texte":    is_titre_or_texte,
+                       "title":                infos_element["titreElement"],
+                       "coche_css":            coche_css,
+                       "icon_coche":           icon_coche,
+                       "is_nouveau":           True if id_member and self.isNouveau(infos_element, liste_actualites) else False,
+                       "is_jalonner":          is_jalonner,
+                       "commentaire_jalonner": commentaire_jalonner,
+                       "url_element":          url_element,
+                       "liste_elements_plan":  liste_elements_plan,
+                       "element":              infos_element}
+            plan_affichage.append(element)
+        return plan_affichage
+
     def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
         #self.plone_log("----- getPlanCours (Start) -----")
         #self.plone_log("***** listeActualites : %s" % str(listeActualites))
@@ -931,19 +988,6 @@ class JalonCours(ATFolder):
     def setPlanCours(self, plan):
         #self.plone_log("setPlanCours")
         self.plan = tuple(plan)
-
-    def getCourseMap(self, is_personnel, user_id, course_actuality_list):
-        LOG.info("----- getCourseMap -----")
-        course_map = []
-        index = 0
-        if course_actuality_list is None:
-            course_actuality_list = self.getActualitesCours(True)["listeActu"]
-        for course_map_first_level in self.plan:
-            course_map_item = self.getCourseMapItem(course_map_first_level, index, is_personnel, user_id, course_actuality_list)
-            if course_map_item:
-                course_map.append(course_map_item)
-            index = index + 1
-        return "\n".join(course_map)
 
     def getPlanChapitre(self, element, index, personnel, authMember, listeActualites):
         #self.plone_log("getPlanChapitre")
