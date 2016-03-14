@@ -52,6 +52,7 @@
     </thead>
     <tbody class="list">
         <tr tal:repeat="item my_view/course_add_list">
+            <tal:define define="item_title python:here.getShortText(item['Title'])">
             <td class="show-for-medium-up"
                 tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
                 <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
@@ -59,7 +60,8 @@
                      i18n:attributes="title">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
-                                           value python:'*-*'.join([item.getId, item.getTypeRessourceExterne, item.Title.decode('utf-8'), user.getId()])"/>
+                                           value string:${item/getId}/${item/getTypeRessourceExterne};
+                                           data-res_name item_title;"/>
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
                 <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
@@ -69,21 +71,20 @@
                 <span tal:content="python:context.getLocaleDate(item['ModificationDate'])"/>
             </td>
             <td class="title">
-                <span class="hide" tal:content="item/Title"/>
-                <strong tal:content="python:here.getShortText(item['Title'])"
+                <strong tal:content="item_title"
                         i18n:attributes="title"/>
                 <span class="show-for-medium-up"
-                      tal:condition="item/Description"
                       tal:content="python:here.getShortText(item['Description'], 160)"/>
                 <a tal:attributes="href item/getVideourl" target="_blank">
                     Voir la vidéo sur UNSPod
                 </a>
             </td>
+            </tal:define>
         </tr>
     </tbody>
     </table>
 
-    <tal:define define="script1 string:setBatchSelect('js-popup-update_target');
+    <tal:define define="script1 string:setBatchSelect('js-attachmentCreator');
                        script2 string:setSortableList('js-list-ressource',['date','title'],'date','desc')">
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)"/>
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)"/>

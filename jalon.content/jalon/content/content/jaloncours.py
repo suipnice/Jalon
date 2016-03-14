@@ -273,7 +273,7 @@ class JalonCours(ATFolder):
         return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
 
     def getMySubSpaceFolder(self, user_id, folder_id, portal):
-        #LOG.info("----- getMySubSpaceFolder -----")
+        LOG.info("----- getMySubSpaceFolder -----")
         #portal = self.portal_url.getPortalObject()
         return getattr(getattr(portal.Members, user_id), folder_id)
 
