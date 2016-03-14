@@ -2282,11 +2282,6 @@ class JalonCours(ATFolder):
             is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
             if not is_display_parent['val']:
                 display_item = ""
-            else:
-                dicoActu = {"reference":      item_id,
-                            "code":           "dispo",
-                            "dateActivation": display_item}
-                self.setActuCours(dicoActu)
 
         items_properties = self.getElementCours()
         if not item_id in items_properties:
@@ -2295,6 +2290,12 @@ class JalonCours(ATFolder):
                                          "createurElement": item_creator,
                                          "affElement":      display_item,
                                          "masquerElement":  ""}
+            if display_item:
+                dicoActu = {"reference":      item_id,
+                            "code":           "dispo",
+                            "dateActivation": display_item}
+                self.setActuCours(dicoActu)
+
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
             self.setElementsCours(items_properties)
