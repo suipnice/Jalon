@@ -330,31 +330,6 @@ class JalonCours(ATFolder):
                 "icon":  "fa fa-search",
                 "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
-    def getTwitterCours(self, key=None):
-        #self.plone_log("getTwitterCours")
-        if not "dateMAJ" in self._twitter_cours:
-            jalon_properties = getToolByName(self, "portal_jalon_properties")
-            twitter_cours = jalon_properties.getTwitterCours("#JalonHTA912")
-            if twitter_cours:
-                self.setTwitterCours({"dateMAJ": DateTime(),
-                                      "tweets":  twitter_cours})
-                return twitter_cours
-            return []
-        if key:
-            return self._twitter_cours.get(key, None)
-        return self._twitter_cours["tweets"]
-
-    def getKeyTwitterCours(self):
-        #self.plone_log("getKeyTwitterCours")
-        return self._twitter_cours.keys()
-
-    def setTwitterCours(self, _twitter_cours):
-        #self.plone_log("setTwitterCours")
-        if type(self._twitter_cours).__name__ != "PersistentMapping":
-            self._twitter_cours = PersistentDict(_twitter_cours)
-        else:
-            self._twitter_cours = _twitter_cours
-
     def getActualitesCours(self, toutes=None):
         #self.plone_log("getActualitesCours")
         actualites = []
@@ -508,33 +483,64 @@ class JalonCours(ATFolder):
             return {"nbForums":    len(listeForums),
                     "listeForums": listeForums}
 
-    def getGraphFacebook(self):
-        #self.plone_log("getDicoForums")
-        if self.getCommentaires_sociaux() or self.getJaime_sociaux():
-            url = self.absolute_url()
-            req = urllib2.Request('http://graph.facebook.com/?ids=%s' % url)
-            try:
-                data = json.load(urllib2.urlopen(req))
-                ##self.plone_log(data)
-                if url in data and "comments" in data[url]:
-                    return data[url]
-            except:
-                ##self.plone_log(e.reason)
-                pass
-        return None
+    def getAffCategorieCours(self):
+        LOG.info("----- getAffCategorieCours -----")
+        categories = self.getJalonCategories()
+        return categories[int(self.getCategorieCours())]["title"]
+
+    def getCategorieCours(self):
+        LOG.info("----- getCategorieCours -----")
+        try:
+            return self.categorie[0]
+        except:
+            return 1
+
+    """
+    def getEtablissement(self):
+        #self.plone_log("getEtablissement")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return {"activer_etablissement": jalon_properties.getJalonProperty("activer_etablissement"),
+                "etablissement":         jalon_properties.getJalonProperty("etablissement")}
+    """
+
+    def getJalonCategories(self):
+        LOG.info("----- getJalonCategories -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return dict(jalon_properties.getCategorie())
+
+    def getPropertiesCatiTunesU(self):
+        LOG.info("----- getPropertiesCatiTunesU -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return dict(jalon_properties.getPropertiesCatiTunesU())
+
+    def getAffCatiTunesUCours(self):
+        LOG.info("----- getAffCatiTunesUCours -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return jalon_properties.getAffCatiTunesUCours(self.getCatiTunesU())
+
+    """
+    def getClefsDico(self, dico):
+        #self.plone_log("getClefsDico")
+        return jalon_utils.getClefsDico(dico)
+    """
+
+    def getCreateur(self):
+        LOG.info("----- getCreateur -----")
+        return self.getInfosMembre(self.Creator())
 
     def getAuteur(self):
-        #self.plone_log("getAuteur")
+        LOG.info("----- getAuteur -----")
         username = self.getAuteurPrincipal()
         if username:
             return self.getInfosMembre(username)
         return self.getInfosMembre(self.Creator())
 
     def getAuteurs(self):
-        #self.plone_log("getAuteurs")
+        LOG.info("----- getAuteurs -----")
         return {"principal": self.getAuteur(), "coAuteurs": self.getCoAuteursCours()}
 
     def getAuthorForm(self):
+        LOG.info("----- getAuthorForm -----")
         course_author = self.getAuteur()
         course_creator = self.getCreateur()
 
@@ -548,66 +554,115 @@ class JalonCours(ATFolder):
 
         return course_author_dict
 
-    def getAffCategorieCours(self):
-        #self.plone_log("getAffCategorieCours")
-        categories = self.getJalonCategories()
-        return categories[int(self.getCategorieCours())]["title"]
-
-    def getCategorieCours(self):
-        #self.plone_log("getCategorieCours")
-        try:
-            return self.categorie[0]
-        except:
-            return 1
-
-    def getAidePlan(self):
-        #self.plone_log("getAidePlan")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return {"activer_aide_plan": jalon_properties.getJalonProperty("activer_aide_plan"),
-                "lien_aide_plan":    jalon_properties.getJalonProperty("lien_aide_plan")}
-
-    def getEtablissement(self):
-        #self.plone_log("getEtablissement")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return {"activer_etablissement": jalon_properties.getJalonProperty("activer_etablissement"),
-                "etablissement":         jalon_properties.getJalonProperty("etablissement")}
-
-    def getJalonCategories(self):
-        #self.plone_log("getJalonCategories")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return dict(jalon_properties.getCategorie())
-
-    def getPropertiesCatiTunesU(self):
-        #self.plone_log("getPropertiesCatiTunesU")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return dict(jalon_properties.getPropertiesCatiTunesU())
-
-    def getAffCatiTunesUCours(self):
-        #self.plone_log("getAffCatiTunesUCours")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return jalon_properties.getAffCatiTunesUCours(self.getCatiTunesU())
-
-    def getClefsDico(self, dico):
-        #self.plone_log("getClefsDico")
-        return jalon_utils.getClefsDico(dico)
+    def setAuteur(self, form):
+        LOG.info("----- setAuteur -----")
+        ancienPrincipal = self.getAuteurPrincipal()
+        if not ancienPrincipal:
+            ancienPrincipal = self.Creator()
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        self.auteurPrincipal = form["username"]
+        infosMembre = self.getInfosMembre(form["username"])
+        #self.tagBU(ancienPrincipal)
+        self.envoyerMail({"a":       infosMembre["email"],
+                          "objet":   "Vous avez été ajouté à un cours",
+                          "message": message})
+        infosMembre = self.getInfosMembre(ancienPrincipal)
+        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ou vous êtiez auteur.\n\nCordialement,\n%s.' % (self.Title(), portal.Title())
+        self.envoyerMail({"a":       infosMembre["email"],
+                          "objet":   "Vous avez été retiré d'un cours",
+                          "message": message})
+        self.manage_setLocalRoles(form["username"], ["Owner"])
+        self.setProperties({"DateDerniereModif": DateTime()})
 
     def getCoAuteursCours(self):
-        #self.plone_log("getCoAuteursCours")
+        LOG.info("----- getCoAuteursCours -----")
         retour = []
         for username in self.getCoAuteurs():
             if username:
                 retour.append(self.getInfosMembre(username))
         return retour
 
+    def addCoAuteurs(self, form):
+        LOG.info("----- addCoAuteurs -----")
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été ajouté comme co-auteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        coAuteurs = list(self.getCoAuteurs())
+        usernames = form["username"].split(",")
+        if usernames != ['']:
+            for username in usernames:
+                if not username in coAuteurs:
+                    coAuteurs.append(username)
+                    self.manage_setLocalRoles(username, ["Owner"])
+                    infosMembre = self.getInfosMembre(username)
+                    self.envoyerMail({"a":       infosMembre["email"],
+                                      "objet":   "Vous avez été ajouté à un cours",
+                                      "message": message})
+            self.coAuteurs = tuple(coAuteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def deleteCoAuteurs(self, form):
+        LOG.info("----- deleteCoAuteurs -----")
+        auteurs = []
+        if "auteur-actu" in form:
+            auteurs = form["auteur-actu"]
+        ancienAuteurs = set(self.getCoAuteurs())
+        supprAuteurs = ancienAuteurs.difference(set(auteurs))
+
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez co-auteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+
+        for idMember in supprAuteurs:
+            infosMembre = self.getInfosMembre(idMember)
+            self.envoyerMail({"a":      infosMembre["email"],
+                              "objet":  "Vous avez été retiré d'un cours",
+                              "message": message})
+        self.coAuteurs = tuple(auteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
     def getCoLecteursCours(self):
-        #self.plone_log("getCoLecteursCours")
+        LOG.info("----- getCoLecteursCours -----")
         retour = []
         for username in self.getCoLecteurs():
             retour.append(self.getInfosMembre(username))
         return retour
 
+    def addLecteurs(self, form):
+        LOG.info("----- addLecteurs -----")
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        lecteurs = list(self.getCoLecteurs())
+        usernames = form["username"].split(",")
+        if usernames != ['']:
+            for username in usernames:
+                if not username in lecteurs:
+                    lecteurs.append(username)
+                    infosMembre = self.getInfosMembre(username)
+                    self.envoyerMail({"a":       infosMembre["email"],
+                                      "objet":   "Vous avez été ajouté à un cours",
+                                      "message": message})
+            self.coLecteurs = tuple(lecteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def deleteLecteurs(self, form):
+        LOG.info("----- deleteLecteurs -----")
+        lecteurs = []
+        if "auteur-actu" in form:
+            lecteurs = form["auteur-actu"]
+        ancienLecteurs = set(self.getCoLecteurs())
+        supprLecteurs = ancienLecteurs.difference(set(lecteurs))
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+        for idMember in supprLecteurs:
+            infosMembre = self.getInfosMembre(idMember)
+            self.envoyerMail({"a":       infosMembre["email"],
+                              "objet":   "Vous avez été retiré d'un cours",
+                              "message": message})
+        self.coLecteurs = tuple(lecteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
     def getCommentaireEpingler(self, idTester=None):
-        #self.plone_log("getCommentaireEpingler")
+        LOG.info("----- getCommentaireEpingler -----")
         if len(self.getAvancementPlan()) <= 1:
             return ""
 
@@ -618,43 +673,21 @@ class JalonCours(ATFolder):
 
         return ""
 
-    def getContents(self, subject, typeR, authMember, repertoire=None, categorie=None):
-        #self.plone_log("getContents")
-        portal = self.portal_url.getPortalObject()
-        folder_dict = {"Fichiers":                "Fichiers",
-                       "JalonRessourceExterne":   "Externes",
-                       "Video":                   "Video",
-                       "JalonTermeGlossaire":     "Glossaire",
-                       "JalonExerciceWims":       "Wims",
-                       "Presentationssonorisees": "Sonorisation",
-                       "Webconference":           "Webconference"}
-        if repertoire:
-            home = getattr(getattr(portal.Members, authMember), folder_dict[repertoire])
-        else:
-            home = getattr(getattr(portal.Members, authMember), folder_dict[typeR])
-        return home.getContents(subject, typeR, authMember, "")
-
     def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant):
         #self.plone_log("getElementView")
         return jalon_utils.getElementView(self, "Cours", idElement, createurElement, typeElement, indexElement, mode_etudiant)
 
-    def getCreateur(self):
-        #self.plone_log("getCreateur")
-        return self.getInfosMembre(self.Creator())
-
+    """
     def getElementsCours(self, tag):
         #self.plone_log("getElementsCours")
         return self.__getattribute__("get%s" % tag)()
+    """
 
     def getDepots(self, idboite, authMember, personnel, request):
         #self.plone_log("getDepots")
         if "*-*"in idboite:
             idboite = idboite.split("*-*")[-1]
         return getattr(self, idboite).getDepots(authMember, personnel, request)
-
-    def getForums(self):
-        #self.plone_log("getForums")
-        return None
 
     def getGloBib(self, glo_bib):
         #self.plone_log("getGloBib")
@@ -823,6 +856,7 @@ class JalonCours(ATFolder):
         #self.plone_log("getInfosMembre")
         return jalon_utils.getInfosMembre(username)
 
+    """
     def getKeyElementsCours(self, tag=None, idboite=None, menu=None):
         #self.plone_log("getKeyElementsCours")
         liste = []
@@ -840,6 +874,7 @@ class JalonCours(ATFolder):
                 liste.append("%s*-*%s" % (tag, element.split("*-*")[-1]))
             return liste
         return self.getElementsCours(tag)
+    """
 
     def getLastLogin(self):
         #self.plone_log("getLastLogin")
@@ -1060,6 +1095,7 @@ class JalonCours(ATFolder):
         else:
             return None
 
+    """
     def getPlanRSS(self, personnel=False):
         #self.plone_log("getPlanRSS")
         rss = []
@@ -1076,7 +1112,9 @@ class JalonCours(ATFolder):
                             element["affElement"] = infos_element["affElement"]
                             rss.append(element)
         return rss
+    """
 
+    """
     def getCoursElementRSS(self, idElement, createurElement):
         #self.plone_log("getCoursElementRSS")
         portal = self.portal_url.getPortalObject()
@@ -1097,7 +1135,9 @@ class JalonCours(ATFolder):
                         "poidsElement": element.get_size(),
                     }
         return None
+    """
 
+    """
     def getCategorieiTunesU(self):
         #self.plone_log("getCategorieiTunesU")
         icon = 'jalon'
@@ -1114,9 +1154,10 @@ class JalonCours(ATFolder):
                     'icon':          'http://itunesu.unice.fr/icones/%s.png' % icon}
         except:
             return None
+    """
 
     def getRechercheAcces(self):
-        #self.plone_log("getRechercheAcces")
+        LOG.info("----- getRechercheAcces -----")
         acces = list(self.getListeAcces())
         groupe = self.getGroupe()
         if groupe:
@@ -1130,7 +1171,7 @@ class JalonCours(ATFolder):
         return tuple(acces)
 
     def getRole(self):
-        #self.plone_log("getRole")
+        LOG.info("----- getRole -----")
         roles = {"createur":  False,
                  "auteur":    False,
                  "coauteur":  False,
@@ -1146,151 +1187,46 @@ class JalonCours(ATFolder):
             roles["colecteur"] = True
         return roles
 
+    """
     def getRoleCat(self):
         #self.plone_log("getRoleCat")
         return {"auteur":    [self.Creator(), self.getAuteurPrincipal()],
                 "coauteur":  self.getCoAuteurs(),
                 "colecteur": self.getCoLecteurs()
                 }
-
-    def getMenuCours(self):
-        #self.plone_log("getMenuCours")
-        portal = self.portal_url.getPortalObject()
-        portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
-        mon_espace = portal_jalon_properties.getPropertiesMonEspace()
-
-        retour = {"titre":     [],
-                  "espace":    [],
-                  "activites": [],
-                  "rapide":    []}
-
-        # Menu Mon Espace
-        if mon_espace["activer_fichiers"]:
-            retour["espace"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
-        if mon_espace["activer_presentations_sonorisees"]:
-            retour["espace"].append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées", "icone": "fa fa-microphone fa-fw"})
-        if mon_espace["activer_liens"]:
-            retour["espace"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
-        if mon_espace["activer_webconferences"]:
-            retour["espace"].append({"rubrique": "Webconference", "titre": "Webconférence", "icone": "fa fa-headphones fa-fw"})
-        if mon_espace["activer_lille1pod"]:
-            retour["espace"].append({"rubrique": "Video", "titre": "Vidéos", "icone": "fa fa-youtube-play fa-fw"})
-        if mon_espace["activer_vod"]:
-            retour["espace"].append({"rubrique": "VOD", "titre": "VOD", "icone": "fa fa-video-camera fa-fw"})
-
-        # Menu Activités
-        retour["activites"].append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts", "icone": "fa fa-fw fa-inbox"})
-        if mon_espace["activer_exercices_wims"]:
-            retour["activites"].append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS", "icone": "fa fa-fw fa-gamepad"})
-            retour["activites"].append({"rubrique": "Examen", "titre": "Examen WIMS", "icone": "fa fa-fw fa-graduation-cap"})
-        if mon_espace["activer_webconferences"]:
-            retour["activites"].append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle", "icone": "fa fa-fw fa-globe"})
-
-        # Menu Ajout rapide
-        if mon_espace["activer_fichiers"]:
-            retour["rapide"].append({"rubrique": "Fichiers", "titre": "Fichiers", "icone": "fa fa-files-o fa-fw"})
-        if mon_espace["activer_liens"]:
-            retour["rapide"].append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Ressources externes", "icone": "fa fa-external-link fa-fw"})
-
-        return retour
-
-    def getRubriqueEspace(self, ajout=None):
-        #self.plone_log("getRubriqueEspace")
-        portal = self.portal_url.getPortalObject()
-        portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
-        mon_espace = portal_jalon_properties.getPropertiesMonEspace()
-        liste = []
-        if ajout in ["Supports", "BoiteDepot", "AutoEvaluation-sujets", "Examen-sujets"]:
-            if mon_espace["activer_fichiers"]:
-                liste.append({"rubrique": "Fichiers", "titre": "Fichiers"})
-            if mon_espace["activer_presentations_sonorisees"]:
-                liste.append({"rubrique": urllib.quote("Presentations sonorisees"), "titre": "Présentations sonorisées"})
-            if mon_espace["activer_liens"]:
-                liste.append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Liens"})
-            if mon_espace["activer_webconferences"]:
-                liste.append({"rubrique": "Webconference", "titre": "Webconférence"})
-        if ajout == "Rapide":
-            if mon_espace["activer_fichiers"]:
-                liste.append({"rubrique": "Fichiers", "titre": "Fichiers"})
-            if mon_espace["activer_liens"]:
-                liste.append({"rubrique": urllib.quote("Ressources Externes"), "titre": "Liens"})
-        if ajout in ["AutoEvaluation-exercices", "Examen-exercices"]:
-            if mon_espace["activer_exercices_wims"]:
-                liste.append({"rubrique": urllib.quote("Exercices Wims"), "titre": "Exercices Wims"})
-        if ajout == "Activites":
-            liste.append({"rubrique": urllib.quote("Boite de depots"), "titre": "Boite de dépôts"})
-            if mon_espace["activer_exercices_wims"]:
-                liste.append({"rubrique": urllib.quote("Auto evaluation"), "titre": "Auto évaluation WIMS"})
-                liste.append({"rubrique": "Examen", "titre": "Examen WIMS"})
-            if mon_espace["activer_webconferences"]:
-                liste.append({"rubrique": urllib.quote("Salle virtuelle"), "titre": "Salle virtuelle"})
-        return liste
+    """
 
     #getSousObjet renvoie le sous-objet idElement
     def getSousObjet(self, idElement):
-        #self.plone_log("getSousObjet")
+        LOG.info("----- getSousObjet -----")
         if "*-*" in idElement:
             idElement = idElement.split("*-*")[-1]
         return getattr(self, idElement)
 
     #getTypeSousObjet renvoie le type du sous-objet idElement
     def getTypeSousObjet(self, idElement):
-        #self.plone_log("getTypeSousObjet")
+        LOG.info("----- getTypeSousObjet -----")
         if "*-*" in idElement:
             typeSousObjet = idElement.split("*-*")[0]
         else:
             typeSousObjet = idElement.split("-")[0]
         return typeSousObjet
 
-    #getTagDefautObj
-    def getTagDefautObj(self, ref, espace, authMember):
-        #self.plone_log("getTagDefautObj")
-        return None
-        portal = self.portal_url.getPortalObject()
-        if espace == "Exercices Wims":
-            espace = "Wims"
-        if espace == "Ressources Externes":
-            espace = "Externes"
-        if espace == "Presentations sonorisees":
-            espace = "Sonorisation"
-        home = getattr(getattr(portal.Members, authMember), espace, None)
-        defaut = home.getTagDefaut()
-        for tag in ref["Subject"]:
-            if tag in defaut:
-                return tag
-        return None
-
-    # getTag : ancien getTagType() Donne la liste des tags associés au type "espace"
-    def getTag(self, authMember, espace):
-        #self.plone_log("getTag")
-        retour = []
-        portal = self.portal_url.getPortalObject()
-        if espace == "Exercices Wims":
-            espace = "Wims"
-        if espace in ["Ressources Externes", "Bibliographie"]:
-            espace = "Externes"
-        if espace == "Presentations sonorisees":
-            espace = "Sonorisation"
-        home = getattr(getattr(portal.Members, authMember), espace, None)
-        if home:
-            return home.getTag()
-        return retour
-
-    def getPageMacro(self, espace):
-        #self.plone_log("getPageMacro")
-        dicoMacro = {"Fichiers":                 {"page": "macro_cours_fichiers", "macro": "fichiers_liste"},
-                     "Ressources Externes":      {"page": "macro_cours_externes", "macro": "externes_liste"},
-                     "Presentations sonorisees": {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
-                     "Webconference":            {"page": "macro_cours_webconference", "macro": "webconferences_liste"},
-                     "Video":                    {"page": "macro_cours_video", "macro": "video_liste"},
-                     "VOD":                      {"page": "macro_cours_vod", "macro": "vod_liste"},
-                     "Glossaire":                {"page": "macro_cours_glossaire", "macro": "termes_glossaire_liste"},
-                     "Bibliographie":            {"page": "macro_cours_bibliographie", "macro": "bibliographie_liste"},
-                     "Exercices Wims":           {"page": "macro_cours_activites", "macro": "exercices_wims_liste"}}
-        return dicoMacro[espace]
+    """
+    def getValAcces(self):
+        #self.plone_log("getValAcces")
+        acces = self.getAcces()
+        if acces == u"Privé".encode("utf-8"):
+            return 0
+        if acces == u"Aux étudiants".encode("utf-8"):
+            return 1
+        if acces == u"Public".encode("utf-8"):
+            return 2
+        return 0
+    """
 
     def getUrlWebconference(self, url):
-        #self.plone_log("getUrlWebconference")
+        LOG.info("----- getUrlWebconference -----")
         url_base = self.connect("getAttribut", {"attribut": "url_connexion"}).split("/api")[0]
         id_reunion = url.split("/")[-2]
         authMember = self.portal_membership.getAuthenticatedMember()
@@ -1304,19 +1240,8 @@ class JalonCours(ATFolder):
             session = home.getSessionConnect(idMember)
             return "%s/%s?session=%s" % (url_base, idMember, session)
 
-    def getValAcces(self):
-        #self.plone_log("getValAcces")
-        acces = self.getAcces()
-        if acces == u"Privé".encode("utf-8"):
-            return 0
-        if acces == u"Aux étudiants".encode("utf-8"):
-            return 1
-        if acces == u"Public".encode("utf-8"):
-            return 2
-        return 0
-
     def getWebconferencesAuteurs(self, personnel):
-        #self.plone_log("getWebconferencesAuteurs")
+        LOG.info("----- getWebconferencesAuteurs -----")
         reunions = []
         creators = [self.Creator()]
         creators.extend(self.getCoAuteurs())
@@ -1342,7 +1267,7 @@ class JalonCours(ATFolder):
         return reunions
 
     def getWebconferencesUser(self, personnel, authMember):
-        #self.plone_log("getWebconferencesUser")
+        LOG.info("----- getWebconferencesUser -----")
         reunions = []
         dossiers = self.connect("getAttribut", {"attribut": "dossiers"})
         if dossiers:
@@ -1365,42 +1290,21 @@ class JalonCours(ATFolder):
         return reunions
 
     def getWebconferenceUrlById(self, authMember, webid):
-        #self.plone_log("getWebconferenceUrlById")
+        LOG.info("----- getWebconferenceUrlById -----")
         for reunion in self.getWebconferencesUser(True, authMember):
             if reunion["id"] == webid:
                 return self.getUrlWebconference(reunion['url'])
         return ""
 
-    def getFilAriane(self, portal, folder, authMemberId):
-        #self.plone_log("getFilAriane")
-        return jalon_utils.getFilAriane(portal, folder, authMemberId)
-
+    """
     def setAccesApogee(self, elements):
         #self.plone_log("setAccesApogee")
         self.listeAcces = tuple(set(elements))
         self.setProperties({"DateDerniereModif": DateTime()})
-
-    def setAuteur(self, form):
-        ancienPrincipal = self.getAuteurPrincipal()
-        if not ancienPrincipal:
-            ancienPrincipal = self.Creator()
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        self.auteurPrincipal = form["username"]
-        infosMembre = self.getInfosMembre(form["username"])
-        #self.tagBU(ancienPrincipal)
-        self.envoyerMail({"a":       infosMembre["email"],
-                          "objet":   "Vous avez été ajouté à un cours",
-                          "message": message})
-        infosMembre = self.getInfosMembre(ancienPrincipal)
-        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ou vous êtiez auteur.\n\nCordialement,\n%s.' % (self.Title(), portal.Title())
-        self.envoyerMail({"a":       infosMembre["email"],
-                          "objet":   "Vous avez été retiré d'un cours",
-                          "message": message})
-        self.manage_setLocalRoles(form["username"], ["Owner"])
-        self.setProperties({"DateDerniereModif": DateTime()})
+    """
 
     def addOffreFormations(self, elements):
+        LOG.info("----- addOffreFormations -----")
         listeOffreFormations = list(self.getListeAcces())
         for formation in elements:
             if not formation in listeOffreFormations:
@@ -1409,77 +1313,12 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def deleteOffreFormations(self, elements):
+        LOG.info("----- deleteOffreFormations -----")
         self.listeAcces = tuple(elements)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def addCoAuteurs(self, form):
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme co-auteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        coAuteurs = list(self.getCoAuteurs())
-        usernames = form["username"].split(",")
-        if usernames != ['']:
-            for username in usernames:
-                if not username in coAuteurs:
-                    coAuteurs.append(username)
-                    self.manage_setLocalRoles(username, ["Owner"])
-                    infosMembre = self.getInfosMembre(username)
-                    self.envoyerMail({"a":       infosMembre["email"],
-                                      "objet":   "Vous avez été ajouté à un cours",
-                                      "message": message})
-            self.coAuteurs = tuple(coAuteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def deleteCoAuteurs(self, form):
-        auteurs = []
-        if "auteur-actu" in form:
-            auteurs = form["auteur-actu"]
-        ancienAuteurs = set(self.getCoAuteurs())
-        supprAuteurs = ancienAuteurs.difference(set(auteurs))
-
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez co-auteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-
-        for idMember in supprAuteurs:
-            infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a":      infosMembre["email"],
-                              "objet":  "Vous avez été retiré d'un cours",
-                              "message": message})
-        self.coAuteurs = tuple(auteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def addLecteurs(self, form):
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        lecteurs = list(self.getCoLecteurs())
-        usernames = form["username"].split(",")
-        if usernames != ['']:
-            for username in usernames:
-                if not username in lecteurs:
-                    lecteurs.append(username)
-                    infosMembre = self.getInfosMembre(username)
-                    self.envoyerMail({"a":       infosMembre["email"],
-                                      "objet":   "Vous avez été ajouté à un cours",
-                                      "message": message})
-            self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def deleteLecteurs(self, form):
-        lecteurs = []
-        if "auteur-actu" in form:
-            lecteurs = form["auteur-actu"]
-        ancienLecteurs = set(self.getCoLecteurs())
-        supprLecteurs = ancienLecteurs.difference(set(lecteurs))
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-        for idMember in supprLecteurs:
-            infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a":       infosMembre["email"],
-                              "objet":   "Vous avez été retiré d'un cours",
-                              "message": message})
-        self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
     def addInscriptionsNomminatives(self, form):
+        LOG.info("----- addInscriptionsNomminatives -----")
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
         nomminatives = list(self.getGroupe())
@@ -1496,6 +1335,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def deleteInscriptionsNomminatives(self, form):
+        LOG.info("----- deleteInscriptionsNomminatives -----")
         nomminatives = []
         if "etu_groupe" in form:
             nomminatives = form["etu_groupe"]
@@ -1512,6 +1352,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def addInvitationsEmail(self, form):
+        LOG.info("----- addInvitationsEmail -----")
         invitations = list(self.getInvitations())
         if "invitation" in form and form["invitation"] != "":
             if "," in form["invitation"]:
@@ -1545,6 +1386,7 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def deleteInvitationsEmail(self, form):
+        LOG.info("----- deleteInvitationsEmail -----")
         invitations = []
         if "etu_email" in form:
             invitations = form["etu_email"]
@@ -1560,56 +1402,57 @@ class JalonCours(ATFolder):
         self.setInvitations(tuple(invitations))
         self.setProperties({"DateDerniereModif": DateTime()})
 
+    def setCoursePublicAccess(self, course_public_access):
+        if self.getAcces() != course_public_access:
+            portal = self.portal_url.getPortalObject()
+            portal_workflow = getToolByName(portal, "portal_workflow")
+
+            workflow_action = "submit"
+            state = "pending"
+            if course_public_access == "Public":
+                workflow_action = "publish"
+                state = "published"
+                court = self.getLienCourt()
+                if not court:
+                    dont_stop = 1
+                    while dont_stop:
+                        part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
+                        part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
+                        short = part1 + part2
+                        link_object = getattr(portal.public, short, None)
+                        if not link_object:
+                            dont_stop = 0
+                    portal.public.invokeFactory(type_name="Link", id=short)
+                    link_object = getattr(portal.public, short)
+                    link_object.setTitle(self.title_or_id())
+                    link_object.setRemoteUrl(self.absolute_url())
+                    portal_workflow.doActionFor(link_object, workflow_action, "jalon_workflow")
+                    link_object.reindexObject()
+                    self.setLienCourt(short)
+
+                for course_object in self.objectValues():
+                    if portal_workflow.getInfoFor(course_object, "review_state", wf_id="jalon_workflow") != state:
+                        portal_workflow.doActionFor(course_object, workflow_action, "jalon_workflow")
+                        # On va modifier l'etat de tous les elements contenus dans les activités du cours.
+                        # (mais cette étape est pour le moment inutile puisque les activités ne sont pas accessibles dans un cours Public)
+                        if course_object.meta_type in ["JalonBoiteDepot", "JalonCoursWims"]:
+                            relatedItems = course_object.getRelatedItems()
+                            for related in relatedItems:
+                                # On ne rend pas public les exercices WIMS. l'objet lui-même ne reste accessible que par son propriétaire.
+                                if related.meta_type != "JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
+                                    portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
+                for related in self.getRelatedItems():
+                    if portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
+                        portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
+            try:
+                portal_workflow.doActionFor(self, workflow_action, "jalon_workflow")
+            except:
+                pass
+        self.setAcces(course_public_access)
+
     def setAttributCours(self, form):
         #self.plone_log("setAttributCours")
         for key in form.keys():
-            if key == "acces":
-                if self.getAcces() != form["acces"]:
-                    portal = self.portal_url.getPortalObject()
-                    portal_workflow = getToolByName(portal, "portal_workflow")
-                    if form["acces"] == "Aux étudiants":
-                        workflow_action = "submit"
-                        state = "pending"
-                    if form["acces"] == "Public":
-                        #self.plone_log("[jaloncours/setAttributCours] (ACESS PUBLIC)")
-                        workflow_action = "publish"
-                        state = "published"
-                        court = self.getLienCourt()
-                        if not court:
-                            dont_stop = 1
-                            while dont_stop:
-                                part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
-                                part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
-                                short = part1 + part2
-                                objLien = getattr(portal.public, short, None)
-                                if not objLien:
-                                    dont_stop = 0
-                            portal.public.invokeFactory(type_name="Link", id=short)
-                            objLien = getattr(portal.public, short)
-                            objLien.setTitle(self.title_or_id())
-                            objLien.setRemoteUrl(self.absolute_url())
-                            portal_workflow.doActionFor(objLien, workflow_action, "jalon_workflow")
-                            objLien.reindexObject()
-                            self.setLienCourt(short)
-
-                        for objet in self.objectValues():
-                            if portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow") != state:
-                                portal_workflow.doActionFor(objet, workflow_action, "jalon_workflow")
-                                # On va modifier l'etat de tous les elements contenus dans les activités du cours.
-                                # (mais cette étape est pour le moment inutile puisque les activités ne sont pas accessibles dans un cours Public)
-                                if objet.meta_type in ["JalonBoiteDepot", "JalonCoursWims"]:
-                                    relatedItems = objet.getRelatedItems()
-                                    for related in relatedItems:
-                                        # On ne rend pas public les exercices WIMS. l'objet lui-même ne reste accessible que par son propriétaire.
-                                        if related.meta_type != "JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
-                                            portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
-                        for related in self.getRelatedItems():
-                            if portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
-                                portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
-                    try:
-                        portal_workflow.doActionFor(self, workflow_action, "jalon_workflow")
-                    except:
-                        pass
             if key == "libre":
                 if not self.getLienMooc():
                     part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])

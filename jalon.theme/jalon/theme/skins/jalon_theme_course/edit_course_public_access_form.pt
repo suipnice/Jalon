@@ -16,7 +16,7 @@
 
     <tal:define define="acces context/getAcces;
                         is_public python:context.test(acces == 'Public', 1, 0)">
-    <form tal:attributes="action string:${context/absolute_url}/edit_course_property_script" method="POST">
+    <form tal:attributes="action string:${context/absolute_url}/edit_course_public_access_script" method="POST">
 
         <div class="panel callout radius">
             <i class="fa fa-info-circle no-pad"></i>
@@ -44,19 +44,17 @@
             </div>
             --></tal:comment>
 
-            <input type="radio" name="acces" id="acces_public" value="Public"
+            <input type="radio" name="course_public_access" id="acces_public" value="Public"
                    tal:attributes="checked is_public" />
             <label for="acces_public" class="success"
                    i18n:translate="">Activer</label>
 
-            <input type="radio" name="acces" id="acces_etudiants" value="Aux étudiants"
+            <input type="radio" name="course_public_access" id="acces_etudiants" value="Aux étudiants"
                    tal:attributes="checked not:is_public" />
             <label for="acces_etudiants" class="warning"
                    i18n:translate="">Désactiver</label>
 
         </div>
-
-        <input type="hidden" name="course_property" value="acces"/>
 
         <div class="formControls">
             <button type="submit" class="button small radius">

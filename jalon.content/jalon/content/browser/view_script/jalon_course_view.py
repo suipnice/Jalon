@@ -33,6 +33,7 @@ class JalonCourseView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getCourseView(self, user, mode_etudiant):
+        portal = self.context.portal_url.getPortalObject()
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
 
         course_acces = self.context.getAcces()
@@ -66,16 +67,19 @@ class JalonCourseView(BrowserView):
                                    "action_name": "Supprimer les activités WIMS"}]
 
         course_path = self.context.getPhysicalPath()
-        course_map_item_adder = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]))
+        course_map_item_adder = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
 
         has_course_map = self.context.getPlan()
 
         course_news = self.context.getActualitesCours()
         course_map = self.context.getPlanCours(is_personnel, user.getId(), course_news['listeActu'])
 
-        course_map_help = self.context.getAidePlan()
-        is_course_map_help_text = ['activer_aide_plan'] and is_personnel and mode_etudiant != 'true'
-        course_map_help_text = course_map_help["lien_aide_plan"]
+        is_course_map_help_text = False
+        course_map_help_text = ""
+        portal_jalon_properties = portal.portal_jalon_properties
+        if portal_jalon_properties.getJalonProperty("activer_aide_plan"):
+            is_course_map_help_text = True
+            course_map_help_text = portal_jalon_properties.getJalonProperty("lien_aide_plan")
 
         course_bibliography_dict = self.context.getGloBib('bibliographie')
         course_bibliography_letter_list = course_bibliography_dict.keys()
@@ -201,8 +205,8 @@ class JalonCourseView(BrowserView):
                 "course_advert":                   course_advert,
                 "course_forums":                   course_forums}
 
-    def getCourseItemAdderList(self, course_link, course_path):
-        item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path)
+    def getCourseItemAdderList(self, course_link, course_path, portal):
+        item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path, portal)
         return [{"menu_adder_class":         "button small course-title dropdown",
                  "menu_adder_data-dropdown": "add-title-text",
                  "menu_adder_icon":          "fa fa-paragraph",
@@ -229,8 +233,7 @@ class JalonCourseView(BrowserView):
                  "menu_adder_name":          "Ajout rapide",
                  "menu_adder_items":         item_adder_list["add"]}]
 
-    def getCourseItemAdderMenuList(self, course_link, course_path):
-        portal = self.context.portal_url.getPortalObject()
+    def getCourseItemAdderMenuList(self, course_link, course_path, portal):
         portal_link = portal.absolute_url()
         my_space = portal.portal_jalon_properties.getPropertiesMonEspace()
 
