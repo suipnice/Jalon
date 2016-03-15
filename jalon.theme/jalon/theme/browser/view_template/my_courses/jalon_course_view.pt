@@ -87,26 +87,6 @@
                     </tal:block>
                 </div>
 
-                <!--ol id="course_plan-plan">
-                    <tal:condition condition="not:my_view/has_course_map">
-                    <li class="panel callout radius">
-                        <h4>
-                            <i class="fa fa-info-circle"></i>
-                            <tal:block i18n:translate="legende">Aucune ressource n'est accessible dans ce cours.</tal:block>
-                        </h4>
-                    </li>
-                    <li tal:replace="structure my_view/course_map_help_text"
-                        tal:condition="my_view/is_course_map_help_text"/>
-                    </tal:condition>
-                    <tal:condition condition="my_view/has_course_map">
-                    <tal:define define="plancours my_view/course_map">
-                    <metal:macro use-macro="context/macro_cours_plan/macros/afficher-plan">
-                        Affichage du plan du cours
-                    </metal:macro>
-                    </tal:define>
-                    </tal:condition>
-                </ol-->
-
                 <tal:define define="course_map my_view/course_map;
                                     expand_titre python:True">
                 <metal:macro use-macro="context/course_map_macro/macros/display_course_map">

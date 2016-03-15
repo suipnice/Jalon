@@ -73,7 +73,6 @@ class JalonCourseView(BrowserView):
 
         course_news = self.context.getActualitesCours()
         course_map = self.context.getCourseMap(user.getId(), is_personnel, course_news['listeActu'])
-        #course_map = self.context.getPlanCours(is_personnel, user.getId(), course_news['listeActu'])
 
         is_course_map_help_text = False
         course_map_help_text = ""

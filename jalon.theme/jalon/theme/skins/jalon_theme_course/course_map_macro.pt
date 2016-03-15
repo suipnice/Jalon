@@ -40,9 +40,17 @@
             <span>
                 <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
                    tal:condition="element/is_item_new"></i>
+
                 <i tal:attributes="class element/is_display_item_icon;
                                    title element/is_display_item_text"
-                   tal:condition="element/is_display_item_bool"></i>
+                   tal:condition="not:element/is_display_item_bool"></i>
+
+                <a class="right" 
+                   tal:attributes="href element/item_read_link"
+                   tal:condition="element/is_item_readable">
+                    <i tal:attributes="class element/item_read_icon"></i>
+                </a>
+
                 <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
                    tal:attributes="title element/item_comment_jalonner"
                    tal:condition="element/is_item_jalonner"></i>
