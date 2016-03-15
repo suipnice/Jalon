@@ -1,4 +1,4 @@
-<tal:define define="portal_url container/aq_parent/absolute_url;
+<tal:define define="portal_url container/absolute_url;
                     left_menu request/left_menu">
             <ul class="left">
             <tal:repeat repeat="left_menu_li left_menu">
