@@ -10,8 +10,7 @@
 
 <metal:main fill-slot="content"
             tal:define="mode_etudiant request/mode_etudiant | nothing;
-                        my_view python:view.getCourseView(user, mode_etudiant);
-                        mtool context/@@plone_tools/membership">
+                        my_view python:view.getCourseView(user, mode_etudiant)">
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
     <tal:define define="no_return python:context.insererConsultation(user, 'Cours', '')"/>
@@ -90,7 +89,7 @@
                 <tal:define define="course_map my_view/course_map;
                                     expand_titre python:True">
                 <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
-                    Affichage du plan du cours NEW
+                    Affichage du plan du cours
                 </metal:macro>
                 </tal:define>
 

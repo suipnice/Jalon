@@ -37,40 +37,51 @@
     <tal:repeat repeat="element course_map/course_map_items_list">
         <li tal:attributes="id element/item_css_id;
                             class element/item_css_class">
-            <span>
-                <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
-                   tal:condition="element/is_item_new"></i>
+            <tal:condition condition="my_view/is_personnel">
+            <a class="dropdown" data-options="align:left"
+               tal:attributes="data-dropdown string:${element/item_drop_id}">
+                <i class="fa fa-cog fa-fw no-pad"></i>
+            </a>
+            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                tal:attributes="id string:${element/item_drop_id}">
+                <li>
+                    <a href="">Modifier</a>
+                </li>
+            </ul>
+            </tal:condition>
 
-                <i tal:attributes="class element/is_display_item_icon;
-                                   title element/is_display_item_text"
-                   tal:condition="not:element/is_display_item_bool"></i>
+            <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
+               tal:condition="element/is_item_new"></i>
 
-                <a class="right" 
-                   tal:attributes="href element/item_read_link"
-                   tal:condition="element/is_item_readable">
-                    <i tal:attributes="class element/item_read_icon"></i>
-                </a>
+            <a class="right" 
+               tal:attributes="href element/item_read_link"
+               tal:condition="element/is_item_readable">
+                <i tal:attributes="class element/item_read_icon"></i>
+            </a>
 
-                <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
-                   tal:attributes="title element/item_comment_jalonner"
-                   tal:condition="element/is_item_jalonner"></i>
+            <i tal:attributes="class element/is_display_item_icon;
+                               title element/is_display_item_text"
+               tal:condition="not:element/is_display_item_bool"></i>
 
-                <a tal:attributes="href element/url_element | nothing;
-                                   class string:typeElementTitre"
-                   title="Voir cet élément du plan"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:content="element/item_title"
-                   tal:omit-tag="element/is_item_title_or_text"
-                   i18n:attributes="title"/>
+            <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
+               tal:attributes="title element/item_comment_jalonner"
+               tal:condition="element/is_item_jalonner"></i>
 
-                <tal:condition condition="element/is_item_title">
-                <tal:define define="course_map python:context.getCourseMapItems(element['liste_elements_plan'], user.getId(), my_view['is_personnel'], my_view['course_news']['listeActu']);">
-                <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
-                    Affichage du plan du cours NEW
-                </metal:macro>
-                </tal:define>
-                </tal:condition>
-            </span>
+            <a tal:attributes="href element/url_element | nothing;
+                               class string:typeElementTitre"
+               title="Voir cet élément du plan"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:content="element/item_title"
+               tal:omit-tag="element/is_item_title_or_text"
+               i18n:attributes="title"/>
+
+            <tal:condition condition="element/is_item_title">
+            <tal:define define="course_map python:context.getCourseMapItems(element['course_map_sub_items_list'], user.getId(), my_view['is_personnel'], my_view['course_news']['listeActu'], portal_state);">
+            <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
+                Affichage du plan du cours NEW
+            </metal:macro>
+            </tal:define>
+            </tal:condition>
         </li>
     </tal:repeat>
     </ol>

@@ -912,100 +912,86 @@ class JalonCours(ATFolder):
                 plat.extend(self.getPlanPlat(titre["listeElement"]))
         return plat
 
-    def getCourseMap(self, user_id, is_personnel, course_actuality_list):
+    def getCourseMap(self, user_id, is_personnel, course_actuality_list, portal):
         LOG.info("----- getCourseMap -----")
-        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, True)
+        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, portal, True)
 
-    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel, course_actuality_list, is_map_top_level=False):
+    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel, course_actuality_list, portal, is_map_top_level=False):
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
             ol_css_id = "course_plan-plan"
             ol_css_class = "ui-sortable"
 
-        id_jalonner = ""
-        commentaire_id_jalonner = ""
-        if len(self.getAvancementPlan()):
-            id_jalonner = self.getAvancementPlan()[0]
-            try:
-                commentaire_id_jalonner = self.getAvancementPlan()[1]
-                commentaire_id_jalonner = commentaire_id_jalonner.replace("'", "’")
-            except:
-                commentaire_id_jalonner = "Élément jalonné par l&rsquo;enseignant"
+        item_jalonner = self.getCourseMapItemJalonner()
 
+        index = 0
         course_map_list = []
         for course_map_item in course_map_items_list:
-            is_item_readable = False
+            index = index + 1
             item_properties = self.getElementCours(course_map_item["idElement"])
 
-            is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
-            is_display_item_bool = True if is_display_item["val"] else False
-            is_display_item_icon = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
-            is_display_item_text = is_display_item["legende"]
+            item = {"item_id":      course_map_item["idElement"],
+                    "item_title":   item_properties["titreElement"],
+                    "item_drop_id": "drop-%i" % index}
 
-            if is_personnel or is_display_item_bool:
-                is_title = False
-                item_css_class = "element"
+            is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+            item["is_display_item_bool"] = True if is_display_item["val"] else False
+            item["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
+            item["is_display_item_text"] = is_display_item["legende"]
+
+            if is_personnel or item["is_display_item_bool"]:
+                item["is_item_title"] = False
+                item["item_css_class"] = "element"
                 course_map_sub_items_list = []
                 if "listeElement" in course_map_item:
-                    is_title = True
-                    item_css_class = "chapitre"
+                    item["is_item_title"] = True
+                    item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
+                item["item_css_id"] ="%s-%s" % (item["item_css_class"], course_map_item["idElement"])
+                item["course_map_sub_items_list"] = course_map_sub_items_list
 
-                is_title_or_text = False
-                if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
-                    is_title_or_text = True
+                item["is_item_title_or_text"] = True  if item_properties["typeElement"] in ["Titre", "TexteLibre"] else False
 
-                if not is_personnel and not is_title:
-                    is_item_readable = True
+                item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
-                item_read_link = "%s/marquer_element_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
-                item_read_css = "decoche right"
-                item_read_icon = "fa fa-square-o fa-fw fa-lg no-pad"
-                if is_item_readable and "marque" in item_properties and user_id in item_properties["marque"]:
-                    item_read_css = "coche right"
-                    item_read_icon = "fa fa-check-square-o fa-fw fa-lg no-pad"
+                item["item_read_link"] = "%s/marquer_element_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                item["item_read_css"] = "decoche right"
+                item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
+                if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
+                    item["item_read_css"] = "coche right"
+                    item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
 
-                is_jalonner = False
-                commentaire_jalonner = ""
-                if course_map_item["idElement"] == id_jalonner:
-                    is_jalonner = True
-                    commentaire_jalonner = commentaire_id_jalonner
+                item["is_item_jalonner"] = False
+                item["item_jalonner_comment"] = ""
+                if course_map_item["idElement"] == item_jalonner["item_jalonner_id"]:
+                    item["is_item_jalonner"] = True
+                    item["item_jalonner_comment"] = item_jalonner["item_jalonner_comment"]
 
-                #class_css = item_properties["typeElement"].replace(" ", "")
-                is_nouveau = False
-                if self.isNouveau(item_properties, course_actuality_list):
-                    is_nouveau = True
+                item["is_item_new"] = True if self.isNouveau(item_properties, course_actuality_list) else False
 
-                url_element = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
-                element = {"item_id":               course_map_item["idElement"],
-                           "item_css_id":           "%s-%s" % (item_css_class, course_map_item["idElement"]),
-                           "item_css_class":        "%s sortable" % item_css_class if is_personnel else item_css_class,
-                           "is_item_title":         is_title,
-                           "is_item_title_or_text": is_title_or_text,
-                           "is_display_item_bool":  is_display_item_bool,
-                           "is_display_item_icon":  is_display_item_icon,
-                           "is_display_item_text":  is_display_item_text,
-                           "is_item_readable":      is_item_readable,
-                           "item_read_link":        item_read_link,
-                           "item_read_css":         item_read_css,
-                           "item_read_icon":        item_read_icon,
-                           "is_item_new":           is_nouveau,
-                           "is_item_jalonner":      is_jalonner,
-                           "item_comment_jalonner": commentaire_jalonner,
-                           "item_title":            item_properties["titreElement"],
-                           "url_element":           url_element,
-                           "liste_elements_plan":   course_map_sub_items_list,
-                           "element":               item_properties}
+                item["url_element"] = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
 
-                if is_title_or_text:
-                    del element["url_element"]
+                if item["is_item_title_or_text"]:
+                    del item["url_element"]
 
-                course_map_list.append(element)
+                course_map_list.append(item)
 
         return {"ol_css_id":              ol_css_id,
                 "ol_css_class":           ol_css_class,
                 "course_map_items_list":  course_map_list}
+
+    def getCourseMapItemJalonner(self):
+        item_jalonner = {"item_jalonner_id":      "",
+                         "item_jalonner_comment": ""}
+        if len(self.getAvancementPlan()):
+            item_jalonner["item_jalonner_id"] = self.getAvancementPlan()[0]
+            try:
+                item_jalonner_comment = self.getAvancementPlan()[1]
+                item_jalonner["item_jalonner_comment"] = item_jalonner_comment.replace("'", "’")
+            except:
+                item_jalonner["item_jalonner_comment"] = "Élément jalonné par l&rsquo;enseignant"
+        return item_jalonner
 
     def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
         #self.plone_log("----- getPlanCours (Start) -----")
