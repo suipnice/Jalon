@@ -44,8 +44,11 @@
             </a>
             <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                 tal:attributes="id string:${element/item_drop_id}">
-                <li>
-                    <a href="">Modifier</a>
+                <li tal:repeat="item_action element/item_actions">
+                    <a tal:attributes="href item_action/item_action_link">
+                        <i tal:attributes="class item_action/item_action_icon"></i>
+                        <tal:replace tal:replace="item_action/item_action_name" i18n:translate=""/>
+                    </a>
                 </li>
             </ul>
             </tal:condition>

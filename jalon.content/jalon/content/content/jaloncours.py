@@ -927,6 +927,7 @@ class JalonCours(ATFolder):
 
         index = 0
         course_map_list = []
+        course_link = self.absolute_url()
         for course_map_item in course_map_items_list:
             index = index + 1
             item_properties = self.getElementCours(course_map_item["idElement"])
@@ -955,12 +956,15 @@ class JalonCours(ATFolder):
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
-                item["item_read_link"] = "%s/marquer_element_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
-                item["item_read_css"] = "decoche right"
-                item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
-                if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
-                    item["item_read_css"] = "coche right"
-                    item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
+                if not is_personnel:
+                    item["item_read_link"] = "%s/marquer_element_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                    item["item_read_css"] = "decoche right"
+                    item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
+                    if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
+                        item["item_read_css"] = "coche right"
+                        item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
+                else:
+                    item["item_actions"] = self.getItemActions(course_map_item["idElement"], item_properties, item["is_display_item_bool"], course_link)
 
                 item["is_item_jalonner"] = False
                 item["item_jalonner_comment"] = ""
@@ -970,7 +974,7 @@ class JalonCours(ATFolder):
 
                 item["is_item_new"] = True if self.isNouveau(item_properties, course_actuality_list) else False
 
-                item["url_element"] = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (self.absolute_url(), course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
+                item["url_element"] = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (course_link, course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
 
                 if item["is_item_title_or_text"]:
                     del item["url_element"]
@@ -992,6 +996,41 @@ class JalonCours(ATFolder):
             except:
                 item_jalonner["item_jalonner_comment"] = "Élément jalonné par l&rsquo;enseignant"
         return item_jalonner
+
+    def getItemActions(self, item_id, item_properties, is_display_item_bool, course_link):
+        item_actions = [{"item_action_link": "%s/course_display_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-eye fa-fw",
+                         "item_action_name": "Afficher"},
+                        {"item_action_link": "%s/course_hide_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-eye-slash fa-fw",
+                         "item_action_name": "Masquer"},
+                        {"item_action_link": "%s/course_edit_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-pencil fa-fw",
+                         "item_action_name": "Modifier"},
+                        {"item_action_link": "%s/course_jalonner_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-hand-o-left fa-fw",
+                         "item_action_name": "Jalonner"},
+                        {"item_action_link": "%s/course_detach_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-chain-broken fa-fw",
+                         "item_action_name": "Détacher"},
+                        {"item_action_link": "%s/course_delete_item_form?item_id=%s" % (course_link, item_id),
+                         "item_action_icon": "fa fa-trash-o fa-fw",
+                         "item_action_name": "Supprimer"}]
+
+        if is_display_item_bool:
+            del item_actions[0]
+        else:
+            del item_actions[1]
+
+        if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "Titre", "TexteLibre"]:
+            del item_actions[-2]
+        else:
+            del item_actions[-1]
+
+        if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:    
+            del item_actions[-1]
+
+        return item_actions
 
     def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
         #self.plone_log("----- getPlanCours (Start) -----")
