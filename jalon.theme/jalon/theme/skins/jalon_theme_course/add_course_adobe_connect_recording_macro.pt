@@ -70,7 +70,7 @@
                      i18n:attributes="title">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
-                                           value string:${item/getId}/${item/Type};
+                                           value string:${item/getId}/${my_view/folder_id};
                                            data-res_name item_title;
                                            data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '')"/>
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>

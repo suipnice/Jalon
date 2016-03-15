@@ -243,6 +243,18 @@ class JalonCours(ATFolder):
                              "mes_webconferences":           "Webconference",
                              "mes_videos_pod":               "Video"}
 
+    _type_folder_my_space_dict = {"File":                    "Fichiers",
+                                  "Image":                   "Fichiers",
+                                  "Page":                    "Fichiers",
+                                  "ExercicesWims":           "Wims",
+                                  "Lienweb":                 "Externes",
+                                  "Lecteurexportable":       "Externes",
+                                  "CatalogueBU":             "Externes",
+                                  "Video":                   "Video",
+                                  "Sonorisation":            "Sonorisation",
+                                  "Webconference":           "Webconference",
+                                  "TermeGlossaire":          "Glossaire"}
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
@@ -912,6 +924,12 @@ class JalonCours(ATFolder):
                 plat.extend(self.getPlanPlat(titre["listeElement"]))
         return plat
 
+    def getDisplayCourseMapAttributes(self, user):
+        LOG.info("----- getDisplayCourseMapAttributes -----")
+        return {"is_personnel": self.isPersonnel(user),
+                "course_news":  self.getActualitesCours(),
+                "portal":       self.portal_url.getPortalObject()}
+
     def getCourseMap(self, user_id, is_personnel, course_actuality_list, portal):
         LOG.info("----- getCourseMap -----")
         return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, portal, True)
@@ -949,6 +967,9 @@ class JalonCours(ATFolder):
                     item["is_item_title"] = True
                     item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
+                else:
+                    item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
+
                 item["item_css_id"] ="%s-%s" % (item["item_css_class"], course_map_item["idElement"])
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
@@ -973,11 +994,6 @@ class JalonCours(ATFolder):
                     item["item_jalonner_comment"] = item_jalonner["item_jalonner_comment"]
 
                 item["is_item_new"] = True if self.isNouveau(item_properties, course_actuality_list) else False
-
-                item["url_element"] = "%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s" % (course_link, course_map_item["idElement"], item_properties["createurElement"], self.verifType(item_properties["typeElement"]))
-
-                if item["is_item_title_or_text"]:
-                    del item["url_element"]
 
                 course_map_list.append(item)
 

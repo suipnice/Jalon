@@ -203,7 +203,8 @@ class JalonCourseView(BrowserView):
                 "course_news":                     course_news,
                 "course_news_title":               course_news_title,
                 "course_advert":                   course_advert,
-                "course_forums":                   course_forums}
+                "course_forums":                   course_forums,
+                "portal":                          portal}
 
     def getCourseItemAdderList(self, course_link, course_path, portal):
         item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path, portal)

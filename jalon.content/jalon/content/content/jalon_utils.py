@@ -1076,7 +1076,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                    "Lienweb":                 "Externes",
                    "Lecteurexportable":       "Externes",
                    "CatalogueBU":             "Externes",
-                   "Video":                     "Video",
+                   "Video":                   "Video",
                    "Presentationssonorisees": "Sonorisation",
                    "TermeGlossaire":          "Glossaire"}
 
