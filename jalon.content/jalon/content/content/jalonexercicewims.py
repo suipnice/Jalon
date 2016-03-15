@@ -69,9 +69,10 @@ class JalonExerciceWims(ATDocumentBase):
     schema['text'].required = False
     schema['text'].mode = "r"
 
-    def getBreadcrumbs(self):
+    def getBreadcrumbs(self, edit_mode=False):
+        """ Fournit le fil d'ariane de l'exercice courant."""
         portal_url = self.portal_url.getPortalObject().absolute_url()
-        return [{"title": _(u"Mon espace"),
+        crumbs_list = [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  "%s/mon_espace" % portal_url},
                 {"title": _(u"Mes exercices WIMS"),
@@ -79,7 +80,13 @@ class JalonExerciceWims(ATDocumentBase):
                  "link":  "%s/mon_espace/mes_exercices_wims" % portal_url},
                 {"title": self.Title(),
                  "icon":  "fa fa-random",
-                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()}]
+                 "link":  "%s/view" % self.absolute_url()}]
+        if edit_mode:
+            crumbs_list.append({"title": "édition",
+                 "icon":  "fa fa-edit",
+                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()})
+
+        return crumbs_list
 
     def getEditWimsExerciceMacroName(self):
         edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
@@ -88,7 +95,7 @@ class JalonExerciceWims(ATDocumentBase):
         return edit_wims_exercice_macro_name
 
     def getVariablesDefaut(self, modele):
-        """ #getVariablesDefaut permet de lister les valeurs par defaut a definir en fonction du modele d'exercice."""
+        """ liste les valeurs par defaut a definir en fonction du modele d'exercice."""
         variables_defaut = {"qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
@@ -465,7 +472,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             #return self.aq_parent.wims("lierExoFeuille", {"listeExos": self.getListeIdsExos(), "qnum": self.getQnum(), "title": self.Title(), "authMember": author, "qclass": qclass, "qsheet": "1"})
         else:
-            return {"status": "ERROR", "code": "NO_EXERCICE"}
+            return {"status": "ERROR", "err_code": "NO_EXERCICE", "message": _(u"Aucun exercice selectionné")}
 
     def supprimerSerie(self):
         """Supprime un groupe d'exercices wims."""
