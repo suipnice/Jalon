@@ -59,6 +59,11 @@
                   template="view_template/my_space/my_adobe_connect_recording_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="jalon_adobe_connect_recording_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonConnect"
+                  template="view_template/my_space/jalon_adobe_connect_recording_view.pt"
+                  permission="zope2.View"/>
+
     <browser:page name="mes_exercices_wims_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_wims_exercices_view.MyWimsExercicesView"

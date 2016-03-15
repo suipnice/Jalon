@@ -1,0 +1,32 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:replace replace="context/Title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel radius callout">
+        <strong>Durée :</strong> <tal:replace replace="context/getDuree"/>
+    </div>
+
+    <a class="button expand success" target="_blank"
+       tal:attributes="href context/getUrlEnr">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir l'enregistrement Adobe Connect dans une nouvelle fenêtre…</tal:block>
+    </a>
+
+</metal:main>
+
+</body>
+
+</html>
