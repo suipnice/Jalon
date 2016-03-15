@@ -29,7 +29,7 @@ if "save_and_test" in form:
     page_url = "%s/view?" % object_link
 else:
     # url de modification de l'exercice
-    page_url = "%s/exercicewims_edit?" % object_link
+    page_url = "%s/edit_wims_exercice_form?" % object_link
 
 # Cas des Modules externes
 if wims_exercice_model == "externe":
