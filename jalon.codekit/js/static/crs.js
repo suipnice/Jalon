@@ -158,8 +158,8 @@ function setAttachmentCreator( ) {
 
         var $form = $( this );
 
-        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
-            $.get( ABSOLUTE_URL + '/cours_affichage_plan' ).done( function( data ) {
+        $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( url ) {
+            $.get( url ).done( function( data ) {
                 $( '#course_plan-plan' ).html( data );
                 Foundation.utils.S( '#reveal-main-large' ).foundation( 'reveal', 'close' );
                 $( document ).foundation( 'dropdown', 'reflow' );
