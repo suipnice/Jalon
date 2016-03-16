@@ -10,7 +10,8 @@
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing">
 
-    <h2><tal:block i18n:translate="">Créer un cours</tal:block>
+    <h2>
+        <tal:block i18n:translate="">Créer un cours</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 

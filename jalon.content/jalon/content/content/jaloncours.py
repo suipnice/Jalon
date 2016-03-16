@@ -970,10 +970,10 @@ class JalonCours(ATFolder):
                 else:
                     item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
 
-                item["item_css_id"] ="%s-%s" % (item["item_css_class"], course_map_item["idElement"])
+                item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
-                item["is_item_title_or_text"] = True  if item_properties["typeElement"] in ["Titre", "TexteLibre"] else False
+                item["is_item_title_or_text"] = True if item_properties["typeElement"] in ["Titre", "TexteLibre"] else False
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
@@ -1043,10 +1043,21 @@ class JalonCours(ATFolder):
         else:
             del item_actions[-1]
 
-        if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:    
+        if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
             del item_actions[-1]
 
         return item_actions
+
+    def getCourseMapForm(self):
+        #LOG.info("----- getCourseMapForm -----")
+        return self.restrictedTraverse("cours/%s/%s/course_map_form" % (self.aq_parent.getId(), self.getId()))()
+
+    def getCourseAddActivityForm(self, activity_type):
+        #LOG.info("----- getCourseAddActivityForm -----")
+        activity_dict = {"1": "Boite de dépots",
+                         "2": "Auto-évaluation WIMS",
+                         "3": "Examen WIMS"}
+        return activity_dict[activity_type]
 
     def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
         #self.plone_log("----- getPlanCours (Start) -----")

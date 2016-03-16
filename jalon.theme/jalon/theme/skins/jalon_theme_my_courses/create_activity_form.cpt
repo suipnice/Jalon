@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        activity_type request/activity_type | string:1;
+                        my_form python:context.getCourseAddActivityForm(activity_type);
+                        course_map_form context/getCourseMapForm">
+
+    <h2>
+        <i class="fa fa-plus-circle no-pad"></i>
+        <tal:block i18n:translate="">Créer une activité pédagogique</tal:block> (<tal:replace replace="my_form" i18n:translate=""/>)
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-activityCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg string:L'activité a été créée.">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
+            <input type="text" maxlength="255" size="30" id="title" name="title"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description"
+             tal:define="error errors/description | nothing"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="description">Consigne</label>
+            <textarea name="description" id="description" rows="5"><tal:block replace="request/description | nothing"/></textarea>
+        </div>
+
+        <tal:replace replace="structure course_map_form"/>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
+        <input type="hidden" name="activity_type" tal:attributes="value activity_type"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-activityCreator','reveal-main')"></script>
+
+</metal:main>
+
+</body>
+
+</html>

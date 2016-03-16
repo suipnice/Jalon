@@ -267,14 +267,14 @@ class JalonCourseView(BrowserView):
                                                 "item_icon": "fa fa-video-camera fa-fw",
                                                 "item_name": "VOD"})
         # Menu Activités
-        item_adder_list["activity"].append({"item_link": "%s/create_deposit_box_form" % course_link,
+        item_adder_list["activity"].append({"item_link": "%s/create_activity_form?activity_type=1" % course_link,
                                             "item_icon": "fa fa-fw fa-inbox",
                                             "item_name": "Boite de dépôts"})
         if my_space["activer_exercices_wims"]:
-            item_adder_list["activity"].append({"item_link": "%s/create_self_evaluation_form" % course_link,
+            item_adder_list["activity"].append({"item_link": "%s/create_activity_form?activity_type=2" % course_link,
                                                 "item_icon": "fa fa-fw fa-gamepad",
                                                 "item_name": "Auto évaluation WIMS"})
-            item_adder_list["activity"].append({"item_link": "%s/create_examination_form" % course_link,
+            item_adder_list["activity"].append({"item_link": "%s/create_activity_form?activity_type=3" % course_link,
                                                 "item_icon": "fa fa-fw fa-graduation-cap",
                                                 "item_name": "Examen WIMS"})
         if my_space["activer_webconferences"]:
