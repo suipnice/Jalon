@@ -44,6 +44,7 @@
         <tal:replace replace="structure course_map_form"/>
 
         <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="validate_key" value="create_activity"/>
         <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
         <input type="hidden" name="activity_type" tal:attributes="value activity_type"/>
 

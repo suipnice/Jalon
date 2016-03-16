@@ -17,7 +17,8 @@ error = False
 form = context.REQUEST.form
 validate_key = form["validate_key"]
 
-validate_dict = {"edit_course_title": ["title"]}
+validate_dict = {"edit_course_title": ["title"],
+                 "create_activity":   ["title"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:

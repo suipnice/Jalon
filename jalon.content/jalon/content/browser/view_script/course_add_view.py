@@ -88,7 +88,7 @@ class CourseAddView(MySpaceView):
                 "nb_display_items":     nb_display_items,
                 "nb_items":             nb_items,
                 "course_add_list":      course_add_list,
-                "course_map":           course_object.getPlanPlat(),
+                "course_map":           course_object.getCourseMapList(),
                 "is_display_hide":      course_add_dict["is_display_hide"],
                 "folder_id":            course_add_dict["folder_id"],
                 "course_link":          course_object.absolute_url(),

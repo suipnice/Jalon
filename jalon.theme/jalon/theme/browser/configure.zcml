@@ -119,7 +119,7 @@
     <browser:page name="cours_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonCours"
                   class="jalon.content.browser.view_script.jalon_course_view.JalonCourseView"
-                  template="view_template/my_courses/jalon_course_view.pt"
+                  template="view_template/jalon_course/jalon_course_view.pt"
                   permission="zope2.View"/>
 
     <browser:page name="course_add_view"

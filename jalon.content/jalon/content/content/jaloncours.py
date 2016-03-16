@@ -20,7 +20,6 @@ from os import close
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import json
-import urllib
 import urllib2
 import string
 import jalon_utils
@@ -255,42 +254,71 @@ class JalonCours(ATFolder):
                                   "Webconference":           "Webconference",
                                   "TermeGlossaire":          "Glossaire"}
 
+    _activity_dict = {"1": {"activity_id":          "BoiteDepot",
+                            "activity_title":       "Boite de dépots",
+                            "activity_portal_type": "JalonBoiteDepot"},
+                      "2": {"activity_id":          "AutoEvaluation",
+                            "activity_title":       "Auto-évaluation WIMS",
+                            "activity_portal_type": "JalonCoursWims"},
+                      "3": {"activity_id":          "Examen",
+                            "activity_title":       "Examen WIMS",
+                            "activity_portal_type": "JalonCoursWims"}}
+
+    _actuality_dict = {"chapdispo":          _(u"et son contenu sont maintenant disponibles."),
+                       "chapnondispo":       _(u"et son contenu ne sont plus disponibles."),
+                       "dispo":              _(u"est disponible."),
+                       "nondispo":           _(u"n'est plus disponible."),
+                       "message":            _(u"Nouveau message dans le sujet de discussion."),
+                       "datedepot":          _(u"Nouvelle date limite de dépôt : "),
+                       "datedepotfin":       _(u"Le dépôt n'est plus permis"),
+                       "correctiondispo":    _(u"La correction est disponible."),
+                       "correctionnondispo": _(u"La correction n'est plus disponible"),
+                       "sujetdispo":         _(u"Le sujet est disponible."),
+                       "sujetnondispo":      _(u"Le sujet n'est plus disponible."),
+                       "nouveauxdepots":     _(u"nouveau(x) dépôt(s) disponible(s)"),
+                       "nouveauxmessages":   _(u"nouveau(x) message(s) disponible(s)")}
+
+    _item_actions = [{"item_action_id":   "course_display_item_form",
+                      "item_action_icon": "fa fa-eye fa-fw",
+                      "item_action_name": "Afficher"},
+                     {"item_action_id":   "course_hide_item_form",
+                      "item_action_icon": "fa fa-eye-slash fa-fw",
+                      "item_action_name": "Masquer"},
+                     {"item_action_id":   "course_edit_item_form",
+                      "item_action_icon": "fa fa-pencil fa-fw",
+                      "item_action_name": "Modifier"},
+                     {"item_action_id":   "course_jalonner_item_form",
+                      "item_action_icon": "fa fa-hand-o-left fa-fw",
+                      "item_action_name": "Jalonner"},
+                     {"item_action_id":   "course_detach_item_form",
+                      "item_action_icon": "fa fa-chain-broken fa-fw",
+                      "item_action_name": "Détacher"},
+                     {"item_action_id":   "course_delete_item_form",
+                      "item_action_icon": "fa fa-trash-o fa-fw",
+                      "item_action_name": "Supprimer"}]
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
 
-    def toPloneboardTime(self, context, request, time_=None):
-        """Return time formatted for Ploneboard."""
-        return toPloneboardTime(context, request, time_)
-
-    def getElementCours(self, key=None):
-        #self.plone_log("getElementCours")
-        if key:
-            return self._elements_cours.get(key, None)
-        return self._elements_cours
-
-    def getKeyElementCours(self):
-        #self.plone_log("getKeyElementCours")
-        return self._elements_cours.keys()
-
-    def setElementsCours(self, elements_cours):
-        #self.plone_log("setElementsCours")
-        if type(self._elements_cours).__name__ != "PersistentMapping":
-            self._elements_cours = PersistentDict(elements_cours)
-        else:
-            self._elements_cours = elements_cours
-
-    def getMySpaceFolder(self, user_id, folder_id):
-        #LOG.info("----- getMySpaceFolder -----")
-        return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
-
-    def getMySubSpaceFolder(self, user_id, folder_id, portal):
-        LOG.info("----- getMySubSpaceFolder -----")
-        #portal = self.portal_url.getPortalObject()
-        return getattr(getattr(portal.Members, user_id), folder_id)
+    #------------#
+    # Utilitaire #
+    #------------#
+    def getCoursePasswordBreadcrumbs(self):
+        LOG.info("----- getCoursePasswordBreadcrumbs -----")
+        portal_link = self.portal_url.getPortalObject().absolute_url()
+        return[{"title": _(u"Mes cours"),
+                "icon":  "fa fa-university",
+                "link":  "%s/mes_cours" % portal_link},
+               {"title": _(u"Accès par mot de passe"),
+                "icon":  "fa fa-key",
+                "link":  "%s/mes_cours?categorie=2" % portal_link},
+               {"title": _(u"Vérification du mot de passe"),
+                "icon":  "fa fa-search",
+                "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
     def checkCourseAuthorized(self, user, request):
-        #LOG.info("----- checkCourseAuthorized -----")
+        LOG.info("----- checkCourseAuthorized -----")
         #LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
         if self.getLibre():
             return True
@@ -305,17 +333,51 @@ class JalonCours(ATFolder):
         if not self.getId() in request.SESSION.get("course_authorized_list", []):
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
 
-    def getProprietesVideo(self, id_video):
-        infos_element = self.getElementCours(id_video)
-        video_title = infos_element["titreElement"]
-        video_title_my_space = video_title
-        if "titreElementMonEspace" in infos_element:
-            video_title_my_space = infos_element["titreElementMonEspace"]
-        return {"video_title":          video_title,
-                "video_title_my_space": video_title_my_space,
-                "is_display_in_map":    "checked" if infos_element["complementElement"]["value"] else ""}
+    # getInfosMembre recupere les infos sur les personnes.
+    def getInfosMembre(self, username):
+        LOG.info("----- getInfosMembre -----")
+        return jalon_utils.getInfosMembre(username)
+
+    def getLastLogin(self):
+        LOG.info("----- getLastLogin -----")
+        member = self.portal_membership.getAuthenticatedMember()
+        last_login = member.getProperty('last_login_time', None)
+        if isinstance(last_login, basestring):
+            last_login = DateTime(last_login)
+        return last_login
+
+    def getLocaleDate(self, date, format="%d/%m/%Y"):
+        LOG.info("----- getLocaleDate -----")
+        return jalon_utils.getLocaleDate(date, format)
+
+    def getElementCours(self, key=None):
+        LOG.info("----- getElementCours -----")
+        LOG.info("***** item_id : %s" % key)
+        if key:
+            return self._elements_cours.get(key, None)
+        return self._elements_cours
+
+    def getKeyElementCours(self):
+        LOG.info("----- getKeyElementCours -----")
+        return self._elements_cours.keys()
+
+    def getAffElement(self, idElement, attribut):
+        LOG.info("----- getAffElement -----")
+        infos_element = self.getElementCours(idElement)
+        if infos_element:
+            if infos_element[attribut] != "":
+                return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
+        return DateTime().strftime("%Y/%m/%d %H:%M")
+
+    def setElementsCours(self, elements_cours):
+        LOG.info("----- setElementsCours -----")
+        if type(self._elements_cours).__name__ != "PersistentMapping":
+            self._elements_cours = PersistentDict(elements_cours)
+        else:
+            self._elements_cours = elements_cours
 
     def setProprietesElement(self, infos_element):
+        LOG.info("----- setProprietesElement -----")
         dico = self.getElementCours(infos_element["idElement"])
         if not "titreElementMonEspace" in dico:
             dico["titreElementMonEspace"] = dico["titreElement"][:]
@@ -330,175 +392,20 @@ class JalonCours(ATFolder):
         self._elements_cours[infos_element["idElement"]] = dico
         self.setElementsCours(self._elements_cours)
 
-    def getCoursePasswordBreadcrumbs(self):
-        portal_link = self.portal_url.getPortalObject().absolute_url()
-        return[{"title": _(u"Mes cours"),
-                "icon":  "fa fa-university",
-                "link":  "%s/mes_cours" % portal_link},
-               {"title": _(u"Accès par mot de passe"),
-                "icon":  "fa fa-key",
-                "link":  "%s/mes_cours?categorie=2" % portal_link},
-               {"title": _(u"Vérification du mot de passe"),
-                "icon":  "fa fa-search",
-                "link":  "%s/check_course_password_form" % self.absolute_url()}]
+    def setProperties(self, dico):
+        LOG.info("----- setProprietesElement -----")
+        for key in dico.keys():
+            self.__getattribute__("set%s" % key)(dico[key])
+        if key == "DateDerniereModif":
+            self.reindexObject()
 
-    def getActualitesCours(self, toutes=None):
-        #self.plone_log("getActualitesCours")
-        actualites = []
-        descriptionActu = {"chapdispo": _(u"et son contenu sont maintenant disponibles."),
-                           "chapnondispo": _(u"et son contenu ne sont plus disponibles."),
-                           "dispo": _(u"est disponible."),
-                           "nondispo": _(u"n'est plus disponible."),
-                           "message": _(u"Nouveau message dans le sujet de discussion."),
-                           "datedepot": _(u"Nouvelle date limite de dépôt : "),
-                           "datedepotfin": _(u"Le dépôt n'est plus permis"),
-                           "correctiondispo": _(u"La correction est disponible."),
-                           "correctionnondispo": _(u"La correction n'est plus disponible"),
-                           "sujetdispo": _(u"Le sujet est disponible."),
-                           "sujetnondispo": _(u"Le sujet n'est plus disponible."),
-                           "nouveauxdepots": _(u"nouveau(x) dépôt(s) disponible(s)"),
-                           "nouveauxmessages": _(u"nouveau(x) message(s) disponible(s)")}
-        listeActualites = list(self.getActualites())
-        listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
-        if not listeActualites:
-            return {"nbActu":    0,
-                    "listeActu": []}
+    def getMySpaceFolder(self, user_id, folder_id):
+        LOG.info("----- getMySpaceFolder -----")
+        return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
 
-        infos_elements = self.getElementCours()
-
-        for actualite in listeActualites:
-            if DateTime() > actualite["dateActivation"]:
-                infos_element = infos_elements.get(actualite["reference"], '')
-                if infos_element:
-                    description = descriptionActu[actualite["code"]]
-                    if actualite["code"] == "datedepot":
-                        description = "%s %s" % (description, DateTime(actualite["dateDepot"], datefmt='international').strftime("%d/%m/%Y %H:%M"))
-                    if actualite["code"] == "nouveauxdepots":
-                        description = "%s %s" % (str(actualite["nb"]), description)
-                    actualites.append({"type":        infos_element["typeElement"],
-                                       "titre":       infos_element["titreElement"],
-                                       "description": description,
-                                       "date":        actualite["dateActivation"]})
-        if not toutes:
-            return {"nbActu":    len(actualites),
-                    "listeActu": actualites[:3]}
-        else:
-            return {"nbActu":    len(actualites),
-                    "listeActu": actualites}
-
-    def getAffichageAcces(self, toutes=None):
-        #self.plone_log("getAffichageAcces")
-        dico = {"Aux étudiants": {"titre": _(u"Réservé à vos étudiants inscrits à l'Université ou invités par courriel"),
-                                   "description": _(u"Accès réservé à : <ul><li>l'offre de formations universitaires Apogée (Diplôme / UE / Groupe)</li><li>mon groupe personalisé d'étudiants inscrits à l'Université</li><li>personnes extérieures à l'université (invitations par courriel)</li></ul>")},
-                "Public":        {"titre": _(u"Public"),
-                                  "description": _(u"Accès à tous les utilisateurs disposant du lien du cours, seuls les étudiants authentifiés auront accès aux activités.")}
-                }
-        if toutes:
-            return dico
-        else:
-            return dico[self.getAcces()]
-
-    def getAffElement(self, idElement, attribut):
-        #self.plone_log("getAffElement")
-        infos_element = self.getElementCours(idElement)
-        if infos_element:
-            if infos_element[attribut] != "":
-                return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
-        return DateTime().strftime("%Y/%m/%d %H:%M")
-
-    def getAnnonces(self, authMember, request, personnel, all=None):
-        #self.plone_log("getAnnonces")
-        annonces = []
-        listeAnnonces = list(self.annonce.objectValues())
-        listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if listeAnnonces and personnel and all:
-            return {"listeAnnonces": listeAnnonces, "nbAnnonces": len(listeAnnonces)}
-        elif listeAnnonces and personnel:
-            return {"listeAnnonces": [listeAnnonces[0]], "nbAnnonces": len(listeAnnonces)}
-
-        #self.plone_log("not personnel")
-        groupes = []
-        diplomes = []
-        portal = self.portal_url.getPortalObject()
-        portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
-        try:
-            idMember = authMember.getId()
-        except:
-            idMember = authMember
-        if idMember and not "@" in idMember:
-            if portal_jalon_bdd.getTypeBDD() == "apogee":
-                COD_ETU = member.getProperty("supannEtuId", member.getProperty("supannAliasLogin"))
-            if portal_jalon_bdd.getTypeBDD() == "sqlite":
-                COD_ETU = idMember
-
-            for diplome in portal_jalon_bdd.getInscriptionIND(COD_ETU, "etape"):
-                diplomes.append(diplome["COD_ELP"])
-
-            groupes = portal_jalon_bdd.getGroupesEtudiant(COD_ETU)
-
-        for annonce in listeAnnonces:
-            suite = 1
-            publics = annonce.getPublics()
-            ##self.plone_log(publics)
-            if not publics:
-                #pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
-                suite = 0
-            if suite and ("colecteurs*-*colecteurs" in publics) and (idMember in self.getCoLecteurs()):
-                annonces.append(annonce)
-                suite = 0
-            if suite and ("groupeperso*-*perso" in publics) and (idMember in self.getGroupe()):
-                annonces.append(annonce)
-                suite = 0
-            if suite and ("invitationsemail*-*email" in publics) and (idMember in self.getInvitations()):
-                annonces.append(annonce)
-                suite = 0
-            if suite:
-                for diplome in diplomes:
-                    if "etape*-*%s" % diplome in publics:
-                        annonces.append(annonce)
-                        suite = 0
-                        break
-
-                    #COD_ETP, COD_VRS_VET = diplome.rsplit("-", 1)
-                    inscription_pedago = portal_jalon_bdd.getInscriptionPedago(COD_ETU, diplome)
-                    if not inscription_pedago:
-                        inscription_pedago = portal_jalon_bdd.getUeEtape(diplome)
-                    for ue in inscription_pedago:
-                        if "ue*-*%s" % ue["COD_ELP"] in publics:
-                            annonces.append(annonce)
-                            suite = 0
-                            break
-                    if not suite:
-                        break
-                if suite:
-                    for groupe in groupes:
-                        if "groupe*-*%s" % groupe[0] in publics:
-                            annonces.append(annonce)
-                            break
-
-        annonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if annonces and all:
-            return {"listeAnnonces": annonces, "nbAnnonces": len(listeAnnonces)}
-        elif annonces:
-            return {"listeAnnonces": [annonces[0]], "nbAnnonces": len(listeAnnonces)}
-        else:
-            return {"listeAnnonces": [], "nbAnnonces": 0}
-
-    def getDicoForums(self, all=None):
-        #self.plone_log("getDicoForums")
-        listeForums = list(self.forum.objectValues())
-        listeForums.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if len(listeForums) > 5:
-            return {"nbForums":    len(listeForums),
-                    "listeForums": listeForums[:5]}
-        else:
-            return {"nbForums":    len(listeForums),
-                    "listeForums": listeForums}
-
-    def getAffCategorieCours(self):
-        LOG.info("----- getAffCategorieCours -----")
-        categories = self.getJalonCategories()
-        return categories[int(self.getCategorieCours())]["title"]
+    def getMySubSpaceFolder(self, user_id, folder_id, portal):
+        LOG.info("----- getMySubSpaceFolder -----")
+        return getattr(getattr(portal.Members, user_id), folder_id)
 
     def getCategorieCours(self):
         LOG.info("----- getCategorieCours -----")
@@ -507,34 +414,182 @@ class JalonCours(ATFolder):
         except:
             return 1
 
-    """
-    def getEtablissement(self):
-        #self.plone_log("getEtablissement")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return {"activer_etablissement": jalon_properties.getJalonProperty("activer_etablissement"),
-                "etablissement":         jalon_properties.getJalonProperty("etablissement")}
-    """
+    def getRole(self):
+        LOG.info("----- getRole -----")
+        roles = {"createur":  False,
+                 "auteur":    False,
+                 "coauteur":  False,
+                 "colecteur": False}
+        authMember = self.portal_membership.getAuthenticatedMember().getId()
+        if authMember == self.Creator():
+            roles["auteur"] = True
+        if authMember == self.getAuteurPrincipal():
+            roles["auteur"] = True
+        if authMember in self.getCoAuteurs():
+            roles["coauteur"] = True
+        if authMember in self.getCoLecteurs():
+            roles["colecteur"] = True
+        return roles
 
-    def getJalonCategories(self):
-        LOG.info("----- getJalonCategories -----")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return dict(jalon_properties.getCategorie())
+    #getSousObjet renvoie le sous-objet idElement
+    def getSousObjet(self, idElement):
+        LOG.info("----- getSousObjet -----")
+        if "*-*" in idElement:
+            idElement = idElement.split("*-*")[-1]
+        return getattr(self, idElement)
 
-    def getPropertiesCatiTunesU(self):
-        LOG.info("----- getPropertiesCatiTunesU -----")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return dict(jalon_properties.getPropertiesCatiTunesU())
+    #getTypeSousObjet renvoie le type du sous-objet idElement
+    def getTypeSousObjet(self, idElement):
+        LOG.info("----- getTypeSousObjet -----")
+        if "*-*" in idElement:
+            typeSousObjet = idElement.split("*-*")[0]
+        else:
+            typeSousObjet = idElement.split("-")[0]
+        return typeSousObjet
 
-    def getAffCatiTunesUCours(self):
-        LOG.info("----- getAffCatiTunesUCours -----")
-        jalon_properties = getToolByName(self, "portal_jalon_properties")
-        return jalon_properties.getAffCatiTunesUCours(self.getCatiTunesU())
+    def isPersonnel(self, user, mode_etudiant="false"):
+        LOG.info("----- isPersonnel -----")
+        if mode_etudiant == "true":
+            # isPersonnel = False (mode étudiant)
+            return False
+        if user.has_role("Manager"):
+            # isPersonnel = True (manager role)
+            return True
+        if user.has_role("Personnel") and self.isCoAuteurs(user.getId()):
+            # isPersonnel = True (Personnel & iscoAuteurs)
+            return True
+        return False
 
-    """
-    def getClefsDico(self, dico):
-        #self.plone_log("getClefsDico")
-        return jalon_utils.getClefsDico(dico)
-    """
+    def encodeUTF8(self, itemAEncoder):
+        LOG.info("----- encodeUTF8 -----")
+        return jalon_utils.encodeUTF8(itemAEncoder)
+
+    def envoyerMail(self, form):
+        LOG.info("----- envoyerMail -----")
+        jalon_utils.envoyerMail(form)
+
+    def envoyerMailErreur(self, form):
+        LOG.info("----- envoyerMailErreur -----")
+        jalon_utils.envoyerMailErreur(form)
+
+    def test(self, condition, valeurVrai, valeurFaux):
+        LOG.info("----- test -----")
+        return jalon_utils.test(condition, valeurVrai, valeurFaux)
+
+    def jalon_quote(self, encode):
+        LOG.info("----- jalon_quote -----")
+        return jalon_utils.jalon_quote(encode)
+
+    def jalon_unquote(self, decode):
+        LOG.info("----- jalon_unquote -----")
+        return jalon_utils.jalon_unquote(decode)
+
+    def getPhotoTrombi(self, login):
+        LOG.info("----- getPhotoTrombi -----")
+        return jalon_utils.getPhotoTrombi(login)
+
+    def retirerEspace(self, mot):
+        LOG.info("----- retirerEspace -----")
+        return jalon_utils.retirerEspace(mot)
+
+    def getBaseAnnuaire(self):
+        LOG.info("----- getBaseAnnuaire -----")
+        return jalon_utils.getBaseAnnuaire()
+
+    def getFicheAnnuaire(self, valeur, base=None):
+        LOG.info("----- getFicheAnnuaire -----")
+        return jalon_utils.getFicheAnnuaire(valeur, base)
+
+    def isLDAP(self):
+        LOG.info("----- isLDAP -----")
+        return jalon_utils.isLDAP()
+
+    def convertirDate(self, date):
+        LOG.info("----- convertirDate -----")
+        return jalon_utils.convertirDate(date)
+
+    def supprimerCaractereSpeciaux(self, chaine):
+        LOG.info("----- ----- supprimerCaractereSpeciaux -----")
+        return jalon_utils.supprimerCaractereSpeciaux(chaine)
+
+    def getShortText(self, text, limit=75):
+        LOG.info("----- ----- getShortText -----")
+        return jalon_utils.getShortText(text, limit)
+
+    #Suppression marquage HTML
+    def supprimerMarquageHTML(self, chaine):
+        return jalon_utils.supprimerMarquageHTML(chaine)
+
+    #--------------------------#
+    # Course action My Courses #
+    #--------------------------#
+    def getDataCourseFormAction(self, user_id, course_id):
+        LOG.info("----- getDataCourseFormAction -----")
+        return {"course_name":     self.getShortText(self.Title(), 80),
+                "is_course_owner": self.isCourseOwner(user_id)}
+
+    def modifyFavorite(self, user_id):
+        LOG.info("----- modifyFavorite -----")
+        subjects = list(self.Subject())
+        if not user_id in subjects:
+            subjects.append(user_id)
+            archives = list(self.getArchive())
+            if user_id in archives:
+                archives.remove(user_id)
+                self.setArchive(tuple(archives))
+        else:
+            subjects.remove(user_id)
+        self.setSubject(tuple(subjects))
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def modifyArchive(self, user_id):
+        LOG.info("----- modifyArchive -----")
+        archives = list(self.getArchive())
+        if not user_id in archives:
+            archives.append(user_id)
+            subjects = list(self.Subject())
+            if user_id in subjects:
+                subjects.remove(user_id)
+                self.setSubject(tuple(subjects))
+        else:
+            archives.remove(user_id)
+        self.setArchive(tuple(archives))
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    #----------------#
+    # Course Heading #
+    #----------------#
+    def getDescriptionCourte(self):
+        LOG.info("----- getDescriptionCourte -----")
+        description = self.Description()
+        if not description:
+            return {"link": False, "desc": "ce cours n'a pas encore de description."}
+        if len(description) > 100:
+            return {"link": True, "desc": self.getShortText(description, 100)}
+        return {"link": False, "desc": description}
+
+    def isCourseOwner(self, user_id):
+        LOG.info("----- isCourseOwner -----")
+        return True if self.aq_parent.getId() == user_id else False
+
+    def isAuteur(self, username):
+        LOG.info("----- isAuteur -----")
+        if username == self.Creator():
+            return 1
+        if username == self.getAuteurPrincipal():
+            return 1
+        return 0
+
+    def isAuteurs(self, username):
+        LOG.info("----- isAuteurs -----")
+        return self.isAuteur(username) or self.isCoAuteurs(username)
+
+    def isInscriptionsLibre(self):
+        LOG.info("----- isInscriptionsLibre -----")
+        if len(self.getInscriptionsLibre()) > 0:
+            return True
+        else:
+            return False
 
     def getCreateur(self):
         LOG.info("----- getCreateur -----")
@@ -632,46 +687,83 @@ class JalonCours(ATFolder):
         self.coAuteurs = tuple(auteurs)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def getCoLecteursCours(self):
-        LOG.info("----- getCoLecteursCours -----")
-        retour = []
-        for username in self.getCoLecteurs():
-            retour.append(self.getInfosMembre(username))
-        return retour
+    def setCoursePublicAccess(self, course_public_access):
+        LOG.info("----- setCoursePublicAccess -----")
+        if self.getAcces() != course_public_access:
+            portal = self.portal_url.getPortalObject()
+            portal_workflow = getToolByName(portal, "portal_workflow")
 
-    def addLecteurs(self, form):
-        LOG.info("----- addLecteurs -----")
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        lecteurs = list(self.getCoLecteurs())
-        usernames = form["username"].split(",")
-        if usernames != ['']:
-            for username in usernames:
-                if not username in lecteurs:
-                    lecteurs.append(username)
-                    infosMembre = self.getInfosMembre(username)
-                    self.envoyerMail({"a":       infosMembre["email"],
-                                      "objet":   "Vous avez été ajouté à un cours",
-                                      "message": message})
-            self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+            workflow_action = "submit"
+            state = "pending"
+            if course_public_access == "Public":
+                workflow_action = "publish"
+                state = "published"
+                court = self.getLienCourt()
+                if not court:
+                    dont_stop = 1
+                    while dont_stop:
+                        part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
+                        part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
+                        short = part1 + part2
+                        link_object = getattr(portal.public, short, None)
+                        if not link_object:
+                            dont_stop = 0
+                    portal.public.invokeFactory(type_name="Link", id=short)
+                    link_object = getattr(portal.public, short)
+                    link_object.setTitle(self.title_or_id())
+                    link_object.setRemoteUrl(self.absolute_url())
+                    portal_workflow.doActionFor(link_object, workflow_action, "jalon_workflow")
+                    link_object.reindexObject()
+                    self.setLienCourt(short)
 
-    def deleteLecteurs(self, form):
-        LOG.info("----- deleteLecteurs -----")
-        lecteurs = []
-        if "auteur-actu" in form:
-            lecteurs = form["auteur-actu"]
-        ancienLecteurs = set(self.getCoLecteurs())
-        supprLecteurs = ancienLecteurs.difference(set(lecteurs))
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-        for idMember in supprLecteurs:
-            infosMembre = self.getInfosMembre(idMember)
-            self.envoyerMail({"a":       infosMembre["email"],
-                              "objet":   "Vous avez été retiré d'un cours",
-                              "message": message})
-        self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+                for course_object in self.objectValues():
+                    if portal_workflow.getInfoFor(course_object, "review_state", wf_id="jalon_workflow") != state:
+                        portal_workflow.doActionFor(course_object, workflow_action, "jalon_workflow")
+                        # On va modifier l'etat de tous les elements contenus dans les activités du cours.
+                        # (mais cette étape est pour le moment inutile puisque les activités ne sont pas accessibles dans un cours Public)
+                        if course_object.meta_type in ["JalonBoiteDepot", "JalonCoursWims"]:
+                            relatedItems = course_object.getRelatedItems()
+                            for related in relatedItems:
+                                # On ne rend pas public les exercices WIMS. l'objet lui-même ne reste accessible que par son propriétaire.
+                                if related.meta_type != "JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
+                                    portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
+                for related in self.getRelatedItems():
+                    if portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
+                        portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
+            try:
+                portal_workflow.doActionFor(self, workflow_action, "jalon_workflow")
+            except:
+                pass
+        self.setAcces(course_public_access)
+
+    def isCoAuteurs(self, username):
+        LOG.info("----- isCoAuteurs -----")
+        u""" Détermine si l'utilisateur 'username' est un auteur ou co-auteur du cours."""
+        if self.isAuteur(username):
+            return True
+        if username in self.coAuteurs:
+            return True
+        # Dans le cas de l'admin, isCoAuteurs renvoi 0 aussi
+        LOG.info("----- isCoAuteurs = 0 (ni auteur, ni coAuteur)")
+        return 0
+
+    def isCoLecteurs(self, username):
+        LOG.info("----- isCoLecteurs -----")
+        return True if username in self.coLecteur else False
+
+    #------------#
+    # Course Map #
+    #------------#
+    def getProprietesVideo(self, id_video):
+        LOG.info("----- getProprietesVideo -----")
+        infos_element = self.getElementCours(id_video)
+        video_title = infos_element["titreElement"]
+        video_title_my_space = video_title
+        if "titreElementMonEspace" in infos_element:
+            video_title_my_space = infos_element["titreElementMonEspace"]
+        return {"video_title":          video_title,
+                "video_title_my_space": video_title_my_space,
+                "is_display_in_map":    "checked" if infos_element["complementElement"]["value"] else ""}
 
     def getCommentaireEpingler(self, idTester=None):
         LOG.info("----- getCommentaireEpingler -----")
@@ -685,245 +777,6 @@ class JalonCours(ATFolder):
 
         return ""
 
-    def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant):
-        #self.plone_log("getElementView")
-        return jalon_utils.getElementView(self, "Cours", idElement, createurElement, typeElement, indexElement, mode_etudiant)
-
-    """
-    def getElementsCours(self, tag):
-        #self.plone_log("getElementsCours")
-        return self.__getattribute__("get%s" % tag)()
-    """
-
-    def getDepots(self, idboite, authMember, personnel, request):
-        #self.plone_log("getDepots")
-        if "*-*"in idboite:
-            idboite = idboite.split("*-*")[-1]
-        return getattr(self, idboite).getDepots(authMember, personnel, request)
-
-    def getGloBib(self, glo_bib):
-        #self.plone_log("getGloBib")
-        dicoLettres = {}
-        if glo_bib == "glossaire":
-            elements = self.getGlossaire()
-        else:
-            elements = self.getBibliographie()
-        if elements:
-            infos_element = self.getElementCours()
-
-        portal_link = self.portal_url.getPortalObject().absolute_url()
-        for idElement in elements:
-            info_element = infos_element.get(idElement)
-            if info_element:
-                info_element["idElement"] = idElement
-                lettre = info_element["titreElement"][0].upper()
-                info_element["urlElement"] = "%s/Members/Externes/%s/%s" % (portal_link, idElement, info_element["createurElement"])
-                if not lettre in dicoLettres:
-                    dicoLettres[lettre] = [info_element]
-                else:
-                    dicoLettres[lettre].append(info_element)
-        return dicoLettres
-
-    def getInfosGroupe(self):
-        #self.plone_log("getInfosGroupe")
-        groupe = self.getGroupe()
-        return jalon_utils.getIndividus(list(groupe), "listdict")
-
-    def getInfosLibre(self):
-        #self.plone_log("getInfosLibre")
-        libre = self.getInscriptionsLibres()
-        return jalon_utils.getIndividus(list(libre), "listdict")
-
-    def getInfosInvitations(self):
-        #self.plone_log("getInfosInvitations")
-        invitations = self.getInvitations()
-        if not invitations:
-            return []
-        etudiants = []
-        portal_membership = getToolByName(self, "portal_membership")
-        for sesame in invitations:
-            nom = sesame
-            member = portal_membership.getMemberById(sesame)
-            if member:
-                nom = member.getProperty("fullname", sesame)
-            etudiants.append({"nom": nom, "email": sesame})
-        return etudiants
-
-    def getPublicsAnnonce(self):
-        #self.plone_log("getPublicsAnnonce")
-        res = self.getInfosListeAcces()
-        if self.getCoAuteurs():
-            res.append(["Tous les co-auteurs", "coauteurs", len(self.getCoAuteurs()), "coauteurs"])
-        if self.getCoLecteurs():
-            res.append(["Tous les co-lecteurs", "colecteurs", len(self.getCoLecteurs()), "colecteurs"])
-        return res
-
-    def getDescriptionCourte(self):
-        description = self.Description()
-        if not description:
-            return {"link": False, "desc": "ce cours n'a pas encore de description."}
-        if len(description) > 100:
-            return {"link": True, "desc": self.getShortText(description, 100)}
-        return {"link": False, "desc": description}
-
-    def getAffichageFormation(self):
-        listeFormations = self.getAffichageFormations()
-        nbEtuFormations = self.getNbEtuFormation(listeFormations)
-        return {"nbFormations": len(listeFormations),
-                "nbEtuFormations": nbEtuFormations}
-
-    def getAffichageFormations(self):
-        #self.plone_log("getAffichageFormation")
-        res = []
-        listeAcces = self.getListeAcces()
-        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-        for acces in listeAcces:
-            type, code = acces.split("*-*")
-            if type == "etape":
-                retour = portal_jalon_bdd.getInfosEtape(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type in ["ue", "uel"]:
-                retour = portal_jalon_bdd.getInfosELP2(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type == "groupe":
-                retour = portal_jalon_bdd.getInfosGPE(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            elem.append(type)
-            res.append(elem)
-        res.sort()
-        return res
-
-    def getNbEtuFormation(self, listeFormations):
-        #self.plone_log("getNbEtuFormation")
-        nbEtuFormations = 0
-        for formation in listeFormations:
-            nbEtuFormations = nbEtuFormations + int(formation[2])
-        return nbEtuFormations
-
-    def getAffichageInscriptionIndividuelle(self, typeAff):
-        #self.plone_log("getAffichageInscriptionIndividuelle")
-        res = []
-        if typeAff == "groupe":
-            groupe = self.getGroupe()
-            nbgroupe = 0
-            if groupe:
-                nbgroupe = len(groupe)
-            if nbgroupe > 0:
-                res.append([_(u"Étudiant(s) de l'université"), "perso", nbgroupe, "groupeperso"])
-        else:
-            invitations = self.getInvitations()
-            nbinvitations = 0
-            if invitations:
-                nbinvitations = len(invitations)
-            if nbinvitations > 0:
-                res.append([_(u"Étudiant(s) extérieur(s)"), "email", nbinvitations, "invitationsemail"])
-        return res
-
-    def getInfosListeAcces(self):
-        #self.plone_log("getInfosListeAcces")
-        res = []
-        listeAcces = self.getListeAcces()
-        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-        for acces in listeAcces:
-            type, code = acces.split("*-*")
-            if type == "etape":
-                retour = portal_jalon_bdd.getInfosEtape(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type in ["ue", "uel"]:
-                retour = portal_jalon_bdd.getInfosELP2(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type == "groupe":
-                retour = portal_jalon_bdd.getInfosGPE(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            elem.append(type)
-            res.append(elem)
-        groupe = self.getGroupe()
-        if groupe:
-            res.append(["Invitations individuelles : étudiant(s) de l'université", "perso", len(groupe), "groupeperso"])
-        invitations = self.getInvitations()
-        if invitations:
-            res.append(["Invitations individuelles : étudiant(s) hors université", "email", len(invitations), "invitationsemail"])
-        return res
-
-    # getInfosMembre recupere les infos sur les personnes.
-    def getInfosMembre(self, username):
-        #self.plone_log("getInfosMembre")
-        return jalon_utils.getInfosMembre(username)
-
-    """
-    def getKeyElementsCours(self, tag=None, idboite=None, menu=None):
-        #self.plone_log("getKeyElementsCours")
-        liste = []
-        if tag == "Glossaire":
-            glossaire = self.getGlossaireCours()
-            for lettre in glossaire:
-                liste.extend(glossaire[lettre])
-            liste.sort()
-            return liste
-        if tag in ["AutoEvaluation", "BoiteDepot", "Examen"]:
-            idBoite = idboite.split("*-*")[-1]
-            boite = getattr(self, idBoite)
-            liste = []
-            for element in boite.getListeAttribut(menu):
-                liste.append("%s*-*%s" % (tag, element.split("*-*")[-1]))
-            return liste
-        return self.getElementsCours(tag)
-    """
-
-    def getLastLogin(self):
-        #self.plone_log("getLastLogin")
-        member = self.portal_membership.getAuthenticatedMember()
-        last_login = member.getProperty('last_login_time', None)
-        if isinstance(last_login, basestring):
-            last_login = DateTime(last_login)
-        return last_login
-
-    def getLocaleDate(self, date, format="%d/%m/%Y"):
-        #self.plone_log("getLocaleDate : %s" % date)
-        return jalon_utils.getLocaleDate(date, format)
-
-    def getMotsClefs(self, search, objet):
-        #self.plone_log("getMotsClefs")
-        mots = []
-        catalog = getToolByName(self, 'portal_catalog')
-        keywords = list(catalog.uniqueValuesFor("Subject"))
-        for mot in keywords:
-            if search in mot:
-                mots.append(mot)
-        mots.sort()
-        return json.dumps(dict(keywords=mots))
-
-    def getPlanPlat(self, liste=None):
-        #self.plone_log("getPlanPlat")
-        plat = []
-        if liste is None:
-            liste = list(self.plan)
-            if not liste:
-                return []
-        for titre in liste:
-            plat.append(titre["idElement"])
-            if "listeElement" in titre:
-                plat.extend(self.getPlanPlat(titre["listeElement"]))
-        return plat
-
     def getDisplayCourseMapAttributes(self, user):
         LOG.info("----- getDisplayCourseMapAttributes -----")
         return {"is_personnel": self.isPersonnel(user),
@@ -935,6 +788,7 @@ class JalonCours(ATFolder):
         return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, portal, True)
 
     def getCourseMapItems(self, course_map_items_list, user_id, is_personnel, course_actuality_list, portal, is_map_top_level=False):
+        LOG.info("----- getCourseMapItems -----")
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
@@ -945,7 +799,6 @@ class JalonCours(ATFolder):
 
         index = 0
         course_map_list = []
-        course_link = self.absolute_url()
         for course_map_item in course_map_items_list:
             index = index + 1
             item_properties = self.getElementCours(course_map_item["idElement"])
@@ -968,7 +821,10 @@ class JalonCours(ATFolder):
                     item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
                 else:
-                    item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
+                    if item_properties["typeElement"] in ["JalonBoiteDepot"]:
+                        item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
+                    else:
+                        item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
 
                 item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
                 item["course_map_sub_items_list"] = course_map_sub_items_list
@@ -985,7 +841,7 @@ class JalonCours(ATFolder):
                         item["item_read_css"] = "coche right"
                         item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
                 else:
-                    item["item_actions"] = self.getItemActions(course_map_item["idElement"], item_properties, item["is_display_item_bool"], course_link)
+                    item["item_actions"] = self.getItemActions(item_properties, item["is_display_item_bool"])
 
                 item["is_item_jalonner"] = False
                 item["item_jalonner_comment"] = ""
@@ -1001,7 +857,12 @@ class JalonCours(ATFolder):
                 "ol_css_class":           ol_css_class,
                 "course_map_items_list":  course_map_list}
 
+    def isAfficherElement(self, affElement, masquerElement):
+        LOG.info("----- isAfficherElement -----")
+        return jalon_utils.isAfficherElement(affElement, masquerElement)
+
     def getCourseMapItemJalonner(self):
+        LOG.info("----- getCourseMapItemJalonner -----")
         item_jalonner = {"item_jalonner_id":      "",
                          "item_jalonner_comment": ""}
         if len(self.getAvancementPlan()):
@@ -1013,25 +874,9 @@ class JalonCours(ATFolder):
                 item_jalonner["item_jalonner_comment"] = "Élément jalonné par l&rsquo;enseignant"
         return item_jalonner
 
-    def getItemActions(self, item_id, item_properties, is_display_item_bool, course_link):
-        item_actions = [{"item_action_link": "%s/course_display_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-eye fa-fw",
-                         "item_action_name": "Afficher"},
-                        {"item_action_link": "%s/course_hide_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-eye-slash fa-fw",
-                         "item_action_name": "Masquer"},
-                        {"item_action_link": "%s/course_edit_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-pencil fa-fw",
-                         "item_action_name": "Modifier"},
-                        {"item_action_link": "%s/course_jalonner_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-hand-o-left fa-fw",
-                         "item_action_name": "Jalonner"},
-                        {"item_action_link": "%s/course_detach_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-chain-broken fa-fw",
-                         "item_action_name": "Détacher"},
-                        {"item_action_link": "%s/course_delete_item_form?item_id=%s" % (course_link, item_id),
-                         "item_action_icon": "fa fa-trash-o fa-fw",
-                         "item_action_name": "Supprimer"}]
+    def getItemActions(self, item_properties, is_display_item_bool):
+        LOG.info("----- getItemActions -----")
+        item_actions = self._item_actions[:]
 
         if is_display_item_bool:
             del item_actions[0]
@@ -1049,333 +894,33 @@ class JalonCours(ATFolder):
         return item_actions
 
     def getCourseMapForm(self):
-        #LOG.info("----- getCourseMapForm -----")
+        LOG.info("----- getCourseMapForm -----")
         return self.restrictedTraverse("cours/%s/%s/course_map_form" % (self.aq_parent.getId(), self.getId()))()
 
-    def getCourseAddActivityForm(self, activity_type):
-        #LOG.info("----- getCourseAddActivityForm -----")
-        activity_dict = {"1": "Boite de dépots",
-                         "2": "Auto-évaluation WIMS",
-                         "3": "Examen WIMS"}
-        return activity_dict[activity_type]
+    def getCourseMapList(self, liste=None):
+        LOG.info("----- getCourseMapList -----")
+        plat = []
+        if liste is None:
+            liste = list(self.plan)
+            if not liste:
+                return []
+        for titre in liste:
+            plat.append(titre["idElement"])
+            if "listeElement" in titre:
+                plat.extend(self.getCourseMapList(titre["listeElement"]))
+        return plat
 
-    def getPlanCours(self, personnel=False, authMember=None, listeActualites=None):
-        #self.plone_log("----- getPlanCours (Start) -----")
-        #self.plone_log("***** listeActualites : %s" % str(listeActualites))
-        LOG.info(self.getPlan())
-        html = []
-        i = 0
-        if listeActualites is None:
-            #self.plone_log("***** Not listeActualites")
-            listeActualites = self.getActualitesCours(True)["listeActu"]
-        for chapitre in self.plan:
-            element = self.getPlanChapitre(chapitre, i, personnel, authMember, listeActualites)
-            if element:
-                html.append(element)
-            i = i + 1
-        #self.plone_log("----- getPlanCours (End) -----")
-        return "\n".join(html)
-
-    def setPlanCours(self, plan):
-        #self.plone_log("setPlanCours")
-        self.plan = tuple(plan)
-
-    def getPlanChapitre(self, element, index, personnel, authMember, listeActualites):
-        #self.plone_log("getPlanChapitre")
-        idEpingler = commentaireEpingler = ""
-        if len(self.getAvancementPlan()):
-            idEpingler = self.getAvancementPlan()[0]
-            try:
-                commentaireEpingler = self.getAvancementPlan()[1]
-            except:
-                commentaireEpingler = "Élément signalé par l&rsquo;enseignant"
-
-        infos_element = self.getElementCours(element["idElement"])
-        if infos_element:
-            nouveau = ""
-            #si la ressource est nouvelle dans le cours
-            if authMember and self.isNouveau(infos_element, listeActualites):
-                nouveau = "<i class='fa fa-bell-o fa-fw fa-lg no-pad right'></i>"
-            isTitre = self.isTitre(infos_element["typeElement"])
-            isAffElement = self.isAfficherElement(infos_element["affElement"], infos_element["masquerElement"])
-
-            categorieElement = ""
-            if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
-                categorieElement = "Classement"
-            if infos_element["typeElement"] in ["File", "Image", "Page", "Lien web", "Lecteur exportable", "Ressource bibliographique", "Glossaire", "Presentations sonorisees", "Webconference", "Catalogue BU", "Video", "VOD"]:
-                categorieElement = "Mon_Espace"
-            if infos_element["typeElement"] in ["AutoEvaluation", "Examen", "BoiteDepot", "Forum", "Glossaire", "SalleVirtuelle"]:
-                categorieElement = "Activite"
-
-            tag = 'span' if isTitre["condition"] else 'a'
-            html = []
-            html.append("<li id=\"%s-%s\" class=\"sortable %s\">" % (isTitre["class"], element["idElement"], isTitre["class"]))
-            if personnel or isAffElement["val"] == 1:
-
-                if authMember and not personnel:
-                    # Version lien
-                    if infos_element["typeElement"] != "Titre":
-                        if "marque" in infos_element and authMember in infos_element["marque"]:
-                            html.append("<a class='right' href='%s/marquer_element_script?element=%s&amp;marquer=non'>" % (self.absolute_url(), element["idElement"]))
-                            html.append("<i class='fa fa-check-square-o fa-fw fa-lg no-pad'></i>")
-                            html.append("</a>")
-                        else:
-                            html.append("<a class='right' href='%s/marquer_element_script?element=%s&amp;marquer=oui'>" % (self.absolute_url(), element["idElement"]))
-                            html.append("<i class='fa fa-square-o fa-fw fa-lg no-pad'></i>")
-                            html.append("</a>")
-
-                if personnel:
-                    html.append("""
-                                <a class="dropdown" data-dropdown="drop-%s" data-options="align:left">
-                                    <i class="fa fa-cog fa-fw no-pad"></i>
-                                </a>
-                                <ul id="drop-%s" class="f-dropdown" data-dropdown-content="data-dropdown-content">
-                                """ % (index, index))
-                    if isAffElement["val"] == 0:
-                        epinglerPos = "non"
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;page=cours_plan_view&amp;section=plan&amp;tag=aucun&amp;idElement=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-eye fa-fw"></i>Afficher</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"]))
-                    else:
-                        epinglerPos = "oui"
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;page=cours_plan_view&amp;section=plan&amp;tag=aucun&amp;idElement=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-eye-slash fa-fw"></i>Masquer</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"]))
-
-                    html.append("""<li>
-                                        <a href="%s/folder_form?macro=macro_cours&amp;formulaire=epingler-element&amp;idElement=%s&amp;epinglerPos=%s"
-                                           data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-hand-o-left fa-fw"></i>Jalonner</a>
-                                   </li>""" % (self.absolute_url(), element["idElement"], epinglerPos))
-                    if element["idElement"] == idEpingler:
-                        html.append("""<li>
-                                            <a href="%s/folder_form?macro=macro_cours&amp;formulaire=desepingler-element&amp;idElement=%s"
-                                               data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-hand-o-right fa-fw"></i>Déjalonner</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"]))
-                    if infos_element["typeElement"] == "BoiteDepot":
-                        idboite = element["idElement"].split("*-*")[-1]
-                        html.append("""<li>
-                                           <a href="%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;section=boite&amp;page=cours_plan_view&amp;idboite=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-cubes fa-fw"></i>Propriétés</a>
-                                       </li>""" % (self.absolute_url(), idboite, idboite))
-                        html.append("""<li>
-                                           <a href="%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;section=boite&amp;page=cours_plan_view&amp;idboite=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-calendar-o fa-fw"></i>Dates</a>
-                                       </li>""" % (self.absolute_url(), idboite, idboite))
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=%s&amp;repertoire=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-trash-o fa-fw"></i>Supprimer</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"], self.verifType(infos_element["typeElement"])))
-                    if infos_element["typeElement"] in ["Video", "VOD"]:
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_cours_video&amp;formulaire=modifier-video_infos&amp;idElement=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-cubes fa-fw"></i>Propriétés</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"]))
-                    if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_cours_plan&amp;formulaire=modifier-plan&amp;idElement=%s&amp;typeElement=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-pencil fa-fw"></i>Modifier</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"], infos_element["typeElement"]))
-
-                    if infos_element["typeElement"] in ["AutoEvaluation", "Examen"]:
-                        idActivite = element["idElement"].split("*-*")[-1]
-                        html.append("""<li>
-                                           <a href="%s/%s/folder_form?macro=macro_form&amp;formulaire=modifier-activite&amp;page=../&amp;idActivite=%s"
-                                              data-reveal-id="reveal-main-large" data-reveal-ajax="true"><i class="fa fa-pencil fa-fw"></i>Modifier</a>
-                                       </li>""" % (self.absolute_url(), idActivite, idActivite))
-
-                    if infos_element["typeElement"] in ["Titre", "TexteLibre"]:
-                        html.append("""<li>
-                                           <a href="%s/cours_retirer_view?idElement=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-trash-o fa-fw"></i>Supprimer</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"]))
-                    elif infos_element["typeElement"] not in ["AutoEvaluation", "Examen", "Glossaire", "BoiteDepot"]:
-                        html.append("""<li>
-                                           <a href="%s/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=%s&amp;repertoire=%s"
-                                              data-reveal-id="reveal-main" data-reveal-ajax="true"><i class="fa fa-chain-broken fa-fw"></i>Détacher</a>
-                                       </li>""" % (self.absolute_url(), element["idElement"], self.verifType(infos_element["typeElement"])))
-                    html.append("</ul>")
-                    if isAffElement["icon2"]:
-                        html.append("<i class='fa %s fa-fw fa-lg no-pad right' data-tooltip title='%s'></i>" % (isAffElement["icon2"], isAffElement["legende"]))
-                    if isAffElement["icon"]:
-                        html.append("<i class='fa %s fa-fw fa-lg no-pad right' data-tooltip title='masqué'></i>" % (isAffElement["icon"]))
-
-                if nouveau:
-                    html.append(nouveau)
-                if element["idElement"] == idEpingler:
-                    if commentaireEpingler:
-                        commentaireEpingler = " data-tooltip title='%s'" % commentaireEpingler.replace("'", "’")
-                    html.append("<i class='fa fa-hand-o-left fa-lg fa-fw no-pad jalonner'%s></i>" % commentaireEpingler)
-
-                html.append("<span class='typeElement type_%s type_%s'>" % (infos_element["typeElement"].replace(" ", ""), categorieElement))
-
-                if tag == "a":
-                    html_etudiant = ""
-                    if not personnel:
-                        html_etudiant = "&amp;mode_etudiant=true"
-                    html.append("""<a href="%s/cours_element_view?idElement=%s&amp;createurElement=%s&amp;typeElement=%s&amp;indexElement=%s%s"
-                                       title="Voir cet élément du plan"
-                                       data-reveal-id="reveal-main" data-reveal-ajax="true"
-                                       class="typeElementTitre">%s""" % (self.absolute_url(), element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, html_etudiant, infos_element["titreElement"]))
-                    if "complementElement" in infos_element and infos_element["complementElement"]["value"]:
-                        html.append("<div class=\"pod_thumb\"><img src=\"%s\" /></div>" % infos_element["complementElement"]["image"])
-
-                    html.append("</a>")
-                    # TODO : troncature coté serveur -> refonte du JS associé
-                    #html.append("   <%s href='./cours_element_view?idElement=%s&createurElement=%s&typeElement=%s&indexElement=%s&requete_ajax=0' class='typeElementTitre'>%s</%s>" % (tag, element["idElement"], infos_element["createurElement"], self.verifType(infos_element["typeElement"]), index, self.getShortText( infos_element["titreElement"] ), tag))
-                else:
-                    html.append("<%s class='typeElementTitre'>%s" % (tag, infos_element["titreElement"]))
-                    if infos_element["typeElement"] == "Titre" and personnel and len(element["listeElement"]) == 0:
-                        html.append('<span class="title-legend"><i class="fa fa-info-circle fa-fw"></i>Faites glisser des éléments du plan dans le titre…</span>')
-                    html.append("</%s>" % tag)
-
-                html.append("</span>")
-                if isTitre["class"] == "chapitre":
-                    html.append("<ol>")
-                    i = 0
-                    for elem in element["listeElement"]:
-                        index = "%s_%s" % (index, i)
-                        i = i + 1
-                        sous_elem = self.getPlanChapitre(elem, index, personnel, authMember, listeActualites)
-                        if sous_elem:
-                            html.append(sous_elem)
-                    html.append("</ol>")
-                html.append("</li>")
-                return "\n".join(html)
-            return None
-        else:
-            return None
-
-    """
-    def getPlanRSS(self, personnel=False):
-        #self.plone_log("getPlanRSS")
-        rss = []
-        idElements = self.getPlanPlat()
-        for idElement in idElements:
-            infos_element = self.getElementCours(idElement)
-            if infos_element:
-                isAffElement = self.isAfficherElement(infos_element["affElement"], infos_element["masquerElement"])
-                if personnel or not isAffElement["val"] == 0:
-                    if infos_element["typeElement"] in ["File"]:
-                        element = self.getCoursElementRSS(idElement, infos_element["createurElement"])
-                        if element:
-                            #infos = dict(infos_element.items() + element.items())
-                            element["affElement"] = infos_element["affElement"]
-                            rss.append(element)
-        return rss
-    """
-
-    """
-    def getCoursElementRSS(self, idElement, createurElement):
-        #self.plone_log("getCoursElementRSS")
-        portal = self.portal_url.getPortalObject()
-        if "*-*" in idElement:
-            idElement = idElement.replace("*-*", ".")
-        home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
-        if home:
-            element = getattr(home, idElement, None)
-            if element:
-                mime = element.getContentType()
-                if mime in ['audio/mpeg', 'audio/x-m4a', 'video/mp4', 'video/x-m4v', 'video/quicktime', 'application/pdf', 'document/x-epub']:
-                    return {
-                        "idElement": idElement,
-                        "titreElement": element.Title(),
-                        "descriptionElement": element.Description(),
-                        "urlElement": element.absolute_url(),
-                        "mimeElement": mime,
-                        "poidsElement": element.get_size(),
-                    }
-        return None
-    """
-
-    """
-    def getCategorieiTunesU(self):
-        #self.plone_log("getCategorieiTunesU")
-        icon = 'jalon'
-
-        jalon_properties = getToolByName(self, 'portal_jalon_properties')
-        dicoLibCatITunesU = jalon_properties.getJalonProperty("dicoLibCatITunesU")
-        idCatiTunesU = self.getCatiTunesU()
-        try:
-            main_category = dicoLibCatITunesU[idCatiTunesU[:3]]
-            sub_category = dicoLibCatITunesU[idCatiTunesU]
-
-            return {'main_category': main_category,
-                    'sub_category':  sub_category,
-                    'icon':          'http://itunesu.unice.fr/icones/%s.png' % icon}
-        except:
-            return None
-    """
-
-    def getRechercheAcces(self):
-        LOG.info("----- getRechercheAcces -----")
-        acces = list(self.getListeAcces())
-        groupe = self.getGroupe()
-        if groupe:
-            acces.extend(list(groupe))
-        invitations = self.getInvitations()
-        if invitations:
-            acces.extend(list(invitations))
-        inscriptionsLibres = self.getInscriptionsLibres()
-        if inscriptionsLibres:
-            acces.extend(list(inscriptionsLibres))
-        return tuple(acces)
-
-    def getRole(self):
-        LOG.info("----- getRole -----")
-        roles = {"createur":  False,
-                 "auteur":    False,
-                 "coauteur":  False,
-                 "colecteur": False}
-        authMember = self.portal_membership.getAuthenticatedMember().getId()
-        if authMember == self.Creator():
-            roles["auteur"] = True
-        if authMember == self.getAuteurPrincipal():
-            roles["auteur"] = True
-        if authMember in self.getCoAuteurs():
-            roles["coauteur"] = True
-        if authMember in self.getCoLecteurs():
-            roles["colecteur"] = True
-        return roles
-
-    """
-    def getRoleCat(self):
-        #self.plone_log("getRoleCat")
-        return {"auteur":    [self.Creator(), self.getAuteurPrincipal()],
-                "coauteur":  self.getCoAuteurs(),
-                "colecteur": self.getCoLecteurs()
-                }
-    """
-
-    #getSousObjet renvoie le sous-objet idElement
-    def getSousObjet(self, idElement):
-        LOG.info("----- getSousObjet -----")
-        if "*-*" in idElement:
-            idElement = idElement.split("*-*")[-1]
-        return getattr(self, idElement)
-
-    #getTypeSousObjet renvoie le type du sous-objet idElement
-    def getTypeSousObjet(self, idElement):
-        LOG.info("----- getTypeSousObjet -----")
-        if "*-*" in idElement:
-            typeSousObjet = idElement.split("*-*")[0]
-        else:
-            typeSousObjet = idElement.split("-")[0]
-        return typeSousObjet
-
-    """
-    def getValAcces(self):
-        #self.plone_log("getValAcces")
-        acces = self.getAcces()
-        if acces == u"Privé".encode("utf-8"):
-            return 0
-        if acces == u"Aux étudiants".encode("utf-8"):
+    def isInCourseMap(self, idElement, listeElement=None):
+        LOG.info("----- getCourseMapList -----")
+        if not listeElement:
+            listeElement = self.getCourseMapList()
+        if idElement in listeElement:
             return 1
-        if acces == u"Public".encode("utf-8"):
-            return 2
         return 0
-    """
+
+    def getCourseAddActivityForm(self, activity_type):
+        LOG.info("----- getCourseAddActivityForm -----")
+        return self._activity_dict[activity_type]["activity_title"]
 
     def getUrlWebconference(self, url):
         LOG.info("----- getUrlWebconference -----")
@@ -1448,12 +993,891 @@ class JalonCours(ATFolder):
                 return self.getUrlWebconference(reunion['url'])
         return ""
 
-    """
-    def setAccesApogee(self, elements):
-        #self.plone_log("setAccesApogee")
-        self.listeAcces = tuple(set(elements))
+    def activerWebconference(self, idwebconference):
+        LOG.info("----- activerWebconference -----")
+        webconferences = list(self.webconferences)
+        if not idwebconference in webconferences:
+            webconferences.append(idwebconference)
+        else:
+            webconferences.remove(idwebconference)
+        self.webconferences = tuple(webconferences)
+
+    def setLecture(self, lu, idElement, authMember):
+        LOG.info("----- setLecture -----")
+        dico = self.getElementCours(idElement)
+        if not self.isAfficherElement(dico["affElement"], dico["masquerElement"])["val"]:
+            return None
+        if lu == 'true':
+            if "lecture" in dico and not authMember in dico["lecture"]:
+                dico["lecture"].append(authMember)
+            else:
+                dico["lecture"] = [authMember]
+
+            if dico["typeElement"] == "Titre":
+                for element in self.getEnfantPlanElement(idElement):
+                        self.setLecture(lu, element["idElement"], authMember)
+        else:
+            if authMember in dico["lecture"]:
+                dico["lecture"].remove(authMember)
+        self._elements_cours[idElement] = dico
+        self.setElementsCours(self._elements_cours)
+
+    def marquerElement(self, idElement, marquer=None):
+        LOG.info("----- marquerElement -----")
+        dico = self.getElementCours(idElement)
+        id_auth_member = self.portal_membership.getAuthenticatedMember().getId()
+        if "marque" in dico:
+            if not id_auth_member in dico["marque"]:
+                dico["marque"].append(id_auth_member)
+            else:
+                dico["marque"].remove(id_auth_member)
+        else:
+            dico["marque"] = [id_auth_member]
+        self._elements_cours[idElement] = dico
+        self.setElementsCours(self._elements_cours)
+
+    def afficherRessource(self, idElement, dateAffichage, attribut, chapitre=None):
+        LOG.info("----- afficherRessource -----")
+        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        dico = self.getElementCours(idElement)
+        if dico:
+            rep = {"Image":                     "Fichiers",
+                   "File":                      "Fichiers",
+                   "Lien web":                  "Externes",
+                   "Lecteur exportable":        "Externes",
+                   "Reference bibliographique": "Externes",
+                   "Glossaire":                 "Glossaire",
+                   "Webconference":             "Webconference",
+                   "Presentations sonorisees":  "Sonorisation"}
+            if dico["typeElement"] in rep.keys():
+                portal = self.portal_url.getPortalObject()
+                try:
+                    objet = getattr(getattr(getattr(getattr(portal, "Members"), dico["createurElement"]), rep[dico["typeElement"]]), idElement.replace("*-*", "."))
+                except:
+                    return None
+                portal_workflow = getToolByName(portal, "portal_workflow")
+                cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
+                objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
+                if attribut == "affElement" and cours_state != objet_state and cours_state == "published":
+                    portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
+
+            # Cas des activités
+            if dico["typeElement"] in ["AutoEvaluation", "BoiteDepot", "Examen", "Forum"]:
+                obj = self.getSousObjet(idElement)
+                resultat_affichage = obj.afficherRessource(idElement, dateAffichage, attribut)
+                if resultat_affichage:
+                    # resultat_affichage["val"] indique "False" si l'affichage n'a pas été fait.
+                    if not resultat_affichage["val"]:
+                        # resultat_affichage["reason"] peut indiquer la raison pour laquelle l'affichage est refusé.
+                        return resultat_affichage
+
+            descriptionElement = ""
+            dico[attribut] = dateAffichage
+            if attribut == "affElement":
+                dico["masquerElement"] = ""
+                descriptionElement = "dispo"
+            self._elements_cours[idElement] = dico
+            self.setElementsCours(self._elements_cours)
+
+            isNotSetActu = True
+            if attribut == "masquerElement":
+                self.delActu(idElement)
+                isNotSetActu = False
+
+            # Quand on affiche un element directement, on l'ajoute aux actus du cours.
+            if descriptionElement and not chapitre:
+                actualites = list(self.getActualites())
+                dicoActu = {"reference":      idElement,
+                            "dateActivation": dateAffichage,
+                            "code":           descriptionElement,
+                            "acces":          ["auteurs", "etudiants"]
+                            }
+                if (actualites and not dicoActu in actualites) or not actualites:
+                    self.setActuCours(dicoActu)
+                    isNotSetActu = False
+            if isNotSetActu:
+                self.setProperties({"DateDerniereModif": DateTime()})
+
+    # Affiche (ou masque) un chapitre du cours, ainsi que tout son contenu
+    def afficherRessourceChapitre(self, idElement, dateAffichage, attribut, listeElement=None):
+        LOG.info("----- afficherRessourceChapitre -----")
+        descriptionElement = ""
+        #attribut = masquerElement ou affElement
+        if attribut == "affElement":
+            descriptionElement = "chapdispo"
+
+        # lors d'un affichage, on ajoute l'actions aux actus du cours
+        if descriptionElement:
+            actualites = list(self.getActualites())
+            dicoActu = {"reference":      idElement,
+                        "dateActivation": dateAffichage,
+                        "code":           descriptionElement,
+                        "nb":             0,
+                        "dateDepot":      None,
+                        "acces":          ["auteurs", "etudiants"]
+                        }
+            if not actualites:
+                self.setActuCours(dicoActu)
+            elif dicoActu not in actualites:
+                self.setActuCours(dicoActu)
+
+        if listeElement is None:
+            listeElement = list(self.getPlan())
+
+        for element in listeElement:
+            if element["idElement"] == idElement or idElement == "all":
+                # On commence par afficher le chapitre lui-même
+                self.afficherRessource(element["idElement"], dateAffichage, attribut, "chapitre")
+                if "listeElement" in element:
+                    for souselem in element["listeElement"]:
+                        #Puis on affiche tous les elements du chapitre
+                        self.afficherRessource(souselem["idElement"], dateAffichage, attribut, "chapitre")
+                        if "listeElement" in souselem:
+                            # Si un des éléments est un sous-chapitre, on affiche son contenu recursivement.
+                            self.afficherRessourceChapitre("all", dateAffichage, attribut, souselem["listeElement"])
+                #Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
+                if element["idElement"] == idElement:
+                    break
+            elif "listeElement" in element:
+                self.afficherRessourceChapitre(idElement, dateAffichage, attribut, element["listeElement"])
+
+    # Affiche un chapitre du cours et ses parents jusqu'à atteindre la racine
+    def afficherChapitresParent(self, idElement, dateAffichage):
+        LOG.info("----- afficherChapitresParent -----")
+        dicoActu = {"reference":      idElement,
+                    "dateActivation": dateAffichage,
+                    "code":           "dispo",
+                    "nb":             0,
+                    "dateDepot":      None,
+                    "acces":          ["auteurs", "etudiants"]
+                    }
+        actualites = list(self.getActualites())
+        if not actualites:
+            self.setActuCours(dicoActu)
+        elif dicoActu not in actualites:
+            self.setActuCours(dicoActu)
+
+        dico = self.getElementCours(idElement)
+        dico["affElement"] = dateAffichage
+        dico["masquerElement"] = ""
+        self._elements_cours[idElement] = dico
+        self.setElementsCours(self._elements_cours)
+
+        parent = self.getParentPlanElement(idElement, 'racine', '')
+        if parent["idElement"] != "racine":
+            self.afficherChapitresParent(parent["idElement"], dateAffichage)
+        else:
+            idElement = "racine"
+
+    def getParentPlanElement(self, idElement, idParent, listeElement):
+        LOG.info("----- getParentPlanElement -----")
+        if idParent == "racine":
+            listeElement = self.plan
+        LOG.info("***** listeElement : %s" % str(listeElement))
+        for element in listeElement:
+            if idElement == element["idElement"]:
+                if idParent == "racine":
+                    return {"idElement": "racine", "affElement": "", "masquerElement": ""}
+                else:
+                    dico = dict(self.getElementCours(idParent))
+                    dico["idElement"] = idParent
+                    return dico
+            elif "listeElement" in element:
+                retour = self.getParentPlanElement(idElement, element["idElement"], element["listeElement"])
+                if retour:
+                    return retour
+        return None
+
+    def getEnfantPlanElement(self, idElement, listeElement=None):
+        LOG.info("----- getEnfantPlanElement -----")
+        if listeElement is None:
+            listeElement = self.plan
+        for element in listeElement:
+            if element["idElement"] == idElement and "listeElement" in element:
+                return element["listeElement"]
+            elif "listeElement" in element:
+                retour = self.getEnfantPlanElement(idElement, element["listeElement"])
+                if retour:
+                    return retour
+        return None
+
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        LOG.info("----- addMySpaceItem -----")
+        item_id_no_dot = item_id.replace(".", "*-*")
+        if self.isInCourseMap(item_id_no_dot):
+            return None
+
+        item_object = getattr(folder_object, item_id)
+
+        if display_item:
+            cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
+            if cours_state == "published":
+                objet_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
+                if cours_state != objet_state:
+                    portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
+
+        item_object_related = item_object.getRelatedItems()
+        if not self in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+
+        course_related = self.getRelatedItems()
+        if not item_object in course_related:
+            course_related.append(item_object)
+            self.setRelatedItems(course_related)
+
+        complement_element = None
+        if item_type in ["Video", "VOD"]:
+            complement_element = {"value":  display_in_plan,
+                                  "auteur": item_object.getVideoauteurname(),
+                                  "image":  item_object.getVideothumbnail()}
+
+        self.addItemInCourseMap(item_id_no_dot, map_position)
+        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+
+    def addItemInCourseMap(self, item_id, map_position):
+        LOG.info("----- addItemInCourseMap -----")
+        course_map = list(self.getPlan())
+
+        item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": item_id}
+
+        if map_position == "debut_racine":
+            course_map.insert(0, item_properties)
+        elif map_position == "fin_racine":
+            course_map.append(item_properties)
+        else:
+            course_title_list = map_position.split("*-*")
+            self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
+
+        self.plan = tuple(course_map)
+
+    def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
+        LOG.info("----- setCourseMapPosition -----")
+        if len(course_title_list) > 1:
+            for item in items_list:
+                if item["idElement"] == course_title_list[0]:
+                    self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
+        else:
+            for item in items_list:
+                if item["idElement"] == course_title_list[0]:
+                    item["listeElement"].append(item_properties)
+                    break
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        LOG.info("----- addItemProperty -----")
+        parent = self.getParentPlanElement(item_id, 'racine', '')
+        LOG.info("***** parent : %s" % str(parent))
+        if parent and parent['idElement'] != 'racine':
+            is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
+            LOG.info("***** is_display_parent : %s" % str(is_display_parent))
+            if not is_display_parent['val']:
+                display_item = ""
+
+        items_properties = self.getElementCours()
+        if not item_id in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+            if display_item:
+                dicoActu = {"reference":      item_id,
+                            "code":           "dispo",
+                            "dateActivation": display_item}
+                self.setActuCours(dicoActu)
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            self.setElementsCours(items_properties)
+
+    def addCourseActivity(self, user_id, activity_type, activity_title, activity_description, map_position):
+        LOG.info("----- addCourseActivity -----")
+        activity_dict = self._activity_dict[activity_type]
+        activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
+
+        activity = getattr(self, activity_id)
+        activity.setProperties({"Title":       activity_title,
+                                "Description": activity_description})
+
+        self.addItemInCourseMap(activity_id, map_position)
+        self.addItemProperty(activity_id, activity_dict["activity_portal_type"], activity_title, user_id, False, None)
+
+    def detacherElement(self, ressource, createur, repertoire):
+        LOG.info("----- detacherElement -----")
+        dicoRep = {"Image":                    "Fichiers",
+                   "File":                     "Fichiers",
+                   "Page":                     "Fichiers",
+                   "Lienweb":                  "Externes",
+                   "Lecteurexportable":        "Externes",
+                   "Referencebibliographique": "Externes",
+                   "CatalogueBU":              "Externes",
+                   "Catalogue BU":             "Externes",
+                   "TermeGlossaire":           "Glossaire",
+                   "Presentationssonorisees": "Sonorisation"}
+        if repertoire in dicoRep:
+            repertoire = dicoRep[repertoire]
+        if "*-*" in ressource:
+            ressource = ressource.replace("*-*", ".")
+        try:
+            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), createur), repertoire), ressource)
+            relatedItems = objet.getRelatedItems()
+            relatedItems.remove(self)
+            objet.setRelatedItems(relatedItems)
+            objet.reindexObject()
+        except:
+            pass
         self.setProperties({"DateDerniereModif": DateTime()})
-    """
+
+    def modifierInfosBoitePlan(self, idElement, param):
+        LOG.info("----- modifierInfosBoitePlan -----")
+        dico = self.getElementCours(idElement)
+        for attribut in param.keys():
+            dico[attribut] = param[attribut]
+        self._elements_cours[idElement] = dico
+        self.setElementsCours(self._elements_cours)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def modifierInfosElementPlan(self, idElement, titreElement):
+        LOG.info("----- modifierInfosElementPlan -----")
+        dico = self.getElementCours(idElement)
+        dico["titreElement"] = titreElement
+        self._elements_cours[idElement] = dico
+        self.setElementsCours(self._elements_cours)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def ordonnerElementPlan(self, pplan):
+        LOG.info("----- ordonnerElementPlan -----")
+        plan = []
+        dicoplan = {}
+        pre_plan = pplan.split("&")
+        for element in pre_plan:
+            clef, valeur = element.split("=")
+            typeElement, idElement = clef[:-1].split("[")
+            dicoplan[idElement] = valeur
+
+        def getParentPlan(idElement):
+            parent = dicoplan[idElement]
+            if parent == "null":
+                return {"idElement": "racine", "listeElement": plan}
+            else:
+                racine = getParentPlan(parent)
+                return {"idElement": racine["listeElement"][-1]["idElement"], "listeElement": racine["listeElement"][-1]["listeElement"]}
+
+        dicoElements = self.getElementCours()
+        for element in pre_plan:
+            clef, valeur = element.split("=")
+            typeElement, idElement = clef[:-1].split("[")
+            infosElement = dicoElements[idElement]
+            isAfficherElement = self.isAfficherElement(infosElement["affElement"], infosElement["masquerElement"])["val"]
+            if typeElement == "chapitre":
+                p = getParentPlan(idElement)
+                if p["idElement"] != "racine":
+                    pInfosElement = self.getElementCours(p["idElement"])
+                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
+                    if isAfficherElement and not isPAfficherElement:
+                        self.afficherRessourceChapitre(idElement, DateTime(), "masquerElement")
+                p["listeElement"].append({"idElement": idElement, "listeElement": []})
+            else:
+                p = getParentPlan(idElement)
+                if p["idElement"] != "racine":
+                    pInfosElement = self.getElementCours(p["idElement"])
+                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
+                    if isAfficherElement and not isPAfficherElement:
+                        self.afficherRessource(idElement, DateTime(), "masquerElement")
+                p["listeElement"].append({"idElement": idElement})
+
+        self.plan = tuple(plan)
+        self.setProperties({"DateDerniereModif": DateTime()})
+        return self.getPlanCours(True)
+
+    def retirerElement(self, idElement):
+        LOG.info("----- retirerElement -----")
+        elements_glossaire = list(self.getGlossaire())
+        if idElement in elements_glossaire:
+            elements_glossaire.remove(idElement)
+            self.elements_glossaire = tuple(elements_glossaire)
+            infos_element = self.getElementCours()
+            infosElement = infos_element[idElement]
+            self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"])
+            del infos_element[idElement]
+        elements_bibliographie = list(self.getBibliographie())
+        if idElement in elements_bibliographie:
+            elements_bibliographie.remove(idElement)
+            self.elements_bibliographie = tuple(elements_bibliographie)
+            if not self.isInCourseMap(idElement):
+                infos_element = self.getElementCours()
+                infosElement = infos_element[idElement]
+                self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
+                del infos_element[idElement]
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
+        LOG.info("----- retirerElementPlan -----")
+        """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
+        start = False
+        if listeElement is None:
+            listeElement = list(self.getPlan())
+            start = True
+        for element in listeElement:
+            if element["idElement"] == idElement or idElement == "all":
+                #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
+                #   avec le parametre "all" et la liste des elements a supprimer
+                if "listeElement" in element and element["listeElement"] != []:
+                    self.retirerElementPlan("all", element["listeElement"], force_WIMS)
+
+                #on supprime element de la liste où il etait dans le plan
+                while element in listeElement:
+                    listeElement.remove(element)
+
+                infosElement = self.getElementCours().get(element["idElement"])
+
+                if infosElement:
+                    #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
+                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
+                        self.ajouterElementPlan(element["idElement"])
+                    else:
+
+                        if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
+                            # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
+                            del self._elements_cours[element["idElement"]]
+                            self.setElementsCours(self._elements_cours)
+
+                    if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
+                        self.detacherElement(element["idElement"], infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
+
+                    if infosElement["typeElement"] == "BoiteDepot":
+                        boite = getattr(self, element["idElement"])
+                        boite.retirerTousElements()
+
+                    if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
+                        self.manage_delObjects([element["idElement"]])
+
+            elif "listeElement" in element:
+                # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
+                self.retirerElementPlan(idElement, element["listeElement"], force_WIMS)
+
+        if start:
+            self.plan = tuple(listeElement)
+        return listeElement
+
+    def verifType(self, typeElement):
+        LOG.info("----- verifType -----")
+        return typeElement.replace(" ", "")
+
+    def isStreamingAuthorized(self, streaming_id, request):
+        LOG.info("----- ----- isStreamingAuthorized -----")
+        if not request.has_key("HTTP_X_REAL_IP"):
+            return False
+        portal = self.portal_url.getPortalObject()
+        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
+        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
+
+    def delElem(self, element):
+        LOG.info("----- ----- delElem -----")
+        del self._elements_cours[element]
+        self.getElementCours()
+        self.setElementsCours(self._elements_cours)
+
+    #---------------------------------#
+    # Course Activity (WIMS Activity) #
+    #---------------------------------#
+    def setListeClasses(self, valeur):
+        LOG.info("----- setListeClasses -----")
+        self.listeclasses = tuple(valeur)
+
+    def authUser(self, quser=None, qclass=None, request=None):
+        LOG.info("----- authUser -----")
+        return jalon_utils.authUser(self, quser, qclass, request)
+
+    def getDataCourseWimsActivity(self, user_id, course_id):
+        LOG.info("----- getDataCourseWimsActivity -----")
+        wims_classe_list = self.getListeClasses()
+        can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
+
+        course_author_data = self.getAuteur()
+
+        #à finir ne tiens pas compte de si pas d'annuaire LDAP
+        record_user_book_base = self.getBaseAnnuaire()
+        course_author_record_user_link = self.getFicheAnnuaire(course_author_data, record_user_book_base)
+
+        is_course_author = self.isAuteur(user_id)
+        can_delete_all_wims_classes_css = "" if is_course_author else "disabled"
+
+        return {"course_name":                     self.getShortText(self.Title(), 80),
+                "is_course_owner":                 self.isCourseOwner(user_id),
+                "wims_classe_list":                wims_classe_list,
+                "can_delete":                      can_delete,
+                "course_author_fullname":          course_author_data["fullname"],
+                "course_author_record_user_link":  course_author_record_user_link,
+                "is_course_author":                is_course_author,
+                "can_delete_all_wims_classes_css": can_delete_all_wims_classes_css}
+
+    def purgerActivitesWims(self):
+        LOG.info("----- purgerActivitesWims -----")
+        u"""Supprime l'ensemble des travaux effectués dans toutes les activités Wims d'un cours."""
+        dico_classes = self.getListeClasses()
+        retour = {}
+        if dico_classes:
+            dico_classes = dico_classes[0]
+
+            authMember = self.portal_membership.getAuthenticatedMember().getId()
+            for user in dico_classes.keys():
+                class_id = dico_classes[user]
+                dico = {"qclass": class_id, "code": authMember}
+                rep = self.wims("cleanClass", dico)
+                retour[user] = rep
+
+        return retour
+
+    def getScoresWims(self, auteur, authMember, request=None, file_format="csv"):
+        LOG.info("----- getScoresWims -----")
+        u"""Télécharger les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
+        dicoClasses = list(self.getListeClasses())[0]
+
+        liste_activitesWIMS = []
+
+        for idElement in self.objectIds():
+
+            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
+                activite = getattr(self, idElement)
+
+                if auteur == "All" or activite.getCreateur() == auteur:
+                    if activite.typeWims == "Examen":
+                        if activite.idExam:
+                            # On ne demande que les examens créés coté WIMS
+                            liste_activitesWIMS.append("exam%s" % activite.getIdExam())
+                    elif activite.isActif():
+                        # Pour les feuilles, on ne demande que les actives.
+                        liste_activitesWIMS.append("sheet%s" % activite.getIdFeuille())
+        retour = {}
+        if len(liste_activitesWIMS) > 0:
+            LOG.info("----- [jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
+            #for user in dicoClasses:
+            #    if auteur == "All" or user == auteur:
+            columns = "login,name,%s" % (",".join(liste_activitesWIMS))
+            if auteur in dicoClasses:
+                dico = {"qclass": dicoClasses[auteur],
+                        "code": authMember,
+                        "job": "getcsv",
+                        "format": file_format,
+                        "option": columns}
+                LOG.info("----- [jaloncours/getScoresWims] callJob dico :'%s'" % dico)
+                rep_wims = self.wims("callJob", dico)
+
+                try:
+                    # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
+                    retour = json.loads(rep_wims)
+                    self.plone_log("[jaloncours/getScoresWims] ERREUR WIMS / retour = %s" % retour)
+                    # Une des erreurs possible, c'est un trop grand nombre :
+                    # * d'eleves dans la classe (>400 ?)
+                    # * d'activités dans la classe (>64 ?)
+                    # * une combinaison des 2 ?
+                    self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                     "fonction": "jaloncours.py/getScoresWims",
+                                                     "message": "Impossible de télécharger les notes (demandeur = %s)" % authMember,
+                                                     "jalon_request": request
+                                                     })
+                except:
+                    if file_format == "xls":
+                        # Pour le format xls, on remplace le séparateur décimal (.) par une virgule.
+                        rep_wims = rep_wims.replace(".", ",")
+                    # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
+                    retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": rep_wims}
+
+        else:
+            retour = {"status": "not_relevant", "nb_activity": len(liste_activitesWIMS)}
+
+        return retour
+
+    def supprimerActivitesWims(self, utilisateur="All", request=None):
+        LOG.info("----- supprimerActivitesWims -----")
+        u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
+        # Retire du plan toutes les activités de l'utilisateur "utilisateur"
+
+        # Ici on utilise self.objectIds() plutot que getPlanPlat, afin de lister les objets réellement dans le cours.
+        # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
+
+        liste_activitesWIMS = []
+
+        for idElement in self.objectIds():
+
+            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
+                # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
+                activite = getattr(self, idElement)
+
+                if utilisateur == "All" or activite.getCreateur() == utilisateur:
+                    LOG.info("----- [jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
+                    liste_activitesWIMS.append(idElement)
+
+                    # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
+                    # retire l'activité des relatedItems pour ses exercices et ses documents.
+                    activite.retirerTousElements(force_WIMS=True)
+
+                    # Supprime l'activité (du plan du cours et du cours)
+                    self.retirerElementPlan(idElement, force_WIMS=True)
+                    # Supprime l'activité des actus du cours
+                    self.delActu(idElement)
+
+                    ### A utiliser dans un patch correctif :
+                    #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
+                    if idElement in self._elements_cours:
+                        self.manage_delObjects(idElement)
+                        del self._elements_cours[idElement]
+
+        # Supprime toutes les classes du serveur WIMS
+        listeClasses = list(self.getListeClasses())
+        removing_classes = []
+        dico = listeClasses[0]
+        LOG.info("----- [jaloncours/supprimerActivitesWims] Ancienne liste :'%s'" % listeClasses)
+        new_listeClasses = []
+        for auteur in dico:
+            if utilisateur == "All" or utilisateur == auteur:
+                removing_classes.append(dico[auteur])
+            else:
+                if len(new_listeClasses) == 0:
+                    new_listeClasses.append({auteur: dico[auteur]})
+                else:
+                    new_listeClasses[0][auteur] = dico[auteur]
+        if removing_classes is not None:
+            self.aq_parent.delClassesWims(removing_classes, request)
+
+        # Et enfin remettre à zero la liste des classes du cours.
+        LOG.info("----- [jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
+        self.setListeClasses(new_listeClasses)
+
+        # Renvoit le nombre d'activités supprimées.
+        return len(liste_activitesWIMS)
+
+    #autoriserAffichageSousObjet : définit si l'affichage de l'objet 'idElement' est autorisé ou pas.
+    # utile pour empecher l'affichage des activités vides par exemple
+    def autoriserAffichageSousObjet(self, idElement, typeElement=None):
+        LOG.info("----- autoriserAffichageSousObjet -----")
+        ret = {"val": True, "reason": ""}
+        if not typeElement:
+            typeElement = self.getTypeSousObjet(idElement)
+        if typeElement in ['AutoEvaluation', 'Examen']:
+            # dans le cas d'une activité WIMS, on n'affiche l'objet que s'il contient des exercices.
+            infosActivite = self.getSousObjet(idElement)
+            ret = infosActivite.autoriser_Affichage()
+        return ret
+
+    #pour montrer les nouveaux éléments dans le cours
+    def isNouveau(self, idElement, listeActualites=None):
+        LOG.info("----- isNouveau -----")
+        if listeActualites is None:
+            LOG.info("----- ***** Not listeActualites")
+            listeActualites = self.getActualitesCours(True)["listeActu"]
+        for actualite in listeActualites:
+            if idElement["titreElement"] in actualite["titre"]:
+                member = self.portal_membership.getAuthenticatedMember()
+                if member.getId() == self.Creator():
+                    if cmp(actualite["date"], member.getProperty('login_time', None)) > 0:
+                        return True
+                    return False
+                elif cmp(actualite["date"], self.getLastLogin()) > 0:
+                    return True
+        return False
+
+    #---------------------------------#
+    # Course Activity (Adobe Connect) #
+    #---------------------------------#
+    def connect(self, methode, param):
+        LOG.info("----- connect -----")
+        return self.portal_connect.__getattribute__(methode)(param)
+
+    def getSessionConnect(self, user_id, repertoire):
+        LOG.info("----- ----- getSessionConnect -----")
+        portal = self.portal_url.getPortalObject()
+        home = getattr(getattr(portal.Members, user_id), repertoire)
+        return home.getSessionConnect(user_id)
+
+    def getReunion(self, user_id, request, repertoire):
+        LOG.info("----- ----- getReunion -----")
+        portal = self.portal_url.getPortalObject()
+        home = getattr(getattr(portal.Members, user_id), repertoire)
+        return home.getReunion(user_id)
+
+    #---------------------#
+    # Course Participants #
+    #---------------------#
+    def getCoLecteursCours(self):
+        LOG.info("----- getCoLecteursCours -----")
+        retour = []
+        for username in self.getCoLecteurs():
+            retour.append(self.getInfosMembre(username))
+        return retour
+
+    def addLecteurs(self, form):
+        LOG.info("----- addLecteurs -----")
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        lecteurs = list(self.getCoLecteurs())
+        usernames = form["username"].split(",")
+        if usernames != ['']:
+            for username in usernames:
+                if not username in lecteurs:
+                    lecteurs.append(username)
+                    infosMembre = self.getInfosMembre(username)
+                    self.envoyerMail({"a":       infosMembre["email"],
+                                      "objet":   "Vous avez été ajouté à un cours",
+                                      "message": message})
+            self.coLecteurs = tuple(lecteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def deleteLecteurs(self, form):
+        LOG.info("----- deleteLecteurs -----")
+        lecteurs = []
+        if "auteur-actu" in form:
+            lecteurs = form["auteur-actu"]
+        ancienLecteurs = set(self.getCoLecteurs())
+        supprLecteurs = ancienLecteurs.difference(set(lecteurs))
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+        for idMember in supprLecteurs:
+            infosMembre = self.getInfosMembre(idMember)
+            self.envoyerMail({"a":       infosMembre["email"],
+                              "objet":   "Vous avez été retiré d'un cours",
+                              "message": message})
+        self.coLecteurs = tuple(lecteurs)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def getInfosGroupe(self):
+        LOG.info("----- getInfosGroupe -----")
+        groupe = self.getGroupe()
+        return jalon_utils.getIndividus(list(groupe), "listdict")
+
+    def getInfosLibre(self):
+        LOG.info("----- getInfosLibre -----")
+        libre = self.getInscriptionsLibres()
+        return jalon_utils.getIndividus(list(libre), "listdict")
+
+    def getInfosInvitations(self):
+        LOG.info("----- getInfosInvitations -----")
+        invitations = self.getInvitations()
+        if not invitations:
+            return []
+        etudiants = []
+        portal_membership = getToolByName(self, "portal_membership")
+        for sesame in invitations:
+            nom = sesame
+            member = portal_membership.getMemberById(sesame)
+            if member:
+                nom = member.getProperty("fullname", sesame)
+            etudiants.append({"nom": nom, "email": sesame})
+        return etudiants
+
+    def getAffichageFormation(self):
+        LOG.info("----- getAffichageFormation -----")
+        listeFormations = self.getAffichageFormations()
+        nbEtuFormations = self.getNbEtuFormation(listeFormations)
+        return {"nbFormations": len(listeFormations),
+                "nbEtuFormations": nbEtuFormations}
+
+    def getAffichageFormations(self):
+        LOG.info("----- getAffichageFormations -----")
+        res = []
+        listeAcces = self.getListeAcces()
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        for acces in listeAcces:
+            type, code = acces.split("*-*")
+            if type == "etape":
+                retour = portal_jalon_bdd.getInfosEtape(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type in ["ue", "uel"]:
+                retour = portal_jalon_bdd.getInfosELP2(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type == "groupe":
+                retour = portal_jalon_bdd.getInfosGPE(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            elem.append(type)
+            res.append(elem)
+        res.sort()
+        return res
+
+    def getNbEtuFormation(self, listeFormations):
+        LOG.info("----- getNbEtuFormation -----")
+        nbEtuFormations = 0
+        for formation in listeFormations:
+            nbEtuFormations = nbEtuFormations + int(formation[2])
+        return nbEtuFormations
+
+    def getAffichageInscriptionIndividuelle(self, typeAff):
+        LOG.info("----- getAffichageInscriptionIndividuelle -----")
+        res = []
+        if typeAff == "groupe":
+            groupe = self.getGroupe()
+            nbgroupe = 0
+            if groupe:
+                nbgroupe = len(groupe)
+            if nbgroupe > 0:
+                res.append([_(u"Étudiant(s) de l'université"), "perso", nbgroupe, "groupeperso"])
+        else:
+            invitations = self.getInvitations()
+            nbinvitations = 0
+            if invitations:
+                nbinvitations = len(invitations)
+            if nbinvitations > 0:
+                res.append([_(u"Étudiant(s) extérieur(s)"), "email", nbinvitations, "invitationsemail"])
+        return res
+
+    def getInfosListeAcces(self):
+        LOG.info("----- getInfosListeAcces -----")
+        res = []
+        listeAcces = self.getListeAcces()
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        for acces in listeAcces:
+            type, code = acces.split("*-*")
+            if type == "etape":
+                retour = portal_jalon_bdd.getInfosEtape(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type in ["ue", "uel"]:
+                retour = portal_jalon_bdd.getInfosELP2(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type == "groupe":
+                retour = portal_jalon_bdd.getInfosGPE(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            elem.append(type)
+            res.append(elem)
+        groupe = self.getGroupe()
+        if groupe:
+            res.append(["Invitations individuelles : étudiant(s) de l'université", "perso", len(groupe), "groupeperso"])
+        invitations = self.getInvitations()
+        if invitations:
+            res.append(["Invitations individuelles : étudiant(s) hors université", "email", len(invitations), "invitationsemail"])
+        return res
+
+    def getRechercheAcces(self):
+        LOG.info("----- getRechercheAcces -----")
+        acces = list(self.getListeAcces())
+        groupe = self.getGroupe()
+        if groupe:
+            acces.extend(list(groupe))
+        invitations = self.getInvitations()
+        if invitations:
+            acces.extend(list(invitations))
+        inscriptionsLibres = self.getInscriptionsLibres()
+        if inscriptionsLibres:
+            acces.extend(list(inscriptionsLibres))
+        return tuple(acces)
 
     def addOffreFormations(self, elements):
         LOG.info("----- addOffreFormations -----")
@@ -1554,1080 +1978,8 @@ class JalonCours(ATFolder):
         self.setInvitations(tuple(invitations))
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def setCoursePublicAccess(self, course_public_access):
-        LOG.info("----- setCoursePublicAccess -----")
-        if self.getAcces() != course_public_access:
-            portal = self.portal_url.getPortalObject()
-            portal_workflow = getToolByName(portal, "portal_workflow")
-
-            workflow_action = "submit"
-            state = "pending"
-            if course_public_access == "Public":
-                workflow_action = "publish"
-                state = "published"
-                court = self.getLienCourt()
-                if not court:
-                    dont_stop = 1
-                    while dont_stop:
-                        part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
-                        part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
-                        short = part1 + part2
-                        link_object = getattr(portal.public, short, None)
-                        if not link_object:
-                            dont_stop = 0
-                    portal.public.invokeFactory(type_name="Link", id=short)
-                    link_object = getattr(portal.public, short)
-                    link_object.setTitle(self.title_or_id())
-                    link_object.setRemoteUrl(self.absolute_url())
-                    portal_workflow.doActionFor(link_object, workflow_action, "jalon_workflow")
-                    link_object.reindexObject()
-                    self.setLienCourt(short)
-
-                for course_object in self.objectValues():
-                    if portal_workflow.getInfoFor(course_object, "review_state", wf_id="jalon_workflow") != state:
-                        portal_workflow.doActionFor(course_object, workflow_action, "jalon_workflow")
-                        # On va modifier l'etat de tous les elements contenus dans les activités du cours.
-                        # (mais cette étape est pour le moment inutile puisque les activités ne sont pas accessibles dans un cours Public)
-                        if course_object.meta_type in ["JalonBoiteDepot", "JalonCoursWims"]:
-                            relatedItems = course_object.getRelatedItems()
-                            for related in relatedItems:
-                                # On ne rend pas public les exercices WIMS. l'objet lui-même ne reste accessible que par son propriétaire.
-                                if related.meta_type != "JalonExerciceWims" and portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
-                                    portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
-                for related in self.getRelatedItems():
-                    if portal_workflow.getInfoFor(related, "review_state", wf_id="jalon_workflow") != state:
-                        portal_workflow.doActionFor(related, workflow_action, "jalon_workflow")
-            try:
-                portal_workflow.doActionFor(self, workflow_action, "jalon_workflow")
-            except:
-                pass
-        self.setAcces(course_public_access)
-
-    def setAttributCours(self, form):
-        LOG.info("----- setAttributCours -----")
-        for key in form.keys():
-            if key == "libre":
-                if not self.getLienMooc():
-                    part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
-                    part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
-                    part3 = ''.join([random.choice(string.ascii_uppercase) for i in range(3)])
-                    short = part1 + part2 + part3
-                    self.setLienMooc(short)
-                if form[key] == "True":
-                    self.setCategorie("2")
-                else:
-                    self.setCategorie("1")
-            method_name = "set%s" % key.capitalize()
-            #if key == "catiTunesU":
-            #    method_name = "setCatiTunesU"
-            #    self.portal_jalon_properties.setUsersiTunesU(self.Creator())
-            #    self.portal_jalon_properties.setCoursUser(self.Creator(), self.getId())
-
-            #if key == "diffusioniTunesU":
-            #    method_name = "setDiffusioniTunesU"
-
-            try:
-                self.__getattribute__(method_name)(form[key])
-            except AttributeError:
-                pass
-
-            #if key == "catiTunesU":
-            #    portal = self.portal_url.getPortalObject()
-            #    infosMembre = jalon_utils.getInfosMembre(self.Creator())
-            #    jalon_utils.envoyerMail({"objet":   "Demande de publication sur iTunesU",
-            #                             "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
-
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def setGroupePerso(self, REQUEST):
-        LOG.info("----- setGroupePerso -----")
-        form = REQUEST.form
-        etudiants = []
-        if form["typeGroupe"] == "groupe":
-            if "etu_groupe" in form:
-                etudiants = form["etu_groupe"]
-            if "username" in form:
-                usernames = form["username"].split(",")
-                if usernames != ['']:
-                    for username in usernames:
-                        if not username in etudiants:
-                            etudiants.append(username)
-            self.setGroupe(tuple(etudiants))
-        elif form["typeGroupe"] == "libre":
-            if "etu_libre" in form:
-                etudiants = form["etu_libre"]
-            self.setInscriptionsLibres(tuple(etudiants))
-        else:
-            if "etu_email" in form:
-                etudiants = form["etu_email"]
-            if "invitation" in form and form["invitation"] != "":
-                if "," in form["invitation"]:
-                    listeInvit = form["invitation"].split(",")
-                else:
-                    listeInvit = [form["invitation"]]
-                portal = self.portal_url.getPortalObject()
-                portal_membership = getToolByName(portal, 'portal_membership')
-                for invitation in listeInvit:
-                    invitation = invitation.strip()
-                    if " " in invitation:
-                        nameInvit, emailInvit = invitation.rsplit(" ", 1)
-                        emailInvit = emailInvit.replace("<", "")
-                        emailInvit = emailInvit.replace(">", "")
-                    else:
-                        nameInvit = invitation.replace("@", " ")
-                        emailInvit = invitation
-                    emailInvit = emailInvit.lower()
-                    if not emailInvit in etudiants:
-                        if not portal_membership.getMemberById(emailInvit):
-                            portal_registration = getToolByName(portal, 'portal_registration')
-                            password = portal_registration.generatePassword()
-                            portal_membership.addMember(emailInvit, password, ("EtudiantJalon", "Member",), "", {"fullname": nameInvit, "email": emailInvit})
-                            portal_registration.registeredNotify(emailInvit)
-                        etudiants.append(emailInvit)
-            self.setInvitations(tuple(etudiants))
-        self.setProperties({"DateDerniereModif": DateTime()})
-        return None
-
-    def modifyFavorite(self, user_id):
-        LOG.info("----- modifyFavorite -----")
-        subjects = list(self.Subject())
-        if not user_id in subjects:
-            subjects.append(user_id)
-            archives = list(self.getArchive())
-            if user_id in archives:
-                archives.remove(user_id)
-                self.setArchive(tuple(archives))
-        else:
-            subjects.remove(user_id)
-        self.setSubject(tuple(subjects))
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def modifyArchive(self, user_id):
-        LOG.info("----- modifyArchive -----")
-        archives = list(self.getArchive())
-        if not user_id in archives:
-            archives.append(user_id)
-            subjects = list(self.Subject())
-            if user_id in subjects:
-                subjects.remove(user_id)
-                self.setSubject(tuple(subjects))
-        else:
-            archives.remove(user_id)
-        self.setArchive(tuple(archives))
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def setLecture(self, lu, idElement, authMember):
-        LOG.info("----- setLecture -----")
-        dico = self.getElementCours(idElement)
-        if not self.isAfficherElement(dico["affElement"], dico["masquerElement"])["val"]:
-            return None
-        if lu == 'true':
-            if "lecture" in dico and not authMember in dico["lecture"]:
-                dico["lecture"].append(authMember)
-            else:
-                dico["lecture"] = [authMember]
-
-            if dico["typeElement"] == "Titre":
-                for element in self.getEnfantPlanElement(idElement):
-                        self.setLecture(lu, element["idElement"], authMember)
-        else:
-            if authMember in dico["lecture"]:
-                dico["lecture"].remove(authMember)
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-
-    def marquerElement(self, idElement, marquer=None):
-        LOG.info("----- marquerElement -----")
-        dico = self.getElementCours(idElement)
-        id_auth_member = self.portal_membership.getAuthenticatedMember().getId()
-        if "marque" in dico:
-            if not id_auth_member in dico["marque"]:
-                dico["marque"].append(id_auth_member)
-            else:
-                dico["marque"].remove(id_auth_member)
-        else:
-            dico["marque"] = [id_auth_member]
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-
-    def setListeClasses(self, valeur):
-        LOG.info("----- setListeClasses -----")
-        self.listeclasses = tuple(valeur)
-
-    def setProperties(self, dico):
-        #self.plone_log("setProperties (Start)")
-        for key in dico.keys():
-            self.__getattribute__("set%s" % key)(dico[key])
-        if key == "DateDerniereModif":
-            #self.plone_log("DateDerniereModif")
-            self.reindexObject()
-        #self.plone_log("setProperties (End)")
-
-    def delAccesApogee(self, elements):
-        #self.plone_log("delAccesApogee")
-        liste = list(self.getListeAcces())
-        for element in elements:
-            if element in liste:
-                liste.remove(element)
-            if element == "groupeperso*-*perso":
-                self.setGroupe(())
-            if element == "invitationsemail*-*email":
-                self.setInvitations(())
-        self.listeAcces = tuple(liste)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def isAfficherElement(self, affElement, masquerElement):
-        #self.plone_log("isAfficherElement")
-        return jalon_utils.isAfficherElement(affElement, masquerElement)
-
-    def isAuteurs(self, username):
-        #self.plone_log("jaloncours/isAuteurs = %s" % (self.isAuteur(username) or self.isCoAuteurs(username)))
-        return self.isAuteur(username) or self.isCoAuteurs(username)
-
-    def isAuteur(self, username):
-        #self.plone_log("isAuteur")
-        if username == self.Creator():
-            return 1
-        if username == self.getAuteurPrincipal():
-            return 1
-        return 0
-
-    def isChecked(self, idElement, espace, listeElement=None):
-        #self.plone_log("isChecked")
-        if espace == "Glossaire":
-            if idElement in list(self.getGlossaire()):
-                return 1
-            return 0
-        if espace == "Bibliographie":
-            if idElement in list(self.getBibliographie()):
-                return 1
-            return 0
-        if espace in ["ajout-supports", "ajout-activite"]:
-            return self.isInPlan(idElement, listeElement)
-
-    def isCourseOwner(self, user_id):
-        return True if self.aq_parent.getId() == user_id else False
-
-    def isInscriptionsLibre(self):
-        #self.plone_log("isInscriptionsLibre")
-        if len(self.getInscriptionsLibre()) > 0:
-            return True
-        else:
-            return False
-
-    def isCoAuteurs(self, username):
-        u""" Détermine si l'utilisateur 'username' est un auteur ou co-auteur du cours."""
-        if self.isAuteur(username):
-            #self.plone_log("isCoAuteurs = 1 (isAuteur)")
-            return 1
-        if username in self.coAuteurs:
-            #self.plone_log("isCoAuteurs = 1 (coAuteur)")
-            return 1
-        # Dans le cas de l'admin, isCoAuteurs renvoi 0 aussi
-        #self.plone_log("isCoAuteurs = 0 (ni auteur, ni coAuteur)")
-        return 0
-
-    def isCoLecteurs(self, username):
-        #self.plone_log("isCoLecteurs")
-        if username in self.coLecteur:
-            return 1
-        return 0
-
-    def isInPlan(self, idElement, listeElement=None):
-        #self.plone_log("isInPlan : %s" % idElement)
-        if not listeElement:
-            listeElement = self.getPlanPlat()
-        #listeIdElementPan = self.getPlanPlat()
-        if idElement in listeElement:
-            return 1
-        return 0
-
-    def isPersonnel(self, user, mode_etudiant="false"):
-        #self.plone_log("jaloncours/isPersonnel")
-        if mode_etudiant == "true":
-            #self.plone_log("isPersonnel = False (mode étudiant)")
-            return False
-        if user.has_role("Manager"):
-            #self.plone_log("isPersonnel = True (manager role)")
-            return True
-        if user.has_role("Personnel") and self.isCoAuteurs(user.getId()):
-            #self.plone_log("isPersonnel = True (Personnel & iscoAuteurs)")
-            return True
-        return False
-
-    def isTitre(self, categorieElement):
-        #self.plone_log("isTitre")
-        retour = {"condition": False, "class": "element"}
-        if categorieElement == "Titre":
-            retour = {"condition": True, "class": "chapitre"}
-        if categorieElement == "TexteLibre":
-            retour = {"condition": True, "class": "element"}
-        return retour
-
-    def activerWebconference(self, idwebconference):
-        #self.plone_log("activerWebconference")
-        webconferences = list(self.webconferences)
-        if not idwebconference in webconferences:
-            webconferences.append(idwebconference)
-        else:
-            webconferences.remove(idwebconference)
-        self.webconferences = tuple(webconferences)
-
-    def getActuCoursFull(self, date):
-        #self.plone_log("getActuCoursFull")
-        actualites = []
-        descriptionActu = {"chapdispo":          _(u"et son contenu sont maintenant disponibles."),
-                           "dispo":              _(u"est disponible."),
-                           "datedepot":          _(u"modification de la date de dépôt : "),
-                           "datedepotfin":       _(u"le dépôt n'est plus permis"),
-                           "correctiondispo":    _(u"la correction est disponible."),
-                           "sujetdispo":         _(u"le sujet est disponible."),
-                           "nouveauxdepots":     _(u"nouveau(x) dépôt(s) disponible(s)"),
-                           "nouveauxmessages":   _(u"nouveau(x) message(s) disponible(s)")}
-
-        listeActualites = list(self.getActualites())
-        listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
-        infos_elements = self.getElementCours()
-
-        for actualite in listeActualites:
-            if date > DateTime(actualite["dateActivation"]).Date():
-                break
-            elif date == DateTime(actualite["dateActivation"]).Date():
-                infos_element = infos_elements.get(actualite["reference"], '')
-                if infos_element:
-                    description = descriptionActu[actualite["code"]]
-                    if actualite["code"] == "datedepot":
-                        description = "%s %s" % (description, DateTime(actualite["dateDepot"], datefmt='international').strftime("%d/%m/%Y %H:%M"))
-                    if actualite["code"] == "nouveauxdepots":
-                        description = "%s %s" % (str(actualite["nb"]), description)
-                    actualites.append({"type":        infos_element["typeElement"],
-                                       "titre":       infos_element["titreElement"],
-                                       "description": description})
-        return actualites
-
-    def setActuCours(self, param):
-        #self.plone_log("setActuCours")
-        dicoActu = {"reference":      param["reference"],
-                    "dateActivation": DateTime(),
-                    "code":           param["code"],
-                    "nb":             0,
-                    "dateDepot":      None,
-                    "acces":          ["auteurs", "etudiants"]
-                    }
-        listeActualites = list(self.getActualites())
-        if param["code"] in ["nouveauxdepots", "nouveauxmessages"]:
-            for actualite in listeActualites:
-                if actualite["reference"] == param["reference"] and param["code"] == actualite["code"] and DateTime(actualite["dateActivation"]).Date() == DateTime().Date():
-                    dicoActu = actualite.copy()
-                    listeActualites.remove(actualite)
-                    break
-            dicoActu["nb"] = dicoActu["nb"] + 1
-            dicoActu["dateActivation"] = DateTime()
-        if param["code"] == "datedepot":
-            dicoActu["dateDepot"] = param["dateDepot"]
-            dicoActu["dateActivation"] = DateTime()
-        if param["code"] not in ["nouveauxdepots", "nouveauxmessages", "datedepot"]:
-            dicoActu["dateActivation"] = param["dateActivation"]
-        listeActualites.append(dicoActu)
-        self.actualites = tuple(listeActualites)
-        self.setDateDerniereActu(self.actualites)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def delActu(self, idElement):
-        #self.plone_log("delActu")
-        newActu = []
-        listeActualites = list(self.getActualites())
-        for actu in listeActualites:
-            if idElement != actu["reference"]:
-                newActu.append(actu)
-        self.actualites = tuple(newActu)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def afficherRessource(self, idElement, dateAffichage, attribut, chapitre=None):
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
-        #self.plone_log("afficherRessource")
-        dico = self.getElementCours(idElement)
-        if dico:
-            rep = {"Image":                     "Fichiers",
-                   "File":                      "Fichiers",
-                   "Lien web":                  "Externes",
-                   "Lecteur exportable":        "Externes",
-                   "Reference bibliographique": "Externes",
-                   "Glossaire":                 "Glossaire",
-                   "Webconference":             "Webconference",
-                   "Presentations sonorisees":  "Sonorisation"}
-            if dico["typeElement"] in rep.keys():
-                portal = self.portal_url.getPortalObject()
-                try:
-                    objet = getattr(getattr(getattr(getattr(portal, "Members"), dico["createurElement"]), rep[dico["typeElement"]]), idElement.replace("*-*", "."))
-                except:
-                    return None
-                portal_workflow = getToolByName(portal, "portal_workflow")
-                cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
-                objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
-                if attribut == "affElement" and cours_state != objet_state and cours_state == "published":
-                    portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
-
-            # Cas des activités
-            if dico["typeElement"] in ["AutoEvaluation", "BoiteDepot", "Examen", "Forum"]:
-                obj = self.getSousObjet(idElement)
-                resultat_affichage = obj.afficherRessource(idElement, dateAffichage, attribut)
-                if resultat_affichage:
-                    # resultat_affichage["val"] indique "False" si l'affichage n'a pas été fait.
-                    if not resultat_affichage["val"]:
-                        # resultat_affichage["reason"] peut indiquer la raison pour laquelle l'affichage est refusé.
-                        return resultat_affichage
-
-            descriptionElement = ""
-            dico[attribut] = dateAffichage
-            if attribut == "affElement":
-                dico["masquerElement"] = ""
-                descriptionElement = "dispo"
-            self._elements_cours[idElement] = dico
-            self.setElementsCours(self._elements_cours)
-
-            isNotSetActu = True
-            if attribut == "masquerElement":
-                self.delActu(idElement)
-                isNotSetActu = False
-
-            # Quand on affiche un element directement, on l'ajoute aux actus du cours.
-            if descriptionElement and not chapitre:
-                actualites = list(self.getActualites())
-                dicoActu = {"reference":      idElement,
-                            "dateActivation": dateAffichage,
-                            "code":           descriptionElement,
-                            "acces":          ["auteurs", "etudiants"]
-                            }
-                if (actualites and not dicoActu in actualites) or not actualites:
-                    self.setActuCours(dicoActu)
-                    isNotSetActu = False
-            if isNotSetActu:
-                self.setProperties({"DateDerniereModif": DateTime()})
-
-    # Affiche (ou masque) un chapitre du cours, ainsi que tout son contenu
-    def afficherRessourceChapitre(self, idElement, dateAffichage, attribut, listeElement=None):
-        #self.plone_log("afficherRessourceChapitre")
-        descriptionElement = ""
-        #attribut = masquerElement ou affElement
-        if attribut == "affElement":
-            descriptionElement = "chapdispo"
-
-        # lors d'un affichage, on ajoute l'actions aux actus du cours
-        if descriptionElement:
-            actualites = list(self.getActualites())
-            dicoActu = {"reference":      idElement,
-                        "dateActivation": dateAffichage,
-                        "code":           descriptionElement,
-                        "nb":             0,
-                        "dateDepot":      None,
-                        "acces":          ["auteurs", "etudiants"]
-                        }
-            if not actualites:
-                self.setActuCours(dicoActu)
-            elif dicoActu not in actualites:
-                self.setActuCours(dicoActu)
-
-        if listeElement is None:
-            listeElement = list(self.getPlan())
-
-        for element in listeElement:
-            if element["idElement"] == idElement or idElement == "all":
-                # On commence par afficher le chapitre lui-même
-                self.afficherRessource(element["idElement"], dateAffichage, attribut, "chapitre")
-                if "listeElement" in element:
-                    for souselem in element["listeElement"]:
-                        #Puis on affiche tous les elements du chapitre
-                        self.afficherRessource(souselem["idElement"], dateAffichage, attribut, "chapitre")
-                        if "listeElement" in souselem:
-                            # Si un des éléments est un sous-chapitre, on affiche son contenu recursivement.
-                            self.afficherRessourceChapitre("all", dateAffichage, attribut, souselem["listeElement"])
-                #Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
-                if element["idElement"] == idElement:
-                    break
-            elif "listeElement" in element:
-                self.afficherRessourceChapitre(idElement, dateAffichage, attribut, element["listeElement"])
-
-    # Affiche un chapitre du cours et ses parents jusqu'à atteindre la racine
-    def afficherChapitresParent(self, idElement, dateAffichage):
-        #self.plone_log("afficherChapitresParent")
-        dicoActu = {"reference":      idElement,
-                    "dateActivation": dateAffichage,
-                    "code":           "dispo",
-                    "nb":             0,
-                    "dateDepot":      None,
-                    "acces":          ["auteurs", "etudiants"]
-                    }
-        actualites = list(self.getActualites())
-        if not actualites:
-            self.setActuCours(dicoActu)
-        elif dicoActu not in actualites:
-            self.setActuCours(dicoActu)
-
-        dico = self.getElementCours(idElement)
-        dico["affElement"] = dateAffichage
-        dico["masquerElement"] = ""
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-
-        parent = self.getParentPlanElement(idElement, 'racine', '')
-        if parent["idElement"] != "racine":
-            self.afficherChapitresParent(parent["idElement"], dateAffichage)
-        else:
-            idElement = "racine"
-
-    def getParentPlanElement(self, idElement, idParent, listeElement):
-        LOG.info("----- getParentPlanElement -----")
-        if idParent == "racine":
-            listeElement = self.plan
-        LOG.info("***** listeElement : %s" % str(listeElement))
-        for element in listeElement:
-            if idElement == element["idElement"]:
-                if idParent == "racine":
-                    return {"idElement": "racine", "affElement": "", "masquerElement": ""}
-                else:
-                    dico = dict(self.getElementCours(idParent))
-                    dico["idElement"] = idParent
-                    return dico
-            elif "listeElement" in element:
-                retour = self.getParentPlanElement(idElement, element["idElement"], element["listeElement"])
-                if retour:
-                    return retour
-        return None
-
-    def getEnfantPlanElement(self, idElement, listeElement=None):
-        #self.plone_log("getEnfantPlanElement")
-        if listeElement is None:
-            listeElement = self.plan
-        for element in listeElement:
-            if element["idElement"] == idElement and "listeElement" in element:
-                return element["listeElement"]
-            elif "listeElement" in element:
-                retour = self.getEnfantPlanElement(idElement, element["listeElement"])
-                if retour:
-                    return retour
-        return None
-
-    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement="", position=None, display_in_plan=False):
-        #self.plone_log("ajouterElement")
-        remplacer = False
-        if typeElement == "Glossaire":
-            glossaire = list(self.getGlossaire())
-            glossaire.append(idElement)
-            self.setElements_glossaire(glossaire)
-            typeElement = "TermeGlossaire"
-        elif "*-*" in typeElement:
-            bibliographie = list(self.getBibliographie())
-            bibliographie.append(idElement)
-            self.setElements_bibliographie(bibliographie)
-            typeElement = typeElement.split("*-*")[1]
-        else:
-            if self.isInPlan(idElement.replace(".", "*-*")):
-                return None
-            self.ajouterElementPlan(idElement, position)
-            if "." in idElement:
-                remplacer = True
-
-        complement_element = None
-        rep = {"Image":                     "Fichiers",
-               "File":                      "Fichiers",
-               "Page":                      "Fichiers",
-               "Lien web":                  "Externes",
-               "Lecteur exportable":        "Externes",
-               "Reference bibliographique": "Externes",
-               "Video":                     "Video",
-               "VOD":                       "VOD",
-               "Catalogue BU":              "Externes",
-               "TermeGlossaire":            "Glossaire",
-               "Webconference":             "Webconference",
-               "Presentations sonorisees":  "Sonorisation"}
-        if typeElement in rep:
-            portal = self.portal_url.getPortalObject()
-            objet = getattr(getattr(getattr(getattr(portal, "Members"), createurElement), rep[typeElement]), idElement)
-            if remplacer:
-                idElement = idElement.replace(".", "*-*")
-            if affElement:
-                portal_workflow = getToolByName(portal, "portal_workflow")
-                cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
-                objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
-                if cours_state != objet_state and cours_state == "published":
-                    portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
-                dicoActu = {"reference":      idElement,
-                            "code":           "dispo",
-                            "dateActivation": DateTime()}
-                self.setActuCours(dicoActu)
-            relatedItems = objet.getRelatedItems()
-            if not self in relatedItems:
-                relatedItems.append(self)
-                objet.setRelatedItems(relatedItems)
-                objet.reindexObject()
-            coursRelatedItems = self.getRelatedItems()
-            if not objet.getId() in coursRelatedItems:
-                coursRelatedItems.append(objet)
-                self.setRelatedItems(coursRelatedItems)
-
-            if typeElement in ["Video", "VOD"]:
-                complement_element = {"value":  display_in_plan,
-                                      "auteur": objet.getVideoauteurname(),
-                                      "image":  objet.getVideothumbnail()}
-
-        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement, complementElement=complement_element)
-
-    def ajouterElementPlan(self, idElement, position=None):
-        #self.plone_log("ajouterElementPlan")
-        plan = list(self.getPlan())
-        if idElement.startswith("Titre"):
-            element_add = {"idElement": idElement, "listeElement": []}
-        else:
-            if "." in idElement and not (idElement.startswith("BoiteDepot") or idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
-                idElement = idElement.replace(".", "*-*")
-            element_add = {"idElement": idElement}
-        if not position:
-            plan.append(element_add)
-        elif position == "debut_racine":
-            plan.insert(0, element_add)
-        else:
-            liste_titres = position.split("*-*")
-            self.setPosition(idElement, plan, liste_titres[1:])
-
-        self.plan = tuple(plan)
-        #self.setProperties({"DateDerniereModif": DateTime()})
-
-    def setPosition(self, idElement, listeElement, liste_titres):
-        if len(liste_titres) > 1:
-            for element in listeElement:
-                if element["idElement"] == liste_titres[0]:
-                    self.setPosition(idElement, element["listeElement"], liste_titres[1:])
-        else:
-            for element in listeElement:
-                if element["idElement"] == liste_titres[0]:
-                    if idElement.startswith("Titre"):
-                        element_add = {"idElement": idElement, "listeElement": []}
-                    else:
-                        if "." in idElement:
-                            idElement = idElement.replace(".", "*-*")
-                        element_add = {"idElement": idElement}
-                    element["listeElement"].append(element_add)
-                    break
-
-    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement="", complementElement=None):
-        #self.plone_log("ajouterInfosElement")
-        parent = self.getParentPlanElement(idElement, 'racine', '')
-        if parent and parent['idElement'] != 'racine':
-            isAfficher = self.isAfficherElement(parent['affElement'], parent['masquerElement'])['val']
-            if not isAfficher:
-                affElement = ""
-
-        infos_element = self.getElementCours()
-        if not idElement in infos_element:
-            infos_element[idElement] = {"titreElement":    titreElement,
-                                        "typeElement":     typeElement,
-                                        "createurElement": createurElement,
-                                        "affElement":      affElement,
-                                        "masquerElement":  ""}
-            if complementElement:
-                infos_element[idElement]["complementElement"] = complementElement
-            self.setElementsCours(infos_element)
-        #self.setProperties({"DateDerniereModif": DateTime()})
-
-    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        LOG.info("----- addMySpaceItem -----")
-        item_id_no_dot = item_id.replace(".", "*-*")
-        if self.isInPlan(item_id_no_dot):
-            return None
-
-        item_object = getattr(folder_object, item_id)
-
-        if display_item:
-            cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
-            if cours_state == "published":
-                objet_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
-                if cours_state != objet_state:
-                    portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
-
-        item_object_related = item_object.getRelatedItems()
-        if not self in item_object_related:
-            item_object_related.append(self)
-            item_object.setRelatedItems(item_object_related)
-            item_object.reindexObject()
-
-        course_related = self.getRelatedItems()
-        if not item_object in course_related:
-            course_related.append(item_object)
-            self.setRelatedItems(course_related)
-
-        complement_element = None
-        if item_type in ["Video", "VOD"]:
-            complement_element = {"value":  display_in_plan,
-                                  "auteur": item_object.getVideoauteurname(),
-                                  "image":  item_object.getVideothumbnail()}
-
-        self.addItemInCourseMap(item_id_no_dot, map_position)
-        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
-
-    def addItemInCourseMap(self, item_id, map_position):
-        LOG.info("----- addItemInCourseMap -----")
-        course_map = list(self.getPlan())
-
-        item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": item_id}
-
-        if map_position == "debut_racine":
-            course_map.insert(0, item_properties)
-        elif map_position == "fin_racine":
-            course_map.append(item_properties)
-        else:
-            course_title_list = map_position.split("*-*")
-            self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
-
-        self.plan = tuple(course_map)
-
-    def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
-        LOG.info("----- setCourseMapPosition -----")
-        if len(course_title_list) > 1:
-            for item in items_list:
-                if item["idElement"] == course_title_list[0]:
-                    self.setCourseMapPosition(item_id, item_properties, item["listeElement"], course_title_list[1:])
-        else:
-            for item in items_list:
-                if item["idElement"] == course_title_list[0]:
-                    item["listeElement"].append(item_properties)
-                    break
-
-    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
-        LOG.info("----- addItemProperty -----")
-        parent = self.getParentPlanElement(item_id, 'racine', '')
-        LOG.info("***** parent : %s" % str(parent))
-        if parent and parent['idElement'] != 'racine':
-            is_display_parent = self.isAfficherElement(parent['affElement'], parent['masquerElement'])
-            LOG.info("***** is_display_parent : %s" % str(is_display_parent))
-            if not is_display_parent['val']:
-                display_item = ""
-
-        items_properties = self.getElementCours()
-        if not item_id in items_properties:
-            items_properties[item_id] = {"titreElement":    item_title,
-                                         "typeElement":     item_type,
-                                         "createurElement": item_creator,
-                                         "affElement":      display_item,
-                                         "masquerElement":  ""}
-            if display_item:
-                dicoActu = {"reference":      item_id,
-                            "code":           "dispo",
-                            "dateActivation": display_item}
-                self.setActuCours(dicoActu)
-
-            if complement_element:
-                items_properties[item_id]["complementElement"] = complement_element
-            self.setElementsCours(items_properties)
-
-    def authUser(self, quser=None, qclass=None, request=None):
-        #self.plone_log("authUser")
-        return jalon_utils.authUser(self, quser, qclass, request)
-
-    def creerSousObjet(self, typeElement, titreElement, descriptionElement, createurElement, publicsElement, mailAnnonce):
-        #self.plone_log("creerSousObjet (Start)")
-        dicoType = {"BoiteDepot":     "JalonBoiteDepot",
-                    "AutoEvaluation": "JalonCoursWims",
-                    "Examen":         "JalonCoursWims",
-                    "Forum":          "PloneboardForum",
-                    "Annonce":        "JalonAnnonce"}
-        rep = self
-        if typeElement == "Annonce":
-            rep = self.annonce
-        elif typeElement == "Actu":
-            rep = self.actu
-        elif typeElement == "Forum":
-            rep = self.forum
-        #self.plone_log("invokeFactory %s (Start)" % dicoType[typeElement])
-        idElement = rep.invokeFactory(type_name=dicoType[typeElement], id="%s-%s-%s" % (typeElement, createurElement, DateTime().strftime("%Y%m%d%H%M%S%f")))
-        #self.plone_log("invokeFactory %s (End)" % dicoType[typeElement])
-        element = getattr(rep, idElement)
-        if typeElement == "Forum":
-            element.setTitle(titreElement)
-            element.setDescription(descriptionElement)
-            element.setMaxAttachments(0)
-            element.reindexObject()
-        else:
-            element.setProperties({"Title":       titreElement,
-                                   "Description": descriptionElement})
-        if typeElement == "Annonce":
-            element.setProperties({"Publics": publicsElement})
-            if mailAnnonce:
-                element.envoyerAnnonce()
-        #self.setProperties({"DateDerniereModif": DateTime()})
-        #self.plone_log("creerSousObjet (End)")
-        return idElement
-
-    def connect(self, methode, param):
-        #LOG.info("----- connect -----")
-        return self.portal_connect.__getattribute__(methode)(param)
-
-    def detacherElement(self, ressource, createur, repertoire):
-        #self.plone_log("detacherElement")
-        dicoRep = {"Image":                    "Fichiers",
-                   "File":                     "Fichiers",
-                   "Page":                     "Fichiers",
-                   "Lienweb":                  "Externes",
-                   "Lecteurexportable":        "Externes",
-                   "Referencebibliographique": "Externes",
-                   "CatalogueBU":              "Externes",
-                   "Catalogue BU":             "Externes",
-                   "TermeGlossaire":           "Glossaire",
-                   "Presentationssonorisees": "Sonorisation"}
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
-        if "*-*" in ressource:
-            ressource = ressource.replace("*-*", ".")
-        try:
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), createur), repertoire), ressource)
-            relatedItems = objet.getRelatedItems()
-            relatedItems.remove(self)
-            objet.setRelatedItems(relatedItems)
-            objet.reindexObject()
-        except:
-            pass
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def encodeUTF8(self, itemAEncoder):
-        #self.plone_log("encodeUTF8")
-        return jalon_utils.encodeUTF8(itemAEncoder)
-
-    def envoyerMail(self, form):
-        #self.plone_log("envoyerMail")
-        jalon_utils.envoyerMail(form)
-
-    def envoyerMailErreur(self, form):
-        #self.plone_log("envoyerMailErreur")
-        jalon_utils.envoyerMailErreur(form)
-
-    def modifierInfosBoitePlan(self, idElement, param):
-        #self.plone_log("modifierInfosBoitePlan")
-        dico = self.getElementCours(idElement)
-        for attribut in param.keys():
-            dico[attribut] = param[attribut]
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def modifierInfosElementPlan(self, idElement, titreElement):
-        #self.plone_log("modifierInfosElementPlan")
-        dico = self.getElementCours(idElement)
-        dico["titreElement"] = titreElement
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def ordonnerElementPlan(self, pplan):
-        #self.plone_log("ordonnerElementPlan")
-        plan = []
-        dicoplan = {}
-        pre_plan = pplan.split("&")
-        for element in pre_plan:
-            clef, valeur = element.split("=")
-            typeElement, idElement = clef[:-1].split("[")
-            dicoplan[idElement] = valeur
-
-        def getParentPlan(idElement):
-            parent = dicoplan[idElement]
-            if parent == "null":
-                return {"idElement": "racine", "listeElement": plan}
-            else:
-                racine = getParentPlan(parent)
-                return {"idElement": racine["listeElement"][-1]["idElement"], "listeElement": racine["listeElement"][-1]["listeElement"]}
-
-        dicoElements = self.getElementCours()
-        for element in pre_plan:
-            clef, valeur = element.split("=")
-            typeElement, idElement = clef[:-1].split("[")
-            infosElement = dicoElements[idElement]
-            isAfficherElement = self.isAfficherElement(infosElement["affElement"], infosElement["masquerElement"])["val"]
-            if typeElement == "chapitre":
-                p = getParentPlan(idElement)
-                if p["idElement"] != "racine":
-                    pInfosElement = self.getElementCours(p["idElement"])
-                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
-                    if isAfficherElement and not isPAfficherElement:
-                        self.afficherRessourceChapitre(idElement, DateTime(), "masquerElement")
-                p["listeElement"].append({"idElement": idElement, "listeElement": []})
-            else:
-                p = getParentPlan(idElement)
-                if p["idElement"] != "racine":
-                    pInfosElement = self.getElementCours(p["idElement"])
-                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
-                    if isAfficherElement and not isPAfficherElement:
-                        self.afficherRessource(idElement, DateTime(), "masquerElement")
-                p["listeElement"].append({"idElement": idElement})
-
-        self.plan = tuple(plan)
-        self.setProperties({"DateDerniereModif": DateTime()})
-        return self.getPlanCours(True)
-
-    def getDataCourseFormAction(self, user_id, course_id):
-        #LOG.info("----- getDataCourseFormAction -----")
-        return {"course_name":     self.getShortText(self.Title(), 80),
-                "is_course_owner": self.isCourseOwner(user_id)}
-
-    def getDataCourseWimsActivity(self, user_id, course_id):
-        #LOG.info("----- getDataCourseWimsActivity -----")
-        wims_classe_list = self.getListeClasses()
-        can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
-
-        course_author_data = self.getAuteur()
-
-        #à finir ne tiens pas compte de si pas d'annuaire LDAP
-        record_user_book_base = self.getBaseAnnuaire()
-        course_author_record_user_link = self.getFicheAnnuaire(course_author_data, record_user_book_base)
-
-        is_course_author = self.isAuteur(user_id)
-        can_delete_all_wims_classes_css = "" if is_course_author else "disabled"
-
-        return {"course_name":                     self.getShortText(self.Title(), 80),
-                "is_course_owner":                 self.isCourseOwner(user_id),
-                "wims_classe_list":                wims_classe_list,
-                "can_delete":                      can_delete,
-                "course_author_fullname":          course_author_data["fullname"],
-                "course_author_record_user_link":  course_author_record_user_link,
-                "is_course_author":                is_course_author,
-                "can_delete_all_wims_classes_css": can_delete_all_wims_classes_css}
-
-    def purgerActivitesWims(self):
-        u"""Supprime l'ensemble des travaux effectués dans toutes les activités Wims d'un cours."""
-        #self.plone_log("purgerActivitesWims")
-        dico_classes = self.getListeClasses()
-        retour = {}
-        if dico_classes:
-            dico_classes = dico_classes[0]
-
-            authMember = self.portal_membership.getAuthenticatedMember().getId()
-            for user in dico_classes.keys():
-                class_id = dico_classes[user]
-                dico = {"qclass": class_id, "code": authMember}
-                rep = self.wims("cleanClass", dico)
-                retour[user] = rep
-
-        return retour
-
-    def getScoresWims(self, auteur, authMember, request=None, file_format="csv"):
-        u"""Télécharger les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
-        #self.plone_log("[jaloncours/getScoresWims]")
-        dicoClasses = list(self.getListeClasses())[0]
-
-        liste_activitesWIMS = []
-
-        for idElement in self.objectIds():
-
-            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
-                activite = getattr(self, idElement)
-
-                if auteur == "All" or activite.getCreateur() == auteur:
-                    if activite.typeWims == "Examen":
-                        if activite.idExam:
-                            # On ne demande que les examens créés coté WIMS
-                            liste_activitesWIMS.append("exam%s" % activite.getIdExam())
-                    elif activite.isActif():
-                        # Pour les feuilles, on ne demande que les actives.
-                        liste_activitesWIMS.append("sheet%s" % activite.getIdFeuille())
-        retour = {}
-        if len(liste_activitesWIMS) > 0:
-            #self.plone_log("[jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
-            #for user in dicoClasses:
-            #    if auteur == "All" or user == auteur:
-            columns = "login,name,%s" % (",".join(liste_activitesWIMS))
-            if auteur in dicoClasses:
-                dico = {"qclass": dicoClasses[auteur],
-                        "code": authMember,
-                        "job": "getcsv",
-                        "format": file_format,
-                        "option": columns}
-                #self.plone_log("[jaloncours/getScoresWims] callJob dico :'%s'" % dico)
-                rep_wims = self.wims("callJob", dico)
-
-                try:
-                    # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
-                    retour = json.loads(rep_wims)
-                    self.plone_log("[jaloncours/getScoresWims] ERREUR WIMS / retour = %s" % retour)
-                    # Une des erreurs possible, c'est un trop grand nombre :
-                    # * d'eleves dans la classe (>400 ?)
-                    # * d'activités dans la classe (>64 ?)
-                    # * une combinaison des 2 ?
-                    self.wims("verifierRetourWims", {"rep": rep_wims,
-                                                     "fonction": "jaloncours.py/getScoresWims",
-                                                     "message": "Impossible de télécharger les notes (demandeur = %s)" % authMember,
-                                                     "jalon_request": request
-                                                     })
-                except:
-                    if file_format == "xls":
-                        # Pour le format xls, on remplace le séparateur décimal (.) par une virgule.
-                        rep_wims = rep_wims.replace(".", ",")
-                    # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
-                    retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": rep_wims}
-
-        else :
-            retour = {"status": "not_relevant", "nb_activity": len(liste_activitesWIMS)}
-
-        return retour
-
-    def supprimerActivitesWims(self, utilisateur="All", request=None):
-        u"""Suppression de toutes les activites WIMS du cours, créées par 'utilisateur'."""
-        # Retire du plan toutes les activités de l'utilisateur "utilisateur"
-
-        # Ici on utilise self.objectIds() plutot que getPlanPlat, afin de lister les objets réellement dans le cours.
-        # Cela permet de prendre egalement d'éventuels elements mal supprimés qui sont toujours "la", mais plus dans le plan.
-
-        liste_activitesWIMS = []
-
-        for idElement in self.objectIds():
-
-            if (idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
-                # self.plone_log("[jaloncours/supprimerActivitesWims] ACTIVITE :'%s'" % element)
-                activite = getattr(self, idElement)
-
-                if utilisateur == "All" or activite.getCreateur() == utilisateur:
-                    #self.plone_log("[jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
-                    liste_activitesWIMS.append(idElement)
-
-                    # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
-                    # retire l'activité des relatedItems pour ses exercices et ses documents.
-                    activite.retirerTousElements(force_WIMS=True)
-
-                    # Supprime l'activité (du plan du cours et du cours)
-                    self.retirerElementPlan(idElement, force_WIMS=True)
-                    # Supprime l'activité des actus du cours
-                    self.delActu(idElement)
-
-                    ### A utiliser dans un patch correctif :
-                    #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
-                    if idElement in self._elements_cours:
-                        self.manage_delObjects(idElement)
-                        del self._elements_cours[idElement]
-
-        # Supprime toutes les classes du serveur WIMS
-        listeClasses = list(self.getListeClasses())
-        removing_classes = []
-        dico = listeClasses[0]
-        #self.plone_log("[jaloncours/supprimerActivitesWims] Ancienne liste :'%s'" % listeClasses)
-        new_listeClasses = []
-        for auteur in dico:
-            if utilisateur == "All" or utilisateur == auteur:
-                removing_classes.append(dico[auteur])
-            else:
-                if len(new_listeClasses) == 0:
-                    new_listeClasses.append({auteur: dico[auteur]})
-                else:
-                    new_listeClasses[0][auteur] = dico[auteur]
-        if removing_classes is not None:
-            self.aq_parent.delClassesWims(removing_classes, request)
-
-        # Et enfin remettre à zero la liste des classes du cours.
-        #self.plone_log("[jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
-        self.setListeClasses(new_listeClasses)
-
-        # Renvoit le nombre d'activités supprimées.
-        return len(liste_activitesWIMS)
-
-    # rechercheApogee
     def rechercheApogee(self, recherche, termeRecherche):
-        #self.plone_log("rechercheApogee")
+        LOG.info("----- rechercheApogee -----")
         if not termeRecherche:
             return None
         termeRecherche.strip()
@@ -2635,7 +1987,6 @@ class JalonCours(ATFolder):
         termeRecherche = termeRecherche.replace(" ", "% %")
         listeRecherche = termeRecherche.split(" ")
 
-        #apogee = getToolByName(self, "portal_apogee")
         portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
         if recherche == "etape":
             return portal_jalon_bdd.rechercherEtape(listeRecherche)
@@ -2648,477 +1999,11 @@ class JalonCours(ATFolder):
         return None
 
     def rechercherUtilisateur(self, username, typeUser, match=False, json=True):
-        #self.plone_log("rechercherUtilisateur")
+        LOG.info("----- rechercherUtilisateur -----")
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
 
-    def retirerElement(self, idElement):
-        #LOG.info("----- retirerElement -----")
-        elements_glossaire = list(self.getGlossaire())
-        if idElement in elements_glossaire:
-            elements_glossaire.remove(idElement)
-            self.elements_glossaire = tuple(elements_glossaire)
-            infos_element = self.getElementCours()
-            infosElement = infos_element[idElement]
-            self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"])
-            del infos_element[idElement]
-        elements_bibliographie = list(self.getBibliographie())
-        if idElement in elements_bibliographie:
-            elements_bibliographie.remove(idElement)
-            self.elements_bibliographie = tuple(elements_bibliographie)
-            if not self.isInPlan(idElement):
-                infos_element = self.getElementCours()
-                infosElement = infos_element[idElement]
-                self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
-                del infos_element[idElement]
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
-        """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
-        #LOG.info("----- retirerElementPlan -----")
-        start = False
-        if listeElement is None:
-            listeElement = list(self.getPlan())
-            start = True
-        for element in listeElement:
-            if element["idElement"] == idElement or idElement == "all":
-                #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
-                #   avec le parametre "all" et la liste des elements a supprimer
-                if "listeElement" in element and element["listeElement"] != []:
-                    self.retirerElementPlan("all", element["listeElement"], force_WIMS)
-
-                #on supprime element de la liste où il etait dans le plan
-                while element in listeElement:
-                    listeElement.remove(element)
-
-                infosElement = self.getElementCours().get(element["idElement"])
-
-                if infosElement:
-                    #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
-                    if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
-                        self.ajouterElementPlan(element["idElement"])
-                    else:
-
-                        if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
-                            # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
-                            del self._elements_cours[element["idElement"]]
-                            self.setElementsCours(self._elements_cours)
-
-                    if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
-                        self.detacherElement(element["idElement"], infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
-
-                    if infosElement["typeElement"] == "BoiteDepot":
-                        boite = getattr(self, element["idElement"])
-                        boite.retirerTousElements()
-
-                    if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
-                        self.manage_delObjects([element["idElement"]])
-
-            elif "listeElement" in element:
-                # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
-                self.retirerElementPlan(idElement, element["listeElement"], force_WIMS)
-
-        if start:
-            self.plan = tuple(listeElement)
-        return listeElement
-
-    def purgerDepots(self):
-        #self.plone_log("purgerDepots")
-        for boite in self.objectValues("JalonBoiteDepot"):
-            boite.purgerDepots()
-        self.setProperties({"DateDerniereModif": DateTime()})
-
-    def supprimerAnnonce(self, annonce):
-        #self.plone_log("supprimerAnnonce")
-        self.annonce.manage_delObjects([annonce])
-
-    def verifType(self, typeElement):
-        #self.plone_log("verifType")
-        return typeElement.replace(" ", "")
-
-    def test(self, condition, valeurVrai, valeurFaux):
-        #self.plone_log("test")
-        return jalon_utils.test(condition, valeurVrai, valeurFaux)
-
-    def jalon_quote(self, encode):
-        #self.plone_log("jalon_quote")
-        return jalon_utils.jalon_quote(encode)
-
-    def jalon_unquote(self, decode):
-        #self.plone_log("jalon_unquote")
-        return jalon_utils.jalon_unquote(decode)
-
-    #autoriserAffichageSousObjet : définit si l'affichage de l'objet 'idElement' est autorisé ou pas.
-    # utile pour empecher l'affichage des activités vides par exemple
-    def autoriserAffichageSousObjet(self, idElement, typeElement=None):
-        #self.plone_log("autoriserAffichageSousObjet")
-        ret = {"val": True, "reason": ""}
-        if not typeElement:
-            typeElement = self.getTypeSousObjet(idElement)
-        if typeElement in ['AutoEvaluation', 'Examen']:
-            # dans le cas d'une activité WIMS, on n'affiche l'objet que s'il contient des exercices.
-            infosActivite = self.getSousObjet(idElement)
-            ret = infosActivite.autoriser_Affichage()
-        return ret
-
-    def getPhotoTrombi(self, login):
-        #self.plone_log("getPhotoTrombi")
-        return jalon_utils.getPhotoTrombi(login)
-
-    def retirerEspace(self, mot):
-        #self.plone_log("retirerEspace")
-        return jalon_utils.retirerEspace(mot)
-
-    def getBaseAnnuaire(self):
-        #self.plone_log("getBaseAnnuaire")
-        return jalon_utils.getBaseAnnuaire()
-
-    def getFicheAnnuaire(self, valeur, base=None):
-        #self.plone_log("getFicheAnnuaire")
-        return jalon_utils.getFicheAnnuaire(valeur, base)
-
-    def inscrireMOOC(self, member):
-        #self.plone_log("inscrireMOOC")
-        if self.getLibre():
-            inscriptionsLibres = list(self.getInscriptionsLibres())
-            if not member in inscriptionsLibres:
-                inscriptionsLibres.append(member)
-                self.setProperties({"InscriptionsLibres": inscriptionsLibres,
-                                    "DateDerniereModif":  DateTime()})
-
-    def getParamMooc(self):
-        #self.plone_log("getParamMooc")
-        return urllib2.quote("".join(["?action=mooc&amp;idcours=", self.getId(), "&auteur=", self.Creator(), "&amp;came_from=", self.absolute_url()]))
-
-    def isLDAP(self):
-        #self.plone_log("isLDAP")
-        return jalon_utils.isLDAP()
-
-    def convertirDate(self, date):
-        #self.plone_log("convertirDate")
-        return jalon_utils.convertirDate(date)
-
-    def majCours(self):
-        #self.plone_log("majCours")
-        if not getattr(self, "forum", None):
-            commentaires_sociaux = BooleanField("commentaires_sociaux",
-                                                required=True,
-                                                accessor="getCommentaires_sociaux",
-                                                searchable=False,
-                                                default=False,
-                                                widget=BooleanWidget(label=_(u"Commentaires sur Facebook"))
-                                                )
-            self.schema.addField(commentaires_sociaux)
-            jaime_sociaux = BooleanField("jaime_sociaux",
-                                         required=True,
-                                         accessor="getJaime_sociaux",
-                                         searchable=False,
-                                         default=False,
-                                         widget=BooleanWidget(label=_(u"J'aime sur Facebook"))
-                                         )
-            self.schema.addField(jaime_sociaux)
-            self.invokeFactory(type_name='Ploneboard', id="forum")
-            forum = getattr(self, "forum")
-            forum.setTitle("Liste des forums du cours")
-            username = self.getAuteurPrincipal()
-            if not username:
-                username = self.Creator()
-            forum.manage_setLocalRoles(username, ["Owner"])
-        return "fait"
-
-    #fonction centrale dans l'automatisation de la mise en place de tag sur les ressources d'un serveur primo liées à des cours jalon
-    def tagBU(self, action, ressource=None):
-        #self.plone_log("tagBU")
-        portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
-        if portal_jalon_properties.getPropertiesMonEspace('activer_tags_catalogue_bu'):
-            if not ressource:
-                elem = dict(self.getElementCours())
-                for cle_element in elem.keys():
-                    prop_element = elem[cle_element]
-                    if prop_element["typeElement"] == "Catalogue BU":
-                        self.tagBU(action, cle_element)
-            else:
-                portal_primo = getToolByName(self, "portal_primo")
-                nomAuteur = self.getAuteur()["nom"]
-                listeTag = []
-                listeTag = portal_primo.recupTagBU(ressource)
-                try:
-                    elemTag = action.split(None, 1)[1]
-                except:
-                    pass
-                action = action.split(None, 1)[0]
-
-                #suppression de tag si un de ses elements change
-                if action in ["diplome", "nom"]:
-                    for ancienTag in listeTag:
-                        ancienTagSplit = ancienTag.split(None, 2)
-                        if len(ancienTagSplit) == 2:
-                            ancienTag = ancienTag.replace(" ", "%20")
-                            if action == "diplome":
-                                if nomAuteur == ancienTagSplit[0]:  # and ancienTagSplit[2] in titreCour:
-                                    portal_primo.tagBU(ressource, ancienTag, "remove")
-                            if action == "nom":
-                                ancienNom = self.getInfosMembre(elemTag)["nom"]
-                                if ancienNom == ancienTagSplit[0]:  # ancienTagSplit[2] in titreCour and
-                                    portal_primo.tagBU(ressource, ancienTag, "remove")
-                    action = "add"
-
-                #recuperation des code diplome associé au cours
-                for public in self.getInfosListeAcces():
-                    COD_ETU = public[1]
-                    if COD_ETU not in ["email", "perso"]:
-                        tag = nomAuteur + "%20" + COD_ETU  # + "%20" + titreCour
-                        tag = tag.replace("%20", " ")
-                        if len(tag) > 34:
-                            tag = tag[0:34]
-                        tag = tag.replace(" ", "%20")
-
-                        #si j'ajoute une nouvelle ressourceBU
-                        if action in ["add", "remove"]:
-                            portal_primo.tagBU(ressource, tag, action)
-
-    #pour montrer les nouveaux éléments dans le cours
-    def isNouveau(self, idElement, listeActualites=None):
-        #self.plone_log("isNouveau")
-        if listeActualites is None:
-            #self.plone_log("***** Not listeActualites")
-            listeActualites = self.getActualitesCours(True)["listeActu"]
-        for actualite in listeActualites:
-            if idElement["titreElement"] in actualite["titre"]:
-                member = self.portal_membership.getAuthenticatedMember()
-                if member.getId() == self.Creator():
-                    if cmp(actualite["date"], member.getProperty('login_time', None)) > 0:
-                        return True
-                    return False
-                elif cmp(actualite["date"], self.getLastLogin()) > 0:
-                    return True
-        return False
-
-    #Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
-    def getDateDerniereActu(self):
-        #self.plone_log("getDateDerniereActu")
-        try:
-            return DateTime(self.getLastDateActu())
-        except:
-            return DateTime()
-
-    def setDateDerniereActu(self, listeActualites=None):
-        #self.plone_log("setDateDerniereActu")
-        #self.plone_log("***** listeActualites : %s" % str(listeActualites))
-        retour = self.created()
-        paramDate = "dateActivation"
-        if listeActualites is None:
-            listeActualites = self.getActualitesCours(True)["listeActu"]
-            paramDate = "date"
-        for actualite in listeActualites:
-            if cmp(actualite[paramDate], retour) > 0:
-                retour = actualite[paramDate]
-        self.dateDerniereActu = retour
-
-    def insererConsultation(self, user, type_cons, id_cons):
-        #self.plone_log("insererConsultation")
-        public_cons = "Anonymous"
-        if user.has_role("Personnel"):
-            username = user.getId()
-            if self.isAuteur(username):
-                public_cons = "Auteur"
-            if username in self.coAuteurs:
-                public_cons = "Co-auteur"
-            if username in self.coLecteurs:
-                public_cons = "Lecteur"
-        if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
-            public_cons = "Etudiant"
-        if user.has_role("Manager"):
-            public_cons = "Manager"
-        if user.has_role("Secretaire"):
-            public_cons = "Secretaire"
-        portal = self.portal_url.getPortalObject()
-        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=user.getId(), ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
-
-    def getConsultation(self):
-        #self.plone_log("getConsultation")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByCoursByDate(self.getId())
-
-    def getConsultationByCoursByUniversityYearByDate(self, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
-        #LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearByDate(self.getId(), DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
-
-    def getConsultationByCoursByYearForGraph(self):
-        #self.plone_log("getConsultationByCoursByYearForGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
-
-    def getConsultationByCoursByUniversityYearForGraph(self):
-        #self.plone_log("getConsultationByCoursByYearForGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
-
-    def getFrequentationByCoursByUniversityYearByDateForGraph(self, PUBLIC_CONS):
-        #self.plone_log("getFrequentationByCoursByUniversityYearForGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearByDateForGraph(self.getId(), PUBLIC_CONS)
-
-    def getConsultationElementsByCours(self, elements_list, elements_dict):
-        #self.plone_log("getConsultationElementsByCours")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationElementsByCours(self.getId(), elements_list=elements_list, elements_dict=elements_dict)
-
-    def getConsultationByElementByCours(self, element_id):
-        #self.plone_log("getConsultationByElementByCours")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByElementByCours(self.getId(), element_id)
-
-    def getConsultationByElementByCoursByYearForGraph(self, element_id):
-        #self.plone_log("getConsultationByElementByCoursByYearForGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
-
-    def getConsultationByElementByCoursByUniversityYearForGraph(self, element_id):
-        #self.plone_log("getConsultationByElementByCoursByUniversityYearForGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.getConsultationByElementByCoursByUniversityYearForGraph(self.getId(), element_id)
-
-    def genererGraphIndicateurs(self, months_dict):
-        #self.plone_log("genererGraphIndicateurs")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.genererGraphIndicateurs(months_dict)
-
-    def genererFrequentationGraph(self, months_dict):
-        self.plone_log("genererFrequentationGraph")
-        portal = self.portal_url.getPortalObject()
-        return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
-
-    #Recupere la liste des fichiers d'un cours pouvant etre telecharges
-    def getFichiersCours(self, page=None):
-        #self.plone_log("getFichiersCours")
-        #fixe le nb d'element voulu par page
-        nbElem = 15  # doit etre identique a celui de nbPage
-        elem = dict(self.getElementCours())
-        retour = []
-        i = 0
-        #Pour la 1er page ou s'il n'y en a qu'une
-        if page in [None, 1, '']:
-            for cle_element in elem.keys():
-                element = elem[cle_element]
-                if self.isInPlan(cle_element):
-                    if i < nbElem:
-                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
-                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
-                                element.update({'taille': self.getTailleFichiers(cle_element, element['createurElement'])})
-                                retour.append(element)
-                                i = i + 1
-        else:
-            limitte = nbElem * int(page)
-            limitteInf = nbElem * (int(page) - 1)
-            for cle_element in elem.keys():
-                element = elem[cle_element]
-                #Pour les pages avant l'actuel
-                if self.isInPlan(cle_element):
-                    if i < limitteInf:
-                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
-                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
-                                i = i + 1
-                    #pour la page actuel
-                    elif i >= limitteInf and i < limitte:
-                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
-                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
-                                element.update({'taille': self.getTailleFichiers(cle_element, element['createurElement'])})
-                                retour.append(element)
-                                i = i + 1
-        return retour
-
-    #donne la taille d'un fichier
-    def getTailleFichiers(self, idElement, createurElement):
-        #self.plone_log("getTailleFichiers")
-        portal = self.portal_url.getPortalObject()
-        home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
-        objid = idElement
-        if "*-*" in idElement:
-            objid = objid.replace("*-*", ".")
-        try:
-            objid = objid.replace(" ", "-")
-        except:
-            pass
-        for obj in home.objectValues(["ATBlob", "ATDocument"]):
-            if objid in obj.id:
-                return obj.getObjSize()
-
-    def nbPage(self):
-        #self.plone_log("nbPage")
-        nbPage = 0
-        #fixe le nb d'element voulu par page
-        nbElem = 15
-        i = 0
-        retour = []
-        elem = dict(self.getElementCours())
-        for cle_element in elem.keys():
-            if self.isInPlan(cle_element):
-                element = elem[cle_element]
-                if i < nbElem:
-                    if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
-                        if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
-                            i = i + 1
-                #si on depasse le nombre d'element par page on ajoute une page
-                else:
-                    nbPage = nbPage + 1
-                    retour.append(nbPage)
-                    i = 0
-                    if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
-                        if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
-                            i = 1
-        if i > 0:
-            nbPage = nbPage + 1
-            retour.append(nbPage)
-        return retour
-
-    def telecharger(self, HTTP_USER_AGENT, fichiers):
-        #self.plone_log("telecharger")
-        import tempfile
-        fd, path = tempfile.mkstemp('.zipfiletransport')
-        close(fd)
-        zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
-        portal = self.portal_url.getPortalObject()
-        elems = dict(self.getElementCours())
-        cours = self.supprimerCaractereSpeciaux(self.Title())
-        dansArchive = []
-        for cle_element in elems.keys():
-            element = elems[cle_element]
-            for fichier in fichiers:
-                # on ne prend que les fichiers coché parmi tout les fichiers du cours
-                if element["titreElement"] == fichier and cle_element not in dansArchive:
-                    createurElement = element["createurElement"]
-                    # on vas chercher le fichier dans l'espace du prof a qui il appartient
-                    home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
-                    #"ATBlob", "ATDocument" sont les 2 seuls qui fonctionnent
-                    if "*-*" in cle_element:
-                        cle_element = cle_element.replace("*-*", ".")
-                    try:
-                        objid = cle_element.replace(" ", "-")
-                    except:
-                        objid = cle_element
-                    for obj in home.objectValues(["ATBlob", "ATDocument"]):
-                        if objid in obj.id:
-                            if len(fichiers) == 1 and fichiers[0] == element["titreElement"] and element["typeElement"] not in ["Image"]:
-                                return {"situation": 1, "data": '%s/at_download/file' % obj.absolute_url()}
-                            dansArchive.append(cle_element)
-                            file_data = str(obj.data)
-                            #nom du dossier/ nom du fichier dans le zip
-                            filename_path = "%s/%s" % (cours, obj.id)
-                            if 'Windows' in HTTP_USER_AGENT:
-                                try:
-                                    filename_path = filename_path.decode('utf-8').encode('cp437')
-                                except:
-                                    pass
-                            zipFile.writestr(filename_path, file_data)
-                            pass
-        zipFile.close()
-        fp = open(path, 'rb')
-        data = fp.read()
-        fp.close()
-        return {"length": str(os.stat(path)[6]), "data": data, "situation": 3}
-
     def hasParticipants(self):
+        LOG.info("----- hasParticipants -----")
         formations = self.getAffichageFormations()
         if formations:
             return True
@@ -3134,6 +2019,7 @@ class JalonCours(ATFolder):
         return False
 
     def telechargerListingParticipants(self):
+        LOG.info("----- telechargerListingParticipants -----")
         import tempfile
         from os import close
         from xlwt import Workbook, Style, Pattern, XFStyle
@@ -3302,45 +2188,1023 @@ class JalonCours(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
-    def supprimerCaractereSpeciaux(self, chaine):
-        return jalon_utils.supprimerCaractereSpeciaux(chaine)
+    #--------------------#
+    # Course Life - News #
+    #--------------------#
+    def getActualitesCours(self, toutes=None):
+        LOG.info("----- getActualitesCours -----")
+        actualites = []
+        listeActualites = list(self.getActualites())
+        listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
+        if not listeActualites:
+            return {"nbActu":    0,
+                    "listeActu": []}
 
-    def getSessionConnect(self, user_id, repertoire):
-        #self.plone_log("getSessionConnect")
+        infos_elements = self.getElementCours()
+
+        for actualite in listeActualites:
+            if DateTime() > actualite["dateActivation"]:
+                infos_element = infos_elements.get(actualite["reference"], '')
+                if infos_element:
+                    description = self._actuality_dict[actualite["code"]]
+                    if actualite["code"] == "datedepot":
+                        description = "%s %s" % (description, DateTime(actualite["dateDepot"], datefmt='international').strftime("%d/%m/%Y %H:%M"))
+                    if actualite["code"] == "nouveauxdepots":
+                        description = "%s %s" % (str(actualite["nb"]), description)
+                    actualites.append({"type":        infos_element["typeElement"],
+                                       "titre":       infos_element["titreElement"],
+                                       "description": description,
+                                       "date":        actualite["dateActivation"]})
+        if not toutes:
+            return {"nbActu":    len(actualites),
+                    "listeActu": actualites[:3]}
+        else:
+            return {"nbActu":    len(actualites),
+                    "listeActu": actualites}
+
+    def getActuCoursFull(self, date):
+        LOG.info("----- getActuCoursFull -----")
+        actualites = []
+
+        listeActualites = list(self.getActualites())
+        listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
+        infos_elements = self.getElementCours()
+
+        for actualite in listeActualites:
+            if date > DateTime(actualite["dateActivation"]).Date():
+                break
+            elif date == DateTime(actualite["dateActivation"]).Date():
+                infos_element = infos_elements.get(actualite["reference"], '')
+                if infos_element:
+                    description = self._actuality_dict[actualite["code"]]
+                    if actualite["code"] == "datedepot":
+                        description = "%s %s" % (description, DateTime(actualite["dateDepot"], datefmt='international').strftime("%d/%m/%Y %H:%M"))
+                    if actualite["code"] == "nouveauxdepots":
+                        description = "%s %s" % (str(actualite["nb"]), description)
+                    actualites.append({"type":        infos_element["typeElement"],
+                                       "titre":       infos_element["titreElement"],
+                                       "description": description})
+        return actualites
+
+    def setActuCours(self, param):
+        LOG.info("----- setActuCours -----")
+        dicoActu = {"reference":      param["reference"],
+                    "dateActivation": DateTime(),
+                    "code":           param["code"],
+                    "nb":             0,
+                    "dateDepot":      None,
+                    "acces":          ["auteurs", "etudiants"]
+                    }
+        listeActualites = list(self.getActualites())
+        if param["code"] in ["nouveauxdepots", "nouveauxmessages"]:
+            for actualite in listeActualites:
+                if actualite["reference"] == param["reference"] and param["code"] == actualite["code"] and DateTime(actualite["dateActivation"]).Date() == DateTime().Date():
+                    dicoActu = actualite.copy()
+                    listeActualites.remove(actualite)
+                    break
+            dicoActu["nb"] = dicoActu["nb"] + 1
+            dicoActu["dateActivation"] = DateTime()
+        if param["code"] == "datedepot":
+            dicoActu["dateDepot"] = param["dateDepot"]
+            dicoActu["dateActivation"] = DateTime()
+        if param["code"] not in ["nouveauxdepots", "nouveauxmessages", "datedepot"]:
+            dicoActu["dateActivation"] = param["dateActivation"]
+        listeActualites.append(dicoActu)
+        self.actualites = tuple(listeActualites)
+        self.setDateDerniereActu(self.actualites)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def delActu(self, idElement):
+        LOG.info("----- delActu -----")
+        newActu = []
+        listeActualites = list(self.getActualites())
+        for actu in listeActualites:
+            if idElement != actu["reference"]:
+                newActu.append(actu)
+        self.actualites = tuple(newActu)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    #Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
+    def getDateDerniereActu(self):
+        LOG.info("----- getDateDerniereActu -----")
+        try:
+            return DateTime(self.getLastDateActu())
+        except:
+            return DateTime()
+
+    def setDateDerniereActu(self, listeActualites=None):
+        LOG.info("----- setDateDerniereActu -----")
+        retour = self.created()
+        paramDate = "dateActivation"
+        if listeActualites is None:
+            listeActualites = self.getActualitesCours(True)["listeActu"]
+            paramDate = "date"
+        for actualite in listeActualites:
+            if cmp(actualite[paramDate], retour) > 0:
+                retour = actualite[paramDate]
+        self.dateDerniereActu = retour
+
+    #---------------------#
+    # Course Life - Forum #
+    #---------------------#
+    def toPloneboardTime(self, context, request, time_=None):
+        LOG.info("----- toPloneboardTime -----")
+        """Return time formatted for Ploneboard."""
+        return toPloneboardTime(context, request, time_)
+
+    def getDicoForums(self, all=None):
+        LOG.info("----- getDicoForums -----")
+        listeForums = list(self.forum.objectValues())
+        listeForums.sort(lambda x, y: cmp(y.modified(), x.modified()))
+        if len(listeForums) > 5:
+            return {"nbForums":    len(listeForums),
+                    "listeForums": listeForums[:5]}
+        else:
+            return {"nbForums":    len(listeForums),
+                    "listeForums": listeForums}
+
+    #------------------------#
+    # Course Life - Announce #
+    #------------------------#
+    def getAnnonces(self, authMember, request, personnel, all=None):
+        LOG.info("----- getAnnonces -----")
+        annonces = []
+        listeAnnonces = list(self.annonce.objectValues())
+        listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
+        if listeAnnonces and personnel and all:
+            return {"listeAnnonces": listeAnnonces, "nbAnnonces": len(listeAnnonces)}
+        elif listeAnnonces and personnel:
+            return {"listeAnnonces": [listeAnnonces[0]], "nbAnnonces": len(listeAnnonces)}
+
+        groupes = []
+        diplomes = []
         portal = self.portal_url.getPortalObject()
-        home = getattr(getattr(portal.Members, user_id), repertoire)
-        return home.getSessionConnect(user_id)
+        portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
+        try:
+            idMember = authMember.getId()
+        except:
+            idMember = authMember
+        if idMember and not "@" in idMember:
+            if portal_jalon_bdd.getTypeBDD() == "apogee":
+                COD_ETU = member.getProperty("supannEtuId", member.getProperty("supannAliasLogin"))
+            if portal_jalon_bdd.getTypeBDD() == "sqlite":
+                COD_ETU = idMember
 
-    def getReunion(self, user_id, request, repertoire):
-        #self.plone_log("getReunion")
+            for diplome in portal_jalon_bdd.getInscriptionIND(COD_ETU, "etape"):
+                diplomes.append(diplome["COD_ELP"])
+
+            groupes = portal_jalon_bdd.getGroupesEtudiant(COD_ETU)
+
+        for annonce in listeAnnonces:
+            suite = 1
+            publics = annonce.getPublics()
+            if not publics:
+                #pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
+                suite = 0
+            if suite and ("colecteurs*-*colecteurs" in publics) and (idMember in self.getCoLecteurs()):
+                annonces.append(annonce)
+                suite = 0
+            if suite and ("groupeperso*-*perso" in publics) and (idMember in self.getGroupe()):
+                annonces.append(annonce)
+                suite = 0
+            if suite and ("invitationsemail*-*email" in publics) and (idMember in self.getInvitations()):
+                annonces.append(annonce)
+                suite = 0
+            if suite:
+                for diplome in diplomes:
+                    if "etape*-*%s" % diplome in publics:
+                        annonces.append(annonce)
+                        suite = 0
+                        break
+
+                    inscription_pedago = portal_jalon_bdd.getInscriptionPedago(COD_ETU, diplome)
+                    if not inscription_pedago:
+                        inscription_pedago = portal_jalon_bdd.getUeEtape(diplome)
+                    for ue in inscription_pedago:
+                        if "ue*-*%s" % ue["COD_ELP"] in publics:
+                            annonces.append(annonce)
+                            suite = 0
+                            break
+                    if not suite:
+                        break
+                if suite:
+                    for groupe in groupes:
+                        if "groupe*-*%s" % groupe[0] in publics:
+                            annonces.append(annonce)
+                            break
+
+        annonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
+        if annonces and all:
+            return {"listeAnnonces": annonces, "nbAnnonces": len(listeAnnonces)}
+        elif annonces:
+            return {"listeAnnonces": [annonces[0]], "nbAnnonces": len(listeAnnonces)}
+        else:
+            return {"listeAnnonces": [], "nbAnnonces": 0}
+
+    def getPublicsAnnonce(self):
+        LOG.info("----- getPublicsAnnonce -----")
+        res = self.getInfosListeAcces()
+        if self.getCoAuteurs():
+            res.append(["Tous les co-auteurs", "coauteurs", len(self.getCoAuteurs()), "coauteurs"])
+        if self.getCoLecteurs():
+            res.append(["Tous les co-lecteurs", "colecteurs", len(self.getCoLecteurs()), "colecteurs"])
+        return res
+
+    def supprimerAnnonce(self, annonce):
+        LOG.info("----- supprimerAnnonce -----")
+        self.annonce.manage_delObjects([annonce])
+
+    #--------------------------------#
+    # Course Glossary & Bibliography #
+    #--------------------------------#
+    def getGloBib(self, glo_bib):
+        LOG.info("----- getGloBib -----")
+        dicoLettres = {}
+        if glo_bib == "glossaire":
+            elements = self.getGlossaire()
+        else:
+            elements = self.getBibliographie()
+        if elements:
+            infos_element = self.getElementCours()
+
+        portal_link = self.portal_url.getPortalObject().absolute_url()
+        for idElement in elements:
+            info_element = infos_element.get(idElement)
+            if info_element:
+                info_element["idElement"] = idElement
+                lettre = info_element["titreElement"][0].upper()
+                info_element["urlElement"] = "%s/Members/Externes/%s/%s" % (portal_link, idElement, info_element["createurElement"])
+                if not lettre in dicoLettres:
+                    dicoLettres[lettre] = [info_element]
+                else:
+                    dicoLettres[lettre].append(info_element)
+        return dicoLettres
+
+    #-------------------#
+    # Course indicators #
+    #-------------------#
+    def insererConsultation(self, user, type_cons, id_cons):
+        LOG.info("----- insererConsultation -----")
+        public_cons = "Anonymous"
+        if user.has_role("Personnel"):
+            username = user.getId()
+            if self.isAuteur(username):
+                public_cons = "Auteur"
+            if username in self.coAuteurs:
+                public_cons = "Co-auteur"
+            if username in self.coLecteurs:
+                public_cons = "Lecteur"
+        if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
+            public_cons = "Etudiant"
+        if user.has_role("Manager"):
+            public_cons = "Manager"
+        if user.has_role("Secretaire"):
+            public_cons = "Secretaire"
         portal = self.portal_url.getPortalObject()
-        home = getattr(getattr(portal.Members, user_id), repertoire)
-        return home.getReunion(user_id)
+        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=user.getId(), ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
 
-    def getShortText(self, text, limit=75):
-        #self.plone_log("getShortText")
-        return jalon_utils.getShortText(text, limit)
+    def getConsultation(self):
+        LOG.info("----- getConsultation -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByDate(self.getId())
+
+    def getConsultationByCoursByUniversityYearByDate(self, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
+        LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearByDate(self.getId(), DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
+
+    def getConsultationByCoursByYearForGraph(self):
+        LOG.info("----- getConsultationByCoursByYearForGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByYearForGraph(self.getId())
+
+    def getConsultationByCoursByUniversityYearForGraph(self):
+        LOG.info("----- getConsultationByCoursByYearForGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByCoursByUniversityYearForGraph(self.getId())
+
+    def getFrequentationByCoursByUniversityYearByDateForGraph(self, PUBLIC_CONS):
+        LOG.info("----- getFrequentationByCoursByUniversityYearForGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getFrequentationByCoursByUniversityYearByDateForGraph(self.getId(), PUBLIC_CONS)
+
+    def getConsultationElementsByCours(self, elements_list, elements_dict):
+        LOG.info("----- getConsultationElementsByCours -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationElementsByCours(self.getId(), elements_list=elements_list, elements_dict=elements_dict)
+
+    def getConsultationByElementByCours(self, element_id):
+        LOG.info("----- getConsultationByElementByCours -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCours(self.getId(), element_id)
+
+    def getConsultationByElementByCoursByYearForGraph(self, element_id):
+        LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByYearForGraph(self.getId(), element_id)
+
+    def getConsultationByElementByCoursByUniversityYearForGraph(self, element_id):
+        LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.getConsultationByElementByCoursByUniversityYearForGraph(self.getId(), element_id)
+
+    def genererGraphIndicateurs(self, months_dict):
+        LOG.info("----- genererGraphIndicateurs -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.genererGraphIndicateurs(months_dict)
+
+    def genererFrequentationGraph(self, months_dict):
+        self.plone_log("genererFrequentationGraph -----")
+        portal = self.portal_url.getPortalObject()
+        return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
+
+    #------------------------------------------#
+    # Fonction morte en attente de suppression #
+    #------------------------------------------#
+    """
+    def getAffCategorieCours(self):
+        LOG.info("----- getAffCategorieCours -----")
+        categories = self.getJalonCategories()
+        return categories[int(self.getCategorieCours())]["title"]
+
+    def getAffichageAcces(self, toutes=None):
+        LOG.info("----- getAffichageAcces")
+        dico = {"Aux étudiants": {"titre": _(u"Réservé à vos étudiants inscrits à l'Université ou invités par courriel"),
+                                   "description": _(u"Accès réservé à : <ul><li>l'offre de formations universitaires Apogée (Diplôme / UE / Groupe)</li><li>mon groupe personalisé d'étudiants inscrits à l'Université</li><li>personnes extérieures à l'université (invitations par courriel)</li></ul>")},
+                "Public":        {"titre": _(u"Public"),
+                                  "description": _(u"Accès à tous les utilisateurs disposant du lien du cours, seuls les étudiants authentifiés auront accès aux activités.")}
+                }
+        if toutes:
+            return dico
+        else:
+            return dico[self.getAcces()]
+
+    def getEtablissement(self):
+        LOG.info("----- getEtablissement")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return {"activer_etablissement": jalon_properties.getJalonProperty("activer_etablissement"),
+                "etablissement":         jalon_properties.getJalonProperty("etablissement")}
+
+    def getJalonCategories(self):
+        LOG.info("----- getJalonCategories -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return dict(jalon_properties.getCategorie())
+
+    def getPropertiesCatiTunesU(self):
+        LOG.info("----- getPropertiesCatiTunesU -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return dict(jalon_properties.getPropertiesCatiTunesU())
+
+
+    def getAffCatiTunesUCours(self):
+        LOG.info("----- getAffCatiTunesUCours -----")
+        jalon_properties = getToolByName(self, "portal_jalon_properties")
+        return jalon_properties.getAffCatiTunesUCours(self.getCatiTunesU())
+
+    def getClefsDico(self, dico):
+        LOG.info("----- getClefsDico")
+        return jalon_utils.getClefsDico(dico)
+
+    def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant):
+        LOG.info("----- getElementView")
+        return jalon_utils.getElementView(self, "Cours", idElement, createurElement, typeElement, indexElement, mode_etudiant)
+
+    def getElementsCours(self, tag):
+        LOG.info("----- getElementsCours")
+        return self.__getattribute__("get%s" % tag)()
+
+    def getDepots(self, idboite, authMember, personnel, request):
+        LOG.info("----- getDepots")
+        if "*-*"in idboite:
+            idboite = idboite.split("*-*")[-1]
+        return getattr(self, idboite).getDepots(authMember, personnel, request)
+
+    def getKeyElementsCours(self, tag=None, idboite=None, menu=None):
+        LOG.info("----- getKeyElementsCours")
+        liste = []
+        if tag == "Glossaire":
+            glossaire = self.getGlossaireCours()
+            for lettre in glossaire:
+                liste.extend(glossaire[lettre])
+            liste.sort()
+            return liste
+        if tag in ["AutoEvaluation", "BoiteDepot", "Examen"]:
+            idBoite = idboite.split("*-*")[-1]
+            boite = getattr(self, idBoite)
+            liste = []
+            for element in boite.getListeAttribut(menu):
+                liste.append("%s*-*%s" % (tag, element.split("*-*")[-1]))
+            return liste
+        return self.getElementsCours(tag)
+
+    def getPlanPlat(self, liste=None):
+        LOG.info("----- getPlanPlat")
+        plat = []
+        if liste is None:
+            liste = list(self.plan)
+            if not liste:
+                return []
+        for titre in liste:
+            plat.append(titre["idElement"])
+            if "listeElement" in titre:
+                plat.extend(self.getPlanPlat(titre["listeElement"]))
+        return plat
+
+    def getPlanRSS(self, personnel=False):
+        LOG.info("----- getPlanRSS")
+        rss = []
+        idElements = self.getPlanPlat()
+        for idElement in idElements:
+            infos_element = self.getElementCours(idElement)
+            if infos_element:
+                isAffElement = self.isAfficherElement(infos_element["affElement"], infos_element["masquerElement"])
+                if personnel or not isAffElement["val"] == 0:
+                    if infos_element["typeElement"] in ["File"]:
+                        element = self.getCoursElementRSS(idElement, infos_element["createurElement"])
+                        if element:
+                            #infos = dict(infos_element.items() + element.items())
+                            element["affElement"] = infos_element["affElement"]
+                            rss.append(element)
+        return rss
+
+    def getCoursElementRSS(self, idElement, createurElement):
+        LOG.info("----- getCoursElementRSS")
+        portal = self.portal_url.getPortalObject()
+        if "*-*" in idElement:
+            idElement = idElement.replace("*-*", ".")
+        home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
+        if home:
+            element = getattr(home, idElement, None)
+            if element:
+                mime = element.getContentType()
+                if mime in ['audio/mpeg', 'audio/x-m4a', 'video/mp4', 'video/x-m4v', 'video/quicktime', 'application/pdf', 'document/x-epub']:
+                    return {
+                        "idElement": idElement,
+                        "titreElement": element.Title(),
+                        "descriptionElement": element.Description(),
+                        "urlElement": element.absolute_url(),
+                        "mimeElement": mime,
+                        "poidsElement": element.get_size(),
+                    }
+        return None
+
+    def getCategorieiTunesU(self):
+        LOG.info("----- getCategorieiTunesU")
+        icon = 'jalon'
+
+        jalon_properties = getToolByName(self, 'portal_jalon_properties')
+        dicoLibCatITunesU = jalon_properties.getJalonProperty("dicoLibCatITunesU")
+        idCatiTunesU = self.getCatiTunesU()
+        try:
+            main_category = dicoLibCatITunesU[idCatiTunesU[:3]]
+            sub_category = dicoLibCatITunesU[idCatiTunesU]
+
+            return {'main_category': main_category,
+                    'sub_category':  sub_category,
+                    'icon':          'http://itunesu.unice.fr/icones/%s.png' % icon}
+        except:
+            return None
+
+    def getRoleCat(self):
+        LOG.info("----- getRoleCat")
+        return {"auteur":    [self.Creator(), self.getAuteurPrincipal()],
+                "coauteur":  self.getCoAuteurs(),
+                "colecteur": self.getCoLecteurs()
+                }
+
+    def getValAcces(self):
+        LOG.info("----- getValAcces")
+        acces = self.getAcces()
+        if acces == u"Privé".encode("utf-8"):
+            return 0
+        if acces == u"Aux étudiants".encode("utf-8"):
+            return 1
+        if acces == u"Public".encode("utf-8"):
+            return 2
+        return 0
+
+    def getMotsClefs(self, search, objet):
+        LOG.info("----- getMotsClefs")
+        mots = []
+        catalog = getToolByName(self, 'portal_catalog')
+        keywords = list(catalog.uniqueValuesFor("Subject"))
+        for mot in keywords:
+            if search in mot:
+                mots.append(mot)
+        mots.sort()
+        return json.dumps(dict(keywords=mots))
+
+    def setAccesApogee(self, elements):
+        LOG.info("----- setAccesApogee")
+        self.listeAcces = tuple(set(elements))
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def setAttributCours(self, form):
+        LOG.info("----- setAttributCours -----")
+        for key in form.keys():
+            if key == "libre":
+                if not self.getLienMooc():
+                    part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
+                    part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
+                    part3 = ''.join([random.choice(string.ascii_uppercase) for i in range(3)])
+                    short = part1 + part2 + part3
+                    self.setLienMooc(short)
+                if form[key] == "True":
+                    self.setCategorie("2")
+                else:
+                    self.setCategorie("1")
+            method_name = "set%s" % key.capitalize()
+            #if key == "catiTunesU":
+            #    method_name = "setCatiTunesU"
+            #    self.portal_jalon_properties.setUsersiTunesU(self.Creator())
+            #    self.portal_jalon_properties.setCoursUser(self.Creator(), self.getId())
+
+            #if key == "diffusioniTunesU":
+            #    method_name = "setDiffusioniTunesU"
+
+            try:
+                self.__getattribute__(method_name)(form[key])
+            except AttributeError:
+                pass
+
+            #if key == "catiTunesU":
+            #    portal = self.portal_url.getPortalObject()
+            #    infosMembre = jalon_utils.getInfosMembre(self.Creator())
+            #    jalon_utils.envoyerMail({"objet":   "Demande de publication sur iTunesU",
+            #                             "message": "Bonjour\n\n%s a fait une demande de publication sur iTunesU pour le cours \"%s\" dans la catégorie : \"%s\".\n\nVous pouvez la valider ou la rejeter depuis l'interface de configuration de %s\n\nCordialement,\nL'équipe %s" % (infosMembre["fullname"], self.Title(), self.getAffCatiTunesUCours(), portal.Title(), portal.Title()), })
+
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def setGroupePerso(self, REQUEST):
+        LOG.info("----- setGroupePerso -----")
+        form = REQUEST.form
+        etudiants = []
+        if form["typeGroupe"] == "groupe":
+            if "etu_groupe" in form:
+                etudiants = form["etu_groupe"]
+            if "username" in form:
+                usernames = form["username"].split(",")
+                if usernames != ['']:
+                    for username in usernames:
+                        if not username in etudiants:
+                            etudiants.append(username)
+            self.setGroupe(tuple(etudiants))
+        elif form["typeGroupe"] == "libre":
+            if "etu_libre" in form:
+                etudiants = form["etu_libre"]
+            self.setInscriptionsLibres(tuple(etudiants))
+        else:
+            if "etu_email" in form:
+                etudiants = form["etu_email"]
+            if "invitation" in form and form["invitation"] != "":
+                if "," in form["invitation"]:
+                    listeInvit = form["invitation"].split(",")
+                else:
+                    listeInvit = [form["invitation"]]
+                portal = self.portal_url.getPortalObject()
+                portal_membership = getToolByName(portal, 'portal_membership')
+                for invitation in listeInvit:
+                    invitation = invitation.strip()
+                    if " " in invitation:
+                        nameInvit, emailInvit = invitation.rsplit(" ", 1)
+                        emailInvit = emailInvit.replace("<", "")
+                        emailInvit = emailInvit.replace(">", "")
+                    else:
+                        nameInvit = invitation.replace("@", " ")
+                        emailInvit = invitation
+                    emailInvit = emailInvit.lower()
+                    if not emailInvit in etudiants:
+                        if not portal_membership.getMemberById(emailInvit):
+                            portal_registration = getToolByName(portal, 'portal_registration')
+                            password = portal_registration.generatePassword()
+                            portal_membership.addMember(emailInvit, password, ("EtudiantJalon", "Member",), "", {"fullname": nameInvit, "email": emailInvit})
+                            portal_registration.registeredNotify(emailInvit)
+                        etudiants.append(emailInvit)
+            self.setInvitations(tuple(etudiants))
+        self.setProperties({"DateDerniereModif": DateTime()})
+        return None
+
+    def delAccesApogee(self, elements):
+        LOG.info("----- delAccesApogee")
+        liste = list(self.getListeAcces())
+        for element in elements:
+            if element in liste:
+                liste.remove(element)
+            if element == "groupeperso*-*perso":
+                self.setGroupe(())
+            if element == "invitationsemail*-*email":
+                self.setInvitations(())
+        self.listeAcces = tuple(liste)
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def isChecked(self, idElement, espace, listeElement=None):
+        LOG.info("----- isChecked")
+        if espace == "Glossaire":
+            if idElement in list(self.getGlossaire()):
+                return 1
+            return 0
+        if espace == "Bibliographie":
+            if idElement in list(self.getBibliographie()):
+                return 1
+            return 0
+        if espace in ["ajout-supports", "ajout-activite"]:
+            return self.isInCourseMap(idElement, listeElement)
+
+    def isTitre(self, categorieElement):
+        LOG.info("----- isTitre")
+        retour = {"condition": False, "class": "element"}
+        if categorieElement == "Titre":
+            retour = {"condition": True, "class": "chapitre"}
+        if categorieElement == "TexteLibre":
+            retour = {"condition": True, "class": "element"}
+        return retour
+
+    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement="", position=None, display_in_plan=False):
+        LOG.info("----- ajouterElement")
+        remplacer = False
+        if typeElement == "Glossaire":
+            glossaire = list(self.getGlossaire())
+            glossaire.append(idElement)
+            self.setElements_glossaire(glossaire)
+            typeElement = "TermeGlossaire"
+        elif "*-*" in typeElement:
+            bibliographie = list(self.getBibliographie())
+            bibliographie.append(idElement)
+            self.setElements_bibliographie(bibliographie)
+            typeElement = typeElement.split("*-*")[1]
+        else:
+            if self.isInCourseMap(idElement.replace(".", "*-*")):
+                return None
+            self.ajouterElementPlan(idElement, position)
+            if "." in idElement:
+                remplacer = True
+
+        complement_element = None
+        rep = {"Image":                     "Fichiers",
+               "File":                      "Fichiers",
+               "Page":                      "Fichiers",
+               "Lien web":                  "Externes",
+               "Lecteur exportable":        "Externes",
+               "Reference bibliographique": "Externes",
+               "Video":                     "Video",
+               "VOD":                       "VOD",
+               "Catalogue BU":              "Externes",
+               "TermeGlossaire":            "Glossaire",
+               "Webconference":             "Webconference",
+               "Presentations sonorisees":  "Sonorisation"}
+        if typeElement in rep:
+            portal = self.portal_url.getPortalObject()
+            objet = getattr(getattr(getattr(getattr(portal, "Members"), createurElement), rep[typeElement]), idElement)
+            if remplacer:
+                idElement = idElement.replace(".", "*-*")
+            if affElement:
+                portal_workflow = getToolByName(portal, "portal_workflow")
+                cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
+                objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
+                if cours_state != objet_state and cours_state == "published":
+                    portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
+                dicoActu = {"reference":      idElement,
+                            "code":           "dispo",
+                            "dateActivation": DateTime()}
+                self.setActuCours(dicoActu)
+            relatedItems = objet.getRelatedItems()
+            if not self in relatedItems:
+                relatedItems.append(self)
+                objet.setRelatedItems(relatedItems)
+                objet.reindexObject()
+            coursRelatedItems = self.getRelatedItems()
+            if not objet.getId() in coursRelatedItems:
+                coursRelatedItems.append(objet)
+                self.setRelatedItems(coursRelatedItems)
+
+            if typeElement in ["Video", "VOD"]:
+                complement_element = {"value":  display_in_plan,
+                                      "auteur": objet.getVideoauteurname(),
+                                      "image":  objet.getVideothumbnail()}
+
+        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement, complementElement=complement_element)
+
+    def ajouterElementPlan(self, idElement, position=None):
+        LOG.info("----- ajouterElementPlan")
+        plan = list(self.getPlan())
+        if idElement.startswith("Titre"):
+            element_add = {"idElement": idElement, "listeElement": []}
+        else:
+            if "." in idElement and not (idElement.startswith("BoiteDepot") or idElement.startswith("AutoEvaluation") or idElement.startswith("Examen")):
+                idElement = idElement.replace(".", "*-*")
+            element_add = {"idElement": idElement}
+        if not position:
+            plan.append(element_add)
+        elif position == "debut_racine":
+            plan.insert(0, element_add)
+        else:
+            liste_titres = position.split("*-*")
+            self.setPosition(idElement, plan, liste_titres[1:])
+
+        self.plan = tuple(plan)
+        #self.setProperties({"DateDerniereModif": DateTime()})
+
+    def setPosition(self, idElement, listeElement, liste_titres):
+        if len(liste_titres) > 1:
+            for element in listeElement:
+                if element["idElement"] == liste_titres[0]:
+                    self.setPosition(idElement, element["listeElement"], liste_titres[1:])
+        else:
+            for element in listeElement:
+                if element["idElement"] == liste_titres[0]:
+                    if idElement.startswith("Titre"):
+                        element_add = {"idElement": idElement, "listeElement": []}
+                    else:
+                        if "." in idElement:
+                            idElement = idElement.replace(".", "*-*")
+                        element_add = {"idElement": idElement}
+                    element["listeElement"].append(element_add)
+                    break
+
+    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement="", complementElement=None):
+        LOG.info("----- ajouterInfosElement")
+        parent = self.getParentPlanElement(idElement, 'racine', '')
+        if parent and parent['idElement'] != 'racine':
+            isAfficher = self.isAfficherElement(parent['affElement'], parent['masquerElement'])['val']
+            if not isAfficher:
+                affElement = ""
+
+        infos_element = self.getElementCours()
+        if not idElement in infos_element:
+            infos_element[idElement] = {"titreElement":    titreElement,
+                                        "typeElement":     typeElement,
+                                        "createurElement": createurElement,
+                                        "affElement":      affElement,
+                                        "masquerElement":  ""}
+            if complementElement:
+                infos_element[idElement]["complementElement"] = complementElement
+            self.setElementsCours(infos_element)
+        #self.setProperties({"DateDerniereModif": DateTime()})
+
+    def creerSousObjet(self, typeElement, titreElement, descriptionElement, createurElement, publicsElement, mailAnnonce):
+        LOG.info("----- creerSousObjet (Start)")
+        dicoType = {"BoiteDepot":     "JalonBoiteDepot",
+                    "AutoEvaluation": "JalonCoursWims",
+                    "Examen":         "JalonCoursWims",
+                    "Forum":          "PloneboardForum",
+                    "Annonce":        "JalonAnnonce"}
+        rep = self
+        if typeElement == "Annonce":
+            rep = self.annonce
+        elif typeElement == "Actu":
+            rep = self.actu
+        elif typeElement == "Forum":
+            rep = self.forum
+        LOG.info("----- invokeFactory %s (Start)" % dicoType[typeElement])
+        idElement = rep.invokeFactory(type_name=dicoType[typeElement], id="%s-%s-%s" % (typeElement, createurElement, DateTime().strftime("%Y%m%d%H%M%S%f")))
+        LOG.info("----- invokeFactory %s (End)" % dicoType[typeElement])
+        element = getattr(rep, idElement)
+        if typeElement == "Forum":
+            element.setTitle(titreElement)
+            element.setDescription(descriptionElement)
+            element.setMaxAttachments(0)
+            element.reindexObject()
+        else:
+            element.setProperties({"Title":       titreElement,
+                                   "Description": descriptionElement})
+        if typeElement == "Annonce":
+            element.setProperties({"Publics": publicsElement})
+            if mailAnnonce:
+                element.envoyerAnnonce()
+        #self.setProperties({"DateDerniereModif": DateTime()})
+        LOG.info("----- creerSousObjet (End)")
+        return idElement
+
+    def purgerDepots(self):
+        LOG.info("----- purgerDepots")
+        for boite in self.objectValues("JalonBoiteDepot"):
+            boite.purgerDepots()
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def inscrireMOOC(self, member):
+        LOG.info("----- inscrireMOOC")
+        if self.getLibre():
+            inscriptionsLibres = list(self.getInscriptionsLibres())
+            if not member in inscriptionsLibres:
+                inscriptionsLibres.append(member)
+                self.setProperties({"InscriptionsLibres": inscriptionsLibres,
+                                    "DateDerniereModif":  DateTime()})
+
+    def getParamMooc(self):
+        LOG.info("----- getParamMooc")
+        return urllib2.quote("".join(["?action=mooc&amp;idcours=", self.getId(), "&auteur=", self.Creator(), "&amp;came_from=", self.absolute_url()]))
+
+    def majCours(self):
+        LOG.info("----- majCours")
+        if not getattr(self, "forum", None):
+            commentaires_sociaux = BooleanField("commentaires_sociaux",
+                                                required=True,
+                                                accessor="getCommentaires_sociaux",
+                                                searchable=False,
+                                                default=False,
+                                                widget=BooleanWidget(label=_(u"Commentaires sur Facebook"))
+                                                )
+            self.schema.addField(commentaires_sociaux)
+            jaime_sociaux = BooleanField("jaime_sociaux",
+                                         required=True,
+                                         accessor="getJaime_sociaux",
+                                         searchable=False,
+                                         default=False,
+                                         widget=BooleanWidget(label=_(u"J'aime sur Facebook"))
+                                         )
+            self.schema.addField(jaime_sociaux)
+            self.invokeFactory(type_name='Ploneboard', id="forum")
+            forum = getattr(self, "forum")
+            forum.setTitle("Liste des forums du cours")
+            username = self.getAuteurPrincipal()
+            if not username:
+                username = self.Creator()
+            forum.manage_setLocalRoles(username, ["Owner"])
+        return "fait"
+
+    #fonction centrale dans l'automatisation de la mise en place de tag sur les ressources d'un serveur primo liées à des cours jalon
+    def tagBU(self, action, ressource=None):
+        LOG.info("----- tagBU")
+        portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
+        if portal_jalon_properties.getPropertiesMonEspace('activer_tags_catalogue_bu'):
+            if not ressource:
+                elem = dict(self.getElementCours())
+                for cle_element in elem.keys():
+                    prop_element = elem[cle_element]
+                    if prop_element["typeElement"] == "Catalogue BU":
+                        self.tagBU(action, cle_element)
+            else:
+                portal_primo = getToolByName(self, "portal_primo")
+                nomAuteur = self.getAuteur()["nom"]
+                listeTag = []
+                listeTag = portal_primo.recupTagBU(ressource)
+                try:
+                    elemTag = action.split(None, 1)[1]
+                except:
+                    pass
+                action = action.split(None, 1)[0]
+
+                #suppression de tag si un de ses elements change
+                if action in ["diplome", "nom"]:
+                    for ancienTag in listeTag:
+                        ancienTagSplit = ancienTag.split(None, 2)
+                        if len(ancienTagSplit) == 2:
+                            ancienTag = ancienTag.replace(" ", "%20")
+                            if action == "diplome":
+                                if nomAuteur == ancienTagSplit[0]:  # and ancienTagSplit[2] in titreCour:
+                                    portal_primo.tagBU(ressource, ancienTag, "remove")
+                            if action == "nom":
+                                ancienNom = self.getInfosMembre(elemTag)["nom"]
+                                if ancienNom == ancienTagSplit[0]:  # ancienTagSplit[2] in titreCour and
+                                    portal_primo.tagBU(ressource, ancienTag, "remove")
+                    action = "add"
+
+                #recuperation des code diplome associé au cours
+                for public in self.getInfosListeAcces():
+                    COD_ETU = public[1]
+                    if COD_ETU not in ["email", "perso"]:
+                        tag = nomAuteur + "%20" + COD_ETU  # + "%20" + titreCour
+                        tag = tag.replace("%20", " ")
+                        if len(tag) > 34:
+                            tag = tag[0:34]
+                        tag = tag.replace(" ", "%20")
+
+                        #si j'ajoute une nouvelle ressourceBU
+                        if action in ["add", "remove"]:
+                            portal_primo.tagBU(ressource, tag, action)
+
+    #Recupere la liste des fichiers d'un cours pouvant etre telecharges
+    def getFichiersCours(self, page=None):
+        LOG.info("----- getFichiersCours")
+        #fixe le nb d'element voulu par page
+        nbElem = 15  # doit etre identique a celui de nbPage
+        elem = dict(self.getElementCours())
+        retour = []
+        i = 0
+        #Pour la 1er page ou s'il n'y en a qu'une
+        if page in [None, 1, '']:
+            for cle_element in elem.keys():
+                element = elem[cle_element]
+                if self.isInCourseMap(cle_element):
+                    if i < nbElem:
+                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
+                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
+                                element.update({'taille': self.getTailleFichiers(cle_element, element['createurElement'])})
+                                retour.append(element)
+                                i = i + 1
+        else:
+            limitte = nbElem * int(page)
+            limitteInf = nbElem * (int(page) - 1)
+            for cle_element in elem.keys():
+                element = elem[cle_element]
+                #Pour les pages avant l'actuel
+                if self.isInCourseMap(cle_element):
+                    if i < limitteInf:
+                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
+                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
+                                i = i + 1
+                    #pour la page actuel
+                    elif i >= limitteInf and i < limitte:
+                        if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
+                            if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
+                                element.update({'taille': self.getTailleFichiers(cle_element, element['createurElement'])})
+                                retour.append(element)
+                                i = i + 1
+        return retour
+
+    #donne la taille d'un fichier
+    def getTailleFichiers(self, idElement, createurElement):
+        LOG.info("----- getTailleFichiers")
+        portal = self.portal_url.getPortalObject()
+        home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
+        objid = idElement
+        if "*-*" in idElement:
+            objid = objid.replace("*-*", ".")
+        try:
+            objid = objid.replace(" ", "-")
+        except:
+            pass
+        for obj in home.objectValues(["ATBlob", "ATDocument"]):
+            if objid in obj.id:
+                return obj.getObjSize()
+
+    def nbPage(self):
+        LOG.info("----- nbPage")
+        nbPage = 0
+        #fixe le nb d'element voulu par page
+        nbElem = 15
+        i = 0
+        retour = []
+        elem = dict(self.getElementCours())
+        for cle_element in elem.keys():
+            if self.isInCourseMap(cle_element):
+                element = elem[cle_element]
+                if i < nbElem:
+                    if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
+                        if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
+                            i = i + 1
+                #si on depasse le nombre d'element par page on ajoute une page
+                else:
+                    nbPage = nbPage + 1
+                    retour.append(nbPage)
+                    i = 0
+                    if element["typeElement"] in ["File", "Image"] and not "." in cle_element:
+                        if self.isAfficherElement(element['affElement'], element['masquerElement'])['val'] == 1:
+                            i = 1
+        if i > 0:
+            nbPage = nbPage + 1
+            retour.append(nbPage)
+        return retour
+
+    def telecharger(self, HTTP_USER_AGENT, fichiers):
+        LOG.info("----- telecharger")
+        import tempfile
+        fd, path = tempfile.mkstemp('.zipfiletransport')
+        close(fd)
+        zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
+        portal = self.portal_url.getPortalObject()
+        elems = dict(self.getElementCours())
+        cours = self.supprimerCaractereSpeciaux(self.Title())
+        dansArchive = []
+        for cle_element in elems.keys():
+            element = elems[cle_element]
+            for fichier in fichiers:
+                # on ne prend que les fichiers coché parmi tout les fichiers du cours
+                if element["titreElement"] == fichier and cle_element not in dansArchive:
+                    createurElement = element["createurElement"]
+                    # on vas chercher le fichier dans l'espace du prof a qui il appartient
+                    home = getattr(getattr(portal.Members, createurElement), "Fichiers", None)
+                    #"ATBlob", "ATDocument" sont les 2 seuls qui fonctionnent
+                    if "*-*" in cle_element:
+                        cle_element = cle_element.replace("*-*", ".")
+                    try:
+                        objid = cle_element.replace(" ", "-")
+                    except:
+                        objid = cle_element
+                    for obj in home.objectValues(["ATBlob", "ATDocument"]):
+                        if objid in obj.id:
+                            if len(fichiers) == 1 and fichiers[0] == element["titreElement"] and element["typeElement"] not in ["Image"]:
+                                return {"situation": 1, "data": '%s/at_download/file' % obj.absolute_url()}
+                            dansArchive.append(cle_element)
+                            file_data = str(obj.data)
+                            #nom du dossier/ nom du fichier dans le zip
+                            filename_path = "%s/%s" % (cours, obj.id)
+                            if 'Windows' in HTTP_USER_AGENT:
+                                try:
+                                    filename_path = filename_path.decode('utf-8').encode('cp437')
+                                except:
+                                    pass
+                            zipFile.writestr(filename_path, file_data)
+                            pass
+        zipFile.close()
+        fp = open(path, 'rb')
+        data = fp.read()
+        fp.close()
+        return {"length": str(os.stat(path)[6]), "data": data, "situation": 3}
 
     def getJalonMenu(self, portal_url, user, request):
         return jalon_utils.getJalonMenu(self, portal_url, user, request)
-
-    #Suppression marquage HTML
-    def supprimerMarquageHTML(self, chaine):
-        return jalon_utils.supprimerMarquageHTML(chaine)
-
-    def isStreamingAuthorized(self, streaming_id, request):
-        if not request.has_key("HTTP_X_REAL_IP"):
-            return False
-        portal = self.portal_url.getPortalObject()
-        portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
-        return portal_jalon_wowza.isStreamingAuthorized(streaming_id, request["HTTP_X_REAL_IP"])
-
-    def delElem(self, element):
-        #self.plone_log("delElem")
-        del self._elements_cours[element]
-        self.getElementCours()
-        self.setElementsCours(self._elements_cours)
-
+    """
 
 # enregistrement dans la registery Archetype
 registerATCT(JalonCours, PROJECTNAME)

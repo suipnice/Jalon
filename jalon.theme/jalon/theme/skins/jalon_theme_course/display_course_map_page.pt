@@ -10,6 +10,7 @@
 
 <metal:main fill-slot="content"
             tal:define="my_view python:context.getDisplayCourseMapAttributes(user);
+                        course_link context/absolute_url;
                         course_map python:context.getCourseMap(user.getId(), my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['portal']);
                         expand_titre python:True">
 

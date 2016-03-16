@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_course_property
+
+[actions]
+action.failure = traverse_to:string:add_course_activity_form
+action.success_create_activity = traverse_to:string:add_course_activity_script

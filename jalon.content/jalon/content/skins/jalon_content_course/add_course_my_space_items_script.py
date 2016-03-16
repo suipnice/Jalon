@@ -24,4 +24,4 @@ for item in request.form["paths"]:
     item_id, item_type = item.split("/")
     context.addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
 
-return context.absolute_url()
+return "%s/display_course_map_page" % context.absolute_url()
