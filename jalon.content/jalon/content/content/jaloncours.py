@@ -523,6 +523,20 @@ class JalonCours(ATFolder):
     #--------------------------#
     # Course action My Courses #
     #--------------------------#
+    def addCourseForum(self, forum_title, forum_description, user_id):
+        LOG.info("----- addCourseForum -----")
+
+        forum_folder = self.forum
+        forum_id = forum_folder.invokeFactory(type_name="PloneboardForum", id="Forum-%s-%s" % (user_id, DateTime().strftime("%Y%m%d%H%M%S%f")))
+        forum_object = getattr(forum_folder, forum_id)
+
+        forum_object.setTitle(forum_title)
+        forum_object.setDescription(forum_description)
+        forum_object.setMaxAttachments(0)
+        forum_object.reindexObject()
+
+        return forum_id
+
     def getDataCourseFormAction(self, user_id, course_id):
         LOG.info("----- getDataCourseFormAction -----")
         return {"course_name":     self.getShortText(self.Title(), 80),
@@ -1301,7 +1315,7 @@ class JalonCours(ATFolder):
                                 "Description": activity_description})
 
         self.addItemInCourseMap(activity_id, map_position)
-        self.addItemProperty(activity_id, activity_dict["activity_portal_type"], activity_title, user_id, False, None)
+        self.addItemProperty(activity_id, activity_type, activity_title, user_id, False, None)
 
     def detacherElement(self, ressource, createur, repertoire):
         LOG.info("----- detacherElement -----")
