@@ -835,7 +835,7 @@ class JalonCours(ATFolder):
                     item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
                 else:
-                    if item_properties["typeElement"] in ["JalonBoiteDepot"]:
+                    if item_properties["typeElement"] in ["BoiteDepot"]:
                         item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
                     else:
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
@@ -1315,7 +1315,7 @@ class JalonCours(ATFolder):
                                 "Description": activity_description})
 
         self.addItemInCourseMap(activity_id, map_position)
-        self.addItemProperty(activity_id, activity_type, activity_title, user_id, False, None)
+        self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, False, None)
 
     def detacherElement(self, ressource, createur, repertoire):
         LOG.info("----- detacherElement -----")
