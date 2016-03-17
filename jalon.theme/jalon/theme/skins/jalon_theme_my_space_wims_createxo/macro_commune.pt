@@ -124,7 +124,7 @@
                tal:attributes="value accolade"/>
         --></tal:comment>
 
-        <div class="panel" tal:define="accolade QCM_parsed/accolade  | string:1">
+        <div class="panel" tal:define="accolade QCM_parsed/accolade | string:1">
             <a href="#reveal_accolade" class="button tiny radius right" data-reveal-id="reveal_accolade">
                 <i class="fa fa-question"></i>
                 Aide

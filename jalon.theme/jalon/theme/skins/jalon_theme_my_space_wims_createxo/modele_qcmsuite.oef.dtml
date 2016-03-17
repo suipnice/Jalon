@@ -78,7 +78,7 @@ $embraced_randitem
 
 :Affichage des bonnes réponses
 Si oui, la liste des bonnes réponses sera affiché une fois la réponse donnée par l'apprenant.
-\text{answer_given=item(1, oui, non)}
+\text{answer_given=item($$answer_given$$, oui, non)}
 
 :Mode d'affichage (nombre de colonnes)
 Le mode "2 colonnes" permet d'économiser du papier pour des questions courtes.
@@ -396,7 +396,7 @@ text{testexp=wims(nospace \testexp)}
                 {<span class="oef_indgood">\good_answer_text</span>}
         }
 
-        \if{\answer_given=yes}{
+        \if{\answer_given=oui}{
           \if{\TEST[\h;3]>0 or \TEST[\h;2]>0}{
             <div class="prompt">\qcm_prompt2</div>
             <ul class="oef_indgood">

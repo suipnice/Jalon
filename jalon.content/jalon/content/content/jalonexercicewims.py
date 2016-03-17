@@ -297,6 +297,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                  "credits"                    : "",
                                  "columns"                    : "1",
                                  "anstype"                    : "checkbox",
+                                 "answer_given"               : "2",
                                  }
                             }
         if modele in variables_defaut:
@@ -436,7 +437,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             source = source.replace("*-*", "\\")
 
             # iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €
-            source = jalon_utils.convertUTF8ToHTMLEntities(source)
+            # attention : cela ajoute des ";" qui peuvent nuire à certains modèle d'exos (QCM suite par exemple)
+            # pour ces derniers, on pourrait convertir chaque champ compatible ?
+            if modele not in ["qcmsuite"]:
+                source = jalon_utils.convertUTF8ToHTMLEntities(source)
 
             #try:
             # on ne peux pas empecher la creation d'un exercice pour une erreur d'encodage. on ignore donc les caracteres non reconnus.
@@ -744,6 +748,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                              "credits"                : "credits{",
                                              "columns"                : "text{columns",
                                              "anstype"                : "text{anstype",
+                                             "answer_given"           : "text{answer_given=item\(",
                                              }
                                }
 
@@ -756,7 +761,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
-                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help"]:
+                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help", "answer_given"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
                     if key in ["precision", "credits", "hint", "help"]:
@@ -765,7 +770,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     if key == "texte_reponse":
                         #exemple : \answer{Votre reponse est}{\ans}{type=number}
                         pattern = "%s([^\}]*)\}" % variables_parse[modele][key]
-                    if key == "accolade":
+                    if key in ["accolade", "answer_given"]:
                         #exemple : \text{accolade=item($$variable$$,1 oui,\n2 non)}
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
