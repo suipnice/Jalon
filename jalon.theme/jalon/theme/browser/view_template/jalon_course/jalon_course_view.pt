@@ -65,7 +65,22 @@
                 </h2>
             </div>
 
-            <div class="row panel callout radius">
+            <div class="row panel callout radius"
+                 tal:condition="not:my_view/has_course_map">
+                <tal:condition condition="my_view/is_personnel">
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
+                    Affichage de la barre d'ajout
+                </metal:macro>
+                </tal:condition>
+                <div class="panel radius">
+                    <h4>
+                        <i class="fa fa-info-circle"></i>
+                        <tal:block i18n:translate="">Aucune ressource n'est accessible dans ce cours.</tal:block>
+                    </h4>
+                </div>
+            </div>
+            <div class="row panel callout radius"
+                 tal:condition="my_view/has_course_map">
                 <a class="button tiny radius expand"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                    tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
