@@ -58,6 +58,25 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
         var $reveal = Foundation.utils.S( '#' + revealID );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
+            if ( data.split( ':' )[ 0 ] === "http" ) {
+
+                // Refresh course
+                $.get( data ).done( function( coursePlanMarkup ) {
+                    $( '#course_plan-plan' ).html( coursePlanMarkup );
+                    $reveal.foundation( 'reveal', 'close' );
+                    //$( document ).foundation( 'dropdown', 'reflow' );
+                    setAlertBox( 'success', $form.data( 'success_msg' ) );
+                } );
+
+            } else {
+
+                // Form error -> refresh popup
+                $reveal.empty( ).html( data );
+                revealInit( $reveal );
+            }
+
+            /*
             var html = $.parseHTML( data );
             if ( $( html ).find( '.error' ).length ) {
                 $reveal.empty( ).html( data );
@@ -69,7 +88,8 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
                     //$( document ).foundation( 'dropdown', 'reflow' );
                     setAlertBox( 'success', $form.data( 'success_msg' ) );
                 } );
-            }
+            } //*/
+
         } );
     } );
 }
