@@ -297,6 +297,15 @@ class JalonCours(ATFolder):
                       "item_action_icon": "fa fa-trash-o fa-fw",
                       "item_action_name": "Supprimer"}]
 
+    _add_course_map_item_dict = {"1": {"form_title":    "titre",
+                                       "is_type_title": True,
+                                       "item_type":     "Titre",
+                                       "form_js":       "setRevealFormPlanRefresh('js-planTextCreator','reveal-main')"},
+                                 "2": {"form_title":    "texte libre",
+                                       "is_type_title": False,
+                                       "item_type":     "TexteLibre",
+                                       "form_js":       "setRevealFormPlanRefresh('js-planTextCreator','reveal-main','titreElement')"}}
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
@@ -797,6 +806,11 @@ class JalonCours(ATFolder):
                 "course_news":  self.getActualitesCours(),
                 "portal":       self.portal_url.getPortalObject()}
 
+    def getAddCourseMapItemForm(self, item_type):
+        LOG.info("----- getAddCourseMapItemForm -----")
+        LOG.info("***** dict : %s" % str(self._add_course_map_item_dict[item_type]))
+        return self._add_course_map_item_dict[item_type]
+
     def getCourseMap(self, user_id, is_personnel, course_actuality_list, portal):
         LOG.info("----- getCourseMap -----")
         return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, portal, True)
@@ -835,7 +849,7 @@ class JalonCours(ATFolder):
                     item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
                 else:
-                    if item_properties["typeElement"] in ["BoiteDepot"]:
+                    if item_properties["typeElement"] in ["TexteLibre", "BoiteDepot"]:
                         item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
                     else:
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])

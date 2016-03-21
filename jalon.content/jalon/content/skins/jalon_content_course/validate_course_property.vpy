@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##Script (Python) "validate_my_space"
+##Script (Python) "validate_course_property"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -17,8 +17,9 @@ error = False
 form = context.REQUEST.form
 validate_key = form["validate_key"]
 
-validate_dict = {"edit_course_title": ["title"],
-                 "create_activity":   ["title"]}
+validate_dict = {"edit_course_title":      ["title"],
+                 "create_activity":        ["title"],
+                 "create_course_map_item": ["title"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:

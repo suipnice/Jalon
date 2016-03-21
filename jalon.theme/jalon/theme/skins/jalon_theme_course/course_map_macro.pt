@@ -74,7 +74,7 @@
                                class string:typeElementTitre"
                title="Voir cet élément du plan"
                data-reveal-id="reveal-main" data-reveal-ajax="true"
-               tal:content="element/item_title"
+               tal:content="structure element/item_title"
                tal:omit-tag="element/is_item_title_or_text"
                i18n:attributes="title"/>
 

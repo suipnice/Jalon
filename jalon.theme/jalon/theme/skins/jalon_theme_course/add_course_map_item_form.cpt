@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors;
+                        item_type request/item_type | string:1;
+                        form_properties python:context.getAddCourseMapItemForm(item_type);
+                        course_map_form context/getCourseMapForm">
+
+    <h2>
+        <tal:block i18n:translate="">Créer un</tal:block>
+        <tal:replace replace="form_properties/form_title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-planTextCreator" method="POST"
+          tal:define="title request/title | nothing"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg string:L'élément de plan a été crée.">
+
+        <div class="field"
+             tal:define="error python:errors.get('title', None);"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="text" id="titreElement" name="title" size="30" maxlength="255"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:condition="form_properties/is_type_title" i18n:attributes="placeholder"/>
+            <textarea id="titreElement" name="title" rows="9"
+                      required="required" placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                      tal:condition="not:form_properties/is_type_title"><tal:block replace="title"/></textarea>
+
+        </div>
+
+        <tal:replace replace="structure course_map_form"/>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="validate_key" value="create_course_map_item"/>
+        <input type="hidden" name="item_type"
+               tal:attributes="value form_properties/item_type"/>
+        <input type="hidden" name="user_id"
+               tal:attributes="value user/getId"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius"
+                    name="form.button.save">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure form_properties/form_js"></script>
+
+</metal:main>
+
+</body>
+
+</html>
