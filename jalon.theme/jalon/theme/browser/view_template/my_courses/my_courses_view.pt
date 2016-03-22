@@ -27,7 +27,7 @@
 
     <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="small-12 columns"
              tal:condition="my_courses_view/is_message_cache">

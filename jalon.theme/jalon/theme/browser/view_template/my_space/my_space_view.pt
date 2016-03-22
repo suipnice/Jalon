@@ -24,7 +24,7 @@
         </div>
 
         <tal:comment replace="nothing">!-- Bloc message de session --</tal:comment>
-        <metal:macro use-macro="context/macro_global_statusmessage/macros/portal_message">
+        <metal:macro use-macro="context/global_statusmessage_macro/macros/portal_message">
             Message de session
         </metal:macro>
 

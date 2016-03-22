@@ -3,10 +3,7 @@
            i18n_domain="jalon.content">
 
     <!-- File System Directory Views registration -->
-    <cmf:registerDirectory name="jalon_content"/>
-    <cmf:registerDirectory name="jalon_mon_espace"/>
-    <cmf:registerDirectory name="jalon_cours"/>
-
+    <cmf:registerDirectory name="jalon_content_general"/>
     <cmf:registerDirectory name="jalon_content_connexion"/>
     <cmf:registerDirectory name="jalon_content_my_space"/>
     <cmf:registerDirectory name="jalon_content_my_courses"/>

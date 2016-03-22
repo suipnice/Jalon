@@ -27,7 +27,7 @@
     <main class="row" role="main" aria-labelledby="page_title"
           tal:define="edit_wims_exercice_macro_name context/getEditWimsExerciceMacroName">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
             Message de session
         </metal:macro>
 

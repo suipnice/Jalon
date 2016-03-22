@@ -59,7 +59,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="panel warning radius hide" id="enable_cookies_message"
              i18n:translate="enable_cookies_message_before_login">
