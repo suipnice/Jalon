@@ -15,7 +15,7 @@ form = context.REQUEST.form
 item_id = "%s-%s-%s" % (form["item_type"], form["user_id"], ''.join([now.strftime('%Y%m%d'), now.strftime('%H%M%S')]))
 
 context.addItemInCourseMap(item_id, form["map_position"])
-context.addItemProperty(item_id, form["item_type"], form["title"], form["user_id"], False, None)
+context.addItemProperty(item_id, form["item_type"], form["title"], form["user_id"], "", None)
 
 context.setProperties({"DateDerniereModif": DateTime()})
 

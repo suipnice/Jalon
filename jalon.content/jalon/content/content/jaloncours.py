@@ -374,6 +374,7 @@ class JalonCours(ATFolder):
         LOG.info("----- getAffElement -----")
         infos_element = self.getElementCours(idElement)
         if infos_element:
+            LOG.info("item_property : %s" % str(infos_element))
             if infos_element[attribut] != "":
                 return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
         return DateTime().strftime("%Y/%m/%d %H:%M")
@@ -825,15 +826,15 @@ class JalonCours(ATFolder):
 
         item_jalonner = self.getCourseMapItemJalonner()
 
-        index = 0
+        #index = 0
         course_map_list = []
         for course_map_item in course_map_items_list:
-            index = index + 1
+            #index = index + 1
             item_properties = self.getElementCours(course_map_item["idElement"])
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
-                    "item_drop_id": "drop-%i" % index}
+                    "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", "")}
 
             is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
             item["is_display_item_bool"] = True if is_display_item["val"] else False
@@ -849,7 +850,7 @@ class JalonCours(ATFolder):
                     item["item_css_class"] = "chapitre"
                     course_map_sub_items_list = course_map_item["listeElement"]
                 else:
-                    if item_properties["typeElement"] in ["TexteLibre", "BoiteDepot"]:
+                    if item_properties["typeElement"] in ["TexteLibre", "BoiteDepot", "AutoEvaluation"]:
                         item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
                     else:
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
@@ -1063,6 +1064,66 @@ class JalonCours(ATFolder):
             dico["marque"] = [id_auth_member]
         self._elements_cours[idElement] = dico
         self.setElementsCours(self._elements_cours)
+
+    def getDisplayItemForm(self, item_id):
+        LOG.info("----- getDisplayItemForm -----")
+        form_properties = {"is_item_parent_title":     False,
+                           "item_parent_title":        "",
+                           "help_css":                 "panel callout radius",
+                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants."}
+        item_properties = self.getElementCours(item_id)
+        form_properties["is_wims_examen"] = True if item_properties["typeElement"] == "Exeman" else False
+
+        display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+        if display_properties["val"]:
+            form_properties["form_button_css"] = "button small radius warning"
+            form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
+            form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
+            form_properties["item_property_name"] = "masquerElement"
+            form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
+            form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
+
+            form_properties["text_title_lately"] = "… ou programmer son masquage."
+            if item_properties["typeElement"] == "Titre":
+                form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
+            else:
+                form_properties["text_title_directly"] = "Masquer directement…"
+
+            form_properties["form_name"] = "masquer-element"
+            form_properties["item_date"] = self.getAffElement(item_id, "masquerElement")
+        else:
+            form_properties["form_button_css"] = "button small radius"
+            form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
+            form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
+            form_properties["item_property_name"] = "affElement"
+            form_properties["is_wims_examen"] = False
+            form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
+            form_properties["form_title_icon"] = "fa fa-eye no-pad"
+
+            item_parent_title = self.getParentPlanElement(item_id, "racine", "")
+            if item_parent_title["idElement"] != "racine":
+                form_properties["is_item_parent_title"] = True
+                form_properties["item_parent_title"] = item_parent_title["titreElement"]
+
+            if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
+                is_authorized_activity = self.autoriserAffichageSousObjet(item_id, item_properties["typeElement"])
+                if not is_authorized_activity["val"]:
+                    form_properties["help_css"] = "panel warning radius"
+                    not_exercices_text = "Vous ne pouvez pas afficher une auto-évaluation ou un examen tant que sa liste d'exercices est vide."
+                    form_properties["help_text"] = not_exercices_text if is_authorized_activity["reason"] == "listeExos" else "Vous ne pouvez pas afficher cette ressource. %s" % is_authorized_activity["reason"]
+
+            form_properties["text_title_lately"] = "… ou programmer son affichage."
+            if item_properties["typeElement"] == "Titre":
+                form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
+                form_properties["wims_help_text"] = True
+            else:
+                form_properties["text_title_directly"] = "L'afficher directement…"
+                form_properties["wims_help_text"] = False
+
+            form_properties["form_name"] = "afficher-element"
+            form_properties["item_date"] = self.getAffElement(item_id, "affElement")
+
+        return form_properties
 
     def afficherRessource(self, idElement, dateAffichage, attribut, chapitre=None):
         LOG.info("----- afficherRessource -----")
@@ -1329,7 +1390,7 @@ class JalonCours(ATFolder):
                                 "Description": activity_description})
 
         self.addItemInCourseMap(activity_id, map_position)
-        self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, False, None)
+        self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
 
     def detacherElement(self, ressource, createur, repertoire):
         LOG.info("----- detacherElement -----")
