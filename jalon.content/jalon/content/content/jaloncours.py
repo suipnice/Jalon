@@ -250,6 +250,7 @@ class JalonCours(ATFolder):
                                   "Lecteurexportable":       "Externes",
                                   "CatalogueBU":             "Externes",
                                   "Video":                   "Video",
+                                  "VOD":                     "VOD",
                                   "Sonorisation":            "Sonorisation",
                                   "Webconference":           "Webconference",
                                   "TermeGlossaire":          "Glossaire"}
@@ -281,7 +282,7 @@ class JalonCours(ATFolder):
     _item_actions = [{"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye fa-fw",
                       "item_action_name": "Afficher"},
-                     {"item_action_id":   "course_hide_item_form",
+                     {"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye-slash fa-fw",
                       "item_action_name": "Masquer"},
                      {"item_action_id":   "course_edit_item_form",
@@ -442,11 +443,11 @@ class JalonCours(ATFolder):
         return roles
 
     #getSousObjet renvoie le sous-objet idElement
-    def getSousObjet(self, idElement):
-        LOG.info("----- getSousObjet -----")
-        if "*-*" in idElement:
-            idElement = idElement.split("*-*")[-1]
-        return getattr(self, idElement)
+    #def getSousObjet(self, idElement):
+    #    LOG.info("----- getSousObjet -----")
+    #    if "*-*" in idElement:
+    #        idElement = idElement.split("*-*")[-1]
+    #    return getattr(self, idElement)
 
     #getTypeSousObjet renvoie le type du sous-objet idElement
     def getTypeSousObjet(self, idElement):
@@ -812,11 +813,11 @@ class JalonCours(ATFolder):
         LOG.info("***** dict : %s" % str(self._add_course_map_item_dict[item_type]))
         return self._add_course_map_item_dict[item_type]
 
-    def getCourseMap(self, user_id, is_personnel, course_actuality_list, portal):
+    def getCourseMap(self, user_id, user_last_login_time, is_personnel, course_actuality_list, portal):
         LOG.info("----- getCourseMap -----")
-        return self.getCourseMapItems(self.getPlan(), user_id, is_personnel, course_actuality_list, portal, True)
+        return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, portal, True)
 
-    def getCourseMapItems(self, course_map_items_list, user_id, is_personnel, course_actuality_list, portal, is_map_top_level=False):
+    def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
         ol_css_id = ""
         ol_css_class = ""
@@ -878,7 +879,7 @@ class JalonCours(ATFolder):
                     item["is_item_jalonner"] = True
                     item["item_jalonner_comment"] = item_jalonner["item_jalonner_comment"]
 
-                item["is_item_new"] = True if self.isNouveau(item_properties, course_actuality_list) else False
+                item["is_item_new"] = True if item["is_display_item_bool"] and cmp(item_properties["affElement"], user_last_login_time) > 0 else False
 
                 course_map_list.append(item)
 
@@ -1067,12 +1068,13 @@ class JalonCours(ATFolder):
 
     def getDisplayItemForm(self, item_id):
         LOG.info("----- getDisplayItemForm -----")
-        form_properties = {"is_item_parent_title":     False,
-                           "item_parent_title":        "",
+        form_properties = {"is_authorized_form":       True,
+                           "is_item_title":            False,
+                           "is_item_parent_title":     False,
                            "help_css":                 "panel callout radius",
                            "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants."}
         item_properties = self.getElementCours(item_id)
-        form_properties["is_wims_examen"] = True if item_properties["typeElement"] == "Exeman" else False
+        form_properties["is_wims_examen"] = True if item_properties["typeElement"] == "Examen" else False
 
         display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
         if display_properties["val"]:
@@ -1082,9 +1084,12 @@ class JalonCours(ATFolder):
             form_properties["item_property_name"] = "masquerElement"
             form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
+            form_properties["item_parent_title"] = ""
+            form_properties["wims_help_text"] = False
 
             form_properties["text_title_lately"] = "… ou programmer son masquage."
             if item_properties["typeElement"] == "Titre":
+                form_properties["is_item_title"] = True
                 form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
             else:
                 form_properties["text_title_directly"] = "Masquer directement…"
@@ -1100,20 +1105,28 @@ class JalonCours(ATFolder):
             form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye no-pad"
 
-            item_parent_title = self.getParentPlanElement(item_id, "racine", "")
-            if item_parent_title["idElement"] != "racine":
-                form_properties["is_item_parent_title"] = True
-                form_properties["item_parent_title"] = item_parent_title["titreElement"]
+            item_parent_properties = self.getParentPlanElement(item_id, "racine", "")
+            if item_parent_properties["idElement"] != "racine":
+                display_parent_properties = self.isAfficherElement(item_parent_properties["affElement"], item_parent_properties["masquerElement"])
+                if not display_parent_properties["val"]:
+                    form_properties["is_item_parent_title"] = True
+                    form_properties["item_parent_title_id"] = item_parent_properties["idElement"]
+                    form_properties["item_parent_title"] = item_parent_properties["titreElement"]
 
             if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
-                is_authorized_activity = self.autoriserAffichageSousObjet(item_id, item_properties["typeElement"])
+                is_authorized_activity = getattr(self, item_id).autoriser_Affichage()
+                #is_authorized_activity = self.autoriserAffichageSousObjet(item_id, item_properties["typeElement"])
                 if not is_authorized_activity["val"]:
+                    form_properties["is_authorized_form"] = False
                     form_properties["help_css"] = "panel warning radius"
-                    not_exercices_text = "Vous ne pouvez pas afficher une auto-évaluation ou un examen tant que sa liste d'exercices est vide."
-                    form_properties["help_text"] = not_exercices_text if is_authorized_activity["reason"] == "listeExos" else "Vous ne pouvez pas afficher cette ressource. %s" % is_authorized_activity["reason"]
+                    if is_authorized_activity["reason"] == "listeExos":
+                        form_properties["help_text"] = "Vous ne pouvez pas afficher une auto-évaluation ou un examen tant que sa liste d'exercices est vide."
+                    else:
+                        form_properties["help_text"] = "Vous ne pouvez pas afficher cette ressource. %s" % is_authorized_activity["reason"]
 
             form_properties["text_title_lately"] = "… ou programmer son affichage."
             if item_properties["typeElement"] == "Titre":
+                form_properties["is_item_title"] = True
                 form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
                 form_properties["wims_help_text"] = True
             else:
@@ -1125,138 +1138,93 @@ class JalonCours(ATFolder):
 
         return form_properties
 
-    def afficherRessource(self, idElement, dateAffichage, attribut, chapitre=None):
-        LOG.info("----- afficherRessource -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
-        dico = self.getElementCours(idElement)
-        if dico:
-            rep = {"Image":                     "Fichiers",
-                   "File":                      "Fichiers",
-                   "Lien web":                  "Externes",
-                   "Lecteur exportable":        "Externes",
-                   "Reference bibliographique": "Externes",
-                   "Glossaire":                 "Glossaire",
-                   "Webconference":             "Webconference",
-                   "Presentations sonorisees":  "Sonorisation"}
-            if dico["typeElement"] in rep.keys():
-                portal = self.portal_url.getPortalObject()
-                try:
-                    objet = getattr(getattr(getattr(getattr(portal, "Members"), dico["createurElement"]), rep[dico["typeElement"]]), idElement.replace("*-*", "."))
-                except:
-                    return None
-                portal_workflow = getToolByName(portal, "portal_workflow")
-                cours_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
-                objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
-                if attribut == "affElement" and cours_state != objet_state and cours_state == "published":
-                    portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
+    def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
+        LOG.info("----- editCourseTitleVisibility -----")
+        actuality_code = "chapdispo" if item_property_name == "affElement" else ""
 
-            # Cas des activités
-            if dico["typeElement"] in ["AutoEvaluation", "BoiteDepot", "Examen", "Forum"]:
-                obj = self.getSousObjet(idElement)
-                resultat_affichage = obj.afficherRessource(idElement, dateAffichage, attribut)
-                if resultat_affichage:
-                    # resultat_affichage["val"] indique "False" si l'affichage n'a pas été fait.
-                    if not resultat_affichage["val"]:
-                        # resultat_affichage["reason"] peut indiquer la raison pour laquelle l'affichage est refusé.
-                        return resultat_affichage
+        if actuality_code:
+            self.updateActualities(item_id, item_date, actuality_code)
 
-            descriptionElement = ""
-            dico[attribut] = dateAffichage
-            if attribut == "affElement":
-                dico["masquerElement"] = ""
-                descriptionElement = "dispo"
-            self._elements_cours[idElement] = dico
-            self.setElementsCours(self._elements_cours)
+        if items_list is None:
+            items_list = list(self.getPlan())
 
-            isNotSetActu = True
-            if attribut == "masquerElement":
-                self.delActu(idElement)
-                isNotSetActu = False
-
-            # Quand on affiche un element directement, on l'ajoute aux actus du cours.
-            if descriptionElement and not chapitre:
-                actualites = list(self.getActualites())
-                dicoActu = {"reference":      idElement,
-                            "dateActivation": dateAffichage,
-                            "code":           descriptionElement,
-                            "acces":          ["auteurs", "etudiants"]
-                            }
-                if (actualites and not dicoActu in actualites) or not actualites:
-                    self.setActuCours(dicoActu)
-                    isNotSetActu = False
-            if isNotSetActu:
-                self.setProperties({"DateDerniereModif": DateTime()})
-
-    # Affiche (ou masque) un chapitre du cours, ainsi que tout son contenu
-    def afficherRessourceChapitre(self, idElement, dateAffichage, attribut, listeElement=None):
-        LOG.info("----- afficherRessourceChapitre -----")
-        descriptionElement = ""
-        #attribut = masquerElement ou affElement
-        if attribut == "affElement":
-            descriptionElement = "chapdispo"
-
-        # lors d'un affichage, on ajoute l'actions aux actus du cours
-        if descriptionElement:
-            actualites = list(self.getActualites())
-            dicoActu = {"reference":      idElement,
-                        "dateActivation": dateAffichage,
-                        "code":           descriptionElement,
-                        "nb":             0,
-                        "dateDepot":      None,
-                        "acces":          ["auteurs", "etudiants"]
-                        }
-            if not actualites:
-                self.setActuCours(dicoActu)
-            elif dicoActu not in actualites:
-                self.setActuCours(dicoActu)
-
-        if listeElement is None:
-            listeElement = list(self.getPlan())
-
-        for element in listeElement:
-            if element["idElement"] == idElement or idElement == "all":
+        for item in items_list:
+            if item["idElement"] == item_id or item_id == "all":
                 # On commence par afficher le chapitre lui-même
-                self.afficherRessource(element["idElement"], dateAffichage, attribut, "chapitre")
-                if "listeElement" in element:
-                    for souselem in element["listeElement"]:
+                self.editCourseItemVisibility(item["idElement"], item_date, item_property_name, True)
+                if "listeElement" in item:
+                    for sub_item in item["listeElement"]:
                         #Puis on affiche tous les elements du chapitre
-                        self.afficherRessource(souselem["idElement"], dateAffichage, attribut, "chapitre")
-                        if "listeElement" in souselem:
+                        self.editCourseItemVisibility(sub_item["idElement"], item_date, item_property_name, True)
+                        if "listeElement" in sub_item:
                             # Si un des éléments est un sous-chapitre, on affiche son contenu recursivement.
-                            self.afficherRessourceChapitre("all", dateAffichage, attribut, souselem["listeElement"])
+                            self.editCourseTitleVisibility("all", item_date, item_property_name, sub_item["listeElement"])
                 #Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
-                if element["idElement"] == idElement:
+                if item["idElement"] == item_id:
                     break
-            elif "listeElement" in element:
-                self.afficherRessourceChapitre(idElement, dateAffichage, attribut, element["listeElement"])
+            elif "listeElement" in item:
+                self.editCourseItemVisibility(item_id, item_date, item_property_name, item["listeElement"])
 
-    # Affiche un chapitre du cours et ses parents jusqu'à atteindre la racine
-    def afficherChapitresParent(self, idElement, dateAffichage):
-        LOG.info("----- afficherChapitresParent -----")
-        dicoActu = {"reference":      idElement,
-                    "dateActivation": dateAffichage,
-                    "code":           "dispo",
-                    "nb":             0,
-                    "dateDepot":      None,
-                    "acces":          ["auteurs", "etudiants"]
-                    }
-        actualites = list(self.getActualites())
-        if not actualites:
-            self.setActuCours(dicoActu)
-        elif dicoActu not in actualites:
-            self.setActuCours(dicoActu)
+    def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        LOG.info("----- editCourseItemVisibility -----")
+        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        item_properties = self.getElementCours(item_id)
 
-        dico = self.getElementCours(idElement)
-        dico["affElement"] = dateAffichage
-        dico["masquerElement"] = ""
-        self._elements_cours[idElement] = dico
+        if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+            item_object = getattr(self, item_id)
+            item_object.afficherRessource(item_id, item_date, item_property_name)
+
+        update_actuality = False
+        if item_property_name == "affElement":
+            item_properties["masquerElement"] = ""
+            if item_properties["typeElement"] in self._type_folder_my_space_dict:
+                portal_workflow = getToolByName(self.portal_url.getPortalObject(), "portal_workflow")
+                course_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
+                if course_state == "published":
+                    item_object = getattr(getattr(getattr(portal.Members, item_properties["createurElement"]), self._type_folder_my_space_dict), item_id.replace("*-*", "."))
+                    item_object_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
+                    if cours_state != item_object_state:
+                        portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
+
+            if not is_update_from_title:
+                update_actuality = True
+                self.updateActualities(item_id, item_date, "dispo")
+        else:
+            self.delActu(item_id)
+
+        item_properties[item_property_name] = item_date
+        self._elements_cours[item_id] = item_properties
         self.setElementsCours(self._elements_cours)
 
-        parent = self.getParentPlanElement(idElement, 'racine', '')
-        if parent["idElement"] != "racine":
-            self.afficherChapitresParent(parent["idElement"], dateAffichage)
+        if not update_actuality:
+            self.setProperties({"DateDerniereModif": DateTime()})
+
+    def editCourseParentTitleVisibility(self, item_parent_id, item_date):
+        LOG.info("----- editCourseParentTitleVisibility -----")
+        item_properties = self.getElementCours(item_parent_id)
+
+        item_properties["affElement"] = item_date
+        item_properties["masquerElement"] = ""
+        self._elements_cours[item_parent_id] = item_properties
+        self.setElementsCours(self._elements_cours)
+
+        item_parent = self.getParentPlanElement(item_parent_id, 'racine', '')
+        if item_parent["idElement"] == "racine":
+            self.updateActualities(item_parent_id, item_date, "chapdispo")
         else:
-            idElement = "racine"
+            self.editCourseParentTitleVisibility(item_parent["idElement"], item_date)
+
+    def updateActualities(self, item_id, item_date, actuality_code):
+        LOG.info("----- updateActualities -----")
+        actualities_list = list(self.getActualites())
+        actuality_dict = {"reference":      item_id,
+                          "dateActivation": item_date,
+                          "code":           actuality_code,
+                          "nb":             0,
+                          "dateDepot":      None,
+                          "acces":          ["auteurs", "etudiants"]}
+        if not actuality_dict in actualities_list:
+            self.setActuCours(actuality_dict)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
         LOG.info("----- getParentPlanElement -----")

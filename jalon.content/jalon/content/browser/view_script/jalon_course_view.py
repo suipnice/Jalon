@@ -72,7 +72,8 @@ class JalonCourseView(BrowserView):
         has_course_map = self.context.getPlan()
 
         course_news = self.context.getActualitesCours()
-        course_map = self.context.getCourseMap(user.getId(), is_personnel, course_news['listeActu'], portal)
+        user_last_login = user.getProperty('login_time', "")
+        course_map = self.context.getCourseMap(user.getId(), user_last_login, is_personnel, course_news['listeActu'], portal)
 
         is_course_map_help_text = False
         course_map_help_text = ""
@@ -168,7 +169,8 @@ class JalonCourseView(BrowserView):
                                       "tab_icon":   "fa fa-comments fa-2x",
                                       "tab_name":   "Forums"})
 
-        return {"is_personnel":                    is_personnel,
+        return {"user_last_login":                 user_last_login,
+                "is_personnel":                    is_personnel,
                 "is_public":                       "success" if course_acces == "Public" else "disabled",
                 "course_short_description":        self.context.getDescriptionCourte(),
                 "course_author_name":              course_author["fullname"],
