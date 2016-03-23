@@ -278,7 +278,7 @@ class JalonCours(ATFolder):
                        "nouveauxdepots":     _(u"nouveau(x) dépôt(s) disponible(s)"),
                        "nouveauxmessages":   _(u"nouveau(x) message(s) disponible(s)")}
 
-    _item_actions = [{"item_action_id":   "course_display_item_form",
+    _item_actions = [{"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye fa-fw",
                       "item_action_name": "Afficher"},
                      {"item_action_id":   "course_hide_item_form",
