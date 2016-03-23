@@ -520,11 +520,11 @@ class JalonCours(ATFolder):
         return jalon_utils.convertirDate(date)
 
     def supprimerCaractereSpeciaux(self, chaine):
-        LOG.info("----- ----- supprimerCaractereSpeciaux -----")
+        LOG.info("----- supprimerCaractereSpeciaux -----")
         return jalon_utils.supprimerCaractereSpeciaux(chaine)
 
     def getShortText(self, text, limit=75):
-        LOG.info("----- ----- getShortText -----")
+        LOG.info("----- getShortText -----")
         return jalon_utils.getShortText(text, limit)
 
     #Suppression marquage HTML

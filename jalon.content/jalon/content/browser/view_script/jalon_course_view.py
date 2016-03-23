@@ -12,6 +12,57 @@ class JalonCourseView(BrowserView):
     """Class pour le first_page
     """
 
+    #to : training offer
+    _course_to_actions_list = [{"action_link": "course_delete_training_offer_form",
+                                "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
+                                "action_name": "Supprimer"},
+                               {"action_link": "course_add_training_offer_form",
+                                "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
+                                "action_name": "Ajouter"},
+                               {"action_link": "course_display_training_offer_page",
+                                "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
+                                "action_name": "Voir"}]
+    #nr : nominative registraion
+    _course_nr_actions_list = [{"action_link": "course_delete_nominative_registration_form",
+                                "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
+                                "action_name": "Supprimer"},
+                               {"action_link": "course_add_nominative_registration_form",
+                                "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
+                                "action_name": "Ajouter"},
+                               {"action_link": "course_display_nominative_registration_page",
+                                "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
+                                "action_name": "Voir"}]
+    #er : email registraion
+    _course_er_actions_list = [{"action_link": "course_delete_email_registration_form",
+                                "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
+                                "action_name": "Supprimer"},
+                               {"action_link": "course_add_email_registration_form",
+                                "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
+                                "action_name": "Ajouter"},
+                               {"action_link": "course_display_email_registration_page",
+                                "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
+                                "action_name": "Voir"}]
+    #pr : password registraion
+    _course_pr_actions_list = [{"action_link": "course_delete_password_registration_form",
+                                "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
+                                "action_name": "Supprimer"},
+                               {"action_link": "course_add_password_registration_form",
+                                "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
+                                "action_name": "Ajouter"},
+                               {"action_link": "course_display_password_registration_page",
+                                "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
+                                "action_name": "Voir"}]
+    #cr : coreader registraion
+    _course_cr_actions_list = [{"action_link": "course_delete_coreader_registration_form",
+                                "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
+                                "action_name": "Supprimer"},
+                               {"action_link": "course_add_coreader_registration_form",
+                                "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
+                                "action_name": "Ajouter"},
+                               {"action_link": "course_display_coreader_registration_page",
+                                "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
+                                "action_name": "Voir"}]
+
     def __init__(self, context, request):
         #LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
@@ -34,16 +85,27 @@ class JalonCourseView(BrowserView):
 
     def getCourseView(self, user, mode_etudiant):
         portal = self.context.portal_url.getPortalObject()
-        is_personnel = self.context.isPersonnel(user, mode_etudiant)
 
-        course_acces = self.context.getAcces()
+        my_view = {"portal":                       portal,
+                   "course_short_description":     self.context.getDescriptionCourte(),
+                   "is_personnel":                 self.context.isPersonnel(user, mode_etudiant),
+                   "is_public":                    "success" if self.context.getAcces() == "Public" else "disabled",
+                   "is_course_author":             self.context.isAuteurs(user.getId()),
+                   "course_training_offer":        self.context.getAffichageFormation(),
+                   "course_coreader_registration": len(self.context.getCoLecteurs())}
+
+        my_view["is_course_password"] = self.context.getLibre() and my_view["is_personnel"]
+        my_view["course_password"] = self.context.getLienMooc()
 
         course_author = self.context.getAuteur()
+        my_view["course_author_name"] = course_author["fullname"]
+
         course_author_link = "mailto:%s" % course_author['email']
         is_ladp_actived = self.context.isLDAP()
         if is_ladp_actived:
             base_user_book = self.context.getBaseAnnuaire()
             course_author_link = self.context.getFicheAnnuaire(course_author, base_user_book)
+        my_view["course_author_link"] = course_author_link
 
         course_coauthor_list = []
         if is_ladp_actived:
@@ -54,159 +116,78 @@ class JalonCourseView(BrowserView):
             for course_coauthor in self.context.getCoAuteursCours():
                 course_coauthor_list.append({"course_coauthor_name": course_coauthor["fullname"],
                                              "course_coauthor_link": "mailto:%s" % course_coauthor["email"]})
+        my_view["course_coauthor_list"] = course_coauthor_list
 
         course_link = self.context.absolute_url()
-        course_map_action_list = [{"action_link": "%s/download_wims_score_form" % course_link,
-                                   "action_icon": "fa fa-download fa-fw",
-                                   "action_name": "Télécharger les notes WIMS"},
-                                  {"action_link": "%s/purge_course_form" % course_link,
-                                   "action_icon": "fa fa-filter fa-fw",
-                                   "action_name": "Purger les travaux étudiants"},
-                                  {"action_link": "%s/delete_wims_activity_form" % course_link,
-                                   "action_icon": "fa fa-trash-o  fa-fw",
-                                   "action_name": "Supprimer les activités WIMS"}]
+        my_view["course_map_action_list"] = [{"action_link": "%s/download_wims_score_form" % course_link,
+                                              "action_icon": "fa fa-download fa-fw",
+                                              "action_name": "Télécharger les notes WIMS"},
+                                             {"action_link": "%s/purge_course_form" % course_link,
+                                              "action_icon": "fa fa-filter fa-fw",
+                                              "action_name": "Purger les travaux étudiants"},
+                                             {"action_link": "%s/delete_wims_activity_form" % course_link,
+                                              "action_icon": "fa fa-trash-o  fa-fw",
+                                              "action_name": "Supprimer les activités WIMS"}]
 
         course_path = self.context.getPhysicalPath()
-        course_map_item_adder = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
+        my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
 
-        has_course_map = self.context.getPlan()
+        my_view["has_course_map"] = self.context.getPlan()
 
-        course_news = self.context.getActualitesCours()
-        user_last_login = user.getProperty('login_time', "")
-        course_map = self.context.getCourseMap(user.getId(), user_last_login, is_personnel, course_news['listeActu'], portal)
+        my_view["course_news"] = self.context.getActualitesCours()
+        my_view["user_last_login"] = user.getProperty('login_time', "")
+        my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login"], my_view["is_personnel"], my_view["course_news"]['listeActu'], portal)
 
-        is_course_map_help_text = False
-        course_map_help_text = ""
+        my_view["is_course_map_help_text"] = False
+        my_view["course_map_help_text"] = ""
         portal_jalon_properties = portal.portal_jalon_properties
         if portal_jalon_properties.getJalonProperty("activer_aide_plan"):
-            is_course_map_help_text = True
-            course_map_help_text = portal_jalon_properties.getJalonProperty("lien_aide_plan")
+            my_view["is_course_map_help_text"] = True
+            my_view["course_map_help_text"] = portal_jalon_properties.getJalonProperty("lien_aide_plan")
 
-        course_bibliography_dict = self.context.getGloBib('bibliographie')
-        course_bibliography_letter_list = course_bibliography_dict.keys()
-        course_bibliography_letter_list.sort()
-        course_has_bibliography = len(course_bibliography_letter_list)
+        my_view["course_bibliography_dict"] = self.context.getGloBib('bibliographie')
+        my_view["course_bibliography_letter_list"] = my_view["course_bibliography_dict"].keys()
+        my_view["course_bibliography_letter_list"].sort()
+        my_view["course_has_bibliography"] = len(my_view["course_bibliography_letter_list"])
 
-        course_glossary_dict = self.context.getGloBib('glossaire')
-        course_glossary_letter_list = course_glossary_dict.keys()
-        course_glossary_letter_list.sort()
-        course_has_glossary = len(course_glossary_letter_list)
+        my_view["course_glossary_dict"] = self.context.getGloBib('glossaire')
+        my_view["course_glossary_letter_list"] = my_view["course_glossary_dict"].keys()
+        my_view["course_glossary_letter_list"].sort()
+        my_view["course_has_glossary"] = len(my_view["course_glossary_letter_list"])
 
-        if is_personnel:
-            #to : training offer
-            course_to_actions_list = [{"action_link": "%s/course_delete_training_offer_form" % course_link,
-                                       "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
-                                       "action_name": "Supprimer"},
-                                      {"action_link": "%s/course_add_training_offer_form" % course_link,
-                                       "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
-                                       "action_name": "Ajouter"}]
-            #nr : nominative registraion
-            course_nr_actions_list = [{"action_link": "%s/course_delete_nominative_registration_form" % course_link,
-                                       "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
-                                       "action_name": "Supprimer"},
-                                      {"action_link": "%s/course_add_nominative_registration_form" % course_link,
-                                       "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
-                                       "action_name": "Ajouter"}]
-            #er : email registraion
-            course_er_actions_list = [{"action_link": "%s/course_delete_email_registration_form" % course_link,
-                                       "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
-                                       "action_name": "Supprimer"},
-                                      {"action_link": "%s/course_add_email_registration_form" % course_link,
-                                       "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
-                                       "action_name": "Ajouter"}]
-            #pr : password registraion
-            course_pr_actions_list = [{"action_link": "%s/course_delete_password_registration_form" % course_link,
-                                       "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
-                                       "action_name": "Supprimer"},
-                                      {"action_link": "%s/course_add_password_registration_form" % course_link,
-                                       "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
-                                       "action_name": "Ajouter"}]
-            #cr : coreader registraion
-            course_cr_actions_list = [{"action_link": "%s/course_delete_coreader_registration_form" % course_link,
-                                       "action_icon": "fa fa-trash fa-lg fa-fw no-pad alert",
-                                       "action_name": "Supprimer"},
-                                      {"action_link": "%s/course_add_coreader_registration_form" % course_link,
-                                       "action_icon": "fa fa-plus-circle fa-lg fa-fw no-pad",
-                                       "action_name": "Ajouter"}]
+        my_view["course_to_actions_list"] = self.getActionsList(my_view["is_personnel"], self._course_to_actions_list)
+        my_view["course_nominative_registration"] = len(self.context.getGroupe())
+        my_view["course_nr_actions_list"] = self.getActionsList(my_view["is_personnel"], self._course_nr_actions_list)
+        my_view["course_email_registration"] = len(self.context.getInvitations())
+        my_view["course_er_actions_list"] = self.getActionsList(my_view["is_personnel"], self._course_er_actions_list)
+        my_view["course_password_registration"] = len(self.context.getInscriptionsLibres())
+        my_view["course_pr_actions_list"] = self.getActionsList(my_view["is_personnel"], self._course_pr_actions_list)
+        my_view["course_cr_actions_list"] = self.getActionsList(my_view["is_personnel"], self._course_cr_actions_list)
+
+        my_view["course_life_tabs_list"] = [{"tab_link":   "#course_life-historique",
+                                             "tab_number": my_view["course_news"]["nbActu"],
+                                             "tab_icon":   "fa fa-bell fa-2x",
+                                             "tab_name":   "Historique"}]
+
+        my_view["course_news_title"] = "La dernière nouveauté du cours"
+        if my_view["course_news"]["nbActu"] >= 4:
+            my_view["course_news_title"] = "Les dernières nouveautés du cours"
         else:
-            course_to_actions_list = [{"action_link": "%s/course_display_training_offer_page" % course_link,
-                                       "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
-                                       "action_name": "Voir"}]
-            course_nr_actions_list = [{"action_link": "%s/course_display_nominative_registration_page" % course_link,
-                                       "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
-                                       "action_name": "Voir"}]
-            course_er_actions_list = [{"action_link": "%s/course_display_email_registration_page" % course_link,
-                                       "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
-                                       "action_name": "Voir"}]
-            course_pr_actions_list = [{"action_link": "%s/course_display_password_registration_page" % course_link,
-                                       "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
-                                       "action_name": "Voir"}]
-            course_cr_actions_list = [{"action_link": "%s/course_display_coreader_registration_page" % course_link,
-                                       "action_icon": "fa fa-eye fa-lg fa-fw no-pad",
-                                       "action_name": "Voir"}]
+            my_view["course_news_title"] = "Les 3 dernières nouveautés du cours"
 
-        course_life_tabs_list = []
-        course_life_tabs_list.append({"tab_link":   "#course_life-historique",
-                                      "tab_number": course_news["nbActu"],
-                                      "tab_icon":   "fa fa-bell fa-2x",
-                                      "tab_name":   "Historique"})
+        my_view["course_advert"] = self.context.getAnnonces(user, self.request, mode_etudiant)
+        my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-annonces",
+                                                 "tab_number": my_view["course_advert"]["nbAnnonces"],
+                                                 "tab_icon":   "fa fa-bullhorn fa-2x",
+                                                 "tab_name":   "Annonces"})
 
-        course_news_title = "La dernière nouveauté du cours"
-        if course_news["nbActu"] >= 4:
-            course_news_title = "Les dernières nouveautés du cours"
-        else:
-            course_news_title = "Les 3 dernières nouveautés du cours"
+        my_view["course_forums"] = self.context.getDicoForums()
+        my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-forum",
+                                                 "tab_number": my_view["course_forums"]["nbForums"],
+                                                 "tab_icon":   "fa fa-comments fa-2x",
+                                                 "tab_name":   "Forums"})
 
-        course_advert = self.context.getAnnonces(user, self.request, mode_etudiant)
-        course_life_tabs_list.append({"tab_link":   "#course_life-annonces",
-                                      "tab_number": course_advert["nbAnnonces"],
-                                      "tab_icon":   "fa fa-bullhorn fa-2x",
-                                      "tab_name":   "Annonces"})
-
-        course_forums = self.context.getDicoForums()
-        course_life_tabs_list.append({"tab_link":   "#course_life-forum",
-                                      "tab_number": course_forums["nbForums"],
-                                      "tab_icon":   "fa fa-comments fa-2x",
-                                      "tab_name":   "Forums"})
-
-        return {"user_last_login":                 user_last_login,
-                "is_personnel":                    is_personnel,
-                "is_public":                       "success" if course_acces == "Public" else "disabled",
-                "course_short_description":        self.context.getDescriptionCourte(),
-                "course_author_name":              course_author["fullname"],
-                "course_author_link":              course_author_link,
-                "course_coauthor_list":            course_coauthor_list,
-                "course_map_action_list":          course_map_action_list,
-                "course_map_item_adder":           course_map_item_adder,
-                "has_course_map":                  has_course_map,
-                "course_map":                      course_map,
-                "is_course_map_help_text":         is_course_map_help_text,
-                "course_map_help_text":            course_map_help_text,
-                "course_has_bibliography":         course_has_bibliography,
-                "course_bibliography_dict":        course_bibliography_dict,
-                "course_bibliography_letter_list": course_bibliography_letter_list,
-                "course_has_glossary":             course_has_glossary,
-                "course_glossary_dict":            course_glossary_dict,
-                "course_glossary_letter_list":     course_glossary_letter_list,
-                "is_course_author":                self.context.isAuteurs(user.getId()),
-                "course_training_offer":           self.context.getAffichageFormation(),
-                "course_to_actions_list":          course_to_actions_list,
-                "course_nominative_registration":  len(self.context.getGroupe()),
-                "course_nr_actions_list":          course_nr_actions_list,
-                "course_email_registration":       len(self.context.getInvitations()),
-                "course_er_actions_list":          course_er_actions_list,
-                "course_password_registration":    len(self.context.getInscriptionsLibres()),
-                "course_pr_actions_list":          course_pr_actions_list,
-                "is_course_password":              self.context.getLibre() and is_personnel,
-                "course_password":                 self.context.getLienMooc(),
-                "course_coreader_registration":    len(self.context.getCoLecteurs()),
-                "course_cr_actions_list":          course_cr_actions_list,
-                "course_life_tabs_list":           course_life_tabs_list,
-                "course_news":                     course_news,
-                "course_news_title":               course_news_title,
-                "course_advert":                   course_advert,
-                "course_forums":                   course_forums,
-                "portal":                          portal}
+        return my_view
 
     def getCourseItemAdderList(self, course_link, course_path, portal):
         item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path, portal)
@@ -293,3 +274,11 @@ class JalonCourseView(BrowserView):
                                            "item_icon": "fa fa-external-link fa-fw",
                                            "item_name": "Ressources externes"})
         return item_adder_list
+
+    def getActionsList(self, is_personnel, actions_list):
+        tmp_list = actions_list[:]
+        if is_personnel:
+            del tmp_list[-1]
+        else:
+            tmp_list = [tmp_list[-1]]
+        return tmp_list

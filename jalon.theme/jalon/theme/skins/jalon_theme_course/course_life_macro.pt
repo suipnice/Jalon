@@ -32,12 +32,13 @@
         </a>
         <i class="fa fa-child"></i><tal:block i18n:translate="">Participants</tal:block>
     </h2>
-    <div class="panel radius bkgrnd">
+    <div class="panel radius bkgrnd"
+         tal:define="course_link context/absolute_url">
         <dl>
             <dd>
                 <a tal:repeat="action_dict my_view/course_to_actions_list"
                    class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href action_dict/action_link">
+                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
                     <i tal:attributes="class action_dict/action_icon"></i>
                 </a>
                 <i class="fa fa-university fa-fw"></i>Offre(s) de formation :
@@ -47,7 +48,7 @@
             <dd>
                 <a tal:repeat="action_dict my_view/course_nr_actions_list"
                    class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href action_dict/action_link">
+                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
                     <i tal:attributes="class action_dict/action_icon"></i>
                 </a>
                 <i class="fa fa-users fa-fw"></i>Inscription(s) nominative(s) :
@@ -56,7 +57,7 @@
             <dd>
                 <a tal:repeat="action_dict my_view/course_er_actions_list"
                    class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href action_dict/action_link">
+                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
                     <i tal:attributes="class action_dict/action_icon"></i>
                 </a>
                 <i class="fa fa-envelope-o fa-fw"></i>Invitation(s) par courriel :
@@ -66,7 +67,7 @@
             <dd>
                 <a tal:repeat="action_dict my_view/course_pr_actions_list"
                    class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href action_dict/action_link">
+                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
                     <i tal:attributes="class action_dict/action_icon"></i>
                 </a>
                 <i class="fa fa-key fa-fw"></i>Accès par mot de passe :
@@ -81,7 +82,7 @@
             <dd>
                 <a tal:repeat="action_dict my_view/course_cr_actions_list"
                    class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href action_dict/action_link">
+                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
                     <i tal:attributes="class action_dict/action_icon"></i>
                 </a>
                 <i class="fa fa-users fa-fw"></i>Lecteur(s) enseignant(s) :
