@@ -438,21 +438,9 @@ class JalonCours(ATFolder):
             roles["colecteur"] = True
         return roles
 
-    #getSousObjet renvoie le sous-objet idElement
     #def getSousObjet(self, idElement):
-    #    LOG.info("----- getSousObjet -----")
-    #    if "*-*" in idElement:
-    #        idElement = idElement.split("*-*")[-1]
-    #    return getattr(self, idElement)
-
-    #getTypeSousObjet renvoie le type du sous-objet idElement
-    def getTypeSousObjet(self, idElement):
-        LOG.info("----- getTypeSousObjet -----")
-        if "*-*" in idElement:
-            typeSousObjet = idElement.split("*-*")[0]
-        else:
-            typeSousObjet = idElement.split("-")[0]
-        return typeSousObjet
+    #    à remplacer par
+    #    getattr(self, idElement)
 
     def isPersonnel(self, user, mode_etudiant="false"):
         LOG.info("----- isPersonnel -----")
@@ -1077,7 +1065,6 @@ class JalonCours(ATFolder):
 
             if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
                 is_authorized_activity = getattr(self, item_id).autoriser_Affichage()
-                #is_authorized_activity = self.autoriserAffichageSousObjet(item_id, item_properties["typeElement"])
                 if not is_authorized_activity["val"]:
                     form_properties["is_authorized_form"] = False
                     form_properties["help_css"] = "panel warning radius"
@@ -1669,35 +1656,14 @@ class JalonCours(ATFolder):
         # Renvoit le nombre d'activités supprimées.
         return len(liste_activitesWIMS)
 
-    #autoriserAffichageSousObjet : définit si l'affichage de l'objet 'idElement' est autorisé ou pas.
-    # utile pour empecher l'affichage des activités vides par exemple
-    def autoriserAffichageSousObjet(self, idElement, typeElement=None):
-        LOG.info("----- autoriserAffichageSousObjet -----")
-        ret = {"val": True, "reason": ""}
-        if not typeElement:
-            typeElement = self.getTypeSousObjet(idElement)
-        if typeElement in ['AutoEvaluation', 'Examen']:
-            # dans le cas d'une activité WIMS, on n'affiche l'objet que s'il contient des exercices.
-            infosActivite = self.getSousObjet(idElement)
-            ret = infosActivite.autoriser_Affichage()
-        return ret
+    #def autoriserAffichageSousObjet(self, idElement, typeElement=None):
+    #    à remplacer par
+    #    getattr(self, item_id).autoriser_Affichage()
 
     #pour montrer les nouveaux éléments dans le cours
-    def isNouveau(self, idElement, listeActualites=None):
-        LOG.info("----- isNouveau -----")
-        if listeActualites is None:
-            LOG.info("----- ***** Not listeActualites")
-            listeActualites = self.getActualitesCours(True)["listeActu"]
-        for actualite in listeActualites:
-            if idElement["titreElement"] in actualite["titre"]:
-                member = self.portal_membership.getAuthenticatedMember()
-                if member.getId() == self.Creator():
-                    if cmp(actualite["date"], member.getProperty('login_time', None)) > 0:
-                        return True
-                    return False
-                elif cmp(actualite["date"], self.getLastLogin()) > 0:
-                    return True
-        return False
+    #def isNouveau(self, idElement, listeActualites=None):
+    #    à remplacer par
+    #    True if item["is_display_item_bool"] and cmp(item_properties["affElement"], user_last_login_time) > 0 else False
 
     #---------------------------------#
     # Course Activity (Adobe Connect) #
