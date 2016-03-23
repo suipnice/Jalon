@@ -804,9 +804,10 @@ class JalonCours(ATFolder):
 
     def getDisplayCourseMapAttributes(self, user):
         LOG.info("----- getDisplayCourseMapAttributes -----")
-        return {"is_personnel": self.isPersonnel(user),
-                "course_news":  self.getActualitesCours(),
-                "portal":       self.portal_url.getPortalObject()}
+        return {"is_personnel":         self.isPersonnel(user),
+                "user_last_login_time": user.getProperty('login_time', ""),
+                "course_news":          self.getActualitesCours(),
+                "portal":               self.portal_url.getPortalObject()}
 
     def getAddCourseMapItemForm(self, item_type):
         LOG.info("----- getAddCourseMapItemForm -----")

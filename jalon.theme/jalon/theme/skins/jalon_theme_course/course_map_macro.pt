@@ -80,7 +80,7 @@
                i18n:attributes="title"/>
 
             <tal:condition condition="element/is_item_title">
-            <tal:define define="course_map python:context.getCourseMapItems(element['course_map_sub_items_list'], user.getId(), my_view['user_last_login'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['portal']);">
+            <tal:define define="course_map python:context.getCourseMapItems(element['course_map_sub_items_list'], user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['portal']);">
             <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
                 Affichage du plan du cours
             </metal:macro>
