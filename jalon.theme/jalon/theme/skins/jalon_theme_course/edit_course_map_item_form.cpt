@@ -6,20 +6,21 @@
       i18n:domain="jalon.content">
 
 <body>
+
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors;
-                        item_type request/item_type | string:1;
-                        form_properties python:context.getAddCourseMapItemForm(item_type);
-                        course_map_form context/getCourseMapForm">
+                        item_type request/item_type | nothing;
+                        item_id request/item_id | nothing;
+                        my_form python:context.getCourseMapItemForm(item_type=item_type, item_id=item_id)">
 
     <h2>
-        <tal:block i18n:translate="">Créer un</tal:block>
-        <tal:replace replace="form_properties/form_title"/>
+        <tal:replace replace="my_form/form_title_text"/>
+        <tal:replace replace="my_form/form_title_type"/>
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <form id="js-planTextCreator" method="POST"
-          tal:define="title request/title | nothing"
+    <form id="js-editCourseMapItem" method="POST"
+          tal:define="title request/title | my_form/title | nothing"
           tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-success_msg string:L'élément de plan a été crée.">
 
@@ -31,34 +32,42 @@
                  tal:condition="error"/>
             <input type="text" id="titreElement" name="title" size="30" maxlength="255"
                    required="required" placeholder="Saisie obligatoire"
-                   tal:condition="form_properties/is_type_title" i18n:attributes="placeholder"/>
+                   tal:attributes="value title"
+                   tal:condition="my_form/is_type_title" i18n:attributes="placeholder"/>
             <textarea id="titreElement" name="title" rows="9"
                       required="required" placeholder="Saisie obligatoire" i18n:attributes="placeholder"
-                      tal:condition="not:form_properties/is_type_title"><tal:block replace="title"/></textarea>
-
+                      tal:condition="not:my_form/is_type_title"><tal:block replace="title"/></textarea>
         </div>
 
-        <tal:replace replace="structure course_map_form"/>
+        <tal:condition condition="my_form/is_add_form">
+            <tal:define define="course_map_form context/getCourseMapForm">
+                <tal:replace replace="structure course_map_form"/>
+            </tal:define>
+        </tal:condition>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="validate_key" value="create_course_map_item"/>
+        <input type="hidden" name="validate_key" 
+               tal:attributes="value my_form/validate_key"/>
         <input type="hidden" name="item_type"
-               tal:attributes="value form_properties/item_type"/>
+               tal:attributes="value my_form/item_type"/>
+        <input type="hidden" name="item_id"
+               tal:attributes="value my_form/item_id"
+               tal:condition="not:my_form/is_add_form"/>
         <input type="hidden" name="user_id"
                tal:attributes="value user/getId"/>
 
         <div class="formControls">
-            <button type="submit" class="button small create radius"
-                    name="form.button.save">
-                <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+            <button type="submit" name="form.button.save"
+                    tal:attributes="class my_form/form_button_css">
+                <i tal:attributes="class my_form/form_button_icon"></i>
+                <tal:replace replace="my_form/form_button_text"/>
             </button>
         </div>
 
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure form_properties/form_js"></script>
+            tal:content="structure my_form/form_js"></script>
 
 </metal:main>
 

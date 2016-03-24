@@ -25,6 +25,7 @@ import string
 import jalon_utils
 import random
 import os
+import copy
 
 from logging import getLogger
 LOG = getLogger('[JalonCours]')
@@ -285,7 +286,7 @@ class JalonCours(ATFolder):
                      {"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye-slash fa-fw",
                       "item_action_name": "Masquer"},
-                     {"item_action_id":   "course_edit_item_form",
+                     {"item_action_id":   "edit_course_map_item_form",
                       "item_action_icon": "fa fa-pencil fa-fw",
                       "item_action_name": "Modifier"},
                      {"item_action_id":   "course_jalonner_item_form",
@@ -298,14 +299,14 @@ class JalonCours(ATFolder):
                       "item_action_icon": "fa fa-trash-o fa-fw",
                       "item_action_name": "Supprimer"}]
 
-    _add_course_map_item_dict = {"1": {"form_title":    "titre",
-                                       "is_type_title": True,
-                                       "item_type":     "Titre",
-                                       "form_js":       "setRevealFormPlanRefresh('js-planTextCreator','reveal-main')"},
-                                 "2": {"form_title":    "texte libre",
-                                       "is_type_title": False,
-                                       "item_type":     "TexteLibre",
-                                       "form_js":       "setRevealFormPlanRefresh('js-planTextCreator','reveal-main','titreElement')"}}
+    _course_map_item_dict = {"1": {"form_title_type":    "titre",
+                                   "is_type_title":      True,
+                                   "item_type":          "Titre",
+                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','reveal-main')"},
+                             "2": {"form_title_type":    "texte libre",
+                                   "is_type_title":      False,
+                                   "item_type":          "TexteLibre",
+                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','reveal-main','titreElement')"}}
 
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
@@ -758,10 +759,32 @@ class JalonCours(ATFolder):
                 "course_news":          self.getActualitesCours(),
                 "portal":               self.portal_url.getPortalObject()}
 
-    def getAddCourseMapItemForm(self, item_type):
-        LOG.info("----- getAddCourseMapItemForm -----")
-        LOG.info("***** dict : %s" % str(self._add_course_map_item_dict[item_type]))
-        return self._add_course_map_item_dict[item_type]
+    def getCourseMapItemForm(self, item_type, item_id):
+        LOG.info("----- getCourseMapItemForm -----")
+        if not item_type:
+            item_properties = self.getElementCours(item_id)
+            item_type = "1" if item_properties["typeElement"] == "Titre" else "2"
+
+        form_properties = copy.deepcopy(self._course_map_item_dict[item_type])
+
+        if not item_id:
+            form_properties["form_title_text"] = "Créer un"
+            form_properties["is_add_form"] = True
+            form_properties["form_button_css"] = "button small create radius"
+            form_properties["form_button_text"] = "Créer"
+            form_properties["form_button_icon"] = "fa fa-plus-circle"
+            form_properties["validate_key"] = "create_course_map_item"
+        else:
+            form_properties["form_title_text"] = "Modifier un"
+            form_properties["is_add_form"] = False
+            form_properties["item_id"] = item_id
+            form_properties["form_button_css"] = "button small radius"
+            form_properties["form_button_text"] = "Modifier"
+            form_properties["form_button_icon"] = "fa fa-pencil"
+            form_properties["validate_key"] = "edit_course_map_item"
+            form_properties["title"] = item_properties["titreElement"]
+
+        return form_properties
 
     def getCourseMap(self, user_id, user_last_login_time, is_personnel, course_actuality_list, portal):
         LOG.info("----- getCourseMap -----")
@@ -1344,13 +1367,13 @@ class JalonCours(ATFolder):
         self.setElementsCours(self._elements_cours)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def modifierInfosElementPlan(self, idElement, titreElement):
-        LOG.info("----- modifierInfosElementPlan -----")
-        dico = self.getElementCours(idElement)
-        dico["titreElement"] = titreElement
-        self._elements_cours[idElement] = dico
+    def editCourseMapItem(self, item_id, item_title):
+        LOG.info("----- editCourseMapItem -----")
+        item_properties = self.getElementCours(item_id)
+        item_properties["titreElement"] = item_title
+        self._elements_cours[item_id] = item_properties
         self.setElementsCours(self._elements_cours)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        #self.setProperties({"DateDerniereModif": DateTime()})
 
     def ordonnerElementPlan(self, pplan):
         LOG.info("----- ordonnerElementPlan -----")
