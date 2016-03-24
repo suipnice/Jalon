@@ -6,20 +6,21 @@
       i18n:domain="jalon.content">
 
 <body>
-    <metal:main fill-slot="content"
-                tal:define="resName python:context.aq_parent.getShortText(context.Title(), 80);
-                            is_object_attached python:context.aq_parent.isObjectAttached(context)">
 
-        <h2><tal:block i18n:translate="">Détacher la ressource</tal:block>
-            « <tal:content content="resName" /> »
-            <a class="close-reveal-modal"></a>
-        </h2>
+<metal:main fill-slot="content"
+            tal:define="resName python:context.aq_parent.getShortText(context.Title(), 80);
+                        is_object_attached python:context.aq_parent.isObjectAttached(context)">
 
-        <metal:macro use-macro="python:context.detach_object_macro.macros.get(is_object_attached)">
-            Macro du formulaire pour détacher si c'est possible.
-        </metal:macro>
+    <h2><tal:block i18n:translate="">Détacher la ressource</tal:block>
+        « <tal:content content="resName" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
 
-    </metal:main>
+    <metal:macro use-macro="python:context.detach_object_macro.macros.get(is_object_attached)">
+        Macro du formulaire pour détacher si c'est possible.
+    </metal:macro>
+
+</metal:main>
 
 </body>
 

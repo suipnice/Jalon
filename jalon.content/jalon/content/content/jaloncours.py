@@ -1162,7 +1162,7 @@ class JalonCours(ATFolder):
                 update_actuality = True
                 self.updateActualities(item_id, item_date, "dispo")
         else:
-            self.delActu(item_id)
+            self.deleteActuality(item_id)
 
         item_properties[item_property_name] = item_date
         self._elements_cours[item_id] = item_properties
@@ -1332,30 +1332,19 @@ class JalonCours(ATFolder):
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
 
-    def detacherElement(self, ressource, createur, repertoire):
-        LOG.info("----- detacherElement -----")
-        dicoRep = {"Image":                    "Fichiers",
-                   "File":                     "Fichiers",
-                   "Page":                     "Fichiers",
-                   "Lienweb":                  "Externes",
-                   "Lecteurexportable":        "Externes",
-                   "Referencebibliographique": "Externes",
-                   "CatalogueBU":              "Externes",
-                   "Catalogue BU":             "Externes",
-                   "TermeGlossaire":           "Glossaire",
-                   "Presentationssonorisees": "Sonorisation"}
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
-        if "*-*" in ressource:
-            ressource = ressource.replace("*-*", ".")
-        try:
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), createur), repertoire), ressource)
-            relatedItems = objet.getRelatedItems()
-            relatedItems.remove(self)
-            objet.setRelatedItems(relatedItems)
-            objet.reindexObject()
-        except:
-            pass
+    def detachCourseItem(self, item_id, item_creator, folder_id):
+        LOG.info("----- detachCourseItem -----")
+
+        item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, item_creator), self._type_folder_my_space_dict[folder_id]), item_id)
+        item_relatedItems = item_object.getRelatedItems()
+        item_relatedItems.remove(self)
+        item_object.setRelatedItems(item_relatedItems)
+        item_object.reindexObject()
+
+        course_relatedItems = self.getRelatedItems()
+        course_relatedItems.remove(item_object)
+        self.setRelatedItems(course_relatedItems)
+
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def modifierInfosBoitePlan(self, idElement, param):
@@ -1428,7 +1417,7 @@ class JalonCours(ATFolder):
             self.elements_glossaire = tuple(elements_glossaire)
             infos_element = self.getElementCours()
             infosElement = infos_element[idElement]
-            self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"])
+            self.detachCourseItem(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
             del infos_element[idElement]
         elements_bibliographie = list(self.getBibliographie())
         if idElement in elements_bibliographie:
@@ -1437,12 +1426,12 @@ class JalonCours(ATFolder):
             if not self.isInCourseMap(idElement):
                 infos_element = self.getElementCours()
                 infosElement = infos_element[idElement]
-                self.detacherElement(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
+                self.detachCourseItem(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
                 del infos_element[idElement]
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
-        LOG.info("----- retirerElementPlan -----")
+    def detachCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
+        LOG.info("----- detachCourseMapItem -----")
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         start = False
         if listeElement is None:
@@ -1453,7 +1442,7 @@ class JalonCours(ATFolder):
                 #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
                 if "listeElement" in element and element["listeElement"] != []:
-                    self.retirerElementPlan("all", element["listeElement"], force_WIMS)
+                    self.detachCourseMapItem("all", element["listeElement"], force_WIMS)
 
                 #on supprime element de la liste où il etait dans le plan
                 while element in listeElement:
@@ -1464,16 +1453,14 @@ class JalonCours(ATFolder):
                 if infosElement:
                     #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
                     if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
-                        self.ajouterElementPlan(element["idElement"])
-                    else:
-
-                        if not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
-                            # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
-                            del self._elements_cours[element["idElement"]]
-                            self.setElementsCours(self._elements_cours)
+                        self.addItemInCourseMap(element["idElement"], "fin_racine")
+                    elif not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
+                        # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
+                        del self._elements_cours[element["idElement"]]
+                        self.setElementsCours(self._elements_cours)
 
                     if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
-                        self.detacherElement(element["idElement"], infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
+                        self.detachCourseItem(element["idElement"].replace("*-*", "."), infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
 
                     if infosElement["typeElement"] == "BoiteDepot":
                         boite = getattr(self, element["idElement"])
@@ -1484,7 +1471,7 @@ class JalonCours(ATFolder):
 
             elif "listeElement" in element:
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
-                self.retirerElementPlan(idElement, element["listeElement"], force_WIMS)
+                self.detachCourseMapItem(idElement, element["listeElement"], force_WIMS)
 
         if start:
             self.plan = tuple(listeElement)
@@ -1647,7 +1634,7 @@ class JalonCours(ATFolder):
                     # Supprime l'activité (du plan du cours et du cours)
                     self.retirerElementPlan(idElement, force_WIMS=True)
                     # Supprime l'activité des actus du cours
-                    self.delActu(idElement)
+                    self.deleteActuality(idElement)
 
                     ### A utiliser dans un patch correctif :
                     #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
@@ -2283,14 +2270,14 @@ class JalonCours(ATFolder):
         self.setDateDerniereActu(self.actualites)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def delActu(self, idElement):
-        LOG.info("----- delActu -----")
-        newActu = []
-        listeActualites = list(self.getActualites())
-        for actu in listeActualites:
-            if idElement != actu["reference"]:
-                newActu.append(actu)
-        self.actualites = tuple(newActu)
+    def deleteActuality(self, item_id):
+        LOG.info("----- deleteActuality -----")
+        actuality_new = []
+        actualities_list = list(self.getActualites())
+        for actuality in actualities_list:
+            if item_id != actuality["reference"]:
+                actuality_new.append(actuality)
+        self.actualites = tuple(actuality_new)
         self.setProperties({"DateDerniereModif": DateTime()})
 
     #Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
