@@ -1,4 +1,4 @@
-## Script (Python) "course_detach_item_script"
+## Script (Python) "course_delete_item_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -10,7 +10,7 @@
 
 form = context.REQUEST.form
 
-context.detachCourseMapItem(form["item_id"], None)
-context.deleteActuality(form["item_id"])
+context.deleteCourseMapItem(form["item_id"], None)
+context.deleteCourseActuality(form["item_id"])
 
 context.REQUEST.RESPONSE.redirect(context.absolute_url())

@@ -308,6 +308,14 @@ class JalonCours(ATFolder):
                                    "item_type":          "TexteLibre",
                                    "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','reveal-main','titreElement')"}}
 
+    _course_delete_item_form = {"Titre":          {"form_title":       "le titre",
+                                                   "form_has_warning": False},
+                                "TexteLibre":     {"form_title":       "le texte libre",
+                                                   "form_has_warning": False},
+                                "BoiteDepot":     {"form_title":       "la boite de dépôts",
+                                                   "form_has_warning": True,
+                                                   "form_waning_text": "vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !"}}
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
@@ -1162,7 +1170,7 @@ class JalonCours(ATFolder):
                 update_actuality = True
                 self.updateActualities(item_id, item_date, "dispo")
         else:
-            self.deleteActuality(item_id)
+            self.deleteCourseActuality(item_id)
 
         item_properties[item_property_name] = item_date
         self._elements_cours[item_id] = item_properties
@@ -1430,8 +1438,8 @@ class JalonCours(ATFolder):
                 del infos_element[idElement]
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def detachCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
-        LOG.info("----- detachCourseMapItem -----")
+    def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
+        LOG.info("----- deleteCourseMapItem -----")
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         start = False
         if listeElement is None:
@@ -1442,7 +1450,7 @@ class JalonCours(ATFolder):
                 #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
                 if "listeElement" in element and element["listeElement"] != []:
-                    self.detachCourseMapItem("all", element["listeElement"], force_WIMS)
+                    self.deleteCourseMapItem("all", element["listeElement"], force_WIMS)
 
                 #on supprime element de la liste où il etait dans le plan
                 while element in listeElement:
@@ -1471,18 +1479,25 @@ class JalonCours(ATFolder):
 
             elif "listeElement" in element:
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
-                self.detachCourseMapItem(idElement, element["listeElement"], force_WIMS)
+                self.deleteCourseMapItem(idElement, element["listeElement"], force_WIMS)
 
         if start:
             self.plan = tuple(listeElement)
         return listeElement
+
+    def getCourseDeleteItemForm(self, item_id):
+        LOG.info("----- getCourseDeleteItemForm -----")
+        item_properties = self.getElementCours(item_id)
+        form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
+        form_properties["item_short_title"] = self.getShortText(item_properties['titreElement'], 80)
+        return form_properties
 
     def verifType(self, typeElement):
         LOG.info("----- verifType -----")
         return typeElement.replace(" ", "")
 
     def isStreamingAuthorized(self, streaming_id, request):
-        LOG.info("----- ----- isStreamingAuthorized -----")
+        LOG.info("----- isStreamingAuthorized -----")
         if not request.has_key("HTTP_X_REAL_IP"):
             return False
         portal = self.portal_url.getPortalObject()
@@ -1634,7 +1649,7 @@ class JalonCours(ATFolder):
                     # Supprime l'activité (du plan du cours et du cours)
                     self.retirerElementPlan(idElement, force_WIMS=True)
                     # Supprime l'activité des actus du cours
-                    self.deleteActuality(idElement)
+                    self.deleteCourseActuality(idElement)
 
                     ### A utiliser dans un patch correctif :
                     #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
@@ -2270,8 +2285,8 @@ class JalonCours(ATFolder):
         self.setDateDerniereActu(self.actualites)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def deleteActuality(self, item_id):
-        LOG.info("----- deleteActuality -----")
+    def deleteCourseActuality(self, item_id):
+        LOG.info("----- deleteCourseActuality -----")
         actuality_new = []
         actualities_list = list(self.getActualites())
         for actuality in actualities_list:
