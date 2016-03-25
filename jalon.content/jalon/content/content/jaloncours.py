@@ -392,22 +392,6 @@ class JalonCours(ATFolder):
         else:
             self._elements_cours = elements_cours
 
-    def setProprietesElement(self, infos_element):
-        LOG.info("----- setProprietesElement -----")
-        dico = self.getElementCours(infos_element["idElement"])
-        if not "titreElementMonEspace" in dico:
-            dico["titreElementMonEspace"] = dico["titreElement"][:]
-        if infos_element["element_title_in_map"] == "":
-            dico["titreElement"] = dico["titreElementMonEspace"][:]
-        else:
-            dico["titreElement"] = infos_element["element_title_in_map"]
-        if not "display_in_plan" in infos_element:
-            dico["complementElement"]["value"] = False
-        else:
-            dico["complementElement"]["value"] = True
-        self._elements_cours[infos_element["idElement"]] = dico
-        self.setElementsCours(self._elements_cours)
-
     def setProperties(self, dico):
         LOG.info("----- setProprietesElement -----")
         for key in dico.keys():
@@ -772,7 +756,7 @@ class JalonCours(ATFolder):
         LOG.info("----- getCourseMapItemForm -----")
         if not item_type:
             item_properties = self.getElementCours(item_id)
-            item_type = "1" if item_properties["typeElement"] == "Titre" else "2"
+            item_type = "2" if item_properties["typeElement"] == "TexteLibre" else "1"
 
         form_properties = copy.deepcopy(self._course_map_item_dict[item_type])
 
@@ -791,7 +775,16 @@ class JalonCours(ATFolder):
             form_properties["form_button_text"] = "Modifier"
             form_properties["form_button_icon"] = "fa fa-pencil"
             form_properties["validate_key"] = "edit_course_map_item"
-            form_properties["title"] = item_properties["titreElement"]
+
+            form_properties["item_title"] = item_properties["titreElement"]
+            if item_properties["typeElement"] in self._type_folder_my_space_dict.keys():
+                form_properties["item_title_in_my_space"] = item_properties["titreElement"]
+                if "titreElementMonEspace" in item_properties:
+                    form_properties["item_title_in_my_space"] = item_properties["titreElementMonEspace"]
+
+                if item_properties["typeElement"] == "Video":
+                    form_properties["is_item_display_in_course_map"] = True
+                    form_properties["item_display_in_course_map"] = "checked" if item_properties["complementElement"]["value"] else ""
 
         return form_properties
 
@@ -1370,13 +1363,23 @@ class JalonCours(ATFolder):
         self.setElementsCours(self._elements_cours)
         self.setProperties({"DateDerniereModif": DateTime()})
 
-    def editCourseMapItem(self, item_id, item_title):
+    def editCourseMapItem(self, item_id, item_title, display_item_in_course_map):
         LOG.info("----- editCourseMapItem -----")
         item_properties = self.getElementCours(item_id)
-        item_properties["titreElement"] = item_title
+
+        if not "titreElementMonEspace" in item_properties:
+            item_properties["titreElementMonEspace"] = item_properties["titreElement"][:]
+
+        if item_title == "":
+            item_properties["titreElement"] = item_properties["titreElementMonEspace"][:]
+        else:
+            item_properties["titreElement"] = item_title
+
+        if display_item_in_course_map:
+            item_properties["complementElement"]["value"] = True
+
         self._elements_cours[item_id] = item_properties
         self.setElementsCours(self._elements_cours)
-        #self.setProperties({"DateDerniereModif": DateTime()})
 
     def ordonnerElementPlan(self, pplan):
         LOG.info("----- ordonnerElementPlan -----")

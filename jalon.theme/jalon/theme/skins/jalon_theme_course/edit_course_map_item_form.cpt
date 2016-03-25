@@ -20,7 +20,7 @@
     </h2>
 
     <form id="js-editCourseMapItem" method="POST"
-          tal:define="title request/title | my_form/title | nothing"
+          tal:define="title request/title | my_form/item_title | nothing"
           tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-success_msg string:L'élément de plan a été crée.">
 
@@ -37,6 +37,22 @@
             <textarea id="titreElement" name="title" rows="9"
                       required="required" placeholder="Saisie obligatoire" i18n:attributes="placeholder"
                       tal:condition="not:my_form/is_type_title"><tal:block replace="title"/></textarea>
+        </div>
+
+        <div class="field ArchetypesStringWidget"
+             tal:condition="my_form/item_title_in_my_space"
+             tal:on-error="nothing">
+            <label for="title" i18n:translate="">Titre dans mon espace</label>
+            <input type="text" maxlength="255" size="30" disabled="disabled"
+                   tal:attributes="value my_form/item_title_in_my_space"/>
+        </div>
+
+        <div class="field"
+             tal:condition="my_form/is_item_display_in_course_map"
+             tal:on-error="nothing">
+            <input type="checkbox" name="display_in_plan" id="display_in_plan"
+                   value="1" tal:attributes="checked my_form/item_display_in_course_map"/>
+            <label for="display_in_plan" i18n:translate="">Afficher la vignette de la vidéo dans le plan</label>
         </div>
 
         <tal:condition condition="my_form/is_add_form">

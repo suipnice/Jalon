@@ -17,7 +17,8 @@ if not form.has_key("item_id"):
     context.addItemInCourseMap(item_id, form["map_position"])
     context.addItemProperty(item_id, form["item_type"], form["title"], form["user_id"], "", None)
 else:
-    context.editCourseMapItem(form["item_id"], form["title"])
+    item_display_in_course_map = True if form.has_key("display_in_plan") else False
+    context.editCourseMapItem(form["item_id"], form["title"], item_display_in_course_map)
 
 context.setProperties({"DateDerniereModif": DateTime()})
 
