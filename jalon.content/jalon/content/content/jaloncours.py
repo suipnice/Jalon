@@ -765,6 +765,7 @@ class JalonCours(ATFolder):
         return {"is_personnel":         self.isPersonnel(user),
                 "user_last_login_time": user.getProperty('login_time', ""),
                 "course_news":          self.getActualitesCours(),
+                "item_jalonner":        self.getCourseMapItemJalonner(),
                 "portal":               self.portal_url.getPortalObject()}
 
     def getCourseMapItemForm(self, item_type, item_id):
@@ -794,19 +795,17 @@ class JalonCours(ATFolder):
 
         return form_properties
 
-    def getCourseMap(self, user_id, user_last_login_time, is_personnel, course_actuality_list, portal):
+    def getCourseMap(self, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal):
         LOG.info("----- getCourseMap -----")
-        return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, portal, True)
+        return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
-    def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, portal, is_map_top_level=False):
+    def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
             ol_css_id = "course_plan-plan"
             ol_css_class = "ui-sortable"
-
-        item_jalonner = self.getCourseMapItemJalonner()
 
         #index = 0
         course_map_list = []
@@ -1440,6 +1439,7 @@ class JalonCours(ATFolder):
 
     def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
         LOG.info("----- deleteCourseMapItem -----")
+        LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         start = False
         if listeElement is None:
@@ -1476,8 +1476,8 @@ class JalonCours(ATFolder):
 
                     if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
-
             elif "listeElement" in element:
+                LOG.info("***** parent item_id : %s" % element["idElement"])
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
                 self.deleteCourseMapItem(idElement, element["listeElement"], force_WIMS)
 

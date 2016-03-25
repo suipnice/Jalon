@@ -136,7 +136,8 @@ class JalonCourseView(BrowserView):
 
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
-        my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], portal)
+        my_view["item_jalonner"] = self.context.getCourseMapItemJalonner()
+        my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
 
         my_view["is_course_map_help_text"] = False
         my_view["course_map_help_text"] = ""

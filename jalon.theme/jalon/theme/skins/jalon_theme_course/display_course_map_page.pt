@@ -11,7 +11,7 @@
 <metal:main fill-slot="content"
             tal:define="my_view python:context.getDisplayCourseMapAttributes(user);
                         course_link context/absolute_url;
-                        course_map python:context.getCourseMap(user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['portal']);
+                        course_map python:context.getCourseMap(user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal']);
                         expand_titre python:True">
 
     <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
