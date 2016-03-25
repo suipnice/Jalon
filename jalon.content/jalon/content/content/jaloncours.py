@@ -289,7 +289,7 @@ class JalonCours(ATFolder):
                      {"item_action_id":   "edit_course_map_item_form",
                       "item_action_icon": "fa fa-pencil fa-fw",
                       "item_action_name": "Modifier"},
-                     {"item_action_id":   "course_jalonner_item_form",
+                     {"item_action_id":   "mark_out_course_map_item_form",
                       "item_action_icon": "fa fa-hand-o-left fa-fw",
                       "item_action_name": "Jalonner"},
                      {"item_action_id":   "course_detach_item_form",
@@ -1045,6 +1045,13 @@ class JalonCours(ATFolder):
             dico["marque"] = [id_auth_member]
         self._elements_cours[idElement] = dico
         self.setElementsCours(self._elements_cours)
+
+    def getMarkOutCourseMapItemForm(self, item_id):
+        LOG.info("----- getMarkOutCourseMapItemForm -----")
+        item_properties = self.getElementCours(item_id)
+        return {"form_title":         self.getShortText(self.supprimerMarquageHTML(item_properties['titreElement']), 80),
+                "is_visible_item":    self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])["val"],
+                "mark_out_item_text": self.getCommentaireEpingler(item_id)}
 
     def getDisplayItemForm(self, item_id):
         LOG.info("----- getDisplayItemForm -----")

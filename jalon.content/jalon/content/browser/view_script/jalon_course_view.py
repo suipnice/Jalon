@@ -84,6 +84,7 @@ class JalonCourseView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getCourseView(self, user, mode_etudiant):
+        LOG.info("----- getCourseView (Start) -----")
         portal = self.context.portal_url.getPortalObject()
 
         my_view = {"portal":                       portal,
@@ -188,6 +189,7 @@ class JalonCourseView(BrowserView):
                                                  "tab_icon":   "fa fa-comments fa-2x",
                                                  "tab_name":   "Forums"})
 
+        LOG.info("----- getCourseView (End) -----")
         return my_view
 
     def getCourseItemAdderList(self, course_link, course_path, portal):

@@ -68,7 +68,7 @@
                tal:condition="not:element/is_display_item_bool"></i>
 
             <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
-               tal:attributes="title element/item_comment_jalonner"
+               tal:attributes="title element/item_jalonner_comment"
                tal:condition="element/is_item_jalonner"></i>
 
             <a tal:attributes="href element/item_link | nothing;

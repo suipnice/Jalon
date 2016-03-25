@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="my_form python:context.getMarkOutCourseMapItemForm(request['item_id'])">
+
+    <h2>
+        <tal:block i18n:translate="">Jalonner l'élément</tal:block>
+        « <tal:replace replace="my_form/form_title" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Fait apparaître un jalon en face d'un élément du plan, permettant de donner une indication (apparaissant au survol) aux étudiants.</tal:block><br/>
+        <tal:block i18n:translate="">Exemple :</tal:block>
+        <i i18n:translate="">À la prochaine séance nous commencerons ici.</i>
+    </div>
+
+    <div class="panel warning radius"
+          tal:condition="not:my_form/is_visible_item">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cet élément du plan est actuellement masqué, vous ne pouvez pas le jalonner.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/mark_out_course_map_item_script"
+          method="POST"
+          tal:condition="my_form/is_visible_item">
+
+        <div id="archetypes-fieldname-commentaire" class="field">
+            <label for="mark_out_item_text" i18n:translate="">Indication</label>
+            <textarea name="mark_out_item_text" id="mark_out_item_text" rows="5"
+                      placeholder="Saisissez ici l'indication que vous souhaitez donner aux étudiants."
+                      i18n:attributes="placeholder"><tal:replace replace="my_form/mark_out_item_text"/></textarea>
+        </div>
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Si vous laissez le champ</tal:block>
+            « <tal:block i18n:translate="">Indication</tal:block> »
+            <tal:block i18n:translate="">vide, le texte affiché sera</tal:block>
+            « <tal:block i18n:translate="">Élément signalé par l'enseignant</tal:block> ».
+        </div>
+
+        <div class="panel warning radius">
+            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Vous ne pouvez jalonner qu'un seul élément du plan. Si un élément du plan est déjà jalonné, vous allez le remplacer.</tal:block>
+        </div>
+
+        <input type="hidden" name="mark_out_item_id" tal:attributes="value request/item_id" />
+
+        <div class="formControls">
+            <button type="submit" class="button small warning">
+                <i class="fa fa-hand-o-left"></i>
+                <tal:block i18n:translate="">Jalonner</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+
+</metal:main>
+
+</body>
+
+</html>
