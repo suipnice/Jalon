@@ -837,7 +837,7 @@ class JalonCours(ATFolder):
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
                 if not is_personnel:
-                    item["item_read_link"] = "%s/marquer_element_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                    item["item_read_link"] = "%s/read_course_map_item_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
                     item["item_read_css"] = "decoche right"
                     item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
                     if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
@@ -1005,38 +1005,18 @@ class JalonCours(ATFolder):
             webconferences.remove(idwebconference)
         self.webconferences = tuple(webconferences)
 
-    def setLecture(self, lu, idElement, authMember):
-        LOG.info("----- setLecture -----")
-        dico = self.getElementCours(idElement)
-        if not self.isAfficherElement(dico["affElement"], dico["masquerElement"])["val"]:
-            return None
-        if lu == 'true':
-            if "lecture" in dico and not authMember in dico["lecture"]:
-                dico["lecture"].append(authMember)
+    def readCourseMapItem(self, item_id):
+        LOG.info("----- readCourseMapItem -----")
+        item_properties = self.getElementCours(item_id)
+        user_id = self.portal_membership.getAuthenticatedMember().getId()
+        if "marque" in item_properties:
+            if not user_id in item_properties["marque"]:
+                item_properties["marque"].append(user_id)
             else:
-                dico["lecture"] = [authMember]
-
-            if dico["typeElement"] == "Titre":
-                for element in self.getEnfantPlanElement(idElement):
-                        self.setLecture(lu, element["idElement"], authMember)
+                item_properties["marque"].remove(user_id)
         else:
-            if authMember in dico["lecture"]:
-                dico["lecture"].remove(authMember)
-        self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-
-    def marquerElement(self, idElement, marquer=None):
-        LOG.info("----- marquerElement -----")
-        dico = self.getElementCours(idElement)
-        id_auth_member = self.portal_membership.getAuthenticatedMember().getId()
-        if "marque" in dico:
-            if not id_auth_member in dico["marque"]:
-                dico["marque"].append(id_auth_member)
-            else:
-                dico["marque"].remove(id_auth_member)
-        else:
-            dico["marque"] = [id_auth_member]
-        self._elements_cours[idElement] = dico
+            item_properties["marque"] = [user_id]
+        self._elements_cours[item_id] = item_properties
         self.setElementsCours(self._elements_cours)
 
     def getMarkOutCourseMapItemForm(self, item_id):
