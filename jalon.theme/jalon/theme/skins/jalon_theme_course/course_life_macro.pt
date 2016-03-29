@@ -35,58 +35,31 @@
     <div class="panel radius bkgrnd"
          tal:define="course_link context/absolute_url">
         <dl>
-            <dd>
-                <a tal:repeat="action_dict my_view/course_to_actions_list"
-                   class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
-                    <i tal:attributes="class action_dict/action_icon"></i>
+            <dd tal:repeat="course_action my_view/course_actions">
+                <span class="right">
+                <a class="dropdown" data-options="align:bottom" 
+                   tal:attributes="data-dropdown course_action/course_actions_id">
+                    <i class="fa fa-cog fa-lg"></i>
                 </a>
-                <i class="fa fa-university fa-fw"></i>Offre(s) de formation :
-                <tal:replace replace="my_view/course_training_offer/nbFormations"/>
-                (<tal:replace replace="my_view/course_training_offer/nbEtuFormations"/> étu.)
-            </dd>
-            <dd>
-                <a tal:repeat="action_dict my_view/course_nr_actions_list"
-                   class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
-                    <i tal:attributes="class action_dict/action_icon"></i>
-                </a>
-                <i class="fa fa-users fa-fw"></i>Inscription(s) nominative(s) :
-                <tal:replace replace="my_view/course_nominative_registration"/>
-            </dd>
-            <dd>
-                <a tal:repeat="action_dict my_view/course_er_actions_list"
-                   class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
-                    <i tal:attributes="class action_dict/action_icon"></i>
-                </a>
-                <i class="fa fa-envelope-o fa-fw"></i>Invitation(s) par courriel :
-                <tal:replace replace="my_view/course_email_registration"/>
-            </dd>
-
-            <dd>
-                <a tal:repeat="action_dict my_view/course_pr_actions_list"
-                   class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
-                    <i tal:attributes="class action_dict/action_icon"></i>
-                </a>
-                <i class="fa fa-key fa-fw"></i>Accès par mot de passe :
-                <tal:replace replace="my_view/course_password_registration"/>
+                <ul tal:attributes="id course_action/course_actions_id" 
+                    class="f-dropdown" data-dropdown-content>
+                    <li tal:repeat="action_dict course_action/course_actions_list">
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${course_link}/${action_dict/action_link}">
+                            <i tal:attributes="class action_dict/action_icon"></i>
+                            <tal:replace replace="action_dict/action_name"/>
+                        </a>
+                    </li>
+                </ul>
+                </span>
+                <i tal:attributes="class course_action/course_actions_icon"></i>
+                <tal:replace replace="course_action/course_actions_text"/> :
+                <tal:replace replace="course_action/course_actions_registration"/>
                 <div class="panel callout radius"
                      tal:condition="my_view/is_course_password">
                     <tal:block i18n:translate="">Le mot de passe d'inscription au cours est</tal:block>
                     « <strong tal:content="my_view/course_password"/> ».
-                 </div>
-
-            </dd>
-            <dd>
-                <a tal:repeat="action_dict my_view/course_cr_actions_list"
-                   class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
-                   tal:attributes="href string:${course_link}/${action_dict/action_link}">
-                    <i tal:attributes="class action_dict/action_icon"></i>
-                </a>
-                <i class="fa fa-users fa-fw"></i>Lecteur(s) enseignant(s) :
-                <tal:replace replace="my_view/course_coreader_registration"/>
+                </div>
             </dd>
         </dl>
     </div>

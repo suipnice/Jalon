@@ -20,6 +20,6 @@ else:
     item_display_in_course_map = True if form.has_key("display_in_plan") else False
     context.editCourseMapItem(form["item_id"], form["title"], item_display_in_course_map)
 
-context.setProperties({"DateDerniereModif": DateTime()})
+context.setCourseProperties({"DateDerniereModif": DateTime()})
 
 return "%s/display_course_map_page" % context.absolute_url()

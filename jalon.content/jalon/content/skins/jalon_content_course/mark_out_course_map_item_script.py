@@ -10,6 +10,6 @@
 
 form = context.REQUEST.form
 
-context.setProperties({"AvancementPlan": [form["mark_out_item_id"], form["mark_out_item_text"]]})
+context.setCourseProperties({"AvancementPlan": [form["mark_out_item_id"], form["mark_out_item_text"]]})
 
 context.REQUEST.RESPONSE.redirect(context.absolute_url())

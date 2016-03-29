@@ -352,11 +352,6 @@ class JalonCours(ATFolder):
         if not self.getId() in request.SESSION.get("course_authorized_list", []):
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
 
-    def useJalonUtils(self, method_name, method_parameters_dict):
-        LOG.info("----- useJalonUtils -----")
-        LOG.info("***** method_name : %s" % method_name)
-        return jalon_utils.__getattribute__(method_name)(**method_parameters_dict)
-
     def getLastLogin(self):
         LOG.info("----- getLastLogin -----")
         member = self.portal_membership.getAuthenticatedMember()
@@ -365,35 +360,35 @@ class JalonCours(ATFolder):
             last_login = DateTime(last_login)
         return last_login
 
-    def getElementCours(self, key=None):
-        LOG.info("----- getElementCours -----")
+    def getCourseItemProperties(self, key=None):
+        LOG.info("----- getCourseItemProperties -----")
         LOG.info("***** item_id : %s" % key)
         if key:
             return self._elements_cours.get(key, None)
         return self._elements_cours
 
-    def getKeyElementCours(self):
-        LOG.info("----- getKeyElementCours -----")
-        return self._elements_cours.keys()
+    def setCourseItemsProperties(self, elements_cours):
+        LOG.info("----- setCourseItemsProperties -----")
+        if type(self._elements_cours).__name__ != "PersistentMapping":
+            self._elements_cours = PersistentDict(elements_cours)
+        else:
+            self._elements_cours = elements_cours
 
-    def getAffElement(self, idElement, attribut):
-        LOG.info("----- getAffElement -----")
-        infos_element = self.getElementCours(idElement)
+    #def getKeyElementCours(self):
+    #    LOG.info("----- getKeyElementCours -----")
+    #    return self._elements_cours.keys()
+
+    def getDisplayOrHiddenDate(self, idElement, attribut):
+        LOG.info("----- getDisplayOrHiddenDate -----")
+        infos_element = self.getCourseItemProperties(idElement)
         if infos_element:
             LOG.info("item_property : %s" % str(infos_element))
             if infos_element[attribut] != "":
                 return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
         return DateTime().strftime("%Y/%m/%d %H:%M")
 
-    def setElementsCours(self, elements_cours):
-        LOG.info("----- setElementsCours -----")
-        if type(self._elements_cours).__name__ != "PersistentMapping":
-            self._elements_cours = PersistentDict(elements_cours)
-        else:
-            self._elements_cours = elements_cours
-
-    def setProperties(self, dico):
-        LOG.info("----- setProprietesElement -----")
+    def setCourseProperties(self, dico):
+        LOG.info("----- setCourseProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
         if key == "DateDerniereModif":
@@ -447,6 +442,11 @@ class JalonCours(ATFolder):
             # isPersonnel = True (Personnel & iscoAuteurs)
             return True
         return False
+
+    def useJalonUtils(self, method_name, method_parameters_dict):
+        LOG.info("----- useJalonUtils -----")
+        LOG.info("***** method_name : %s" % method_name)
+        return jalon_utils.__getattribute__(method_name)(**method_parameters_dict)
 
     def getLocaleDate(self, date, format="%d/%m/%Y"):
         LOG.info("----- getLocaleDate -----")
@@ -506,7 +506,7 @@ class JalonCours(ATFolder):
         else:
             subjects.remove(user_id)
         self.setSubject(tuple(subjects))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def modifyArchive(self, user_id):
         LOG.info("----- modifyArchive -----")
@@ -520,13 +520,13 @@ class JalonCours(ATFolder):
         else:
             archives.remove(user_id)
         self.setArchive(tuple(archives))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     #----------------#
     # Course Heading #
     #----------------#
-    def getDescriptionCourte(self):
-        LOG.info("----- getDescriptionCourte -----")
+    def getShortDescription(self):
+        LOG.info("----- getShortDescription -----")
         description = self.Description()
         if not description:
             return {"link": False, "desc": "ce cours n'a pas encore de description."}
@@ -607,7 +607,7 @@ class JalonCours(ATFolder):
                                                     "objet":   "Vous avez été retiré d'un cours",
                                                     "message": message}})
         self.manage_setLocalRoles(form["username"], ["Owner"])
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getCoAuteursCours(self):
         LOG.info("----- getCoAuteursCours -----")
@@ -633,7 +633,7 @@ class JalonCours(ATFolder):
                                                                 "objet":   "Vous avez été ajouté à un cours",
                                                                 "message": message}})
             self.coAuteurs = tuple(coAuteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCoAuteurs(self, form):
         LOG.info("----- deleteCoAuteurs -----")
@@ -652,7 +652,7 @@ class JalonCours(ATFolder):
                                                         "objet":  "Vous avez été retiré d'un cours",
                                                         "message": message}})
         self.coAuteurs = tuple(auteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def setCoursePublicAccess(self, course_public_access):
         LOG.info("----- setCoursePublicAccess -----")
@@ -723,7 +723,7 @@ class JalonCours(ATFolder):
     #------------#
     def getProprietesVideo(self, id_video):
         LOG.info("----- getProprietesVideo -----")
-        infos_element = self.getElementCours(id_video)
+        infos_element = self.getCourseItemProperties(id_video)
         video_title = infos_element["titreElement"]
         video_title_my_space = video_title
         if "titreElementMonEspace" in infos_element:
@@ -755,7 +755,7 @@ class JalonCours(ATFolder):
     def getCourseMapItemForm(self, item_type, item_id):
         LOG.info("----- getCourseMapItemForm -----")
         if not item_type:
-            item_properties = self.getElementCours(item_id)
+            item_properties = self.getCourseItemProperties(item_id)
             item_type = "2" if item_properties["typeElement"] == "TexteLibre" else "1"
 
         form_properties = copy.deepcopy(self._course_map_item_dict[item_type])
@@ -804,7 +804,7 @@ class JalonCours(ATFolder):
         course_map_list = []
         for course_map_item in course_map_items_list:
             #index = index + 1
-            item_properties = self.getElementCours(course_map_item["idElement"])
+            item_properties = self.getCourseItemProperties(course_map_item["idElement"])
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
@@ -1007,7 +1007,7 @@ class JalonCours(ATFolder):
 
     def readCourseMapItem(self, item_id):
         LOG.info("----- readCourseMapItem -----")
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
         user_id = self.portal_membership.getAuthenticatedMember().getId()
         if "marque" in item_properties:
             if not user_id in item_properties["marque"]:
@@ -1017,11 +1017,11 @@ class JalonCours(ATFolder):
         else:
             item_properties["marque"] = [user_id]
         self._elements_cours[item_id] = item_properties
-        self.setElementsCours(self._elements_cours)
+        self.setCourseItemsProperties(self._elements_cours)
 
     def getMarkOutCourseMapItemForm(self, item_id):
         LOG.info("----- getMarkOutCourseMapItemForm -----")
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
         return {"form_title":         self.getShortText(self.supprimerMarquageHTML(item_properties['titreElement']), 80),
                 "is_visible_item":    self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])["val"],
                 "mark_out_item_text": self.getCommentaireEpingler(item_id)}
@@ -1033,7 +1033,7 @@ class JalonCours(ATFolder):
                            "is_item_parent_title":     False,
                            "help_css":                 "panel callout radius",
                            "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants."}
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
         form_properties["is_wims_examen"] = True if item_properties["typeElement"] == "Examen" else False
 
         display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
@@ -1055,7 +1055,7 @@ class JalonCours(ATFolder):
                 form_properties["text_title_directly"] = "Masquer directement…"
 
             form_properties["form_name"] = "masquer-element"
-            form_properties["item_date"] = self.getAffElement(item_id, "masquerElement")
+            form_properties["item_date"] = self.getDisplayOrHiddenDate(item_id, "masquerElement")
         else:
             form_properties["form_button_css"] = "button small radius"
             form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
@@ -1093,7 +1093,7 @@ class JalonCours(ATFolder):
                 form_properties["wims_help_text"] = False
 
             form_properties["form_name"] = "afficher-element"
-            form_properties["item_date"] = self.getAffElement(item_id, "affElement")
+            form_properties["item_date"] = self.getDisplayOrHiddenDate(item_id, "affElement")
 
         return form_properties
 
@@ -1127,7 +1127,7 @@ class JalonCours(ATFolder):
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         LOG.info("----- editCourseItemVisibility -----")
         u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
 
         if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
             item_object = getattr(self, item_id)
@@ -1153,19 +1153,19 @@ class JalonCours(ATFolder):
 
         item_properties[item_property_name] = item_date
         self._elements_cours[item_id] = item_properties
-        self.setElementsCours(self._elements_cours)
+        self.setCourseItemsProperties(self._elements_cours)
 
         if not update_actuality:
-            self.setProperties({"DateDerniereModif": DateTime()})
+            self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def editCourseParentTitleVisibility(self, item_parent_id, item_date):
         LOG.info("----- editCourseParentTitleVisibility -----")
-        item_properties = self.getElementCours(item_parent_id)
+        item_properties = self.getCourseItemProperties(item_parent_id)
 
         item_properties["affElement"] = item_date
         item_properties["masquerElement"] = ""
         self._elements_cours[item_parent_id] = item_properties
-        self.setElementsCours(self._elements_cours)
+        self.setCourseItemsProperties(self._elements_cours)
 
         item_parent = self.getParentPlanElement(item_parent_id, 'racine', '')
         if item_parent["idElement"] == "racine":
@@ -1195,7 +1195,7 @@ class JalonCours(ATFolder):
                 if idParent == "racine":
                     return {"idElement": "racine", "affElement": "", "masquerElement": ""}
                 else:
-                    dico = dict(self.getElementCours(idParent))
+                    dico = dict(self.getCourseItemProperties(idParent))
                     dico["idElement"] = idParent
                     return dico
             elif "listeElement" in element:
@@ -1290,7 +1290,7 @@ class JalonCours(ATFolder):
             if not is_display_parent['val']:
                 display_item = ""
 
-        items_properties = self.getElementCours()
+        items_properties = self.getCourseItemProperties()
         if not item_id in items_properties:
             items_properties[item_id] = {"titreElement":    item_title,
                                          "typeElement":     item_type,
@@ -1305,7 +1305,7 @@ class JalonCours(ATFolder):
 
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
-            self.setElementsCours(items_properties)
+            self.setCourseItemsProperties(items_properties)
 
     def addCourseActivity(self, user_id, activity_type, activity_title, activity_description, map_position):
         LOG.info("----- addCourseActivity -----")
@@ -1313,8 +1313,8 @@ class JalonCours(ATFolder):
         activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
 
         activity = getattr(self, activity_id)
-        activity.setProperties({"Title":       activity_title,
-                                "Description": activity_description})
+        activity.setCourseProperties({"Title":       activity_title,
+                                      "Description": activity_description})
 
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
@@ -1332,20 +1332,20 @@ class JalonCours(ATFolder):
         course_relatedItems.remove(item_object)
         self.setRelatedItems(course_relatedItems)
 
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def modifierInfosBoitePlan(self, idElement, param):
         LOG.info("----- modifierInfosBoitePlan -----")
-        dico = self.getElementCours(idElement)
+        dico = self.getCourseItemProperties(idElement)
         for attribut in param.keys():
             dico[attribut] = param[attribut]
         self._elements_cours[idElement] = dico
-        self.setElementsCours(self._elements_cours)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseItemsProperties(self._elements_cours)
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def editCourseMapItem(self, item_id, item_title, display_item_in_course_map):
         LOG.info("----- editCourseMapItem -----")
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
 
         if not "titreElementMonEspace" in item_properties:
             item_properties["titreElementMonEspace"] = item_properties["titreElement"][:]
@@ -1359,7 +1359,7 @@ class JalonCours(ATFolder):
             item_properties["complementElement"]["value"] = True
 
         self._elements_cours[item_id] = item_properties
-        self.setElementsCours(self._elements_cours)
+        self.setCourseItemsProperties(self._elements_cours)
 
     def ordonnerElementPlan(self, pplan):
         LOG.info("----- ordonnerElementPlan -----")
@@ -1379,7 +1379,7 @@ class JalonCours(ATFolder):
                 racine = getParentPlan(parent)
                 return {"idElement": racine["listeElement"][-1]["idElement"], "listeElement": racine["listeElement"][-1]["listeElement"]}
 
-        dicoElements = self.getElementCours()
+        dicoElements = self.getCourseItemProperties()
         for element in pre_plan:
             clef, valeur = element.split("=")
             typeElement, idElement = clef[:-1].split("[")
@@ -1388,7 +1388,7 @@ class JalonCours(ATFolder):
             if typeElement == "chapitre":
                 p = getParentPlan(idElement)
                 if p["idElement"] != "racine":
-                    pInfosElement = self.getElementCours(p["idElement"])
+                    pInfosElement = self.getCourseItemProperties(p["idElement"])
                     isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
                     if isAfficherElement and not isPAfficherElement:
                         self.afficherRessourceChapitre(idElement, DateTime(), "masquerElement")
@@ -1396,14 +1396,14 @@ class JalonCours(ATFolder):
             else:
                 p = getParentPlan(idElement)
                 if p["idElement"] != "racine":
-                    pInfosElement = self.getElementCours(p["idElement"])
+                    pInfosElement = self.getCourseItemProperties(p["idElement"])
                     isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
                     if isAfficherElement and not isPAfficherElement:
                         self.afficherRessource(idElement, DateTime(), "masquerElement")
                 p["listeElement"].append({"idElement": idElement})
 
         self.plan = tuple(plan)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
         return self.getPlanCours(True)
 
     def retirerElement(self, idElement):
@@ -1412,7 +1412,7 @@ class JalonCours(ATFolder):
         if idElement in elements_glossaire:
             elements_glossaire.remove(idElement)
             self.elements_glossaire = tuple(elements_glossaire)
-            infos_element = self.getElementCours()
+            infos_element = self.getCourseItemProperties()
             infosElement = infos_element[idElement]
             self.detachCourseItem(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
             del infos_element[idElement]
@@ -1421,11 +1421,11 @@ class JalonCours(ATFolder):
             elements_bibliographie.remove(idElement)
             self.elements_bibliographie = tuple(elements_bibliographie)
             if not self.isInCourseMap(idElement):
-                infos_element = self.getElementCours()
+                infos_element = self.getCourseItemProperties()
                 infosElement = infos_element[idElement]
                 self.detachCourseItem(idElement, infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
                 del infos_element[idElement]
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
         LOG.info("----- deleteCourseMapItem -----")
@@ -1446,7 +1446,7 @@ class JalonCours(ATFolder):
                 while element in listeElement:
                     listeElement.remove(element)
 
-                infosElement = self.getElementCours().get(element["idElement"])
+                infosElement = self.getCourseItemProperties().get(element["idElement"])
 
                 if infosElement:
                     #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
@@ -1455,7 +1455,7 @@ class JalonCours(ATFolder):
                     elif not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
                         # Si ce n'est pas un element Biblio ou Glossaire, on le supprime des objets du cours
                         del self._elements_cours[element["idElement"]]
-                        self.setElementsCours(self._elements_cours)
+                        self.setCourseItemsProperties(self._elements_cours)
 
                     if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
                         self.detachCourseItem(element["idElement"].replace("*-*", "."), infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
@@ -1477,7 +1477,7 @@ class JalonCours(ATFolder):
 
     def getCourseDeleteItemForm(self, item_id):
         LOG.info("----- getCourseDeleteItemForm -----")
-        item_properties = self.getElementCours(item_id)
+        item_properties = self.getCourseItemProperties(item_id)
         form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
         form_properties["item_short_title"] = self.getShortText(item_properties['titreElement'], 80)
         return form_properties
@@ -1497,8 +1497,8 @@ class JalonCours(ATFolder):
     def delElem(self, element):
         LOG.info("----- ----- delElem -----")
         del self._elements_cours[element]
-        self.getElementCours()
-        self.setElementsCours(self._elements_cours)
+        self.getCourseItemProperties()
+        self.setCourseItemsProperties(self._elements_cours)
 
     #---------------------------------#
     # Course Activity (WIMS Activity) #
@@ -1724,7 +1724,7 @@ class JalonCours(ATFolder):
                                                                 "objet":   "Vous avez été ajouté à un cours",
                                                                 "message": message}})
             self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteLecteurs(self, form):
         LOG.info("----- deleteLecteurs -----")
@@ -1741,7 +1741,7 @@ class JalonCours(ATFolder):
                                                         "objet":   "Vous avez été retiré d'un cours",
                                                         "message": message}})
         self.coLecteurs = tuple(lecteurs)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getInfosGroupe(self):
         LOG.info("----- getInfosGroupe -----")
@@ -1887,12 +1887,12 @@ class JalonCours(ATFolder):
             if not formation in listeOffreFormations:
                 listeOffreFormations.append(formation)
         self.listeAcces = tuple(listeOffreFormations)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteOffreFormations(self, elements):
         LOG.info("----- deleteOffreFormations -----")
         self.listeAcces = tuple(elements)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def addInscriptionsNomminatives(self, form):
         LOG.info("----- addInscriptionsNomminatives -----")
@@ -1909,7 +1909,7 @@ class JalonCours(ATFolder):
                                                                 "objet":   "Vous avez été inscrit à un cours",
                                                                 "message": message}})
         self.setGroupe(tuple(nomminatives))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteInscriptionsNomminatives(self, form):
         LOG.info("----- deleteInscriptionsNomminatives -----")
@@ -1926,7 +1926,7 @@ class JalonCours(ATFolder):
                                                         "objet":   "Vous avez été désincrit d'un cours",
                                                         "message": message}})
         self.setGroupe(tuple(nomminatives))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def addInvitationsEmail(self, form):
         LOG.info("----- addInvitationsEmail -----")
@@ -1960,7 +1960,7 @@ class JalonCours(ATFolder):
                                                                 "objet":   "Vous avez été inscrit à un cours",
                                                                 "message": message}})
                 self.setInvitations(tuple(invitations))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteInvitationsEmail(self, form):
         LOG.info("----- deleteInvitationsEmail -----")
@@ -1977,7 +1977,7 @@ class JalonCours(ATFolder):
                                                         "objet":   "Vous avez été désincrit d'un cours",
                                                         "message": message}})
         self.setInvitations(tuple(invitations))
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def rechercheApogee(self, recherche, termeRecherche):
         LOG.info("----- rechercheApogee -----")
@@ -2201,7 +2201,7 @@ class JalonCours(ATFolder):
             return {"nbActu":    0,
                     "listeActu": []}
 
-        infos_elements = self.getElementCours()
+        infos_elements = self.getCourseItemProperties()
 
         for actualite in listeActualites:
             if DateTime() > actualite["dateActivation"]:
@@ -2229,7 +2229,7 @@ class JalonCours(ATFolder):
 
         listeActualites = list(self.getActualites())
         listeActualites.sort(lambda x, y: cmp(y["dateActivation"], x["dateActivation"]))
-        infos_elements = self.getElementCours()
+        infos_elements = self.getCourseItemProperties()
 
         for actualite in listeActualites:
             if date > DateTime(actualite["dateActivation"]).Date():
@@ -2273,7 +2273,7 @@ class JalonCours(ATFolder):
         listeActualites.append(dicoActu)
         self.actualites = tuple(listeActualites)
         self.setDateDerniereActu(self.actualites)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCourseActuality(self, item_id):
         LOG.info("----- deleteCourseActuality -----")
@@ -2283,7 +2283,7 @@ class JalonCours(ATFolder):
             if item_id != actuality["reference"]:
                 actuality_new.append(actuality)
         self.actualites = tuple(actuality_new)
-        self.setProperties({"DateDerniereModif": DateTime()})
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     #Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
     def getDateDerniereActu(self):
@@ -2426,7 +2426,7 @@ class JalonCours(ATFolder):
         else:
             elements = self.getBibliographie()
         if elements:
-            infos_element = self.getElementCours()
+            infos_element = self.getCourseItemProperties()
 
         portal_link = self.portal_url.getPortalObject().absolute_url()
         for idElement in elements:
