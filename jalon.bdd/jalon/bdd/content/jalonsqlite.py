@@ -172,6 +172,12 @@ def getInfosELP2(session, COD_ELP):
     return recherche.first()
 
 
+def getELPProperties(session, COD_ELP):
+    ELP = aliased(tables.ElementPedagogiSQLITE)
+    recherche = session.query(ELP.LIB_ELP, ELP.COD_ELP, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens"), ELP.TYP_ELP, ELP.DATE_CREATION, ELP.DATE_MODIF).filter(ELP.COD_ELP == COD_ELP)
+    return convertirResultatBDD(recherche)
+
+
 def getELPData(session, COD_ELP):
     ELP = aliased(tables.ElementPedagogiSQLITE)
     recherche = session.query(ELP.LIB_ELP, ELP.TYP_ELP, ELP.COD_ELP, ELP.COD_GPE, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens"), ELP.DATE_CREATION, ELP.DATE_MODIF).filter(ELP.COD_ELP == COD_ELP)
@@ -348,6 +354,18 @@ def rechercherGPE(session, listeRecherche):
         listeCond.append(or_(func.upper(ELP.COD_ELP).like(mot), func.upper(ELP.LIB_ELP).like(mot), func.upper(ELP.COD_GPE).like(mot), func.upper(ELP.COD_ELP).like(element.upper().decode("utf-8")), func.upper(ELP.LIB_ELP).like(element.upper().decode("utf-8")), func.upper(ELP.COD_GPE).like(element.upper().decode("utf-8"))))
         listeCond.append(ELP.TYP_ELP == "groupe")
     recherche = session.query(ELP.LIB_ELP, ELP.COD_ELP, ELP.TYP_ELP, ELP.COD_GPE, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens")).filter(and_(*listeCond)).order_by(ELP.LIB_ELP)
+    return convertirResultatBDD(recherche.all())
+
+
+def searchELP(session, search_terms_list, search_elp_type=None):
+    conditions_list = []
+    ELP = aliased(tables.ElementPedagogiSQLITE)
+    for search_term in search_terms_list:
+        word = supprimerAccent(search_term).upper()
+        conditions_list.append(or_(func.upper(ELP.COD_ELP).like(word), func.upper(ELP.LIB_ELP).like(word), func.upper(ELP.COD_GPE).like(word), func.upper(ELP.COD_ELP).like(search_term.decode("utf-8")), func.upper(ELP.LIB_ELP).like(search_term.decode("utf-8")), func.upper(ELP.COD_GPE).like(search_term.decode("utf-8"))))
+    if search_elp_type:
+        conditions_list.append(ELP.TYP_ELP == search_elp_type)
+    recherche = session.query(ELP.LIB_ELP, ELP.COD_ELP, ELP.TYP_ELP, ELP.COD_GPE, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens")).filter(and_(*conditions_list)).order_by(ELP.LIB_ELP)
     return convertirResultatBDD(recherche.all())
 
 

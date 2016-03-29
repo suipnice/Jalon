@@ -1,0 +1,228 @@
+<metal:macro define-macro="course_search_training_offer">
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">En utilisant l'offre de formation vous donnez directement accès à ce cours à tous les étudiants d'un diplôme, d'une UE ou d'un groupe.</tal:block>
+    </div>
+
+    <h3 class="texte_icone icone_recherche"
+        i18n:translate="">Rechercher un diplôme / une UE / un groupe dans l'offre de formation</h3>
+
+    <form name="recherche_apogee" id="js-Apogee_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/add_course_training_offer_form">
+
+        <div class="field" id="archetypes-fieldname-recherche">
+            <label for="recherche" i18n:translate="">Type :</label>
+            <select name="recherche" id="recherche">
+                <option tal:repeat="training_offer_type my_form/training_offer_type"
+                        tal:attributes="value training_offer_type/training_offer_type_value;
+                                        selected training_offer_type/training_offer_type_selected"
+                        tal:content="training_offer_type/training_offer_type_text"
+                        i18n:translate=""></option>
+           </select>
+
+           <label for="termeRecherche" i18n:translate="">Mot clé ou code :</label>
+           <input type="text" name="termeRecherche" class="blurrable" id="termeRecherche" 
+                  size="30" maxlength="255"
+                  tal:attributes="value training_offer_search_text"/>
+
+           <input class="button expand tiny radius" type="submit" 
+                  name="form.button.save" value="Rechercher" 
+                  i18n:attributes="value label_rechercher" />
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setApogeeSearch()"></script>
+   </form>
+</metal:macro>
+
+
+<metal:macro define-macro="course_search_result_training_offer">
+   <form name="element_add" id="js-Apogee_result" method="POST"
+         tal:attributes="action string:${context/absolute_url}/add_course_training_offer_script"
+         tal:define="search_results python:context.searchTrainingOffer(training_offer_search_text, training_offer_search_type)">
+
+        <h3 class="texte_icone icone_resultats"
+            i18n:translate="">Résultats de la recherche</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:search_results"
+             i18n:translate="">
+            La recherche n'a donné aucun résultat.
+        </div>
+
+        <tal:condition condition="search_results">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Sélectionnez les éléments de l'offre de formation que vous souhaitez inscrire au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table summary="Liste des résultats de la recherche Apogée">
+            <thead>
+                <tr>
+                    <th class="checkall">
+                    </th>
+                    <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="code" title="Trier selon le code" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Code</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort" data-sort="nbre" title="Trier selon le nombre d'étudiants" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Nbre d'étudiants</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+            <tal:repeat repeat="item search_results">
+                <tr>
+                    <td>
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="elements:list"
+                                   tal:attributes="id string:switch_reveal-${repeat/item/index};
+                                                   value string:${training_offer_search_type}*-*${item/COD_ELP}" />
+                            <label title="Sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/item/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td class="title" tal:content="item/LIB_ELP" />
+                    <td class="code"
+                        tal:content="python: item['COD_GPE'] if training_offer_search_type == 'groupe' else item['COD_ELP']"/>
+                    <td class="nbre" tal:content="item/nb_etu" />
+                </tr>
+            </tal:repeat>
+            </tbody>
+        </table>
+
+        <input type="hidden" name="formulaire" value="ajout-apogee"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-Apogee_result',['title','code','nbre'],'title','asc')"></script>
+
+        </tal:condition>
+    </form>
+</metal:macro>
+
+
+<metal:macro define-macro="course_display_training_offer">
+
+    <div class="panel callout radius"
+         tal:condition="not:my_form/training_offer_list">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucune formation.</tal:block>
+    </div>
+
+    <div id="js-formation-insc_list"
+         tal:condition="my_form/training_offer_list">
+
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Ce cours fait partie de la(des) formation(s) suivante(s)</h3>
+
+        <table class="listing">
+        <thead>
+            <tr>
+                <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="type" title="Trier selon le type" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Type</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="number" title="Trier selon l'effectif" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Effectif</tal:block>
+                    </span>
+                </th>
+                <th class="action show-for-medium-up" title="Actions"
+                    tal:condition="my_form/is_personnel"
+                    i18n:attributes="title"><i class="fa fa-cog fa-lg no-pad"></i></th>
+            </tr>
+        </thead>
+        <tbody class="list"
+               tal:define="training_offer_dict my_form/training_offer_dict">
+            <tr tal:repeat="training_offer my_form/training_offer_list">
+                <td class="title" tal:content="training_offer/LIB_ELP" />
+                <td class="type" tal:content="python:training_offer_dict[training_offer['TYP_ELP']]" />
+                <td class="number" tal:content="training_offer/nb_etu" />
+                <td class="show-for-medium-up"
+                    tal:condition="my_form/is_personnel">
+                    <a class="dropdown" data-options="align:left"
+                       tal:attributes="data-dropdown string:drop-${repeat/training_offer/index}">
+                        <i class="fa fa-cog fa-lg no-pad"></i>
+                    </a>
+                    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                        tal:define="code training_offer/COD_ELP;
+                                    type training_offer/TYP_ELP"
+                        tal:attributes="id string:drop-${repeat/training_offer/index}">
+                        <li class="show-for-medium-up">
+                            <a data-reveal-id="reveal-main_second" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=listing&amp;code=${code}&amp;type=${type}">
+                                <i class="fa fa-align-justify fa-fw"></i>
+                                <tal:block i18n:translate="">Liste</tal:block>
+                            </a>
+                        </li>
+                        <li tal:condition="python:context.getJalonProperty('activer_trombinoscope')">
+                            <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${code}&amp;type=${type}"
+                               target="_blank">
+                                <i class="fa fa-camera-retro fa-fw"></i>
+                                <tal:block i18n:translate="">Trombinoscope</tal:block>
+                            </a>
+                        </li>
+                        <li class="show-for-medium-up">
+                            <a data-reveal-id="reveal-main_second" data-reveal-ajax="true"
+                               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=ecrire&amp;code=${code}&amp;type=${type}">
+                                <i class="fa fa-pencil-square-o fa-fw"></i>
+                                <tal:block i18n:translate="">Écrire</tal:block>
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+
+        </table>
+
+        <script charset="UTF-8"
+                tal:condition="my_form/is_personnel"
+                tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>
+
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-formation-insc_list',['title','type','number'],'title','asc')"></script>
+
+    </div>
+</metal:macro>

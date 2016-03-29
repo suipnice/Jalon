@@ -1,0 +1,35 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="training_offer_search_type request/recherche | string:etape;
+                        training_offer_search_text request/termeRecherche | nothing;
+                        mode_etudiant request/mode_etudiant | nothing;
+                        my_form python:context.getCourseTrainingOfferForm(user, mode_etudiant, training_offer_search_type)">
+
+    <h2>
+        <tal:block i18n:translate="">Inscription(s) par formation(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:condition condition="my_form/is_personnel">
+        <metal:macro use-macro="context/course_training_offer_macro/macros/course_search_training_offer"/>
+        <tal:condition condition="training_offer_search_text">
+            <metal:macro use-macro="context/course_training_offer_macro/macros/course_search_result_training_offer"/>
+        </tal:condition>
+    </tal:condition>
+
+    <metal:macro use-macro="context/course_training_offer_macro/macros/course_display_training_offer"/>
+
+</metal:main>
+
+</body>
+
+</html>

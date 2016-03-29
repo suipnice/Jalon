@@ -316,6 +316,12 @@ class JalonCours(ATFolder):
                                                    "form_has_warning": True,
                                                    "form_waning_text": "vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !"}}
 
+    _training_offer_type = {"etape":   "Diplôme",
+                            "ue":      "Unité d'enseignement",
+                            "uel":     "Unité d'enseignement libre",
+                            "groupe":  "Groupe",
+                            "inconnu": "Inconnu"}
+
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
@@ -1702,6 +1708,102 @@ class JalonCours(ATFolder):
     #---------------------#
     # Course Participants #
     #---------------------#
+    def getCourseTrainingOfferForm(self, user, mode_etudiant, training_offer_searh_type):
+        form_properties = {"is_personnel": self.isPersonnel(user, mode_etudiant)}
+        form_properties["training_offer_type"] = [{"training_offer_type_selected": "selected" if training_offer_searh_type == "etape" else "",
+                                                   "training_offer_type_value":    "etape",
+                                                   "training_offer_type_text":     "Diplôme"},
+                                                  {"training_offer_type_selected": "selected" if training_offer_searh_type == "ue" else "",
+                                                   "training_offer_type_value":    "ue",
+                                                   "training_offer_type_text":     "Unité d'enseignement"},
+                                                  {"training_offer_type_selected": "selected" if training_offer_searh_type == "uel" else "",
+                                                   "training_offer_type_value":    "uel",
+                                                   "training_offer_type_text":     "Unité d'enseignement libre"},
+                                                  {"training_offer_type_selected": "selected" if training_offer_searh_type == "groupe" else "",
+                                                   "training_offer_type_value":    "groupe",
+                                                   "training_offer_type_text":     "Groupe"}]
+        form_properties["training_offer_dict"] = self._training_offer_type
+        form_properties["training_offer_list"] = self.getTrainingOffer()
+        return form_properties
+
+    def getTrainingOffer(self):
+        LOG.info("----- getTrainingOffer -----")
+        training_offer_list = []
+        course_access_list = self.getListeAcces()
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        for course_access in course_access_list:
+            course_access_type, course_access_code = course_access.split("*-*")
+            db_result = portal_jalon_bdd.getELPProperties(course_access_code)
+
+            if not db_result:
+                training_offer = {"LIB_ELP": "Le code %s n'est plus valide." % course_access_code,
+                                  "COD_ELP": course_access_code,
+                                  "TYP_ELP": "inconnu",
+                                  "nb_etu": "0"}
+            else:
+                training_offer = db_result[0]
+            training_offer_list.append(training_offer)
+
+        training_offer_list.sort()
+        return training_offer_list
+
+    def getAffichageFormations(self):
+        LOG.info("----- getAffichageFormations -----")
+        res = []
+        listeAcces = self.getListeAcces()
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        for acces in listeAcces:
+            type, code = acces.split("*-*")
+            if type == "etape":
+                retour = portal_jalon_bdd.getInfosEtape(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type in ["ue", "uel"]:
+                retour = portal_jalon_bdd.getInfosELP2(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            if type == "groupe":
+                retour = portal_jalon_bdd.getInfosGPE(code)
+                if not retour:
+                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                else:
+                    elem = list(self.encodeUTF8(retour))
+            elem.append(type)
+            res.append(elem)
+        res.sort()
+        return res
+
+    def searchTrainingOffer(self, training_offer_search_text, training_offer_search_type):
+        LOG.info("----- searchTrainingOffer -----")
+        if not training_offer_search_text:
+            return ""
+
+        training_offer_search_text.strip()
+        training_offer_search_text = "%" + training_offer_search_text + "%"
+        training_offer_search_text = training_offer_search_text.replace(" ", "% %")
+        training_offer_search_text_list = training_offer_search_text.split(" ")
+
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        return portal_jalon_bdd.searchELP(training_offer_search_text_list, training_offer_search_type)
+
+    def addCourseTrainingOffer(self, training_offer_list):
+        LOG.info("----- addCourseTrainingOffer -----")
+        course_access_list = list(self.getListeAcces())
+        for training_offer in training_offer_list:
+            if not training_offer in course_access_list:
+                course_access_list.append(training_offer)
+        self.listeAcces = tuple(course_access_list)
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
+    def deleteOffreFormations(self, elements):
+        LOG.info("----- deleteOffreFormations -----")
+        self.listeAcces = tuple(elements)
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
     def getCoLecteursCours(self):
         LOG.info("----- getCoLecteursCours -----")
         retour = []
@@ -1774,36 +1876,6 @@ class JalonCours(ATFolder):
         nbEtuFormations = self.getNbEtuFormation(listeFormations)
         return {"nbFormations": len(listeFormations),
                 "nbEtuFormations": nbEtuFormations}
-
-    def getAffichageFormations(self):
-        LOG.info("----- getAffichageFormations -----")
-        res = []
-        listeAcces = self.getListeAcces()
-        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-        for acces in listeAcces:
-            type, code = acces.split("*-*")
-            if type == "etape":
-                retour = portal_jalon_bdd.getInfosEtape(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-                else:
-                    elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            if type in ["ue", "uel"]:
-                retour = portal_jalon_bdd.getInfosELP2(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
-                else:
-                    elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            if type == "groupe":
-                retour = portal_jalon_bdd.getInfosGPE(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
-                else:
-                    elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            elem.append(type)
-            res.append(elem)
-        res.sort()
-        return res
 
     def getNbEtuFormation(self, listeFormations):
         LOG.info("----- getNbEtuFormation -----")
@@ -1879,20 +1951,6 @@ class JalonCours(ATFolder):
         if inscriptionsLibres:
             acces.extend(list(inscriptionsLibres))
         return tuple(acces)
-
-    def addOffreFormations(self, elements):
-        LOG.info("----- addOffreFormations -----")
-        listeOffreFormations = list(self.getListeAcces())
-        for formation in elements:
-            if not formation in listeOffreFormations:
-                listeOffreFormations.append(formation)
-        self.listeAcces = tuple(listeOffreFormations)
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
-
-    def deleteOffreFormations(self, elements):
-        LOG.info("----- deleteOffreFormations -----")
-        self.listeAcces = tuple(elements)
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def addInscriptionsNomminatives(self, form):
         LOG.info("----- addInscriptionsNomminatives -----")
@@ -1978,26 +2036,6 @@ class JalonCours(ATFolder):
                                                         "message": message}})
         self.setInvitations(tuple(invitations))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
-
-    def rechercheApogee(self, recherche, termeRecherche):
-        LOG.info("----- rechercheApogee -----")
-        if not termeRecherche:
-            return None
-        termeRecherche.strip()
-        termeRecherche = "%" + termeRecherche + "%"
-        termeRecherche = termeRecherche.replace(" ", "% %")
-        listeRecherche = termeRecherche.split(" ")
-
-        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-        if recherche == "etape":
-            return portal_jalon_bdd.rechercherEtape(listeRecherche)
-        if recherche == "ue":
-            return portal_jalon_bdd.rechercherELP(listeRecherche, 0)
-        if recherche == "uel":
-            return portal_jalon_bdd.rechercherELP(listeRecherche, 1)
-        if recherche == "groupe":
-            return portal_jalon_bdd.rechercherGPE(listeRecherche)
-        return None
 
     def rechercherUtilisateur(self, username, typeUser, match=False, json=True):
         LOG.info("----- rechercherUtilisateur -----")

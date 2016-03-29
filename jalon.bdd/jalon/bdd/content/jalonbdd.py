@@ -320,6 +320,10 @@ class JalonBDD(SimpleItem):
         if self._typeBDD == "sqlite":
             return jalonsqlite.getInfosELP2(session, COD_ELP)
 
+    def getELPProperties(self, COD_ELP):
+        session = self.getSession()
+        return jalonsqlite.getELPProperties(session, COD_ELP)
+
     def getELPData(self, COD_ELP):
         session = self.getSession()
         return jalonsqlite.getELPData(session, COD_ELP)
@@ -385,6 +389,10 @@ class JalonBDD(SimpleItem):
         session = self.getSession()
         if self._typeBDD == "sqlite":
             return jalonsqlite.rechercherGPE(session, listeRecherche)
+
+    def searchELP(self, search_terms_list, search_elp_type=None):
+        session = self.getSession()
+        return jalonsqlite.searchELP(session, search_terms_list, search_elp_type)
 
     def rechercherEtudiantXLS(self, COD_ELP):
         session = self.getSession()

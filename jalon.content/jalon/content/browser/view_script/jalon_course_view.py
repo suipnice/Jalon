@@ -13,50 +13,50 @@ class JalonCourseView(BrowserView):
     """
 
     #to : training offer
-    _course_to_actions_list = [{"action_link": "course_add_training_offer_form",
+    _course_to_actions_list = [{"action_link": "add_course_training_offer_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
-                               {"action_link": "course_delete_training_offer_form",
+                               {"action_link": "delete_course_training_offer_form",
                                 "action_icon": "fa fa-trash fa-fw no-pad alert",
                                 "action_name": "Supprimer"},
                                {"action_link": "course_display_training_offer_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
     #nr : nominative registraion
-    _course_nr_actions_list = [{"action_link": "course_add_nominative_registration_form",
+    _course_nr_actions_list = [{"action_link": "add_course_nominative_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
-                               {"action_link": "course_delete_nominative_registration_form",
+                               {"action_link": "delete_course_nominative_registration_form",
                                 "action_icon": "fa fa-trash fa-fw no-pad alert",
                                 "action_name": "Supprimer"},
                                {"action_link": "course_display_nominative_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
     #er : email registraion
-    _course_er_actions_list = [{"action_link": "course_add_email_registration_form",
+    _course_er_actions_list = [{"action_link": "add_course_email_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
-                               {"action_link": "course_delete_email_registration_form",
+                               {"action_link": "delete_course_email_registration_form",
                                 "action_icon": "fa fa-trash fa-fw no-pad alert",
                                 "action_name": "Supprimer"},
                                {"action_link": "course_display_email_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
     #pr : password registraion
-    _course_pr_actions_list = [{"action_link": "course_add_password_registration_form",
+    _course_pr_actions_list = [{"action_link": "add_course_password_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
-                               {"action_link": "course_delete_password_registration_form",
+                               {"action_link": "delete_course_password_registration_form",
                                 "action_icon": "fa fa-trash fa-fw no-pad alert",
                                 "action_name": "Supprimer"},
                                {"action_link": "course_display_password_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
     #cr : coreader registraion
-    _course_cr_actions_list = [{"action_link": "course_add_coreader_registration_form",
+    _course_cr_actions_list = [{"action_link": "add_course_coreader_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
-                               {"action_link": "course_delete_coreader_registration_form",
+                               {"action_link": "delete_course_coreader_registration_form",
                                 "action_icon": "fa fa-trash fa-fw no-pad alert",
                                 "action_name": "Supprimer"},
                                {"action_link": "course_display_coreader_registration_page",
