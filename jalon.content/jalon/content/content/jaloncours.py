@@ -1723,11 +1723,11 @@ class JalonCours(ATFolder):
                                                    "training_offer_type_value":    "groupe",
                                                    "training_offer_type_text":     "Groupe"}]
         form_properties["training_offer_dict"] = self._training_offer_type
-        form_properties["training_offer_list"] = self.getTrainingOffer()
+        form_properties["training_offer_list"] = self.getCourseTrainingOffer()
         return form_properties
 
-    def getTrainingOffer(self):
-        LOG.info("----- getTrainingOffer -----")
+    def getCourseTrainingOffer(self):
+        LOG.info("----- getCourseTrainingOffer -----")
         training_offer_list = []
         course_access_list = self.getListeAcces()
         portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
@@ -1746,36 +1746,6 @@ class JalonCours(ATFolder):
 
         training_offer_list.sort()
         return training_offer_list
-
-    def getAffichageFormations(self):
-        LOG.info("----- getAffichageFormations -----")
-        res = []
-        listeAcces = self.getListeAcces()
-        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
-        for acces in listeAcces:
-            type, code = acces.split("*-*")
-            if type == "etape":
-                retour = portal_jalon_bdd.getInfosEtape(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type in ["ue", "uel"]:
-                retour = portal_jalon_bdd.getInfosELP2(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            if type == "groupe":
-                retour = portal_jalon_bdd.getInfosGPE(code)
-                if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
-                else:
-                    elem = list(self.encodeUTF8(retour))
-            elem.append(type)
-            res.append(elem)
-        res.sort()
-        return res
 
     def searchTrainingOffer(self, training_offer_search_text, training_offer_search_type):
         LOG.info("----- searchTrainingOffer -----")

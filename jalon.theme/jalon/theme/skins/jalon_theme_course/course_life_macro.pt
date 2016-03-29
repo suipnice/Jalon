@@ -223,7 +223,7 @@
             </div>
             <div class="panel radius"
                  tal:condition="my_view/course_forums/listeForums">
-                <dl>
+                <dl tal:define="mtool context/@@plone_tools/membership;">
                 <tal:repeat repeat="course_forum my_view/course_forums/listeForums">
                     <dt>
                         <a tal:attributes="href string:${course_forum/absolute_url}?mode_etudiant=${mode_etudiant}"
@@ -240,7 +240,7 @@
                             <tal:replace replace="course_forum/getNumberOfConversations" /> conversation(s)<br/>
                             <tal:block i18n:translate="label_by_author">dernier message par</tal:block>
                             <strong><tal:author define="creator course_forum_author;
-                                                        creatorinfo python: mtool.getMemberInfo(creator);"
+                                                        creatorinfo python:mtool.getMemberInfo(creator);"
                                                 content="python:creatorinfo and creatorinfo['fullname'] or creator"
                                                 i18n:name="author"/></strong><br/>
                             le <tal:replace replace="python:context.convertirDate(course_forum.getLastCommentDate())" />

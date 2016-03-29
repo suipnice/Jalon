@@ -155,12 +155,17 @@ class JalonCourseView(BrowserView):
         my_view["course_glossary_letter_list"].sort()
         my_view["course_has_glossary"] = len(my_view["course_glossary_letter_list"])
 
-        course_training_offer = self.context.getAffichageFormation()
+        course_training_offer_list = self.context.getCourseTrainingOffer()
+        course_training_offer_students = 0
+        for course_training_offer in course_training_offer_list:
+            course_training_offer_students = course_training_offer_students + int(course_training_offer["nb_etu"])
+        course_training_offer = len(course_training_offer_list)
+
         my_view["course_actions"] = [{"course_actions_id": "course_to",
                                       "course_actions_icon": "fa fa-university fa-fw",
                                       "course_actions_text": "Offre(s) de formation",
                                       "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_to_actions_list),
-                                      "course_actions_registration": "%s (%s étu.)" % (course_training_offer["nbFormations"], course_training_offer["nbEtuFormations"])}]
+                                      "course_actions_registration": "%s (%s étu.)" % (course_training_offer, course_training_offer_students)}]
         my_view["course_actions"].append({"course_actions_id": "course_nr",
                                           "course_actions_icon": "fa fa-users fa-fw",
                                           "course_actions_text": "Inscription(s) nominative(s)",
