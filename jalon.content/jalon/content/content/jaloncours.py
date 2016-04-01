@@ -1811,6 +1811,63 @@ class JalonCours(ATFolder):
         self.setGroupe(tuple(nominative_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def getEmailRegistration(self):
+        LOG.info("----- getEmailregistration -----")
+        course_email_registration_list = self.getInvitations()
+        if not course_email_registration_list:
+            return []
+        email_registration_list = []
+        portal_membership = getToolByName(self, "portal_membership")
+        for email_registration in course_email_registration_list:
+            username = email_registration
+            member = portal_membership.getMemberById(username)
+            if member:
+                username = member.getProperty("fullname", username)
+            email_registration_list.append({"nom": username, "email": email_registration})
+        return email_registration_list
+
+    def addEmailRegistration(self, email_registration_list):
+        LOG.info("----- addEmailRegistration -----")
+        portal = self.portal_url.getPortalObject()
+        portal_membership = getToolByName(portal, 'portal_membership')
+        course_email_registration_list = list(self.getInvitations())
+        for email_registration in email_registration_list:
+            email_registration = email_registration.strip()
+            if "<" in email_registration:
+                email_registration_name, email_registration_email = email_registration.rsplit("<", 1)
+                email_registration_email = email_registration_email.replace(">", "")
+            else:
+                email_registration_name = email_registration.replace("@", " ")
+                email_registration_email = email_registration
+            email_registration_email = email_registration_email.lower()
+            if not email_registration_email in course_email_registration_list:
+                if not portal_membership.getMemberById(email_registration_email):
+                    portal_registration = getToolByName(portal, 'portal_registration')
+                    password = portal_registration.generatePassword()
+                    portal_membership.addMember(email_registration_email, password, ("EtudiantJalon", "Member",), "", {"fullname": email_registration_name, "email": email_registration_email})
+                    portal_registration.registeredNotify(email_registration_email)
+                course_email_registration_list.append(email_registration_email)
+                message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+                self.useJalonUtils("envoyerMail", {"form": {"a":       email_registration_email,
+                                                            "objet":   "Vous avez été inscrit à un cours",
+                                                            "message": message}})
+        self.setInvitations(tuple(course_email_registration_list))
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
+    def deleteEmailRegistration(self, email_registration_list):
+        LOG.info("----- deleteEmailRegistration -----")
+        course_email_registration_list = set(self.getInvitations())
+        delete_email_registration_list = course_email_registration_list.difference(set(email_registration_list))
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+        for email_registration in delete_email_registration_list:
+            infosMembre = self.useJalonUtils("getInfosMembre", {"username": email_registration})
+            self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
+                                                        "objet":   "Vous avez été désincrit d'un cours",
+                                                        "message": message}})
+        self.setInvitations(tuple(email_registration_list))
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
     def getCoLecteursCours(self):
         LOG.info("----- getCoLecteursCours -----")
         retour = []
@@ -1856,40 +1913,6 @@ class JalonCours(ATFolder):
         LOG.info("----- getInfosLibre -----")
         libre = self.getInscriptionsLibres()
         return jalon_utils.getIndividus(list(libre), "listdict")
-
-    def getInfosInvitations(self):
-        LOG.info("----- getInfosInvitations -----")
-        invitations = self.getInvitations()
-        if not invitations:
-            return []
-        etudiants = []
-        portal_membership = getToolByName(self, "portal_membership")
-        for sesame in invitations:
-            nom = sesame
-            member = portal_membership.getMemberById(sesame)
-            if member:
-                nom = member.getProperty("fullname", sesame)
-            etudiants.append({"nom": nom, "email": sesame})
-        return etudiants
-
-    def getAffichageInscriptionIndividuelle(self, typeAff):
-        LOG.info("----- getAffichageInscriptionIndividuelle -----")
-        res = []
-        if typeAff == "groupe":
-            groupe = self.getGroupe()
-            nbgroupe = 0
-            if groupe:
-                nbgroupe = len(groupe)
-            if nbgroupe > 0:
-                res.append([_(u"Étudiant(s) de l'université"), "perso", nbgroupe, "groupeperso"])
-        else:
-            invitations = self.getInvitations()
-            nbinvitations = 0
-            if invitations:
-                nbinvitations = len(invitations)
-            if nbinvitations > 0:
-                res.append([_(u"Étudiant(s) extérieur(s)"), "email", nbinvitations, "invitationsemail"])
-        return res
 
     def getInfosListeAcces(self):
         LOG.info("----- getInfosListeAcces -----")
@@ -1939,57 +1962,6 @@ class JalonCours(ATFolder):
         if inscriptionsLibres:
             acces.extend(list(inscriptionsLibres))
         return tuple(acces)
-
-    def addInvitationsEmail(self, form):
-        LOG.info("----- addInvitationsEmail -----")
-        invitations = list(self.getInvitations())
-        if "invitation" in form and form["invitation"] != "":
-            if "," in form["invitation"]:
-                listeInvit = form["invitation"].split(",")
-            else:
-                listeInvit = [form["invitation"]]
-            portal = self.portal_url.getPortalObject()
-            portal_membership = getToolByName(portal, 'portal_membership')
-            for invitation in listeInvit:
-                invitation = invitation.strip()
-                if "<" in invitation:
-                    nameInvit, emailInvit = invitation.rsplit("<", 1)
-                    #emailInvit = emailInvit.replace("<", "")
-                    emailInvit = emailInvit.replace(">", "")
-                else:
-                    nameInvit = invitation.replace("@", " ")
-                    emailInvit = invitation
-                emailInvit = emailInvit.lower()
-                if not emailInvit in invitations:
-                    if not portal_membership.getMemberById(emailInvit):
-                        portal_registration = getToolByName(portal, 'portal_registration')
-                        password = portal_registration.generatePassword()
-                        portal_membership.addMember(emailInvit, password, ("EtudiantJalon", "Member",), "", {"fullname": nameInvit, "email": emailInvit})
-                        portal_registration.registeredNotify(emailInvit)
-                    invitations.append(emailInvit)
-                    message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-                    self.useJalonUtils("envoyerMail", {"form": {"a":       emailInvit,
-                                                                "objet":   "Vous avez été inscrit à un cours",
-                                                                "message": message}})
-                self.setInvitations(tuple(invitations))
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
-
-    def deleteInvitationsEmail(self, form):
-        LOG.info("----- deleteInvitationsEmail -----")
-        invitations = []
-        if "etu_email" in form:
-            invitations = form["etu_email"]
-        ancienInvitations = set(self.getInvitations())
-        supprInvitations = ancienInvitations.difference(set(invitations))
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-        for idMember in supprInvitations:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": idMember})
-            self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
-                                                        "objet":   "Vous avez été désincrit d'un cours",
-                                                        "message": message}})
-        self.setInvitations(tuple(invitations))
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def rechercherUtilisateur(self, username, typeUser, match=False, json=True):
         LOG.info("----- rechercherUtilisateur -----")

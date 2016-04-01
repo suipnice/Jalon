@@ -35,68 +35,68 @@
         </div>
 
         <table>
-            <thead>
-                <tr>
-                    <th class="checkall show-for-medium-up">
-                        <div class="switch tiny round">
-                            <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_groupe:list" checked="checked" />
-                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
-                                   i18n:attributes="title"></label>
-                        </div>
-                    </th>
-                    <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
-                        <span>
-                            <i class="fa fa-sort"></i>
-                            <i class="fa fa-sort-asc"></i>
-                            <i class="fa fa-sort-desc"></i>
-                            <tal:block i18n:translate="">NOM Prénom</tal:block>
-                        </span>
-                    </th>
-                    <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
-                        <span>
-                            <i class="fa fa-sort"></i>
-                            <i class="fa fa-sort-asc"></i>
-                            <i class="fa fa-sort-desc"></i>
-                            <tal:block i18n:translate="">ID étu.</tal:block>
-                        </span>
-                    </th>
-                    <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
-                        <span>
-                            <i class="fa fa-sort"></i>
-                            <i class="fa fa-sort-asc"></i>
-                            <i class="fa fa-sort-desc"></i>
-                            <tal:block i18n:translate="">Courriel</tal:block>
-                        </span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="list">
-                <tr tal:repeat="nominative_registration nominative_registration_list">
-                    <td class="show-for-medium-up">
-                        <div class="switch tiny round">
-                            <input type="checkbox" name="etu_groupe:list" checked="checked"
-                                   tal:attributes="id string:switch_reveal-${repeat/nominative_registration/index};
-                                                   value nominative_registration/sesame" />
-                            <label title="Sélectionner / désélectionner"
-                                   tal:attributes="for string:switch_reveal-${repeat/nominative_registration/index}"
-                                   i18n:attributes="title"></label>
-                        </div>
-                    </td>
-                    <td class="name">
-                        <tal:block content="nominative_registration/nom" />
-                        <tal:block tal:content="python:nominative_registration['prenom'].capitalize()" />
-                    </td>
-                    <td class="code" tal:content="nominative_registration/num_etu" />
-                    <td class="email"
-                        tal:condition="nominative_registration/email">
-                        <a tal:attributes="href string:mailto:${nominative_registration/email}"
-                           tal:content="nominative_registration/email" />
-                    </td>
-                    <td tal:condition="not:nominative_registration/email">
-                        <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
-                    </td>
-                </tr>
-            </tbody>
+        <thead>
+            <tr>
+                <th class="checkall show-for-medium-up">
+                    <div class="switch tiny round">
+                        <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_groupe:list" checked="checked" />
+                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                               i18n:attributes="title"></label>
+                    </div>
+                </th>
+                <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">ID étu.</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Courriel</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            <tr tal:repeat="nominative_registration nominative_registration_list">
+                <td class="show-for-medium-up">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="etu_groupe:list" checked="checked"
+                               tal:attributes="id string:switch_reveal-${repeat/nominative_registration/index};
+                                               value nominative_registration/sesame" />
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_reveal-${repeat/nominative_registration/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="name">
+                    <tal:block content="nominative_registration/nom" />
+                    <tal:block tal:content="python:nominative_registration['prenom'].capitalize()" />
+                </td>
+                <td class="code" tal:content="nominative_registration/num_etu" />
+                <td class="email"
+                    tal:condition="nominative_registration/email">
+                    <a tal:attributes="href string:mailto:${nominative_registration/email}"
+                       tal:content="nominative_registration/email" />
+                </td>
+                <td tal:condition="not:nominative_registration/email">
+                    <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
+                </td>
+            </tr>
+        </tbody>
         </table>
 
         <script charset="UTF-8"
