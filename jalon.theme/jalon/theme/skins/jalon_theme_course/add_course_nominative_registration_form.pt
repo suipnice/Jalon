@@ -1,0 +1,114 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="nominative_registration_list context/getInfosGroupe;
+                        mode_etudiant request/mode_etudiant | nothing;
+                        is_personnel python:context.isPersonnel(user, mode_etudiant);">
+    <h2>
+        <tal:block i18n:translate="">Inscription(s) nominative(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-LDAP_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/add_course_nominative_registration_script"
+          tal:condition="is_personnel">
+
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Inscrire un(e) étudiant(e) depuis l'annuaire de l'université</h3>
+
+        <div class="panel callout radius">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <input type="text" id="input-groupe" name="username" />
+        <input type="hidden" name="typeGroupe" value="groupe" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setLDAPSearch()"></script>
+    </form>
+
+    <div id="js-named-insc_list">
+        <h3 class="texte_icone icone_users"
+            i18n:translate="">Étudiant(s) de l'Université inscrit(s) nominativement</h3>
+
+        <div class="panel callout radius"
+             tal:condition="not:nominative_registration_list"
+             i18n:translate="">
+             <i class="fa fa-info-circle no-pad"></i>
+             <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) inscrit(e) nominativement</tal:block>
+        </div>
+
+        <table class="listing"
+               tal:condition="nominative_registration_list">
+        <thead>
+            <tr>
+                <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">ID étu.</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Courriel</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+            <tr tal:repeat="etudiant listeGroupe">
+                <td class="name">
+                    <tal:block content="etudiant/nom" />
+                    <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                </td>
+                <td class="code" tal:content="etudiant/num_etu" />
+                <td class="email"
+                    tal:condition="etudiant/email">
+                    <a tal:attributes="href string:mailto:${etudiant/email}"
+                       tal:content="etudiant/email" />
+                </td>
+                <td class="email"
+                    tal:condition="not:etudiant/email">
+                    <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
+                </td>
+            </tr>
+        </tbody>
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-named-insc_list',['name','code','email'],'name','asc')"></script>
+        </table>
+    </div>
+
+</metal:main>
+
+</body>
+
+</html>

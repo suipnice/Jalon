@@ -1777,6 +1777,35 @@ class JalonCours(ATFolder):
         self.listeAcces = tuple(training_offer_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def addNominativeRegistration(self, nominative_registration_list):
+        LOG.info("----- addNominativeRegistration -----")
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        course_nominative_registration_list = list(self.getGroupe())
+        for nominative_registration in nominative_registration_list:
+            if not nominative_registration in course_nominative_registration_list:
+                course_nominative_registration_list.append(nominative_registration)
+                infosMembre = self.useJalonUtils("getInfosMembre", {"username": nominative_registration})
+                self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
+                                                            "objet":   "Vous avez été inscrit à un cours",
+                                                            "message": message}})
+        self.setGroupe(tuple(course_nominative_registration_list))
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
+    def deleteNominativeRegistration(self, nominative_registration_list):
+        LOG.info("----- deleteNominativeRegistration -----")
+        course_nominative_registration_list = set(self.getGroupe())
+        delete_nominative_registration_list = course_nominative_registration_list.difference(set(nominative_registration_list))
+        portal = self.portal_url.getPortalObject()
+        message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+        for delete_nominative_registration in delete_nominative_registration_list:
+            infosMembre = self.useJalonUtils("getInfosMembre", {"username": delete_nominative_registration})
+            self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
+                                                        "objet":   "Vous avez été désincrit d'un cours",
+                                                        "message": message}})
+        self.setGroupe(tuple(nominative_registration_list))
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
     def getCoLecteursCours(self):
         LOG.info("----- getCoLecteursCours -----")
         retour = []
@@ -1842,20 +1871,6 @@ class JalonCours(ATFolder):
                 nom = member.getProperty("fullname", sesame)
             etudiants.append({"nom": nom, "email": sesame})
         return etudiants
-
-    def getAffichageFormation(self):
-        LOG.info("----- getAffichageFormation -----")
-        listeFormations = self.getAffichageFormations()
-        nbEtuFormations = self.getNbEtuFormation(listeFormations)
-        return {"nbFormations": len(listeFormations),
-                "nbEtuFormations": nbEtuFormations}
-
-    def getNbEtuFormation(self, listeFormations):
-        LOG.info("----- getNbEtuFormation -----")
-        nbEtuFormations = 0
-        for formation in listeFormations:
-            nbEtuFormations = nbEtuFormations + int(formation[2])
-        return nbEtuFormations
 
     def getAffichageInscriptionIndividuelle(self, typeAff):
         LOG.info("----- getAffichageInscriptionIndividuelle -----")
@@ -1924,40 +1939,6 @@ class JalonCours(ATFolder):
         if inscriptionsLibres:
             acces.extend(list(inscriptionsLibres))
         return tuple(acces)
-
-    def addInscriptionsNomminatives(self, form):
-        LOG.info("----- addInscriptionsNomminatives -----")
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        nomminatives = list(self.getGroupe())
-        usernames = form["username"].split(",")
-        if usernames != ['']:
-            for username in usernames:
-                if not username in nomminatives:
-                    nomminatives.append(username)
-                    infosMembre = self.useJalonUtils("getInfosMembre", {"username": username})
-                    self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
-                                                                "objet":   "Vous avez été inscrit à un cours",
-                                                                "message": message}})
-        self.setGroupe(tuple(nomminatives))
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
-
-    def deleteInscriptionsNomminatives(self, form):
-        LOG.info("----- deleteInscriptionsNomminatives -----")
-        nomminatives = []
-        if "etu_groupe" in form:
-            nomminatives = form["etu_groupe"]
-        ancienNomminatives = set(self.getGroupe())
-        supprNomminatives = ancienNomminatives.difference(set(nomminatives))
-        portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-        for idMember in supprNomminatives:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": idMember})
-            self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
-                                                        "objet":   "Vous avez été désincrit d'un cours",
-                                                        "message": message}})
-        self.setGroupe(tuple(nomminatives))
-        self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def addInvitationsEmail(self, form):
         LOG.info("----- addInvitationsEmail -----")
