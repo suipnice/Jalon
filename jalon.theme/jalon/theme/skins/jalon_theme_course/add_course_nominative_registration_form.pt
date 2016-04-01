@@ -29,8 +29,7 @@
              <tal:block i18n:translate="">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
         </div>
 
-        <input type="text" id="input-groupe" name="username" />
-        <input type="hidden" name="typeGroupe" value="groupe" />
+        <input type="text" id="input-groupe" name="username"/>
 
         <div class="formControls">
             <button type="submit" class="button small radius">

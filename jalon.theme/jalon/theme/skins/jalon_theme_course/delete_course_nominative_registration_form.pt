@@ -104,8 +104,6 @@
         <script charset="UTF-8"
                 tal:content="structure string:setBatchSelect('js-LDAP_search',true)"></script>
 
-        <input type="hidden" name="typeGroupe" value="groupe" />
-
         <div class="formControls">
             <button type="submit" class="button small radius">
                 <i class="fa fa-check-circle"></i>
