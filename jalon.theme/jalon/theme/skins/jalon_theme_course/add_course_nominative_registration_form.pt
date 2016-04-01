@@ -84,19 +84,19 @@
             </tr>
         </thead>
         <tbody class="list">
-            <tr tal:repeat="etudiant listeGroupe">
+            <tr tal:repeat="nominative_registration nominative_registration_list">
                 <td class="name">
-                    <tal:block content="etudiant/nom" />
-                    <tal:block tal:content="python:etudiant['prenom'].capitalize()" />
+                    <tal:block content="nominative_registration/nom" />
+                    <tal:block tal:content="python:nominative_registration['prenom'].capitalize()" />
                 </td>
-                <td class="code" tal:content="etudiant/num_etu" />
+                <td class="code" tal:content="nominative_registration/num_etu" />
                 <td class="email"
-                    tal:condition="etudiant/email">
-                    <a tal:attributes="href string:mailto:${etudiant/email}"
-                       tal:content="etudiant/email" />
+                    tal:condition="nominative_registration/email">
+                    <a tal:attributes="href string:mailto:${nominative_registration/email}"
+                       tal:content="nominative_registration/email" />
                 </td>
                 <td class="email"
-                    tal:condition="not:etudiant/email">
+                    tal:condition="not:nominative_registration/email">
                     <span class="label warning round" i18n:translate="">Compte UNS non ouvert</span>
                 </td>
             </tr>
