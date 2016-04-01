@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:block i18n:translate="">Supprimer des inscriptions par formation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius">
+        <i class="fa fa-exclamation-triangle no-pad"></i>
+        <tal:block i18n:translate="">Cette opération va retirer l'accès au cours pour les formations désélectionnées.</tal:block>
+    </div>
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Formation(s) inscrite(s) au cours</h3>
+
+   <form name="element_add" method="POST"
+         tal:attributes="action string:${context/absolute_url}/delete_course_training_offer_script"
+         tal:define="training_offer_list context/getCourseTrainingOffer">
+
+        <div class="panel callout radius"
+             tal:condition="not:training_offer_list"
+             i18n:translate="">
+            Le cours n'est diffusé à aucune formation.
+        </div>
+
+        <tal:condition condition="training_offer_list">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Désélectionnez les formations ne devant plus avoir accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+        </div>
+
+        <table class="listing" id="js-list-ressource"
+               tal:define="training_offer_dict python:context.getCourseProperty('training_offer_type')">
+        <thead>
+            <tr>
+                <th class="checkall show-for-medium-up">
+                    <div class="switch tiny round has-tip" title="Action par lot : tout sélectionner / désélectionner"
+                         i18n:attributes="title">
+                        <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                        <label for="switch-all"></label>
+                    </div>
+                </th>
+                <th class="sort" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="type" title="Trier selon le type" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Type</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="number" title="Trier selon l'effectif" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Effectif</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+            <tal:repeat repeat="training_offer training_offer_list">
+            <tr>
+                <td class="check">
+                    <div class="switch tiny round">
+                        <input type="checkbox" name="elements:list" checked="checked"
+                               tal:attributes="id string:switch_tagada-${repeat/training_offer/index};
+                                               value string:${training_offer/TYP_ELP}*-*${training_offer/COD_ELP}"/>
+                        <label title="Sélectionner / désélectionner"
+                               tal:attributes="for string:switch_tagada-${repeat/training_offer/index}"
+                               i18n:attributes="title"></label>
+                    </div>
+                </td>
+                <td class="title" tal:content="training_offer/LIB_ELP" />
+                <td class="type" tal:content="python:training_offer_dict[training_offer['TYP_ELP']]" />
+                <td class="number" tal:content="training_offer/nb_etu" />
+            </tr>
+            </tal:repeat>
+        </table>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius alert">
+                <i class="fa fa-trash"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+        </tal:condition>
+    </form>
+
+    <!--tal:define define="script1 string:setSortableList('js-list-ressource',['title','type','number'],'title','asc')">
+
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                tal:content="structure buffer"></script>
+    </tal:define-->
+
+</metal:main>
+
+</body>
+
+</html>

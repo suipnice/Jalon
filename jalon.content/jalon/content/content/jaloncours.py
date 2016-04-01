@@ -400,6 +400,10 @@ class JalonCours(ATFolder):
         if key == "DateDerniereModif":
             self.reindexObject()
 
+    def getCourseProperty(self, property_id):
+        LOG.info("----- getCourseProperty -----")
+        return self.__getattribute__("_%s" % property_id)
+
     def getMySpaceFolder(self, user_id, folder_id):
         LOG.info("----- getMySpaceFolder -----")
         return getattr(getattr(portal.Members, user_id), self._folder_my_space_dict[folder_id])
@@ -1743,8 +1747,7 @@ class JalonCours(ATFolder):
             else:
                 training_offer = db_result[0]
             training_offer_list.append(training_offer)
-
-        training_offer_list.sort()
+        LOG.info("***** training_offer_list : %s" % str(training_offer_list))
         return training_offer_list
 
     def searchTrainingOffer(self, training_offer_search_text, training_offer_search_type):
@@ -1769,9 +1772,9 @@ class JalonCours(ATFolder):
         self.listeAcces = tuple(course_access_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    def deleteOffreFormations(self, elements):
-        LOG.info("----- deleteOffreFormations -----")
-        self.listeAcces = tuple(elements)
+    def deleteCourseTrainingOffer(self, training_offer_list):
+        LOG.info("----- deleteCourseTrainingOffer -----")
+        self.listeAcces = tuple(training_offer_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getCoLecteursCours(self):

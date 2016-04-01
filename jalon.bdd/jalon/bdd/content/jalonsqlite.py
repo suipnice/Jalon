@@ -174,7 +174,7 @@ def getInfosELP2(session, COD_ELP):
 
 def getELPProperties(session, COD_ELP):
     ELP = aliased(tables.ElementPedagogiSQLITE)
-    recherche = session.query(ELP.LIB_ELP, ELP.COD_ELP, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens"), ELP.TYP_ELP, ELP.DATE_CREATION, ELP.DATE_MODIF).filter(ELP.COD_ELP == COD_ELP)
+    recherche = session.query(ELP.LIB_ELP, ELP.COD_ELP, ELP.COD_GPE, ELP.ETU_ELP.label("nb_etu"), ELP.ENS_ELP.label("nb_ens"), ELP.TYP_ELP, ELP.DATE_CREATION, ELP.DATE_MODIF).filter(ELP.COD_ELP == COD_ELP)
     return convertirResultatBDD(recherche)
 
 
