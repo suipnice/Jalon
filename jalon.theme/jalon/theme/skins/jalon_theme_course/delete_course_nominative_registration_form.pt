@@ -16,7 +16,7 @@
     </h2>
 
     <form id="js-LDAP_search" method="POST"
-          tal:define="nominative_registration_list context/getInfosGroupe"
+          tal:define="nominative_registration_list context/getNominativeRegistration"
           tal:attributes="action string:${context/absolute_url}/delete_course_nominative_registration_script">
 
         <h3 class="texte_icone icone_users"

@@ -1777,6 +1777,11 @@ class JalonCours(ATFolder):
         self.listeAcces = tuple(training_offer_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def getNominativeRegistration(self):
+        LOG.info("----- getNominativeRegistration -----")
+        groupe = self.getGroupe()
+        return jalon_utils.getIndividus(list(groupe), "listdict")
+
     def addNominativeRegistration(self, nominative_registration_list):
         LOG.info("----- addNominativeRegistration -----")
         portal = self.portal_url.getPortalObject()
@@ -1846,11 +1851,6 @@ class JalonCours(ATFolder):
                                                         "message": message}})
         self.coLecteurs = tuple(lecteurs)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
-
-    def getInfosGroupe(self):
-        LOG.info("----- getInfosGroupe -----")
-        groupe = self.getGroupe()
-        return jalon_utils.getIndividus(list(groupe), "listdict")
 
     def getInfosLibre(self):
         LOG.info("----- getInfosLibre -----")
