@@ -782,6 +782,9 @@ class JalonCours(ATFolder):
         invitations = self.getInvitations()
         if invitations:
             res.append(["Invitations individuelles : étudiant(s) hors université", "email", len(invitations), "invitationsemail"])
+        password = self.getInscriptionsLibres()
+        if password:
+            res.append(["Accès par mot de passe : ", "libre", len(password), "password"])
         return res
 
     # getInfosMembre recupere les infos sur les personnes.
