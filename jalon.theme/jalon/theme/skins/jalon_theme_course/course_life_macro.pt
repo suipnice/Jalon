@@ -56,9 +56,9 @@
                 <tal:replace replace="course_action/course_actions_text"/> :
                 <tal:replace replace="course_action/course_actions_registration"/>
                 <div class="panel callout radius"
-                     tal:condition="my_view/is_course_password">
+                     tal:condition="course_action/is_course_password">
                     <tal:block i18n:translate="">Le mot de passe d'inscription au cours est</tal:block>
-                    « <strong tal:content="my_view/course_password"/> ».
+                    « <strong tal:content="course_action/course_password"/> ».
                 </div>
             </dd>
         </dl>

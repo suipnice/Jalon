@@ -27,7 +27,8 @@
         <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
     </h3>
 
-    <form id="js-mailRegistrationList" class="no_reveal_action itemAdder">
+    <form id="js-mailRegistrationList" class="no_reveal_action itemAdder"
+          tal:condition="is_personnel">
 
         <fieldset class="row">
 

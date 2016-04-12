@@ -93,9 +93,6 @@ class JalonCourseView(BrowserView):
                    "is_public":                    "success" if self.context.getAcces() == "Public" else "disabled",
                    "is_course_author":             self.context.isAuteurs(user.getId())}
 
-        my_view["is_course_password"] = self.context.getLibre() and my_view["is_personnel"]
-        my_view["course_password"] = self.context.getLienMooc()
-
         course_author = self.context.getAuteur()
         my_view["course_author_name"] = course_author["fullname"]
 
@@ -161,31 +158,37 @@ class JalonCourseView(BrowserView):
             course_training_offer_students = course_training_offer_students + int(course_training_offer["nb_etu"])
         course_training_offer = len(course_training_offer_list)
 
-        my_view["course_actions"] = [{"course_actions_id": "course_to",
-                                      "course_actions_icon": "fa fa-university fa-fw",
-                                      "course_actions_text": "Offre(s) de formation",
-                                      "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_to_actions_list),
-                                      "course_actions_registration": "%s (%s étu.)" % (course_training_offer, course_training_offer_students)}]
-        my_view["course_actions"].append({"course_actions_id": "course_nr",
-                                          "course_actions_icon": "fa fa-users fa-fw",
-                                          "course_actions_text": "Inscription(s) nominative(s)",
-                                          "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_nr_actions_list),
-                                          "course_actions_registration": len(self.context.getGroupe())})
-        my_view["course_actions"].append({"course_actions_id": "course_er",
-                                          "course_actions_icon": "fa fa-envelope-o fa-fw",
-                                          "course_actions_text": "Invitation(s) par courriel",
-                                          "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_er_actions_list),
-                                          "course_actions_registration": len(self.context.getInvitations())})
-        my_view["course_actions"].append({"course_actions_id": "course_pr",
-                                          "course_actions_icon": "fa fa-key fa-fw",
-                                          "course_actions_text": "Accès par mot de passe",
-                                          "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_pr_actions_list),
-                                          "course_actions_registration": len(self.context.getInscriptionsLibres())})
-        my_view["course_actions"].append({"course_actions_id": "course_cr",
-                                          "course_actions_icon": "fa fa-users fa-fw",
-                                          "course_actions_text": "Lecteur(s) enseignant(s)",
-                                          "course_actions_list": self.getActionsList(my_view["is_personnel"], self._course_pr_actions_list),
-                                          "course_actions_registration": len(self.context.getCoLecteurs())})
+        my_view["course_actions"] = [{"course_actions_id":           "course_to",
+                                      "course_actions_icon":         "fa fa-university fa-fw",
+                                      "course_actions_text":         "Offre(s) de formation",
+                                      "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_to_actions_list),
+                                      "course_actions_registration": "%s (%s étu.)" % (course_training_offer, course_training_offer_students),
+                                      "is_course_password":          False}]
+        my_view["course_actions"].append({"course_actions_id":           "course_nr",
+                                          "course_actions_icon":         "fa fa-users fa-fw",
+                                          "course_actions_text":         "Inscription(s) nominative(s)",
+                                          "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_nr_actions_list),
+                                          "course_actions_registration": len(self.context.getGroupe()),
+                                          "is_course_password":          False})
+        my_view["course_actions"].append({"course_actions_id":           "course_er",
+                                          "course_actions_icon":         "fa fa-envelope-o fa-fw",
+                                          "course_actions_text":         "Invitation(s) par courriel",
+                                          "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_er_actions_list),
+                                          "course_actions_registration": len(self.context.getInvitations()),
+                                          "is_course_password":          False})
+        my_view["course_actions"].append({"course_actions_id":           "course_pr",
+                                          "course_actions_icon":         "fa fa-key fa-fw",
+                                          "course_actions_text":         "Accès par mot de passe",
+                                          "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_pr_actions_list),
+                                          "course_actions_registration": len(self.context.getInscriptionsLibres()),
+                                          "is_course_password":          self.context.getLibre() and my_view["is_personnel"],
+                                          "course_password":             self.context.getLienMooc()})
+        my_view["course_actions"].append({"course_actions_id":           "course_cr",
+                                          "course_actions_icon":         "fa fa-users fa-fw",
+                                          "course_actions_text":         "Lecteur(s) enseignant(s)",
+                                          "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_pr_actions_list),
+                                          "course_actions_registration": len(self.context.getCoLecteurs()),
+                                          "is_course_password":          False})
 
         my_view["course_life_tabs_list"] = [{"tab_link":   "#course_life-historique",
                                              "tab_number": my_view["course_news"]["nbActu"],

@@ -1811,6 +1811,18 @@ class JalonCours(ATFolder):
         self.setGroupe(tuple(nominative_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def editPasswordregistration(self, activate_password):
+        LOG.info("----- editPasswordregistration -----")
+        if activate_password == "True" or not self.getLienMooc():
+            part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
+            part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
+            part3 = ''.join([random.choice(string.ascii_uppercase) for i in range(3)])
+            short = part1 + part2 + part3
+            self.setLienMooc(short)
+
+        self.setLibre(activate_password)
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
     def getEmailRegistration(self):
         LOG.info("----- getEmailregistration -----")
         course_email_registration_list = self.getInvitations()
@@ -1947,6 +1959,9 @@ class JalonCours(ATFolder):
         invitations = self.getInvitations()
         if invitations:
             res.append(["Invitations individuelles : étudiant(s) hors université", "email", len(invitations), "invitationsemail"])
+        password = self.getInscriptionsLibres()
+        if password:
+            res.append(["Accès par mot de passe : ", "libre", len(password), "password"])
         return res
 
     def getRechercheAcces(self):

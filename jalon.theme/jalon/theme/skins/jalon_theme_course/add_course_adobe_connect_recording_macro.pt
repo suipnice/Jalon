@@ -20,7 +20,8 @@
     <script charset="UTF-8"
             tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
 
-    <table summary="Liste des enregistrements Adobe Connect">
+    <table summary="Liste des enregistrements Adobe Connect"
+           tal:condition="is_personnel">
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
