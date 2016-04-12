@@ -162,6 +162,7 @@
              i18n:translate="">
             Vous êtes sur le point de masquer cette ressource à vos étudiants.
         </div>
+
         <div tal:condition="python:typeElement == 'Examen'">
             <div class="panel alert radius"
                  i18n:translate="">
@@ -172,7 +173,7 @@
         <div class="text-center"
              tal:condition="not:python:request['idElement'].startswith('Titre')"
              i18n:translate="">
-            La masquer maintenant…
+            Masquer maintenant…
         </div>
 
         <div class="text-center"
@@ -180,53 +181,55 @@
              i18n:translate="">
             Masquer maintenant le titre / sous titre et son contenu…
         </div>
+
+        <form method="POST"
+              tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
+
+            <input type="hidden" name="chapitre" value="contenu"
+                   tal:condition="python:request['idElement'].startswith('Titre')" />
+            <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+            <input type="hidden" name="date-affichage-now" value="now" />
+            <input type="hidden" name="attribut" value="masquerElement" />
+
+            <div class="formControls">
+                <input class="button warning small" type="submit"
+                       name="cours_afficher_ressource:method" value="Masquer la ressource maintenant"
+                       i18n:attributes="value" />
+            </div>
+
+        </form>
+
+        <tal:condition condition="python:typeElement != 'Examen'">
+            <div class="text-center" i18n:translate="">
+                … ou programmer son masquage.
+            </div>
+
+            <form id="js-hideDatetimepickerContainer" method="POST"
+                  tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
+
+                <div class="formControls">
+                    <input id="datetime" name="datetime" type="datetime"
+                           required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                           tal:attributes="value python:context.getAffElement(request['idElement'], 'masquerElement')" />
+                </div>
+
+                <input type="hidden" name="chapitre" value="contenu"
+                       tal:condition="python:request['idElement'].startswith('Titre')" />
+                <input type="hidden" name="attribut" value="masquerElement" />
+                <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
+
+                <div class="formControls">
+                    <input class="button warning small" type="submit"
+                           name="cours_afficher_ressource:method" value="Programmer le masquage de la ressource à l'instant choisi"
+                           i18n:attributes="value" />
+                </div>
+
+            </form>
+
+            <script charset="UTF-8"
+                    tal:content="structure string:setDateTimePicker('datetime')" />
+        </tal:condition>
     </tal:define>
-
-    <form method="POST"
-          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
-
-        <input type="hidden" name="chapitre" value="contenu"
-               tal:condition="python:request['idElement'].startswith('Titre')" />
-        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
-        <input type="hidden" name="date-affichage-now" value="now" />
-        <input type="hidden" name="attribut" value="masquerElement" />
-
-        <div class="formControls">
-            <input class="button warning small" type="submit"
-                   name="cours_afficher_ressource:method" value="Masquer la ressource maintenant"
-                   i18n:attributes="value" />
-        </div>
-
-    </form>
-
-    <div class="text-center" i18n:translate="">
-        … ou programmer son masquage.
-    </div>
-
-    <form id="js-hideDatetimepickerContainer" method="POST"
-          tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
-
-        <div class="formControls">
-            <input id="datetime" name="datetime" type="datetime"
-                   required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
-                   tal:attributes="value python:context.getAffElement(request['idElement'], 'masquerElement')" />
-        </div>
-
-        <input type="hidden" name="chapitre" value="contenu"
-               tal:condition="python:request['idElement'].startswith('Titre')" />
-        <input type="hidden" name="attribut" value="masquerElement" />
-        <input type="hidden" name="idElement" tal:attributes="value request/idElement" />
-
-        <div class="formControls">
-            <input class="button warning small" type="submit"
-                   name="cours_afficher_ressource:method" value="Programmer le masquage de la ressource à l'instant choisi"
-                   i18n:attributes="value" />
-        </div>
-
-    </form>
-
-    <script charset="UTF-8"
-            tal:content="structure string:setDateTimePicker('datetime')" />
 
 </metal:macro>
 
