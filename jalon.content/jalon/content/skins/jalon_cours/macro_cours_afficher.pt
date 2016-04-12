@@ -144,35 +144,43 @@
 -->
 <metal:macro define-macro="masquer-element">
 
-    <h2 tal:define="idElement request/idElement;
-                    typeElement python:context.getTypeSousObjet(idElement)">
-        <tal:block i18n:translate="">Masquer</tal:block>
-        <tal:condition condition="python:typeElement not in ['AutoEvaluation','BoiteDepot','Examen']">
-            <tal:block tal:content="string:la ressource" i18n:translate="" />
-            « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(idElement)['titreElement']), 80)" /> »
-        </tal:condition>
-        <tal:block tal:condition="python:typeElement == 'AutoEvaluation'" tal:content="string:cette auto-évaluation" i18n:translate="" />
-        <tal:block tal:condition="python:typeElement == 'BoiteDepot'" tal:content="string:cette boîte de dépôt" i18n:translate="" />
-        <tal:block tal:condition="python:typeElement == 'Examen'" tal:content="string:cet examen" i18n:translate="" />
-        <a class="close-reveal-modal"></a>
-    </h2>
+    <tal:define define="idElement request/idElement;
+                        typeElement python:context.getTypeSousObjet(idElement)">
+        <h2>
+            <tal:block i18n:translate="">Masquer</tal:block>
+            <tal:condition condition="python:typeElement not in ['AutoEvaluation','BoiteDepot','Examen']">
+                <tal:block tal:content="string:la ressource" i18n:translate="" />
+                « <tal:content content="python:context.getShortText(context.supprimerMarquageHTML(context.getElementCours(idElement)['titreElement']), 80)" /> »
+            </tal:condition>
+            <tal:block tal:condition="python:typeElement == 'AutoEvaluation'" tal:content="string:cette auto-évaluation" i18n:translate="" />
+            <tal:block tal:condition="python:typeElement == 'BoiteDepot'" tal:content="string:cette boîte de dépôt" i18n:translate="" />
+            <tal:block tal:condition="python:typeElement == 'Examen'" tal:content="string:cet examen" i18n:translate="" />
+            <a class="close-reveal-modal"></a>
+        </h2>
 
-    <div class="panel warning radius"
-         i18n:translate="">
-        Vous êtes sur le point de masquer cette ressource à vos étudiants.
-    </div>
+        <div class="panel warning radius"
+             i18n:translate="">
+            Vous êtes sur le point de masquer cette ressource à vos étudiants.
+        </div>
+        <div tal:condition="python:typeElement == 'Examen'">
+            <div class="panel alert radius"
+                 i18n:translate="">
+                 <strong><i class="fa fa-warning"></i>Attention :</strong> Tant que l'examen est masqué, les étudiants ne peuvent plus y obtenir de notes.
+            </div>
+        </div>
 
-    <div class="text-center"
-         tal:condition="not:python:request['idElement'].startswith('Titre')"
-         i18n:translate="">
-        La masquer maintenant…
-    </div>
+        <div class="text-center"
+             tal:condition="not:python:request['idElement'].startswith('Titre')"
+             i18n:translate="">
+            La masquer maintenant…
+        </div>
 
-    <div class="text-center"
-         tal:condition="python:request['idElement'].startswith('Titre')"
-         i18n:translate="">
-        Masquer maintenant le titre / sous titre et son contenu…
-    </div>
+        <div class="text-center"
+             tal:condition="python:request['idElement'].startswith('Titre')"
+             i18n:translate="">
+            Masquer maintenant le titre / sous titre et son contenu…
+        </div>
+    </tal:define>
 
     <form method="POST"
           tal:attributes="action string:${context/absolute_url}/cours_afficher_ressource">
