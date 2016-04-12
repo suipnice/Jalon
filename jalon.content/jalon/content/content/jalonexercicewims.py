@@ -17,6 +17,11 @@ from urlparse import urlparse
 
 import jalon_utils
 import re
+# RE ne peux pas nativement matcher des elements imbriqués.
+# pour y arriver, il faudrait plutot faire un parser spécifique, ou importer pyparsing
+# Docs : http://pyparsing.wikispaces.com/Documentation
+#from pyparsing import nestedExpr
+
 import json
 from copy import deepcopy
 
@@ -287,7 +292,7 @@ Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Franci
 Marignan fut la première victoire du jeune roi François Ier, la première année de son règne.\n\
 1\n1515\n1414\n1313\n1616}",
                                  "boucle_data_q"              : "*-*text{data_q=\data1!= ? 1:}\n*-*text{data_q=\data2!= ? wims(append item 2 to \data_q)}",
-                                 "boucle_battage"             : " *-*text{QUEST=*-*battage[\i]=1? \data1}\n *-*text{QUEST=*-*battage[\i]=2? \data2}",
+                                 "boucle_battage"             : "*-*text{QUEST=*-*battage[\i]=1? \data1}\n *-*text{QUEST=*-*battage[\i]=2? \data2}",
                                  "boucle_answer"              : "*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*anstype}{option=\option}\n*-*answer{}{\REP2;\CHOIX[2;]}{type=*-*anstype}{option=\option}",
                                  "boucle_matrix_rep"          : "\matrix{REP = \REP1\n\REP2}",
                                  "boucle_condition_questions" : "\condition{Question 1 : Aucune mauvaise réponse }{\TEST[1;3]=0}\n\
