@@ -87,11 +87,11 @@ Le mode "2 colonnes" permet d'économiser du papier pour des questions courtes.
 :Questions
 <p>Entrez ici la question à poser, selon le format suivant :</p>
 <ol>
-<li>La première ligne contient l'énoncé de la question.</li>
-<li>La seconde ligne représente un feedback, qui sera affiché après validation des réponses
+ <li>La première ligne contient l'énoncé de la question.</li>
+ <li>La seconde ligne représente un feedback, qui sera affiché après validation des réponses
 (elle peut être laissée vide).</li>
-<li>Entrez sur la 3e ligne la liste des numéros des bonnes réponses, séparées par des virgules. (les numéros représentent l'ordre dans lequel sont écrites les propositions ci-dessous)</li>
-<li>Chaque ligne suivante représente les différentes propositions de réponses.</li></ol>
+ <li>Entrez sur la 3e ligne la liste des numéros des bonnes réponses, séparées par des virgules. (les numéros représentent l'ordre dans lequel sont écrites les propositions ci-dessous)</li>
+ <li>Chaque ligne suivante représente les différentes propositions de réponses.</li></ol>
 <div style="border-left:2px solid orange;width:45em;background-color:white;padding:1em .5em;">Exemple : <br/>
 <pre>Énoncé de la Question n°1
 Explication (feedback) affichée en cas de mauvaise réponse à la question n°1
@@ -113,9 +113,11 @@ Proposition n°3</pre></div>
 $$questions$$
 
 :Type de réponses (checkbox ou radio)
-
+Le type "checkbox" (boutons carrés) permet à l'apprenant de cocher plusieurs réponses par question.<br/>
+Alors que le type "radio" (boutons ronds) ne permet qu'une réponse par question.
 \text{anstype=$$anstype$$}
 
+:
 \language{fr}
 \computeanswer{no}
 \format{html}
@@ -129,7 +131,7 @@ $$boucle_data_q$$
 
 :%%%%%%%%%%%%%% Rien à modifier jusqu'à l'énoncé %%%%%%%%%%%%%%%%
 \text{anstype=radio iswordof \anstype?radio:checkbox}
-
+\text{instruction=\accolade issametext oui ? wims(embraced randitem \instruction):\instruction}
 
 \integer{cnt_question=items(\data_q)}
 
@@ -259,7 +261,7 @@ $$boucle_data_q$$
   \text{QUEST=\test_inst=1 ? \QUEST[2..-1;]}
   \text{QUEST=wims(replace internal " by $$quot; in \QUEST)}
 
-  \matrix{QUEST=\accolade=1 ? wims(embraced randitem \QUEST):\QUEST}
+  \matrix{QUEST=\accolade issametext oui ? wims(embraced randitem \QUEST):\QUEST}
 
   \matrix{question = \question
 \QUEST[1;]}
@@ -396,7 +398,7 @@ text{testexp=wims(nospace \testexp)}
                 {<span class="oef_indgood">\good_answer_text</span>}
         }
 
-        \if{\answer_given=oui}{
+        \if{\answer_given issametext oui}{
           \if{\TEST[\h;3]>0 or \TEST[\h;2]>0}{
             <div class="prompt">\qcm_prompt2</div>
             <ul class="oef_indgood">
