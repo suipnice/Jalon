@@ -1,0 +1,78 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="mode_etudiant request/mode_etudiant | nothing;
+                        is_personnel python:context.isPersonnel(user, mode_etudiant);
+                        course_reader_list context/getCourseReader">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Lecteur(s) enseignant(s)</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius">
+        <i class="fa fa-info-circle no-pad"></i>
+        <tal:block i18n:translate="">Un lecteur enseignant est considéré comme un étudiant du cours. Il ne peut pas modifier le cours mais peut répondre aux activités à l'inverse d'un co-auteur.</tal:block>
+    </div>
+
+    <form id="js-coAuthorMod" method="POST"
+          tal:attributes="action string:${context/absolute_url}/add_course_coreader_registration_script"
+          tal:condition="is_personnel">
+        <h3 class="texte_icone icone_recherche"
+            i18n:translate="">Rechercher un personnel de l'Université dans l'annuaire</h3>
+        <div class="field">
+            <label for="input-coauteurs"
+                   i18n:translate="">Nom ou identifiant</label>
+            <input type="text" id="input-coauteurs" name="username" />
+        </div>
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+    <div class="panel callout radius"
+         tal:condition="not:course_reader_list">
+         <i class="fa fa-info-circle no-pad"></i>
+         <tal:block i18n:translate="">Ce cours n'est diffusé auprès d'aucun(e) lecteur(trice) enseignant(e).</tal:block>
+    </div>
+
+    <tal:isLecteurs condition="course_reader_list">
+
+    <h3 class="texte_icone icone_users"
+        i18n:translate="">Lecteur(s) enseignant(s) de ce cours</h3>
+
+    <div class="panel radius bkgrnd">
+        <tal:repeat repeat="course_reader course_reader_list">
+            <tal:define define="is_last repeat/course_reader/end;
+                                itemNbr repeat/course_reader/length;">
+                <tal:block tal:content="course_reader/fullname" /><tal:isNotLast tal:condition="not:is_last"><tal:interSep condition="python: itemNbr > 1">,</tal:interSep></tal:isNotLast><tal:isLast tal:condition="is_last"><tal:finalSep condition="python: itemNbr > 1">.</tal:finalSep></tal:isLast>
+                <tal:comment replace="nothing"><!--
+                    Les conditions ci-dessus sont à la suite pour éviter l'apparition d'un espace avant le signe de ponctuation.
+                --></tal:comment>
+
+            </tal:define>
+        </tal:repeat>
+    </div>
+
+    </tal:isLecteurs>
+
+
+    <script charset="UTF-8"
+            tal:content="structure string:setCoAuthorReaderMod()"></script>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -1880,37 +1880,33 @@ class JalonCours(ATFolder):
         self.setInvitations(tuple(email_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    def getCoLecteursCours(self):
-        LOG.info("----- getCoLecteursCours -----")
+    def getCourseReader(self):
+        LOG.info("----- getCourseReader -----")
         retour = []
         for username in self.getCoLecteurs():
             retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
         return retour
 
-    def addLecteurs(self, form):
-        LOG.info("----- addLecteurs -----")
+    def addCourseReader(self, course_reader_list):
+        LOG.info("----- addCourseReader -----")
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
-        lecteurs = list(self.getCoLecteurs())
-        usernames = form["username"].split(",")
-        if usernames != ['']:
-            for username in usernames:
-                if not username in lecteurs:
-                    lecteurs.append(username)
-                    infosMembre = self.useJalonUtils("getInfosMembre", {"username": username})
+        course_readers_list = list(self.getCoLecteurs())
+        if course_reader_list != ['']:
+            for course_reader in course_reader_list:
+                if not course_reader in course_readers_list:
+                    course_readers_list.append(course_reader)
+                    infosMembre = self.useJalonUtils("getInfosMembre", {"username": course_reader})
                     self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                                 "objet":   "Vous avez été ajouté à un cours",
                                                                 "message": message}})
-            self.coLecteurs = tuple(lecteurs)
+            self.coLecteurs = tuple(course_readers_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    def deleteLecteurs(self, form):
-        LOG.info("----- deleteLecteurs -----")
-        lecteurs = []
-        if "auteur-actu" in form:
-            lecteurs = form["auteur-actu"]
+    def deleteCourseReader(self, course_reader_list):
+        LOG.info("----- deleteCourseReader -----")
         ancienLecteurs = set(self.getCoLecteurs())
-        supprLecteurs = ancienLecteurs.difference(set(lecteurs))
+        supprLecteurs = ancienLecteurs.difference(set(course_reader_list))
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for idMember in supprLecteurs:
@@ -1918,7 +1914,7 @@ class JalonCours(ATFolder):
             self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                         "objet":   "Vous avez été retiré d'un cours",
                                                         "message": message}})
-        self.coLecteurs = tuple(lecteurs)
+        self.coLecteurs = tuple(course_reader_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getInfosLibre(self):
@@ -2001,7 +1997,6 @@ class JalonCours(ATFolder):
     def telechargerListingParticipants(self):
         LOG.info("----- telechargerListingParticipants -----")
         import tempfile
-        from os import close
         from xlwt import Workbook, Style, Pattern, XFStyle
 
         portal_membership = getToolByName(self, "portal_membership")

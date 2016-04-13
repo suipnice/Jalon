@@ -89,7 +89,7 @@ class JalonAnnonce(ATDocumentBase):
                 if typeELP == "coauteurs":
                     listeEtudiants = parent.getCoAuteursCours()
                 if typeELP == "colecteurs":
-                    listeEtudiants = parent.getCoLecteursCours()
+                    listeEtudiants = parent.getCourseReader()
                 if listeEtudiants:
                     for etudiant in listeEtudiants:
                         if etudiant["email"]:
