@@ -21,7 +21,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <tal:define define="breadcrumbs context/getBreadcrumbs">
+    <tal:define define="breadcrumbs context/getBreadcrumbs"  tal:condition="not:is_ajax | nothing">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
@@ -45,7 +45,7 @@
 
             <a class="button small success right"
                tal:condition="python:modele!='groupe'"
-               tal:attributes="href string:${context/absolute_url}/exercicewims_edit">
+               tal:attributes="href string:${context/absolute_url}/edit_wims_exercice_form">
                 <i class="fa fa-pencil no-pad"></i>
                 <tal:block tal:condition="python:modele!='externe'" i18n:translate="">Modifier cet exercice</tal:block>
                 <tal:block tal:condition="python:modele=='externe'" i18n:translate="">Changer cet exercice</tal:block>

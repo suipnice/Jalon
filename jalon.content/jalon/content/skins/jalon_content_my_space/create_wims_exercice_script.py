@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## Controller Python Script "create_wims_exercice_script"
+""" ##Controller Python Script "create_wims_exercice_script"."""
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -26,7 +26,7 @@ param = None
 
 #obj est un element de type "jalonexercicewims"
 wims_exercice_object = getattr(wims_exercice_folder, object_id)
-page_url = "%s/exercicewims_edit?" % wims_exercice_object.absolute_url()
+page_url = "%s/edit_wims_exercice_form?" % wims_exercice_object.absolute_url()
 
 
 # Cas des Modules externes
@@ -34,7 +34,7 @@ if wims_exercice_model == "externe":
     permalink = REQUEST.get("permalink", '')
     wims_exercice_object.setProperties({"Title":     form["title"],
                                         "Modele":    wims_exercice_model,
-                                        "Permalink": permalink,})
+                                        "Permalink": permalink})
 
 # Cas classique : on ajoute l'exercice côté WIMS
 else:

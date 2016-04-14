@@ -15,7 +15,7 @@
         bloc css exercice WIMS
     </metal:macro>
 
-    <tal:define define="breadcrumbs context/getBreadcrumbs">
+    <tal:define define="breadcrumbs python:context.getBreadcrumbs(edit_mode=True)">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
