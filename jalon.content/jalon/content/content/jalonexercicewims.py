@@ -135,6 +135,8 @@ crée en ??1639?? par les Princes de Savoie ; il comprenait un important corps d
 Au XVIIème siècle, une École de ??Médecine, Couture, Danse, Chimie?? dispensa des enseignements appréciés dans toute l'Europe.\n",
                                  "feedback_general": "",
                                  "credits"         : "",
+                                 "accolade"        : "1",
+                                 "list_order"      : "1",
                                  },
                             "marqueruntexte":
                                 {"minmark"  : "1",
@@ -675,6 +677,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                "donnees":   "text{data",
                                                "feedback_general": "text{feedback_general",
                                                "credits":          "credits{",
+                                               "accolade":      "text{accolade=item\(",
+                                               "list_order":      "text{list_order=item\(",
                                                },
                                "marqueruntexte": {"minmark": "integer{minmark",
                                                   "maxmark": "integer{maxmark",
@@ -775,7 +779,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
-                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help", "answer_given"]:
+                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help", "answer_given", "list_order"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
                     if key in ["precision", "credits", "hint", "help"]:
@@ -784,7 +788,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     if key == "texte_reponse":
                         #exemple : \answer{Votre reponse est}{\ans}{type=number}
                         pattern = "%s([^\}]*)\}" % variables_parse[modele][key]
-                    if key in ["accolade", "answer_given"]:
+                    if key in ["accolade", "answer_given", "list_order"]:
                         #exemple : \text{accolade=item($$variable$$,1 oui,\n2 non)}
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
@@ -795,7 +799,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     variable = recherche.group(1)
                     # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
                     # On continue alors la recherche jusqu'à la prochaine occurence.
-                    if key not in ["texte_reponse", "accolade", "answer_given"]:
+                    if key not in ["texte_reponse", "accolade", "answer_given", "list_order"]:
                         variable = self.extendResearch(variable, fichier, recherche.end())
 
                 else:

@@ -38,47 +38,71 @@ applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
 Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
 \text{feedback_general=asis($$feedback_general$$)}
 
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$, oui, non)}
+
+:Ordre d'affichage des listes de choix
+Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabétique(alpha).
+\text{list_order=item($$list_order$$, alpha, shuffle)}
+
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+
+
 \if{\feedback_general notsametext }{
   \text{feedback_general=<div class='feedback'>\feedback_general</div>}
 }
 \precision{10000}
 \text{data=wims(singlespace \data)}
-\text{data=wims(embraced randitem \data)}
+\text{data=\accolade issametext oui ? wims(embraced randitem \data):\data}
 \text{data=slib(text/cutchoice2 \data)}
+
 \integer{qs=min(20,floor(rows(\data)/2))}
 \text{types=}
 \text{options=}
 \text{lengths=}
 \text{good=}
 \text{field=}
+
 \for{i=1 to \qs}{
  \text{f=\data[2*\i;]}
  \integer{test=items(\f)}
+
  \if{\test>1}{
   \text{g=\f[1]}
-  \text{f=wims(sort items \f)}
+  \if{\list_order issametext alpha}{
+    \text{f=wims(sort items \f)}
+  }
+  {
+    \text{f=shuffle(\f,,)}
+  }
   \text{g=positionof(\g,\f)}
   \text{good=\good\g;,}
   \text{field=\field\f;}
   \text{types=\types[]menu,}
-  \text{lengths=\lengths,}}{
+  \text{lengths=\lengths,}
+ }{
   \text{good=\good\f,}
   \integer{c=wims(charcnt \f)}
   \text{field=\field;}
   \real{test=\f}
+
   \if{\test issametext NaN}{
    \text{test=wims(translate internal | to , in \f)}
    \integer{c=wims(charcnt \test[1])}
    \integer{c=min(50,max(6,\c+6))}
    \text{lengths=\lengths\c,}
    \text{types=\types[]\type_rep,}
-   \text{options=| isin \f?\options[]symtext}}{
+   \text{options=| isin \f?\options[]symtext}
+  }{
    \integer{c=max(5,\c+2)}
    \text{f1=wims(nospace \f)}
    \text{test=wims(text select -0123456789 in \f)}
-   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}}}
- \text{options=\options,}}
+   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}
+  }
+ }
+ \text{options=\options,}
+}
 \text{pre=wims(embraced randitem \pre)}
 \text{post=wims(embraced randitem \post)}
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
