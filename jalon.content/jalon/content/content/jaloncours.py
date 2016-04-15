@@ -1048,6 +1048,8 @@ class JalonCours(ATFolder):
 
         display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
         if display_properties["val"]:
+            form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
+            form_properties["help_css"] = "panel radius warning"
             form_properties["form_button_css"] = "button small radius warning"
             form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
             form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
