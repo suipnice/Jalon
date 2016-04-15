@@ -51,7 +51,7 @@
 
     <metal:macro define-macro="isnt_selected_tags">
 
-        <div id="untag_sel" class="reveal-modal medium" 
+        <div id="untag_sel" class="reveal-modal medium"
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
             <h2>
                 <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
@@ -67,7 +67,7 @@
 
     <metal:macro define-macro="remove_tags_objects">
         <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
-        <div id="untag_sel" class="reveal-modal medium" 
+        <div id="untag_sel" class="reveal-modal medium"
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
             <h2>
                 <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
@@ -125,6 +125,80 @@
                         <tal:block i18n:translate="">Supprimer</tal:block>
                     </button>
                 </div>
+            </form>
+        </div>
+    </metal:macro>
+
+    <!--
+            Créer un groupe d'exercices Wims (série, ou selection aléatoire)
+    -->
+    <metal:macro define-macro="create_wims_exercice_group">
+
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="group_create" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+            <h2>
+                <tal:block i18n:translate="">Créer un groupe d'exercices</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <form id="js-wimsGroupCreator" method="POST"
+                  tal:attributes="action string:${context/absolute_url};
+                                  data-success_msg string:Le groupe d'exercices Wims a été crée.;
+                                  data-all_no_msg string:Création de groupe impossible :;
+                                  data-s_all_no_msg string:l'exercice sélectionné est un groupe ou un exercice externe.;
+                                  data-p_all_no_msg string:les exercices sélectionnés sont des groupes ou des exercices externes.;
+                                  data-s_yes_msg string:L'exercice suivant fera partie du groupe :;
+                                  data-p_yes_msg string:Les exercices suivants feront partie du groupe :;
+                                  data-s_no_msg string:L'exercice suivant est un groupe ou un exercice externe, et ne peut pas être inclus dans un groupe :;
+                                  data-p_no_msg string:Les exercices suivants sont des groupes ou des exercices externes, et ne peuvent pas être inclus dans un groupe :"
+                  i18n:attributes="data-success_msg; data-all_no_msg; data-s_all_no_msg; data-p_all_no_msg; data-s_yes_msg; data-s_no_msg; data-p_yes_msg; data-p_no_msg">
+
+                <div id="archetypes-fieldname-title" class="field ArchetypesStringWidget">
+                    <label for="title" class="formQuestion">
+                        Titre du groupe d'exercices
+                        <span id="title_wims_help" class="formHelp">
+                            <tal:block i18n:translate="">Un titre de groupe, comme un titre d'exercice, est limité à 40 caractères.</tal:block><br />
+                            <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
+                            <tal:block i18n:translate="">sont interdits.</tal:block>
+                        </span>
+                    </label>
+                    <div class="fieldErrorBox"></div>
+                    <input type="text" maxlength="40"
+                           id="title" name="title"
+                           required="required" placeholder="Saisie obligatoire"
+                           i18n:attributes="placeholder" />
+                </div>
+
+                <div id="archetypes-fieldname-qnum" class="field ArchetypesStringWidget">
+                    <label for="qnum" class="formQuestion" i18n:translate="">
+                        Nombre d'exercices de ce groupe auxquels l'étudiant devra répondre
+                    </label>
+                    <span class="formHelp">Une note ne sera attribuée qu'une fois la totalité des exercices terminés.</span>
+                    <div class="fieldErrorBox"></div>
+                    <select name="qnum" id="qnum">
+                <tal:block repeat="val python:range(1,10)">
+                        <option tal:attributes="value val" tal:content="val" />
+                </tal:block>
+                    </select>
+                </div>
+
+                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+                <input type="hidden" name="modele" value="groupe" />
+                <input type="hidden" name="macro" value="ajout-groupe-wims" />
+                <input type="hidden" name="form.submitted" value="1" />
+
+                <input type="hidden" name="create_wims_exercice_group_script:method" value="Save" />
+
+                <div class="formControls">
+                    <button type="submit" class="button small create radius"
+                            name="create_wims_exercice_group_script:method">
+                        <i class="fa fa-check-circle"></i>
+                        <tal:block i18n:translate="">Créer le groupe</tal:block>
+                    </button>
+                </div>
+
             </form>
         </div>
     </metal:macro>

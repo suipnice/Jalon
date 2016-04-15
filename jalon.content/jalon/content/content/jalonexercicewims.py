@@ -17,6 +17,7 @@ from urlparse import urlparse
 
 import jalon_utils
 import re
+
 import json
 from copy import deepcopy
 
@@ -69,9 +70,10 @@ class JalonExerciceWims(ATDocumentBase):
     schema['text'].required = False
     schema['text'].mode = "r"
 
-    def getBreadcrumbs(self):
+    def getBreadcrumbs(self, edit_mode=False):
+        """ Fournit le fil d'ariane de l'exercice courant."""
         portal_url = self.portal_url.getPortalObject().absolute_url()
-        return [{"title": _(u"Mon espace"),
+        crumbs_list = [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  "%s/mon_espace" % portal_url},
                 {"title": _(u"Mes exercices WIMS"),
@@ -79,16 +81,23 @@ class JalonExerciceWims(ATDocumentBase):
                  "link":  "%s/mon_espace/mes_exercices_wims" % portal_url},
                 {"title": self.Title(),
                  "icon":  "fa fa-random",
-                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()}]
+                 "link":  "%s/view" % self.absolute_url()}]
+        if edit_mode:
+            crumbs_list.append({"title": "édition",
+                 "icon":  "fa fa-edit",
+                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()})
+
+        return crumbs_list
 
     def getEditWimsExerciceMacroName(self):
+        """ Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
         edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
         if self.getModele() == "externe":
             edit_wims_exercice_macro_name = "edit_wims_exercice_externe"
         return edit_wims_exercice_macro_name
 
     def getVariablesDefaut(self, modele):
-        """ #getVariablesDefaut permet de lister les valeurs par defaut a definir en fonction du modele d'exercice."""
+        """ Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
         variables_defaut = {"qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
@@ -280,7 +289,7 @@ Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Franci
 Marignan fut la première victoire du jeune roi François Ier, la première année de son règne.\n\
 1\n1515\n1414\n1313\n1616}",
                                  "boucle_data_q"              : "*-*text{data_q=\data1!= ? 1:}\n*-*text{data_q=\data2!= ? wims(append item 2 to \data_q)}",
-                                 "boucle_battage"             : " *-*text{QUEST=*-*battage[\i]=1? \data1}\n *-*text{QUEST=*-*battage[\i]=2? \data2}",
+                                 "boucle_battage"             : "*-*text{QUEST=*-*battage[\i]=1? \data1}\n *-*text{QUEST=*-*battage[\i]=2? \data2}",
                                  "boucle_answer"              : "*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*anstype}{option=\option}\n*-*answer{}{\REP2;\CHOIX[2;]}{type=*-*anstype}{option=\option}",
                                  "boucle_matrix_rep"          : "\matrix{REP = \REP1\n\REP2}",
                                  "boucle_condition_questions" : "\condition{Question 1 : Aucune mauvaise réponse }{\TEST[1;3]=0}\n\
@@ -290,6 +299,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                  "credits"                    : "",
                                  "columns"                    : "1",
                                  "anstype"                    : "checkbox",
+                                 "answer_given"               : "2",
                                  }
                             }
         if modele in variables_defaut:
@@ -356,12 +366,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                         nb_questions = nb_questions + 1
                 list_id_questions = ["data1"]
 
-                enonce = param["enonce0"].replace("\n", "<br/>")
-                #Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
-                if param["enonce0"].startswith("Qtitle"):
-                    enonce = enonce.replace("<br/>", "\n", 1)
+                questions = [self.genererDataQuestionSuite(param["enonce0"], param["feedback0"], param["reponses0"], 1)]
 
-                questions = ["*-*text{data1=asis(%s\n%s\n%s)}" % (enonce, param["feedback0"].replace("\n", "<br/>"), param["reponses0"])]
                 boucle_data_q = ["*-*text{data_q=\data1!= ? 1:}"]
                 boucle_battage = [" *-*matrix{QUEST=*-*battage[\i]=1? \data1}"]
                 boucle_answer = ["*-*answer{}{\REP1;\CHOIX[1;]}{type=*-*anstype}{option=\option}"]
@@ -370,9 +376,13 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 for i in range(2, nb_questions):
                     list_id_questions.append("data%s" % str(i))
                     questions.append(":Question %s" % str(i))
-                    questions.append("*-*text{data%s=asis(%s\n%s\n%s)}" % (str(i), param["enonce%s" % str(i - 1)]
-                        .replace("\n", "<br/>"), param["feedback%s" % str(i - 1)]
-                        .replace("\n", "<br/>"), param["reponses%s" % str(i - 1)]))
+
+                    question_string = self.genererDataQuestionSuite(param["enonce%s" % str(i - 1)],
+                                                               param["feedback%s" % str(i - 1)],
+                                                               param["reponses%s" % str(i - 1)],
+                                                               i)
+                    questions.append(question_string)
+
                     boucle_data_q.append("*-*text{data_q=\data%s!= ? wims(append item %s to \data_q)}" % (str(i), str(i)))
                     boucle_battage.append(" *-*matrix{QUEST=*-*battage[\i]=%s? \data%s}" % (str(i), str(i)))
                     boucle_answer.append("*-*answer{}{\REP%s;\CHOIX[%s;]}{type=*-*anstype}{option=\option}" % (str(i), str(i)))
@@ -429,7 +439,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             source = source.replace("*-*", "\\")
 
             # iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €
-            source = jalon_utils.convertUTF8ToHTMLEntities(source)
+            # attention : cela ajoute des ";" qui peuvent nuire à certains modèle d'exos (QCM suite par exemple)
+            # pour ces derniers, on pourrait convertir chaque champ compatible ?
+            if modele not in ["qcmsuite"]:
+                source = jalon_utils.convertUTF8ToHTMLEntities(source)
 
             #try:
             # on ne peux pas empecher la creation d'un exercice pour une erreur d'encodage. on ignore donc les caracteres non reconnus.
@@ -448,6 +461,17 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 retour["list_id_questions"] = list_id_questions
             return retour
 
+    def genererDataQuestionSuite(self, enonce, feedback, reponses, id_question):
+        u""" Genere une chaine au format spécifique des questions du modele "QCM Suite"."""
+        enonce = enonce.replace("\n", "<br/>")
+        #Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
+        if enonce.startswith("Qtitle"):
+            enonce = enonce.replace("<br/>", "\n", 1)
+
+        feedback = feedback.replace("\n", "<br/>")
+
+        return "*-*text{data%s=asis(%s\n%s\n%s)}" % (str(id_question), enonce, feedback , reponses)
+
     def ajouterSerie(self, author):
         """Ajoute un groupe d'exercices wims."""
         liste_exos = self.getListeIdsExos()
@@ -465,7 +489,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             #return self.aq_parent.wims("lierExoFeuille", {"listeExos": self.getListeIdsExos(), "qnum": self.getQnum(), "title": self.Title(), "authMember": author, "qclass": qclass, "qsheet": "1"})
         else:
-            return {"status": "ERROR", "code": "NO_EXERCICE"}
+            return {"status": "ERROR", "err_code": "NO_EXERCICE", "message": _(u"Aucun exercice selectionné")}
 
     def supprimerSerie(self):
         """Supprime un groupe d'exercices wims."""
@@ -597,12 +621,13 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return fichier
 
     def getExoWims(self, modele, authMember, requete={}):
-        """permet de parser le code source d'un exercice WIMS."""
-        #LOG.info("[getExoWims] modele = %s" % modele)
-        #Il faudra faire un traitement specifique aux exercices externes ici
+        """ Permet de parser le code source d'un exercice WIMS."""
+        # LOG.info("[getExoWims] modele = %s" % modele)
+        # Il faudra faire un traitement specifique aux exercices externes ici
         if modele == "externe":
             return {"status": "OK"}
-        #cas ou on recharge la page de modification (un parametre doit etre manquant). on recharge alors simplement le formulaire precedent.
+        # Cas où on recharge la page de modification (un parametre doit etre manquant).
+        # on recharge alors simplement le formulaire precedent.
         if "option" in requete and requete["option"] == "force_rewrite":
             requete["options_split"] = 0
             requete["options_eqweight"] = 0
@@ -649,7 +674,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                "texteatrous": {"type_rep":  "text{type_rep",
                                                "donnees":   "text{data",
                                                "feedback_general": "text{feedback_general",
-                                               "credits"         : "credits{",
+                                               "credits":          "credits{",
                                                },
                                "marqueruntexte": {"minmark": "integer{minmark",
                                                   "maxmark": "integer{maxmark",
@@ -737,6 +762,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                              "credits"                : "credits{",
                                              "columns"                : "text{columns",
                                              "anstype"                : "text{anstype",
+                                             "answer_given"           : "text{answer_given=item\(",
                                              }
                                }
 
@@ -749,7 +775,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             for key in variables_parse[modele].keys():
                 #Certaines instructions de wims fonctionnent differement (comme "precision")
-                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help"]:
+                if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help", "answer_given"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
                     if key in ["precision", "credits", "hint", "help"]:
@@ -758,7 +784,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     if key == "texte_reponse":
                         #exemple : \answer{Votre reponse est}{\ans}{type=number}
                         pattern = "%s([^\}]*)\}" % variables_parse[modele][key]
-                    if key == "accolade":
+                    if key in ["accolade", "answer_given"]:
                         #exemple : \text{accolade=item($$variable$$,1 oui,\n2 non)}
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
@@ -767,6 +793,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 #LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
                 if recherche is not None:
                     variable = recherche.group(1)
+                    # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
+                    # On continue alors la recherche jusqu'à la prochaine occurence.
+                    if key not in ["texte_reponse", "accolade", "answer_given"]:
+                        variable = self.extendResearch(variable, fichier, recherche.end())
+
                 else:
                     variable = self.getVariablesDefaut(modele)[key]
                 if key == "options":
@@ -808,6 +839,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     m = re.compile(pattern)
                     recherche = m.search(fichier)
                     variable = recherche.group(1)
+                    variable = self.extendResearch(variable, fichier, recherche.end())
                     variable = variable.replace("_ENDLINE_", "\n")
 
                     #when variable = asis(variable)
@@ -823,6 +855,22 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     retour["reponses%s" % str(i)] = "\n".join(list_variable[2:])
                     i = i + 1
             return retour
+
+    def extendResearch(self, variable, fichier, end_offset):
+        u"""Permet d'etendre une recherche d'expression reguliere dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""
+        CountLeft = len(re.findall("\{", variable))
+        CountRight = len(re.findall("\}", variable))
+        if CountLeft > CountRight:
+            # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
+            # On continue alors la recherche jusqu'à la prochaine occurence.
+            string = fichier[end_offset:]
+            m2 = re.search("}_ENDLINE_", string)
+            variable = "%s}_ENDLINE_%s" % (variable, string[:m2.start()])
+            # Et on recommence en récursif tant que le nombre d'accolades n'est pas pair.
+            new_offset = end_offset + len(string[:m2.start()]) + len("}_ENDLINE_")
+            return self.extendResearch(variable, fichier, new_offset)
+        else:
+            return variable
 
     def getParamListeExos(self, exo_params, mode="autoeval"):
         u"""permet d'obtenir des parametres par défaut pour visualiser un exo en dehors d'une feuille."""

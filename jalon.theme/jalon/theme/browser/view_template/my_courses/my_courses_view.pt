@@ -15,14 +15,14 @@
                         my_courses_dict my_courses_view/courses_dict">
 
     <tal:condition condition="not:is_ajax">
-    
+
     <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
     </tal:define>
 
-    <div id="reveal-main" class="reveal-modal medium" 
+    <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main id="mes_cours" class="row" role="main" aria-labelledby="page_title">

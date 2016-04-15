@@ -178,7 +178,7 @@
     </tbody>
     </table>
 
-    <metal:macro use-macro="context/macro_form/macros/creer-groupe-exercices">
+    <metal:macro use-macro="context/multiple_objects_form/macros/create_wims_exercice_group">
         Formulaire de création de groupe d'exercices (sélection aléatoire)
     </metal:macro>
 

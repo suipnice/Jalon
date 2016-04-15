@@ -132,33 +132,42 @@ class Wims(SimpleItem):
         try:
             req = urllib2.Request(self.url_connexion, data)
             handle = urllib2.urlopen(req, timeout=self.timeout)
+            # geturl() fournit la véritable url obtenue, dans le cas d'une redirection par exemple.
+            # get_url = handle.geturl()
             rep = handle.read()
+            rep = rep.decode("iso-8859-1")
         except IOError, e:
-            rep = '{"status":"ERROR"'
-            #--- Erreur HTTP ---
-            #urllib2.URLError
+
+            try:
+                error_body = e.read()
+                error_body = error_body.decode("iso-8859-1")
+            except:
+                # Si l'exception ne peux etre lue, c'est probablement un timeout... (AttributeError: 'timeout' object has no attribute 'read')
+                error_body = str(e)
+            error_body = self.string_for_json(error_body)
+
+            asked_url = "%s?%s" % (self.url_connexion, data)
+            rep = '{"status":"ERROR", "URL":"%s"' % asked_url
+
             if hasattr(e, 'reason'):
-                #print 'URLError ', e.reason
-                # URLError peut survenir en cas de "Time out" Cela peut aussi bien provenir du client (modifier alors la valeur de timeout ci-dessus) que du serveur appelé.
-                # Mais cela peux aussi survenir lorsqu'on envoi des parentheses mal fermées.
-                rep = '%s,"type":"URLError","message":"%s","URL":"%s?%s"}' % (rep, e.reason, self.url_connexion, data)
+                # -- URLError --
+                # URLError peut survenir en cas de :
+                #  * "Time out" Cela peut aussi bien provenir du client (modifier alors la valeur de timeout ci-dessus) que du serveur appelé.
+                #  * ou lorsqu'on envoi des parentheses mal fermées. (reason = WIMS User Error)
+                #  * ou lorsque le serveur WIMS est en maintenance. (reason = WIMS Interruption)
+                rep = '%s, "type":"URLError", "message":"%s", "error_body":"%s"}' % (rep, e.reason, error_body)
             elif hasattr(e, 'code'):
-                #-- HTTPError --
+                # -- HTTPError --
                 # L'erreur HTTP 450 survient souvent lors de parenthese mal fermées detectées par WIMS
-                rep = '%s,"type":"HTTPError","message":"%s","error_code":"%s"}' % (rep, self.string_for_json(e.read()), e.code)
+                rep = '%s, "type":"HTTPError", "error_code":"%s", "message":"%s"}' % (rep, e.code, error_body)
             else:
-                try:
-                    message = e.read()
-                except:
-                    # Si l'exception ne peux etre lue, c'est probablement un timeout... (AttributeError: 'timeout' object has no attribute 'read')
-                    message = str(e)
-                rep = '%s,"type":"Unknown IOError","message":"%s"}' % (rep, self.string_for_json(message))
+                rep = '%s, "type":"Unknown IOError", "message":"%s"}' % (rep, error_body)
             #mail = rep.decode("iso-8859-1")
             #self.verifierRetourWims({"rep": mail.encode("utf-8"), "fonction": "jalon.wims/utility.py/callJob", "requete" : param})
         #print "--- REP Wims ---"
         #print rep
         #print "--- REP Wims (fin) ---"
-        rep = rep.decode("iso-8859-1")
+
         return rep.encode("utf-8")
 
     def checkIdent(self, param):
@@ -191,9 +200,11 @@ class Wims(SimpleItem):
 
     def creerClasse(self, param):
         """Creation d'une classe ou d'un groupement de classes WIMS."""
-        #LOG.debug("** param[fullname] = %s" % param["fullname"])
+        #LOG.info("---creerClasse---")
         if not "titre_classe" in param:
             param["titre_classe"] = "Classes de %s" % param["fullname"]
+        # Il faut supprimer les éventuels parenthèses/accolades/crochets du titre de la classe :
+        param["titre_classe"] = self.string_for_wims(param["titre_classe"])
         donnees_classe = self.donnees_classe % (param["titre_classe"].decode("utf-8"),
                                                 self.nom_institution,
                                                 param["fullname"].decode("utf-8"),
@@ -491,6 +502,10 @@ class Wims(SimpleItem):
         """Supprime tous les caracteres indesirables d'une chaine pour l'integrer au format JSON (quotes, retour chariot, barre oblique )."""
         return chaine.replace('\"', "'").replace('\n', "").replace("\\", "").replace("\t", "\\t")
 
+    def string_for_wims(self, chaine):
+        """Supprime tous les caracteres indesirables d'une chaine pour l'integrer au format WIMS ( parentheses, accolades, crochets... )."""
+        return chaine.replace('(', "").replace(')', "").replace("{", "").replace("}", "").replace("[", "").replace("]", "")
+
     def validerUserID(self, user_ID):
         u"""Verification de conformité de l'id d'un utilisateur WIMS."""
         # Il doit avoir une taille mini et maxi et ne contenir aucun caractere interdit
@@ -585,16 +600,6 @@ class Wims(SimpleItem):
         else:
             requete = ""
 
-        if "jalon_URL" in params:
-            jalon_URL = params["jalon_URL"]
-        else:
-            jalon_URL = ""
-
-        if "jalon_request" in params:
-            jalon_request = params["jalon_request"]
-        else:
-            jalon_request = ""
-
         rep = params["rep"]
 
         portal = getUtility(IPloneSiteRoot)
@@ -621,16 +626,23 @@ class Wims(SimpleItem):
             if message == "":
                 message = "aucune info supplémentaire"
             mail_erreur["message"] = "<h1>Retour d'erreur de WIMS</h1>"
-            if jalon_URL != "":
-                mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"], jalon_URL)
+
+            if "jalon_URL" in params:
+                mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"], params["jalon_URL"])
             mail_erreur["message"] = "%s <h2>Fonction appelante :</h2><p>%s</p>" % (mail_erreur["message"], fonction)
             mail_erreur["message"] = '%s <h2>Requ&ecirc;te effectu&eacute;e :</h2><pre>%s</pre>' % (mail_erreur["message"], requete)
+
+            if "error_code" in params:
+                mail_erreur["message"] = "%s <h2>Code d'erreur :</h2><div>%s</div>" % (mail_erreur["message"], params["error_code"])
+            if "error_body" in params:
+                mail_erreur["message"] = "%s <h2>Page d'erreur :</h2><div>%s</div>" % (mail_erreur["message"], params["error_body"])
+
             mail_erreur["message"] = "%s <h2>Message d'erreur :</h2><pre>%s</pre>" % (mail_erreur["message"], rep["message"])
             mail_erreur["message"] = "%s <h2>Informations sur l'erreur</h2><pre>%s</pre>" % (mail_erreur["message"], message.decode("utf-8"))
             mail_erreur["message"] = "%s <h2>R&eacute;ponse WIMS :</h2><div><pre>%s</pre></div>" % (mail_erreur["message"], rep)
 
-            if jalon_request != "":
-                mail_erreur["message"] = "%s <hr/><h2>REQUEST Jalon :</h2><div>%s</div>" % (mail_erreur["message"], jalon_request)
+            if "jalon_request" in params:
+                mail_erreur["message"] = "%s <hr/><h2>REQUEST Jalon :</h2><div>%s</div>" % (mail_erreur["message"], params["jalon_request"])
 
             jalon_utils.envoyerMailErreur(mail_erreur)
             # print "@@@@@@ ==> envoi d'un mail d'erreur WIMS "
