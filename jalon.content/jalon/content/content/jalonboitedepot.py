@@ -799,9 +799,9 @@ class JalonBoiteDepot(ATFolder):
                 idEtudiant = obj.Creator()
                 if not idEtudiant in listeEtudiants:
                     listeEtudiants.append(idEtudiant)
-                listeDepots.append({"idEtudiant" : idEtudiant,
-                                    "filename"   : "(%s) %s" % (DateTime(obj.created()).strftime("%Y-%m-%d %Hh%Mm%Ss"), obj.file.filename),
-                                    "file_data"  : str(obj.file.data)})
+                listeDepots.append({"idEtudiant": idEtudiant,
+                                    "filename":   "(%s) %s" % (DateTime(obj.created()).strftime("%Y-%m-%d %Hh%Mm%Ss"), obj.file.filename),
+                                    "file_data":  str(obj.file.data)})
 
         dicoEtudiants = jalon_utils.getIndividus(listeEtudiants, type="dict")
         for depot in listeDepots:
@@ -828,7 +828,7 @@ class JalonBoiteDepot(ATFolder):
 
         isCorrection = self.getCorrectionIndividuelle()
         isNotation = self.getNotation()
-        translation_service = getToolByName(self,'translation_service')
+        translation_service = getToolByName(self, 'translation_service')
         portal_membership = getToolByName(self, "portal_membership")
         authMember = portal_membership.getAuthenticatedMember()
 

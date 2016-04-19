@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content fill-slot="content">
+
+    <h2>
+        <i class="fa fa-bell-o"></i>
+        <tal:block i18n:translate="">Liste des nouveautés</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="course_life-actus panel radius">
+        <dl>
+        <tal:repeat repeat="actu python:context.getActualitesCours('all')['listeActu']">
+            <dt>
+                <span class="label bkgrnd"
+                      tal:content="python:context.getLocaleDate(actu['date'])" />
+            </dt>
+            <dd tal:attributes="class string:typeElement type_${actu/type}">
+                « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 60)" /> ...»
+                <i tal:content="actu/description" />
+            </dd>
+        </tal:repeat>
+        </dl>
+    </div>
+
+</metal:content>
+
+</body>
+
+</html>

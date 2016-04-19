@@ -118,7 +118,7 @@
                     </tal:block>
                 </dl>
                 <a class="button tiny expand radius"
-                   tal:attributes="href string:${context/absolute_url}/course_display_news_page?mode_etudiant=${mode_etudiant}"
+                   tal:attributes="href string:${context/absolute_url}/display_course_news_page?mode_etudiant=${mode_etudiant}"
                    data-reveal-id="reveal-main" data-reveal-ajax="true">
                     <i class="fa fa-arrow-circle-right"></i>
                     <tal:block i18n:translate="label_consulter_actualites">Voir toutes les nouveautés</tal:block>
