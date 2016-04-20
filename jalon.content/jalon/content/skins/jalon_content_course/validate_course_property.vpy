@@ -20,7 +20,8 @@ validate_key = form["validate_key"]
 validate_dict = {"edit_course_title":      ["title"],
                  "create_activity":        ["title"],
                  "create_course_map_item": ["title"],
-                 "edit_course_map_item":   ["title"]}
+                 "edit_course_map_item":   ["title"],
+                 "add_course_announce":    ["title", "description"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:

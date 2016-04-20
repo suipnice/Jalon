@@ -201,9 +201,10 @@ class JalonCourseView(BrowserView):
         else:
             my_view["course_news_title"] = "Les 3 dernières nouveautés du cours"
 
-        my_view["course_advert"] = self.context.getAnnonces(user, self.request, mode_etudiant)
+        my_view["course_announce"] = self.context.getAnnonces(user, mode_etudiant, False)
+        LOG.info("***** course_announce : %s" % str(my_view["course_announce"]))
         my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-annonces",
-                                                 "tab_number": my_view["course_advert"]["nbAnnonces"],
+                                                 "tab_number": my_view["course_announce"]["nbAnnonces"],
                                                  "tab_icon":   "fa fa-bullhorn fa-2x",
                                                  "tab_name":   "Annonces"})
 

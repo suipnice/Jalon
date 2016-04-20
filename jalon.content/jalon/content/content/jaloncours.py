@@ -2303,16 +2303,21 @@ class JalonCours(ATFolder):
     #------------------------#
     # Course Life - Announce #
     #------------------------#
-    def getAnnonces(self, authMember, request, personnel, all=None):
+    def getAnnonces(self, authMember, mode_etudiant, all_annonce=False):
         LOG.info("----- getAnnonces -----")
         annonces = []
         listeAnnonces = list(self.annonce.objectValues())
-        listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if listeAnnonces and personnel and all:
-            return {"listeAnnonces": listeAnnonces, "nbAnnonces": len(listeAnnonces)}
-        elif listeAnnonces and personnel:
-            return {"listeAnnonces": [listeAnnonces[0]], "nbAnnonces": len(listeAnnonces)}
+        if not listeAnnonces:
+            return []
 
+        listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
+        if not mode_etudiant:
+            if all_annonce:
+                return {"listeAnnonces": listeAnnonces, "nbAnnonces": len(listeAnnonces)}
+            else:
+                return {"last_announce": listeAnnonces[0], "nbAnnonces": len(listeAnnonces)}
+
+        LOG.info("***** Not Personnel")
         groupes = []
         diplomes = []
         portal = self.portal_url.getPortalObject()
@@ -2371,7 +2376,7 @@ class JalonCours(ATFolder):
                             break
 
         annonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if annonces and all:
+        if annonces and all_annonce:
             return {"listeAnnonces": annonces, "nbAnnonces": len(listeAnnonces)}
         elif annonces:
             return {"listeAnnonces": [annonces[0]], "nbAnnonces": len(listeAnnonces)}
@@ -2386,6 +2391,17 @@ class JalonCours(ATFolder):
         if self.getCoLecteurs():
             res.append(["Tous les co-lecteurs", "colecteurs", len(self.getCoLecteurs()), "colecteurs"])
         return res
+
+    def createAnnounce(self, user_id, announce_title, announce_description, announce_publics, mail_announce):
+        LOG.info("----- createAnnounce -----")
+        announce_folder = self.annonce
+        announce_id = announce_folder.invokeFactory(type_name="JalonAnnonce", id="Annonce-%s-%s" % (user_id, DateTime().strftime("%Y%m%d%H%M%S%f")))
+        announce_object = getattr(announce_folder, announce_id)
+        announce_object.setProperties({"Title":       announce_title,
+                                       "Description": announce_description,
+                                       "Publics":     announce_publics})
+        #if mail_announce:
+        #    announce_object.envoyerAnnonce()
 
     def supprimerAnnonce(self, annonce):
         LOG.info("----- supprimerAnnonce -----")

@@ -127,44 +127,65 @@
         </div>
         <div class="content" id="course_life-annonces" role="tabpanel">
             <h3>
-                <a class="button tiny radius right"
+                <!--a class="button tiny radius right"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                    tal:condition="my_view/is_personnel"
-                   tal:attributes="href string:${context/absolute_url}/course_create_news_form"><i class="fa fa-plus-circle"></i><span class="show-for-medium-only" i18n:translate="">Nouvelle ann.</span><span class="show-for-large-up" i18n:translate="">Nouvelle annonce</span></a>
+                   tal:attributes="href string:${context/absolute_url}/course_create_news_form"><i class="fa fa-plus-circle"></i><span class="show-for-medium-only" i18n:translate="">Nouvelle ann.</span><span class="show-for-large-up" i18n:translate="">Nouvelle annonce</span></a-->
+                <a class="dropdown right"
+                   data-options="align:bottom" data-dropdown="annonce-options"
+                   tal:condition="my_view/is_personnel">
+                    <i class="fa fa-cog fa-lg"></i>
+                </a>
                 <i class="fa fa-bullhorn"></i><tal:block i18n:translate="">Annonces</tal:block>
             </h3>
+            <tal:condition condition="my_view/is_personnel">
+                <ul id="annonce-options" data-dropdown-content class="f-dropdown">
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/add_course_announce_form">
+                            <i class="fa fa-plus-circle fa-fw"></i><tal:block i18n:translate="">Ajouter</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/delete_course_announce_form">
+                            <i class="fa fa-trash-o fa-fw alert"></i><tal:block i18n:translate="">Supprimer</tal:block>
+                        </a>
+                    </li>
+                </ul>
+            </tal:condition>
 
             <div class="panel callout radius"
-                 tal:condition="not:my_view/course_advert/nbAnnonces">
+                 tal:condition="not:my_view/course_announce/nbAnnonces">
                 <i class="fa fa-info-circle"></i>
                 <tal:block i18n:translate="">Il n'y a aucune annonce concernant ce cours.</tal:block>
             </div>
 
-            <tal:condition condition="my_view/course_advert/nbAnnonces">
+            <tal:condition condition="my_view/course_announce/nbAnnonces">
             <div class="panel warning radius">
                  Les étudiants ne verront que les annonces qui leur sont destinées.
             </div>
 
             <div class="panel radius"
-                 tal:define="last_advert python:my_view/course_advert['listeAnnonces'][0]">
-                 <h4>La dernière annonce</h4>
-                <span class="label bkgrnd round" tal:content="python:context.getLocaleDate(last_advert.modified())" />
+                 tal:define="last_announce python:my_view['course_announce']['last_announce']">
+                <h4>La dernière annonce</h4>
+                <span class="label bkgrnd round" tal:content="python:context.getLocaleDate(last_announce.modified())" />
 
-                <tal:condition condition="personnel">
+                <tal:condition condition="my_view/is_personnel">
                 <a class="dropdown right show-for-medium-up" data-dropdown="last_announce" data-options="align:left">
                     <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
                 </a>
                 <ul id="last_announce" class="f-dropdown" data-dropdown-content="data-dropdown-content">
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/annonce/${last_advert/getId}/edit_course_advert_form">
+                           tal:attributes="href string:${context/absolute_url}/annonce/${last_announce/getId}/edit_course_advert_form">
                             <i class="fa fa-pencil fa-fw"></i>
                             <tal:block i18n:translate="">Modifier</tal:block>
                         </a>
                     </li>
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:define="titre python:context.jalon_quote(last_advert['title'])"
+                           tal:define="titre python:context.jalon_quote(last_announce['title'])"
                            tal:attributes="href string:${context/absolute_url}/delete_course_advert_form">
                             <i class="fa fa-trash-o fa-fw"></i>
                             <tal:block i18n:translate="">Supprimer</tal:block>
@@ -173,8 +194,8 @@
                 </ul>
                 </tal:condition>
 
-                <h4 class="typeElementTitre" tal:content="last_advert/Title"/>
-                <p class="panel radius" tal:content="structure last_advert/getDescriptionAff"/>
+                <h4 class="typeElementTitre" tal:content="last_announce/Title"/>
+                <p class="panel radius" tal:content="structure last_announce/getDescriptionAff"/>
                 <a class="button tiny expand radius"
                    tal:attributes="href string:${context/absolute_url}/cours_display_all_advert_page">
                     <i class="fa fa-arrow-circle-right"></i>
