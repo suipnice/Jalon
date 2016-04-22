@@ -178,7 +178,7 @@
                 <ul id="last_announce" class="f-dropdown" data-dropdown-content="data-dropdown-content">
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/annonce/${last_announce/getId}/edit_course_advert_form">
+                           tal:attributes="href string:${context/absolute_url}/annonce/${last_announce/getId}/edit_course_announce_form">
                             <i class="fa fa-pencil fa-fw"></i>
                             <tal:block i18n:translate="">Modifier</tal:block>
                         </a>

@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_course_property
+
+[actions]
+action.failure = traverse_to:string:edit_course_announce_form
+action.success_edit_course_announce = traverse_to:string:edit_course_announce_script
