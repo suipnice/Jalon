@@ -2308,7 +2308,7 @@ class JalonCours(ATFolder):
         annonces = []
         listeAnnonces = list(self.annonce.objectValues())
         if not listeAnnonces:
-            return []
+            return {"listeAnnonces": [], "nbAnnonces": 0}
 
         listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
         if not mode_etudiant:
@@ -2383,6 +2383,13 @@ class JalonCours(ATFolder):
         else:
             return {"listeAnnonces": [], "nbAnnonces": 0}
 
+    def getAnnounce(self, announce_id):
+        LOG.info("----- getAnnounce -----")
+        announce_folder = self.annonce
+        announce_object = getattr(announce_folder, announce_id)
+        return {"announce_title":       announce_object.Title(),
+                "announce_description": announce_object.Description()}
+
     def getPublicsAnnonce(self):
         LOG.info("----- getPublicsAnnonce -----")
         res = self.getInfosListeAcces()
@@ -2403,9 +2410,9 @@ class JalonCours(ATFolder):
         #if mail_announce:
         #    announce_object.envoyerAnnonce()
 
-    def supprimerAnnonce(self, annonce):
-        LOG.info("----- supprimerAnnonce -----")
-        self.annonce.manage_delObjects([annonce])
+    def deleteAnnounce(self, announce_id):
+        LOG.info("----- deleteAnnounce -----")
+        self.annonce.manage_delObjects([announce_id])
 
     #--------------------------------#
     # Course Glossary & Bibliography #

@@ -142,8 +142,10 @@
         <input type="hidden" name="validate_key" value="edit_course_announce" />
 
         <div class="formControls">
-            <input class="button small radius" type="submit" name="form.button.save" value="Save"
-                   i18n:attributes="value label_save" />
+            <button type="submit" class="button small radius">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
         </div>
 
     </form>

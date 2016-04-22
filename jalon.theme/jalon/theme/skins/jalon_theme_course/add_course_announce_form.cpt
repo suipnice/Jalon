@@ -152,8 +152,10 @@
         <input type="hidden" name="user_id" tal:attributes="value user/getId" />
 
         <div class="formControls">
-            <input type="submit" class="button small radius" value="Créer cette annonce"
-                   i18n:attributes="value" />
+            <button type="submit" class="button small radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
         </div>
 
     </form>

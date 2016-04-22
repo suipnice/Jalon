@@ -186,7 +186,7 @@
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:define="titre python:context.jalon_quote(last_announce['title'])"
-                           tal:attributes="href string:${context/absolute_url}/delete_course_advert_form">
+                           tal:attributes="href string:${context/absolute_url}/delete_course_announce_form?item_id=${last_announce/getId}">
                             <i class="fa fa-trash-o fa-fw"></i>
                             <tal:block i18n:translate="">Supprimer</tal:block>
                         </a>
