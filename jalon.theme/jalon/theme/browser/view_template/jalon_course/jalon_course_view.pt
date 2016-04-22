@@ -9,8 +9,9 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="mode_etudiant request/mode_etudiant | nothing;
-                        my_view python:view.getCourseView(user, mode_etudiant)">
+            tal:define="mode_etudiant_request request/mode_etudiant | nothing;
+                        my_view python:view.getCourseView(user, mode_etudiant_request);
+                        mode_etudiant my_view/mode_etudiant">
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
     <tal:define define="no_return python:context.insererConsultation(user, 'Cours', '')"/>

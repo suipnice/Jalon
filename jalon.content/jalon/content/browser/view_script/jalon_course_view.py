@@ -87,9 +87,12 @@ class JalonCourseView(BrowserView):
         LOG.info("----- getCourseView (Start) -----")
         portal = self.context.portal_url.getPortalObject()
 
+        is_personnel = self.context.isPersonnel(user, mode_etudiant)
+        mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
         my_view = {"portal":                       portal,
                    "course_short_description":     self.context.getShortDescription(),
-                   "is_personnel":                 self.context.isPersonnel(user, mode_etudiant),
+                   "mode_etudiant":                mode_etudiant,
+                   "is_personnel":                 is_personnel,
                    "is_public":                    "success" if self.context.getAcces() == "Public" else "disabled",
                    "is_course_author":             self.context.isAuteurs(user.getId())}
 

@@ -197,7 +197,7 @@
                 <h4 class="typeElementTitre" tal:content="last_announce/Title"/>
                 <p class="panel radius" tal:content="structure last_announce/getDescriptionAff"/>
                 <a class="button tiny expand radius"
-                   tal:attributes="href string:${context/absolute_url}/cours_display_all_advert_page">
+                   tal:attributes="href string:${context/absolute_url}/course_display_all_advert_page?mode_etudiant=${mode_etudiant}">
                     <i class="fa fa-arrow-circle-right"></i>
                     <tal:block i18n:translate="label_consulter_annonces">Voir toutes les annonces</tal:block>
                 </a>

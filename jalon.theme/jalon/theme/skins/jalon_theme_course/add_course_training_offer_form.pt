@@ -11,8 +11,7 @@
 <metal:main fill-slot="content"
             tal:define="training_offer_search_type request/recherche | string:etape;
                         training_offer_search_text request/termeRecherche | nothing;
-                        mode_etudiant request/mode_etudiant | nothing;
-                        my_form python:context.getCourseTrainingOfferForm(user, mode_etudiant, training_offer_search_type)">
+                        my_form python:context.getCourseTrainingOfferForm(user, training_offer_search_type)">
 
     <h2>
         <tal:block i18n:translate="">Inscription(s) par formation(s)</tal:block>

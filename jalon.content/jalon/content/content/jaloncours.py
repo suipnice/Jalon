@@ -1714,8 +1714,8 @@ class JalonCours(ATFolder):
     #---------------------#
     # Course Participants #
     #---------------------#
-    def getCourseTrainingOfferForm(self, user, mode_etudiant, training_offer_searh_type):
-        form_properties = {"is_personnel": self.isPersonnel(user, mode_etudiant)}
+    def getCourseTrainingOfferForm(self, user, training_offer_searh_type):
+        form_properties = {"is_personnel": self.isPersonnel(user)}
         form_properties["training_offer_type"] = [{"training_offer_type_selected": "selected" if training_offer_searh_type == "etape" else "",
                                                    "training_offer_type_value":    "etape",
                                                    "training_offer_type_text":     "Diplôme"},

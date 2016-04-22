@@ -10,8 +10,7 @@
 
 <metal:main fill-slot="content"
             tal:define="nominative_registration_list context/getNominativeRegistration;
-                        mode_etudiant request/mode_etudiant | nothing;
-                        is_personnel python:context.isPersonnel(user, mode_etudiant);">
+                        is_personnel python:context.isPersonnel(user);">
     <h2>
         <tal:block i18n:translate="">Inscription(s) nominative(s)</tal:block>
         <a class="close-reveal-modal"></a>

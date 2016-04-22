@@ -18,8 +18,7 @@
         <tal:block i18n:translate="">Un co-auteur du cours dispose des droits de modifications sur la totalité de cours.</tal:block>
     </div>
     <form id="js-coAuthorMod" method="POST"
-          tal:define="mode_etudiant request/mode_etudiant | nothing;
-                      personnel python:context.isPersonnel(user, mode_etudiant);"
+          tal:define="personnel python:context.isPersonnel(user);"
           tal:attributes="action string:${context/absolute_url}/add_course_coauthor_script"
           tal:condition="personnel">
         <h3 class="texte_icone icone_recherche"

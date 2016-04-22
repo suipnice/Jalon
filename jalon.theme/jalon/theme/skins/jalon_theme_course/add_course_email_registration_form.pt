@@ -9,8 +9,7 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="mode_etudiant request/mode_etudiant | nothing;
-                        is_personnel python:context.isPersonnel(user, mode_etudiant);
+            tal:define="is_personnel python:context.isPersonnel(user);
                         email_registration_list context/getEmailRegistration">
     <h2>
         <tal:block i18n:translate="">Inscription(s) extérieure(s) par courriel</tal:block>
