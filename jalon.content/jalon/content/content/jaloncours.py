@@ -2414,6 +2414,12 @@ class JalonCours(ATFolder):
         LOG.info("----- deleteAnnounce -----")
         self.annonce.manage_delObjects([announce_id])
 
+    def deleteAllAnnounce(self):
+        LOG.info("----- deleteAllAnnounce -----")
+        announce_folder = self.annonce
+        announce_ids = announce_folder.objectIds()
+        announce_folder.manage_delObjects(announce_ids)
+
     #--------------------------------#
     # Course Glossary & Bibliography #
     #--------------------------------#
