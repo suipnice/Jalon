@@ -389,7 +389,9 @@ class JalonCoursWims(ATDocument):
                         rep_wims = self.wims("callJob", dico)
                     else:
                         rep_wims = '{"status": "ERROR", "message": "pas de permalien pour cet exercice externe"}'
-                    rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/ajouterElement", "message": "parametres de la requete : %s" % dico})
+                    rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                                "fonction": "jaloncourswims.py/ajouterElement",
+                                                                "message": "parametres de la requete : %s" % dico})
                     if rep_wims['status'] != "OK":
                         # Le retour sera intercepté depuis "cours_element_add" pour afficher une erreur a l'utilisateur
                         # en outre, l'exercice n'est pas ajouté.
@@ -726,7 +728,12 @@ class JalonCoursWims(ATDocument):
                         index = index + 1
                     if erreur:
                         rep_wims = '{"status": "ERROR", "message": "impossible de convertir le score au type float"}'
-                        self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes", "message": '<ul><li>rep["got_points"] = %s</li><li>Liste des scores verreux : %s</li><li>Liste des exceptions : %s</li></ul>' % (rep["got_points"], liste_erreurs, liste_except)})
+                        self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                         "fonction": "jaloncourswims.py/getNotes",
+                                                         "message": '<ul><li>rep["got_points"] = %s</li><li>rep["require_points"] = %s</li>\<li>Liste des scores verreux : %s</li><li>Liste des exceptions : %s</li></ul>' % (rep["got_points"], rep["require_points"], liste_erreurs, liste_except),
+                                                         "requete": param,
+                                                         "jalon_request": request
+                                                         })
                     if totalSur == 0:
                         retour["note"] = 0
                     else:
@@ -768,7 +775,10 @@ class JalonCoursWims(ATDocument):
                     if no_user_message in rep_wims:
                         rep = json.loads(rep_wims)
                     else:
-                        rep = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes", "message": 'stats globales de la feuille demandees par un auteur/coauteur', "requete": dico})
+                        rep = self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                               "fonction": "jaloncourswims.py/getNotes",
+                                                               "message": 'stats globales de la feuille demandees par un auteur/coauteur',
+                                                               "requete": dico})
                     #LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
@@ -798,7 +808,10 @@ class JalonCoursWims(ATDocument):
                     if no_user_message in rep_wims:
                         rep = json.loads(rep_wims)
                     else:
-                        rep = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes", "message": 'notes detaillees de la feuille demandees par un auteur/coauteur', "requete": dico})
+                        rep = self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                               "fonction": "jaloncourswims.py/getNotes",
+                                                               "message": 'notes detaillees de la feuille demandees par un auteur/coauteur',
+                                                               "requete": dico})
                         #Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
                         if rep["status"] == "OK":
                             # si les etudiants ont deja eu des notes une premiere fois sur cette feuille, et qu'on a ajouté ensuite un exo, les données risquent d'etre erronées. on ne passera surmeent pas un try
@@ -1036,7 +1049,9 @@ class JalonCoursWims(ATDocument):
         else:
             rep_wims = '{"status": "ERROR", "message": "Seul un enseignant ou un etudiant lui-même peut avoir accès a ses logs de connexion"}'
 
-        rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getUserLog", "message": "parametres de la requete : %s" % param})
+        rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims,
+                                                    "fonction": "jaloncourswims.py/getUserLog",
+                                                    "message": "parametres de la requete : %s" % param})
         rep_wims["fullname"] = jalon_utils.getInfosMembre(quser)["fullname"]
         # On enleve un eventuel element vide a la liste :
         try:
