@@ -14,6 +14,7 @@
     <h2 tal:condition="is_ajax">
         <i class="fa fa-bullhorn"></i>
         <tal:block i18n:translate="">Liste des annonces</tal:block>
+        <a class="close-reveal-modal"></a>
     </h2>
 
     <div id="reveal-main" class="reveal-modal medium"

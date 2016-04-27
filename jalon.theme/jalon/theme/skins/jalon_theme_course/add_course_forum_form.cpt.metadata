@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_course_property
+
+[actions]
+action.failure                  = traverse_to:string:add_course_forum_form
+action.success_add_course_forum = traverse_to:string:add_course_forum_script

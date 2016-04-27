@@ -21,8 +21,7 @@
 
     <form id="js-activityCreator" method="POST"
           tal:attributes="action string:${context/absolute_url}/${template/id};
-                          data-success_msg string:L'activité a été créée."
-          tal:condition="is_personnel">
+                          data-success_msg string:L'activité a été créée.">
 
         <div id="archetypes-fieldname-title"
              tal:define="error errors/title | nothing"
