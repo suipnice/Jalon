@@ -2311,7 +2311,7 @@ class JalonCours(ATFolder):
             return {"listeAnnonces": [], "nbAnnonces": 0}
 
         listeAnnonces.sort(lambda x, y: cmp(y.modified(), x.modified()))
-        if not mode_etudiant:
+        if mode_etudiant == "false":
             if all_annonce:
                 return {"listeAnnonces": listeAnnonces, "nbAnnonces": len(listeAnnonces)}
             else:

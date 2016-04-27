@@ -127,10 +127,6 @@
         </div>
         <div class="content" id="course_life-annonces" role="tabpanel">
             <h3>
-                <!--a class="button tiny radius right"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:condition="my_view/is_personnel"
-                   tal:attributes="href string:${context/absolute_url}/course_create_news_form"><i class="fa fa-plus-circle"></i><span class="show-for-medium-only" i18n:translate="">Nouvelle ann.</span><span class="show-for-large-up" i18n:translate="">Nouvelle annonce</span></a-->
                 <a class="dropdown right"
                    data-options="align:bottom" data-dropdown="annonce-options"
                    tal:condition="my_view/is_personnel">
@@ -197,7 +193,8 @@
                 <h4 class="typeElementTitre" tal:content="last_announce/Title"/>
                 <p class="panel radius" tal:content="structure last_announce/getDescriptionAff"/>
                 <a class="button tiny expand radius"
-                   tal:attributes="href string:${context/absolute_url}/course_display_all_advert_page?mode_etudiant=${mode_etudiant}">
+                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/display_course_all_advert_page?mode_etudiant=${mode_etudiant}">
                     <i class="fa fa-arrow-circle-right"></i>
                     <tal:block i18n:translate="label_consulter_annonces">Voir toutes les annonces</tal:block>
                 </a>
