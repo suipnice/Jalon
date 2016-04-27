@@ -1194,7 +1194,7 @@ En entrée :
                     <div class="nom_etudiant" tal:content="string:${etudiant/last_name} ${etudiant/first_name}"/>
                     <span class="show-for-large-up">
                         <div>
-                            <tal:block i18n:translate="">Id UNS :</tal:block>
+                            <tal:block i18n:translate="">Identifiant :</tal:block>
                             <tal:replace replace="etudiant/id"/>
                         </div>
                         <div>

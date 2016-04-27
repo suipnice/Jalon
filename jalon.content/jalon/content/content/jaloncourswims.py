@@ -658,7 +658,6 @@ class JalonCoursWims(ATDocument):
             - ou les notes de l'activité (dans ce cas, detailed permet d'obtenir les notes par etudiants)
 
         """
-
         no_user_message = "There is no user in this class"
         param = {"quser": quser}
         # On fait un setClasse() pour créer eventuellement la classe si ce n'etait deja fait.
@@ -822,7 +821,7 @@ class JalonCoursWims(ATDocument):
                                     individu = dico_ETU[user["id"]]
                                     user["first_name"] = individu["prenom"]
                                     user["last_name"]  = individu["nom"]
-                                    user["num_etu"]    = dico_ETU[user["id"]]["num_etu"]
+                                    user["num_etu"]    = individu["num_etu"]
                                 # cas des comptes enseignants et invités
                                 else:
                                     # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon

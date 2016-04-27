@@ -2399,9 +2399,13 @@ class JalonCours(ATFolder):
         return retour
 
     def getScoresWims(self, auteur, authMember, request=None, file_format="csv"):
-        u"""Télécharger les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
+        u"""Liste (pour téléchargement) les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
         #self.plone_log("[jaloncours/getScoresWims]")
         dicoClasses = list(self.getListeClasses())[0]
+
+        separators = {"csv": ",",
+                      "tsv": "\t",
+                      "xls": ";"}
 
         liste_activitesWIMS = []
 
@@ -2447,11 +2451,41 @@ class JalonCours(ATFolder):
                                                      "jalon_request": request
                                                      })
                 except:
+                    # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
                     if file_format == "xls":
                         # Pour le format xls, on remplace le séparateur décimal (.) par une virgule.
                         rep_wims = rep_wims.replace(".", ",")
-                    # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
-                    retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": rep_wims}
+
+                    # Ici on ajoute le numéro étudiant dans les colonnes :
+                    listETU = []
+                    file_lines = rep_wims.rstrip('\n').split('\n')
+                    nb_entetes = 3
+
+                    for line in file_lines[nb_entetes:]:
+                        # On cree une liste de tous les identifiants
+                        listETU.append(line.split(separators[file_format])[0].strip('"'))
+                    # On demande toutes les infos disponibles pour la liste d'identifiants
+                    dico_ETU = jalon_utils.getIndividus(listETU, type="dict")
+                    export_file = []
+
+                    for index, line in enumerate(file_lines):
+                        if index >= nb_entetes:
+                            id_etu = listETU[index - nb_entetes]
+                            if id_etu in dico_ETU:
+                                individu = dico_ETU[id_etu]
+                                #user["first_name"] = individu["prenom"]
+                                #user["last_name"]  = individu["nom"]
+                                num_etu = "%s" % individu["num_etu"]
+                            else:
+                                num_etu = "Non disp."
+                        elif index == 1:
+                            num_etu = "Num. Etudiant"
+                        else:
+                            num_etu = "number"
+                        if line != "":
+                            export_file.append("%s%s%s" % (num_etu.encode("utf-8"), separators[file_format], line))
+
+                    retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": "\n".join(export_file)}
 
         else :
             retour = {"status": "not_relevant", "nb_activity": len(liste_activitesWIMS)}
@@ -3085,16 +3119,16 @@ class JalonCours(ATFolder):
             # ajustement de la largeur d'une colonne
             feuille.col(4).width = 8000
 
-        # Ajout des inscriptions nomminatives
+        # Ajout des inscriptions nominatives
         nomminatives = self.getInfosGroupe()
         if nomminatives:
-            # Création de la feuille des inscriptiosn nomminatives
-            feuille = listing.add_sheet("InscriptionsNomminatives")
+            # Création de la feuille des inscriptions nominatives
+            feuille = listing.add_sheet("InscriptionsNominatives")
 
             # Première Ligne : Titre de la formation ; Type ; Code
             feuille.write(0, 0, "Liste des participants du cours :")
             feuille.write(0, 1, self.Title())
-            feuille.write(1, 0, "Inscription(s) nomminative(s)")
+            feuille.write(1, 0, "Inscription(s) nominative(s)")
 
             # ajout des en-têtes
             feuille.write(3, 0, 'Nom', styleEnTete)
@@ -3120,7 +3154,7 @@ class JalonCours(ATFolder):
         # Ajout des invitations par courriel
         invitations = self.getInfosInvitations()
         if invitations:
-            # Création de la feuille des inscriptiosn nomminatives
+            # Création de la feuille des inscriptions par email
             feuille = listing.add_sheet("InvitationsCourriel")
 
             # Première Ligne : Titre de la formation ; Type ; Code
