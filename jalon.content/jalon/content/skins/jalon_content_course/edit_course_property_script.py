@@ -13,7 +13,7 @@ form = context.REQUEST.form
 course_property = form["course_property"]
 context.setCourseProperties({course_property.capitalize(): form[course_property]})
 
-if course_property in ["acces", "description"]:
+if course_property in ["acces", "description", "activer_email_forum"]:
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
     return context.absolute_url()
