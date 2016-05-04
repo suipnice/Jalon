@@ -31,3 +31,16 @@ class JalonDepositBoxView(BrowserView):
                 {"title": self.context.Title(),
                  "icon":  "fa fa-book",
                  "link":  self.context.absolute_url()}]
+
+    def getDepositBoxView(self, user, mode_etudiant, is_ajax):
+        LOG.info("----- getDepositBoxView (Start) -----")
+        my_view = {"is_anonymous": self.isAnonymous()}
+        instruction_text = self.context.Description()
+        if instruction_text:
+            my_view["instruction_class"] = "panel callout radius"
+            my_view["instruction_text"] = instruction_text
+        else:
+            my_view["instruction_class"] = "panel radius"
+            my_view["instruction_text"] = "Consigne non renseignée"
+
+        return my_view

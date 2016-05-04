@@ -8,7 +8,42 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="my_view python:view.getDepositBoxView(user, 'false', is_ajax)">
+
+<tal:condition condition="is_ajax">
+    <h2>
+        <tal:replace replace="context/Title" 
+                     i18n:translate=""/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <h3 class="texte_icone icone_consignes"
+        i18n:translate="">Consigne</h3>
+    <div tal:attributes="class my_view/instruction_class"
+         tal:content="my_view/instruction_text"
+         i18n:translate=""/>
+    <a class="button expand success" 
+       tal:attributes="href context/absolute_url"
+       tal:condition="not:my_view/is_anonymous">
+        <i class="fa fa-eye"></i>
+        <tal:block i18n:translate="">Accéder à cette boite de dépôts</tal:block>
+    </a>
+    <tal:condition condition="my_view/is_anonymous">
+        <div class="panel radius warning text-center">
+            <i class="fa fa-warning"></i>
+            <strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong>
+        </div>
+        <a class="button expand"
+           tal:define="page_quote python:context.jalon_quote(page)"
+           tal:attributes="href string:${portal_url}/acl_users/credentials_cookie_auth/require_login?came_from=${page_quote}">
+            <i class="fa fa-key"></i>
+            <tal:block i18n:translate="">Se connecter pour accéder à cette boite de dépôts</tal:block>
+        </a>
+    </tal:condition>
+</tal:condition>
+
+<tal:condition condition="not:is_ajax">
+</tal:condition>
 
 </metal:main>
 
