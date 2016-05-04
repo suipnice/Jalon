@@ -21,23 +21,9 @@
    />
 
   <browser:page
-      name="cours_plan_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonCours"
-      template="templates/cours_plan_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
       name="cours_wims_view"
       for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
       template="templates/cours_wims_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
-      name="cours_boite_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-      template="templates/cours_boite_view.pt"
       permission="zope2.View"
    />
 

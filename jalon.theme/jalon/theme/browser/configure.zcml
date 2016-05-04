@@ -134,6 +134,12 @@
                   template="view_template/jalon_course/course_add_view_ajax.pt"
                   permission="zope2.View"/>
 
+      <browser:page name="deposit_box_view"
+                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                    class="jalon.content.browser.view_script.jalon_deposit_box_view.JalonDepositBoxView"
+                    template="view_template/jalon_course/deposit_box_view.pt"
+                    permission="zope2.View"/>
+
 
     <!-- MyStudentsView Definition -->
     <browser:page name="mes_etudiants_view"
