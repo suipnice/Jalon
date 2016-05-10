@@ -1,0 +1,5 @@
+<metal:macro define-macro="deposit-list">
+    <metal:macro use-macro="context/deposit_box_macro/macros/deposit-list">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>

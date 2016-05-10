@@ -1,0 +1,123 @@
+<!--
+        Liste des dépots
+-->
+<metal:macro define-macro="deposit-list">
+
+<tal:define define="dico_depots python:context.getDepots(user, my_view['is_personnel'], my_view['is_authorized_deposit'], my_view['is_late']);
+                    liste_depots dico_depots/liste_depots">
+
+    <tal:condition condition="my_view/is_personnel">
+    <a class="dropdown right"
+       data-options="align:left" data-dropdown="drop-action-depots">
+        <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+    </a>
+    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+        id="drop-action-depots">
+        <li tal:repeat="menu dico_depots/menus">
+            <a tal:attributes="href menu/href">
+                <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i><tal:block replace="menu/text"
+                                                                                      i18n:translate=""/>
+            </a>
+        </li>
+    </ul>
+    </tal:condition>
+    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-depot"
+       title="Déposer un fichier" class="button small radius right"
+       data-reveal-id="reveal-main" data-reveal-ajax="true"
+       tal:condition="python:not my_view['is_personnel'] and my_view['is_authorized_deposit']"
+       i18n:translate="">
+        <i class="fa fa-download"></i>
+        <tal:block i18n:translate="">Déposer un fichier</tal:block>
+    </a>
+    <h2>
+        <i class="fa fa-download"></i><tal:block replace="dico_depots/table_title"
+                                                 i18n:translate=""/>
+    </h2>
+
+    <div tal:define="infos_depots dico_depots/infos_depots"
+         tal:attributes="class string:panel ${infos_depots/css_class} radius"
+         tal:content="structure infos_depots/text"
+         tal:condition="dico_depots/is_infos_depots"/>
+
+    <div class="panel callout radius"
+         tal:condition="not:liste_depots"
+         i18n:translate="">
+        Aucun dépôt
+    </div>
+
+    <table id="js-listeDepots"
+           summary="Liste des dépots"
+           tal:define="infos_tableau python:context.getInfosTableau(my_view['is_personnel'], my_view['is_authorized_deposit'])"
+           tal:condition="liste_depots">
+
+        <thead tal:define="head_table infos_tableau/head_table">
+            <tr>
+                <th tal:repeat="tr head_table"
+                    tal:attributes="class tr/css_class;
+                                    title tr/attr_title;
+                                    data-sort tr/data-sort"
+                    data-tooltip>
+                    <span tal:condition="tr/data-sort">
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block content="tr/column_title" i18n:translate=""/>
+                    </span>
+                    <tal:block replace="structure tr/column_title"
+                               condition="not:tr/data-sort"/>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+        <tal:block repeat="depot liste_depots">
+            <tr>
+                <td class="name"
+                    tal:condition="infos_tableau/is_column_etudiant"
+                    tal:content="depot/etudiant_name" />
+                <td class="title">
+                    <span class="hide" tal:content="depot/date_sort" />
+                    <i tal:condition="depot/is_corrupt"
+                       class="fa fa-exclamation-triangle right has-tip" data-tooltip
+                       title="Attention ! Ce dépôt est peut être corrompu, merci de vérifier en le téléchargeant."
+                       i18n:attributes="title">
+                    </i>
+                    <a tal:attributes="href string:${context/absolute_url}/cours_element_view?idElement=${depot/depot_id}&amp;typeElement=JalonFile&amp;createurElement=${user/getId}&amp;indexElement=0"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:content="depot/depot_title" />
+                    <span tal:content="depot/date_aff" />
+                </td>
+                <tal:repeat repeat="column depot/columns_etat_correction_notation">
+                <td tal:attributes="class column/css_class"
+                    tal:condition="python:infos_tableau[column['test']]">
+                    <span tal:attributes="class column/span_css_class"
+                          tal:content="column/text"
+                          i18n:translate="" />
+                </td>
+                </tal:repeat>
+                <td tal:condition="infos_tableau/is_column_actions"
+                    tal:define="depot_action depot/depot_action">
+                    <a tal:attributes="title depot_action/action_title;
+                                       href depot_action/action_url"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       i18n:attributes="title">
+                        <i tal:attributes="class string:fa ${depot_action/action_icon} fa-2x fa-fw"></i>
+                    </a>
+                </td>
+            </tr>
+        </tal:block>
+        </tbody>
+    </table>
+
+    <tal:define define="acces_depots dico_depots/acces_depots">
+        <tal:block condition="python:my_view['is_personnel'] or acces_depots"
+                   define="script string:setSortableList('js-listeDepots',['name','title','valide','correction','note'],'name','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+        <tal:block condition="python:not my_view['is_personnel'] and not acces_depots"
+                   define="script string:setSortableList('js-listeDepots',['title','valide','correction','note'],'title','desc')">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+    </tal:define>
+
+</tal:define>
+</metal:macro>
