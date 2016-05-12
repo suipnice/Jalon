@@ -1325,8 +1325,8 @@ class JalonCours(ATFolder):
         activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
 
         activity = getattr(self, activity_id)
-        activity.setCourseProperties({"Title":       activity_title,
-                                      "Description": activity_description})
+        activity.setProperties({"Title":       activity_title,
+                                "Description": activity_description})
 
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
