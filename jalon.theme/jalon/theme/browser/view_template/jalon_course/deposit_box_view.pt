@@ -92,6 +92,7 @@
         <tal:condition condition="not:my_view/is_anonymous">
 
         <section id="boite" class="medium-8 small-12 columns">
+
             <tal:condition condition="my_view/is_personnel">
             <a class="button small radius dropdown right" data-options="align:bottom" data-dropdown="boite-options">
                 <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
@@ -110,7 +111,12 @@
                 <i class="fa fa-inbox no-pad"></i>
                 <tal:replace replace="here/Title" />
             </h1>
-            <ul id="tab_button-group" class="button-group radius">
+            <div class="panel alert radius"
+                 tal:condition="my_view/is_student_and_deposit_box_hidden">
+                <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette boîte de dépôts est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+            </div>
+            <ul id="tab_button-group" class="button-group radius"
+                tal:condition="my_view/is_personnel_or_deposit_box_visible">
                 <li tal:repeat="onglet my_view/deposit_box_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
                                        href onglet/href"
@@ -127,11 +133,6 @@
                 Page d'affichage de la liste des sujets, dépôts ou des compétences
             </metal:macro>
             </tal:condition>
-
-            <div class="panel alert radius"
-                 tal:condition="my_view/is_student_and_deposit_box_hidden">
-                <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette boîte de dépôts est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
-            </div>
         </section>
 
         <aside class="medium-4 small-12 columns">

@@ -53,6 +53,7 @@ class JalonDepositBoxView(BrowserView):
         my_view["deposit_box_link"] = my_deposit_box.absolute_url()
 
         my_view["is_personnel"] = my_deposit_box.isPersonnel(user, mode_etudiant)
+        LOG.info(my_view["is_personnel"])
         my_view["mode_etudiant"] = "false" if (not mode_etudiant) and my_view["is_personnel"] else mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
@@ -63,15 +64,15 @@ class JalonDepositBoxView(BrowserView):
 
         my_view["deposit_box_edit"] = []
         if my_view["deposit_box_visibility"]["val"]:
-            my_view["deposit_box_edit"].append({"href": "%s/course_edit_item_visibility_script?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
+            my_view["deposit_box_edit"].append({"href": "%s/edit_course_item_visibility_form?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
                                                 "icon": "fa-eye-slash",
                                                 "text": "Masquer"})
         else:
-            my_view["deposit_box_edit"].append({"href": "%s/course_edit_item_visibility_script?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
+            my_view["deposit_box_edit"].append({"href": "%s/edit_course_item_visibility_form?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
                                                 "icon": "fa-eye",
                                                 "text": "Afficher"})
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
-                                            "icon": "fa-edit",
+                                            "icon": "fa-pencil",
                                             "text": "Modifier"})
 
         my_view["deposit_box_tabs"] = []
@@ -133,7 +134,9 @@ class JalonDepositBoxView(BrowserView):
             my_view["is_late"] = False
             my_view["class_limit_date"] = "warning"
 
-        my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False,
+        LOG.info(my_view["deposit_box_visibility"])
+        my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False
+        LOG.info(my_view["is_personnel_or_deposit_box_visible"])
         my_view["is_student_and_deposit_box_hidden"] = True if (not my_view["is_personnel"]) and my_view["deposit_box_visibility"]['val'] == 0 else False
         my_view["is_display_mod"] = my_deposit_box.isAuteurs(user.getId())
         LOG.info("----- getDepositBoxView (End) -----")
