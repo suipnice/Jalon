@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_deposibox_property
+
+[actions]
+action.failure = traverse_to:string:edit_deposit_box_form
+action.success_edit_deposit_box = traverse_to:string:edit_deposit_box_script
