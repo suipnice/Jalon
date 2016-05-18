@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+    <body>
+<metal:content-core fill-slot="contentHeader">
+
+<!--
+
+     Fil d'ariane
+
+        tal:repeat loop item data :
+
+            repeat/item/key :       returns the item's key if some/result is an associative resource (index otherwise)
+            repeat/item/index :     returns the item index (0 to count-1)
+            repeat/item/number :    returns the item number (1 to count)
+            repeat/item/even :      returns true if item index is even
+            repeat/item/odd :       returns true if item index is odd
+            repeat/item/start :     returns true if item is the first one
+            repeat/item/end :       returns true if item is the last one
+            repeat/item/length :    returns the number of elements in some/result
+
+
+        TODO : supprimer les éventuels « define="donnees_fil …" » des gabarits utilisant cette macro.
+-->
+<metal:macro define-macro="fil_d_ariane">
+
+        <div id="breadcrumb"
+             tal:condition="not:is_ajax | nothing"
+             tal:define="portal portal_state/portal;
+                         pageCours pageCours | nothing;
+                         breadcrumbs python:portal.etudiants.getFilAriane(portal, context, user.getId(), pageCours)">
+
+            <div class="row">
+                <span tal:repeat="crumb breadcrumbs">
+        <tal:define define="is_last repeat/crumb/end;
+                            icone crumb/icone | nothing">
+
+            <tal:isNotLast tal:condition="not:is_last">
+                <i tal:attributes="class string:${icone} no-pad"></i>
+                <a tal:attributes="href crumb/url"
+                   tal:content="python:portal.etudiants.getShortText(crumb['titre'], 30)"
+                   i18n:translate="" />
+                <i class="fa fa-angle-double-right no-pad"></i>
+            </tal:isNotLast>
+
+            <tal:isLast tal:condition="is_last">
+                <i tal:attributes="class string:${icone} no-pad"></i>
+                <span id="breadcrumbs-current"
+                      tal:content="python:portal.etudiants.getShortText(crumb['titre'], 30)"
+                      i18n:translate="" />
+            </tal:isLast>
+
+        </tal:define>
+                </span>
+            </div>
+        </div>
+
+</metal:macro>
+
+</metal:content-core>
+    </body>
+</html>
