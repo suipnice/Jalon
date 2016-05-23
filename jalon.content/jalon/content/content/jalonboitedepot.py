@@ -1249,6 +1249,8 @@ class JalonBoiteDepot(ATFolder):
         else:
             evaluation_by_peers_dict["table_title"] = "Mon évaluation"
         evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
+        evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
+        evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
         return evaluation_by_peers_dict
 
     def getCriteriaDict(self, key=None):
@@ -1264,6 +1266,12 @@ class JalonBoiteDepot(ATFolder):
         else:
             self._crietria_dict = crietria_dict
 
+    def getCriteriaOrder(self):
+        LOG.info("----- getCriteriaOrder -----")
+        order = self._crietria_dict.keys()
+        order.sort(lambda x, y: cmp(int(x), int(y)))
+        return order
+
     def getPeersDict(self, key=None):
         LOG.info("----- getPeersDict -----")
         if key:
@@ -1276,6 +1284,15 @@ class JalonBoiteDepot(ATFolder):
             self._peers_dict = PersistentDict(peers_dict)
         else:
             self._peers_dict = peers_dict
+
+    def getPeersOrder(self):
+        LOG.info("----- getPeersOrder -----")
+        order = []
+        for SESAME_ETU in self._peers_dict.keys():
+            order.append({"id":  SESAME_ETU,
+                          "nom": self.getNomEtudiant(SESAME_ETU)})
+        order.sort(lambda x, y: cmp(x["nom"], y["nom"]))
+        return order
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

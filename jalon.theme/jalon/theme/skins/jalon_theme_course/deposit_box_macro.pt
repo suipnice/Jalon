@@ -149,6 +149,57 @@
                                                  i18n:translate=""/>
     </h2>
 
-    <tal:replace replace="criteria_dict"/>
+    <div class="panel callout radius" tal:condition="not:criteria_dict"
+         i18n:translate="">
+        La grille d'évaluation ne contient aucun critère.
+    </div>
+
+    <tal:condition condition="criteria_dict">
+        <form id="js-list_competences" method="post"
+              tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
+              tal:condition="my_view/is_personnel">
+            <div class="table-overflow_container">
+                <table summary="Liste des compétences">
+                <thead>
+                    <tr>
+                        <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                            title="Cliquer pour trier selon l'étudiant"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                            </span>
+                        </th>
+                    <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
+                        <th tal:define="criteria python:criteria_dict[index]">
+                            <tal:replace tal:replace="criteria/title">Titre du critère</tal:replace>
+                        </th>
+                    </tal:repeat>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody class="list"
+                       tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                    <tr tal:condition="not:evaluation_by_peers_dict/peers_list">
+                        <td tal:attributes="colspan python:(len(criteria_dict) + 1)">
+                            <strong i18n:translate="">Aucun étudiant à évaluer</strong>
+                        </td>
+                    </tr>
+                    <tal:condition condition="evaluation_by_peers_dict/peers_list">
+                    <tr tal:repeat="peer evaluation_by_peers_dict/peers_list">
+                        <td class="etudiant">
+                            <span class="hide" tal:content="peer/nom" />
+                            <tal:replace replace="peer/nom" />
+                        </td>
+                        <td tal:repeat="criteria evaluation_by_peers_dict/criteria_order"></td>
+                    </tr>
+                    </tal:condition>
+                </tbody>
+                </table>
+            </div>
+        </form>
+    </tal:condition>
     </tal:define>
 </metal:macro>
