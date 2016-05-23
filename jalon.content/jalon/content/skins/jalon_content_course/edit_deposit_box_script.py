@@ -11,9 +11,12 @@
 #context = context
 form = context.REQUEST.form
 
-context.setProperties({"Title": form["title"]})
+if "title" in form:
+    context.setProperties({"Title": form["title"]})
+else:
+    context.setProperties({"Profile": form["profile"]})
 
-# menu n'existe pas si on modifie l'activite depuis le plan du cours
+# tab n'existe pas si on modifie l'activite depuis le plan du cours
 if "tab" in form:
     redirection = "%s?tab=%s" % (context.absolute_url(), form["tab"])
 else:

@@ -3,3 +3,9 @@
         Page d'affichage de la liste des dépôts
     </metal:macro>
 </metal:macro>
+
+<metal:macro define-macro="peers-list">
+    <metal:macro use-macro="context/deposit_box_macro/macros/peers-list">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>

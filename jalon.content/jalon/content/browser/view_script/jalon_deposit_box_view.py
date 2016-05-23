@@ -73,7 +73,10 @@ class JalonDepositBoxView(BrowserView):
                                                 "text": "Afficher"})
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                             "icon": "fa-pencil",
-                                            "text": "Modifier"})
+                                            "text": "Titre"})
+        my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                            "icon": "fa-cogs",
+                                            "text": "Profil"})
 
         my_view["deposit_box_tabs"] = []
 
@@ -86,6 +89,7 @@ class JalonDepositBoxView(BrowserView):
 
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
+            my_view["deposit_tab_options_link"] = ""
             my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getCorrectionIndividuelle() else "fa-toggle-off",
                                                "text": "Correction des dépôts"},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getNotificationCorrection() else "fa-toggle-off",
@@ -103,27 +107,55 @@ class JalonDepositBoxView(BrowserView):
                                             "text":      "Documents enseignants",
                                             "nb":        my_deposit_box.getNbSujets()})
 
+        deposit_box_profile = my_deposit_box.getProfile() or "standard"
+
         my_view["is_skills_tab"] = True if tab == "skills" else False
-        if my_view["is_personnel"] or my_deposit_box.getAfficherCompetences():
+        if (my_view["is_personnel"] and deposit_box_profile == "competences") or my_deposit_box.getAfficherCompetences():
             my_view["deposit_box_tabs"].append({"href":      "%s?tab=skills&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                                 "css_class": " selected" if my_view["is_skills_tab"] else "",
                                                 "icon":      "fa-tasks",
                                                 "text":      "Compétences",
                                                 "nb":        my_deposit_box.getNbCompetences()})
-        my_view["skills_tab_options"] = []
         if my_view["is_skills_tab"]:
-            my_view["skills_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getAfficherCompetences() else "fa-toggle-off",
-                                              "text": "Affichage de l'onglet \"Compétences\" aux étudiants"}]
+            my_view["deposit_tab_options_link"] = ""
+            my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getAfficherCompetences() else "fa-toggle-off",
+                                               "text": "Affichage de l'onglet \"Compétences\" aux étudiants"}]
             if my_deposit_box.getPermissionModifierCompetence(my_view["is_personnel"], user.getId()):
-                my_view["skills_tab_options"].append({"icon": "fa-toggle-on success" if my_deposit_box.getModifierCompetences() else "fa-toggle-off",
-                                                      "text": "Restriction de la gestion des compétences"})
+                my_view["deposit_tab_options"].append({"icon": "fa-toggle-on success" if my_deposit_box.getModifierCompetences() else "fa-toggle-off",
+                                                       "text": "Restriction de la gestion des compétences"})
 
-        my_view["deposit_box_instruction"] = [{"href":  "/edit_deposit_box_date_form?tab=%s" % tab,
-                                               "icon": "fa-calendar",
-                                               "text": "Date"},
-                                              {"href":  "/edit_deposit_box_instruction_form?tab=%s" % tab,
-                                               "icon":  "fa-align-justify",
-                                               "text":  "Consigne"}]
+        my_view["deposit_peer_options"] = []
+        my_view["is_peers_tab"] = True if tab == "peers" else False
+        if (my_view["is_personnel"] and deposit_box_profile == "pairs") or my_deposit_box.getAfficherCompetences():
+            my_view["deposit_box_tabs"].append({"href":      "%s?tab=peers&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
+                                                "css_class": " selected" if my_view["is_peers_tab"] else "",
+                                                "icon":      "fa-users",
+                                                "text":      "Par les pairs",
+                                                "nb":        my_deposit_box.getNbCompetences()})
+        if my_view["is_peers_tab"]:
+            my_view["deposit_tab_options_link"] = ""
+            my_view["deposit_peer_options"] = [{"link":  "",
+                                                "class": "panel warning radius",
+                                                "icon":  "fa fa-clock-o fa-fw no-pad",
+                                                "text":  "Date limite de correction",
+                                                "value": ""},
+                                               {"link":  "",
+                                                "class": "panel callout radius",
+                                                "icon":  "fa fa-users fa-fw no-pad",
+                                                "text":  "Corrections par étudiants",
+                                                "value": ""},
+                                               {"link":  "",
+                                                "class": "panel callout radius",
+                                                "icon":  "fa fa-thumbs-o-down fa-fw no-pad",
+                                                "text":  "Pénalité",
+                                                "value": ""}]
+
+        my_view["deposit_box_date"] = {"href":  "/edit_deposit_box_date_form?tab=%s" % tab,
+                                       "icon": "fa-pencil",
+                                       "text": "Modifier"}
+        my_view["deposit_box_instruction"] = {"href":  "/edit_deposit_box_instruction_form?tab=%s" % tab,
+                                              "icon":  "fa-pencil",
+                                              "text":  "Modifier"}
 
         my_view["deposit_box_deposit_date"] = my_deposit_box.getAffDate('DateDepot')
         my_view["is_authorized_deposit"] = my_deposit_box.isDepotActif()

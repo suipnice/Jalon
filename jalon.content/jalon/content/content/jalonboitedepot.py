@@ -22,10 +22,12 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import jalon_utils
 import os
 import copy
+import random
+import string
 
 # Messages de debug :
-#from logging import getLogger
-#LOG = getLogger( '[JalonBoiteDepot]' )
+from logging import getLogger
+LOG = getLogger("[JalonBoiteDepot]")
 
 ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8"), u"Ressource bibliographie".encode("utf-8")]
 
@@ -67,7 +69,13 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                 required=False,
                 accessor="getDateMasq",
                 searchable=False,
-                widget=StringWidget(label=_(u"Date à laquelle la boite de dépôts est masquée"),)),
+                widget=StringWidget(label=_(u"Profile de la boite de dépots"),)),
+    StringField("profile",
+                required=False,
+                accessor="getProfile",
+                default="standard",
+                searchable=False,
+                widget=StringWidget(label=_(u"Date d'affichage de la boite de dépôts"),)),
     BooleanField("correctionIndividuelle",
                  required=False,
                  accessor="getCorrectionIndividuelle",
@@ -125,6 +133,8 @@ class JalonBoiteDepot(ATFolder):
     _infos_element = {}
     _competences = {}
     _comp_etudiants = {}
+    _crietria_dict = {}
+    _peers_dict = {}
 
     ##-------------------##
     # Fonctions générales #
@@ -225,9 +235,9 @@ class JalonBoiteDepot(ATFolder):
             if retour["descriptionElement"] in ["", " "]:
                 retour["descriptionElement"] = "Aucun commentaire"
             if self.getCorrectionIndividuelle():
-               retour["correctionElement"] = depot.getCorrectionDepot().replace("\n", "<br/>")
+                retour["correctionElement"] = depot.getCorrectionDepot().replace("\n", "<br/>")
             if self.getNotation():
-               retour["noteElement"] = depot.getNote()
+                retour["noteElement"] = depot.getNote()
             retour["fichierElement"] = depot.getFichierCorrection()
             retour["urlElement"] = '%s/%s/%s/at_download/file' % (self.absolute_url(), createurElement, idElement)
             return retour
@@ -397,6 +407,23 @@ class JalonBoiteDepot(ATFolder):
                     pass
                 objet.reindexObject()
 
+    def getDepositBoxProfile(self):
+        LOG.info("----- getDepositBoxProfile -----")
+        deposit_box_profil = self.getProfile() or "standard"
+        LOG.info("***** deposit_box_profil : %s" % deposit_box_profil)
+        return [{"deposit_box_profile_text":    "Standard",
+                 "deposit_box_profile_value":   "standard",
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "standard" else ""},
+                {"deposit_box_profile_text":    "Examen",
+                 "deposit_box_profile_value":   "examen",
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "examen" else ""},
+                {"deposit_box_profile_text":    "Évaluation par compétences",
+                 "deposit_box_profile_value":   "competences",
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "competences" else ""},
+                {"deposit_box_profile_text":    "Évaluation par les pairs",
+                 "deposit_box_profile_value":   "pairs",
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
+
     def getTemplateView(self, user, mode_etudiant, menu):
         is_anonymous = user.has_role('Anonymous')
         if is_anonymous:
@@ -504,6 +531,32 @@ class JalonBoiteDepot(ATFolder):
     ##-----------------------##
     # Fonctions onglet Dépots #
     ##-----------------------##
+    def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id):
+        LOG.info("----- addDepositFile -----")
+        part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
+        part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
+        file_id = "Depot-%s%s-%s" % (part1, part2, DateTime().strftime("%Y%m%d%H%M%S"))
+        self.invokeFactory(type_name='JalonFile', id=file_id)
+
+        deposit_object = getattr(self, file_id)
+        deposit_object.setProperties({"Title":       deposit_title,
+                                      "Description": desposit_comment,
+                                      "File":        deposit_file})
+        self.aq_parent.setActuCours({"reference": self.getId(),
+                                     "code":      "nouveauxdepots"})
+
+        comp_etudiants = dict(self.getCompEtudiants())
+        listeEtu = comp_etudiants.keys()
+        if not user_id in listeEtu:
+            comp_etudiants[user_id] = {}
+            self.setCompEtudiants(comp_etudiants)
+
+        peers_dict = dict(self.getPeersDict())
+        peers_list = peers_dict.keys()
+        if not user_id in peers_list:
+            peers_dict[user_id] = {}
+            self.setPeersDict(peers_dict)
+
     def getDepots(self, auth_member, is_personnel, is_depot_actif, is_retard):
         valides = 0
         liste_depots = []
@@ -937,8 +990,8 @@ class JalonBoiteDepot(ATFolder):
     def getOrdreEtudiants(self):
         ordre = []
         for SESAME_ETU in self._comp_etudiants.keys():
-            ordre.append({"id"  : SESAME_ETU,
-                          "nom" : self.getNomEtudiant(SESAME_ETU)})
+            ordre.append({"id":  SESAME_ETU,
+                          "nom": self.getNomEtudiant(SESAME_ETU)})
         ordre.sort(lambda x, y: cmp(x["nom"], y["nom"]))
         return ordre
 
@@ -1180,6 +1233,49 @@ class JalonBoiteDepot(ATFolder):
         data = fp.read()
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
+
+    ##------------------------##
+    # Évaluation par les pairs #
+    ##------------------------##
+    def getEvaluationByPeers(self, user, is_personnel):
+        LOG.info("----- getEvaluationByPeers -----")
+        evaluation_by_peers_dict = {}
+        deposit_box_link = self.absolute_url()
+        if is_personnel:
+            evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
+            evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
+                                                    "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
+                                                    "icon": "fa fa-plus-circle fa-fw"}]
+        else:
+            evaluation_by_peers_dict["table_title"] = "Mon évaluation"
+        evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
+        return evaluation_by_peers_dict
+
+    def getCriteriaDict(self, key=None):
+        LOG.info("----- getCriteriaDict -----")
+        if key:
+            return self._crietria_dict.get(key, None)
+        return self._crietria_dict
+
+    def setCriteriaDict(self, crietria_dict):
+        LOG.info("----- setCriteriaDict -----")
+        if type(self._crietria_dict).__name__ != "PersistentMapping":
+            self._crietria_dict = PersistentDict(crietria_dict)
+        else:
+            self._crietria_dict = crietria_dict
+
+    def getPeersDict(self, key=None):
+        LOG.info("----- getPeersDict -----")
+        if key:
+            return self._peers_dict.get(key, None)
+        return self._peers_dict
+
+    def setPeersDict(self, peers_dict):
+        LOG.info("----- setPeersDict -----")
+        if type(self._peers_dict).__name__ != "PersistentMapping":
+            self._peers_dict = PersistentDict(peers_dict)
+        else:
+            self._peers_dict = peers_dict
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

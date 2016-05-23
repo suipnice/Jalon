@@ -21,7 +21,7 @@
         </li>
     </ul>
     </tal:condition>
-    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-depot"
+    <a tal:attributes="href string:${context/absolute_url}/deposit_file_form"
        title="Déposer un fichier" class="button small radius right"
        data-reveal-id="reveal-main" data-reveal-ajax="true"
        tal:condition="python:not my_view['is_personnel'] and my_view['is_authorized_deposit']"
@@ -120,4 +120,35 @@
     </tal:define>
 
 </tal:define>
+</metal:macro>
+
+<!--
+    Évaluation par les pairs
+-->
+<metal:macro define-macro="peers-list">
+    <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
+                        criteria_dict evaluation_by_peers_dict/criteria_dict">
+    <tal:condition condition="my_view/is_personnel">
+    <a class="dropdown right"
+       data-options="align:left" data-dropdown="drop-action-peers">
+        <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+    </a>
+    <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+        id="drop-action-peers">
+        <li tal:repeat="option evaluation_by_peers_dict/options">
+            <a tal:attributes="href option/link"
+               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                <i tal:attributes="class string:fa ${option/icon} fa-fw"></i><tal:block replace="option/text"
+                                                                                      i18n:translate=""/>
+            </a>
+        </li>
+    </ul>
+    </tal:condition>
+    <h2>
+        <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
+                                                 i18n:translate=""/>
+    </h2>
+
+    <tal:replace replace="criteria_dict"/>
+    </tal:define>
 </metal:macro>

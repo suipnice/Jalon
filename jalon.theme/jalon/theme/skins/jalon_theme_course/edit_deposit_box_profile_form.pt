@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="tab request/tab">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier le profil de la boite de dépôt</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-modifDepot" method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_deposit_box_script">
+
+        <div id="archetypes-fieldname-profil" class="field">
+            <label for="profil" i18n:translate="">Profil</label>
+            <tal:repreat repeat="profile context/getDepositBoxProfile">
+                <input type="radio" name="profile" 
+                       tal:attributes="id profile/deposit_box_profile_value;
+                                       value profile/deposit_box_profile_value;
+                                       checked profile/deposit_box_profile_checked"/>
+                <label tal:attributes="for profile/deposit_box_profile_value"
+                       tal:content="profile/deposit_box_profile_text"
+                       i18n:translate=""/><br/>
+            </tal:repreat>
+        </div>
+
+        <input type="hidden" name="tab" tal:attributes="value tab"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

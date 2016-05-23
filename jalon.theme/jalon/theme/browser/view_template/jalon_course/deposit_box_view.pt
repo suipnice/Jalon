@@ -94,8 +94,8 @@
         <section id="boite" class="medium-8 small-12 columns">
 
             <tal:condition condition="my_view/is_personnel">
-            <a class="button small radius dropdown right" data-options="align:bottom" data-dropdown="boite-options">
-                <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
+            <a class="right" data-options="align:bottom" data-dropdown="boite-options">
+                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
             </a>
             <ul id="boite-options" data-dropdown-content class="f-dropdown">
                 <li tal:repeat="option my_view/deposit_box_edit">
@@ -142,29 +142,17 @@
             </metal:macro>
             </tal:condition>
             <h2>
-                <a class="button tiny radius dropdown right"
-                   data-options="align:bottom" data-dropdown="instruction-options"
-                   tal:condition="my_view/is_personnel">
-                    <i class="fa fa-pencil"></i>
-                    <tal:block i18n:translate="">Modifier</tal:block>
-                </a>
                 <i class="fa fa-info"></i><tal:block i18n:translate="">Instructions</tal:block>
             </h2>
-            <ul id="instruction-options" data-dropdown-content class="f-dropdown"
-                tal:condition="my_view/is_personnel">
-                <li tal:repeat="instruction my_view/deposit_box_instruction">
-                    <a tal:attributes="href instruction/href"
-                       data-reveal-id="reveal-main" data-reveal-ajax="true">
-                        <i tal:attributes="class string:fa ${instruction/icon} fa-fw"></i>
-                        <tal:block tal:content="instruction/text"
-                                   i18n:translate=""/>
-                    </a>
-                </li>
-            </ul>
             <div class="panel bkgrnd radius">
-                <h3>
+                <h3 tal:define="deposit_box_date my_view/deposit_box_date">
+                    <a tal:attributes="href deposit_box_date/href" class="right" tilte="Modifier"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:condition="my_view/is_personnel">
+                        <i tal:attributes="class string:fa ${deposit_box_date/icon} fa-fw"></i>
+                    </a>
                     <i class="fa fa-clock-o fa-fw no-pad"></i>
-                    <tal:block i18n:translate="">Date limite</tal:block>
+                    <tal:block i18n:translate="">Date limite de dépôt</tal:block>
                 </h3>
                 <div tal:attributes="class string:panel ${my_view/class_limit_date} radius">
                     <tal:block content="my_view/deposit_box_deposit_date"/>
@@ -173,7 +161,12 @@
                         <tal:block i18n:translate="">Dernières minutes !</tal:block>
                     </div>
                 </div>
-                <h3>
+                <h3 tal:define="deposit_box_instruction my_view/deposit_box_instruction">
+                    <a tal:attributes="href deposit_box_instruction/href" class="right" tilte="Modifier"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:condition="my_view/is_personnel">
+                        <i tal:attributes="class string:fa ${deposit_box_instruction/icon} fa-fw"></i>
+                    </a>
                     <i class="fa fa-hand-paper-o fa-fw no-pad"></i>
                     <tal:block i18n:translate="">Consigne</tal:block>
                 </h3>
@@ -186,16 +179,15 @@
                 </div>
             </div>
 
-            <tal:deposit_options condition="my_view/is_deposit_tab">
-            <a class="button radius tiny right"
-                tal:attributes="href string:${my_view/deposit_box_link}/${context/getId}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-avancees&amp;tab=${tab}"
+            <tal:condition condition="my_view/deposit_tab_options">
+            <a class="right"
+                tal:attributes="href my_view/deposit_tab_options_link"
                 data-reveal-id="reveal-main" data-reveal-ajax="true"
                 tal:condition="my_view/is_personnel">
                 <i class="fa fa-pencil"></i>
-                <tal:block  i18n:translate="">Modifier</tal:block>
             </a>
             <h2>
-                <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options des dépôts</tal:block>
+                <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
             </h2>
             <div class="panel bkgrnd radius options_boite-depot">
                 <ul>
@@ -206,29 +198,33 @@
                     </li>
                 </ul>
             </div>
-            </tal:deposit_options>
+            </tal:condition>
 
-            <tal:skills_options condition="my_view/is_skills_tab">
-            <a class="button radius tiny right"
-                tal:attributes="href string:${my_view/deposit_box_link}/folder_form?macro=macro_cours_boite&amp;formulaire=permission-competence"
-                data-reveal-id="reveal-main" data-reveal-ajax="true"
-                tal:condition="is_personnel">
-                <i class="fa fa-pencil"></i>
-                <tal:block  i18n:translate="">Modifier</tal:block>
-            </a>
+            <tal:condition condition="my_view/deposit_peer_options">
             <h2>
-                <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options des compétences</tal:block>
+                <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options</tal:block>
             </h2>
-            <div class="panel bkgrnd radius options_boite-depot">
-                <ul>
-                    <li tal:repeat="option my_view/skills_tab_options">
-                        <i tal:attributes="class string:fa ${option/icon}"></i>
-                        <tal:block tal:content="option/text"
-                                   i18n:translate=""/>
-                    </li>
-                </ul>
+            <div class="panel bkgrnd radius">
+                <tal:repeat repeat="peer_option my_view/deposit_peer_options">
+                <h3>
+                    <a tal:attributes="href peer_option/link" class="right" tilte="Modifier"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:condition="my_view/is_personnel">
+                        <i class="fa fa-pencil fa-fw"></i>
+                    </a>
+                    <i tal:attributes="class peer_option/icon"></i>
+                    <tal:replace replace="peer_option/text" i18n:translate=""/>
+                </h3>
+                <div tal:attributes="class peer_option/class">
+                    <tal:replace replace="structure peer_option/value"
+                                 condition="peer_option/value"/>
+                    <tal:replace replace="structure string:Non renseignée."
+                                 condition="not:peer_option/value"
+                                 i18n:translate=""/>
+                </div>
+                </tal:repeat>
             </div>
-            </tal:skills_options>
+            </tal:condition>
 
         </aside>
 
