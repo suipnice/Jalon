@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        penality request/penalite | string:aucune">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier la pénalite</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-editNombreCorrection" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-penalite"
+             tal:define="error errors/penalite | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="penalite" i18n:translate="">Pénalité</label>
+            <div class="panel warning radius">
+                Appliquer une pénalité si un étudiant ne corrige pas le nombre de devoirs attendu.
+            </div>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="radio" name="penalite" id="aucune" value="aucune"
+                   tal:attributes="checked python:context.test(penality == 'aucune', 'checked', '')"/> <label for="aucune">Aucune</label><br/>
+            <input type="radio" name="penalite" id="consultation" value="consultation"
+                   tal:attributes="checked python:context.test(penality == 'consultation', 'checked', '')"/> <label for="consultation">Consultation de note interdite</label><br/>
+            <input type="radio" name="penalite" id="points" value="points"
+                   tal:attributes="checked python:context.test(penality == 'points', 'checked', '')"/> <label for="points">Points négatifs par devoir non corrigé</label>
+            <input type="number" name="nombrePoints" min="1" max="5"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/nombrePoints | string:1"/>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="tab" value="peers"/>
+        <input type="hidden" name="validate_key" value="penality"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-editNombreCorrection','reveal-main')"></script>
+
+</metal:main>
+
+</body>
+
+</html>

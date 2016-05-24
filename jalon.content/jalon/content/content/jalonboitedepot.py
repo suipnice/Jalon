@@ -124,6 +124,7 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
     IntegerField("nombreCorrection",
                  required=False,
                  accessor="getNombreCorrection",
+                 default=2,
                  searchable=False,
                  widget=IntegerWidget(label=_(u"Nombre de correction"),)),
     StringField("penalite",
@@ -151,6 +152,10 @@ class JalonBoiteDepot(ATFolder):
     _comp_etudiants = {}
     _crietria_dict = {}
     _peers_dict = {}
+
+    _penality_title = {"aucune":       "Aucune",
+                       "consultation": "Consultation de note interdite",
+                       "other":        "points par devoir non corrigé"}
 
     ##-------------------##
     # Fonctions générales #
@@ -218,10 +223,7 @@ class JalonBoiteDepot(ATFolder):
         self.reindexObject()
 
     def getAffDate(self, attribut):
-        if attribut == "DateDepot":
-            date = self.dateDepot
-        if attribut == "DateRetard":
-            date = self.dateRetard
+        date = getattr(self, attribut, None)
         if not date:
             return "Aucune date limite de dépôt."
         else:
@@ -1309,6 +1311,15 @@ class JalonBoiteDepot(ATFolder):
                           "nom": self.getNomEtudiant(SESAME_ETU)})
         order.sort(lambda x, y: cmp(x["nom"], y["nom"]))
         return order
+
+    def getDisplayPenality(self):
+        LOG.info("----- getDisplayPenality -----")
+        penality = self.getPenalite()
+        try:
+            penality = int(penality)
+            return "- %i %s" % (penality, self._penality_title["other"])
+        except:
+            return self._penality_title[penality]
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

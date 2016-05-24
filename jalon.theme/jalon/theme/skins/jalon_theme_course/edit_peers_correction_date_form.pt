@@ -1,0 +1,67 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier la date limite de corrections</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-modBoxDate" method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_peers_correction_date_script">
+
+        <div class="text-center" i18n:translate="">
+            Date limite de correction affichée aux étudiants
+        </div>
+
+        <div id="archetypes-fieldname-dateCorrection"
+                tal:define="error errors/dateCorrection | nothing;
+                            inputname string:dateCorrection;
+                            inputvalue request/dateCorrection | context/getDateCorrection"
+                tal:attributes="class python:context.test(error, 'error field', 'field')">
+
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
+
+            <div class="formControls">
+                <input id="datetime-dateCorrection" name="datetime-dateCorrection" type="datetime"
+                       required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
+                       tal:attributes="value request/dateCorrection | inputvalue" />
+            </div>
+
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:block define="script1 string:setDateTimePicker('datetime-dateCorrection');
+                       script2 string:setRevealFormNewPage('js-modBoxDate','reveal-main')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
+    </tal:block>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer">
+    </script>
+
+</metal:main>
+
+</body>
+
+</html>

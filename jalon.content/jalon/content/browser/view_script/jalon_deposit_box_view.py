@@ -138,17 +138,17 @@ class JalonDepositBoxView(BrowserView):
                                                 "class": "panel warning radius",
                                                 "icon":  "fa fa-clock-o fa-fw no-pad",
                                                 "text":  "Date limite de correction",
-                                                "value": ""},
-                                               {"link":  "",
+                                                "value": my_deposit_box.getAffDate('dateCorrection')},
+                                               {"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-users fa-fw no-pad",
                                                 "text":  "Corrections par étudiants",
-                                                "value": ""},
-                                               {"link":  "",
+                                                "value": my_deposit_box.getNombreCorrection()},
+                                               {"link":  "%s/edit_peers_penality_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-thumbs-o-down fa-fw no-pad",
                                                 "text":  "Pénalité",
-                                                "value": ""}]
+                                                "value": my_deposit_box.getDisplayPenality()}]
 
         my_view["deposit_box_date"] = {"href":  "%s/edit_deposit_box_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                        "icon": "fa-pencil",
@@ -157,7 +157,7 @@ class JalonDepositBoxView(BrowserView):
                                               "icon":  "fa-pencil",
                                               "text":  "Modifier"}
 
-        my_view["deposit_box_deposit_date"] = my_deposit_box.getAffDate('DateDepot')
+        my_view["deposit_box_deposit_date"] = my_deposit_box.getAffDate('dateDepot')
         my_view["is_authorized_deposit"] = my_deposit_box.isDepotActif()
         if my_view["is_authorized_deposit"] == 2:
             my_view["is_late"] = True

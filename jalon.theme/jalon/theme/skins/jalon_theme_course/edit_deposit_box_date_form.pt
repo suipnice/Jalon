@@ -11,7 +11,7 @@
             tal:define="tab request/tab">
 
     <h2 i18n:translate="">
-        <tal:block i18n:translate="">Modifier la date limite de corrections</tal:block>
+        <tal:block i18n:translate="">Modifier les dates de dépôts</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -20,7 +20,7 @@
           tal:define="formname string:modifier-correction-date">
 
         <div class="text-center" i18n:translate="">
-            Date limite de correction affichée aux étudiants
+            Date limite de dépôts affichée aux étudiants
         </div>
 
         <div id="archetypes-fieldname-dateDepot"

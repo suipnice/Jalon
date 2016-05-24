@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Modifier le nombre de corrections par étudiant</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-editNombreCorrection" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-nombreCorrection"
+             tal:define="error errors/nombreCorrection | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="nombreCorrection" i18n:translate="">Nombre de correction par étudiants (max 5)</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="number" name="nombreCorrection" min="1" max="5"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/nombreCorrection | string:2"/>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="tab" value="peers"/>
+        <input type="hidden" name="validate_key" value="correction_number"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-editNombreCorrection','reveal-main')"></script>
+
+</metal:main>
+
+</body>
+
+</html>
