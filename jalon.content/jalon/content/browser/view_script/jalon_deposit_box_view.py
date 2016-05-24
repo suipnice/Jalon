@@ -134,7 +134,7 @@ class JalonDepositBoxView(BrowserView):
                                                 "nb":        my_deposit_box.getNbCompetences()})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""
-            my_view["deposit_peer_options"] = [{"link":  "",
+            my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],
                                                 "class": "panel warning radius",
                                                 "icon":  "fa fa-clock-o fa-fw no-pad",
                                                 "text":  "Date limite de correction",
@@ -150,10 +150,10 @@ class JalonDepositBoxView(BrowserView):
                                                 "text":  "Pénalité",
                                                 "value": ""}]
 
-        my_view["deposit_box_date"] = {"href":  "/edit_deposit_box_date_form?tab=%s" % tab,
+        my_view["deposit_box_date"] = {"href":  "%s/edit_deposit_box_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                        "icon": "fa-pencil",
                                        "text": "Modifier"}
-        my_view["deposit_box_instruction"] = {"href":  "/edit_deposit_box_instruction_form?tab=%s" % tab,
+        my_view["deposit_box_instruction"] = {"href":  "%s/edit_deposit_box_instruction_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                               "icon":  "fa-pencil",
                                               "text":  "Modifier"}
 

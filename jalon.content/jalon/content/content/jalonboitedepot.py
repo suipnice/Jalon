@@ -115,7 +115,23 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                  required=False,
                  accessor="getModifierCompetences",
                  searchable=False,
-                 widget=BooleanWidget(label=_(u"Restreindre la modification des compétences au créateur de la boite de dépôts"),))
+                 widget=BooleanWidget(label=_(u"Restreindre la modification des compétences au créateur de la boite de dépôts"),)),
+    DateTimeField("dateCorrection",
+                  required=False,
+                  accessor="getDateCorrection",
+                  searchable=False,
+                  widget=CalendarWidget(label=_(u"Date limite de correction"),)),
+    IntegerField("nombreCorrection",
+                 required=False,
+                 accessor="getNombreCorrection",
+                 searchable=False,
+                 widget=IntegerWidget(label=_(u"Nombre de correction"),)),
+    StringField("penalite",
+                required=False,
+                accessor="getPenalite",
+                default="aucune",
+                searchable=False,
+                widget=StringWidget(label=_(u"Pénalité"),))
 ))
 
 
