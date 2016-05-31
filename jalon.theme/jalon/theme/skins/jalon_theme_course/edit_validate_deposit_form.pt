@@ -1,0 +1,61 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="actif context/getActif">
+
+    <tal:condition condition="actif">
+        <h2>
+            <tal:block i18n:translate="">Invalider ce dépot ?</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+        <div class="panel warning radius"
+             i18n:translate="">
+            Pour signaler ce dépôt comme « invalide » à votre enseignant (qui ne le prendra pas en compte) cliquez sur le bouton « Invalider ».
+        </div>
+        <form tal:attributes="action string:${context/absolute_url}/edit_validate_deposit_script"
+              method="post">
+            <input type="hidden" name="actif" value=""/>
+            <div class="formControls">
+                <button type="submit" class="button small warning"
+                        name="form.button.save">
+                    <i class="fa fa-times-circle"></i>
+                    <tal:block i18n:translate="">Ignorer</tal:block>
+                </button>
+            </div>
+        </form>
+    </tal:condition>
+
+    <tal:condition condition="not:actif">
+        <h2>
+            <tal:block i18n:translate="">Valider ce dépôt ?</tal:block>
+            <a class="close-reveal-modal"></a>
+        </h2>
+         <div class="panel callout radius"
+             i18n:translate="">
+            Pour signaler ce dépôt comme « valide » à votre enseignant (qui le prendra en compte) cliquez sur le bouton « Valider ».
+         </div>
+         <form tal:attributes="action string:${context/absolute_url}/edit_validate_deposit_script"
+               method="post">
+            <input type="hidden" name="actif" value="actif"/>
+            <div class="formControls">
+                <button type="submit" class="button small"
+                        name="form.button.save">
+                    <i class="fa fa-check-circle"></i>
+                    <tal:block i18n:translate="">Valider</tal:block>
+                </button>
+            </div>
+        </form>
+    </tal:condition>
+
+</metal:main>
+
+</body>
+
+</html>

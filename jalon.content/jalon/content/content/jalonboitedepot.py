@@ -661,12 +661,12 @@ class JalonBoiteDepot(ATFolder):
                 if not is_correction["value"] or not is_notation["value"]:
                     if not is_valide["value"]:
                         depot_action = {"action_title": "Valider ce dépôt",
-                                        "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=" % (self.absolute_url(), depot_id),
+                                        "action_url":   "%s/edit_validate_deposit_form" % depot.getURL(),
                                         "action_icon":  "fa-check-circle success",
                                         "action_text":  "Valider"}
                     else:
                         depot_action = {"action_title": "Ignorer ce dépôt",
-                                        "action_url":   "%s/cours_activer_depot?idElement=%s&amp;actif=actif" % (self.absolute_url(), depot_id),
+                                        "action_url":   "%s/edit_validate_deposit_form" % depot.getURL(),
                                         "action_icon":  "fa-times-circle warning",
                                         "action_text":  "Ignorer"}
             if is_personnel and is_corriger_noter:
@@ -1311,6 +1311,10 @@ class JalonBoiteDepot(ATFolder):
                           "nom": self.getNomEtudiant(SESAME_ETU)})
         order.sort(lambda x, y: cmp(x["nom"], y["nom"]))
         return order
+
+    def getPeerLength(self):
+        LOG.info("----- getPeerLength -----")
+        return len(self._peers_dict.keys())
 
     def getDisplayPenality(self):
         LOG.info("----- getDisplayPenality -----")

@@ -131,7 +131,7 @@ class JalonDepositBoxView(BrowserView):
                                                 "css_class": " selected" if my_view["is_peers_tab"] else "",
                                                 "icon":      "fa-users",
                                                 "text":      "Par les pairs",
-                                                "nb":        my_deposit_box.getNbCompetences()})
+                                                "nb":        my_deposit_box.getPeerLength()})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],
@@ -173,28 +173,3 @@ class JalonDepositBoxView(BrowserView):
         my_view["is_display_mod"] = my_deposit_box.isAuteurs(user.getId())
         LOG.info("----- getDepositBoxView (End) -----")
         return my_view
-
-        """
-        return {"id_boite":                      id_boite,
-                "url_boite":                     url_boite,
-                "is_anonymous":                  False,
-                "is_personnel":                  personnel,
-                "is_etu_and_boite_hidden":       True if (not personnel) and affElement['val'] == 0 else False,
-                "is_personnel_or_boite_visible": True if personnel or affElement['val'] != 0 else False,
-                "is_auteur":                     self.isAuteurs(user.getId()),
-                "is_depot_actif":                is_depot_actif,
-                "is_retard":                     is_retard,
-                "is_afficher_comp":              self.getAfficherCompetences(),
-                "menu_options":                  menu_options,
-                "affElement":                    affElement,
-                "came_from":                     "%s/login_form?came_from=%s" % (url_boite, self.jalon_quote(url_boite)),
-                "class_limit_date":              class_limit_date,
-                "date_depot_aff":                self.getAffDate('DateDepot'),
-                "onglets":                       onglets,
-                "instructions":                  instructions,
-                "description":                   self.Description(),
-                "is_onglet_depots":              is_onglet_depots,
-                "menu_option_depots":            menu_option_depots,
-                "is_onglet_competences":         is_onglet_competences,
-                "menu_option_competences":       menu_option_competences}
-        """
