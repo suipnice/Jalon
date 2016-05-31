@@ -804,14 +804,15 @@ class JalonBoiteDepot(ATFolder):
         else:
             return self.dateRetard.strftime("%Y/%m/%d %H:%M")
 
-    def getNbDepots(self, is_personnel):
+    def getNbDepots(self, is_personnel, user_id):
         if not is_personnel and not self.getAccesDepots():
-            nbDepots = 0
-            authMember = self.portal_membership.getAuthenticatedMember().getId()
-            for iddepot in self.objectIds():
-                if authMember in iddepot:
-                    nbDepots = nbDepots + 1
-            return nbDepots
+            #nbDepots = 0
+            #authMember = self.portal_membership.getAuthenticatedMember().getId()
+            #for iddepot in self.objectIds():
+            #    if authMember in iddepot:
+            #        nbDepots = nbDepots + 1
+            #return nbDepots
+            return len(self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": user_id}))
         depots = self.objectIds()
         if "corrections" in depots:
             return len(depots) - 1

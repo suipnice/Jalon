@@ -85,7 +85,7 @@ class JalonDepositBoxView(BrowserView):
                                             "css_class": " selected" if my_view["is_deposit_tab"] else "",
                                             "icon":      "fa-download",
                                             "text":      "Mes dépôts" if not my_view["is_personnel"] and not my_deposit_box.getAccesDepots() else "Dépôts étudiants",
-                                            "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"])})
+                                            "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user.getId())})
 
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
@@ -126,7 +126,7 @@ class JalonDepositBoxView(BrowserView):
 
         my_view["deposit_peer_options"] = []
         my_view["is_peers_tab"] = True if tab == "peers" else False
-        if (my_view["is_personnel"] and deposit_box_profile == "pairs") or my_deposit_box.getAfficherCompetences():
+        if deposit_box_profile == "pairs":
             my_view["deposit_box_tabs"].append({"href":      "%s?tab=peers&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                                 "css_class": " selected" if my_view["is_peers_tab"] else "",
                                                 "icon":      "fa-users",
