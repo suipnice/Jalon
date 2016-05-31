@@ -8,12 +8,18 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="errors options/state/getErrors | nothing">
+            tal:define="errors options/state/getErrors | nothing;
+                        is_evaluation_by_peers context/isEvaluationByPeers">
 
     <h2>
         <tal:block i18n:translate="">Déposer votre fichier</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+
+    <div class="panel warning radius"
+         tal:condition="is_evaluation_by_peers">
+        <strong><i class="fa fa-info-circle fa-fw"></i>Attention :</strong> Dans le profil "Évaluation par les pairs" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.
+    </div>
 
     <form method="post"
           enctype="multipart/form-data"
@@ -50,6 +56,7 @@
 
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
+        <input type="hidden" name="is_evaluation_by_peers" tal:attributes="value is_evaluation_by_peers"/>
         <input type="hidden" name="validate_key" value="deposit_file"/>
 
         <div class="formControls">

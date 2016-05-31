@@ -549,8 +549,16 @@ class JalonBoiteDepot(ATFolder):
     ##-----------------------##
     # Fonctions onglet Dépots #
     ##-----------------------##
-    def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id):
+    def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id, is_evaluation_by_peers):
         LOG.info("----- addDepositFile -----")
+        if is_evaluation_by_peers:
+            content_filter = {"portal_type": "JalonFile", "Creator": user_id}
+            depots = self.getFolderContents(contentFilter=content_filter)
+            for depot_brain in depots:
+                depot = depot_brain.getObject()
+                LOG.info("***** object_id : %s" % depot.getId())
+                depot.setProperties({"Actif": ""})
+
         part1 = ''.join([random.choice(string.ascii_lowercase) for i in range(3)])
         part2 = ''.join([random.choice(string.digits[1:]) for i in range(3)])
         file_id = "Depot-%s%s-%s" % (part1, part2, DateTime().strftime("%Y%m%d%H%M%S"))
@@ -832,17 +840,17 @@ class JalonBoiteDepot(ATFolder):
         corriger = self.getCorrectionIndividuelle()
         noter = self.getNotation()
         if corriger and noter:
-            return {"title"    : "Corriger et Noter",
-                    "corriger" : 1,
-                    "noter"    : 1}
+            return {"title":   "Corriger et Noter",
+                    "corriger": 1,
+                    "noter":    1}
         if corriger:
-            return {"title"    : "Corriger",
-                    "corriger" : 1,
-                    "noter"    : 0}
+            return {"title":   "Corriger",
+                    "corriger": 1,
+                    "noter":    0}
         if noter:
-            return {"title"    : "Noter",
-                    "corriger" : 0,
-                    "noter"    : 1}
+            return {"title":    "Noter",
+                    "corriger": 0,
+                    "noter":    1}
 
     def activerDepot(self, idDepot, actif):
         depot = getattr(self, idDepot)
@@ -1255,6 +1263,10 @@ class JalonBoiteDepot(ATFolder):
     ##------------------------##
     # Évaluation par les pairs #
     ##------------------------##
+    def isEvaluationByPeers(self):
+        LOG.info("----- isEvaluationByPeers -----")
+        return True if self.getProfile() == "pairs" else False
+
     def getEvaluationByPeers(self, user, is_personnel):
         LOG.info("----- getEvaluationByPeers -----")
         evaluation_by_peers_dict = {}
