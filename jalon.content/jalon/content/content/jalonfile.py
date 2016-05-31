@@ -13,6 +13,9 @@ from jalon.content.interfaces import IJalonFile
 
 import jalon_utils
 
+from logging import getLogger
+LOG = getLogger('[JalonFile]')
+
 JalonFileSchema = ATDocumentSchema.copy() + atpublic.Schema((
     BlobField('file',
               widget=atpublic.FileWidget(label='A file',
@@ -24,20 +27,17 @@ JalonFileSchema = ATDocumentSchema.copy() + atpublic.Schema((
                          accessor="getActif",
                          searchable=False,
                          default="actif",
-                         widget=atpublic.StringWidget(label=_(u"Actif"),
-                         )),
+                         widget=atpublic.StringWidget(label=_(u"Actif"),)),
     atpublic.TextField("correction",
                        required=True,
                        accessor="getCorrection",
                        searchable=False,
-                       widget=atpublic.TextAreaWidget(label=_(u"Correction"),
-                       )),
+                       widget=atpublic.TextAreaWidget(label=_(u"Correction"),)),
     atpublic.StringField("note",
                          required=False,
                          accessor="getNote",
                          searchable=False,
-                         widget=atpublic.StringWidget(label=_(u"Note ou appréciation"),
-                         )),
+                         widget=atpublic.StringWidget(label=_(u"Note ou appréciation"),)),
 ))
 
 
@@ -59,13 +59,19 @@ class JalonFile(ATDocumentBase):
             self.__getattribute__("set%s" % key)(dico[key])
         self.reindexObject()
 
+    def isActivatable(self):
+        LOG.info("----- isActivatable -----")
+        LOG.info("***** Profile : %s" % self.aq_parent.getProfile())
+        is_activatable = True if self.aq_parent.getProfile() != "pairs" else False
+        return is_activatable
+
     def getCorrectionDepot(self):
         return str(self.correction)
 
     def getFichierCorrection(self):
         corrections = getattr(self.aq_parent, "corrections", None)
         if corrections:
-            fichier_correction = getattr(corrections, "Correction_%s" %self.getId(), None)
+            fichier_correction = getattr(corrections, "Correction_%s" % self.getId(), None)
             if fichier_correction:
                 return "%s/at_download/file" % fichier_correction.absolute_url()
         return None
