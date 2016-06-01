@@ -1344,52 +1344,62 @@ class JalonBoiteDepot(ATFolder):
         LOG.info("***** INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
         LOG.info("***** INTRO peers_list : %s" % str(peers_list))
-        peers_loop_list = peers_list[:]
+
+        all_affected_list = []
+        not_affected_list = peers_list[:]
 
         correction_file_number = self.getNombreCorrection()
         LOG.info("***** INTRO correction_file_number : %s" % str(correction_file_number))
         correction_file_loop = range(0, correction_file_number)
         LOG.info("***** INTRO correction_file_loop : %s" % str(correction_file_loop))
 
-        already_affected_file = {}
         for peer in peers_list:
+            affected_list = []
             LOG.info("***** PEER : %s" % peer)
-            peers_remove_list = []
+            LOG.info("***** PEER not_affected_list : %s" % str(not_affected_list))
             try:
-                peers_loop_list.remove(peer)
+                not_affected_list.remove(peer)
+                is_affected = False
+                LOG.info("***** PEER remove not_affected_list : %s" % peer)
             except:
-                pass
-            LOG.info("***** PEER peers_loop_list : %s" % peers_loop_list)
+                is_affected = True
             for i in correction_file_loop:
                 LOG.info("***** INDEX : %s" % str(i))
-                LOG.info("***** INDEX peers_loop_list: %s" % str(peers_loop_list))
-                try:
-                    affected_peer = peers_loop_list[random.randint(0, len(peers_loop_list) - 1)]
-                except:
-                    affected_peer = peers_loop_list[0]
+                LOG.info("***** INDEX not_affected_list: %s" % str(not_affected_list))
+                if not not_affected_list:
+                    not_affected_list = all_affected_list[:]
+                    try:
+                        not_affected_list.remove(peer)
+                        LOG.info("***** T INDEX remove peer : %s" % peer)
+                    except:
+                        pass
+                    all_affected_list = []
+                    LOG.info("***** INDEX not_affected_list : VIDE")
+                    LOG.info("***** INDEX not_affected_list REBOOT : %s" % str(not_affected_list))
+
+                affected_peer = not_affected_list[random.randint(0, len(not_affected_list) - 1)]
                 LOG.info("***** INDEX affected_peer : %s" % affected_peer)
+                affected_list.append(affected_peer)
+
                 try:
                     peers_dict[peer].append({"peer": affected_peer, "file": "", "criteria": []})
                 except:
                     peers_dict[peer] = [{"peer": affected_peer, "file": "", "criteria": []}]
+
                 try:
-                    already_affected_file[affected_peer] = already_affected_file[affected_peer] + 1
-                    LOG.info("***** INDEX already_affected_file : %s / %s" % (affected_peer, str(already_affected_file[affected_peer])))
+                    LOG.info("***** T INDEX remove not_affected_list: %s" % affected_peer)
+                    not_affected_list.remove(affected_peer)
                 except:
-                    LOG.info("***** INDEX init already_affected_file : %s" % affected_peer)
-                    already_affected_file[affected_peer] = 1
-                LOG.info("***** INDEX remove : %s" % affected_peer)
-                peers_loop_list.remove(affected_peer)
-                peers_remove_list.append(affected_peer)
+                    pass
 
-            for peer_remove in peers_remove_list:
-                if already_affected_file[peer_remove] < correction_file_number:
-                    LOG.info("***** PEER append peers_loop_list : %s" % peer_remove)
-                    peers_loop_list.append(peer_remove)
+            LOG.info("***** PEER all_affected_list: %s" % str(all_affected_list))
+            LOG.info("***** PEER extend all_affected_list: %s" % str(affected_list))
+            all_affected_list.extend(affected_list)
 
-            if not peer in already_affected_file or already_affected_file[peer] < correction_file_number:
-                LOG.info("***** PEER append peers_loop_list: %s" % peer)
-                peers_loop_list.append(peer)
+            if not is_affected:
+                LOG.info("***** PEER append not_affected_list: %s" % peer)
+                not_affected_list.append(peer)
+
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
 
     ##-----------------------------##
