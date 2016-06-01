@@ -1338,6 +1338,57 @@ class JalonBoiteDepot(ATFolder):
         except:
             return self._penality_title[penality]
 
+    def affectDepositFile(self):
+        LOG.info("----- affectDepositFile -----")
+        peers_dict = copy.deepcopy(self._peers_dict)
+        LOG.info("***** peers_dict : %s" % str(peers_dict))
+        peers_list = peers_dict.keys()
+        LOG.info("***** peers_list : %s" % str(peers_list))
+        peers_loop_list = peers_list[:]
+
+        correction_file_number = self.getNombreCorrection()
+        LOG.info("***** correction_file_number : %s" % str(correction_file_number))
+        correction_file_loop = range(0, correction_file_number)
+        LOG.info("***** correction_file_loop : %s" % str(correction_file_loop))
+
+        already_affected_file = {}
+        for peer in peers_list:
+            peers_remove_list = []
+            try:
+                peers_loop_list.remove(peer)
+            except:
+                pass
+            for i in correction_file_loop:
+                LOG.info("***** index : %s" % str(i))
+                LOG.info("***** len(peers_loop_list): %s" % str(len(peers_loop_list)))
+                try:
+                    affected_peer = peers_loop_list[random.randint(0, len(peers_loop_list) - 1)]
+                except:
+                    affected_peer = peers_loop_list[0]
+                LOG.info("***** affected_peer : %s" % affected_peer)
+                try:
+                    peers_dict[peer].append({"peer": affected_peer, "file": "", "criteria": []})
+                except:
+                    peers_dict[peer] = [{"peer": affected_peer, "file": "", "criteria": []}]
+                try:
+                    already_affected_file[affected_peer] = already_affected_file[affected_peer] + 1
+                    LOG.info("***** already_affected_file : %s / %s" % (affected_peer, str(already_affected_file[affected_peer])))
+                except:
+                    LOG.info("***** init already_affected_file : %s" % affected_peer)
+                    already_affected_file[affected_peer] = 1
+                LOG.info("***** remove : %s" % affected_peer)
+                peers_loop_list.remove(affected_peer)
+                peers_remove_list.append(affected_peer)
+
+            for peer_remove in peers_remove_list:
+                if already_affected_file[peer_remove] < correction_file_number:
+                    LOG.info("***** append : %s" % peer_remove)
+                    peers_loop_list.append(peer_remove)
+
+            if not peer in already_affected_file or already_affected_file[peer] < correction_file_number:
+                peers_loop_list.append(peer)
+        LOG.info("***** peers_dict : %s" % str(peers_dict))
+
     ##-----------------------------##
     # Fonctions appel à jalon_utils #
     ##-----------------------------##
