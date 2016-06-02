@@ -1341,64 +1341,43 @@ class JalonBoiteDepot(ATFolder):
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")
         peers_dict = copy.deepcopy(self._peers_dict)
-        LOG.info("***** INTRO peers_dict : %s" % str(peers_dict))
+        LOG.info("INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
-        LOG.info("***** INTRO peers_list : %s" % str(peers_list))
-
-        all_affected_list = []
-        not_affected_list = peers_list[:]
-
+        LOG.info("INTRO peers_list : %s" % str(peers_list))
         correction_file_number = self.getNombreCorrection()
-        LOG.info("***** INTRO correction_file_number : %s" % str(correction_file_number))
+        LOG.info("INTRO correction_file_number : %s" % str(correction_file_number))
         correction_file_loop = range(0, correction_file_number)
-        LOG.info("***** INTRO correction_file_loop : %s" % str(correction_file_loop))
+        LOG.info("INTRO correction_file_loop : %s" % str(correction_file_loop))
 
+        random.shuffle(peers_list)
+        LOG.info("INTRO peers_list shulle : %s" % peers_list)
+
+        interval_list = []
+        for loop in correction_file_loop:
+            new_interval = random.randint(1, len(peers_list) - 1)
+            while new_interval in interval_list:
+                new_interval = random.randint(1, len(peers_list) - 1)
+            interval_list.append(new_interval)
+        LOG.info("INTRO interval_list : %s" % str(interval_list))
+
+        peer_index = 0
+        peers_list_len = len(peers_list)
+        LOG.info("INTRO peers_list_len : %s" % str(peers_list_len))
         for peer in peers_list:
-            affected_list = []
-            LOG.info("***** PEER : %s" % peer)
-            LOG.info("***** PEER not_affected_list : %s" % str(not_affected_list))
-            try:
-                not_affected_list.remove(peer)
-                is_affected = False
-                LOG.info("***** PEER remove not_affected_list : %s" % peer)
-            except:
-                is_affected = True
-            for i in correction_file_loop:
-                LOG.info("***** INDEX : %s" % str(i))
-                LOG.info("***** INDEX not_affected_list: %s" % str(not_affected_list))
-                if not not_affected_list:
-                    not_affected_list = all_affected_list[:]
-                    try:
-                        not_affected_list.remove(peer)
-                        LOG.info("***** T INDEX remove peer : %s" % peer)
-                    except:
-                        pass
-                    all_affected_list = []
-                    LOG.info("***** INDEX not_affected_list : VIDE")
-                    LOG.info("***** INDEX not_affected_list REBOOT : %s" % str(not_affected_list))
+            LOG.info("PEER peer : %s" % peer)
+            for interval in interval_list:
+                peer_interval = peer_index + interval
+                if peer_interval >= peers_list_len:
+                    peer_interval = (peer_interval - peers_list_len)
+                LOG.info("PEER peer_interval : %s" % str(peer_interval))
 
-                affected_peer = not_affected_list[random.randint(0, len(not_affected_list) - 1)]
-                LOG.info("***** INDEX affected_peer : %s" % affected_peer)
-                affected_list.append(affected_peer)
-
+                affected_peer = peers_list[peer_interval]
+                LOG.info("PEER affected_peer : %s" % affected_peer)
                 try:
                     peers_dict[peer].append({"peer": affected_peer, "file": "", "criteria": []})
                 except:
                     peers_dict[peer] = [{"peer": affected_peer, "file": "", "criteria": []}]
-
-                try:
-                    LOG.info("***** T INDEX remove not_affected_list: %s" % affected_peer)
-                    not_affected_list.remove(affected_peer)
-                except:
-                    pass
-
-            LOG.info("***** PEER all_affected_list: %s" % str(all_affected_list))
-            LOG.info("***** PEER extend all_affected_list: %s" % str(affected_list))
-            all_affected_list.extend(affected_list)
-
-            if not is_affected:
-                LOG.info("***** PEER append not_affected_list: %s" % peer)
-                not_affected_list.append(peer)
+            peer_index = peer_index + 1
 
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
 
