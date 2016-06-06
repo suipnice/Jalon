@@ -61,7 +61,8 @@
                 </li>
                 </tal:repeat>
             </ul>
-            <form tal:attributes="action my_form/form_link">
+            <form class="peer_evaluate"
+                  tal:attributes="action my_form/form_link">
                 <input type="hidden" name="form.submitted" value="1"/>
                 <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
                 <input type="hidden" name="criteria_order" tal:attributes="value my_form/criteria_order"/>
