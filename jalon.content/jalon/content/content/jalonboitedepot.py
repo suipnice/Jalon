@@ -1412,10 +1412,11 @@ class JalonBoiteDepot(ATFolder):
                 break
 
         deposit_link = ""
-        deposit_files = self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": evaluation["peer"]})
-        for deposit_brain in deposit_files:
-            if deposit_brain.getActif:
-                deposit_link = deposit_brain.getURL()
+        if evaluation:
+            deposit_files = self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": evaluation["peer"]})
+            for deposit_brain in deposit_files:
+                if deposit_brain.getActif:
+                    deposit_link = deposit_brain.getURL()
 
         criteria_order = self.getCriteriaOrder()
         return {"breadcrumbs":    self.getEvaluateBreadcrumbs(),
