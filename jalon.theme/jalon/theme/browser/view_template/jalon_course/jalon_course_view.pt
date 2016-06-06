@@ -15,14 +15,14 @@
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
     <tal:define define="no_return python:context.insererConsultation(user, 'Cours', '')"/>
-    
+
     <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
     </tal:define>
 
-    <div id="reveal-main" class="reveal-modal medium" 
+    <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
     <div id="reveal-main_second" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
@@ -126,7 +126,7 @@
             </div>
 
             <div class="row">
-                <div class="small-12 colmuns">
+                <div class="small-12 columns">
                     <metal:macro use-macro="context/course_bibliography_macro/macros/display_bibliography">
                         Affichage de la bibliographie
                     </metal:macro>
@@ -134,7 +134,7 @@
             </div>
 
             <div class="row">
-                <div class="small-12 colmuns">
+                <div class="small-12 columns">
                     <metal:macro use-macro="context/course_glossary_macro/macros/display_glossary">
                         Affichage du glossarie
                     </metal:macro>
