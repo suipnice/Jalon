@@ -191,3 +191,12 @@
     background-color: #227da3;
     border-color: #227da3;
 }
+
+/*
+    css utilsés dans l'évaluation par les pairs
+    fichier : evaluate_deposit_file_form
+*/
+.tabs dd.active > a, .tabs .tab-title.active > a {
+    background-color: #2a9ccc;
+    color: #fff;
+}

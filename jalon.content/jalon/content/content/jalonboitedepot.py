@@ -1273,15 +1273,27 @@ class JalonBoiteDepot(ATFolder):
         evaluation_by_peers_dict = {}
         deposit_box_link = self.absolute_url()
         if is_personnel:
+            evaluation_by_peers_dict["macro_peers"] = "peers_teacher_macro"
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
             evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
                                                     "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
                                                     "icon": "fa fa-plus-circle fa-fw"}]
+            evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
         else:
-            evaluation_by_peers_dict["table_title"] = "Mon évaluation"
+            evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
+            evaluation_by_peers_dict["table_title"] = "Mes évaluations"
+            evaluation_by_peers_dict["evaluate_link"] = "%s/evalute_deposit_file_form" % deposit_box_link
+            evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user.getId())
+            if len(evaluation_by_peers_dict["peers_evaluations"]):
+                number = 0
+                for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
+                    if evaluation["criteria"] != []:
+                        number = number + 1
+                evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
+            else:
+                evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
         evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
         evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
-        evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
         return evaluation_by_peers_dict
 
     def getCriteriaDict(self, key=None):
@@ -1325,9 +1337,12 @@ class JalonBoiteDepot(ATFolder):
         order.sort(lambda x, y: cmp(x["nom"], y["nom"]))
         return order
 
-    def getPeerLength(self):
+    def getPeerLength(self, is_personnel, user_id):
         LOG.info("----- getPeerLength -----")
-        return len(self._peers_dict.keys())
+        if is_personnel:
+            return len(self._peers_dict.keys())
+        else:
+            return len(self.getPeersDict(user_id))
 
     def getDisplayPenality(self):
         LOG.info("----- getDisplayPenality -----")
@@ -1374,12 +1389,48 @@ class JalonBoiteDepot(ATFolder):
                 affected_peer = peers_list[peer_interval]
                 LOG.info("PEER affected_peer : %s" % affected_peer)
                 try:
-                    peers_dict[peer].append({"peer": affected_peer, "file": "", "criteria": []})
+                    peers_dict[peer].append({"peer": affected_peer, "criteria": []})
                 except:
-                    peers_dict[peer] = [{"peer": affected_peer, "file": "", "criteria": []}]
+                    peers_dict[peer] = [{"peer": affected_peer, "criteria": []}]
             peer_index = peer_index + 1
 
+        self.setPeersDict(peers_dict)
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
+
+    def getEvaluateDepositFileForm(self, user_id):
+        LOG.info("----- getEvaluateDepositFileForm -----")
+        evaluation = {}
+        peers_evaluations = self.getPeersDict(user_id)
+        for corrected_evaluation in peers_evaluations:
+            if corrected_evaluation["criteria"] == []:
+                evaluation = corrected_evaluation
+
+        deposit_link = ""
+        deposit_files = self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": evaluation["peer"]})
+        for deposit_brain in deposit_files:
+            if deposit_brain.getActif:
+                deposit_link = deposit_brain.getURL()
+
+        criteria_order = self.getCriteriaOrder()
+        return {"breadcrumbs":    self.getEvaluateBreadcrumbs(),
+                "evaluation":     evaluation,
+                "deposit_link":   "%s/at_download/file" % deposit_link,
+                "criteria_dict":  self.getCriteriaDict(),
+                "criteria_order": criteria_order}
+
+    def getEvaluateBreadcrumbs(self):
+        LOG.info("----- getEvaluateBreadcrumbs -----")
+        portal = self.portal_url.getPortalObject()
+        parent = self.aq_parent
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/mes_cours" % portal.absolute_url()},
+                {"title": parent.Title(),
+                 "icon":  "fa fa-book",
+                 "link":  parent.absolute_url()},
+                {"title": self.Title(),
+                 "icon":  "fa fa-inbox",
+                 "link":  self.absolute_url()}]
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

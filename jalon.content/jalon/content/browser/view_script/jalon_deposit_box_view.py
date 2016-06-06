@@ -38,6 +38,7 @@ class JalonDepositBoxView(BrowserView):
 
     def getDepositBoxView(self, user, mode_etudiant, tab, is_ajax):
         LOG.info("----- getDepositBoxView (Start) -----")
+        user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
         my_deposit_box = self.context
@@ -85,7 +86,7 @@ class JalonDepositBoxView(BrowserView):
                                             "css_class": " selected" if my_view["is_deposit_tab"] else "",
                                             "icon":      "fa-download",
                                             "text":      "Mes dépôts" if not my_view["is_personnel"] and not my_deposit_box.getAccesDepots() else "Dépôts étudiants",
-                                            "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user.getId())})
+                                            "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user_id)})
 
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
@@ -120,7 +121,7 @@ class JalonDepositBoxView(BrowserView):
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getAfficherCompetences() else "fa-toggle-off",
                                                "text": "Affichage de l'onglet \"Compétences\" aux étudiants"}]
-            if my_deposit_box.getPermissionModifierCompetence(my_view["is_personnel"], user.getId()):
+            if my_deposit_box.getPermissionModifierCompetence(my_view["is_personnel"], user_id):
                 my_view["deposit_tab_options"].append({"icon": "fa-toggle-on success" if my_deposit_box.getModifierCompetences() else "fa-toggle-off",
                                                        "text": "Restriction de la gestion des compétences"})
 
@@ -131,7 +132,7 @@ class JalonDepositBoxView(BrowserView):
                                                 "css_class": " selected" if my_view["is_peers_tab"] else "",
                                                 "icon":      "fa-users",
                                                 "text":      "Par les pairs",
-                                                "nb":        my_deposit_box.getPeerLength()})
+                                                "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],

@@ -145,6 +145,11 @@
     </ul>
     </tal:condition>
     <h2>
+        <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
+           tal:condition="not:my_view/is_personnel">
+            <i class="fa fa-check-square-o" aria-hidden="true"></i>
+            Évaluer
+        </a>
         <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
                                                  i18n:translate=""/>
     </h2>
@@ -155,51 +160,103 @@
     </div>
 
     <tal:condition condition="criteria_dict">
-        <form id="js-list_competences" method="post"
-              tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
-              tal:condition="my_view/is_personnel">
-            <div class="table-overflow_container">
-                <table summary="Liste des compétences">
-                <thead>
-                    <tr>
-                        <th class="sort has-tip" data-tooltip data-sort="etudiant"
-                            title="Cliquer pour trier selon l'étudiant"
-                            i18n:attributes="title">
-                            <span>
-                                <i class="fa fa-sort"></i>
-                                <i class="fa fa-sort-asc"></i>
-                                <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
-                            </span>
-                        </th>
-                    <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
-                        <th tal:define="criteria python:criteria_dict[index]">
-                            <tal:replace tal:replace="criteria/title">Titre du critère</tal:replace>
-                        </th>
-                    </tal:repeat>
-                    </tr>
-                </thead>
-                <tfoot></tfoot>
-                <tbody class="list"
-                       tal:define="compEtudiants python:dict(context.getCompEtudiants())">
-                    <tr tal:condition="not:evaluation_by_peers_dict/peers_list">
-                        <td tal:attributes="colspan python:(len(criteria_dict) + 1)">
-                            <strong i18n:translate="">Aucun étudiant à évaluer</strong>
-                        </td>
-                    </tr>
-                    <tal:condition condition="evaluation_by_peers_dict/peers_list">
-                    <tr tal:repeat="peer evaluation_by_peers_dict/peers_list">
-                        <td class="etudiant">
-                            <span class="hide" tal:content="peer/nom" />
-                            <tal:replace replace="peer/nom" />
-                        </td>
-                        <td tal:repeat="criteria evaluation_by_peers_dict/criteria_order"></td>
-                    </tr>
-                    </tal:condition>
-                </tbody>
-                </table>
-            </div>
-        </form>
+        <metal:macro use-macro="python:context.deposit_box_macro.macros.get(evaluation_by_peers_dict['macro_peers'])"/>
     </tal:condition>
     </tal:define>
+</metal:macro>
+
+<!--
+    Évaluation par les pairs Liste role Personnel
+-->
+<metal:macro define-macro="peers_teacher_macro">
+    <form id="js-list_competences" method="post"
+          tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
+          tal:condition="my_view/is_personnel">
+        <div class="table-overflow_container">
+            <table summary="Liste des compétences">
+            <thead>
+                <tr>
+                    <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                        title="Cliquer pour trier selon l'étudiant"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                        </span>
+                    </th>
+                <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
+                    <th tal:define="criteria python:criteria_dict[index]">
+                        <tal:replace tal:replace="criteria/title">Titre du critère</tal:replace>
+                    </th>
+                </tal:repeat>
+                </tr>
+            </thead>
+            <tfoot></tfoot>
+            <tbody class="list"
+                   tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                <tr tal:condition="not:evaluation_by_peers_dict/peers_list">
+                    <td tal:attributes="colspan python:(len(criteria_dict) + 1)">
+                        <strong i18n:translate="">Aucun étudiant à évaluer</strong>
+                    </td>
+                </tr>
+                <tal:condition condition="evaluation_by_peers_dict/peers_list">
+                <tr tal:repeat="peer evaluation_by_peers_dict/peers_list">
+                    <td class="etudiant">
+                        <span class="hide" tal:content="peer/nom" />
+                        <tal:replace replace="peer/nom" />
+                    </td>
+                    <td tal:repeat="criteria evaluation_by_peers_dict/criteria_order"></td>
+                </tr>
+                </tal:condition>
+            </tbody>
+            </table>
+        </div>
+    </form>
+</metal:macro>
+
+<!--
+    Évaluation par les pairs Liste role Étudiant
+-->
+<metal:macro define-macro="peers_student_macro">
+    <div class="panel callout radius"
+         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
+    <div class="table-overflow_container">
+        <table summary="Liste des critères">
+        <thead>
+            <tr>
+                <th class="sort has-tip" data-tooltip data-sort="criteria"
+                    title="Cliquer pour trier selon l'étudiant"
+                    i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Critères</tal:block>
+                    </span>
+                </th>
+            <tal:repeat repeat="peer evaluation_by_peers_dict/peers_evaluations">
+                <th>
+                    Devoir n°<tal:replace tal:replace="repeat/peer/number"/>
+                </th>
+            </tal:repeat>
+            </tr>
+        </thead>
+        <tfoot></tfoot>
+        <tbody class="list"
+               tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+            <tr tal:repeat="index evaluation_by_peers_dict/criteria_order">
+                <td class="criteria"
+                    tal:define="criteria python:criteria_dict[index]">
+                    <span class="hide" tal:content="criteria/title" />
+                    <tal:replace replace="criteria/title" />
+                </td>
+            <tal:repeat repeat="peer evaluation_by_peers_dict/peers_evaluations">
+                <td>VIDE</td>
+            </tal:repeat>
+            </tr>
+        </tbody>
+        </table>
+    </div>
 </metal:macro>
