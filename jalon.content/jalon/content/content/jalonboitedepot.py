@@ -1355,11 +1355,11 @@ class JalonBoiteDepot(ATFolder):
 
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")
-        #peers_dict = copy.deepcopy(self._peers_dict)
-        peers_dict = {"bordonad": [],
-                      "etudiant1": [],
-                      "etudiant2": [],
-                      "etudiant3": []}
+        peers_dict = copy.deepcopy(self._peers_dict)
+        #peers_dict = {"bordonad": [],
+        #              "etudiant1": [],
+        #              "etudiant2": [],
+        #              "etudiant3": []}
         LOG.info("INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
         LOG.info("INTRO peers_list : %s" % str(peers_list))
