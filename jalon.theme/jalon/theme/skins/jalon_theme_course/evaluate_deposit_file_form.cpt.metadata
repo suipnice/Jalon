@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_peer_evaluate
+
+[actions]
+action.failure = traverse_to:string:evaluate_deposit_file_form
+action.success = traverse_to:string:evaluate_deposit_file_script

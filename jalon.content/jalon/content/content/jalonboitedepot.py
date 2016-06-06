@@ -1282,7 +1282,7 @@ class JalonBoiteDepot(ATFolder):
         else:
             evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
             evaluation_by_peers_dict["table_title"] = "Mes évaluations"
-            evaluation_by_peers_dict["evaluate_link"] = "%s/evalute_deposit_file_form" % deposit_box_link
+            evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form" % deposit_box_link
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user.getId())
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
@@ -1416,7 +1416,8 @@ class JalonBoiteDepot(ATFolder):
                 "evaluation":     evaluation,
                 "deposit_link":   "%s/at_download/file" % deposit_link,
                 "criteria_dict":  self.getCriteriaDict(),
-                "criteria_order": criteria_order}
+                "criteria_order": criteria_order,
+                "form_link":      "%s/evaluate_deposit_file_form" % self.absolute_url()}
 
     def getEvaluateBreadcrumbs(self):
         LOG.info("----- getEvaluateBreadcrumbs -----")

@@ -39,6 +39,12 @@
                 <i class="fa fa-download"></i> Télécharger ce dépôt
             </a>
 
+            <div class="panel alert radius"
+                 tal:define="error_index errors/error_index | nothing"
+                 tal:condition="error_index">
+                 <i class="fa fa-info-circle"></i><strong tal:content="error_index"/>
+             </div>
+
             <ul class="tabs" data-tab role="tablist">
                 <tal:repeat repeat="index my_form/criteria_order">
                 <li class="tab-title" role="presentation">
@@ -49,8 +55,9 @@
                 </li>
                 </tal:repeat>
             </ul>
-                <form action=".">
+                <form tal:attributes="action my_form/form_link">
                     <input type="hidden" name="form.submitted" value="1"/>
+                    <input type="hidden" name="criteria_order" tal:attributes="value my_form/criteria_order"/>
                     <div class="tabs-content">
                         <section role="tabpanel" aria-hidden="true" class="content active">
                             <div class="panel callout radius">Sélectionnez un onglet</div>
@@ -68,6 +75,8 @@
                                  tal:attributes="id string:archetypes-fieldname-${criteria_comment};
                                                  class python:context.test(error, 'error field', 'field')">
                                 <label tal:attributes="for criteria_comment">Commentaire</label>
+                                <div class="fieldErrorBox" tal:content="error"
+                                     tal:condition="error"/>
                                 <textarea tal:attributes="name criteria_comment; id criteria_comment" rows="5"><tal:block replace="python:request.get(criteria_comment, None)"/></textarea>
                             </div>
                             <div tal:define="criteria_note string:${criteria_id}-note;
@@ -85,6 +94,9 @@
                                                        name  criteria_note;
                                                        value python:request.get(criteria_note, '1');
                                                        max criteria/notation"/>
+                                <input type="hidden"
+                                       tal:attributes="name string:${criteria_note}_max;
+                                                       value criteria/notation"/>
                             </div>
                             <!--
                             <ul class="tabs" data-tab role="tablist">
