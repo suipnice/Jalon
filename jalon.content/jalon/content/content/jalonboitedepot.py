@@ -1355,7 +1355,11 @@ class JalonBoiteDepot(ATFolder):
 
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")
-        peers_dict = copy.deepcopy(self._peers_dict)
+        #peers_dict = copy.deepcopy(self._peers_dict)
+        peers_dict = {"bordonad": [],
+                      "etudiant1": [],
+                      "etudiant2": [],
+                      "etudiant3": []}
         LOG.info("INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
         LOG.info("INTRO peers_list : %s" % str(peers_list))
@@ -1402,8 +1406,10 @@ class JalonBoiteDepot(ATFolder):
         evaluation = {}
         peers_evaluations = self.getPeersDict(user_id)
         for corrected_evaluation in peers_evaluations:
+            LOG.info("***** corrected_evaluation : %s" % str(corrected_evaluation))
             if corrected_evaluation["criteria"] == []:
                 evaluation = corrected_evaluation
+                break
 
         deposit_link = ""
         deposit_files = self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": evaluation["peer"]})
@@ -1432,6 +1438,30 @@ class JalonBoiteDepot(ATFolder):
                 {"title": self.Title(),
                  "icon":  "fa fa-inbox",
                  "link":  self.absolute_url()}]
+
+    def setEvaluatePeer(self, param_dict):
+        LOG.info("----- setEvaluatePeer -----")
+        evaluation = {}
+        peers_dict = copy.deepcopy(self.getPeersDict())
+        corrected_evaluation_index = 0
+        for corrected_evaluation in peers_dict[param_dict["user_id"]]:
+            if corrected_evaluation["criteria"] == []:
+                evaluation = corrected_evaluation
+                break
+            corrected_evaluation_index = corrected_evaluation_index + 1
+
+        index = 1
+        criteria_loop = param_dict["criteria_order"].split(",")
+        for loop in criteria_loop:
+            criteria_id = "criteria%i" % index
+            criteria_dict = {"criteria_id":      param_dict[criteria_id],
+                             "criteria_comment": param_dict["%s-comment" % criteria_id],
+                             "criteria_note":    param_dict["%s-note" % criteria_id]}
+            evaluation["criteria"].append(criteria_dict)
+            index = index + 1
+        LOG.info("***** evaluation : %s" % str(evaluation))
+        peers_dict[param_dict["user_id"]][corrected_evaluation_index] = evaluation
+        self.setPeersDict(peers_dict)
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

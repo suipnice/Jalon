@@ -57,6 +57,7 @@
             </ul>
                 <form tal:attributes="action my_form/form_link">
                     <input type="hidden" name="form.submitted" value="1"/>
+                    <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
                     <input type="hidden" name="criteria_order" tal:attributes="value my_form/criteria_order"/>
                     <div class="tabs-content">
                         <section role="tabpanel" aria-hidden="true" class="content active">
@@ -94,6 +95,9 @@
                                                        name  criteria_note;
                                                        value python:request.get(criteria_note, '1');
                                                        max criteria/notation"/>
+                                <input type="hidden"
+                                       tal:attributes="name string:${criteria_id};
+                                                       value index"/>
                                 <input type="hidden"
                                        tal:attributes="name string:${criteria_note}_max;
                                                        value criteria/notation"/>
