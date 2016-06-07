@@ -250,3 +250,11 @@ def getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, I
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     return nbConsultations
+
+
+#--------------------------#
+# Évaluation par les pairs #
+#--------------------------#
+def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
+    session.add(tables.PeersEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
+    session.commit()

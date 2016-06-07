@@ -18,3 +18,5 @@ from connexionind import ConnexionINDSQLITE
 from connexionind import ConnexionINDMySQL
 from consultationcours import ConsultationCoursSQLITE
 from consultationcours import ConsultationCoursMySQL
+from peers_evaluation import PeersEvaluationMySQL
+from peers_evaluation import PeersAverageMySQL

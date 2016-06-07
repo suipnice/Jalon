@@ -151,9 +151,11 @@ class JalonBDD(SimpleItem):
     def creerTablesMySQL(self):
             connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
             engine = create_engine(connexion, echo=True)
-            tables.IndividuMySQL.__table__.create(bind=engine)
-            tables.ConnexionINDMySQL.__table__.create(bind=engine)
-            tables.ConsultationCoursMySQL.__table__.create(bind=engine)
+            #tables.IndividuMySQL.__table__.create(bind=engine)
+            #tables.ConnexionINDMySQL.__table__.create(bind=engine)
+            #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
     # Utilitaire base de données #
@@ -1420,6 +1422,13 @@ class JalonBDD(SimpleItem):
             return jalon_mysql.getMinMaxYearByELP(session, COD_ELP, listeInds)
         else:
             return jalonsqlite.getMinMaxYearByELP(session, COD_ELP, listeInds)
+
+    #--------------------------#
+    # Évaluation par les pairs #
+    #--------------------------#
+    def setEvaluatePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_NOTE, CRITERIA_COMMENT):
+        session = self.getSessionMySQL()
+        jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
 
     #-----------------------#
     # Fonctions utilitaires #

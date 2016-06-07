@@ -34,17 +34,17 @@
                 Évaluer un devoir
             </h1>
 
-            <a class="button expand radius"
-               tal:attributes="href my_form/deposit_link">
-                <i class="fa fa-download"></i> Télécharger ce dépôt
-            </a>
-
             <div class="panel warning radius"
                  tal:condition="not:my_form/evaluation">
                 Vous n'avez aucun dépôt à évaluer.
             </div>
 
             <tal:condition condition="my_form/evaluation">
+            <a class="button expand radius"
+               tal:attributes="href my_form/deposit_link">
+                <i class="fa fa-download"></i> Télécharger ce dépôt
+            </a>
+
             <div class="panel alert radius"
                  tal:define="error_index errors/error_index | nothing"
                  tal:condition="error_index">
