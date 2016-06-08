@@ -1517,7 +1517,7 @@ class JalonBoiteDepot(ATFolder):
         jalon_bdd = self.portal_jalon_bdd
         for loop in criteria_loop:
             criteria_id = "criteria%i" % index
-            jalon_bdd.setAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], True, param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+            jalon_bdd.setAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], False, param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
             index = index + 1
 
     def setAveragePeer(self):
@@ -1528,7 +1528,7 @@ class JalonBoiteDepot(ATFolder):
             jalon_bdd.setAveragePeer(self.getId(), average[0], int(average[1]), True, int(average[2]), 0, "")
 
     def getAveragePeer(self):
-        LOG.info("----- setAveragePeer -----")
+        LOG.info("----- getAveragePeer -----")
         average_dict = {}
         jalon_bdd = self.portal_jalon_bdd
         average_list = jalon_bdd.getPeersAverage(self.getId())

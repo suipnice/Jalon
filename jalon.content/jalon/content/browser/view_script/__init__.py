@@ -8,4 +8,5 @@ from my_pod_videos_view import MyPodVideosView
 from my_courses_view import MyCoursesView
 from jalon_course_view import JalonCourseView
 from jalon_deposit_box_view import JalonDepositBoxView
+from jalon_student_evaluation_view import JalonStudentEvaluationView
 from my_students_view import MyStudentsView
