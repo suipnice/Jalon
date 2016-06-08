@@ -1,0 +1,215 @@
+<metal:macro define-macro="student_evaluate">
+    <h1>
+        <i class="fa fa-check-square-o no-pad"></i>
+        Évaluer un devoir
+    </h1>
+
+    <div class="panel warning radius"
+         tal:condition="not:my_evaluate_form/evaluation">
+        Vous n'avez aucun dépôt à évaluer.
+    </div>
+
+    <tal:condition condition="my_evaluate_form/evaluation">
+    <a class="button expand radius"
+       tal:attributes="href my_evaluate_form/deposit_link">
+        <i class="fa fa-download"></i> Télécharger ce dépôt
+    </a>
+
+    <div class="panel alert radius"
+         tal:define="error_index errors/error_index | nothing"
+         tal:condition="error_index">
+         <i class="fa fa-info-circle"></i><strong tal:content="error_index"/>
+    </div>
+
+    <ul class="tabs" data-tab role="tablist">
+        <tal:repeat repeat="index my_evaluate_form/criteria_order">
+        <li class="tab-title" role="presentation">
+            <a role="tab" tabindex="0" aria-selected="true"
+               tal:attributes="href string:#criteria${repeat/index/number};
+                               aria-controls string:#criteria${repeat/index/number}"
+               tal:content="string:Critère ${repeat/index/number}"/>
+        </li>
+        </tal:repeat>
+    </ul>
+    <form class="peer_evaluate"
+          tal:attributes="action my_evaluate_form/form_link">
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="mode_etudiant" value="true"/>
+        <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
+        <input type="hidden" name="criteria_order" tal:attributes="value my_evaluate_form/criteria_order"/>
+        <div class="tabs-content">
+            <section role="tabpanel" aria-hidden="true" class="content active">
+                <div class="panel callout radius">Sélectionnez un onglet</div>
+            </section>
+            <tal:repeat repeat="index my_evaluate_form/criteria_order">
+            <section role="tabpanel" aria-hidden="true" class="content"
+                     tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
+                                 criteria_id string:criteria${repeat/index/number}"
+                     tal:attributes="id criteria_id">
+                <h2 tal:content="criteria/title"/>
+                <div class="panel callout radius"
+                     tal:content="criteria/description"/>
+                <div tal:define="criteria_comment string:${criteria_id}-comment;
+                                 error python:errors.get(criteria_comment, None)"
+                     tal:attributes="id string:archetypes-fieldname-${criteria_comment};
+                                     class python:context.test(error, 'error field', 'field')">
+                    <label tal:attributes="for criteria_comment">Commentaire</label>
+                    <div class="fieldErrorBox" tal:content="error"
+                         tal:condition="error"/>
+                    <textarea tal:attributes="name criteria_comment; id criteria_comment" rows="5"><tal:block replace="python:request.get(criteria_comment, None)"/></textarea>
+                </div>
+                <div tal:define="criteria_note string:${criteria_id}-note;
+                                 error python:errors.get(criteria_note, None)"
+                     tal:attributes="id string:archetypes-fieldname-${criteria_note};
+                                     class python:context.test(error, 'field error', 'field')">
+                    <label tal:attributes="for criteria_note">
+                        Nombre de points (max <tal:replace replace="criteria/notation"/>)
+                    </label>
+                    <div class="fieldErrorBox" tal:content="error"
+                         tal:condition="error"/>
+                    <input type="number" min="1" step="1" style="width:3em;display:inline;"
+                           tal:define="error python:errors.get(criteria_note, None)"
+                           tal:attributes="class python:context.test(error, 'error', '');
+                                           name  criteria_note;
+                                           value python:request.get(criteria_note, '1');
+                                           max criteria/notation"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_id};
+                                           value index"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_note}_max;
+                                           value criteria/notation"/>
+                </div>
+                <!--
+                <ul class="tabs" data-tab role="tablist">
+                    <li class="tab-title" role="presentation">
+                        <a role="tab" tabindex="0" aria-selected="true" class="button radius"
+                           tal:define="criteria_number repeat/index/number;
+                                       criteria_next python:'%s%s' % ('criteria', int(criteria_number) + 1)"
+                           tal:attributes="href string:#${criteria_next};
+                                           aria-controls string:#${criteria_next}">
+                            <i class="fa fa-arrow-right"></i>Suivant
+                        </a>
+                    </li>
+                </ul>
+                -->
+                <div class="formControls"
+                     tal:condition="repeat/index/end">
+                    <button type="submit" class="button small"
+                            name="form.button.save">
+                        <i class="fa fa-pencil"></i>
+                        <tal:block i18n:translate="">Enregistrer</tal:block>
+                    </button>
+                </div>
+            </section>
+            </tal:repeat>
+        </div>
+    </form>
+    </tal:condition>
+</metal:macro>
+
+<metal:macro define-macro="teacher_evaluate">
+    <h1>
+        <i class="fa fa-check-square-o no-pad"></i>
+        Évaluer le devoir de XXXX
+    </h1>
+
+    <div class="panel warning radius">
+        Cet étudiant n'a eu aucune évaluation de ses pairs.
+    </div>
+
+    <a class="button expand radius"
+       tal:attributes="href my_evaluate_form/deposit_link">
+        <i class="fa fa-download"></i> Télécharger ce dépôt
+    </a>
+
+    <div class="panel alert radius"
+         tal:define="error_index errors/error_index | nothing"
+         tal:condition="error_index">
+         <i class="fa fa-info-circle"></i><strong tal:content="error_index"/>
+    </div>
+
+    <ul class="tabs" data-tab role="tablist">
+        <tal:repeat repeat="index my_evaluate_form/criteria_order">
+        <li class="tab-title" role="presentation">
+            <a role="tab" tabindex="0" aria-selected="true"
+               tal:attributes="href string:#criteria${repeat/index/number};
+                               aria-controls string:#criteria${repeat/index/number}"
+               tal:content="string:Critère ${repeat/index/number}"/>
+        </li>
+        </tal:repeat>
+    </ul>
+    <form class="peer_evaluate"
+          tal:attributes="action my_evaluate_form/form_link">
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="student_id" tal:attributes="value student_id"/>
+        <input type="hidden" name="criteria_order" tal:attributes="value my_evaluate_form/criteria_order"/>
+        <div class="tabs-content">
+            <section role="tabpanel" aria-hidden="true" class="content active">
+                <div class="panel callout radius">Sélectionnez un onglet</div>
+            </section>
+            <tal:repeat repeat="index my_evaluate_form/criteria_order">
+            <section role="tabpanel" aria-hidden="true" class="content"
+                     tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
+                                 criteria_id string:criteria${repeat/index/number}"
+                     tal:attributes="id criteria_id">
+                <h2 tal:content="criteria/title"/>
+                <div class="panel callout radius"
+                     tal:content="criteria/description"/>
+                <div tal:define="criteria_comment string:${criteria_id}-comment;
+                                 error python:errors.get(criteria_comment, None)"
+                     tal:attributes="id string:archetypes-fieldname-${criteria_comment};
+                                     class python:context.test(error, 'error field', 'field')">
+                    <label tal:attributes="for criteria_comment">Commentaire</label>
+                    <div class="fieldErrorBox" tal:content="error"
+                         tal:condition="error"/>
+                    <textarea tal:attributes="name criteria_comment; id criteria_comment" rows="5"><tal:block replace="python:request.get(criteria_comment, None)"/></textarea>
+                </div>
+                <div tal:define="criteria_note string:${criteria_id}-note;
+                                 error python:errors.get(criteria_note, None)"
+                     tal:attributes="id string:archetypes-fieldname-${criteria_note};
+                                     class python:context.test(error, 'field error', 'field')">
+                    <label tal:attributes="for criteria_note">
+                        Nombre de points (max <tal:replace replace="criteria/notation"/>)
+                    </label>
+                    <div class="fieldErrorBox" tal:content="error"
+                         tal:condition="error"/>
+                    <input type="number" min="1" step="1" style="width:3em;display:inline;"
+                           tal:define="error python:errors.get(criteria_note, None)"
+                           tal:attributes="class python:context.test(error, 'error', '');
+                                           name  criteria_note;
+                                           value python:request.get(criteria_note, '1');
+                                           max criteria/notation"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_id};
+                                           value index"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_note}_max;
+                                           value criteria/notation"/>
+                </div>
+                <!--
+                <ul class="tabs" data-tab role="tablist">
+                    <li class="tab-title" role="presentation">
+                        <a role="tab" tabindex="0" aria-selected="true" class="button radius"
+                           tal:define="criteria_number repeat/index/number;
+                                       criteria_next python:'%s%s' % ('criteria', int(criteria_number) + 1)"
+                           tal:attributes="href string:#${criteria_next};
+                                           aria-controls string:#${criteria_next}">
+                            <i class="fa fa-arrow-right"></i>Suivant
+                        </a>
+                    </li>
+                </ul>
+                -->
+                <div class="formControls"
+                     tal:condition="repeat/index/end">
+                    <button type="submit" class="button small"
+                            name="form.button.save">
+                        <i class="fa fa-pencil"></i>
+                        <tal:block i18n:translate="">Enregistrer</tal:block>
+                    </button>
+                </div>
+            </section>
+            </tal:repeat>
+        </div>
+    </form>
+</metal:macro>

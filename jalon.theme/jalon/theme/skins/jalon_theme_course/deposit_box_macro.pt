@@ -195,7 +195,7 @@
             </thead>
             <tfoot></tfoot>
             <tbody class="list"
-                   tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                   tal:define="peers_average_dict evaluation_by_peers_dict/peers_average_dict">
                 <tr tal:condition="not:evaluation_by_peers_dict/peers_list">
                     <td tal:attributes="colspan python:(len(criteria_dict) + 1)">
                         <strong i18n:translate="">Aucun étudiant à évaluer</strong>
@@ -207,7 +207,16 @@
                         <span class="hide" tal:content="peer/nom" />
                         <tal:replace replace="peer/nom" />
                     </td>
-                    <td tal:repeat="criteria evaluation_by_peers_dict/criteria_order"></td>
+                    <td tal:repeat="criteria evaluation_by_peers_dict/criteria_order">
+                        <tal:condition condition="python:peer['id'] in peers_average_dict">
+                        <tal:replace replace="python:peers_average_dict[peer['id']][int(criteria)]" on-error="nothing"/>
+                        </tal:condition>
+                        <tal:condition condition="python:peer['id'] not in peers_average_dict">
+                            <a tal:attributes="href string:${my_view/deposit_box_link}/evaluate_deposit_file_form?student_id=${peer/id}">
+                                <i class="fa fa-exclamation-triangle fa-2x alert"></i>
+                            </a>
+                        </tal:condition>
+                    </td>
                 </tr>
                 </tal:condition>
             </tbody>

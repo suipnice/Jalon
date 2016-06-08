@@ -258,3 +258,22 @@ def getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, I
 def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
     session.add(tables.PeersEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
     session.commit()
+
+
+def generatePeersAverage(session, DEPOSIT_BOX):
+    PE = aliased(tables.PeersEvaluationMySQL)
+    peers_average = session.query(PE.DEPOSIT_STU, PE.CRITERIA, func.avg(PE.CRITERIA_NOTE).label("CRITERIA_AVG")).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX).group_by(PE.DEPOSIT_STU, PE.CRITERIA)
+    #return convertirResultatBDD(peers_average)
+    return peers_average
+
+
+def setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_STATE, CRITERIA_DATE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
+    session.add(tables.PeersAverageMySQL(DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_STATE, CRITERIA_DATE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T))
+    session.commit()
+
+
+def getPeersAverage(session, DEPOSIT_BOX):
+    PA = aliased(tables.PeersAverageMySQL)
+    peers_average = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_STATE, PA.CRITERIA_AVERAGE, PA.CRITERIA_NOTE_T, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
+    #return convertirResultatBDD(peers_average)
+    return peers_average
