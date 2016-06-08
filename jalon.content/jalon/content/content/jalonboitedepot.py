@@ -593,7 +593,7 @@ class JalonBoiteDepot(ATFolder):
         peers_dict = dict(self.getPeersDict())
         peers_list = peers_dict.keys()
         if not user_id in peers_list:
-            peers_dict[user_id] = {}
+            peers_dict[user_id] = []
             self.setPeersDict(peers_dict)
 
     def getDepots(self, auth_member, is_personnel, is_depot_actif, is_retard):
