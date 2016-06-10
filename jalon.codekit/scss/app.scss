@@ -1643,7 +1643,7 @@ code {
             width: 33.33%;
             text-align: center;
 
-            @media #{ $small-only } { width: 50%; }
+            //@media #{ $small-only } { width: 50%; }
 
             &:first-child a { @include side-radius( 'left' ); }
             &:last-child a { @include side-radius( 'right' ); }
