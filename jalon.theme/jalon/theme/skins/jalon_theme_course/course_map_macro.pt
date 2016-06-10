@@ -6,7 +6,7 @@
     <tal:block i18n:translate="">Ajouter des éléments</tal:block>
 </h3>
 <nav id="item-adder">
-    <ul class="button-group radius">
+    <ul class="button-group round">
         <li tal:repeat="item_adder my_view/course_map_item_adder">
             <a tal:attributes="class item_adder/menu_adder_class;
                                data-dropdown item_adder/menu_adder_data-dropdown"
@@ -14,7 +14,7 @@
                 <i tal:attributes="class item_adder/menu_adder_icon"></i>
                 <tal:replace replace="item_adder/menu_adder_name" i18n:translate=""/>
             </a>
-            <ul tal:attributes="id item_adder/menu_adder_data-dropdown" 
+            <ul tal:attributes="id item_adder/menu_adder_data-dropdown"
                 class="f-dropdown" data-dropdown-content>
                 <li tal:repeat="menu_adder_item item_adder/menu_adder_items">
                     <a tal:attributes="href menu_adder_item/item_link"
@@ -57,7 +57,7 @@
             <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
                tal:condition="element/is_item_new"></i>
 
-            <a class="right" 
+            <a class="right"
                tal:attributes="href element/item_read_link"
                tal:condition="element/is_item_readable">
                 <i tal:attributes="class element/item_read_icon"></i>
@@ -91,7 +91,7 @@
     </ol>
 </metal:macro>
 
-<!-- Version avec booleen expand à définir avant l'appel 
+<!-- Version avec booleen expand à définir avant l'appel
     <metal:macro define-macro="display_course_map">
     <ol tal:attributes="class course_map/is_course_map_sortable">
     <tal:repeat repeat="element course_map/course_map_items_list">
@@ -114,7 +114,7 @@
             <tal:replace replace="structure element/title"/>
             <tal:condition condition="element/is_title">
             <br/>
-            <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_cours_plan&amp;macro=affichage_elements_titre&amp;id_titre=${element/id}&amp;mode_etudiant=${mode_etudiant}" 
+            <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_cours_plan&amp;macro=affichage_elements_titre&amp;id_titre=${element/id}&amp;mode_etudiant=${mode_etudiant}"
                data-reveal-id="reveal-main" data-reveal-ajax="true"
                tal:condition="not:expand_titre">
                |___-> VOIR

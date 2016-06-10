@@ -2,7 +2,7 @@
     <h2>
         <i class="fa fa-desktop"></i><tal:block i18n:translate="">Affichage</tal:block>
     </h2>
-    <ul class="button-group radius even-2"
+    <ul class="button-group round even-2"
         tal:define="tab tab | nothing;
                     menu_aff python:context.test(tab, '&amp;tab=%s' % tab, '')">
         <li>
@@ -37,11 +37,11 @@
         <dl>
             <dd tal:repeat="course_action my_view/course_actions">
                 <span class="right">
-                <a class="dropdown" data-options="align:bottom" 
+                <a class="dropdown" data-options="align:bottom"
                    tal:attributes="data-dropdown course_action/course_actions_id">
                     <i class="fa fa-cog fa-lg"></i>
                 </a>
-                <ul tal:attributes="id course_action/course_actions_id" 
+                <ul tal:attributes="id course_action/course_actions_id"
                     class="f-dropdown" data-dropdown-content>
                     <li tal:repeat="action_dict course_action/course_actions_list">
                         <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
