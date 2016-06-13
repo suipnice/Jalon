@@ -30,4 +30,4 @@ obj.creerSousObjet("Forum", "Discussion générale", "Discutez ici librement du 
 obj.setProperties({"DateDerniereModif" : DateTime()})
 #context.plone_log("---------- ajoutercours_script (Fin) ----------")
 
-context.REQUEST.RESPONSE.redirect("%s" % context.absolute_url())
+context.REQUEST.RESPONSE.redirect("%s?onglet=2" % context.absolute_url())

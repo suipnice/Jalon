@@ -2,7 +2,7 @@
 u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS dans différents formats."""
 
 import xml.etree.ElementTree as ET
-import HTMLParser
+#import HTMLParser
 
 import jalon_utils
 
@@ -24,6 +24,10 @@ LOG.critical('critical message')
 
 import string
 alphabet = list(string.ascii_uppercase)
+
+import lxml
+#lxml parser est plus permissif qu'elementTree : grace a l'option "recover" il est capable d'ignorer les balises attributs html non conforms en XML.
+parser_lxml = lxml.etree.XMLParser(recover=True)
 
 
 def getExoTXT(context, format="GIFT", version="latest"):
@@ -166,7 +170,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         else:
             exoXML = ET.Element("error")
             exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
-        return ET.tostring(exoXML)
+        return ET.tostring(exoXML, encoding="utf-8")
 
     else:
         return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
@@ -174,9 +178,13 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers OLX:
-    LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
-    chaine = '<div class="enonce">%s</div>' % jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
-    exoXML.append(ET.fromstring(chaine))
+    #LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
+    enonce = jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
+    #enonce = jalon_utils.convertHTMLToXHTML(enonce)
+    enonce = '<div class="enonce">%s</div>' % enonce
+
+    exoXML.append(ET.fromstring(enonce, parser=parser_lxml))
+
     if parsed_exo["options_checkbox"] == 1:
         # Checkbox buttons
         element = "choiceresponse"
@@ -211,6 +219,7 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
                                attrib=attributs_sousElement)
     liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
     liste_id_bons = []
+    liste_id_mauvais = []
     nb_rep = 0
     for ligne in liste_bons:
         rep = ligne.strip()
@@ -224,6 +233,7 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
     for ligne in liste_mauvais:
         rep = ligne.strip()
         if rep != "":
+            liste_id_mauvais.append(alphabet[nb_rep])
             nb_rep = nb_rep + 1
             reponse = ET.SubElement(elementXML, "choice", attrib={"correct": "false", "explanation-id": "incorrect"})
             reponse.text = ligne
@@ -231,9 +241,15 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
     if parsed_exo["options_checkbox"] == 1:
         # en mode "checkbox", on place les feedbacks en compoundhint, a l'interieur du checkboxgroup
         if parsed_exo["feedback_bon"] != "":
-            bonnes_reps = " ".join(liste_id_bons)
-            elementXML = ET.SubElement(elementXML, "compoundhint", attrib={"value": bonnes_reps})
-            elementXML.text = parsed_exo["feedback_bon"].decode("utf-8")
+            reps = " ".join(liste_id_bons)
+            feedback = ET.SubElement(elementXML, "compoundhint", attrib={"value": reps})
+            feedback.text = parsed_exo["feedback_bon"].decode("utf-8")
+        # Malheuresement, avec cette méthode le feedback de mauvaise réponse n'apparait que si toutes les mauvaises sont cochées.
+        # il faudrait trouver le moyen de les afficher si au moins une est cochée.
+        if parsed_exo["feedback_mauvais"] != "":
+            reps = " ".join(liste_id_mauvais)
+            feedback = ET.SubElement(elementXML, "compoundhint", attrib={"value": reps})
+            feedback.text = parsed_exo["feedback_mauvais"].decode("utf-8")
 
     if parsed_exo["hint"] != "" or parsed_exo["help"] != "":
         elementXML = ET.SubElement(exoXML, "demandhint")
@@ -251,16 +267,16 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
             if parsed_exo["feedback_mauvais"] != "":
                 feedback = ET.SubElement(elementXML, "targetedfeedback", attrib={"explanation-id": "incorrect"})
                 chaine = '<div class="detailed-targeted-feedback feedback-hint-incorrect"><div class="hint-label">Incorrect :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_mauvais"]
-                feedback.append(ET.fromstring(chaine))
+                feedback.append(ET.fromstring(chaine, parser=parser_lxml))
             if parsed_exo["feedback_bon"] != "":
                 feedback = ET.SubElement(elementXML, "targetedfeedback", attrib={"explanation-id": "correct"})
                 chaine = '<div class="detailed-targeted-feedback feedback-hint-correct"><div class="hint-label">Correct :</div><div class="hint-text">%s</div></div>' % parsed_exo["feedback_bon"]
-                feedback.append(ET.fromstring(chaine))
+                feedback.append(ET.fromstring(chaine, parser=parser_lxml))
 
     if parsed_exo["feedback_general"] != "":
         elementXML = ET.SubElement(exoXML, "solution")
         chaine = '<div class="detailed-solution"><p>Solution</p><p>%s</p></div>' % parsed_exo["feedback_general"]
-        elementXML.append(ET.fromstring(chaine))
+        elementXML.append(ET.fromstring(chaine, parser=parser_lxml))
 
     return exoXML
 
@@ -753,7 +769,7 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
                                                "simpleChoice",
                                                attrib={"identifier": rep_id,
                                                        "fixed":      "false"})
-                    elementXML.text = rep
+                    elementXML.text = rep.decode("utf-8")
 
         if parsed_exo["feedback%s" % index] != "":
             elementXML = ET.SubElement(assessmentItem,

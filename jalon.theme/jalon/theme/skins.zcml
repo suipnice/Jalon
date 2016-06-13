@@ -13,6 +13,5 @@
        by replacing the previous lines with this one:
   <cmf:registerDirectory name="skins" directory="skins" recursive="True" />
   -->
-  <cmf:registerDirectory name="jalon_theme_ckeditor_script" directory="skins" recursive="True" />
 
 </configure>

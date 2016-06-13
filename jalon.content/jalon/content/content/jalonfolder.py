@@ -35,11 +35,11 @@ from logging import getLogger
 LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
-LOG.debug('debug message')
-LOG.info('info message')
-LOG.warn('warn message')
-LOG.error('error message')
-LOG.critical('critical message')
+#LOG.debug('debug message')
+#LOG.info('info message')
+#LOG.warn('warn message')
+#LOG.error('error message')
+#LOG.critical('critical message')
 """
 
 JalonFolderSchema = ATFolderSchema.copy() + atpublic.Schema((
@@ -190,15 +190,9 @@ class JalonFolder(ATFolder):
         classe = self.getComplement()
         if not classe:
             #1er  cas : Aucune classe n'existe pour cet utilisateur
-
-            #member = self.portal_membership.getMemberById(authMember)
             member = self.getInfosMembre(authMember)
             auth_email = member["email"]
             fullname = member["fullname"]
-            #if not fullname:
-            #    fullname = member.getProperty("displayName")
-            #if not auth_email:
-            #    auth_email = str(member.getProperty("mail"))
             groupement = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "2", "qclass": ""})
             if groupement["status"] == "OK":
                 idClasse = self.wims("creerClasse", {"authMember": authMember, "fullname": fullname, "auth_email": auth_email, "type": "0", "titre_classe": "Mes exercices", "qclass": groupement["class_id"]})
@@ -214,8 +208,6 @@ class JalonFolder(ATFolder):
         else:
             #2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.
             #print "Classe %s" % self.getComplement()
-            #exercices={}
-            #try:
             exercices = self.wims("getExercicesWims",
                                   {"authMember": authMember,
                                    "qclass": "%s_1" % self.getComplement(),
@@ -304,7 +296,7 @@ class JalonFolder(ATFolder):
                         self.invokeFactory(type_name='JalonRessourceExterne', id=idobj)
                         obj = getattr(self, idobj)
                         video = self.searchElasticsearch(type_search="video", term_search=video_id)
-                        LOG.info(video)
+                        #LOG.info(video)
                         param = {"Title":                video["title"],
                                  "TypeRessourceExterne": "Video",
                                  "Videourl":             video["full_url"],
@@ -325,71 +317,161 @@ class JalonFolder(ATFolder):
         c = a.difference(b)
         return c
 
-    def getListeCoursEns(self, subject, authMember):
+    def getMesCoursView(self, user, tab=None):
+        #LOG.info("----- getMesCoursView -----")
+
+        folder_link = self.absolute_url()
+        is_manager = user.has_role("Manager")
+        actions_list = [{"css_class":   "button create expand",
+                         "action_link": "%s/folder_form?macro=macro_mescours_actions&amp;formulaire=add_course" % folder_link,
+                         "action_icon": "fa fa-plus-circle",
+                         "action_name": "Créer un cours"},
+                        {"css_class":   "button",
+                         "action_link": "%s/lister_auteur" % folder_link,
+                         "action_icon": "fa fa-code-fork",
+                         "action_name": "Dupliquer un cours"}]
+        if not is_manager:
+            del actions_list[-1]
+
+        if not tab:
+            tab = "1" if self.getComplement() == "True" else "2"
+        tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
+                      "tab_link":  "%s?onglet=1" % folder_link,
+                      "tab_icon":  "fa fa-star fa-fw",
+                      "tab_name":  "Favoris"},
+                     {"css_class": "button small selected" if tab == "2" else "button small secondary",
+                      "tab_link":  "%s?onglet=2" % folder_link,
+                      "tab_icon":  "fa fa-user fa-fw",
+                      "tab_name":  "Auteur"},
+                     {"css_class": "button small selected" if tab == "3" else "button small secondary",
+                      "tab_link":  "%s?onglet=3" % folder_link,
+                      "tab_icon":  "fa fa-users fa-fw",
+                      "tab_name":  "Co-auteur"},
+                     {"css_class": "button small selected" if tab == "4" else "button small secondary",
+                      "tab_link":  "%s?onglet=4" % folder_link,
+                      "tab_icon":  "fa fa-graduation-cap fa-fw",
+                      "tab_name":  "Lecteur"},
+                     {"css_class": "button small selected" if tab == "5" else "button small secondary",
+                      "tab_link":  "%s?onglet=5" % folder_link,
+                      "tab_icon":  "fa fa-folder fa-fw",
+                      "tab_name":  "Archives"}]
+        return {"tab":          tab,
+                "is_manager":   is_manager,
+                "actions_list": actions_list,
+                "tabs_list":    tabs_list}
+
+    def getInfosCours(self, cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list):
+        #LOG.info("----- getInfosCours -----")
+
+        cours_infos = {"id":                cours_brain.getId,
+                       "title":             cours_brain.Title,
+                       "short_title":       self.getShortText(cours_brain.Title),
+                       "short_description": self.getPlainShortText(cours_brain.Description, 210),
+                       "is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(cours_brain.getDateDerniereActu, member_login_time) > 0 else "",
+                       "modified":          cours_brain.modified,
+                       "url_cours":         cours_brain.getURL,
+                       "is_etudiants":      "fa fa-check fa-lg no-pad success" if len(cours_brain.getRechercheAcces) > 0 else "fa fa-times fa-lg no-pad warning",
+                       "is_password":       "fa fa-check fa-lg no-pad success" if cours_brain.getLibre else "fa fa-times fa-lg no-pad warning",
+                       "is_public":         "fa fa-check fa-lg no-pad success" if cours_brain.getAcces == "Public" else "fa fa-times fa-lg no-pad warning",
+                       "actions_list":      actions_list}
+        if onglet != "2":
+            cours_author = cours_brain.getAuteurPrincipal
+            if not cours_author:
+                cours_author = cours_brain.Creator
+            if cours_author in authors_dict:
+                cours_infos["name_auteur_cours"] = authors_dict[cours_author]
+            else:
+                name_auteur_cours = self.getInfosMembre(cours_author)["fullname"]
+                authors_dict[cours_author] = name_auteur_cours
+                cours_infos["name_auteur_cours"] = name_auteur_cours
+
+        return cours_infos
+
+    def getListeCoursEns(self, onglet, member):
+        #LOG.info("----- getListeCoursEns -----")
         """ Renvoi la liste des cours pour authMember."""
-
-        listeCours = []
-        listeCoursId = []
-        listeTousCours = []
-        authMemberId = authMember.getId()
+        courses_list = []
+        courses_ids_list = []
+        courses_list_filter = []
+        member_id = member.getId()
+        member_login_time = member.getProperty('login_time', None)
         portal_catalog = getToolByName(self, "portal_catalog")
-        filtre = {"portal_type": "JalonCours"}
-        if subject == "favori":
-            filtre["Subject"] = authMemberId
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId, Subject=authMemberId))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId, Subject=authMemberId)))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId, Subject=authMemberId)))
-        else:
-            listeTousCours = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMemberId))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMemberId)))
-            listeTousCours.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=authMemberId)))
-        listeTousCours.extend(list(self.getFolderContents(contentFilter=filtre)))
 
-        dicoAuteur = {}
-        for cours in listeTousCours:
-            if not cours.getId in listeCoursId:
-                if authMemberId in cours.Subject:
-                    favori = {"val": "Oui", "icon": "fa-star"}
+        actions_list = [{"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_favorite",
+                         "action_icon": "fa fa-star fa-fw",
+                         "action_name": "Ajouter aux favoris"},
+                        {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=duplicate_course",
+                         "action_icon": "fa fa-code-fork fa-fw",
+                         "action_name": "Dupliquer"},
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=purge_course&amp;onglet=%s" % onglet,
+                         "action_icon": "fa fa-filter fa-fw",
+                         "action_name": "Purger les travaux étudiants"},
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_wims_activity&amp;onglet=%s" % onglet,
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer les activités WIMS"},
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=add_archive",
+                         "action_icon": "fa fa-folder fa-fw",
+                         "action_name": "Archiver ce cours"},
+                        {"action_url": "/folder_form?macro=macro_mescours_actions&amp;formulaire=delete_course&amp;onglet=%s" % onglet,
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer ce cours"}]
+
+        filtre = {"portal_type": "JalonCours"}
+        if onglet == "1":
+            filtre["Subject"] = member_id
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, Subject=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, Subject=member_id)))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            actions_list[0] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_favorite",
+                               "action_icon": "fa fa-star-o fa-fw warning",
+                               "action_name": "Retirer des favoris"}
+            if len(courses_list):
+                self.setComplement("True")
+            else:
+                self.setComplement("False")
+        if onglet == "2":
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+        if onglet == "3":
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
+            del actions_list[1]
+            del actions_list[-1]
+        if onglet == "4":
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[1]
+            del actions_list[-1]
+        if onglet == "5":
+            filtre["getArchive"] = member_id
+            courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=member_id, getArchive=member_id))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id, getArchive=member_id)))
+            courses_list.extend(list(self.getFolderContents(contentFilter=filtre)))
+            actions_list[-2] = {"action_url":  "/folder_form?macro=macro_mescours_actions&amp;formulaire=remove_archive",
+                                "action_icon": "fa fa-folder-open fa-fw warning",
+                                "action_name": "Désarchiver ce cours"}
+
+        messages_dict = {"1": "Vous n'avez aucun cours en favoris.",
+                         "2": "Vous n'avez pas encore de cours dans Jalon. Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.",
+                         "3": "Vous n'êtes co-auteur d'aucun cours.",
+                         "4": "Vous n'êtes lecteur d'aucun cours.",
+                         "5": "Vous n'avez aucun cours en archives."}
+        if not courses_list:
+            return {"is_courses_list": False,
+                    "message": messages_dict[onglet]}
+        authors_dict = {}
+        for cours_brain in courses_list:
+            if not cours_brain.getId in courses_ids_list:
+                if not onglet in ["1", "5"]:
+                    if (not member_id in cours_brain.Subject) and (not member_id in cours_brain.getArchive):
+                        courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
                 else:
-                    favori = {"val": "Non", "icon": "fa-star-o"}
-                auteur_cours = cours.getAuteurPrincipal
-                if not auteur_cours:
-                    auteur_cours = cours.Creator
-                if auteur_cours in dicoAuteur:
-                    name_auteur_cours = dicoAuteur[auteur_cours]
-                else:
-                    name_auteur_cours = self.getInfosMembre(auteur_cours)["fullname"]
-                    dicoAuteur[auteur_cours] = name_auteur_cours
-                role = {"is_creator": True, "is_auteur": False, "is_co_auteur": False, "is_lecteur": False, "affichage": "Auteur"}
-                roles = cours.getRoleCat
-                if authMemberId in roles["auteur"]:
-                    role = {"is_creator": True, "is_auteur": True, "is_co_auteur": False, "is_lecteur": False, "affichage": "Auteur"}
-                if authMemberId in roles["coauteur"]:
-                    role = {"is_creator": False, "is_auteur": False, "is_co_auteur": True, "is_lecteur": False, "affichage": "Co-auteur"}
-                if authMemberId in roles["colecteur"]:
-                    role = {"is_creator": False, "is_auteur": False, "is_co_auteur": False, "is_lecteur": True, "affichage": "Lecteur"}
-                listeCours.append({"id": cours.getId,
-                                   "title": cours.Title,
-                                   "short_title": self.getShortText(cours.Title),
-                                   #"description": cours.Description,
-                                   "short_description": self.getPlainShortText(cours.Description, 210),
-                                   "auteur_cours": auteur_cours,
-                                   "name_auteur_cours": name_auteur_cours,
-                                   "is_creator": role["is_creator"],
-                                   "is_auteur": role["is_auteur"],
-                                   "is_co_auteur": role["is_co_auteur"],
-                                   "is_lecteur": role["is_lecteur"],
-                                   "role_affichage": role["affichage"],
-                                   "is_nouveau": cmp(cours.getDateDerniereActu, authMember.getProperty('login_time', None)) > 0,
-                                   "modified": cours.modified,
-                                   "is_favori": favori["val"],
-                                   "favori_icon": favori["icon"],
-                                   "url_cours": cours.getURL,
-                                   "is_etudiants": len(cours.getRechercheAcces) > 0,
-                                   "is_password": cours.getLibre,
-                                   "is_public": cours.getAcces == 'Public'})
-                listeCoursId.append(cours.getId)
-        return list(listeCours)
+                    courses_list_filter.append(self.getInfosCours(cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list))
+                courses_ids_list.append(cours_brain.getId)
+        return {"is_courses_list": True,
+                "courses_list":    list(courses_list_filter)}
 
     def getInfosApogee(self, code, type):
         portal = self.portal_url.getPortalObject()
@@ -414,11 +496,6 @@ class JalonFolder(ATFolder):
     def getInfosMembre(self, username):
         #self.plone_log("getInfosMembre")
         return jalon_utils.getInfosMembre(username)
-
-    #[DEPRECATED]
-    #getDisplayName() permet d'obtenir le nom (+prenom) d'un utilisateur
-    #def getDisplayName(self, user_id, request=None, portal=None):
-    #    return jalon_utils.getDisplayName(user_id, request, portal)
 
     def getPropertiesMessages(self, key=None):
         jalon_properties = self.portal_jalon_properties
@@ -451,7 +528,6 @@ class JalonFolder(ATFolder):
 
         if categorie == "1":
             dicoUE = {}
-            #groupes = portal_jalon_bdd.getGroupesEtudiant(COD_ETU)
             #pour les nouveaux étudiant qui n'ont pas encore de diplome
             if not diplomes:
                 listeCours = []
@@ -785,16 +861,6 @@ class JalonFolder(ATFolder):
                              "affichage": _(u"Lien catalogue"),
                              "aide":      _(u"Trouver une oeuvre ou une revue dans le catalogue de la BU"),
                              "checked":   checked})
-        """
-        if jalon_properties["activer_lille1pod"]:
-            checked = ""
-            if len(typeLien) == 0:
-                checked = "checked"
-            typeLien.append({"macro":     "ajout-elasticsearch",
-                             "affichage": _(u"Lien UNSPOD"),
-                             "aide":      _(u"Trouver une vidéo dans UNSPOD"),
-                             "checked":   checked})
-        """
         return typeLien
 
     def getShortText(self, text, limit=75):
@@ -861,31 +927,6 @@ class JalonFolder(ATFolder):
         else:
             for mot in mots:
                 retour.append({"tag": urllib.quote(mot), "titre": mot})
-        """
-        if self.getId() == "Wims":
-            tags = self.getTagsWims()
-            for mot in mots:
-                try:
-                    retour.append({"tag": urllib.quote(mot), "titre": tags[mot]})
-                except:
-                    retour.append({"tag": urllib.quote(mot), "titre": mot})
-
-        if not self.getId() in ["Webconference", "Sonorisation", "Wims"]:
-            for mot in mots:
-                retour.append({"tag": urllib.quote(mot), "titre": mot})
-        """
-
-        """# DEBUG start
-        print "\n••• getTag •••\n"
-        print "self.id ->", self.getId()
-        print "tag ->", tag
-        print "mots ->", mots
-        print "retour ->", retour
-        print "\n"
-        # DEBUG end"""
-
-        #self.plone_log( retour )
-
         return retour
 
     def ajouterTag(self, tag):
@@ -959,12 +1000,19 @@ class JalonFolder(ATFolder):
                 classe_id = dico[auteur]
                 dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
-                rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonfolder.py/dupliquerCours", "message": "parametres de la requete : %s" % dico_wims})
+                rep_wims = self.wims("verifierRetourWims",
+                                     {"rep": rep_wims,
+                                      "fonction": "jalonfolder.py/dupliquerCours",
+                                      "message":  "parametres de la requete : %s\ncours d'origine : %s\nduplicata : %s\nauteur : %s\n" % (dico_wims, idcours, idobj, auteur)})
                 if rep_wims["status"] == "OK":
                     #LOG.info('rep_wims["status"] : %s' % rep_wims["status"])
                     new_listeClasses[index][auteur] = rep_wims["new_class"]
                 else:
-                    message = _(u"Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de contacter votre administrateur svp.")
+                    portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
+                    admin_link = portal_jalon_properties.getLienContact()
+                    site_title = self.getInfosConnexion()['site']
+                    admin_link = u"%s?subject=[%s] Erreur de duplication WIMS&amp;body=cours d'origine : %s%%0Dduplicata : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (admin_link, site_title, idcours, idobj)
+                    message = _(u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
                     self.plone_utils.addPortalMessage(message, type='error')
         #LOG.info('new_listeClasses : %s' % new_listeClasses)
 
@@ -973,8 +1021,6 @@ class JalonFolder(ATFolder):
                  "Description":            cours.Description(),
                  "Elements_glossaire":     cours.getGlossaire(),
                  "Elements_bibliographie": cours.getBibliographie(),
-                 # ListClasse ne passe pas via setproperties : "AttributeError: 'dict' object has no attribute 'strip'""
-                 #"Listeclasses":           new_listeClasses
                  }
         duplicata.setProperties(param)
         duplicata.setElementsCours(infos_element)
@@ -1225,8 +1271,6 @@ class JalonFolder(ATFolder):
         """
 
         listeSubject = list(self.Subject())
-        #etiquette = jalon_utils.getDisplayName(user_source)
-        #etiquette = etiquette.encode("utf-8")
         etiquette = jalon_utils.getInfosMembre(user_source)["fullname"]
 
         authMember = self.aq_parent.getId()
@@ -1465,7 +1509,7 @@ class JalonFolder(ATFolder):
         jalon_properties = getToolByName(self, "portal_jalon_properties")
         return jalon_properties.getJalonPhoto(user_id)
 
-    #   Suppression marquage HTML
+    #Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
 

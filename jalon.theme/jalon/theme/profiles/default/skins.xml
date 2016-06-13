@@ -25,9 +25,6 @@
  <object name="jalon_theme_dynamic_script"
     meta_type="Filesystem Directory View"
     directory="jalon.theme:skins/jalon_theme_dynamic_script"/>
- <object name="jalon_theme_ckeditor_script"
-    meta_type="Filesystem Directory View"
-    directory="jalon.theme:skins/jalon_theme_ckeditor_script"/>
  <object name="jalon_theme_styles"
     meta_type="Filesystem Directory View"
     directory="jalon.theme:skins/jalon_theme_styles"/>
@@ -52,10 +49,8 @@
            insert-after="custom"/>
     <layer name="jalon_theme_dynamic_script"
            insert-after="jalon_theme_custom_templates"/>
-    <layer name="jalon_theme_ckeditor_script"
-           insert-after="jalon_theme_dynamic_script"/>
     <layer name="jalon_theme_styles"
-           insert-after="jalon_theme_ckeditor_script"/>
+           insert-after="jalon_theme_dynamic_script"/>
 </skin-path>
 
 </object>

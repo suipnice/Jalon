@@ -213,6 +213,14 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de la dernière Actu du cours"),
                                     description=_(u"Date de la dernière Actu du cours"),)),
+    LinesField("archive",
+               required=False,
+               accessor="getArchive",
+               searchable=False,
+               default=[],
+               widget=LinesWidget(label=_(u"Utilisateur ayant archivé ce cours."),
+                                  description=_(u"Archive(s) du cours."),
+                                  visible={'view': 'visible', 'edit': 'invisible'},)),
 ))
 
 
@@ -360,7 +368,6 @@ class JalonCours(ATFolder):
 
     def getAffElement(self, idElement, attribut):
         #self.plone_log("getAffElement")
-        #infos_element = self.getInfosElementCours(idElement)
         infos_element = self.getElementCours(idElement)
         if infos_element:
             if infos_element[attribut] != "":
@@ -387,12 +394,6 @@ class JalonCours(ATFolder):
         except:
             idMember = authMember
         if idMember and not "@" in idMember:
-            #membership = getToolByName(portal, "portal_membership")
-            #member = membership.getMemberById(idMember)
-            #diplomes = authMember.getProperty("unsdiplomes", [])
-            #if diplomes is None:
-            #    diplomes = []
-
             if portal_jalon_bdd.getTypeBDD() == "apogee":
                 COD_ETU = member.getProperty("supannEtuId", member.getProperty("supannAliasLogin"))
             if portal_jalon_bdd.getTypeBDD() == "sqlite":
@@ -409,7 +410,6 @@ class JalonCours(ATFolder):
             ##self.plone_log(publics)
             if not publics:
                 #pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
-                #annonces.append(annonce)
                 suite = 0
             if suite and ("colecteurs*-*colecteurs" in publics) and (idMember in self.getCoLecteurs()):
                 annonces.append(annonce)
@@ -672,9 +672,6 @@ class JalonCours(ATFolder):
         for acces in listeAcces:
             type, code = acces.split("*-*")
             if type == "etape":
-                #suite au probleme de DAEU-B ce conditionnement à été créé pour cette fonction
-                #ainsi que pour getInfosListeAcces et dans jalonfoler getInfosApogee et getListeCours
-                #retour = apogee.getInfosEtape(*code.rsplit("-", 1))
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
@@ -731,9 +728,6 @@ class JalonCours(ATFolder):
         for acces in listeAcces:
             type, code = acces.split("*-*")
             if type == "etape":
-                #suite au probleme de DAEU-B ce conditionnement à été créé pour cette fonction
-                #ainsi que pour getInfosListeAcces et dans jalonfoler getInfosApogee et getListeCours
-                #retour = apogee.getInfosEtape(*code.rsplit("-", 1))
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
@@ -1638,14 +1632,32 @@ class JalonCours(ATFolder):
         self.setProperties({"DateDerniereModif": DateTime()})
         return None
 
-    def setFavoris(self, authMember):
-        #self.plone_log("setFavoris")
+    def modifyFavorite(self, user_id):
+        #self.plone_log("----- modifyFavorite -----")
         subjects = list(self.Subject())
-        if not authMember in subjects:
-            subjects.append(authMember)
+        if not user_id in subjects:
+            subjects.append(user_id)
+            archives = list(self.getArchive())
+            if user_id in archives:
+                archives.remove(user_id)
+                self.setArchive(tuple(archives))
         else:
-            subjects.remove(authMember)
+            subjects.remove(user_id)
         self.setSubject(tuple(subjects))
+        self.setProperties({"DateDerniereModif": DateTime()})
+
+    def modifyArchive(self, user_id):
+        #self.plone_log("----- modifyArchive -----")
+        archives = list(self.getArchive())
+        if not user_id in archives:
+            archives.append(user_id)
+            subjects = list(self.Subject())
+            if user_id in subjects:
+                subjects.remove(user_id)
+                self.setSubject(tuple(subjects))
+        else:
+            archives.remove(user_id)
+        self.setArchive(tuple(archives))
         self.setProperties({"DateDerniereModif": DateTime()})
 
     def setLecture(self, lu, idElement, authMember):
@@ -1743,6 +1755,9 @@ class JalonCours(ATFolder):
             return 0
         if espace in ["ajout-supports", "ajout-activite"]:
             return self.isInPlan(idElement, listeElement)
+
+    def isCourseOwner(self, user_id):
+        return True if self.aq_parent.getId() == user_id else False
 
     def isInscriptionsLibre(self):
         #self.plone_log("isInscriptionsLibre")
@@ -2411,7 +2426,7 @@ class JalonCours(ATFolder):
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
 
     def retirerElement(self, idElement):
-        #self.plone_log("retirerElement")
+        #LOG.info("----- retirerElement -----")
         elements_glossaire = list(self.getGlossaire())
         if idElement in elements_glossaire:
             elements_glossaire.remove(idElement)
@@ -2433,7 +2448,7 @@ class JalonCours(ATFolder):
 
     def retirerElementPlan(self, idElement, listeElement=None, force_WIMS=False):
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
-        #LOG.info("retirerElementPlan")
+        #LOG.info("----- retirerElementPlan -----")
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())
