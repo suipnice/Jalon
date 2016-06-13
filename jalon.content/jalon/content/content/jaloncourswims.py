@@ -4,7 +4,7 @@
 from zope.interface import implements
 
 from Products.Archetypes.public import *
-#from Products.ATExtensions.ateapi import *
+# from Products.ATExtensions.ateapi import *
 
 from Products.ATContentTypes.content.document import ATDocument, ATDocumentSchema
 from Products.ATContentTypes.content.base import registerATCT
@@ -15,6 +15,11 @@ from persistent.dict import PersistentDict
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonCoursWims
+
+#import os
+import json
+import copy
+import jalon_utils
 
 # Messages de debug :
 from logging import getLogger
@@ -28,20 +33,15 @@ LOG.error('error message')
 LOG.critical('critical message')
 """
 
-#import os
-import json
-import copy
-import jalon_utils
-
 languages = DisplayList((
-    #('', _(u'Laisser les apprenants choisir')),
+    # ('', _(u'Laisser les apprenants choisir')),
     ('', _(u'Par défaut (français)')),
     ('fr', 'Français'),
     ('en', 'English'),
     ('it', 'Italiano'),
     ('cn', '简体中文(中国)'),
 ))
-#Correspondance des langues Plone <=> WIMS :
+# Correspondance des langues Plone <=> WIMS :
 # zh-cn <=> cn
 # (les autres code de langues correspondent)
 
@@ -170,7 +170,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
 
     # pour ajouter une propriete modifiable, il faut l'ajouter egalement dans "activite_edit.py"
 
-    #RecordField("infos_element",
+    # RecordField("infos_element",
     #            required=False,
     #            accessor="getInfosElement",
     #            searchable=False,
@@ -183,14 +183,17 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
 _dicoRep = {"Image"                    : "Fichiers",
             "File"                     : "Fichiers",
             "Page"                     : "Fichiers",
+
             "Lienweb"                  : "Externes",
             "Lien web"                 : "Externes",
             "Lecteurexportable"        : "Externes",
             "Lecteur exportable"       : "Externes",
             "Referencebibliographique" : "Externes",
             "Reference bibliographique": "Externes",
+
             "Presentationssonorisees"  : "Sonorisation",
             "Presentations sonorisees" : "Sonorisation",
+
             "ExerciceWims"             : "Wims",
             "ExercicesWims"            : "Wims",
             "Exercice Wims"            : "Wims"
@@ -198,7 +201,6 @@ _dicoRep = {"Image"                    : "Fichiers",
 
 
 class JalonCoursWims(ATDocument):
-
     u"""
     Une autoevaluation ou un examen pour Jalon.
 
@@ -223,17 +225,17 @@ class JalonCoursWims(ATDocument):
     _infos_element = {}
 
     def getInfosElement(self, key=None):
-        """ getInfosElement."""
+        """Get Infos Element."""
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
     def getElementCours(self, key=None):
-        u""" Renvoi vers la fonction getInfosElement() (utilisé depuis macro_form/detacher-cours)."""
+        u"""Renvoi vers la fonction getInfosElement() (utilisé depuis macro_form/detacher-cours)."""
         return self.getInfosElement(key)
 
     def getKeyInfosElement(self):
-        """getKeyInfosElement."""
+        """Get Key Infos Element."""
         return self._infos_element.keys()
 
     def setInfosElement(self, infos_element):
@@ -244,18 +246,18 @@ class JalonCoursWims(ATDocument):
             self._infos_element = infos_element
 
     def afficherRessource(self, idElement, dateAffichage, attribut):
-        """ Modifie les dates de la ressource pour activer/desactiver son affichage."""
+        """Modifie les dates de la ressource pour activer/desactiver son affichage."""
         # On agit directement sur l'activité
         if idElement == self.getId():
 
             portal = self.portal_url.getPortalObject()
-            #portal = portal_state.portal()
+            # portal = portal_state.portal()
             dico = {"authMember": portal.portal_membership.getAuthenticatedMember().getId()}
 
             # Affichage
             if attribut == "affElement":
                 aff_autorise = self.autoriser_Affichage()
-                #Si l'affichage de l'objet est impossible, on arrete la.
+                # Si l'affichage de l'objet est impossible, on arrete la.
                 #  (cas habituel : liste d'exos vide)
                 if not aff_autorise["val"]:
                     return aff_autorise
@@ -264,11 +266,11 @@ class JalonCoursWims(ATDocument):
                 dico["status"] = 1
 
                 portal_workflow = getToolByName(portal, "portal_workflow")
-                #Si l'etat de l'element était en mode "pending",
+                # Si l'etat de l'element était en mode "pending",
                 #  on le passe en mode "submit"
                 if portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow") != "pending":
                     portal_workflow.doActionFor(self, "submit", "jalon_workflow")
-            #Masquage
+            # Masquage
             else:
                 dico["status"] = 0
                 self.dateMasq = dateAffichage
@@ -292,18 +294,17 @@ class JalonCoursWims(ATDocument):
                 dico["attempts"] = self.attempts
                 dico["cut_hours"] = self.cut_hours
 
-                #Lors du 1er affichage de l'examen, on le crée
+                # Lors du 1er affichage de l'examen, on le crée
                 if dico["status"] and not self.idExam:
-                    #print "jaloncourswims/afficherRessource // dico =%s" % str(dico)
+                    # print "jaloncourswims/afficherRessource // dico =%s" % str(dico)
                     reponse = self.wims("creerExamen", dico)
                     self.idExam = str(reponse["exam_id"])
-                    # L'examen est créé, on lui ajoute alors la liste des
-                    # exercices de la feuille
+                    # L'examen est créé, on lui ajoute alors la liste des exercices de la feuille
                     reponse = self.wims("injecter_exercice", {"authMember": dico["authMember"], "qclass": dico["qclass"], "qsheet": dico["qsheet"], "qexam": self.idExam})
-                                # si l'examen existe deja, on lui applique
-                                # les modifications
+                    # si l'examen existe deja, on lui applique
+                    # les modifications
                 if self.idExam:
-                    #on cree un dictionnaire épuré, pour ne changer que le statut.
+                    # On cree un dictionnaire épuré, pour ne changer que le statut.
                     newdico = {"status": dico["status"], "qclass": dico["qclass"], "authMember": dico["authMember"]}
                     # une fois un examen activé, on ne peut plus le désactiver.
                     # le statut passe à 3 (périmé+caché) pour le masquer
@@ -316,7 +317,7 @@ class JalonCoursWims(ATDocument):
             else:
                 self.wims("modifierFeuille", dico)
 
-            #self.setProperties(dico)
+            # self.setProperties(dico)
             self.aq_parent.modifierInfosBoitePlan(self.getId(), {"affElement": self.getDateAff(), "masquerElement": self.getDateMasq()})
             self.reindexObject()
 
@@ -374,10 +375,10 @@ class JalonCoursWims(ATDocument):
                     permalien = objet['permalink']
                     dico = {"job": "putexo", "code": createurElement, "qclass": idClasse, "qsheet": self.idFeuille}
                     if permalien != "":
-                        #exemple de permalien : module=U2/analysis/oeffourier.fr&exo=addfourier2,addfourier1,addfourier4,addfourier3&qnum=1&qcmlevel=3
+                        # exemple de permalien : module=U2/analysis/oeffourier.fr&exo=addfourier2,addfourier1,addfourier4,addfourier3&qnum=1&qcmlevel=3
                         parsed_permalien = permalien.split("&", 1)
                         if len(parsed_permalien) == 1:
-                            #par defaut, si aucun parametre n'a ete defini, on definie au minima le parametre de sévérité
+                            # par defaut, si aucun parametre n'a ete defini, on definie au minima le parametre de sévérité
                             parsed_permalien.append("qcmlevel=1")
                         donnees_exercice = u"%s\nparams=%s\npoints=%s\nweight=%s\ntitle=%s\ndescription=%s" % (parsed_permalien[0],
                                                                                                                parsed_permalien[1],
@@ -417,17 +418,17 @@ class JalonCoursWims(ATDocument):
                         # Attention si la creation n'a pas eu lieu coté WIMS, il ne faut rien créer côté Jalon.
                         return rep_wims
 
-            #On ajoute l'activité aux relatedItems de l'objet.
+            # On ajoute l'activité aux relatedItems de l'objet.
             relatedItems = objet.getRelatedItems()
-            if not self in relatedItems:
+            if self not in relatedItems:
                 relatedItems.append(self)
                 objet.setRelatedItems(relatedItems)
                 objet.reindexObject()
 
-            #Et on ajoute l'exercice aux relatedItems de l'activité ??
+            # Et on ajoute l'exercice aux relatedItems de l'activité ??
             # ==> Inutile, l'activité connait deja ses listes d'objets.
-            #activiteRelatedItems = self.getRelatedItems()
-            #if not objet in activiteRelatedItems:
+            # activiteRelatedItems = self.getRelatedItems()
+            # if not objet in activiteRelatedItems:
             #   activiteRelatedItems.append(objet)
             #   self.setRelatedItems(activiteRelatedItems)
             #   self.reindexObject()
@@ -442,13 +443,13 @@ class JalonCoursWims(ATDocument):
     def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
         """ajouterInfosElement."""
         infos_element = copy.deepcopy(self.getInfosElement())
-        if not idElement in infos_element:
+        if idElement not in infos_element:
             infos_element[idElement] = {"titreElement": titreElement,
                                         "typeElement": typeElement,
                                         "createurElement": createurElement,
                                         "affElement": affElement,
                                         "masquerElement": ""}
-            #self.setInfos_element(infos_element)
+            # self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
     def ajouterTag(self, tag):
@@ -501,7 +502,7 @@ class JalonCoursWims(ATDocument):
         """
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
-        #cas des Autoevaluations activées:
+        # Cas des Autoevaluations activées:
         if actif and not self.idExam:
             # Cas d'un etudiant, on demande ses notes sur cette feuille
             if not isProf:
@@ -530,7 +531,7 @@ class JalonCoursWims(ATDocument):
 
         """
         identifiant = self.getId().split("-")
-        #LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
+        # LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
         if len(identifiant) > 1:
             return identifiant[1]
         else:
@@ -557,10 +558,10 @@ class JalonCoursWims(ATDocument):
                 auth_email = str(member.getProperty("mail"))
             idgroupement = self.getGroupement(auteur)
             if not idgroupement:
-                #cas ou l'utilisateur a tenté de créer une autoevaluation ou un examen sans etre passé une fois par les exercices WIMS
+                # Cas ou l'utilisateur a tenté de créer une autoevaluation ou un examen sans etre passé une fois par les exercices WIMS
                 rep_wims = '{"status": "ERROR", "message": "[jaloncourswims] Tentative de creation de classe WIMS sans groupement.","auteur":"%s"}' % auteur
                 self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/setClasse"})
-                #self.reindexObject()
+                # self.reindexObject()
                 return None
 
             classe = self.wims("creerClasse", {"authMember": auteur, "fullname": fullname, "auth_email": auth_email, "type": "1", "titre_classe": self.aq_parent.title_or_id(), "qclass": idgroupement})
@@ -634,7 +635,7 @@ class JalonCoursWims(ATDocument):
                            "classElement": self.test(affElement['val'] == 0 and attribut != "exercices", 'arrondi off', 'arrondi')
                            }
                     retour.append(new)
-        #if retour:
+        # if retour:
         #    retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
 
@@ -681,14 +682,14 @@ class JalonCoursWims(ATDocument):
             return {"status": "ERROR", "message": message}
 
         retour = {"pourcentage": "", "qualite": "", "listeNotes": [], "message": ""}
-        portal = self.portal_url.getPortalObject()
-        #cas des Autoevaluations activées:
+        # portal = self.portal_url.getPortalObject()
+        # Cas des Autoevaluations activées:
         if actif and not self.idExam:
             # Dans le cas d'un etudiant, on demande ses notes sur cette feuille
             if not isProf:
                 rep = self.wims("getNote", param)
-                #print "\n getnote : %s \n" % rep
-                #Si on obtient des notes, c'est au moins que l'etudiant a un compte dans cette classe
+                # print "\n getnote : %s \n" % rep
+                # Si on obtient des notes, c'est au moins que l'etudiant a un compte dans cette classe
                 if rep["status"] == "OK":
                     index = 0
                     totalNotes = 0.0
@@ -702,13 +703,13 @@ class JalonCoursWims(ATDocument):
                         try:
                             sur = rep["weights"][index]
                         except:
-                            #Dans le cas ou l'exercice n'a pas encore de poid défini dans WIMS, on le place à 1
+                            # Dans le cas ou l'exercice n'a pas encore de poid défini dans WIMS, on le place à 1
                             sur = 1
 
                         try:
                             note = ((float(score) / rep["require_points"][index]) * sur) * 100
                         except Exception as e:
-                            #dans certains cas, il semble que "score" soit une liste... ?
+                            # Dans certains cas, il semble que "score" soit une liste... ?
                             note = 0
                             erreur = True
                             liste_erreurs.append(score)
@@ -718,7 +719,7 @@ class JalonCoursWims(ATDocument):
                         note = "%.0f" % note
                         qualite = "%.2f" % rep["score_qualities"][index]
                         if site_lang == "fr":
-                            #note = str(note).replace(".", ",")
+                            # note = str(note).replace(".", ",")
                             qualite = str(qualite).replace(".", ",")
                         listeNotes.append({"note": note,
                                            "sur": sur,
@@ -737,10 +738,10 @@ class JalonCoursWims(ATDocument):
                         retour["note"] = 0
                     else:
                         retour["note"] = (totalNotes * float(self.getNoteMax())) / totalSur
-                    #DEBUG
+                    # DEBUG
                     retour["sheet_summaries"] = rep["sheet_summaries"]
                     if len(rep["sheet_summaries"]) > 1:
-                        #LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
+                        # LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
                         retour["pourcentage"] = rep["sheet_summaries"][0]
                         retour["qualite"] = (rep["sheet_summaries"][1] * float(self.getNoteMax())) / 10
                     else:
@@ -765,7 +766,7 @@ class JalonCoursWims(ATDocument):
                     return retour
 
             else:
-              #Pour l'auteur et le co-auteur, cas d'une autoevaluation active
+                # Pour l'auteur et le co-auteur, cas d'une autoevaluation active
                 if not detailed:
                     # dans le menu "exercices, on ne demande que les notes globales de la feuille
                     dico = {"job": "getsheetstats", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}
@@ -778,7 +779,7 @@ class JalonCoursWims(ATDocument):
                                                                "fonction": "jaloncourswims.py/getNotes",
                                                                "message": 'stats globales de la feuille demandees par un auteur/coauteur',
                                                                "requete": dico})
-                    #LOG.info('Retour WIMS = %s' % rep)
+                    # LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
                         for indice, poids in enumerate(rep["weights"]):
@@ -790,7 +791,7 @@ class JalonCoursWims(ATDocument):
                                 exo_qualite = "%.2f" % exo_qualite
                             except:
                                 exo_qualite = exo_note = "--"
-                                #print "EXCEPTION RAISE dans jalonCoursWims/getNotes! rep['sheet_got_details'] = %s" % rep["sheet_got_details"]
+                                # print "EXCEPTION RAISE dans jalonCoursWims/getNotes! rep['sheet_got_details'] = %s" % rep["sheet_got_details"]
 
                             if site_lang == "fr":
                                 exo_note = exo_note.replace(".", ",")
@@ -811,7 +812,7 @@ class JalonCoursWims(ATDocument):
                                                                "fonction": "jaloncourswims.py/getNotes",
                                                                "message": 'notes detaillees de la feuille demandees par un auteur/coauteur',
                                                                "requete": dico})
-                        #Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
+                        # Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
                         if rep["status"] == "OK":
                             # si les etudiants ont deja eu des notes une premiere fois sur cette feuille, et qu'on a ajouté ensuite un exo, les données risquent d'etre erronées. on ne passera surmeent pas un try
                             listETU = [x["id"] for x in rep["data_scores"]]
@@ -827,7 +828,7 @@ class JalonCoursWims(ATDocument):
                                     # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon
                                     # (user_id wims ayant pu etre tronqué par validerUserID + module raw transforme automatiquement . en @)
                                     # Si user["id"] n'est pas trouvé, on gardera simplement les infos données par WIMS.
-                                    #pour debug : user["first_name"] = "%s [direct from WIMS]" % user["first_name"]
+                                    # pour debug : user["first_name"] = "%s [direct from WIMS]" % user["first_name"]
                                     user["num_etu"] = "Non disp."
                                 user["user_quality"] = "%.2f" % ((float(user["user_quality"]) * float(self.getNoteMax())) / 10)
                                 user["user_percent"] = "%.2f" % user["user_percent"]
@@ -847,7 +848,7 @@ class JalonCoursWims(ATDocument):
                         rep["pourcentage"] = str(rep["pourcentage"]).replace(".", ",")
                         rep["qualite"] = str(rep["qualite"]).replace(".", ",")
                     return rep
-        #cas des Examens :
+        # cas des Examens :
         elif self.idExam:
 
             # on demande les infos de la feuille, pour connaitre le poid de chaque exercice.
@@ -870,11 +871,11 @@ class JalonCoursWims(ATDocument):
 
             # Dans le cas d'un etudiant, on demande ses notes sur cet exam
             if not isProf:
-                #on supprime qsheet pour ne pas interferer avec l'examen
+                # On supprime qsheet pour ne pas interferer avec l'examen
                 qsheet = param["qsheet"]
                 del param["qsheet"]
                 rep = self.wims("getNote", param)
-                #Si on obtient des notes, c'est au moins que l'etudiant a un compte dans cette classe
+                # Si on obtient des notes, c'est au moins que l'etudiant a un compte dans cette classe
 
                 retour["listeNotes"] = listeNotes
                 retour["status"] = rep["status"]
@@ -889,16 +890,16 @@ class JalonCoursWims(ATDocument):
                         retour["note"] = "--"
                     return retour
                 else:
-                    #on replace qsheet pour obtenir des infos globales
+                    # On replace qsheet pour obtenir des infos globales
                     retour["message"] = rep["message"]
                     param["qsheet"] = qsheet
 
-            #Pour l'auteur et le co-auteur, on demande les notes globales de l'examen s'il est actif
+            # Pour l'auteur et le co-auteur, on demande les notes globales de l'examen s'il est actif
             if isProf:
                 rep = json.loads(self.wims("callJob", {"job": "getexamscores", "code": quser, "qclass": param["qclass"], "qexam": self.getIdExam()}))
-                #Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
+                # Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
                 if rep["status"] == "OK":
-                    rep["score_max"] = (float(rep["score_max"]) * float(self.getNoteMax())) / 10
+                    rep["score_max"]  = (float(rep["score_max"]) * float(self.getNoteMax())) / 10
                     rep["score_mean"] = (float(rep["score_mean"]) * float(self.getNoteMax())) / 10
                     rep["score_max"]  = "%.2f" % rep["score_max"]
                     rep["score_mean"] = "%.2f" % rep["score_mean"]
@@ -922,7 +923,7 @@ class JalonCoursWims(ATDocument):
                             # Si user["id"] n'est pas trouvé, on gardera simplement les infos données par WIMS.
                             user["num_etu"] = "Non disp."
                         user["score"] = (float(user["score"]) * float(self.getNoteMax())) / 10
-                        user["score"]   = "%.2f" % user["score"]
+                        user["score"] = "%.2f" % user["score"]
                         if site_lang == "fr":
                             user["score"] = str(user["score"]).replace(".", ",")
                     return rep
@@ -940,7 +941,7 @@ class JalonCoursWims(ATDocument):
             retour["sheet_status"] = rep["sheet_status"]
             liste_exos_jalon = self.getListeExercices()
             nbExos_wims = len(rep["exolist"])
-            #for exo in rep["exolist"]:
+            # for exo in rep["exolist"]:
             for index, exo_jalon in enumerate(liste_exos_jalon):
                 if index < nbExos_wims:
                     sur = rep["exolist"][index]["weight"]
@@ -966,7 +967,7 @@ class JalonCoursWims(ATDocument):
         retour["score_mean"] = "-"
         retour["data_scores"] = ""
         retour["listeNotes"] = listeNotes
-        #retour["rep_wims"] = rep
+        # retour["rep_wims"] = rep
 
         return retour
 
@@ -995,7 +996,7 @@ class JalonCoursWims(ATDocument):
                     id_etu  = '"%s"' % etudiant["id"]
                     if self.idExam:
                         score = '"%s"' % etudiant["score"]
-                        #if sep == ",":
+                        # if sep == ",":
                         #    score = score.replace(",", ".")
                         if site_lang == "fr":
                             score = score.replace(".", ",")
@@ -1006,7 +1007,7 @@ class JalonCoursWims(ATDocument):
                         if site_lang == "fr":
                             note = note.replace(".", ",")
                             qualite = qualite.replace(".", ",")
-                        #if sep == ",":
+                        # if sep == ",":
                         #    qualite = qualite.replace(",", ".")
                         ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
                     export.append(sep.join(ligne))
@@ -1034,10 +1035,10 @@ class JalonCoursWims(ATDocument):
         """
         param = {}
         if (isProf or quser == authUser):
-            param["job"] = "getlog"
+            param["job"]    = "getlog"
             param["qclass"] = self.getClasse()
-            param["quser"] = quser
-            param["code"] = authUser
+            param["quser"]  = quser
+            param["code"]   = authUser
             if self.idExam:
                 param["qexam"] = self.getIdExam()
                 option = "exams"
@@ -1057,7 +1058,7 @@ class JalonCoursWims(ATDocument):
             rep_wims["user_log"].remove("")
         except:
             pass
-        #print "Retour WIMS de getUserLog : %s " % rep_wims
+        # print "Retour WIMS de getUserLog : %s " % rep_wims
         return rep_wims
 
     def getWimsLang(self, site_lang=''):
@@ -1072,7 +1073,7 @@ class JalonCoursWims(ATDocument):
             return self.getWims_lang()
 
     def isActif(self):
-        u""" Permet de savoir si l'activité courante est active (affichée ou masquée)."""
+        u"""Permet de savoir si l'activité courante est active (affichée ou masquée)."""
         return self.isAfficherElement(self.dateAff, self.dateMasq)["val"] == 1
 
     def isAfficherElement(self, affElement, masquerElement):
@@ -1145,8 +1146,8 @@ class JalonCoursWims(ATDocument):
             objet.reindexObject()
 
     def retirerTousElements(self, force_WIMS=False):
-        """ Retire tous les elements de l'activite (exercices et documents)."""
-        #Concernant les exercices, on n'execute l'opération que si :
+        """Retire tous les elements de l'activite (exercices et documents)."""
+        # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
         # * TODO : ou c'est un exam non verrouillé
@@ -1164,16 +1165,16 @@ class JalonCoursWims(ATDocument):
                 exo.removeRelatedItem(self.getId())
 
             # TODO : Suppression côté WIMS (seulement dans les cas autorisés)
-            #if ....:
-            #idClasse = self.getClasse()
-            #idFeuille = self.getIdFeuille()
+            # if ....:
+            # idClasse = self.getClasse()
+            # idFeuille = self.getIdFeuille()
 
             # Supprime les exercices de la feuille côté WIMS
-            #dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille}
+            # dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille}
             # ICI il faut voir si coté WIMS on a un job qui permet de supprimer d'un coup tous les exos d'une feuille.
-            #self.wims("retirerExosFeuille", dico)
+            # self.wims("retirerExosFeuille", dico)
 
-        #suppression des documents
+        # Suppression des documents
         liste_elements = self.getInfosElement()
         for sujet in self.getListeSujets():
             infosElement = liste_elements[sujet]
@@ -1208,14 +1209,14 @@ class JalonCoursWims(ATDocument):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
         idFeuille = self.getIdFeuille()
         if not idFeuille:
-            #On crée la classe si elle n'existe pas.
+            # On crée la classe si elle n'existe pas.
             idclasse = self.setClasse()
             if idclasse:
                 if self.typeWims == "Examen":
                     sheet_title = "Feuille dediée à l'examen '%s'" % self.Title()
                 else:
                     sheet_title = self.Title()
-                #Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)
+                # Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)
                 reponse = self.wims("creerFeuille", {"authMember": authMember, "title": sheet_title, "description": self.Description(), "qclass": idclasse})
                 if reponse["status"] != "OK":
                     return None
@@ -1225,7 +1226,7 @@ class JalonCoursWims(ATDocument):
         return idFeuille
 
     def setJalonProperties(self, dico={}):
-        u""" Modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen), coté Jalon uniquement.
+        u"""Modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen), coté Jalon uniquement.
 
         # attention, cette fonction n'effectue volontairement aucun controle côté WIMS. Assurez-vous de définir des propriétés valables.
         # Utilisé notemment lors de la duplication de cours
@@ -1235,12 +1236,12 @@ class JalonCoursWims(ATDocument):
             self.__getattribute__("set%s" % key)(dico[key])
 
         if "DateDerniereModif" in dico.keys():
-            #self.plone_log("DateDerniereModif")
+            # self.plone_log("DateDerniereModif")
             self.reindexObject()
         return dico
 
     def setProperties(self, dico={}):
-        u"""modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen).
+        u"""Modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen).
 
         # dico est renseigné lors de la création de l'objet. (issu de creerSousObjet de jaloncours)
         # Attention : si on modifie un parametre a l'interieur d'une fonction,
@@ -1250,40 +1251,40 @@ class JalonCoursWims(ATDocument):
         """
         auteur = self.getCreateur()
 
-        #Cas ou la feuille existe déjà
+        # Cas où la feuille existe déjà
         if self.idFeuille:
             proprietes = {}
             proprietes["qclass"] = self.getClasse()
             proprietes["qsheet"] = self.idFeuille
 
-            proprietes["authMember"] = auteur
+            proprietes["authMember"]  = auteur
             proprietes["description"] = self.Description()
             if self.typeWims == "Examen":
                 proprietes["title"] = "Feuille dediée à l'examen '%s'" % self.Title()
                 self.wims("modifierFeuille", proprietes)
 
-                proprietes["title"] = self.Title()
-                proprietes["duration"] = self.duree
-                proprietes["attempts"] = self.attempts
+                proprietes["title"]     = self.Title()
+                proprietes["duration"]  = self.duree
+                proprietes["attempts"]  = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
 
                 # si l'examen existe deja, on lui applique les modifications
                 if self.idExam:
-                    #une fois un examen activé, on ne peut plus le désactiver. le statut passe à 3 (périmé+caché) pour le masquer
+                    # Une fois un examen activé, on ne peut plus le désactiver. le statut passe à 3 (périmé+caché) pour le masquer
                     proprietes["qexam"] = self.idExam
                     self.wims("modifierExamen", proprietes)
             else:
                 proprietes["title"] = self.Title()
                 self.wims("modifierFeuille", proprietes)
         else:
-            #Cas ou la feuille n'existe pas encore
+            # Cas ou la feuille n'existe pas encore
             self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
 
             for key in dico.keys():
                 # ici il faudrait peut etre faire un key.capitalize()
                 self.__getattribute__("set%s" % key)(dico[key])
 
-            #On crée la feuille côté WIMS
+            # On crée la feuille côté WIMS
             self.getIdFeuilleWIMS(auteur)
 
         self.reindexObject()
@@ -1292,7 +1293,7 @@ class JalonCoursWims(ATDocument):
         """Importe un ensemble d'exercice hotpotatoes, les place dans mon espace et dans l'autoevaluation/examen."""
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, member_auth), "Wims")
-        #import_name = import_file.filename[:-4]
+        # import_name = import_file.filename[:-4]
         questions_list = portal.portal_wims.importerHotPotatoes(home, member_auth, import_file)
         index = 1
         for question_dict in questions_list:
@@ -1314,11 +1315,11 @@ class JalonCoursWims(ATDocument):
 
     def wims(self, methode, param):
         """permet d'appeler la methode definie en parametre depuis le connecteur wims, en lui envoyant le dico "param"."""
-        #LOG.info("----- wims -----")
+        # LOG.info("----- wims -----")
         return self.portal_wims.__getattribute__(methode)(param)
 
     def majActiviteWims(self):
-        u""" Mise à jour des activités WIMS.
+        u"""Mise à jour des activités WIMS.
 
         Pour utiliser cette fonction :
         1 - décommenter import ATExtensions puis RecordField infos_element

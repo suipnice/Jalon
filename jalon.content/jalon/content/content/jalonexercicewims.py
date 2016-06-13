@@ -4,14 +4,11 @@ from zope.interface import implements
 from Products.Archetypes import public as atpublic
 from Products.ATContentTypes.content.document import ATDocumentBase, ATDocumentSchema
 from Products.ATContentTypes.content.base import registerATCT
-#from Products.CMFCore.utils import getToolByName
+# from Products.CMFCore.utils import getToolByName
 
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonExerciceWims
-
-from logging import getLogger
-LOG = getLogger('[JalonExerciceWims]')
 
 from urlparse import urlparse
 
@@ -20,6 +17,9 @@ import re
 
 import json
 from copy import deepcopy
+
+from logging import getLogger
+LOG = getLogger('[JalonExerciceWims]')
 
 JalonExerciceWimsSchema = ATDocumentSchema.copy() + atpublic.Schema((
     atpublic.StringField(
@@ -59,8 +59,7 @@ JalonExerciceWimsSchema = ATDocumentSchema.copy() + atpublic.Schema((
 
 
 class JalonExerciceWims(ATDocumentBase):
-
-    """ Un Exercice Wims de Mon Espace."""
+    """Un Exercice Wims de Mon Espace."""
 
     implements(IJalonExerciceWims)
     meta_type = 'JalonExerciceWims'
@@ -71,33 +70,33 @@ class JalonExerciceWims(ATDocumentBase):
     schema['text'].mode = "r"
 
     def getBreadcrumbs(self, edit_mode=False):
-        """ Fournit le fil d'ariane de l'exercice courant."""
+        """Fournit le fil d'ariane de l'exercice courant."""
         portal_url = self.portal_url.getPortalObject().absolute_url()
-        crumbs_list = [{"title": _(u"Mon espace"),
-                 "icon":  "fa fa-home",
-                 "link":  "%s/mon_espace" % portal_url},
-                {"title": _(u"Mes exercices WIMS"),
-                 "icon":  "fa fa-random",
-                 "link":  "%s/mon_espace/mes_exercices_wims" % portal_url},
-                {"title": self.Title(),
-                 "icon":  "fa fa-random",
-                 "link":  "%s/view" % self.absolute_url()}]
+        crumbs_list = [{"title" : _(u"Mon espace"),
+                        "icon"  : "fa fa-home",
+                        "link" : "%s/mon_espace" % portal_url},
+                       {"title": _(u"Mes exercices WIMS"),
+                        "icon" : "fa fa-random",
+                        "link" : "%s/mon_espace/mes_exercices_wims" % portal_url},
+                       {"title": self.Title(),
+                        "icon" : "fa fa-random",
+                        "link" : "%s/view" % self.absolute_url()}]
         if edit_mode:
             crumbs_list.append({"title": "édition",
-                 "icon":  "fa fa-edit",
-                 "link":  "%s/edit_wims_exercice_form" % self.absolute_url()})
+                                "icon" : "fa fa-edit",
+                                "link" : "%s/edit_wims_exercice_form" % self.absolute_url()})
 
         return crumbs_list
 
     def getEditWimsExerciceMacroName(self):
-        """ Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
+        """Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
         edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
         if self.getModele() == "externe":
             edit_wims_exercice_macro_name = "edit_wims_exercice_externe"
         return edit_wims_exercice_macro_name
 
     def getVariablesDefaut(self, modele):
-        """ Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
+        """Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
         variables_defaut = {"qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
@@ -310,7 +309,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return None
 
     def addExoWims(self, idobj=None, title=None, author=None, modele=None, form=None, sandbox=False):
-        """    ajoute ou modifie un exercice wims."""
+        """Ajoute ou modifie un exercice wims."""
         title = self.formaterTitreWIMS(title)
         member = self.portal_membership.getMemberById(author)
         auth_email = member.getProperty("email")
@@ -464,7 +463,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return retour
 
     def genererDataQuestionSuite(self, enonce, feedback, reponses, id_question):
-        u""" Genere une chaine au format spécifique des questions du modele "QCM Suite"."""
+        u"""Genere une chaine au format spécifique des questions du modele "QCM Suite"."""
         enonce = enonce.replace("\n", "<br/>")
         #Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
         if enonce.startswith("Qtitle"):
@@ -536,7 +535,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return retour
 
     def lister_modules_wims(self, authMember, module_path="/"):
-        u""" Liste tous les modules wims publiés sous le niveau "module_path"."""
+        u"""Liste tous les modules wims publiés sous le niveau "module_path"."""
         dico = {"job": "listmodules", "option": module_path, "code": authMember}
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/lister_modules_wims", "message": "demande une Liste de modules wims publiés ", "requete": dico})
@@ -552,7 +551,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return jalonexportswims.getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
 
     def getListeExports(self):
-        u""" fournit la liste des formats exportables a partir du modèle courant."""
+        u"""Fournit la liste des formats exportables a partir du modèle courant."""
         liste_formats = {"qcmsimple":                  ["QTI", "OLX", "OEF", "FLL"],
                          "equation":                   ["OEF"],
                          "texteatrous":                ["OEF"],
@@ -579,14 +578,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/getModule", "message": "demande les infos d'un module", "requete": dico})
 
     def getTypeWims(self):
-        """ retourne le type d'element (exercice / groupe)."""
+        """Retourne le type d'element (exercice / groupe)."""
         if self.modele == "groupe":
             return "Groupe"
         else:
             return "Exercice"
 
     def cleanData(self, input_data):
-        """cleanData."""
+        """clean Data."""
         # Il faut verifier quelques points à l'interieur des parametres :
         # 1/ attention aux caracteres speciaux
         # 2/ attention aux }\n qui pourraient etre contenus.
@@ -623,7 +622,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return fichier
 
     def getExoWims(self, modele, authMember, requete={}):
-        """ Permet de parser le code source d'un exercice WIMS."""
+        """Permet de parser le code source d'un exercice WIMS."""
         # LOG.info("[getExoWims] modele = %s" % modele)
         # Il faudra faire un traitement specifique aux exercices externes ici
         if modele == "externe":
@@ -982,7 +981,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return new_permalink
 
     def addRelatedItem(self, item_a_ajouter):
-        u""" Ajoute un objet aux relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        u"""Ajoute un objet aux relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
         relatedItems = self.getRelatedItems()
         if item_a_ajouter not in relatedItems:
             relatedItems.append(item_a_ajouter)
@@ -990,7 +989,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             self.reindexObject()
 
     def removeRelatedItem(self, item_a_retirer):
-        u""" Retire un objet des relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        u"""Retire un objet des relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
         relatedItems = self.getRelatedItems()
         if item_a_retirer in relatedItems:
             relatedItems.remove(item_a_retirer)
