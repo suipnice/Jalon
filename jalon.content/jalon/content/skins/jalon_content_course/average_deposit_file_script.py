@@ -9,6 +9,5 @@
 ##
 
 context.setAveragePeer()
-return "OK"
 
-#return context.getAveragePeer()
+context.REQUEST.RESPONSE.redirect("%s?tab=peers&amp;mode_etudiant=false" % context.absolute_url())

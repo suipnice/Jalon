@@ -233,7 +233,8 @@
 <metal:macro define-macro="peers_student_macro">
     <div class="panel callout radius"
          tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
-    <div class="table-overflow_container">
+    <div class="table-overflow_container"
+         tal:condition="evaluation_by_peers_dict/peers_evaluations">
         <table summary="Liste des critères">
         <thead>
             <tr>

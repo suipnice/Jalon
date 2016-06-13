@@ -1290,7 +1290,13 @@ class JalonBoiteDepot(ATFolder):
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
             evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
                                                     "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
-                                                    "icon": "fa fa-plus-circle fa-fw"}]
+                                                    "icon": "fa fa-plus-circle fa-fw"},
+                                                   {"text": "Affecter",
+                                                    "link": "%s/affect_deposit_file_script" % deposit_box_link,
+                                                    "icon": "fa fa-rss fa-fw"},
+                                                   {"text": "Moyenne",
+                                                    "link": "%s/average_deposit_file_script" % deposit_box_link,
+                                                    "icon": "fa fa-calculator fa-fw"}]
             evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
         else:
@@ -1301,7 +1307,7 @@ class JalonBoiteDepot(ATFolder):
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
-                    if evaluation["corrected"] != []:
+                    if evaluation["corrected"]:
                         number = number + 1
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
             else:
@@ -1312,9 +1318,10 @@ class JalonBoiteDepot(ATFolder):
 
     def getCriteriaDict(self, key=None):
         LOG.info("----- getCriteriaDict -----")
+        LOG.info("***** self._crietria_dict : %s" % str(self._crietria_dict))
         if key:
             return self._crietria_dict.get(key, None)
-        return self._crietria_dict
+        return dict(self._crietria_dict)
 
     def setCriteriaDict(self, crietria_dict):
         LOG.info("----- setCriteriaDict -----")
@@ -1327,12 +1334,14 @@ class JalonBoiteDepot(ATFolder):
         LOG.info("----- getCriteriaOrder -----")
         order = self._crietria_dict.keys()
         order.sort(lambda x, y: cmp(int(x), int(y)))
+        LOG.info("***** order : %s" % str(order))
         return order
 
     def getPeersDict(self, key=None):
         LOG.info("----- getPeersDict -----")
+        LOG.info("***** peers_dict : %s" % str(self._peers_dict))
         if key:
-            return self._peers_dict.get(key, None)
+            return self._peers_dict.get(key, [])
         return self._peers_dict
 
     def setPeersDict(self, peers_dict):

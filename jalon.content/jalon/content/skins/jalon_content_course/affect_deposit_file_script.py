@@ -9,4 +9,5 @@
 ##
 
 context.affectDepositFile()
-return "OK"
+
+context.REQUEST.RESPONSE.redirect("%s?tab=peers&amp;mode_etudiant=false" % context.absolute_url())
