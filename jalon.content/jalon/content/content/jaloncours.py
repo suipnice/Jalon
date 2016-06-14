@@ -882,16 +882,11 @@ class JalonCours(ATFolder):
         plan = []
         dicoplan = {}
         pre_plan = course_map.split("&")
-        elements_list = []
         LOG.info("***** pre_plan : %s" % pre_plan)
         for element in pre_plan:
-            #element-BoiteDepot-bordonad[20160512095257981380]=course_plan-plan
             clef, valeur = element.split("=")
             typeElement, idElement = clef[:-1].split("[")
             dicoplan[idElement] = valeur
-            elements_list.append(idElement)
-
-        LOG.info("***** elements_list : %s" % elements_list)
 
         def getParentPlan(idElement):
             parent = dicoplan[idElement]
@@ -902,15 +897,19 @@ class JalonCours(ATFolder):
                 return {"idElement": racine["listeElement"][-1]["idElement"], "listeElement": racine["listeElement"][-1]["listeElement"]}
 
         dicoElements = self.getCourseItemProperties()
-        for idElement in elements_list:
-            #clef, valeur = element.split("=")
-            #clef = clef.replace("[", "-")
-            #clef = clef.replace("]", "")
-            #typeElement, idElement = clef.split("-", 1)
+        LOG.info("***** dicoElements : %s" % dicoElements)
+        for element in pre_plan:
+            clef, valeur = element.split("=")
+            typeElement, idElement = clef[:-1].split("[")
+            infosElement = dicoElements[idElement]
             infosElement = dicoElements[idElement]
             isAfficherElement = self.isAfficherElement(infosElement["affElement"], infosElement["masquerElement"])["val"]
 
             p = getParentPlan(idElement)
+            if typeElement == "branch":
+                p["listeElement"].append({"idElement": idElement, "listeElement": []})
+            else:
+                p["listeElement"].append({"idElement": idElement})
             if p["idElement"] != "racine":
                 pInfosElement = self.getCourseItemProperties(p["idElement"])
                 isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
@@ -919,7 +918,6 @@ class JalonCours(ATFolder):
                         self.editCourseTitleVisibility(idElement, DateTime(), "masquerElement")
                     else:
                         self.editCourseItemVisibility(idElement, DateTime(), "masquerElement")
-            p["listeElement"].append({"idElement": idElement})
 
             """
             if typeElement == "branch":
@@ -942,7 +940,7 @@ class JalonCours(ATFolder):
 
         self.plan = tuple(plan)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
-        return self.getPlanCours(True)
+        #return self.getPlanCours(True)
 
     def isAfficherElement(self, affElement, masquerElement):
         LOG.info("----- isAfficherElement -----")
@@ -1223,12 +1221,13 @@ class JalonCours(ATFolder):
         if item_property_name == "affElement":
             item_properties["masquerElement"] = ""
             if item_properties["typeElement"] in self._type_folder_my_space_dict:
-                portal_workflow = getToolByName(self.portal_url.getPortalObject(), "portal_workflow")
+                portal = self.portal_url.getPortalObject()
+                portal_workflow = getToolByName(portal, "portal_workflow")
                 course_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
                 if course_state == "published":
-                    item_object = getattr(getattr(getattr(portal.Members, item_properties["createurElement"]), self._type_folder_my_space_dict), item_id.replace("*-*", "."))
+                    item_object = getattr(getattr(getattr(portal.Members, item_properties["createurElement"]), self._type_folder_my_space_dict[item_properties["typeElement"]]), item_id.replace("*-*", "."))
                     item_object_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
-                    if cours_state != item_object_state:
+                    if course_state != item_object_state:
                         portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
 
             if not is_update_from_title:
