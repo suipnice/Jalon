@@ -204,6 +204,7 @@ function setSortablePlan( ) {
             expandOnHover: 700,
             startCollapsed: false,
             placeholder: 'placeholder',
+            expression: '([^-=_]*)[-=_](.+)',
             rootID: 'course_plan-plan',
 
             leafClass: 'leaf',
