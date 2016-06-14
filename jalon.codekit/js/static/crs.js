@@ -233,8 +233,7 @@ function setSortablePlan( ) {
 
                         $.ajax( {
                             type: "POST",
-                            //url: ABSOLUTE_URL + "/cours_ordonnerElementPlan",
-                            url: ABSOLUTE_URL + "getSortableData.php",
+                            url: ABSOLUTE_URL + "/order_course_map_item_script",
                             //dataType: "json",
                             data: {
                                 plan: $coursePlan.nestedSortable( 'serialize' ),
