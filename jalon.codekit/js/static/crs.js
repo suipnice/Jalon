@@ -173,31 +173,47 @@ function setAttachmentCreator( ) {
 
 
 /*
-    Tri des elements
+    Tri des elements et fonctionnalités attachées
 */
 
 function setSortablePlan( ) {
 
     if ( matchMedia( Foundation.media_queries.small ).matches
         && !matchMedia( Foundation.media_queries.medium ).matches ) {
-        //setAlertBox( 'warning', "Small media detected" );
-    } else {
-        //setAlertBox( 'warning', "Medium & up media detected" );
 
+        //setAlertBox( 'warning', "Small media detected" );
+        setPlanChapterDisclosure( true );
+        setPlanChapterBehaviors( );
+
+    } else {
+
+        //setAlertBox( 'warning', "Medium & up media detected" );
         //var $coursePlan = Foundation.utils.S( '#course_plan-plan:not(.js-course_empty)' );
         var $coursePlan = Foundation.utils.S( '#course_plan-plan' );
 
+        $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-noSortable' );
+
         $coursePlan.nestedSortable( {
 
-            items: 'li.sortable',
-            //items: 'li:not(.js-course_empty)',
-            tabSize: 15,
+            items: 'li:not(.js-noSortable)',
+            handle: 'div',
+            tabSize: 20,
             isTree: true,
-            //startCollapsed: true,
-            maxLevels: 4,
-            expression: '([^-=_]*)[-=_](.+)',
-            //handle: 'li.sortable',
+            maxLevels: 5,
+            doNotClear: true,
+            expandOnHover: 700,
+            startCollapsed: false,
+            placeholder: 'placeholder',
+            rootID: 'course_plan-plan',
+
+            leafClass: 'leaf',
+            branchClass: 'branch',
+            disabledClass: 'legend',
+            hoveringClass: 'hovering',
+            expandedClass: 'expanded',
+            collapsedClass: 'collapsed',
             disableNestingClass: 'element',
+            errorClass: 'error',
 
             update: function( event, ui ) {
 
@@ -217,14 +233,23 @@ function setSortablePlan( ) {
 
                         $.ajax( {
                             type: "POST",
-                            url: ABSOLUTE_URL + "/cours_ordonnerElementPlan",
-                            dataType: "json",
+                            //url: ABSOLUTE_URL + "/cours_ordonnerElementPlan",
+                            url: ABSOLUTE_URL + "getSortableData.php",
+                            //dataType: "json",
                             data: {
                                 plan: $coursePlan.nestedSortable( 'serialize' ),
                                 classe: ui.item[ 0 ].className,
                                 idAttente: ui.item[ 0 ].id
                             },
-                            success: function( ) {
+                            success: function( data ) {
+                                //console.log( data );
+                            },
+                            error: function( data, textStatus, errorThrown ) {
+                                //console.log( data );
+                                console.log( errorThrown );
+                                console.log( textStatus );
+                            },
+                            complete: function( ) {
                                 $title.html( MSG_LOADING_OK );
                                 $coursePlan.delay( 600 ).fadeTo( 200, 1, function( ) {
                                     $title.html( titleOrgHtml );
@@ -236,6 +261,9 @@ function setSortablePlan( ) {
                 }
             }
         } );
+
+        setPlanChapterBehaviors( );
+
     }
 }
 
