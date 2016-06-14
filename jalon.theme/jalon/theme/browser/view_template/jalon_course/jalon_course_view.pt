@@ -195,8 +195,12 @@
     </main>
 
     <tal:block tal:condition="not:my_view/is_personnel"
-               define="script string:readSwitcher()">
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+               define="script1 string:setPlanChapterDisclosure(true);
+                       script2 string:setPlanChapterBehaviors();
+                       script3 string:readSwitcher()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script3)" />
     </tal:block>
 
     <tal:block tal:condition="my_view/is_personnel"
