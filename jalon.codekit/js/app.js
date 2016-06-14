@@ -26,7 +26,7 @@
 function setPlanChapterDisclosure( disclosureState ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
-        $legendBar = Foundation.utils.S( '#course_plan .js-legend_bar' ),
+        $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
         $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
         $legendBardUp = $legendBar.find( ' > li:last-child > a' );
 
@@ -48,11 +48,11 @@ function setPlanChapterDisclosure( disclosureState ) {
 function setPlanChapterBehaviors( ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan' ),
-        $legendBar = Foundation.utils.S( '#course_plan .js-legend_bar' ),
+        $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
         $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
         $legendBardUp = $legendBar.find( ' > li:last-child > a' );
 
-    Foundation.utils.S( '#course_plan' ).find( '.js-legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
+    Foundation.utils.S( '#course_plan' ).find( '.legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
 
         event.preventDefault( );
         event.stopPropagation( );

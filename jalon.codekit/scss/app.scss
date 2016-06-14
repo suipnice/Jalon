@@ -1317,6 +1317,10 @@ code {
 
         &.panel { margin-left: 0; }
         &:not(.panel) { padding-left: $column-gutter / 2; }
+
+        & > ul.legend_bar > li > a.button {
+            margin-bottom: 0;
+        }
     }
 
     & > .row:first-child {

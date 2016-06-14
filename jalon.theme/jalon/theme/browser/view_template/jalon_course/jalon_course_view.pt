@@ -82,12 +82,28 @@
             </div>
             <div class="row panel callout radius"
                  tal:condition="my_view/has_course_map">
-                <a class="button tiny radius expand"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
-                    <i class="fa fa-info-circle"></i>
-                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
-                </a>
+
+                <ul class="button-group round even-3 legend_bar">
+                    <li>
+                        <a class="button tiny disabled" href="#">
+                            <i class="fa fa-arrow-circle-down"></i>Tout déplier
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button tiny"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
+                            <i class="fa fa-info-circle"></i>
+                            <tal:block i18n:translate="legende">Afficher la légende</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button tiny" href="#">
+                            <i class="fa fa-arrow-circle-right"></i>Tout replier
+                        </a>
+                    </li>
+                </ul>
+
                 <tal:condition condition="my_view/is_personnel">
                 <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
                     Affichage de la barre d'ajout
@@ -117,12 +133,28 @@
                         Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
                     </tal:block>
                 </div>
-                <a class="button tiny radius expand"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
-                    <i class="fa fa-info-circle"></i>
-                    <tal:block i18n:translate="legende">Afficher la légende du plan</tal:block>
-                </a>
+
+                <ul class="button-group round even-3 legend_bar">
+                    <li>
+                        <a class="button tiny disabled" href="#">
+                            <i class="fa fa-arrow-circle-down"></i>Tout déplier
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button tiny"
+                           data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
+                            <i class="fa fa-info-circle"></i>
+                            <tal:block i18n:translate="legende">Afficher la légende</tal:block>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="button tiny" href="#">
+                            <i class="fa fa-arrow-circle-right"></i>Tout replier
+                        </a>
+                    </li>
+                </ul>
+
             </div>
 
             <div class="row">
