@@ -119,8 +119,7 @@
                 </div>
 
                 <tal:define define="course_map my_view/course_map;
-                                    course_link context/absolute_url;
-                                    expand_titre python:True">
+                                    course_link context/absolute_url;">
                 <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
                     Affichage du plan du cours
                 </metal:macro>

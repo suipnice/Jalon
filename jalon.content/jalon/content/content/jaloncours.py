@@ -808,7 +808,7 @@ class JalonCours(ATFolder):
         ol_css_class = ""
         if is_map_top_level:
             ol_css_id = "course_plan-plan"
-            ol_css_class = "ui-sortable"
+            ol_css_class = "sortable ui-sortable"
 
         #index = 0
         course_map_list = []
@@ -818,7 +818,8 @@ class JalonCours(ATFolder):
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
-                    "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", "")}
+                    "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", ""),
+                    "item_link":    ""}
 
             is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
             item["is_display_item_bool"] = True if is_display_item["val"] else False
@@ -831,18 +832,24 @@ class JalonCours(ATFolder):
                 course_map_sub_items_list = []
                 if "listeElement" in course_map_item:
                     item["is_item_title"] = True
-                    item["item_css_class"] = "chapitre"
+                    item["item_css_class"] = "branch"
                     course_map_sub_items_list = course_map_item["listeElement"]
                 else:
-                    if item_properties["typeElement"] in ["TexteLibre", "BoiteDepot", "AutoEvaluation"]:
+                    if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "TexteLibre"]:
+                        item["item_div_css"] = "elemactivite"
                         item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
                     else:
+                        item["item_div_css"] = "elemressource"
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
 
                 item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
+                item["item_span_css"] = "type%s" % item_properties["typeElement"].lower()
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
-                item["is_item_title_or_text"] = True if item_properties["typeElement"] in ["Titre", "TexteLibre"] else False
+                item["is_item_title_or_text"] = False
+                if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
+                    item["is_item_title_or_text"] = True
+                    item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
@@ -869,6 +876,73 @@ class JalonCours(ATFolder):
         return {"ol_css_id":              ol_css_id,
                 "ol_css_class":           ol_css_class,
                 "course_map_items_list":  course_map_list}
+
+    def orderCourseMapItems(self, course_map):
+        LOG.info("----- orderCourseMapItems -----")
+        plan = []
+        dicoplan = {}
+        pre_plan = course_map.split("&")
+        elements_list = []
+        LOG.info("***** pre_plan : %s" % pre_plan)
+        for element in pre_plan:
+            #element-BoiteDepot-bordonad[20160512095257981380]=course_plan-plan
+            clef, valeur = element.split("=")
+            typeElement, idElement = clef[:-1].split("[")
+            dicoplan[idElement] = valeur
+            elements_list.append(idElement)
+
+        LOG.info("***** elements_list : %s" % elements_list)
+
+        def getParentPlan(idElement):
+            parent = dicoplan[idElement]
+            if parent == "course_plan-plan":
+                return {"idElement": "racine", "listeElement": plan}
+            else:
+                racine = getParentPlan(parent)
+                return {"idElement": racine["listeElement"][-1]["idElement"], "listeElement": racine["listeElement"][-1]["listeElement"]}
+
+        dicoElements = self.getCourseItemProperties()
+        for idElement in elements_list:
+            #clef, valeur = element.split("=")
+            #clef = clef.replace("[", "-")
+            #clef = clef.replace("]", "")
+            #typeElement, idElement = clef.split("-", 1)
+            infosElement = dicoElements[idElement]
+            isAfficherElement = self.isAfficherElement(infosElement["affElement"], infosElement["masquerElement"])["val"]
+
+            p = getParentPlan(idElement)
+            if p["idElement"] != "racine":
+                pInfosElement = self.getCourseItemProperties(p["idElement"])
+                isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
+                if isAfficherElement and not isPAfficherElement:
+                    if typeElement == "branch":
+                        self.editCourseTitleVisibility(idElement, DateTime(), "masquerElement")
+                    else:
+                        self.editCourseItemVisibility(idElement, DateTime(), "masquerElement")
+            p["listeElement"].append({"idElement": idElement})
+
+            """
+            if typeElement == "branch":
+                p = getParentPlan(idElement)
+                if p["idElement"] != "racine":
+                    pInfosElement = self.getCourseItemProperties(p["idElement"])
+                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
+                    if isAfficherElement and not isPAfficherElement:
+                        self.editCourseTitleVisibility(idElement, DateTime(), "masquerElement")
+                p["listeElement"].append({"idElement": idElement, "listeElement": []})
+            else:
+                p = getParentPlan(idElement)
+                if p["idElement"] != "racine":
+                    pInfosElement = self.getCourseItemProperties(p["idElement"])
+                    isPAfficherElement = self.isAfficherElement(pInfosElement["affElement"], pInfosElement["masquerElement"])["val"]
+                    if isAfficherElement and not isPAfficherElement:
+                        self.editCourseItemVisibility(idElement, DateTime(), "masquerElement")
+                p["listeElement"].append({"idElement": idElement})
+            """
+
+        self.plan = tuple(plan)
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+        return self.getPlanCours(True)
 
     def isAfficherElement(self, affElement, masquerElement):
         LOG.info("----- isAfficherElement -----")

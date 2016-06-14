@@ -31,7 +31,7 @@
 
 </metal:macro>
 
-<metal:macro define-macro="display_course_map">
+<metal:macro define-macro="display_course_map-old">
     <ol tal:attributes="id course_map/ol_css_id;
                         class course_map/ol_css_class">
     <tal:repeat repeat="element course_map/course_map_items_list">
@@ -91,52 +91,72 @@
     </ol>
 </metal:macro>
 
-<!-- Version avec booleen expand à définir avant l'appel
-    <metal:macro define-macro="display_course_map">
-    <ol tal:attributes="class course_map/is_course_map_sortable">
+<metal:macro define-macro="display_course_map">
+    <ol tal:attributes="id course_map/ol_css_id;
+                        class course_map/ol_css_class">
+
+        <li class="legend"
+            tal:condition="not:course_map/ol_css_id">
+            <i class="fa fa-info-circle fa-fw"></i>
+            Faites glisser des éléments existants du plan sur le titre, ou ajoutez de nouveaux éléments.
+        </li>
     <tal:repeat repeat="element course_map/course_map_items_list">
-        <li tal:attributes="id element/id_css;
-                            class element/class_css">
-            <tal:condition condition="not:my_view/is_personnel">
-            <a tal:attributes="href string:${context/absolute_url}/marquer_element_script?element=${element/id};
-                              class element/coche_css"
-               tal:condition="not:element/is_title">
-                <i tal:attributes="class element/icon_coche"></i>
-            </a>
-            </tal:condition>
-            <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
-               tal:condition="element/is_nouveau"></i>
-             <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right"
-                data-tooltip
-                tal:attributes="title element/commentaire_jalonner"
-                tal:condition="element/is_jalonner"></i>
-        <tal:condition condition="element/is_title_or_text">
-            <tal:replace replace="structure element/title"/>
-            <tal:condition condition="element/is_title">
-            <br/>
-            <a tal:attributes="href string:${context/absolute_url}/page_affichage?fichier_macro=macro_cours_plan&amp;macro=affichage_elements_titre&amp;id_titre=${element/id}&amp;mode_etudiant=${mode_etudiant}"
-               data-reveal-id="reveal-main" data-reveal-ajax="true"
-               tal:condition="not:expand_titre">
-               |___-> VOIR
-            </a>
-            <tal:condition condition="expand_titre">
-            <tal:define define="course_map python:context.getCourseMapItems(element['liste_elements_plan'], user.getId(), my_view['is_personnel']);">
+        <li tal:attributes="id element/item_css_id;
+                            class element/item_css_class">
+            <div tal:attributes="class element/item_div_css">
+                <tal:condition condition="my_view/is_personnel">
+                <a class="dropdown" data-options="align:left"
+                   tal:attributes="data-dropdown string:${element/item_drop_id}">
+                    <i class="fa fa-cog fa-fw no-pad"></i>
+                </a>
+                <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                    tal:attributes="id string:${element/item_drop_id}">
+                    <li tal:repeat="item_action element/item_actions">
+                        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                           tal:attributes="href string:${course_link}/${item_action/item_action_id}?item_id=${element/item_id}">
+                            <i tal:attributes="class item_action/item_action_icon"></i>
+                            <tal:replace tal:replace="item_action/item_action_name" i18n:translate=""/>
+                        </a>
+                    </li>
+                </ul>
+                </tal:condition>
+                <i class='fa fa-bell-o fa-fw fa-lg no-pad right'
+                   tal:condition="element/is_item_new"></i>
+
+                <a class="right"
+                   tal:attributes="href element/item_read_link"
+                   tal:condition="element/is_item_readable">
+                    <i tal:attributes="class element/item_read_icon"></i>
+                </a>
+
+                <i tal:attributes="class element/is_display_item_icon;
+                                   title element/is_display_item_text"
+                   tal:condition="not:element/is_display_item_bool"></i>
+
+                <i class="fa fa-hand-o-left fa-lg fa-fw no-pad jalonner right" data-tooltip
+                   tal:attributes="title element/item_jalonner_comment"
+                   tal:condition="element/is_item_jalonner"></i>
+
+                <span tal:attributes="class element/item_span_css">
+                    <i title="Cliquer pour replier/déplier le contenu." class="fa no-pad js-disclose"
+                       tal:condition="element/is_item_title"></i>
+                    <a tal:attributes="href element/item_link | nothing;
+                                       class string:typeElementTitre"
+                       title="Voir cet élément du plan"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:content="structure element/item_title"
+                       tal:omit-tag="element/is_item_title_or_text"
+                       i18n:attributes="title"/>
+                </span>
+            </div>
+            <tal:condition condition="element/is_item_title">
+            <tal:define define="course_map python:context.getCourseMapItems(element['course_map_sub_items_list'], user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal']);">
             <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
-                Affichage du plan du cours NEW
+                Affichage du plan du cours
             </metal:macro>
             </tal:define>
             </tal:condition>
-            </tal:condition>
-        </tal:condition>
-        <tal:condition condition="not:element/is_title_or_text">
-            <a tal:attributes="href element/url_element"
-               title="Voir cet élément du plan"
-               data-reveal-id="reveal-main" data-reveal-ajax="true"
-               i18n:attributes="title"
-               tal:content="element/title"/>
-        </tal:condition>
         </li>
     </tal:repeat>
     </ol>
 </metal:macro>
--->
