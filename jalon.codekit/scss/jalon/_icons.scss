@@ -63,37 +63,26 @@ dl.typeElement > dd:before,
 dl.typeElement > dd,
 #course_plan-plan span {
 
-    //&.type_examen:before            { content: $fa-var-graduation-cap; }
-    &.type_Examen:before            { content: $fa-var-graduation-cap; }
-    //&.type_autoeval:before          { content: $fa-var-retweet; }
-    //&.type_autoeval:before          { content: $fa-var-lightbulb-o; }
-    &.type_AutoEvaluation:before    { content: $fa-var-gamepad; }
-    //&.type_boitedepot:before        { content: $fa-var-inbox; }
-    &.type_BoiteDepot:before        { content: $fa-var-inbox; }
-    //&.type_sallevirtuelle:before    { content: $fa-var-comments-o; }
-    //&.type_sallevirtuelle:before    { content: $fa-var-video-camera; }
-    &.type_SalleVirtuelle:before    { content: $fa-var-video-camera; }
+    &.typeexamen:before             { content: $fa-var-graduation-cap; }
+    &.typeautoevaluation:before     { content: $fa-var-gamepad; }
+    &.typeboitedepot:before         { content: $fa-var-inbox; }
+    &.typesallevirtuelle:before     { content: $fa-var-video-camera; }
 
-    //&.type_fichier:before           { content: $fa-var-file-o; }
-    &.type_File:before              { content: $fa-var-file-o; }
-    //&.type_image:before             { content: $fa-var-file-image-o; }
-    &.type_Image:before             { content: $fa-var-file-image-o; }
-    &.type_Video:before             { content: $fa-var-youtube-play; }
-    //&.type_externe:before           { content: $fa-var-external-link; }
-    &.type_Lienweb:before           { content: $fa-var-external-link; }
-    //&.type_lecteur:before           { content: $fa-var-file-video-o; }
-    &.type_Lecteurexportable:before { content: $fa-var-file-video-o; }
-    //&.type_catbu:before             { content: $fa-var-book; }
-    //&.type_Ressourcebibliographique:before { content: $fa-var-book; }
-    &.type_CatalogueBU:before       { content: $fa-var-book; }
-    //&.type_presentation:before      { content: $fa-var-bullhorn; }
-    &.type_Presentationssonorisees:before { content: $fa-var-bullhorn; }
-    //&.type_webconf:before           { content: $fa-var-headphones; }
-    &.type_Webconference:before     { content: $fa-var-headphones; }
+    &.typefichier:before            { content: $fa-var-file-o; }
+    &.typeimage:before              { content: $fa-var-file-image-o; }
+    &.typevideo:before              { content: $fa-var-youtube-play; }
+    &.typelienweb:before            { content: $fa-var-external-link; }
+    &.typelecteurexportable:before  { content: $fa-var-file-video-o; }
+    &.typecataloguebu:before        { content: $fa-var-book; }
+    &.typesonorisation:before       { content: $fa-var-bullhorn; }
+    &.typewebconference:before      { content: $fa-var-headphones; }
 }
 
+#course_plan-plan {
 
-#course_plan-plan .type_TexteLibre .typeElementTitre ul li:before { content: $fa-var-genderless; }
+    li.collapsed > div.elemtitre > span > i.fa:before { content: $fa-var-arrow-circle-right; }
+    li.expanded > div.elemtitre > span > i.fa:before { content: $fa-var-arrow-circle-down; }
+}
 
 
 /*
