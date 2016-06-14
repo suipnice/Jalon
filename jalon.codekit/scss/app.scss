@@ -1297,12 +1297,11 @@ code {
 
 /***************************************************************************************************
 
-        Mes cours
+        Cours
 
 */
 
 
-// Légende (sous-titre)
 #course_plan,
 #course_life {
 
@@ -1311,13 +1310,6 @@ code {
 
     .action-button { margin-bottom: 0; }
 }
-
-
-
-/*
-        Plan du cours
-
-*/
 
 #course_plan {
 
@@ -1360,9 +1352,7 @@ code {
 
     & > .row:nth-child( 3 ) {
 
-        & > h2 {
-            margin-top: 0;
-        }
+        & > h2 { margin-top: 0; }
     }
 
     & > .panel.callout:first-of-type:not(.accordion) {
@@ -1376,73 +1366,82 @@ code {
         list-style: none outside none;
         font-size: rem-calc( 14 ) !important;
 
-        ol {
-            margin-top: rem-calc( -8 );
-            margin-left: 1.15rem;
-        }
-
-        li,
-        li > ol { padding-top: rem-calc( 8 ); }
-
-        span {
-
-            &:not(.type_TexteLibre) { padding-left: $iconPadding / 2; }
-            &.type_TexteLibre > .typeElementTitre { padding-left: 0; }
-            & > i.fa { margin: 0 -$iconPadding / 2 0 -$iconPadding / 3; }
-            & > i.fa:first-of-type { margin-left: 0; }
-        }
+        ol { margin-left: 1.15rem; }
 
         .f-dropdown li { padding-top: 0; }
 
-        .typeElement {
-            border-left-style: solid;
-            border-left-width: rem-calc( 5 );
-            border-left-color: transparent;
+        .error,
+        .placeholder {
+            display: block;
+            height: 1.3rem;
+        }
 
-            &.type_Activite { border-left-color: $course_activity-color; }
-            &.type_Mon_Espace { border-left-color: $course_space_el-color; }
-            &.type_Titre { border-left-color: $course_title-color; }
+        .placeholder { outline: 1px dashed $primary-color; }
+        .error { outline: 1px dashed $warning-color; }
+        .outlineTitleContainer { outline: 1px dotted $course_title-color; }
 
-            &.type_Titre {
+        & > li {
 
-                .typeElementTitre {
-                    font-weight: bold;
-                    color: scale-color( $header-font-color, $lightness: 25% );
-                }
+            &.branch {
+                margin-top: rem-calc( 12 );
+                margin-bottom: rem-calc( 8 );
+                //padding-top: rem-calc( 2 );
+                //padding-bottom: rem-calc( 2 );
             }
 
-            &.type_TexteLibre {
-                border: 0 none;
-                /*
-                .typeElementTitre {
+            &.element {
+                margin-top: rem-calc( 6 );
+                margin-bottom: rem-calc( 2 );
+            }
 
-                    p, ul, ol {
-                        margin-top: rem-calc( 2 );
-                        margin-bottom: rem-calc( 2 );
-                        font-size: rem-calc( 13 ) !important;
+            &.expanded > ol { display: block; }
+            &.collapsed > ol { display: none; }
+
+            &.legend {
+                display: none;
+                font-size: 80%;
+                font-style: italic;
+                margin-top: rem-calc( 4 ) !important;
+            }
+
+            &.legend:first-of-type:last-of-type { display: block; }
+
+            & > div {
+
+                & > span:first-of-type {
+                    border-left-style: solid;
+                    border-left-width: rem-calc( 4 );
+                    border-left-color: transparent;
+                }
+
+                &.elemtitre > span:first-of-type {
+                    font-weight: bold;
+                    border-left-color: $course_title-color;
+                    //color: scale-color( $header-font-color, $lightness: 20% );
+
+                    & > .fa { cursor: pointer; }
+                }
+
+                &.elemtextelibre > span:first-of-type {
+                    border: 0 none;
+
+                    * {
+                        font-size: 0.8rem !important;
+                        line-height: 1rem !important;
                     }
 
-                    ul {
-                        margin-left: rem-calc( 5 ) !important;
-                        //list-style-type: circle !important;
-                        //list-style-position: inside !important;
-                        // Pb de list-style-type, utilisation d'une icône FA en
-                        // remplacement, voir « scss/jalon/_icons.css ».
-                        li:before { margin-right: rem-calc( 3 );}
+                    *:not(li) {
+                        margin-bottom: .3rem !important;
                     }
 
                     ol {
-                        margin-left: rem-calc( 6 );
-                        list-style-type: decimal !important;
-                        list-style-position: inside !important;
+                        list-style-type: decimal;
                     }
+                }
 
-                    li {
-                        padding-top: 0;
-                        font-weight: normal;
-                        font-style: normal;
-                    }
-                } //*/
+                &.elemactivite > span:first-of-type { border-left-color: $course_activity-color; }
+                &.elemressource > span:first-of-type { border-left-color: $course_space_el-color; }
+                &:not(.elemtextelibre) > span:first-of-type { padding-left: $iconPadding / 2; }
             }
         }
 
@@ -1479,9 +1478,11 @@ code {
 
 #course_plan-plan {
 
-    li {
+    &.sortable li > div:first-child {
+        cursor: move;
+    }
 
-        &.sortable { cursor: move; }
+    li {
 
         & > a.dropdown {
             margin-left: rem-calc( -2 );
@@ -1489,14 +1490,6 @@ code {
         }
 
         & > i.fa { margin-right: rem-calc( -2 ); }
-    }
-
-    .typeElementTitre .title-legend {
-        //display: inline-block;
-        margin-top: rem-calc( -2 );
-        margin-left: rem-calc( 7 );
-        //margin-bottom: rem-calc( -12 );
-        font-weight: normal;
     }
 
     .switch { float: right; }
@@ -1519,18 +1512,12 @@ code {
 
     }
 
-    div.pod_thumb {
-        overflow: hidden;
+    img.pod_thumb {
+        display: block;
         max-width: 90%;
-        max-height: 8rem;
+        max-height: 7rem;
         margin: rem-calc( 6 8 4 );
         border: 1px solid #d8d8d8;
-
-        img {
-            max-width: 100%;
-            height: auto !important;
-            margin-top: -20%;
-        }
     }
 }
 
@@ -1824,7 +1811,7 @@ body.template-firstpage_view.role-anonymous {
         margin-bottom: rem-calc( 8 );
         text-align: center;
 
-        @include background( 'stars.svg', 0 0, repeat, #2a9ccc );
+        @include background( '#{$imgPath}/stars.svg', 0 0, repeat, #2a9ccc );
 
         h1, h2 {
             font-family: 'hero_lightlight', sans-serif;
