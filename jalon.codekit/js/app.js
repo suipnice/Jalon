@@ -18,6 +18,94 @@
 
 
 
+
+/*
+    Comportements des chapitres de plan de cours
+*/
+
+function setPlanChapterDisclosure( disclosureState ) {
+
+    var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
+        $legendBar = Foundation.utils.S( '#course_plan .js-legend_bar' ),
+        $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
+        $legendBardUp = $legendBar.find( ' > li:last-child > a' );
+
+    if ( disclosureState ) {
+
+        $legendBardDown.addClass( 'disabled' );
+        $legendBardUp.removeClass( 'disabled' );
+        $target.removeClass( 'collapsed' ).addClass( 'expanded' );
+
+    } else {
+
+        $legendBardUp.addClass( 'disabled' );
+        $legendBardDown.removeClass( 'disabled' );
+        $target.removeClass( 'expanded' ).addClass( 'collapsed' );
+    }
+}
+
+
+function setPlanChapterBehaviors( ) {
+
+    var $target = Foundation.utils.S( '#course_plan-plan' ),
+        $legendBar = Foundation.utils.S( '#course_plan .js-legend_bar' ),
+        $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
+        $legendBardUp = $legendBar.find( ' > li:last-child > a' );
+
+    Foundation.utils.S( '#course_plan' ).find( '.js-legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
+
+        event.preventDefault( );
+        event.stopPropagation( );
+
+        if ( ! $( this).hasClass( '.disabled' ) ) {
+
+            if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
+
+                setPlanChapterDisclosure( true );
+
+            } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
+
+                setPlanChapterDisclosure( false );
+            }
+
+            $( this ).blur( );
+
+        }
+    } );
+
+    $target.find( '.js-disclose' ).on( 'click', function( ) {
+
+        $( this ).closest( 'li' ).toggleClass( 'collapsed' ).toggleClass( 'expanded' );
+        //$( this ).toggleClass( 'fa-arrow-circle-right' ).toggleClass( 'fa-arrow-circle-down' );
+
+        $legendBardDown.removeClass( 'disabled' );
+        $legendBardUp.removeClass( 'disabled' );
+
+        if ( ! $target.find( '.collapsed:visible' ).length ) {
+
+            $legendBardDown.addClass( 'disabled' );
+        }
+
+        if ( ! $target.find( '.expanded:visible' ).length ) {
+
+            $legendBardUp.addClass( 'disabled' );
+        }
+    } );
+
+    $target.find( '.elemtitre' ).hover(
+        function( ) {
+
+            $( this ).parent( 'li' ).addClass( 'outlineTitleContainer' );
+        },
+        function( ) {
+
+            $( this ).parent( 'li' ).removeClass( 'outlineTitleContainer' );
+        }
+    );
+}
+
+
+
 /*
     Formatage conditionnel : permet de colorer sur une echelle de 4+2 teintes une colonne d'un tableau
 
