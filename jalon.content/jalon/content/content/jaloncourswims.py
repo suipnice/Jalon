@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Gestion des elements de type Feuille (autoevaluation) et Examen WIMS dans un cours Jalon."""
+"""Gestion des elements de type Feuille (autoevaluation) et Examen WIMS dans un cours Jalon."""
 
 from zope.interface import implements
 
@@ -16,7 +16,7 @@ from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonCoursWims
 
-#import os
+# import os
 import json
 import copy
 import jalon_utils

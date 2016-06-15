@@ -145,4 +145,5 @@ sftp-config.json
 !bower_components/**
 
 
-### SourceTree Additions ###
+### PyCharm Project ###
+.idea/*

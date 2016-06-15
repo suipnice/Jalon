@@ -320,7 +320,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             fullname = member.getProperty("displayName")
 
         source = str(getattr(self, "modele_%s.oef" % modele))
-        #LOG.info("addExoWims / original source=\n%s"%source)
+        # LOG.info("addExoWims / original source=\n%s"%source)
         # La source de départ contient des caracteres html echapés, qu'il faut rétablir avant de les renvoyer à WIMS.
         source = source.replace("&amp;", "&")
         source = source.replace("&lt;", "<")
@@ -346,10 +346,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             else:
                 param = self.getVariablesDefaut(modele)
             if param is None:
-                #LOG.error("addExoWims / getVariablesDefaut return None")
+                # LOG.error("addExoWims / getVariablesDefaut return None")
                 return None
 
-        #Cas d'une modification (ou d'un import)
+        # Cas d'une modification (ou d'un import)
         else:
             # On copie le formulaire pour éviter de le modifier
             param = deepcopy(form)
@@ -379,9 +379,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     questions.append(":Question %s" % str(i))
 
                     question_string = self.genererDataQuestionSuite(param["enonce%s" % str(i - 1)],
-                                                               param["feedback%s" % str(i - 1)],
-                                                               param["reponses%s" % str(i - 1)],
-                                                               i)
+                                                                    param["feedback%s" % str(i - 1)],
+                                                                    param["reponses%s" % str(i - 1)],
+                                                                    i)
                     questions.append(question_string)
 
                     boucle_data_q.append("*-*text{data_q=\data%s!= ? wims(append item %s to \data_q)}" % (str(i), str(i)))
@@ -402,7 +402,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         self.listeIdsGroupes = [0]
 
-        #wims = getToolByName(self, "portal_wims")
+        # wims = getToolByName(self, "portal_wims")
         if modele == "exercicelibre":
             try:
                 dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1")
@@ -411,7 +411,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             if sandbox:
                 dico["sandbox"] = True
-            #result = json.loads(self.aq_parent.wims("callJob", dico))
+            # result = json.loads(self.aq_parent.wims("callJob", dico))
             return self.aq_parent.wims("creerExercice", dico)
         else:
             param["author"] = fullname
@@ -429,14 +429,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 try:
                     source = source.replace("$$%s$$" % key, param[key])
                 except UnicodeDecodeError, e:
-                    #typiquement, dans le cas de l'admin par exemple, son nom est en unicode, pas utf-8
+                    # typiquement, dans le cas de l'admin par exemple, son nom est en unicode, pas utf-8
                     source = source.replace("$$%s$$" % key, param[key].encode("utf-8"))
                     """print e
                     print "[jalonexercicewims/addExoWims] - UnicodeDecodeError"
                     print "param[%s] = '%s'" % (key, param[key])
                     #return None"""
 
-            #source = source.replace("--nbsp;", "&nbsp;")
+            # source = source.replace("--nbsp;", "&nbsp;")
             source = source.replace("*-*", "\\")
 
             # iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €
@@ -445,13 +445,13 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             if modele not in ["qcmsuite"]:
                 source = jalon_utils.convertUTF8ToHTMLEntities(source)
 
-            #try:
+            # try:
             # on ne peux pas empecher la creation d'un exercice pour une erreur d'encodage. on ignore donc les caracteres non reconnus.
             source = source.decode("utf-8").encode("iso-8859-1", "ignore")
-            #except:
+            # except:
             #   print "Caractere non reconnu dans creerExercice WIMS (utility.py)"
             #  pass
-            #print "utility/creerExercice qexo: %s" % param["qexo"]
+            # print "utility/creerExercice qexo: %s" % param["qexo"]
             dico["source"] = source
 
             if sandbox:
@@ -465,7 +465,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
     def genererDataQuestionSuite(self, enonce, feedback, reponses, id_question):
         u"""Genere une chaine au format spécifique des questions du modele "QCM Suite"."""
         enonce = enonce.replace("\n", "<br/>")
-        #Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
+        # Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
         if enonce.startswith("Qtitle"):
             enonce = enonce.replace("<br/>", "\n", 1)
 
@@ -477,9 +477,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         """Ajoute un groupe d'exercices wims."""
         liste_exos = self.getListeIdsExos()
         if len(liste_exos) > 0:
-            #qclass = "%s_1" % self.aq_parent.getComplement()
-            #rep = json.loads(self.aq_parent.wims("callJob", {"job": "checksheet", "code": author, "qclass": qclass, "qsheet": "1"}))
-            #if rep["status"] == "ERROR":
+            # qclass = "%s_1" % self.aq_parent.getComplement()
+            # rep = json.loads(self.aq_parent.wims("callJob", {"job": "checksheet", "code": author, "qclass": qclass, "qsheet": "1"}))
+            # if rep["status"] == "ERROR":
             #    self.aq_parent.wims("creerFeuille", {"authMember": author, "qclass": qclass, "title": "Feuille de tests des sélections aléatoires", "description": ""})
             for exo_id in liste_exos:
                 exo = getattr(self.aq_parent, exo_id)
@@ -488,7 +488,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
             return {"status": "OK", "code": "GROUP_ADDED"}
 
-            #return self.aq_parent.wims("lierExoFeuille", {"listeExos": self.getListeIdsExos(), "qnum": self.getQnum(), "title": self.Title(), "authMember": author, "qclass": qclass, "qsheet": "1"})
+            # return self.aq_parent.wims("lierExoFeuille", {"listeExos": self.getListeIdsExos(), "qnum": self.getQnum(), "title": self.Title(), "authMember": author, "qclass": qclass, "qsheet": "1"})
         else:
             return {"status": "ERROR", "err_code": "NO_EXERCICE", "message": _(u"Aucun exercice selectionné")}
 
@@ -607,7 +607,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
             retour = json.loads(fichier)
-            #LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            # LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
 
@@ -676,8 +676,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                "donnees":   "text{data",
                                                "feedback_general": "text{feedback_general",
                                                "credits":          "credits{",
-                                               "accolade":      "text{accolade=item\(",
-                                               "list_order":      "text{list_order=item\(",
+                                               "accolade":         "text{accolade=item\(",
+                                               "list_order":       "text{list_order=item\(",
                                                },
                                "marqueruntexte": {"minmark": "integer{minmark",
                                                   "maxmark": "integer{maxmark",
@@ -777,23 +777,23 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             fichier = fichier.replace("\n", "_ENDLINE_")
 
             for key in variables_parse[modele].keys():
-                #Certaines instructions de wims fonctionnent differement (comme "precision")
+                # Certaines instructions de wims fonctionnent differement (comme "precision")
                 if key not in ["precision", "texte_reponse", "accolade", "credits", "hint", "help", "answer_given", "list_order"]:
                     pattern = "%s=(.*?)}_ENDLINE_" % variables_parse[modele][key]
                 else:
                     if key in ["precision", "credits", "hint", "help"]:
-                        #exemple : \precision{100}
+                        # exemple : \precision{100}
                         pattern = "%s(.*?)}_ENDLINE_" % variables_parse[modele][key]
                     if key == "texte_reponse":
-                        #exemple : \answer{Votre reponse est}{\ans}{type=number}
+                        # exemple : \answer{Votre reponse est}{\ans}{type=number}
                         pattern = "%s([^\}]*)\}" % variables_parse[modele][key]
                     if key in ["accolade", "answer_given", "list_order"]:
-                        #exemple : \text{accolade=item($$variable$$,1 oui,\n2 non)}
+                        # exemple : \text{accolade=item($$variable$$,1 oui,\n2 non)}
                         pattern = "%s([^,]*)" % variables_parse[modele][key]
 
                 m = re.compile(pattern)
                 recherche = m.search(fichier)
-                #LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
+                # LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
                 if recherche is not None:
                     variable = recherche.group(1)
                     # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
@@ -818,7 +818,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                         retour["%s_eqweight" % key] = 0
                 else:
                     variable = variable.replace("_ENDLINE_", "\n")
-                    #when variable = asis(variable)
+                    # when variable = asis(variable)
                     if variable.startswith("asis("):
                         retour[key] = variable[5:-1]
                     else:
@@ -826,7 +826,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
                     if retour[key] == ("&#36;&#36;%s&#36;&#36;" % key):
                         retour[key] = self.getVariablesDefaut(modele)[key]
-                        #retour[key] = variable.decode("iso-8859-1").encode("utf-8")
+                        # retour[key] = variable.decode("iso-8859-1").encode("utf-8")
 
             if modele == "qcmsuite":
                 i = 0
@@ -845,7 +845,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     variable = self.extendResearch(variable, fichier, recherche.end())
                     variable = variable.replace("_ENDLINE_", "\n")
 
-                    #when variable = asis(variable)
+                    # when variable = asis(variable)
                     if variable.startswith("asis("):
                         variable = variable[5:-1]
 
@@ -890,9 +890,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 intro_check = "1,2,4"
             else:
                 intro_check = "1,2,3,4"
-            #apparament, classes/fr n'a plus d'influence sur la langue. c'est le paremetre "lang" qui prime.
+            # Apparament, classes/fr n'a plus d'influence sur la langue. c'est le paremetre "lang" qui prime.
 
-            #Valeur du parametre "intro_check" :
+            # Valeur du parametre "intro_check" :
             # 1 = Toujours proposer une bonne réponse.
             # 2 = Pénalité pour une mauvaise réponse.
             # 3 = Afficher la bonne réponse. (A EVITER EN EXAMEN)
@@ -923,7 +923,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         listeReplace_titre_wims = ["<", ">", "{", "}", "(", ")", "[", "]", "$", "&", "?", "!", ",", "\"", "\'", ";", "\\", "/"]
         for lettre in listeReplace_titre_wims:
             titre = titre.replace(lettre, " ")
-        #Replace multiple spaces by one (and remove starting&ending spaces)
+        # Replace multiple spaces by one (and remove starting&ending spaces)
         return re.sub(' +', ' ', titre.strip())
 
     def setProperties(self, dico):
