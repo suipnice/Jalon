@@ -87,7 +87,7 @@
             <div class="row panel callout radius"
                  tal:condition="my_view/has_course_map">
 
-                <ul class="button-group expand radius even-3 legend_bar">
+                <ul class="button-group radius even-3 legend_bar">
                     <li>
                         <a class="button tiny disabled" href="#">
                             <i class="fa fa-arrow-circle-down"></i>Tout déplier
@@ -202,7 +202,7 @@
 
     <tal:block tal:condition="not:my_view/is_personnel"
                define="script1 string:setPlanChapterDisclosure(true);
-                       script2 string:setPlanChapterBehaviors();
+                       script2 string:setPlanChapterBehaviors(true);
                        script3 string:readSwitcher()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />

@@ -6,7 +6,7 @@
     <tal:block i18n:translate="">Ajouter des éléments</tal:block>
 </h3>
 <nav id="item-adder">
-    <ul class="button-group expand radius">
+    <ul class="button-group radius">
         <li tal:repeat="item_adder my_view/course_map_item_adder">
             <a tal:attributes="class item_adder/menu_adder_class;
                                data-dropdown item_adder/menu_adder_data-dropdown"

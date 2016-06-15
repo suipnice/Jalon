@@ -183,7 +183,7 @@ function setSortablePlan( ) {
 
         //setAlertBox( 'warning', "Small media detected" );
         setPlanChapterDisclosure( true );
-        setPlanChapterBehaviors( );
+        setPlanChapterBehaviors( true );
 
     } else {
 
@@ -191,11 +191,11 @@ function setSortablePlan( ) {
         //var $coursePlan = Foundation.utils.S( '#course_plan-plan:not(.js-course_empty)' );
         var $coursePlan = Foundation.utils.S( '#course_plan-plan' );
 
-        $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-noSortable' );
+        $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-unsortable' );
 
         $coursePlan.nestedSortable( {
 
-            items: 'li:not(.js-noSortable)',
+            items: 'li:not(.js-unsortable)',
             handle: 'div',
             tabSize: 20,
             isTree: true,
@@ -262,11 +262,23 @@ function setSortablePlan( ) {
             }
         } );
 
-        setPlanChapterBehaviors( );
+        setPlanChapterBehaviors( true );
 
     }
 }
 
+
+
+/*
+    Dépliage complet du plan ()
+*/
+
+function expandPlanChapters( ) {
+
+    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
+        //.removeClass( 'collapsed' )
+        .addClass( 'expanded' );
+}
 
 
 

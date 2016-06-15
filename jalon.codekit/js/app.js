@@ -45,33 +45,35 @@ function setPlanChapterDisclosure( disclosureState ) {
 }
 
 
-function setPlanChapterBehaviors( ) {
+function setPlanChapterBehaviors( init ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan' ),
         $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
         $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
         $legendBardUp = $legendBar.find( ' > li:last-child > a' );
 
-    Foundation.utils.S( '#course_plan' ).find( '.legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
+    if ( init ) {
+        Foundation.utils.S( '#course_plan' ).find( '.legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
 
-        event.preventDefault( );
-        event.stopPropagation( );
+            event.preventDefault( );
+            event.stopPropagation( );
 
-        if ( ! $( this).hasClass( '.disabled' ) ) {
+            if ( ! $( this).hasClass( '.disabled' ) ) {
 
-            if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
+                if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
 
-                setPlanChapterDisclosure( true );
+                    setPlanChapterDisclosure( true );
 
-            } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
+                } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
 
-                setPlanChapterDisclosure( false );
+                    setPlanChapterDisclosure( false );
+                }
+
+                $( this ).blur( );
+
             }
-
-            $( this ).blur( );
-
-        }
-    } );
+        } );
+    }
 
     $target.find( '.js-disclose' ).on( 'click', function( ) {
 
