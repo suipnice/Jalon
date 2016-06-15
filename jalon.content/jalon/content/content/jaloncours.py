@@ -844,13 +844,13 @@ class JalonCours(ATFolder):
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
 
                 item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
-                item["item_span_css"] = "type%s" % item_properties["typeElement"].lower()
+                item["item_span_css"] = "type%s" % item_properties["typeElement"].replace(" ", "").lower()
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
                 item["is_item_title_or_text"] = False
                 if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
                     item["is_item_title_or_text"] = True
-                    item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
+                    item["item_div_css"] = "elem%s" % item_properties["typeElement"]
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
