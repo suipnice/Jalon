@@ -107,6 +107,11 @@ main {
     section > h2 {
         line-height: 1.1;
     }
+
+    ul.button-group {
+        line-height: 1.1rem;
+        font-size: .8rem;
+    }
 }
 
 section > h2:first-child { margin-top: 0; }
@@ -178,16 +183,10 @@ button:focus { border: 0 none; outline: 0; }
 #item-adder {
 
     ul.button-group {
-        margin-bottom: 0.5rem;
-
-        &:not(.even-2):not(.even-3):not(.even-4):not(.even-5):not(.even-6) > li {
-            width: 25%;
-        }
 
         & > li {
 
             & .button {
-                width: 100%;
 
                 &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
                 &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }

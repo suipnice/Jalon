@@ -2,7 +2,7 @@
     <h2>
         <i class="fa fa-desktop"></i><tal:block i18n:translate="">Affichage</tal:block>
     </h2>
-    <ul class="button-group round even-2"
+    <ul class="button-group expand radius even-2"
         tal:define="tab tab | nothing;
                     menu_aff python:context.test(tab, '&amp;tab=%s' % tab, '')">
         <li>
