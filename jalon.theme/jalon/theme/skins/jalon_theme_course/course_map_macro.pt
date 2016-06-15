@@ -33,7 +33,7 @@
 
 <metal:macro define-macro="display_course_map">
         <li class="legend element"
-            tal:condition="not:course_map/ol_css_id">
+            tal:condition="my_view/is_personnel">
             <i class="fa fa-info-circle fa-fw"></i>
             Faites glisser des éléments existants du plan sur le titre, ou ajoutez de nouveaux éléments.
         </li>

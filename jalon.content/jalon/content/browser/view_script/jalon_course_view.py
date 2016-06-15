@@ -131,12 +131,12 @@ class JalonCourseView(BrowserView):
         course_path = self.context.getPhysicalPath()
         my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
 
-        my_view["has_course_map"] = self.context.getPlan()
-
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
         my_view["item_jalonner"] = self.context.getCourseMapItemJalonner()
         my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+
+        my_view["has_course_map"] = True if my_view["course_map"]["course_map_items_list"] else False
 
         my_view["is_course_map_help_text"] = False
         my_view["course_map_help_text"] = ""

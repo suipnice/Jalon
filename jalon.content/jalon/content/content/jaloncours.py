@@ -808,7 +808,8 @@ class JalonCours(ATFolder):
         ol_css_class = ""
         if is_map_top_level:
             ol_css_id = "course_plan-plan"
-            ol_css_class = "sortable ui-sortable"
+            if is_personnel:
+                ol_css_class = "sortable ui-sortable"
 
         #index = 0
         course_map_list = []
