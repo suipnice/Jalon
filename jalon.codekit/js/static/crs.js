@@ -209,11 +209,11 @@ function setSortablePlan( ) {
 
             leafClass: 'leaf',
             branchClass: 'branch',
-            disabledClass: 'legend',
+            disabledClass: 'legend',        // N'est pas prise en compte par la sérialisation.
             hoveringClass: 'hovering',
             expandedClass: 'expanded',
             collapsedClass: 'collapsed',
-            disableNestingClass: 'element',
+            disableNestingClass: 'element', // Ne prend pas de sous élément.
             errorClass: 'error',
 
             update: function( event, ui ) {
