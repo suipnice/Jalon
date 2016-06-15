@@ -25,21 +25,21 @@
         </dl>
         <dl class="typeElement type_Activite">
             <dt i18n:translate="">Activité pédagogique</dt>
-                <dd class="type_Examen" i18n:translate="">Examen</dd>
-                <dd class="type_AutoEvaluation" i18n:translate="">Auto-évaluation</dd>
-                <dd class="type_BoiteDepot" i18n:translate="">Boite de dépôt</dd>
-                <dd class="type_SalleVirtuelle" i18n:translate="">Salle virtuelle</dd>
+                <dd class="typeexamen" i18n:translate="">Examen</dd>
+                <dd class="typeautoevaluation" i18n:translate="">Auto-évaluation</dd>
+                <dd class="typeboitedepot" i18n:translate="">Boite de dépôt</dd>
+                <dd class="typesallevirtuelle" i18n:translate="">Salle virtuelle</dd>
         </dl>
         <dl class="typeElement type_Mon_Espace">
             <dt i18n:translate="">Ressource ou complément</dt>
-                <dd class="type_File" i18n:translate="">Fichier</dd>
-                <dd class="type_Image" i18n:translate="">Image</dd>
-                <dd class="type_Video" i18n:translate="">Ressource Pod</dd>
-                <dd class="type_Lienweb" i18n:translate="">Ressource externe</dd>
-                <dd class="type_Lecteurexportable" i18n:translate="">Lecteur exportable</dd>
-                <dd class="type_CatalogueBU" i18n:translate="">Catalogue BU</dd>
-                <dd class="type_Presentationssonorisees" i18n:translate="">Présentation sonorisée</dd>
-                <dd class="type_Webconference" i18n:translate="">Webconférence</dd>
+                <dd class="typefichier" i18n:translate="">Fichier</dd>
+                <dd class="typeimage" i18n:translate="">Image</dd>
+                <dd class="typevideo" i18n:translate="">Ressource Pod</dd>
+                <dd class="typelienweb" i18n:translate="">Ressource externe</dd>
+                <dd class="typelecteurexportable" i18n:translate="">Lecteur exportable</dd>
+                <dd class="typecataloguebu" i18n:translate="">Catalogue BU</dd>
+                <dd class="typesonorisation" i18n:translate="">Présentation sonorisée</dd>
+                <dd class="typewebconference" i18n:translate="">Webconférence</dd>
         </dl>
         <dl>
             <tal:condition condition="personnel">
