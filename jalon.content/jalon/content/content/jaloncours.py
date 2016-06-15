@@ -850,7 +850,7 @@ class JalonCours(ATFolder):
                 item["is_item_title_or_text"] = False
                 if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
                     item["is_item_title_or_text"] = True
-                    item["item_div_css"] = "elem%s" % item_properties["typeElement"]
+                    item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
