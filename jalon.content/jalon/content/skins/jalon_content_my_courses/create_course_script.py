@@ -17,7 +17,7 @@ course_id = course_user_folder.invokeFactory(type_name='JalonCours', id="Cours-%
 course_object = getattr(course_user_folder, course_id)
 param = {"Title": REQUEST["title"], "Description": REQUEST["description"]}
 
-course_object.setProperties(param)
+course_object.setCourseProperties(param)
 course_object.invokeFactory(type_name='Folder', id="annonce")
 course_object.invokeFactory(type_name='Ploneboard', id="forum")
 
@@ -26,6 +26,6 @@ forum_folder_object.setTitle("Liste des forums du cours")
 
 course_object.addCourseForum("Discussion générale", "Discutez ici librement du cours.", REQUEST["user_id"])
 
-course_object.setProperties({"DateDerniereModif": DateTime()})
+course_object.setCourseProperties({"DateDerniereModif": DateTime()})
 
 context.REQUEST.RESPONSE.redirect("%s?tab=2" % context.absolute_url())
