@@ -68,7 +68,7 @@ dl.typeElement > dd,
     &.typeboitedepot:before         { content: $fa-var-inbox; }
     &.typesallevirtuelle:before     { content: $fa-var-video-camera; }
 
-    &.typefichier:before            { content: $fa-var-file-o; }
+    &.typefile:before               { content: $fa-var-file-o; }
     &.typeimage:before              { content: $fa-var-file-image-o; }
     &.typevideo:before              { content: $fa-var-youtube-play; }
     &.typelienweb:before            { content: $fa-var-external-link; }
