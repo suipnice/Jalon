@@ -11,7 +11,7 @@
 
 function setTagFilter( inPopup ) {
 
-    inReveal = ( typeof inPopup === "undefined" ) ? false : true;
+    var inReveal = ( typeof inPopup === "undefined" ) ? false : true;
 
     Foundation.utils.S( '#js-tag_filter' ).on( 'click', 'li > a.filter-button', function( event ) {
 
