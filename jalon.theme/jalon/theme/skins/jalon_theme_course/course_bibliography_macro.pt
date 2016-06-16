@@ -31,7 +31,7 @@
              tal:define="cours context/getId"
              tal:attributes="id string:bib-${bibliography_letter}">
 
-            <ul tal:define="course_bibliography_element_list python:course_bibliography_dict[bibliography_letter];
+            <ul tal:define="course_bibliography_element_list python:my_view['course_bibliography_dict'][bibliography_letter];
                             no_return python:course_bibliography_element_list.sort(lambda x,y: cmp(x['titreElement'], y['titreElement']))">
                 <li tal:repeat="course_bibliography_element course_bibliography_element_list">
                     <tal:define define="res_name python:context.getShortText(course_bibliography_element['titreElement'], 80)">

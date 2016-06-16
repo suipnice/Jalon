@@ -1,0 +1,78 @@
+<!--
+        wims_activity_macro.pt (anciennement macro_cours_activites.pt) :
+        Macros des activites WIMS du cours
+
+    Sommaire :
+        * macro "informations" : Affiche les informations d'une activité
+        * macro ...
+-->
+
+<!-- Affiche les informations d'une activité -->
+<metal:macro define-macro="informations">
+    <h3>
+        <i class="fa fa-align-justify"></i>
+        <tal:block i18n:translate="">Consigne</tal:block>
+    </h3>
+    <div style="margin-left:2em;">
+        <tal:replace replace="structure context/Description"
+                     condition="context/Description"/>
+        <tal:condition condition="not:context/Description"
+                       i18n:translate="">Aucune consigne
+        </tal:condition>
+    </div>
+
+    <h3>
+        <i class="fa fa-caret-square-o-up"></i>
+        <tal:block i18n:translate="">Barême</tal:block>
+    </h3>
+    <div class="text-right">
+        <tal:replace replace="context/getNoteMax"/> <tal:block i18n:translate="">points</tal:block>
+    </div>
+<tal:condition condition="python:tag == 'Examen'">
+    <h3>
+        <i class="fa fa-clock-o"></i>
+        <tal:block i18n:translate="">Durée</tal:block>
+    </h3>
+    <div class="text-right">
+        <tal:replace replace="context/getDuree"/> <tal:block i18n:translate="">min.</tal:block>
+    </div>
+    <h3>
+        <i class="fa fa-refresh"></i>
+        <tal:block i18n:translate="">Nombre de passages autorisés</tal:block>
+    </h3>
+    <div class="text-right"
+         tal:content="context/getAttempts"/>
+
+<tal:condition condition="is_personnel">
+    <h3>
+        <i class="fa fa-lock"></i>
+        <tal:block i18n:translate="">Mot de passe</tal:block>
+    </h3>
+    <div class="text-right">
+        <p tal:replace="context/getVerrou"
+           tal:condition="context/getVerrou"/>
+        <p tal:condition="not:context/getVerrou"
+           i18n:translate="">
+            Aucun mot de passe
+        </p>
+        <p class="texte_icone icone_information"><em>Visible par les enseignants seulement</em></p>
+    </div>
+</tal:condition>
+
+</tal:condition>
+
+<tal:define define="langue context/getDisplayLang"
+            condition="langue/icone">
+    <h3>
+        <i class="fa fa-flag"></i>
+        <tal:block i18n:translate="">Langue des exercices</tal:block>
+    </h3>
+    <div class="text-right">
+        <img tal:condition="langue/icone"
+             tal:attributes="src string:++resource++country-flags/${langue/icone}.gif;
+                             alt langue/description"/>
+        <tal:replace tal:replace="langue/description"/>
+    </div>
+</tal:define>
+
+</metal:macro>
