@@ -1,7 +1,7 @@
 type=first
 modele_jalon=Texte_a_Trou
 textarea="data, feedback_general"
-asis="data feedback_general"
+asis="data feedback_general feedback_bon feedback_mauvais"
 
 :Questions mixtes incorporées dans un texte fixe.
 <p>Cet exercice présente un texte où des Trous (champs à réponse) sont insérés.</p>
@@ -38,47 +38,85 @@ applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
 Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.
 \text{feedback_general=asis($$feedback_general$$)}
 
+:Feedback en cas de bonne réponse
+Ce texte s'affichera après la réponse de l'apprenant, en cas de bonne réponse.
+\text{feedback_bon=asis($$feedback_bon$$)}
+
+:Feedback en cas de mauvaise réponse
+Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse.
+\text{feedback_mauvais=asis($$feedback_mauvais$$)}
+
+:Mise en aléatoire par des accolades emboitables
+$embraced_randitem
+\text{accolade=item($$accolade$$, oui, non)}
+
+:Ordre d'affichage des listes de choix
+Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabétique(alpha).
+\text{list_order=item($$list_order$$, alpha, shuffle)}
+
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
+
+
 \if{\feedback_general notsametext }{
   \text{feedback_general=<div class='feedback'>\feedback_general</div>}
 }
+\if{\feedback_bon != \empty}{
+  \text{feedback_bon=<p class='feedback oef_indgood'>\feedback_bon</p>}
+}
+\if{\feedback_mauvais != \empty}{
+  \text{feedback_mauvais=<p class='feedback oef_indbad'>\feedback_mauvais</p>}
+}
 \precision{10000}
 \text{data=wims(singlespace \data)}
-\text{data=wims(embraced randitem \data)}
+\text{data=\accolade issametext oui ? wims(embraced randitem \data):\data}
 \text{data=slib(text/cutchoice2 \data)}
 \integer{qs=min(20,floor(rows(\data)/2))}
+
 \text{types=}
 \text{options=}
 \text{lengths=}
 \text{good=}
 \text{field=}
+
 \for{i=1 to \qs}{
  \text{f=\data[2*\i;]}
  \integer{test=items(\f)}
+
  \if{\test>1}{
   \text{g=\f[1]}
-  \text{f=wims(sort items \f)}
+  \if{\list_order issametext alpha}{
+    \text{f=wims(sort items \f)}
+  }
+  {
+    \text{f=shuffle(\f,,)}
+  }
   \text{g=positionof(\g,\f)}
   \text{good=\good\g;,}
   \text{field=\field\f;}
   \text{types=\types[]menu,}
-  \text{lengths=\lengths,}}{
+  \text{lengths=\lengths,}
+ }{
   \text{good=\good\f,}
   \integer{c=wims(charcnt \f)}
   \text{field=\field;}
   \real{test=\f}
+
   \if{\test issametext NaN}{
    \text{test=wims(translate internal | to , in \f)}
    \integer{c=wims(charcnt \test[1])}
    \integer{c=min(50,max(6,\c+6))}
    \text{lengths=\lengths\c,}
    \text{types=\types[]\type_rep,}
-   \text{options=| isin \f?\options[]symtext}}{
+   \text{options=| isin \f?\options[]symtext}
+  }{
    \integer{c=max(5,\c+2)}
    \text{f1=wims(nospace \f)}
    \text{test=wims(text select -0123456789 in \f)}
-   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}}}
- \text{options=\options,}}
+   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}
+  }
+ }
+ \text{options=\options,}
+}
 \text{pre=wims(embraced randitem \pre)}
 \text{post=wims(embraced randitem \post)}
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
@@ -122,4 +160,18 @@ Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fa
 \answer{Champ 19}{\good[19]\field[19;]}{type=\types[19]}{option=\options[19]}
 \answer{Champ 20}{\good[20]\field[20;]}{type=\types[20]}{option=\options[20]}
 
+\integer{score_total=0}
+\text{screply=\sc_reply1,\sc_reply2,\sc_reply3,\sc_reply4,\sc_reply5,\sc_reply6,\sc_reply7,\sc_reply8,\sc_reply9,
+\sc_reply10,\sc_reply11,\sc_reply12,\sc_reply13,\sc_reply14,\sc_reply15,\sc_reply16,\sc_reply17,\sc_reply18,\sc_reply19,
+\sc_reply20,\sc_reply21,\sc_reply22,\sc_reply23,\sc_reply24,\sc_reply25,\sc_reply26,\sc_reply27,\sc_reply28,\sc_reply29,
+\sc_reply30,\sc_reply31,\sc_reply32,\sc_reply33,\sc_reply34,\sc_reply35,\sc_reply36,\sc_reply37,\sc_reply38,\sc_reply39,
+\sc_reply40}
+
+\for{idtrou=1 to \qs}{
+    \integer{score_total=wims(\score_total+\screply[\idtrou])}
+}
+
 \feedback{1=1}{\feedback_general}
+\feedback{\score_total=\qs}{\feedback_bon}
+\feedback{\score_total<\qs}{\feedback_mauvais}
+\feedback{1=1}{<br class='spacer'/>}

@@ -439,7 +439,7 @@ $$boucle_matrix_rep$$
   \integer{test1 = items(\test1)-items(\CHOIX[\H;\rep[\H;]])}
   \text{test2 = wims(listcomplement \REP[\H;] in \CHOIX[\H;\rep[\H;]])}
   \text{test3 = wims(listcomplement \CHOIX[\H;\rep[\H;]] in \REP[\H;])}
-  %%% \integer{test4=items(\REP[\H;]) - items(\CHOIX[\H;])}
+  # \integer{test4=items(\REP[\H;]) - items(\CHOIX[\H;])}
   \text{test_cnt=\test1, items(\test2), items(\test3)}
   \integer{cnt_juste= \test_cnt[1]+\test_cnt[2]+\test_cnt[3] =0 ? \cnt_juste + 1}
   \matrix{TEST=\TEST
