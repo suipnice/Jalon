@@ -32,9 +32,9 @@
 
     <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-    <metal:macro use-macro="context/macro_messages/macros/messages">
+    <!--metal:macro use-macro="context/macro_messages/macros/messages">
         encart d'affichage des messages de feedback
-    </metal:macro>
+    </metal:macro-->
 
     <tal:owner condition="can_view">
 

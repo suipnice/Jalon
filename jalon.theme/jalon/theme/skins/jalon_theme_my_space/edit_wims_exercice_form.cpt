@@ -31,9 +31,9 @@
             Message de session
         </metal:macro>
 
-        <metal:macro use-macro="context/macro_messages/macros/messages">
+        <!--metal:macro use-macro="context/macro_messages/macros/messages">
             Encart d'affichage des messages de feedback
-        </metal:macro>
+        </metal:macro-->
 
         <!-- id="wims-edit" -->
         <section id="wims-edit" class="small-12 columns"
