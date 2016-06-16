@@ -147,3 +147,4 @@ sftp-config.json
 
 ### PyCharm Project ###
 .idea/*
+*.orig
