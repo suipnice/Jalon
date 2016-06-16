@@ -46,6 +46,7 @@ if context.isPersonnel(authMember):
         #message = u"Les notes des activités WIMS du cours « <strong>%s</strong> » ont bien été téléchargées ." % (titre_cours)
         #context.plone_utils.addPortalMessage(_(message), "info")
         filename = "%s.%s" % (context.getId(), dico_format[file_format][0])
+
         if file_format == "xls":
             #Comme Excel (francais) ne prend pas automatiquement l'utf-8, on réencode en iso pour lui.
             charset = "Windows-1252"

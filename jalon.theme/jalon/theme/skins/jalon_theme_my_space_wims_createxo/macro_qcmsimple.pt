@@ -228,7 +228,7 @@
                     </div>
 
                     <div class="row center">
-                        <div class="small-12 medium-6 medium-centered columns">
+                        <div class="medium-6 medium-centered columns">
                             <metal:macro use-macro="context/macro_commune/macros/accolade_option"/>
                         </div>
                     </div>

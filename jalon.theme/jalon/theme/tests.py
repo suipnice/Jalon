@@ -10,17 +10,16 @@ __status__  = "Production"
 """
 
 import unittest
+import jalon.theme
 
-#from zope.testing import doctestunit
-#from zope.component import testing
+# from zope.testing import doctestunit
+# from zope.component import testing
 from Testing import ZopeTestCase as ztc
 
 from Products.Five import fiveconfigure
 from Products.PloneTestCase import PloneTestCase as ptc
 from Products.PloneTestCase.layer import PloneSite
 ptc.setupPloneSite()
-
-import jalon.theme
 
 
 class TestCase(ptc.PloneTestCase):
@@ -45,21 +44,21 @@ def test_suite():
     return unittest.TestSuite(
         [
             # Unit tests
-            #doctestunit.DocFileSuite(
+            # doctestunit.DocFileSuite(
             #    'README.txt', package='jalon.theme',
             #    setUp=testing.setUp, tearDown=testing.tearDown),
 
-            #doctestunit.DocTestSuite(
+            # doctestunit.DocTestSuite(
             #    module='jalon.theme.mymodule',
             #    setUp=testing.setUp, tearDown=testing.tearDown),
 
 
             # Integration tests that use PloneTestCase
-            #ztc.ZopeDocFileSuite(
+            # ztc.ZopeDocFileSuite(
             #    'README.txt', package='jalon.theme',
             #    test_class=TestCase),
 
-            #ztc.FunctionalDocFileSuite(
+            # ztc.FunctionalDocFileSuite(
             #    'browser.txt', package='jalon.theme',
             #    test_class=TestCase),
         ])

@@ -6,10 +6,12 @@ textarea='data explain'
 <p>Pour construire un exercice avec ce modèle, il suffit d'entrer la liste d'objets à trier et changer le texte explicatif.</p>
 <p> Avec une petite modification, une variante de ce modèle peut accepter des images comme objets. </p>
 <p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
 :%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
 Enlevez l'entete ci-dessus si vous detruisez les balises pour le modele !
 (Ce sont les lignes qui commencent par un ':'.)
 Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
 :%%%%%%%% Parametres d'exemples à redefinir %%%%%%%%%%%%%%%%%
 :\title{$$title$$}
 :\author{$$author$$}
@@ -27,6 +29,7 @@ Ecrivez les objets dans le bon ordre, séparés par des virgules.
 \text{data=$$data$$}
 :Le texte qui explique ce qu'il faut faire.
 \text{explain=$$explain$$}
+
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
 \integer{datacnt=items(\data)}
 \integer{tot=min(20,min(\tot,\datacnt))}
@@ -36,12 +39,15 @@ Ecrivez les objets dans le bon ordre, séparés par des virgules.
  \text{data=item(\sh,\data)}}
 \text{st=wims(makelist r x for x=1 to \tot)}
 \steps{\st}
+
 :%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
 ::Vous n'avez pas besoin de modifier ceci en général.
 \statement{
-<p>\explain</p>
-\for{k=1 to \tot}{\embed{r\k,\size}}
-<hr/>}
+  <p>\explain</p>
+  \for{k=1 to \tot}{\embed{r\k,\size}}
+  <hr/>
+}
+
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
 \answer{1}{\data[1]}{type=dragfill}
 \answer{2}{\data[2]}{type=dragfill}

@@ -5,10 +5,12 @@ textarea='data explain'
 On présente une liste d'objets, et il faut marquer ceux qui possèdent une certaine propriété selon la demande de l'exercice.<br/>
 Pour construire un exercice avec ce modèle, il suffit de donner la liste d'objets et leurs propriétés.<br/>
 <p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
 :%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
 Enlevez l'entete ci-dessus si vous détruisez les balises pour le modèle !
 (Ce sont les lignes qui commencent par un ':'.)
 Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
 :%%%%%%%% Paramètres d'exemples à redéfinir %%%%%%%%%%%%%%%%%
 :\title{$$title$$}
 :\author{$$author$$}
@@ -63,11 +65,13 @@ Ajoutez le mot 'liste' aux options si vous voulez afficher les mots sous forme d
 \text{all=item(\sh,\all)}
 \text{ind=item(\sh,\ind)}
 \text{tomark=positionof(1,\ind)}
+
 :%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
 :Le texte pour expliquer ce qu'il faut faire.
 Pour évoquer la propriété tirée, écrire <tt>\prop</tt>.
 $embraced_randitem
 \text{explain=$$explain$$}
+
 :%% Calculs à ne pas modifier
 \text{explain=wims(embraced randitem \explain)}
 ::On n'a pas besoin de modifier l'énoncé directement en général.
@@ -77,5 +81,6 @@ $embraced_randitem
  \for{k=1 to \tot-1}{\separatorL \embed{r1,\k},\separatorR }
  \separatorL \embed{r1,\tot}.\separatorR
 \post}
+
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
 \answer{Le marquage}{\tomark;\all}{type=mark}{option=\option}
