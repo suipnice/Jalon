@@ -22,15 +22,12 @@
     <!--
             Seuls les enseignants font des appels AJAX depuis le plan.
 
-            Une fois la position dépliée / repliée mémorisée, la fonction
-            crs/expandPlanChapters( ) deviendra inutile ainsi que le paramètre de
-            app/setPlanChapterBehaviors( ).
+            Une fois la position dépliée / repliée mémorisée cote srv,
+            cet appel à crs/expandPlanChapters( ) devra être supprimé.
     -->
     </tal:comments>
     <script charset="UTF-8"
             tal:content="structure string:expandPlanChapters()"></script>
-    <script charset="UTF-8"
-            tal:content="structure string:setPlanChapterBehaviors(false)"></script>
 
 </metal:main>
 
