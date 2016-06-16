@@ -77,8 +77,8 @@ function setPlanChapterBehaviors( init ) {
 
     $target.find( '.js-disclose' ).on( 'click', function( ) {
 
-        $( this ).closest( 'li' ).toggleClass( 'collapsed' ).toggleClass( 'expanded' );
-        //$( this ).toggleClass( 'fa-arrow-circle-right' ).toggleClass( 'fa-arrow-circle-down' );
+        $( this ).closest( 'li' ).toggleClass( 'collapsed expanded' );
+        //$( this ).toggleClass( 'fa-arrow-circle-right fa-arrow-circle-down' );
 
         $legendBardDown.removeClass( 'disabled' );
         $legendBardUp.removeClass( 'disabled' );
