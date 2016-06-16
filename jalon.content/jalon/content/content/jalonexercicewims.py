@@ -133,6 +133,8 @@ Néanmoins, ses racines historiques remontent au XVIIème siècle, avec le fameu
 crée en ??1639?? par les Princes de Savoie ; il comprenait un important corps de jurisconsultes et sa notoriété dura jusqu'au rattachement de Nice à la France, en ??1860,1870,1850,1840??.\n\
 Au XVIIème siècle, une École de ??Médecine, Couture, Danse, Chimie?? dispensa des enseignements appréciés dans toute l'Europe.\n",
                                  "feedback_general": "",
+                                 "feedback_bon"    : "",
+                                 "feedback_mauvais": "",
                                  "credits"         : "",
                                  "accolade"        : "1",
                                  "list_order"      : "1",
@@ -675,6 +677,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                "texteatrous": {"type_rep":  "text{type_rep",
                                                "donnees":   "text{data",
                                                "feedback_general": "text{feedback_general",
+                                               "feedback_bon"    : "text{feedback_bon",
+                                               "feedback_mauvais": "text{feedback_mauvais",
                                                "credits":          "credits{",
                                                "accolade":         "text{accolade=item\(",
                                                "list_order":       "text{list_order=item\(",

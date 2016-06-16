@@ -8,10 +8,12 @@ textarea='data words'
 <p>L'analyseur de réponse sait ignorer les 'petites' différences dans la réponse : absence ou ajout d'un article, majuscule/minuscule, accents, pluriel/singulier.</p>
 <p>Il peut aussi ne pas compter des erreurs de frappe comme une fausse réponse. Des synonymes peuvent aussi être déclarés.</p>
 <p>Auteur du modèle : Gang XIAO <qualite@wimsedu.info></p>
+
 :%%%%%%%%%%%%%%%%%      ATTENTION      %%%%%%%%%%%%%%%%%%%%
 Enlevez l'entete ci-dessus si vous detruisez les balises pour le modele !
 (Ce sont les lignes qui commencent par un ':'.)
 Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
+
 :%%%%%%%% Parametres d'exemples à redefinir %%%%%%%%%%%%%%%%%
 :\title{$$title$$}
 :\author{$$author$$}
@@ -42,8 +44,9 @@ Si ce champ est vide, toute réponse non-reconnue est jugée fausse. Ce qui doit
  $embraced_randitem
 \text{pre=$$pre$$}
 :Texte affiché après la question. Balises html admises. Peut être vide.
-$embraced_randitem 
+$embraced_randitem
 \text{post=$$post$$}
+
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
 \text{words=wims(trim \words)}
 \text{atype=wims(word 1 of \atype)}
@@ -62,14 +65,16 @@ $embraced_randitem
 :%%qlist contient la liste des reponses attendues
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
 \steps{\qlist}
+
 :%%%%%%%%%%%%% Maintenant l'enonce en code html. %%%%%%%%%%%%%%%%%%%%
 ::Vous n'avez pas besoin de modifier ceci en general.
 \statement{\pre
 \data[1;]
 \for{k=1 to \qs}{
- \embed{r \k,\len 
+ \embed{r \k,\len
 autocomplete='off' id='reply\k'} \data[2*\k+1;]}
 \post}
+
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
 \answer{Champ 1}{\data[2;];\words}{type=\atype}
 \answer{Champ 2}{\data[4;];\words}{type=\atype}

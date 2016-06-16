@@ -96,6 +96,22 @@
                             </div>
                         </div>
                         <metal:macro use-macro="context/macro_commune/macros/credits"/>
+
+                        <div class="panel success">
+                            <label for="feedback_bon">Feedback de bonne réponse</label>
+                            <div class="formHelp texte_icone icone_information"> Ce texte s'affichera après la réponse de l'apprenant, s'il a trouvé toutes les bonnes réponses. </div>
+                            <input style="width:98%" name="feedback_bon" id="feedback_bon" class="mini"
+                                   tal:define="feedback_bon QCM_parsed/feedback_bon"
+                                   tal:attributes="value feedback_bon"/>
+                        </div>
+
+                        <div class="panel alert">
+                            <label for="feedback_mauvais">Feedback de mauvaise réponse</label>
+                            <div class="formHelp texte_icone icone_information"> Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse. </div>
+                            <input style="width:98%" name="feedback_mauvais" id="feedback_mauvais" class="mini"
+                                   tal:define="feedback_mauvais QCM_parsed/feedback_mauvais"
+                                   tal:attributes="value feedback_mauvais"/>
+                        </div>
                     </div>
                 </dd>
 
