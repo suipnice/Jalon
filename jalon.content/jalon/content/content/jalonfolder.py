@@ -114,6 +114,13 @@ class JalonFolder(ATFolder):
         #LOG.info("----- getMySpaceFolder -----")
         return self.folder_my_space_dict[self.getId()]
 
+    def getMySubSpaceFolder(self, user_id, folder_id, portal=None):
+        """Fourni le sous espace folder_id de user_id."""
+        LOG.info("----- getMySubSpaceFolder -----")
+        if not portal:
+            portal = self.portal_url.getPortalObject()
+        return getattr(getattr(portal.Members, user_id), folder_id)
+
     def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
         """Fourni la liste des elements d'un jalonfolder."""
         dico = {"portal_type": typeR}
