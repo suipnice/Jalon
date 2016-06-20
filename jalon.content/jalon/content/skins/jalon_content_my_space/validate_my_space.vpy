@@ -12,7 +12,7 @@
 
 from Products.CMFPlone import PloneMessageFactory as _
 
-#context.plone_log("[valider_form]")
+# context.plone_log("[valider_form]")
 error = False
 form = context.REQUEST.form
 validate_key = form["validate_key"]

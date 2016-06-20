@@ -13,6 +13,7 @@
 from Products.CMFPlone import PloneMessageFactory as _
 
 """ Script d'edition des exercices WIMS de Mon Espace."""
+# Le contexte est un JalonExerciceWims
 #context = context
 REQUEST = context.REQUEST
 form = REQUEST.form
@@ -24,9 +25,10 @@ wims_exercice_model = form["modele"]
 user_id = context.supprimerCaractereSpeciaux(form["member_id"])
 wims_exercice_folder = context.aq_parent.getMySubSpaceFolder(user_id, "Wims")
 
-success_message       = _(u"Votre exercice « %s » a bien été modifié." % context.Title().decode("utf-8"))
-unknown_model_message = _(u"Une erreur est survenue sur votre exercice « %s » (modèle inexistant ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp." % context.Title().decode("utf-8"))
-syntax_error_message  = _(u"Votre exercice « %s » n'a pas été enregistré, probablement suite à une erreur de syntaxe.<br />Par exemple, lorsque vous utilisez des parenthèses, accolades ou crochets, veillez à les placer par paires correctement fermées." % context.Title().decode("utf-8"))
+title = context.Title().decode("utf-8")
+success_message       = _(u"Votre exercice « %s » a bien été modifié." % title)
+unknown_model_message = _(u"Une erreur est survenue sur votre exercice « %s » (modèle introuvable ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp." % title)
+syntax_error_message  = _(u"Votre exercice « %s » n'a pas été enregistré, probablement suite à une erreur de syntaxe.<br />Par exemple, lorsque vous utilisez des parenthèses, accolades ou crochets, veillez à les placer par paires correctement fermées." % title)
 
 if "save_and_test" in form:
     # url de test direct de l'exercice actuel :
@@ -49,9 +51,9 @@ else:
     # print rep
     if not("status" in rep):
         # La creation a planté (Cause : modele inconnu ?)
-        wims_exercice_folder.manage_delObjects(ids=[object_id])
+        # nb : ceci ne devrait jamais survenir en modification a priori.
+        #wims_exercice_folder.manage_delObjects(ids=[object_id])
         context.plone_utils.addPortalMessage(unknown_model_message, 'error')
-
     else:
         if rep["status"] == "OK":
             # L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
@@ -61,7 +63,6 @@ else:
         else:
             # La creation a planté coté WIMS, on suppose que la creation a planté suite a une erreur de syntaxe.
             context.plone_utils.addPortalMessage(syntax_error_message, 'error')
-            # message = "wims_unavailable"
             page_url = object_link
 
 context.REQUEST.RESPONSE.redirect(page_url)

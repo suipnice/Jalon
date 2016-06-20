@@ -10,6 +10,9 @@
 
 <metal:content-core fill-slot="content"
                     tal:define="errors options/state/getErrors | nothing">
+    <tal:comment replace="nothing">
+        <!-- create_wims_exercice_form.cpt : formulaire de creation d'un exercice WIMS -->
+    </tal:comment>
 
     <h2>
         <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
@@ -83,7 +86,7 @@
 
         <input type="hidden" name="form.submitted" value="1"/>
         <input type="hidden" name="validate_key" value="create_wims_exercice"/>
-        <input type="hidden" name="member_id" 
+        <input type="hidden" name="member_id"
                              tal:attributes="value user/getId"/>
 
         <div class="formControls">

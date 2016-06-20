@@ -22,7 +22,7 @@
     <tal:listing condition="my_view/my_items_list">
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items" />
-        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block i18n:translate="">sur</tal:block>
         <tal:block replace="my_view/nb_items" />
     </div>
 

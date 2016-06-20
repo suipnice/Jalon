@@ -11,7 +11,8 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-
+#context=context
+#state=state
 error = False
 form = context.REQUEST.form
 modele = form["modele"]
@@ -36,7 +37,7 @@ dicoObligatoire = {"qcmsimple":                  ["title", "bonnesrep"],
                    "qcmsuite":                   ["title"]}
 
 for obligatoire in dicoObligatoire[modele]:
-    if not obligatoire in form:
+    if obligatoire not in form:
         state.setError(obligatoire, _(u"Vous n'avez pas renseigné ce champ obligatoire."))
         state.set(status='failure')
         error = True
@@ -51,7 +52,7 @@ if error:
         form["list_id_questions"] = range(int(form["nb_questions"]))
     return state
 
-#Avant de modifier un exercice WIMS, on teste la compilation de celui-ci dans la "sandbox"
+# Avant de modifier un exercice WIMS, on teste la compilation de celui-ci dans la "sandbox"
 if modele == "externe":
     permalink = context.parser_permalien(form["permalink"])
     if permalink == "":
@@ -61,7 +62,7 @@ if modele == "externe":
     else:
         form["permalink"] = permalink
 else:
-    #le dernier parametre "True" permet de tester l'exo en mode "bac à sable"
+    # Le dernier parametre "True" permet de tester l'exo en mode "bac à sable"
     rep = context.addExoWims(form["idobj"], form["title"], form["member_id"], form["modele"], form, True)
     if not (rep and rep["status"] == "OK"):
         if modele == "qcmsuite":
