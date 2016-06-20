@@ -839,9 +839,19 @@ class JalonBoiteDepot(ATFolder):
         0 s'ils n'ont plus le droit.
     """
     def isDepotActif(self):
+        LOG.info("----- isDepotActif -----")
+        profile = self.getProfile()
         now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
         date_depot = DateTime(self.getDateDepot())
         date_retard = DateTime(self.getDateRetard())
+
+        LOG.info("***** profile : %s" % profile)
+        LOG.info("***** date_depot : %s" % self.getDateDepot())
+
+        # En profil évaluation par les pairs la date de dépôts est obligatoire
+        if profile == "pairs" and date_depot == now:
+            return 3
+
         # La date de dépot n'est pas encore passée.
         if now <= date_depot:
             return 1

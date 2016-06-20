@@ -34,6 +34,12 @@
                                                  i18n:translate=""/>
     </h2>
 
+    <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
+         tal:on-error="nothing">
+        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
+        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+    </div>
+
     <div tal:define="infos_depots dico_depots/infos_depots"
          tal:attributes="class string:panel ${infos_depots/css_class} radius"
          tal:content="structure infos_depots/text"
