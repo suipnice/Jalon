@@ -28,7 +28,7 @@
     <main class="row" role="main" aria-labelledby="page_title"
           tal:define="portal_lang portal_state/language">
 
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
     <metal:macro use-macro="context/macro_messages/macros/messages">
         encart d'affichage des messages de feedback

@@ -25,7 +25,7 @@
     See complete doc here : http://docs.plone.org/develop/plone/sessions/statusmessages.html
 
     To call this macro, just add this in your template :
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
 -->
 

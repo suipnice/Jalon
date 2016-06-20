@@ -1,0 +1,195 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:metal="http://xml.zope.org/namespaces/metal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+    lang="en"
+    metal:use-macro="context/main_template/macros/master"
+    i18n:domain="jalon.content">
+
+<body>
+<!--
+  wims_activity_special_page.pt (ex cours_activites_pageWIMS.pt)
+  Page generique d'affichage de contenus WIMS concernant une activité d'un cours (Autoeval / examen)
+ -->
+
+<metal:core fill-slot="content"
+            tal:define="tag context/getTypeWims;
+                        anonymous python:user.has_role('Anonymous');
+                        icones python:{'AutoEvaluation': 'icone_refresh', 'Examen': 'icone_examen'};
+                        pageWIMS request/pageWIMS | string:user_log;">
+
+<tal:comment replace="nothing"><!--seul un enseignant ou l'etudiant demandé peut voir la page --></tal:comment>
+<tal:condition condition="not:anonymous"
+               define="personnel python:context.isPersonnel(user);
+                       quser request/quser | nothing">
+    <h2>
+        <tal:condition condition="python:pageWIMS == 'user_log'"
+                       i18n:translate="">Détail des connexions</tal:condition>
+        <tal:condition condition="python:pageWIMS == 'exam_log'"
+                       i18n:translate="">Revoir les examens</tal:condition>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <style type="text/css">
+        /*
+          Coloration d'une cellule de tableau avec la classe "warning" (utile pour attirer l'attention sur une case)
+            td.warning { color: $warning-color; }
+        */
+        td.warning { color: #f08a24; }
+    </style>
+
+    <tal:condition condition="python: (personnel or quser==user) and quser != None">
+    <div id="js-list-log"
+         tal:define="user_logs python:context.getUserLog(quser=quser, authUser=user, isProf=personnel);
+                     connexions user_logs/user_log  | nothing;"
+         tal:condition="python:context.test(pageWIMS == 'user_log', 1, 0)">
+        <h3>
+            <tal:block i18n:translate="">Connexions de</tal:block>
+            <span tal:content="user_logs/fullname"/>
+            <tal:block i18n:translate="">à l'activité</tal:block>
+            "<span tal:content="context/title_or_id"/>"
+        </h3>
+        <div data-alert="data-alert" class="portalMessage alert-box radius alert"
+             tal:condition="python:user_logs['status']=='ERROR'"
+             tal:define="error_code user_logs/error_code | nothing">
+            <tal:condition condition="python:error_code=='450'">
+                <!--metal:macro use-macro="context/macro_messages/macros/wims_limit_reached">
+                    encart d'affichage du message d'erreur "limit reached".
+                </metal:macro-->
+                limit reached
+            </tal:condition>
+            <tal:condition condition="python:error_code!='450'">
+                <!--metal:macro use-macro="context/macro_messages/macros/wims_unknown_error">
+                    encart d'affichage du message "erreur inconnue".
+                </metal:macro-->
+                wims_unknown_error
+            </tal:condition>
+            <pre tal:content="user_logs/message"/>
+            <tal:comment replace="nothing" ><!--pre tal:content="user_logs/error_body"/--></tal:comment>
+        </div>
+        <tal:condition condition="connexions">
+        <table class="listing">
+            <thead>
+                <tr>
+                    <th class="sort text-left" data-sort="colonne_0" title="Trier selon la date" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Date.Heure</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left show-for-medium-up" data-sort="colonne_1" title="Trier selon la session" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Session</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left" data-sort="colonne_3" title="Trier selon l'exercice'" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Exercice</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left" data-sort="colonne_4" title="Trier selon l'action effectuée" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Action</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left" data-sort="colonne_5" title="Trier selon le résultat" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Résultat</tal:block>
+                        </span>
+                    </th>
+                    <th class="sort text-left show-for-medium-up" data-sort="IP" title="Trier selon l'IP" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Adresse IP</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+                <tal:repeat repeat="log connexions">
+                <tr tal:define="ignore_list python:test(log[4]=='new',[2,6],[2])">
+                    <tal:repeat repeat="item log">
+                    <tal:block define="index repeat/item/index;
+                                       col_name string:colonne_${index}"
+                               condition="python:index not in ignore_list"
+                               >
+                        <tal:comment replace="nothing"><!-- Si on est pas dans le cas de ces 4 actions, on affiche le contenu--></tal:comment>
+                        <tal:block tal:condition="python:item not in ['new', 'renew', 'resume', 'rafale']">
+                            <td tal:condition="python:item.startswith('###')"
+                                class="IP show-for-medium-up"
+                                tal:content="item" />
+                            <td tal:condition="python:not(item.startswith('###'))"
+                                tal:attributes="class python:test(index!=1, col_name,'%s show-for-medium-up'%col_name)"
+                                tal:content="item" />
+                        </tal:block>
+                        <tal:comment replace="nothing"><!-- Dans le cas de ces 4 actions, on affiche une cellule vide supplémentaire--></tal:comment>
+                        <tal:block tal:condition="python:item in ['new', 'renew', 'resume', 'rafale']">
+                            <td tal:attributes="class python:test(item=='rafale','%s warning'%col_name,  col_name)"
+                                tal:content="item" />
+                            <td class="colonne_5" style="opacity:0;"> </td>
+                        </tal:block>
+                    </tal:block>
+                    </tal:repeat>
+                </tr>
+                </tal:repeat>
+            </tbody>
+        </table>
+
+        <!-- Formatage conditionel -->
+        <tal:block define="coloration string:setConditionalFormat(5,10);">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(coloration)" />
+        </tal:block>
+
+        <!-- Tri du tableau -->
+        <tal:block define="sort_script string:setSortableList('js-list-log',['colonne_0', 'colonne_1', 'colonne_3', 'colonne_4','colonne_5', 'IP'],'colonne_0','asc');">
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
+        </tal:block>
+
+        <script charset="UTF-8"
+                tal:define="buffer python:jsBuffer.getDirectBuffer()"
+                tal:content="structure buffer">
+        </script>
+        </tal:condition>
+
+
+        <tal:condition condition="not:connexions">
+        <div class="panel" i18n:translate="">Cet étudiant n'a pas encore commencé cette activité.</div>
+        </tal:condition>
+
+    </div>
+
+        <tal:condition condition="python:context.test(pageWIMS == 'exam_log', 1, 0)" >
+        <tal:comment replace="nothing"><!-- Liste des sessions d'examens effectués --></tal:comment>
+    <iframe id="insert_wims"
+            tal:define="param_wims python:context.authUser('supervisor', context.getClasse(), request);
+                        site_lang  portal_state/language;
+                        wims_lang  python:context.getWimsLang(site_lang);"
+            tal:attributes="src string:${param_wims/home_url}&amp;module=adm%2Fclass%2Fuserscore&amp;cmd=new&amp;job=examcheck&amp;checkuser=${quser}&amp;lang=${wims_lang}"/>
+        <tal:comment replace="nothing"><!-- Pour lister plus loin : checksession=ID_SESSION&amp;checkexo=ID_EXA.ID_EXO&amp;checkstep=STEP --></tal:comment>
+        </tal:condition>
+
+    </tal:condition>
+
+</tal:condition>
+
+</metal:core>
+
+</body>
+
+</html>

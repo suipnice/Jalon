@@ -89,14 +89,7 @@
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">Message de session</metal:macro>
-    <div class="row"
-         tal:define="message request/message | nothing"
-         tal:condition="message">
-        <metal:macro use-macro="context/macro_messages/macros/messages">
-            encart d'affichage des messages de feedback
-        </metal:macro>
-    </div>
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
     <tal:condition condition="anonymous">
         <metal:macro use-macro="context/macro_messages/macros/must_be_connected">
@@ -136,7 +129,7 @@
                     </a>
                 </li>
                 <li>
-                    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_activites&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
+                    <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=wims_activity_macro&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
                         title="Modifier"
                         i18n:attributes="title"
                         data-reveal-id="reveal-main" data-reveal-ajax="true">
@@ -201,22 +194,22 @@
                                     groupement python:context.getGroupement()" >
                 <tal:condition condition="groupement">
                     <tal:condition condition="python:menu == 'sujets'">
-                        <metal:macro use-macro="context/macro_cours_activites/macros/liste-sujets">
+                        <metal:macro use-macro="context/wims_activity_macro/macros/liste-sujets">
                             Page d affichage de la liste des documents enseignants
                         </metal:macro>
                     </tal:condition>
                     <tal:condition condition="python:menu == 'exercices'" >
-                        <metal:macro use-macro="context/macro_cours_activites/macros/liste-exercices">
+                        <metal:macro use-macro="context/wims_activity_macro/macros/liste-exercices">
                             Page d'affichage de la liste des exercices attachés
                         </metal:macro>
                     </tal:condition>
                     <tal:condition condition="python:menu == 'resultats' and tag=='AutoEvaluation'">
-                        <metal:macro use-macro="context/macro_cours_activites/macros/resultats-auto">
+                        <metal:macro use-macro="context/wims_activity_macro/macros/resultats-auto">
                             Page d affichage des Resultats d'une autoevaluation
                         </metal:macro>
                     </tal:condition>
                     <tal:condition condition="python:menu == 'resultats' and tag=='Examen'">
-                        <metal:macro use-macro="context/macro_cours_activites/macros/resultats-exam">
+                        <metal:macro use-macro="context/wims_activity_macro/macros/resultats-exam">
                             Page d affichage des Resultats d'un examen
                         </metal:macro>
                     </tal:condition>
@@ -239,13 +232,13 @@
         <section id="activite_info_options" class="small-12 medium-4 columns">
 
         <tal:condition condition="isAuteurs">
-            <metal:macro use-macro="context/macro_cours_life/macros/mode_affichage">
+            <metal:macro use-macro="context/course_life_macro/macros/display_mod">
                 Mode Enseignant / Etudiant
             </metal:macro>
         </tal:condition>
 
             <div id="activite_informations" tal:condition="python:affElement['val'] > 0 or is_personnel">
-                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_activites&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=wims_activity_macro&amp;formulaire=modifier-activite-wims&amp;page=${idpage}&amp;menu=${menu}"
                     tal:condition="is_personnel"
                     title="Modifier"
                     i18n:attributes="title"
@@ -258,7 +251,7 @@
                     <tal:block  i18n:translate="">Instructions</tal:block>
                 </h2>
                 <div class="panel bkgrnd radius">
-                    <metal:macro use-macro="context/macro_cours_activites/macros/informations">Affiche les informations de l'activité</metal:macro>
+                    <metal:macro use-macro="context/wims_activity_macro/macros/informations">Affiche les informations de l'activité</metal:macro>
                 </div>
             </div>
         </section>

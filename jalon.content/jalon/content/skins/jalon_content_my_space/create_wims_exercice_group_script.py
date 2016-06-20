@@ -10,21 +10,22 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-
+#context = context
 form = context.REQUEST.form
 
 wims_exercice_model = form["modele"]
 user_id = context.supprimerCaractereSpeciaux(form["authMember"])
 wims_exercice_folder = context.getMySubSpaceFolder(user_id, "Wims")
 
-if not "idobj" in form:
-    #--ajouter un nouveau groupe--
+if "idobj" not in form:
+    # Ajouter un nouveau groupe
     object_id = wims_exercice_folder.invokeFactory(type_name='JalonExerciceWims', id="%s-%s-%s" % (wims_exercice_model, user_id, DateTime().strftime("%Y%m%d%H%M%S")))
     message = "groupe_added"
 else:
+    # Modifier un groupe (pour plus tard...)
     object_id = form["idobj"]
 
-#obj est un element de type "jalonexercicewims"
+# obj est un element de type "jalonexercicewims"
 obj = getattr(wims_exercice_folder, object_id)
 
 group_title = ""
@@ -32,7 +33,7 @@ if form["title"] != "":
     if "paths" in form:
         listeIdsExos = []
         for path in form["paths"]:
-            if not "groupe-" in path:
+            if "groupe-" not in path:
                 listeIdsExos.append(path.split("/")[-1])
         obj.setProperties({"Title": form["title"],
                            "Modele": wims_exercice_model,
@@ -64,5 +65,5 @@ else:
     else:
         context.plone_utils.addPortalMessage(_(u"Votre groupe d'exercices %s a bien été créé." % group_title), 'success')
 
-#Tant qu'il n'y a pas de page de modification des groupes d'exos, on retourne sur la page precedente.
+# Tant qu'il n'y a pas de page de modification des groupes d'exos, on retourne sur la page precedente.
 return context.REQUEST.RESPONSE.redirect(context.absolute_url())
