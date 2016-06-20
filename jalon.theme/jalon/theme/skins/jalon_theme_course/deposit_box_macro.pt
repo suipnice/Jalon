@@ -160,6 +160,12 @@
                                                  i18n:translate=""/>
     </h2>
 
+    <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
+         tal:on-error="nothing">
+        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
+        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+    </div>
+
     <div class="panel callout radius" tal:condition="not:criteria_dict"
          i18n:translate="">
         La grille d'évaluation ne contient aucun critère.
