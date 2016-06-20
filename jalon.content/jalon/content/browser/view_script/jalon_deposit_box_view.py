@@ -168,7 +168,7 @@ class JalonDepositBoxView(BrowserView):
             my_view["class_limit_date"] = "warning"
             if my_view["is_authorized_deposit"] == 3:
                 my_view["is_authorized_deposit"] = 0
-                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs la date de dépôts est obligatoire."
+                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 
         LOG.info(my_view["deposit_box_visibility"])
         my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False

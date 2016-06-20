@@ -841,20 +841,27 @@ class JalonBoiteDepot(ATFolder):
     def isDepotActif(self):
         LOG.info("----- isDepotActif -----")
         profile = self.getProfile()
-        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
-        date_depot = DateTime(self.getDateDepot())
-        date_retard = DateTime(self.getDateRetard())
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        date_depot = DateTime(self.getDateDepot()).strftime("%Y/%m/%d %H:%M")
 
         LOG.info("***** profile : %s" % profile)
-        LOG.info("***** date_depot : %s" % self.getDateDepot())
-
+        LOG.info("***** now : %s" % now)
+        LOG.info("***** date_depot : %s" % date_depot)
         # En profil évaluation par les pairs la date de dépôts est obligatoire
         if profile == "pairs" and date_depot == now:
+            return 3
+
+        date_correction = DateTime(self.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+        LOG.info("***** date_correction : %s" % date_correction)
+        # En profil évaluation par les pairs la date de correction est obligatoire
+        if profile == "pairs" and date_correction == now:
             return 3
 
         # La date de dépot n'est pas encore passée.
         if now <= date_depot:
             return 1
+
+        date_retard = DateTime(self.getDateRetard()).strftime("%Y/%m/%d %H:%M")
         # La date de retard n'est pas encore passée.
         if date_retard > date_depot and now < date_retard:
             return 2
