@@ -3,7 +3,7 @@ title=Formulaire
 border=None
 
 [validators]
-validators=validate_deposit_box_property
+validators=validate_deposit_box_criteria
 
 [actions]
 action.failure = traverse_to:string:add_deposit_box_criteria_form

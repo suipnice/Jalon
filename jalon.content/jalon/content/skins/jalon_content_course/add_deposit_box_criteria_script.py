@@ -22,7 +22,11 @@ if criteria_dict:
 criteria_dict[index] = {"title":       form["title"],
                         "description": form["description"],
                         "notation":    form["notation"],
-                        "coefficient": form["coefficient"]}
+                        "coefficient": form["coefficient"],
+                        "gap":         form["gap"],
+                        "comment":     form["comment"],
+                        "comment_min": form["comment_min"],
+                        "comment_max": form["comment_max"]}
 
 context.setCriteriaDict(criteria_dict)
 
