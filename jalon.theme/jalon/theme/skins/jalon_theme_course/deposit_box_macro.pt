@@ -217,7 +217,7 @@
                 <tr tal:repeat="peer evaluation_by_peers_dict/peers_list">
                     <td class="etudiant">
                         <span class="hide" tal:content="peer/nom" />
-                        <a tal:attributes="href string:${my_view/deposit_box_link}/student_evaluation_view?student_id=${peer/id}">
+                        <a tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_evaluation_view?student_id=${peer/id}">
                             <tal:replace replace="peer/nom" />
                         </a>
                     </td>
