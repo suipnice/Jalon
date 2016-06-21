@@ -5,10 +5,10 @@ from zope.component import getMultiAdapter
 from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
-LOG = getLogger('[JalonDepositBoxView]')
+LOG = getLogger('[DepositBoxView]')
 
 
-class JalonDepositBoxView(BrowserView):
+class DepositBoxView(BrowserView):
     """Class pour le first_page
     """
 
@@ -138,12 +138,12 @@ class JalonDepositBoxView(BrowserView):
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],
                                                 "class": "panel warning radius",
                                                 "icon":  "fa fa-clock-o fa-fw no-pad",
-                                                "text":  "Date limite de correction",
+                                                "text":  "Date limite d'évaluation",
                                                 "value": my_deposit_box.getAffDate('dateCorrection')},
                                                {"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-users fa-fw no-pad",
-                                                "text":  "Corrections par étudiants",
+                                                "text":  "Évaluation(s) par étudiants",
                                                 "value": my_deposit_box.getNombreCorrection()},
                                                {"link":  "%s/edit_peers_penality_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",

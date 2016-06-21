@@ -5,10 +5,10 @@ from zope.component import getMultiAdapter
 from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
-LOG = getLogger('[JalonCourseView]')
+LOG = getLogger('[CourseView]')
 
 
-class JalonCourseView(BrowserView):
+class CourseView(BrowserView):
     """Class pour le first_page
     """
 
