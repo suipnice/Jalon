@@ -182,6 +182,10 @@ class JalonBoiteDepot(ATFolder):
                 "date":  ['dateDepot', 'dateRetard']}
         return dico[info]
 
+    def getProperty(self, property_name):
+        LOG.info("----- getProperty -----")
+        return getattr(self, property_name, None)
+
     def setProperties(self, dico):
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])

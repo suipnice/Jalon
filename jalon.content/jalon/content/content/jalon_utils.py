@@ -341,7 +341,7 @@ def getIndividus(listeSesames, type=None, portal=None):
 
 def getLocaleDate(date, format="%d/%m/%Y"):
     locale.setlocale(locale.LC_ALL, 'fr_FR')
-    return DateTime(date).strftime(format)
+    return DateTime(date).strftime(format).decode("iso-8859-1")
 
 
 def getConnectDate(data, sortable=False):

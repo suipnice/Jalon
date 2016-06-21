@@ -20,7 +20,8 @@ validate_key = form["validate_key"]
 validate_dict = {"edit_deposit_box":  ["title"],
                  "deposit_file":      ["title", "file_file"],
                  "correction_number": ["nombreCorrection"],
-                 "penality":          ["penalite"]}
+                 "penality":          ["penalite"],
+                 "correction_date":   ["datetime-dateCorrection"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:
@@ -49,6 +50,12 @@ if validate_key == "penality":
         failed = True
     if failed:
         state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
+        state.set(status='failure')
+        error = True
+
+if validate_key == "correction_date":
+    if DateTime(context.getDateDepot()).strftime("%Y/%m/%d %H:%M") >= DateTime(form["datetime-dateCorrection"]).strftime("%Y/%m/%d %H:%M"):
+        state.setError(validate_field, _(u"Veuillez saisir une date limite d'évaluation supérieur à la date limite de dépôts"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 
