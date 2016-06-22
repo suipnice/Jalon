@@ -44,10 +44,23 @@
                                  criteria_id string:criteria${repeat/index/number}"
                      tal:attributes="id criteria_id">
                 <h2>
-                    <tal:replace replace="criteria/title"/> (coefficient : <tal:replace replace="criteria/coefficient"/>)
+                    <tal:replace replace="criteria/title"/> 
                 </h2>
+                <h3>Description :</h3>
                 <div class="panel callout radius"
                      tal:content="criteria/description"/>
+                <h3>
+                    Coefficient : <tal:replace replace="criteria/coefficient"/>
+                </h3>
+                <h3>
+                    Marge : <tal:replace replace="criteria/gap"/>
+                </h3>
+                <h3>
+                    Commentaire étudiant : <tal:replace replace="python:my_view['comment_dict'][criteria['comment']]"/>
+                </h3>
+                <h3>
+                    Taille du commentaire : entre <tal:replace replace="criteria/comment_min"/> et <tal:replace replace="criteria/comment_max"/> caractères
+                </h3>
             </section>
             </tal:repeat>
         </div>
