@@ -132,7 +132,8 @@
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="tab" value="peers"/>
+        <input type="hidden" name="criteria_id" 
+               tal:attributes="value criteria_id"/>
 
         <div class="formControls">
             <button type="submit" class="button small"

@@ -7,4 +7,4 @@ validators=validate_deposit_box_criteria
 
 [actions]
 action.failure = traverse_to:string:add_deposit_box_criteria_form
-action.success_add_criteria = traverse_to:string:add_deposit_box_criteria_script
+action.success = traverse_to:string:add_deposit_box_criteria_script

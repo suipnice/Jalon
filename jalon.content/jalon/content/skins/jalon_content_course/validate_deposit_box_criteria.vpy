@@ -94,6 +94,6 @@ if form["comment"] in ["1", "2"]:
         error = True
 
 if not error:
-    state.set(status="success_add_criteria")
+    state.set(status="success")
 
 return state
