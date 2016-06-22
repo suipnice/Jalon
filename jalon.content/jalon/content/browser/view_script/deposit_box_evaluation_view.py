@@ -37,7 +37,7 @@ class DepositBoxEvaluationView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getStudentEvaluationView(self, student_id):
-        LOG.info("----- getDepositBoxView (Start) -----")
+        LOG.info("----- getStudentEvaluationView (Start) -----")
         deposit_box = self.context
         deposit_box_id = deposit_box.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
@@ -63,5 +63,6 @@ class DepositBoxEvaluationView(BrowserView):
 
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()
+        LOG.info("----- getStudentEvaluationView (End) -----")
 
         return my_view

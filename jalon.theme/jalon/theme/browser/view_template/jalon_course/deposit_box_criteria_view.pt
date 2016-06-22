@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="my_view view/getCriteriaView">
+
+    <tal:define define="breadcrumbs view/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+        <h1>
+            Grille d'évaluation
+        </h1>
+
+        <ul class="tabs" data-tab role="tablist">
+            <tal:repeat repeat="index my_view/criteria_order">
+            <li class="tab-title" role="presentation">
+                <a role="tab" tabindex="0" aria-selected="true"
+                   tal:attributes="href string:#criteria${repeat/index/number};
+                                   aria-controls string:#criteria${repeat/index/number}"
+                   tal:content="string:Critère ${repeat/index/number}"/>
+            </li>
+            </tal:repeat>
+        </ul>
+
+        <div class="tabs-content peer_evaluate">
+            <section role="tabpanel" aria-hidden="true" class="content active">
+                <div class="panel callout radius">Sélectionnez un onglet</div>
+            </section>
+
+            <tal:repeat repeat="index my_view/criteria_order">
+            <section role="tabpanel" aria-hidden="true" class="content"
+                     tal:define="criteria python:my_view['criteria_dict'][index];
+                                 criteria_id string:criteria${repeat/index/number}"
+                     tal:attributes="id criteria_id">
+                <h2>
+                    <tal:replace replace="criteria/title"/> (coefficient : <tal:replace replace="criteria/coefficient"/>)
+                </h2>
+                <div class="panel callout radius"
+                     tal:content="criteria/description"/>
+            </section>
+            </tal:repeat>
+        </div>
+    </main>
+</metal:main>
+
+</body>
+
+</html>
