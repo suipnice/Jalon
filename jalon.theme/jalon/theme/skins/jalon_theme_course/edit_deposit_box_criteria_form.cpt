@@ -1,0 +1,154 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        criteria_id request/criteria_id;
+                        crietria_dict python:context.getCriteriaDict(criteria_id)">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-addCriteria" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div id="archetypes-fieldname-title"
+             tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="text" id="title" name="title" required="required"
+                   placeholder="Saisie obligatoire" maxlength="255" size="30"
+                   tal:attributes="value request/title | crietria_dict/title | nothing"
+                   i18n:attributes="placeholder"/>
+        </div>
+
+        <div tal:define="error errors/description | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description" i18n:translate="">Description :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" rows="5"
+                      required="required" placeholder="Saisie obligatoire"
+                      tal:content="request/description | crietria_dict/description | nothing"
+                      i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-notation"
+             tal:define="error errors/notation | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="notation" i18n:translate="">Noter sur (max 10 points)</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="number" name="notation" min="0" max="10"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/notation | crietria_dict/notation | string:10"/>
+        </div>
+
+        <div id="archetypes-fieldname-coefficient"
+             tal:define="error errors/coefficient | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="coefficient" i18n:translate="">Coefficient (max 5)</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="number" name="coefficient" min="0" max="5"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/coefficient | crietria_dict/coefficient | string:1"/>
+        </div>
+
+        <div id="archetypes-fieldname-gap"
+             tal:define="error errors/gap | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="gap" i18n:translate="">Marge (max 5)</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="number" name="gap" min="0" max="5"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/gap | crietria_dict/gap | string:1"/>
+        </div>
+
+        <div id="archetypes-fieldname-comment"
+             tal:define="error errors/comment | nothing;
+                         selection request/comment | crietria_dict/comment | string:2"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title">Commentaire étudiant :</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <ul class="verticalRadioList">
+                <li>
+                    <input type="radio" name="comment" value="0"
+                           tal:attributes="checked python:context.test(selection == '0', 'checked', '')" />
+                    Aucun
+                </li>
+                <li>
+                    <input type="radio" name="comment" value="1"
+                           tal:attributes="checked python:context.test(selection == '1', 'checked', '')" />
+                    Optionnel
+                </li>
+                <li>
+                    <input type="radio" name="comment" value="2"
+                           tal:attributes="checked python:context.test(selection == '2', 'checked', '')" />
+                    Obligatoire
+                </li>
+            </ul>
+        </div>
+
+        <div id="archetypes-fieldname-length"
+             tal:define="error errors/comment_min | errors/comment_min | nothing;
+                         selection request/comment | string:1"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title">Taille du commentaire étudiant :</label>
+            <ul class="verticalRadioList">
+                <li tal:define="error errors/comment_min | nothing;">
+                    Minimum :&nbsp;
+                    <input type="number" name="comment_min" min="1" max="500"
+                           step="1" style="width:4em;display:inline;"
+                           tal:attributes="class python:context.test(error, 'error', '');
+                                           value request/comment_min | crietria_dict/comment_min | string:1"/>
+                    <span class="fieldErrorBox" tal:condition="error" tal:content="error" /> caractère(s) (max : 500)
+                </li>
+                <li tal:define="error errors/comment_max | nothing;">
+                    Maximum :
+                    <input type="number" name="comment_max" min="300" max="1500"
+                           step="1" style="width:4em;display:inline;"
+                           tal:attributes="class python:context.test(error, 'error', '');
+                                           value request/comment_max | crietria_dict/comment_max | string:300"/> caractères (max : 1500)
+                    <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                </li>
+            </ul>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="tab" value="peers"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-addCriteria','reveal-main')"></script>
+
+</metal:main>
+
+</body>
+
+</html>

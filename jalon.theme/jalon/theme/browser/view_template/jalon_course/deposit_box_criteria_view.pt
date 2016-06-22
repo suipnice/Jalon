@@ -17,6 +17,13 @@
     </metal:macro>
     </tal:define>
 
+    <div id="reveal-main" class="reveal-modal medium" 
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_second" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main-large" class="reveal-modal large"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
     <main class="row" role="main" aria-labelledby="page_title">
         <h1>
             Grille d'évaluation
@@ -44,6 +51,10 @@
                                  criteria_id string:criteria${repeat/index/number}"
                      tal:attributes="id criteria_id">
                 <h2>
+                    <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${my_view/deposit_box_link}/edit_deposit_box_criteria_form?criteria_id=${index}">
+                        <i class="fa fa-pencil"></i>
+                    </a>
                     <tal:replace replace="criteria/title"/> 
                 </h2>
                 <h3>Description :</h3>

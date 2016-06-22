@@ -40,7 +40,8 @@ class DepositBoxCriteriaView(BrowserView):
         LOG.info("----- getCriteriaView (Start) -----")
         deposit_box = self.context
         #deposit_box_id = deposit_box.getId()
-        my_view = {"is_anonymous": self.isAnonymous()}
+        my_view = {"is_anonymous":     self.isAnonymous(),
+                   "deposit_box_link": deposit_box.absolute_url()}
 
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()
