@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-trash-o"></i>
+        <tal:block i18n:translate="">Modifier le coefficient un critère d'évaluation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-activateCriteria" method="POST"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong>
+            <tal:block i18n:translate="">Vous allez modifier le coefficient ce critère d'évaluation, il doit être comprise entre 1 et 5, le calcul de la moyenne sera fait cette nuit.</tal:block>
+        </div>
+
+        <div id="archetypes-fieldname-coefficient"
+             tal:define="error errors/coefficient | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="coefficient" i18n:translate="">Coefficient (max 5)</label>
+            <div class="fieldErrorBox" tal:content="error"
+                 tal:condition="error"/>
+            <input type="number" name="coefficient" min="1" max="5"
+                   step="1" style="width:3em;display:inline;"
+                   tal:attributes="class python:context.test(error, 'error', '');
+                                   value request/coefficient | crietria_dict/coefficient | string:1"/>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="criteria_id"
+               tal:attributes="value request/criteria_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-activateCriteria','reveal-main')"></script>
+
+</metal:main>
+
+</body>
+
+</html>
