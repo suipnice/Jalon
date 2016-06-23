@@ -1306,21 +1306,26 @@ class JalonBoiteDepot(ATFolder):
         LOG.info("----- getEvaluationByPeers -----")
         evaluation_by_peers_dict = {}
         deposit_box_link = self.absolute_url()
+        evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
+        evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         if is_personnel:
             evaluation_by_peers_dict["macro_peers"] = "peers_teacher_macro"
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
+            """
             evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
                                                     "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
                                                     "icon": "fa fa-plus-circle fa-fw"},
-                                                   {"text": "Voir",
-                                                    "link": "%s/deposit_box_criteria_view" % deposit_box_link,
-                                                    "icon": "fa fa-eye fa-fw"},
                                                    {"text": "Affecter",
                                                     "link": "%s/affect_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-rss fa-fw"},
                                                    {"text": "Moyenne",
                                                     "link": "%s/average_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-calculator fa-fw"}]
+            """
+            if not evaluation_by_peers_dict["criteria_dict"]:
+                evaluation_by_peers_dict["gride_button"] = "fa fa-plus-circle fa-lg fa-fw"
+            else:
+                evaluation_by_peers_dict["gride_button"] = "fa fa-pencil fa-lg fa-fw"
             evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
         else:
@@ -1336,8 +1341,6 @@ class JalonBoiteDepot(ATFolder):
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
             else:
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
-        evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
-        evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         return evaluation_by_peers_dict
 
     def getCriteriaDict(self, key=None):
@@ -1403,10 +1406,6 @@ class JalonBoiteDepot(ATFolder):
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")
         peers_dict = copy.deepcopy(self._peers_dict)
-        #peers_dict = {"bordonad": [],
-        #              "etudiant1": [],
-        #              "etudiant2": [],
-        #              "etudiant3": []}
         LOG.info("INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
         LOG.info("INTRO peers_list : %s" % str(peers_list))

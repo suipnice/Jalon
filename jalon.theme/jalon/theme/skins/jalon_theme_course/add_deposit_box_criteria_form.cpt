@@ -133,7 +133,7 @@
         <input type="hidden" name="tab" value="peers"/>
 
         <div class="formControls">
-            <button type="submit" class="button small"
+            <button type="submit" class="button small create"
                     name="form.button.save">
                 <i class="fa fa-plus-circle"></i>
                 <tal:block i18n:translate="">Ajouter</tal:block>

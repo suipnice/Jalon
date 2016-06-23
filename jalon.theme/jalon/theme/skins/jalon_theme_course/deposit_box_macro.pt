@@ -135,7 +135,11 @@
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
     <tal:condition condition="my_view/is_personnel">
-    <a class="dropdown right"
+    <a class="right"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
+        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
+    </a>
+    <!--a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
     </a>
@@ -148,7 +152,7 @@
                                                                                       i18n:translate=""/>
             </a>
         </li>
-    </ul>
+    </ul-->
     </tal:condition>
     <h2>
         <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"

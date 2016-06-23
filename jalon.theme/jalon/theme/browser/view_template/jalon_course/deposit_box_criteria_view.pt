@@ -9,7 +9,8 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="my_view view/getCriteriaView">
+            tal:define="criteria_id request/criteria_id | string:0;
+                        my_view view/getCriteriaView">
 
     <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
@@ -29,9 +30,23 @@
             Grille d'évaluation
         </h1>
 
+            <div id="item-adder">
+                <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   tal:attributes="href string:${context/absolute_url}/add_deposit_box_criteria_form">
+                   <i class="fa fa-plus-circle"></i>
+                   <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
+                </a>
+            </div>
+
+        <div class="panel radius"
+             tal:condition="not:my_view/criteria_order">
+            La grille d'évaluation ne contient aucun critère d'évaluation
+        </div>
+
         <ul class="tabs" data-tab role="tablist">
             <tal:repeat repeat="index my_view/criteria_order">
-            <li class="tab-title" role="presentation">
+            <li role="presentation"
+                tal:attributes="class python:context.test(index == criteria_id, 'tab-title active', 'tab-title')">
                 <a role="tab" tabindex="0" aria-selected="true"
                    tal:attributes="href string:#criteria${repeat/index/number};
                                    aria-controls string:#criteria${repeat/index/number}"
@@ -40,16 +55,19 @@
             </tal:repeat>
         </ul>
 
-        <div class="tabs-content peer_evaluate">
-            <section role="tabpanel" aria-hidden="true" class="content active">
+        <div class="tabs-content peer_evaluate"
+             tal:condition="my_view/criteria_order">
+            <section role="tabpanel" aria-hidden="true" 
+                     tal:attributes="class python:context.test(criteria_id == '0', 'content active', 'content')">
                 <div class="panel callout radius">Sélectionnez un onglet</div>
             </section>
 
             <tal:repeat repeat="index my_view/criteria_order">
-            <section role="tabpanel" aria-hidden="true" class="content"
+            <section role="tabpanel" aria-hidden="true"
                      tal:define="criteria python:my_view['criteria_dict'][index];
-                                 criteria_id string:criteria${repeat/index/number}"
-                     tal:attributes="id criteria_id">
+                                 criteria_ccs_id string:criteria${repeat/index/number};"
+                     tal:attributes="id criteria_ccs_id;
+                                     class python:context.test(index == criteria_id, 'content active', 'content')">
                 <h2>
                     <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:attributes="href string:${my_view/deposit_box_link}/delete_deposit_box_criteria_form?criteria_id=${index}">
