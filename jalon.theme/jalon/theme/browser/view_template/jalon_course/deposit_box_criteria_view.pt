@@ -10,7 +10,9 @@
 
 <metal:main fill-slot="content"
             tal:define="criteria_id request/criteria_id | string:0;
-                        my_view view/getCriteriaView">
+                        mode_etudiant request/mode_etudiant | nothing;
+                        my_view python:view.getCriteriaView(user, mode_etudiant);
+                        mode_etudiant my_view/mode_etudiant">
 
     <tal:define define="breadcrumbs view/getBreadcrumbs">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
@@ -30,13 +32,21 @@
             Grille d'évaluation
         </h1>
 
-            <div id="item-adder">
-                <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/add_deposit_box_criteria_form">
-                   <i class="fa fa-plus-circle"></i>
-                   <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
-                </a>
-            </div>
+        <tal:condition condition="my_view/is_personnel">
+        <div id="item-adder"
+             tal:condition="my_view/is_depot_actif">
+            <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${context/absolute_url}/add_deposit_box_criteria_form">
+               <i class="fa fa-plus-circle"></i>
+               <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
+            </a>
+        </div>
+
+        <div class="panel radius warning"
+             tal:condition="not:my_view/is_depot_actif">
+            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> La date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
+        </div>
+        </tal:condition>
 
         <div class="panel radius"
              tal:condition="not:my_view/criteria_order">
@@ -69,6 +79,8 @@
                      tal:attributes="id criteria_ccs_id;
                                      class python:context.test(index == criteria_id, 'content active', 'content')">
                 <h2>
+                    <tal:condition condition="my_view/is_personnel">
+                    <tal:condition condition="my_view/is_depot_actif">
                     <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:attributes="href string:${my_view/deposit_box_link}/delete_deposit_box_criteria_form?criteria_id=${index}">
                         <i class="fa fa-trash-o alert"></i>
@@ -77,6 +89,8 @@
                        tal:attributes="href string:${my_view/deposit_box_link}/edit_deposit_box_criteria_form?criteria_id=${index}">
                         <i class="fa fa-pencil"></i>
                     </a>
+                    </tal:condition>
+                    </tal:condition>
                     <tal:replace replace="criteria/title"/> 
                 </h2>
                 <h3>Description :</h3>
