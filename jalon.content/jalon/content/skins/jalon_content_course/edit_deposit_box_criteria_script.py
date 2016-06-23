@@ -12,12 +12,6 @@ param = {}
 form = context.REQUEST.form
 
 criteria_dict = dict(context.getCriteriaDict())
-#keys = criteria_dict.keys()
-#keys.sort(lambda x, y: cmp(int(x), int(y)))
-
-#index = "1"
-#if criteria_dict:
-#    index = str(int(keys[-1]) + 1)
 
 criteria_id = form["criteria_id"]
 criteria_dict[criteria_id] = {"title":       form["title"],

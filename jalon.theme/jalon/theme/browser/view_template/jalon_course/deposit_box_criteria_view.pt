@@ -52,6 +52,10 @@
                      tal:attributes="id criteria_id">
                 <h2>
                     <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${my_view/deposit_box_link}/delete_deposit_box_criteria_form?criteria_id=${index}">
+                        <i class="fa fa-trash-o alert"></i>
+                    </a>
+                    <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:attributes="href string:${my_view/deposit_box_link}/edit_deposit_box_criteria_form?criteria_id=${index}">
                         <i class="fa fa-pencil"></i>
                     </a>
