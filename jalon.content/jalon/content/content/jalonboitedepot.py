@@ -157,9 +157,19 @@ class JalonBoiteDepot(ATFolder):
                        "consultation": "Consultation de note interdite",
                        "other":        "points par devoir non corrigé"}
 
+    _profile_title = {"standard":    "Standard",
+                      "examen":      "Examen",
+                      "competences": "Évaluation par compétences",
+                      "pairs":       "Évaluation par les pairs"}
+
     ##-------------------##
     # Fonctions générales #
     ##-------------------##
+    def getDisplayProfile(self, profile_id=None):
+        LOG.info("----- getDisplayProfile -----")
+        deposit_box_profil = profile_id or self.getProfile() or "standard"
+        return self._profile_title[deposit_box_profil]
+
     def getElementCours(self, key):
         return self.getInfosElement(key)
 

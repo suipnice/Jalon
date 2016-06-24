@@ -12,7 +12,7 @@ form = context.REQUEST.form
 
 context.setAttributActivite({"DateCorrection": DateTime(form["datetime-dateCorrection"])})
 
-redirection = "%s?tab=peers" % context.absolute_url()
+redirection = "%s?tab=%s" % (context.absolute_url(), form["tab"])
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(redirection)
 else:

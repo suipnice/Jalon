@@ -9,7 +9,8 @@
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing;
-                       is_date_depot python:context.getProperty('dateDepot')">
+                        is_date_depot python:context.getProperty('dateDepot');
+                        tab request/tab">
 
     <h2 i18n:translate="">
         <tal:block i18n:translate="">Modifier la date limite d'évaluation</tal:block>
@@ -47,7 +48,8 @@
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="tab" value="peers"/>
+        <input type="hidden" name="tab" 
+               tal:attributes="value tab"/>
         <input type="hidden" name="validate_key" value="correction_date"/>
 
         <div class="formControls">

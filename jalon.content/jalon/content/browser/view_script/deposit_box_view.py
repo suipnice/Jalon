@@ -75,9 +75,6 @@ class DepositBoxView(BrowserView):
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
-        my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
-                                            "icon": "fa-cogs",
-                                            "text": "Profil"})
 
         my_view["deposit_box_tabs"] = []
 
@@ -135,12 +132,7 @@ class DepositBoxView(BrowserView):
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""
-            my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],
-                                                "class": "panel warning radius",
-                                                "icon":  "fa fa-clock-o fa-fw no-pad",
-                                                "text":  "Date limite d'évaluation",
-                                                "value": my_deposit_box.getAffDate('dateCorrection')},
-                                               {"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
+            my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-users fa-fw no-pad",
                                                 "text":  "Évaluation(s) par étudiants",
@@ -151,9 +143,22 @@ class DepositBoxView(BrowserView):
                                                 "text":  "Pénalité",
                                                 "value": my_deposit_box.getDisplayPenality()}]
 
+        my_view["deposit_box_profile"] = {"href":  "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                          "icon": "fa-pencil",
+                                          "text": "Profil"}
+        my_view["deposit_box_profile_text"] = my_deposit_box.getDisplayProfile()
         my_view["deposit_box_date"] = {"href":  "%s/edit_deposit_box_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                        "icon": "fa-pencil",
                                        "text": "Modifier"}
+        my_view["is_peer_profile"] = False
+        if my_deposit_box.getProfile() == "pairs":
+            my_view["is_peer_profile"] = True
+            my_view["deposit_box_correction_date"] = {"link":  "%s/edit_peers_correction_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                                      "class": "panel warning radius",
+                                                      "icon":  "fa fa-pencil fa-fw no-pad",
+                                                      "text":  "Date limite d'évaluation",
+                                                      "value": my_deposit_box.getAffDate('dateCorrection')}
+
         my_view["deposit_box_instruction"] = {"href":  "%s/edit_deposit_box_instruction_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                               "icon":  "fa-pencil",
                                               "text":  "Modifier"}
