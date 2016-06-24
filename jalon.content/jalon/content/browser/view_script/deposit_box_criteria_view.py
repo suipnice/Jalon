@@ -27,6 +27,7 @@ class DepositBoxCriteriaView(BrowserView):
     def getBreadcrumbs(self):
         portal = self.context.portal_url.getPortalObject()
         parent = self.context.aq_parent
+        deposit_box_link = self.context.absolute_url()
         return [{"title": _(u"Mes cours"),
                  "icon":  "fa fa-university",
                  "link":  "%s/mes_cours" % portal.absolute_url()},
@@ -35,7 +36,10 @@ class DepositBoxCriteriaView(BrowserView):
                  "link":  parent.absolute_url()},
                 {"title": self.context.Title(),
                  "icon":  "fa fa-inbox",
-                 "link":  self.context.absolute_url()}]
+                 "link":  "%s?tab=peers" % deposit_box_link},
+                {"title": "Grille d'évaluation",
+                 "icon":  "fa fa-th",
+                 "link":  "%s/deposit_box_criteria_view" % deposit_box_link}]
 
     def getCriteriaView(self, user, mode_etudiant):
         LOG.info("----- getCriteriaView (Start) -----")
@@ -55,13 +59,18 @@ class DepositBoxCriteriaView(BrowserView):
                                    "1": "Optionnel",
                                    "2": "Obligatoire"}
 
-        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
-        date_depot = DateTime(deposit_box.getDateDepot()).strftime("%Y/%m/%d %H:%M")
-        if now >= date_depot:
-            my_view["is_depot_actif"] = False
-        date_correction = DateTime(deposit_box.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
-        if now >= date_correction:
-            my_view["is_correction_actif"] = False
+        my_view["is_authorized_deposit"] = deposit_box.isDepotActif()
+        if my_view["is_authorized_deposit"] == 3:
+            my_view["is_authorized_deposit"] = 0
+            my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
+        else:
+            now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+            date_depot = DateTime(deposit_box.getDateDepot()).strftime("%Y/%m/%d %H:%M")
+            if now >= date_depot:
+                my_view["is_depot_actif"] = False
+            date_correction = DateTime(deposit_box.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+            if now >= date_correction:
+                my_view["is_correction_actif"] = False
         LOG.info("----- getCriteriaView (End) -----")
 
         return my_view

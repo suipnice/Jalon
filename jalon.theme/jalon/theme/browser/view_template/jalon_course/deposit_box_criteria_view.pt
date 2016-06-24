@@ -29,7 +29,7 @@
 
     <main class="row" role="main" aria-labelledby="page_title">
         <h1>
-            Grille d'évaluation
+            <i class="fa fa-th falfw"></i>Grille d'évaluation
         </h1>
 
         <tal:condition condition="my_view/is_personnel">
@@ -43,17 +43,22 @@
         </div>
 
         <div class="panel radius warning"
+             tal:condition="not:my_view/is_authorized_deposit">
+            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> Dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
+        </div>
+        <tal:condition condition="my_view/is_authorized_deposit">
+        <div class="panel radius warning"
              tal:condition="not:my_view/is_depot_actif">
             <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> La date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
         </div>
-
         <div class="panel radius warning"
              tal:condition="not:my_view/is_correction_actif">
             <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> La date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.
         </div>
         </tal:condition>
+        </tal:condition>
 
-        <div class="panel radius"
+        <div class="panel callout radius"
              tal:condition="not:my_view/criteria_order">
             La grille d'évaluation ne contient aucun critère d'évaluation
         </div>
