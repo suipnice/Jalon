@@ -9,3 +9,25 @@
         Page d'affichage de la liste des dépôts
     </metal:macro>
 </metal:macro>
+
+<metal:macro define-macro="documents-list">
+<tal:condition condition="my_view/is_personnel">
+    <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
+        <i class="fa fa-plus-circle"></i>
+        <tal:block i18n:translate="">Ajouter</tal:block>
+    </a>
+    <ul id="add-space_el" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+        <li tal:repeat="menu_adder_item my_view/documents_add">
+            <a tal:attributes="href menu_adder_item/item_link"
+               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                <i tal:attributes="class menu_adder_item/item_icon"></i>
+                <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+            </a>
+        </li>
+    </ul>
+</tal:condition>
+    <h2>
+        <i class="fa fa-upload"></i>
+        <tal:block i18n:translate="">Documents enseignants</tal:block>
+    </h2>
+</metal:macro>

@@ -10,7 +10,6 @@
 
 <metal:main fill-slot="content"
             tal:define="course_path request/course_path;
-                        course_map_form python:view.getCourseMapForm(course_path);
                         my_view python:view.getCourseAddView(user, course_path)">
 
     <h2>
@@ -37,7 +36,9 @@
                 <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_course_items']" />
             </div>
 
-            <tal:replace replace="structure course_map_form"/>
+            <tal:condition condition="my_view/is_course">
+            <tal:replace replace="structure my_view/course_map_form"/>
+            </tal:condition>
 
             <div class="field"
                  tal:condition="my_view/is_display_hide">

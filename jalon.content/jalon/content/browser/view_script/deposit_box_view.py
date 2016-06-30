@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
-
+from course_view import CourseView
 from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
 LOG = getLogger('[DepositBoxView]')
 
 
-class DepositBoxView(BrowserView):
+class DepositBoxView(CourseView):
     """Class pour le first_page
     """
 
@@ -100,11 +100,15 @@ class DepositBoxView(BrowserView):
                                                "text": "Visualisation des dépôts entre étudiants"}]
 
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
-                                            "css_class": " selected" if tab == "2" else "",
+                                            "css_class": " selected" if tab == "documents" else "",
                                             "icon":      "fa-upload",
                                             "text":      "Documents enseignants",
                                             "nb":        my_deposit_box.getNbSujets()})
 
+        my_view["is_document_tab"] = True if tab == "documents" else False
+        if my_view["is_document_tab"]:
+            deposit_box_path = self.context.getPhysicalPath()
+            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), self.context.portal_url.getPortalObject())["my_space"]
         deposit_box_profile = my_deposit_box.getProfile() or "standard"
 
         my_view["is_skills_tab"] = True if tab == "skills" else False

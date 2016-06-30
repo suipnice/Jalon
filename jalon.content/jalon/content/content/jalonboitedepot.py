@@ -170,18 +170,15 @@ class JalonBoiteDepot(ATFolder):
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
-    def getElementCours(self, key):
-        return self.getInfosElement(key)
-
-    def getInfosElement(self, key=None):
+    def getDocumentsProperties(self, key=None):
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
-    def getKeyInfosElement(self):
+    def getDocumentsList(self):
         return self._infos_element.keys()
 
-    def setInfosElement(self, infos_element):
+    def setDocumentsElement(self, infos_element):
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -207,7 +204,8 @@ class JalonBoiteDepot(ATFolder):
     def getInfosListeAttribut(self, attribut, personnel=False):
         retour = []
         listeElement = self.getListeAttribut(attribut)
-        infos_element = self.getInfosElement()
+        infos_element = self.getDocumentsProperties()
+        LOG.info(infos_element)
         for idElement in listeElement:
             infos = infos_element.get(idElement, '')
             if infos:
@@ -348,6 +346,36 @@ class JalonBoiteDepot(ATFolder):
                             portal_workflow.doActionFor(objet, "submit", "jalon_workflow")
                 self.reindexObject()
 
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        LOG.info("----- addMySpaceItem -----")
+        item_id_no_dot = item_id.replace(".", "*-*")
+
+        item_object = getattr(folder_object, item_id)
+
+        complement_element = None
+        if item_type in ["Video", "VOD"]:
+            complement_element = {"value":  display_in_plan,
+                                  "auteur": item_object.getVideoauteurname(),
+                                  "image":  item_object.getVideothumbnail()}
+
+        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        LOG.info("----- addItemProperty -----")
+
+        items_properties = self.getDocumentsProperties()
+        if not item_id in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            self.setDocumentsElement(items_properties)
+
+    """
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
         if "." in idElement:
             idElement = idElement.replace(".", "*-*")
@@ -388,6 +416,7 @@ class JalonBoiteDepot(ATFolder):
                                         "masquerElement": ""}
             #self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
+    """
 
     def retirerElement(self, idElement, menu):
         infos_element = self.getInfosElement()
@@ -468,110 +497,6 @@ class JalonBoiteDepot(ATFolder):
                 {"deposit_box_profile_text":    "Évaluation par les pairs",
                  "deposit_box_profile_value":   "pairs",
                  "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
-
-    def getTemplateView(self, user, mode_etudiant, menu):
-        is_anonymous = user.has_role('Anonymous')
-        if is_anonymous:
-            return {"is_anonymous": True}
-
-        personnel = self.isPersonnel(user, mode_etudiant)
-        affElement = self.isAfficherElement(self.getDateAff(), self.getDateMasq())
-
-        id_boite = self.getId()
-        url_boite = self.absolute_url()
-
-        menu_options = []
-        if affElement["val"]:
-            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=%s" % (url_boite, id_boite),
-                                 "icon": "fa-eye-slash",
-                                 "text": "Masquer"})
-        else:
-            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=%s" % (url_boite, id_boite),
-                                 "icon": "fa-eye",
-                                 "text": "Afficher"})
-        menu_options.append({"href": "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon": "fa-align-justify",
-                             "text": "Titre et consigne"})
-
-        onglets = []
-        is_onglet_depots = True if menu == "depots" else False
-        onglets.append({"href":      "%s?menu=depots&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                        "css_class": " selected" if is_onglet_depots else "",
-                        "icon":      "fa-download",
-                        "text":      "Mes dépôts" if not personnel and not self.getAccesDepots() else "Dépôts étudiants",
-                        "nb":        self.getNbDepots(personnel)})
-        menu_option_depots = []
-        if is_onglet_depots:
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getCorrectionIndividuelle() else "fa-toggle-off",
-                                       "text": "Correction des dépôts"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationCorrection() else "fa-toggle-off",
-                                       "text": "Notification des corrections"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotation() else "fa-toggle-off",
-                                       "text": "Notation des dépôts"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationNotation() else "fa-toggle-off",
-                                       "text": "Notification des notations"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getAccesDepots() else "fa-toggle-off",
-                                       "text": "Visualisation des dépôts entre étudiants"})
-
-        onglets.append({"href":      "%s?menu=sujets&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                        "css_class": " selected" if menu == "sujets" else "",
-                        "icon":      "fa-upload",
-                        "text":      "Documents enseignants",
-                        "nb":        self.getNbSujets()})
-
-        is_onglet_competences = True if menu == "competences" else False
-        if personnel or self.getAfficherCompetences():
-            onglets.append({"href":      "%s?menu=competences&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                            "css_class": " selected" if is_onglet_competences else "",
-                            "icon":      "fa-tasks",
-                            "text":      "Compétences",
-                            "nb":        self.getNbCompetences()})
-        menu_option_competences = []
-        if is_onglet_competences:
-            menu_option_competences.append({"icon": "fa-toggle-on success" if self.getAfficherCompetences() else "fa-toggle-off",
-                                            "text": "Affichage de l'onglet \"Compétences\" aux étudiants"})
-            if self.getPermissionModifierCompetence(personnel, user.getId()):
-                menu_option_competences.append({"icon": "fa-toggle-on success" if self.getModifierCompetences() else "fa-toggle-off",
-                                                "text": "Restriction de la gestion des compétences"})
-
-        instructions = []
-        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon":      "fa-calendar",
-                             "text":      "Date"})
-        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon":      "fa-align-justify",
-                             "text":      "Titre et consigne"})
-
-        is_depot_actif = self.isDepotActif()
-        if is_depot_actif == 2:
-            is_retard = True
-            class_limit_date = "callout"
-        else:
-            is_retard = False
-            class_limit_date = "warning"
-
-        return {"id_boite":                      id_boite,
-                "url_boite":                     url_boite,
-                "is_anonymous":                  False,
-                "is_personnel":                  personnel,
-                "is_etu_and_boite_hidden":       True if (not personnel) and affElement['val'] == 0 else False,
-                "is_personnel_or_boite_visible": True if personnel or affElement['val'] != 0 else False,
-                "is_auteur":                     self.isAuteurs(user.getId()),
-                "is_depot_actif":                is_depot_actif,
-                "is_retard":                     is_retard,
-                "is_afficher_comp":              self.getAfficherCompetences(),
-                "menu_options":                  menu_options,
-                "affElement":                    affElement,
-                "came_from":                     "%s/login_form?came_from=%s" % (url_boite, self.jalon_quote(url_boite)),
-                "class_limit_date":              class_limit_date,
-                "date_depot_aff":                self.getAffDate('DateDepot'),
-                "onglets":                       onglets,
-                "instructions":                  instructions,
-                "description":                   self.Description(),
-                "is_onglet_depots":              is_onglet_depots,
-                "menu_option_depots":            menu_option_depots,
-                "is_onglet_competences":         is_onglet_competences,
-                "menu_option_competences":       menu_option_competences}
 
     ##-----------------------##
     # Fonctions onglet Dépots #
@@ -1038,6 +963,10 @@ class JalonBoiteDepot(ATFolder):
         data = fp.read()
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
+
+    ##--------------------------##
+    # Fonctions onglet Documents #
+    ##--------------------------##
 
     ##----------------------------##
     # Fonctions onglet Compétences #

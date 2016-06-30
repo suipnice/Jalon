@@ -118,18 +118,19 @@ class CourseView(BrowserView):
         my_view["course_coauthor_list"] = course_coauthor_list
 
         course_link = self.context.absolute_url()
-        my_view["course_map_action_list"] = [{"action_link": "%s/download_wims_score_form" % course_link,
-                                              "action_icon": "fa fa-download fa-fw",
-                                              "action_name": "Télécharger les notes WIMS"},
-                                             {"action_link": "%s/purge_course_form" % course_link,
-                                              "action_icon": "fa fa-filter fa-fw",
-                                              "action_name": "Purger les travaux étudiants"},
-                                             {"action_link": "%s/delete_wims_activity_form" % course_link,
-                                              "action_icon": "fa fa-trash-o  fa-fw",
-                                              "action_name": "Supprimer les activités WIMS"}]
+        if is_personnel:
+            my_view["course_map_action_list"] = [{"action_link": "%s/download_wims_score_form" % course_link,
+                                                  "action_icon": "fa fa-download fa-fw",
+                                                  "action_name": "Télécharger les notes WIMS"},
+                                                 {"action_link": "%s/purge_course_form" % course_link,
+                                                  "action_icon": "fa fa-filter fa-fw",
+                                                  "action_name": "Purger les travaux étudiants"},
+                                                 {"action_link": "%s/delete_wims_activity_form" % course_link,
+                                                  "action_icon": "fa fa-trash-o  fa-fw",
+                                                  "action_name": "Supprimer les activités WIMS"}]
 
-        course_path = self.context.getPhysicalPath()
-        my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
+            course_path = self.context.getPhysicalPath()
+            my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
 
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")

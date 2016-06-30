@@ -55,7 +55,7 @@ class CourseAddView(MySpaceView):
         return portal_state.anonymous()
 
     def getCourseAddView(self, user, course_path):
-        #LOG.info("----- getCourseAddView -----")
+        LOG.info("----- getCourseAddView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
@@ -76,7 +76,20 @@ class CourseAddView(MySpaceView):
         nb_items = len(folder.objectIds())
 
         course_path_list = course_path.split("/")
+        LOG.info("***** course_path : %s" % course_path)
         course_object = getattr(getattr(portal.cours, course_path_list[0]), course_path_list[1])
+
+        is_course = True
+        course_map_form = ""
+        if course_path_list[-1].startswith("Cours-"):
+            course_map = course_object.getCourseMapList()
+            course_map_form = self.getCourseMapForm(course_path)
+            course_add_js = course_add_dict["course_add_js"]
+        else:
+            is_course = False
+            course_object = getattr(course_object, course_path_list[-1])
+            course_map = course_object.getDocumentsList()
+            course_add_js = "setTagFilter(true)"
 
         return {"tags_list":            tags_list,
                 "is_no_items":          one_and_selected_tag["is_no_items"],
@@ -88,11 +101,13 @@ class CourseAddView(MySpaceView):
                 "nb_display_items":     nb_display_items,
                 "nb_items":             nb_items,
                 "course_add_list":      course_add_list,
-                "course_map":           course_object.getCourseMapList(),
+                "is_course":            is_course,
+                "course_map":           course_map,
+                "course_map_form":      course_map_form,
                 "is_display_hide":      course_add_dict["is_display_hide"],
                 "folder_id":            course_add_dict["folder_id"],
                 "course_link":          course_object.absolute_url(),
-                "course_add_js":        course_add_dict["course_add_js"]}
+                "course_add_js":        course_add_js}
 
     def getCourseMapForm(self, course_path):
         #LOG.info("----- getCourseMapForm -----")
