@@ -374,6 +374,33 @@ class JalonBoiteDepot(ATFolder):
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
             self.setDocumentsElement(items_properties)
+            listeSujets = list(self.getListeSujets())
+            listeSujets.append(item_id)
+            setattr(self, "listeSujets", tuple(listeSujets))
+
+    def displayDocumentsList(self, is_personnel, portal):
+        LOG.info("----- displayDocumentsList -----")
+        course_parent = self.aq_parent
+
+        documents_list = []
+        documents_dict = self.getDocumentsProperties()
+        for document_id in self.getDocumentsList():
+            document_properties = documents_dict[document_id]
+
+            document_dict = {"document_id":      document_id,
+                             "document_title":   document_properties["titreElement"],
+                             "document_drop_id": "drop-%s" % document_id.replace("*-*", ""),
+                             "document_link":    ""}
+
+            is_display_item = self.isAfficherElement(document_properties["affElement"], document_properties["masquerElement"])
+            document_dict["is_display_item_bool"] = True if is_display_item["val"] else False
+            document_dict["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
+            document_dict["is_display_item_text"] = is_display_item["legende"]
+
+            if is_personnel or document_dict["is_display_item_bool"]:
+                document_dict["document_link"] = "/".join([portal.absolute_url(), "Members", document_properties["createurElement"], course_parent._type_folder_my_space_dict[document_properties["typeElement"].replace(" ", "")], document_id.replace("*-*", "."), "view"])
+            documents_list.append(document_dict)
+        return documents_list
 
     """
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):

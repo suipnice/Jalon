@@ -54,7 +54,6 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_link"] = my_deposit_box.absolute_url()
 
         my_view["is_personnel"] = my_deposit_box.isPersonnel(user, mode_etudiant)
-        LOG.info(my_view["is_personnel"])
         my_view["mode_etudiant"] = "false" if (not mode_etudiant) and my_view["is_personnel"] else mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
@@ -107,8 +106,11 @@ class DepositBoxView(CourseView):
 
         my_view["is_document_tab"] = True if tab == "documents" else False
         if my_view["is_document_tab"]:
-            deposit_box_path = self.context.getPhysicalPath()
-            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), self.context.portal_url.getPortalObject())["my_space"]
+            portal = my_deposit_box.portal_url.getPortalObject()
+            deposit_box_path = my_deposit_box.getPhysicalPath()
+            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), portal)["my_space"]
+            my_view["documents_list"] = my_deposit_box.displayDocumentsList(my_view["is_personnel"], portal)
+
         deposit_box_profile = my_deposit_box.getProfile() or "standard"
 
         my_view["is_skills_tab"] = True if tab == "skills" else False
@@ -179,9 +181,7 @@ class DepositBoxView(CourseView):
                 my_view["is_authorized_deposit"] = 0
                 my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 
-        LOG.info(my_view["deposit_box_visibility"])
         my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False
-        LOG.info(my_view["is_personnel_or_deposit_box_visible"])
         my_view["is_student_and_deposit_box_hidden"] = True if (not my_view["is_personnel"]) and my_view["deposit_box_visibility"]['val'] == 0 else False
         my_view["is_display_mod"] = my_deposit_box.isAuteurs(user.getId())
         LOG.info("----- getDepositBoxView (End) -----")

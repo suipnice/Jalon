@@ -30,4 +30,17 @@
         <i class="fa fa-upload"></i>
         <tal:block i18n:translate="">Documents enseignants</tal:block>
     </h2>
+    <div class="panel callout radius"
+         tal:condition="not:my_view/documents_list"
+         i18n:translate="">
+        Aucun document enseignant n'est disponible.
+    </div>
+    <div tal:repeat="document my_view/documents_list">
+        <a title="Voir le document enseignant"
+           data-reveal-id="reveal-main" data-reveal-ajax="true"
+           tal:attributes="href document/document_link"
+           i18n:attributes="title">
+            <tal:replace replace="document/document_title" />
+        </a>
+    </div>
 </metal:macro>
