@@ -35,12 +35,33 @@
          i18n:translate="">
         Aucun document enseignant n'est disponible.
     </div>
-    <div tal:repeat="document my_view/documents_list">
-        <a title="Voir le document enseignant"
-           data-reveal-id="reveal-main" data-reveal-ajax="true"
-           tal:attributes="href document/document_link"
-           i18n:attributes="title">
-            <tal:replace replace="document/document_title" />
-        </a>
+    <div class="panel callout radius">
+        <div tal:repeat="document my_view/documents_list">
+            <tal:condition condition="my_view/is_personnel">
+            <a class="dropdown right" data-options="align:left"
+               tal:attributes="data-dropdown string:${document/document_drop_id}">
+                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+            </a>
+            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                tal:attributes="id string:${document/document_drop_id}">
+                <li tal:repeat="document_action document/document_actions">
+                    <a data-reveal-ajax="true" data-reveal-id="reveal-main"
+                       tal:attributes="href string:${my_view/deposit_box_link}/${document_action/item_action_id}?document_id=${document/document_id}">
+                        <i tal:attributes="class document_action/item_action_icon"></i>
+                        <tal:replace tal:replace="document_action/item_action_name" i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+            </tal:condition>
+            <i tal:attributes="class document/is_display_item_icon;
+                               title document/is_display_item_text"
+               tal:condition="not:document/is_display_item_bool"></i>
+            <a title="Voir le document enseignant"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href document/document_link"
+               i18n:attributes="title">
+                <tal:replace replace="document/document_title" />
+            </a>
+        </div>
     </div>
 </metal:macro>

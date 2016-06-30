@@ -394,13 +394,30 @@ class JalonBoiteDepot(ATFolder):
 
             is_display_item = self.isAfficherElement(document_properties["affElement"], document_properties["masquerElement"])
             document_dict["is_display_item_bool"] = True if is_display_item["val"] else False
-            document_dict["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
+            document_dict["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right alert" % is_display_item["icon"]
             document_dict["is_display_item_text"] = is_display_item["legende"]
 
             if is_personnel or document_dict["is_display_item_bool"]:
                 document_dict["document_link"] = "/".join([portal.absolute_url(), "Members", document_properties["createurElement"], course_parent._type_folder_my_space_dict[document_properties["typeElement"].replace(" ", "")], document_id.replace("*-*", "."), "view"])
+            if is_personnel:
+                document_dict["document_actions"] = self.getItemActions(course_parent, document_properties, document_dict["is_display_item_bool"])
             documents_list.append(document_dict)
         return documents_list
+
+    def getItemActions(self, course_parent, item_properties, is_display_item_bool):
+        LOG.info("----- getItemActions -----")
+        item_actions = course_parent._item_actions[:]
+
+        if is_display_item_bool:
+            del item_actions[0]
+        else:
+            del item_actions[1]
+
+        del item_actions[-1]
+        del item_actions[-2]
+        del item_actions[-2]
+
+        return item_actions
 
     """
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
