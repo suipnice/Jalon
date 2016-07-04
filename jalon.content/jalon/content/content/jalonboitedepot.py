@@ -805,7 +805,6 @@ class JalonBoiteDepot(ATFolder):
 
         if is_deposit_box:
             course = self.aq_parent
-            update_actuality = True
             if item_property_name == "affElement":
                 self.dateAff = item_date
                 self.dateMasq = ""
@@ -813,17 +812,14 @@ class JalonBoiteDepot(ATFolder):
                 self.dateMasq = item_date
                 course.deleteCourseActuality(item_id)
             course.editCourseItemVisibility(item_id, item_date, item_property_name, False)
+            course.setCourseProperties({"DateDerniereModif": DateTime()})
         else:
-            update_actuality = False
             item_properties = self.getDocumentsProperties(item_id)
             if item_property_name == "affElement":
                 item_properties["masquerElement"] = ""
             item_properties[item_property_name] = item_date
             self._infos_element[item_id] = item_properties
             self.setDocumentsProperties(self._infos_element)
-
-        if not update_actuality:
-            self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
         LOG.info("----- addMySpaceItem -----")
@@ -836,6 +832,17 @@ class JalonBoiteDepot(ATFolder):
             complement_element = {"value":  display_in_plan,
                                   "auteur": item_object.getVideoauteurname(),
                                   "image":  item_object.getVideothumbnail()}
+
+        item_object_related = item_object.getRelatedItems()
+        if not self in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+
+        deposit_box_related = self.getRelatedItems()
+        if not item_object in deposit_box_related:
+            deposit_box_related.append(item_object)
+            self.setRelatedItems(deposit_box_related)
 
         self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
@@ -966,6 +973,7 @@ class JalonBoiteDepot(ATFolder):
     def detachDocument(self, item_id):
         LOG.info("----- detachDocument -----")
         document_properties = self.getDocumentsProperties()
+        document_dict = document_properties[item_id]
         del document_properties[item_id]
         self.setDocumentsProperties(document_properties)
 
@@ -973,40 +981,17 @@ class JalonBoiteDepot(ATFolder):
         documents_list.remove(item_id)
         self.setListeSujets(tuple(documents_list))
 
-    def retirerElement(self, idElement, menu):
-        infos_element = self.getInfosElement()
-        infosElement = infos_element[idElement]
+        item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, document_dict["createurElement"]), self.aq_parent._type_folder_my_space_dict[document_dict["typeElement"].replace(" ", "")]), item_id.replace("*-*", "."))
+        item_relatedItems = item_object.getRelatedItems()
+        item_relatedItems.remove(self)
+        item_object.setRelatedItems(item_relatedItems)
+        item_object.reindexObject()
 
-        elements_list = list(self.__getattribute__("liste%s" % menu.capitalize()))
-        elements_list.remove(idElement)
+        deposit_relatedItems = self.getRelatedItems()
+        deposit_relatedItems.remove(item_object)
+        self.setRelatedItems(deposit_relatedItems)
 
-        self.__getattribute__("setListe%s" % menu.capitalize())(tuple(elements_list))
-        del infos_element[idElement]
-
-        dicoRep = {"Image":                      "Fichiers",
-                   "File":                       "Fichiers",
-                   "Page":                       "Fichiers",
-                   "Lien web":                   "Externes",
-                   "Lecteur exportable":         "Externes",
-                   "Reference bibliographique":  "Externes",
-                   "Catalogue BU":               "Externes",
-                   "Webconference":              "Webconference",
-                   "Presentations sonorisees":   "Sonorisation"}
-
-        repertoire = infosElement["typeElement"]
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
-        if "*-*" in idElement:
-            idElement = idElement.replace("*-*", ".")
-        objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), idElement, None)
-        if objet:
-            relatedItems = objet.getRelatedItems()
-            try:
-                relatedItems.remove(self)
-                objet.setRelatedItems(relatedItems)
-            except:
-                pass
-            objet.reindexObject()
+        self.reindexObject()
 
     ##----------------------------##
     # Fonctions onglet Compétences #
