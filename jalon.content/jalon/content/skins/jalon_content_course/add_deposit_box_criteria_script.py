@@ -22,11 +22,15 @@ if criteria_dict:
 criteria_dict[index] = {"title":       form["title"],
                         "description": form["description"],
                         "notation":    form["notation"],
-                        "coefficient": form["coefficient"]}
+                        "coefficient": form["coefficient"],
+                        "gap":         form["gap"],
+                        "comment":     form["comment"],
+                        "comment_min": form["comment_min"],
+                        "comment_max": form["comment_max"]}
 
 context.setCriteriaDict(criteria_dict)
 
-redirection = "%s?tab=peers" % context.absolute_url()
+redirection = "%s/deposit_box_criteria_view?criteria_id=%s" % (context.absolute_url(), index)
 
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(redirection)

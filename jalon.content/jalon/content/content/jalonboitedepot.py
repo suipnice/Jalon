@@ -5,7 +5,7 @@ from zope.interface import implements
 from Products.Archetypes.public import *
 #from Products.ATExtensions.ateapi import *
 
-from Products.ATContentTypes.content.folder import ATFolder, ATFolderSchema
+from Products.ATContentTypes.content.folder import ATFolderSchema
 from Products.ATContentTypes.content.base import registerATCT
 from Products.CMFCore.utils import getToolByName
 
@@ -20,6 +20,7 @@ from os import close
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import jalon_utils
+from jalon_activity import JalonActivity
 import os
 import copy
 import random
@@ -28,8 +29,6 @@ import string
 # Messages de debug :
 from logging import getLogger
 LOG = getLogger("[JalonBoiteDepot]")
-
-ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8"), u"Ressource bibliographie".encode("utf-8")]
 
 JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
     DateTimeField("dateDepot",
@@ -136,8 +135,8 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
 ))
 
 
-class JalonBoiteDepot(ATFolder):
-    """ Une ressource externe pour Jalon
+class JalonBoiteDepot(JalonActivity):
+    """ Une boite de dépôts pour Jalon
     """
 
     implements(IJalonBoiteDepot)
@@ -157,21 +156,37 @@ class JalonBoiteDepot(ATFolder):
                        "consultation": "Consultation de note interdite",
                        "other":        "points par devoir non corrigé"}
 
+    _profile_title = {"standard":    "Standard",
+                      "examen":      "Examen",
+                      "competences": "Évaluation par compétences",
+                      "pairs":       "Évaluation par les pairs"}
+
+    def __init__(self, *args, **kwargs):
+        super(JalonBoiteDepot, self).__init__(*args, **kwargs)
+
     ##-------------------##
     # Fonctions générales #
     ##-------------------##
-    def getElementCours(self, key):
-        return self.getInfosElement(key)
+    def getDisplayProfile(self, profile_id=None):
+        LOG.info("----- getDisplayProfile -----")
+        deposit_box_profil = profile_id or self.getProfile() or "standard"
+        return self._profile_title[deposit_box_profil]
 
-    def getInfosElement(self, key=None):
+    def getDocumentsProperties(self, key=None):
+        LOG.info("----- getDocumentsProperties -----")
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
-    def getKeyInfosElement(self):
+    def getCourseItemProperties(self, key=None):
+        LOG.info("----- getCourseItemProperties -----")
+        return self.getDocumentsProperties(key)
+
+    def getDocumentsList(self):
+        LOG.info("----- getDocumentsList -----")
         return self._infos_element.keys()
 
-    def setInfosElement(self, infos_element):
+    def setDocumentsProperties(self, infos_element):
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -181,6 +196,10 @@ class JalonBoiteDepot(ATFolder):
         dico = {"info":  ['title', 'description'],
                 "date":  ['dateDepot', 'dateRetard']}
         return dico[info]
+
+    def getProperty(self, property_name):
+        LOG.info("----- getProperty -----")
+        return getattr(self, property_name, None)
 
     def setProperties(self, dico):
         for key in dico.keys():
@@ -193,7 +212,8 @@ class JalonBoiteDepot(ATFolder):
     def getInfosListeAttribut(self, attribut, personnel=False):
         retour = []
         listeElement = self.getListeAttribut(attribut)
-        infos_element = self.getInfosElement()
+        infos_element = self.getDocumentsProperties()
+        LOG.info(infos_element)
         for idElement in listeElement:
             infos = infos_element.get(idElement, '')
             if infos:
@@ -254,162 +274,7 @@ class JalonBoiteDepot(ATFolder):
                 options[option] = {"actif": 0, "texte": _(u"Désactivée")}
         return options
 
-    def getRubriqueEspace(self, ajout=None):
-        return self.aq_parent.getRubriqueEspace(ajout)
-
-    def getElementView(self, idElement, createurElement, typeElement, indexElement, mode_etudiant=None):
-        if typeElement == "JalonFile":
-            retour = {"titreElement": "", "descriptionElement": "", "correctionElement": "", "noteElement": "", "urlElement": "", "indexElement": int(indexElement)}
-            depot = getattr(getattr(self, createurElement), idElement)
-            retour["titreElement"] = depot.Title()
-            retour["descriptionElement"] = depot.Description().replace("\n", "<br/>")
-            if retour["descriptionElement"] in ["", " "]:
-                retour["descriptionElement"] = "Aucun commentaire"
-            if self.getCorrectionIndividuelle():
-                retour["correctionElement"] = depot.getCorrectionDepot().replace("\n", "<br/>")
-            if self.getNotation():
-                retour["noteElement"] = depot.getNote()
-            retour["fichierElement"] = depot.getFichierCorrection()
-            retour["urlElement"] = '%s/%s/%s/at_download/file' % (self.absolute_url(), createurElement, idElement)
-            return retour
-        else:
-            return self.aq_parent.getElementView(idElement, createurElement, typeElement, indexElement, mode_etudiant)
-
-    def getParentPlanElement(self, idElement, idParent, listeElement):
-        if idElement == self.getId():
-            return self.aq_parent.getParentPlanElement(idElement, idParent, listeElement)
-        return {"idElement": "racine", "affElement": "", "masquerElement": ""}
-
-    def isChecked(self, idElement, formulaire, listeElement=None):
-        if formulaire == "ajout-sujets":
-            if idElement in list(self.getListeSujets()):
-                return 1
-            return 0
-        if formulaire == "ajout-corrections":
-            if idElement in list(self.getListeCorrections()):
-                return 1
-            return 0
-
-    def afficherRessource(self, idElement, dateAffichage, attribut):
-        if idElement == self.getId():
-            if attribut == "affElement":
-                self.dateAff = dateAffichage
-                self.dateMasq = ""
-
-                portal = self.portal_url.getPortalObject()
-                portal_workflow = getToolByName(portal, "portal_workflow")
-                if portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow") != "pending":
-                    portal_workflow.doActionFor(self, "submit", "jalon_workflow")
-            else:
-                self.dateMasq = dateAffichage
-            self.aq_parent.modifierInfosBoitePlan(self.getId(), {"affElement": self.getDateAff(), "masquerElement": self.getDateMasq()})
-            self.reindexObject()
-        else:
-            infos_element = copy.deepcopy(self.getInfosElement())
-            if infos_element:
-                infos_element[idElement][attribut] = dateAffichage
-                if attribut == "affElement":
-                    infos_element[idElement]["masquerElement"] = ""
-                self.setInfosElement(infos_element)
-
-                rep = {"Image":                     "Fichiers",
-                       "File":                      "Fichiers",
-                       "Lien web":                  "Externes",
-                       "Lecteur exportable":        "Externes",
-                       "Reference bibliographique": "Externes",
-                       "Glossaire":                 "Glossaire",
-                       "Webconference":             "Webconference",
-                       "Presentations sonorisees":  "Sonorisation"}
-                if infos_element[idElement]["typeElement"] in rep.keys():
-                    idFichier = idElement
-                    if "*-*" in idElement:
-                        idFichier = idElement.replace("*-*", ".")
-                    objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infos_element[idElement]["createurElement"]), rep[infos_element[idElement]["typeElement"]]), idFichier)
-                    portal = self.portal_url.getPortalObject()
-                    portal_workflow = getToolByName(portal, "portal_workflow")
-                    boite_state = portal_workflow.getInfoFor(self, "review_state", wf_id="jalon_workflow")
-                    objet_state = portal_workflow.getInfoFor(objet, "review_state", wf_id="jalon_workflow")
-                    if boite_state != objet_state:
-                        if boite_state == "pending" and objet_state != "published":
-                            portal_workflow.doActionFor(objet, "submit", "jalon_workflow")
-                self.reindexObject()
-
-    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        if "." in idElement:
-            idElement = idElement.replace(".", "*-*")
-        listeSujets = list(self.getListeSujets())
-        listeSujets.append(idElement)
-        setattr(self, "listeSujets", tuple(listeSujets))
-
-        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
-        rep = {"Image":                     "Fichiers",
-               "File":                      "Fichiers",
-               "Page":                      "Fichiers",
-               "Lien web":                  "Externes",
-               "Lecteur exportable":        "Externes",
-               "Reference bibliographique": "Externes",
-               "Catalogue BU":              "Externes",
-               "Webconference":             "Webconference",
-               "Presentations sonorisees":  "Sonorisation"}
-        if typeElement in rep:
-            if "*-*" in idElement:
-                idElement = idElement.replace("*-*", ".")
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), createurElement), rep[typeElement]), idElement)
-            relatedItems = objet.getRelatedItems()
-            if not self in relatedItems:
-                relatedItems.append(self)
-                objet.setRelatedItems(relatedItems)
-                objet.reindexObject()
-                depotRelatedItems = self.getRelatedItems()
-                depotRelatedItems.append(objet)
-                self.setRelatedItems(depotRelatedItems)
-
-    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        infos_element = copy.deepcopy(self.getInfosElement())
-        if not idElement in infos_element:
-            infos_element[idElement] = {"titreElement": titreElement,
-                                        "typeElement": typeElement,
-                                        "createurElement": createurElement,
-                                        "affElement": affElement,
-                                        "masquerElement": ""}
-            #self.setInfos_element(infos_element)
-            self.setInfosElement(infos_element)
-
-    def retirerElement(self, idElement, menu):
-        infos_element = self.getInfosElement()
-        infosElement = infos_element[idElement]
-
-        elements_list = list(self.__getattribute__("liste%s" % menu.capitalize()))
-        elements_list.remove(idElement)
-
-        self.__getattribute__("setListe%s" % menu.capitalize())(tuple(elements_list))
-        del infos_element[idElement]
-
-        dicoRep = {"Image":                      "Fichiers",
-                   "File":                       "Fichiers",
-                   "Page":                       "Fichiers",
-                   "Lien web":                   "Externes",
-                   "Lecteur exportable":         "Externes",
-                   "Reference bibliographique":  "Externes",
-                   "Catalogue BU":               "Externes",
-                   "Webconference":              "Webconference",
-                   "Presentations sonorisees":   "Sonorisation"}
-
-        repertoire = infosElement["typeElement"]
-        if repertoire in dicoRep:
-            repertoire = dicoRep[repertoire]
-        if "*-*" in idElement:
-            idElement = idElement.replace("*-*", ".")
-        objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), idElement, None)
-        if objet:
-            relatedItems = objet.getRelatedItems()
-            try:
-                relatedItems.remove(self)
-                objet.setRelatedItems(relatedItems)
-            except:
-                pass
-            objet.reindexObject()
-
+    """
     def retirerTousElements(self):
         dicoRep = {"Image":                     "Fichiers",
                    "File":                      "Fichiers",
@@ -437,6 +302,7 @@ class JalonBoiteDepot(ATFolder):
                 except:
                     pass
                 objet.reindexObject()
+    """
 
     def getDepositBoxProfile(self):
         LOG.info("----- getDepositBoxProfile -----")
@@ -454,110 +320,6 @@ class JalonBoiteDepot(ATFolder):
                 {"deposit_box_profile_text":    "Évaluation par les pairs",
                  "deposit_box_profile_value":   "pairs",
                  "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
-
-    def getTemplateView(self, user, mode_etudiant, menu):
-        is_anonymous = user.has_role('Anonymous')
-        if is_anonymous:
-            return {"is_anonymous": True}
-
-        personnel = self.isPersonnel(user, mode_etudiant)
-        affElement = self.isAfficherElement(self.getDateAff(), self.getDateMasq())
-
-        id_boite = self.getId()
-        url_boite = self.absolute_url()
-
-        menu_options = []
-        if affElement["val"]:
-            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=masquer-element&amp;idElement=%s" % (url_boite, id_boite),
-                                 "icon": "fa-eye-slash",
-                                 "text": "Masquer"})
-        else:
-            menu_options.append({"href": "%s/folder_form?macro=macro_cours_afficher&amp;formulaire=afficher-element&amp;idElement=%s" % (url_boite, id_boite),
-                                 "icon": "fa-eye",
-                                 "text": "Afficher"})
-        menu_options.append({"href": "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon": "fa-align-justify",
-                             "text": "Titre et consigne"})
-
-        onglets = []
-        is_onglet_depots = True if menu == "depots" else False
-        onglets.append({"href":      "%s?menu=depots&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                        "css_class": " selected" if is_onglet_depots else "",
-                        "icon":      "fa-download",
-                        "text":      "Mes dépôts" if not personnel and not self.getAccesDepots() else "Dépôts étudiants",
-                        "nb":        self.getNbDepots(personnel)})
-        menu_option_depots = []
-        if is_onglet_depots:
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getCorrectionIndividuelle() else "fa-toggle-off",
-                                       "text": "Correction des dépôts"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationCorrection() else "fa-toggle-off",
-                                       "text": "Notification des corrections"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotation() else "fa-toggle-off",
-                                       "text": "Notation des dépôts"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getNotificationNotation() else "fa-toggle-off",
-                                       "text": "Notification des notations"})
-            menu_option_depots.append({"icon": "fa-toggle-on success" if self.getAccesDepots() else "fa-toggle-off",
-                                       "text": "Visualisation des dépôts entre étudiants"})
-
-        onglets.append({"href":      "%s?menu=sujets&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                        "css_class": " selected" if menu == "sujets" else "",
-                        "icon":      "fa-upload",
-                        "text":      "Documents enseignants",
-                        "nb":        self.getNbSujets()})
-
-        is_onglet_competences = True if menu == "competences" else False
-        if personnel or self.getAfficherCompetences():
-            onglets.append({"href":      "%s?menu=competences&amp;mode_etudiant=%s" % (url_boite, mode_etudiant),
-                            "css_class": " selected" if is_onglet_competences else "",
-                            "icon":      "fa-tasks",
-                            "text":      "Compétences",
-                            "nb":        self.getNbCompetences()})
-        menu_option_competences = []
-        if is_onglet_competences:
-            menu_option_competences.append({"icon": "fa-toggle-on success" if self.getAfficherCompetences() else "fa-toggle-off",
-                                            "text": "Affichage de l'onglet \"Compétences\" aux étudiants"})
-            if self.getPermissionModifierCompetence(personnel, user.getId()):
-                menu_option_competences.append({"icon": "fa-toggle-on success" if self.getModifierCompetences() else "fa-toggle-off",
-                                                "text": "Restriction de la gestion des compétences"})
-
-        instructions = []
-        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-date&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon":      "fa-calendar",
-                             "text":      "Date"})
-        instructions.append({"href":      "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-boite-info&amp;menu=%s" % (url_boite, id_boite, menu),
-                             "icon":      "fa-align-justify",
-                             "text":      "Titre et consigne"})
-
-        is_depot_actif = self.isDepotActif()
-        if is_depot_actif == 2:
-            is_retard = True
-            class_limit_date = "callout"
-        else:
-            is_retard = False
-            class_limit_date = "warning"
-
-        return {"id_boite":                      id_boite,
-                "url_boite":                     url_boite,
-                "is_anonymous":                  False,
-                "is_personnel":                  personnel,
-                "is_etu_and_boite_hidden":       True if (not personnel) and affElement['val'] == 0 else False,
-                "is_personnel_or_boite_visible": True if personnel or affElement['val'] != 0 else False,
-                "is_auteur":                     self.isAuteurs(user.getId()),
-                "is_depot_actif":                is_depot_actif,
-                "is_retard":                     is_retard,
-                "is_afficher_comp":              self.getAfficherCompetences(),
-                "menu_options":                  menu_options,
-                "affElement":                    affElement,
-                "came_from":                     "%s/login_form?came_from=%s" % (url_boite, self.jalon_quote(url_boite)),
-                "class_limit_date":              class_limit_date,
-                "date_depot_aff":                self.getAffDate('DateDepot'),
-                "onglets":                       onglets,
-                "instructions":                  instructions,
-                "description":                   self.Description(),
-                "is_onglet_depots":              is_onglet_depots,
-                "menu_option_depots":            menu_option_depots,
-                "is_onglet_competences":         is_onglet_competences,
-                "menu_option_competences":       menu_option_competences}
 
     ##-----------------------##
     # Fonctions onglet Dépots #
@@ -839,12 +601,29 @@ class JalonBoiteDepot(ATFolder):
         0 s'ils n'ont plus le droit.
     """
     def isDepotActif(self):
-        now = DateTime(DateTime().strftime("%Y/%m/%d %H:%M"))
-        date_depot = DateTime(self.getDateDepot())
-        date_retard = DateTime(self.getDateRetard())
+        LOG.info("----- isDepotActif -----")
+        profile = self.getProfile()
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        date_depot = DateTime(self.getDateDepot()).strftime("%Y/%m/%d %H:%M")
+
+        LOG.info("***** profile : %s" % profile)
+        LOG.info("***** now : %s" % now)
+        LOG.info("***** date_depot : %s" % date_depot)
+        # En profil évaluation par les pairs la date de dépôts est obligatoire
+        if profile == "pairs" and date_depot == now:
+            return 3
+
+        date_correction = DateTime(self.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+        LOG.info("***** date_correction : %s" % date_correction)
+        # En profil évaluation par les pairs la date de correction est obligatoire
+        if profile == "pairs" and date_correction == now:
+            return 3
+
         # La date de dépot n'est pas encore passée.
         if now <= date_depot:
             return 1
+
+        date_retard = DateTime(self.getDateRetard()).strftime("%Y/%m/%d %H:%M")
         # La date de retard n'est pas encore passée.
         if date_retard > date_depot and now < date_retard:
             return 2
@@ -1007,6 +786,216 @@ class JalonBoiteDepot(ATFolder):
         data = fp.read()
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
+
+    """
+    ##--------------------------##
+    # Fonctions onglet Documents #
+    ##--------------------------##
+    def isChecked(self, idElement, formulaire, listeElement=None):
+        if formulaire == "ajout-sujets":
+            if idElement in list(self.getListeSujets()):
+                return 1
+            return 0
+        if formulaire == "ajout-corrections":
+            if idElement in list(self.getListeCorrections()):
+                return 1
+            return 0
+
+    def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        LOG.info("----- editCourseItemVisibility -----")
+        #Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer).
+        is_deposit_box = True if item_id == self.getId() else False
+
+        if is_deposit_box:
+            course = self.aq_parent
+            if item_property_name == "affElement":
+                self.dateAff = item_date
+                self.dateMasq = ""
+            else:
+                self.dateMasq = item_date
+                course.deleteCourseActuality(item_id)
+            course.editCourseItemVisibility(item_id, item_date, item_property_name, False)
+            course.setCourseProperties({"DateDerniereModif": DateTime()})
+        else:
+            item_properties = self.getDocumentsProperties(item_id)
+            if item_property_name == "affElement":
+                item_properties["masquerElement"] = ""
+            item_properties[item_property_name] = item_date
+            self._infos_element[item_id] = item_properties
+            self.setDocumentsProperties(self._infos_element)
+
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        LOG.info("----- addMySpaceItem -----")
+        item_id_no_dot = item_id.replace(".", "*-*")
+
+        item_object = getattr(folder_object, item_id)
+
+        complement_element = None
+        if item_type in ["Video", "VOD"]:
+            complement_element = {"value":  display_in_plan,
+                                  "auteur": item_object.getVideoauteurname(),
+                                  "image":  item_object.getVideothumbnail()}
+
+        item_object_related = item_object.getRelatedItems()
+        if not self in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+
+        deposit_box_related = self.getRelatedItems()
+        if not item_object in deposit_box_related:
+            deposit_box_related.append(item_object)
+            self.setRelatedItems(deposit_box_related)
+
+        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        LOG.info("----- addItemProperty -----")
+
+        items_properties = self.getDocumentsProperties()
+        if not item_id in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            self.setDocumentsProperties(items_properties)
+            listeSujets = list(self.getListeSujets())
+            listeSujets.append(item_id)
+            setattr(self, "listeSujets", tuple(listeSujets))
+
+    def displayDocumentsList(self, is_personnel, portal):
+        LOG.info("----- displayDocumentsList -----")
+        course_parent = self.aq_parent
+
+        documents_list = []
+        documents_dict = self.getDocumentsProperties()
+        for document_id in self.getDocumentsList():
+            document_properties = documents_dict[document_id]
+
+            document_dict = {"document_id":      document_id,
+                             "document_title":   document_properties["titreElement"],
+                             "document_drop_id": "drop-%s" % document_id.replace("*-*", ""),
+                             "document_link":    ""}
+
+            is_display_item = self.isAfficherElement(document_properties["affElement"], document_properties["masquerElement"])
+            document_dict["is_display_item_bool"] = True if is_display_item["val"] else False
+            document_dict["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right alert" % is_display_item["icon"]
+            document_dict["is_display_item_text"] = is_display_item["legende"]
+
+            if is_personnel or document_dict["is_display_item_bool"]:
+                document_dict["document_link"] = "/".join([portal.absolute_url(), "Members", document_properties["createurElement"], course_parent._type_folder_my_space_dict[document_properties["typeElement"].replace(" ", "")], document_id.replace("*-*", "."), "view"])
+            if is_personnel:
+                document_dict["document_actions"] = self.getItemActions(course_parent, document_properties, document_dict["is_display_item_bool"])
+            documents_list.append(document_dict)
+        return documents_list
+
+    def getItemActions(self, course_parent, item_properties, is_display_item_bool):
+        LOG.info("----- getItemActions -----")
+        item_actions = course_parent._item_actions[:]
+
+        if is_display_item_bool:
+            del item_actions[0]
+        else:
+            del item_actions[1]
+
+        del item_actions[-1]
+        del item_actions[-2]
+        del item_actions[-2]
+
+        return item_actions
+
+    def getDisplayItemForm(self, item_id):
+        LOG.info("----- getDisplayItemForm -----")
+        form_properties = {"is_authorized_form":       True,
+                           "is_item_title":            False,
+                           "is_item_parent_title":     False,
+                           "help_css":                 "panel callout radius",
+                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
+                           "is_wims_examen":           False}
+        if self.getId() == item_id:
+            form_properties = self.aq_parent.getDisplayItemForm(item_id)
+        else:
+            item_properties = self.getDocumentsProperties(item_id)
+            display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+            if display_properties["val"]:
+                form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
+                form_properties["help_css"] = "panel radius warning"
+                form_properties["form_button_css"] = "button small radius warning"
+                form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
+                form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
+                form_properties["item_property_name"] = "masquerElement"
+                form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
+                form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
+                form_properties["item_parent_title"] = ""
+                form_properties["wims_help_text"] = False
+
+                form_properties["text_title_lately"] = "… ou programmer son masquage."
+                if item_properties["typeElement"] == "Titre":
+                    form_properties["is_item_title"] = True
+                    form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
+                else:
+                    form_properties["text_title_directly"] = "Masquer directement…"
+
+                form_properties["form_name"] = "masquer-element"
+                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "masquerElement")
+            else:
+                form_properties["form_button_css"] = "button small radius"
+                form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
+                form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
+                form_properties["item_property_name"] = "affElement"
+                form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
+                form_properties["form_title_icon"] = "fa fa-eye no-pad"
+
+                form_properties["text_title_lately"] = "… ou programmer son affichage."
+                if item_properties["typeElement"] == "Titre":
+                    form_properties["is_item_title"] = True
+                    form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
+                    form_properties["wims_help_text"] = True
+                else:
+                    form_properties["text_title_directly"] = "L'afficher directement…"
+                    form_properties["wims_help_text"] = False
+
+                form_properties["form_name"] = "afficher-element"
+                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "affElement")
+
+        return form_properties
+
+    def getDisplayOrHiddenDate(self, item_properties, attribut):
+        LOG.info("----- getDisplayOrHiddenDate -----")
+        LOG.info("***** item_properties : %s" % item_properties)
+        if item_properties[attribut] != "":
+            LOG.info("***** attribut: %s" % attribut)
+            LOG.info("***** item_properties[attribut]: %s" % item_properties[attribut])
+            return item_properties[attribut].strftime("%Y/%m/%d %H:%M")
+        return DateTime().strftime("%Y/%m/%d %H:%M")
+
+    def detachDocument(self, item_id):
+        LOG.info("----- detachDocument -----")
+        document_properties = self.getDocumentsProperties()
+        document_dict = document_properties[item_id]
+        del document_properties[item_id]
+        self.setDocumentsProperties(document_properties)
+
+        documents_list = list(self.getListeSujets())
+        documents_list.remove(item_id)
+        self.setListeSujets(tuple(documents_list))
+
+        item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, document_dict["createurElement"]), self.aq_parent._type_folder_my_space_dict[document_dict["typeElement"].replace(" ", "")]), item_id.replace("*-*", "."))
+        item_relatedItems = item_object.getRelatedItems()
+        item_relatedItems.remove(self)
+        item_object.setRelatedItems(item_relatedItems)
+        item_object.reindexObject()
+
+        deposit_relatedItems = self.getRelatedItems()
+        deposit_relatedItems.remove(item_object)
+        self.setRelatedItems(deposit_relatedItems)
+
+        self.reindexObject()
+    """
 
     ##----------------------------##
     # Fonctions onglet Compétences #
@@ -1285,9 +1274,12 @@ class JalonBoiteDepot(ATFolder):
         LOG.info("----- getEvaluationByPeers -----")
         evaluation_by_peers_dict = {}
         deposit_box_link = self.absolute_url()
+        evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
+        evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         if is_personnel:
             evaluation_by_peers_dict["macro_peers"] = "peers_teacher_macro"
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
+            """
             evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
                                                     "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
                                                     "icon": "fa fa-plus-circle fa-fw"},
@@ -1297,6 +1289,11 @@ class JalonBoiteDepot(ATFolder):
                                                    {"text": "Moyenne",
                                                     "link": "%s/average_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-calculator fa-fw"}]
+            """
+            if not evaluation_by_peers_dict["criteria_dict"]:
+                evaluation_by_peers_dict["gride_button"] = "fa fa-plus-circle fa-lg fa-fw"
+            else:
+                evaluation_by_peers_dict["gride_button"] = "fa fa-pencil fa-lg fa-fw"
             evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
         else:
@@ -1312,8 +1309,6 @@ class JalonBoiteDepot(ATFolder):
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
             else:
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
-        evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
-        evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         return evaluation_by_peers_dict
 
     def getCriteriaDict(self, key=None):
@@ -1379,10 +1374,6 @@ class JalonBoiteDepot(ATFolder):
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")
         peers_dict = copy.deepcopy(self._peers_dict)
-        #peers_dict = {"bordonad": [],
-        #              "etudiant1": [],
-        #              "etudiant2": [],
-        #              "etudiant3": []}
         LOG.info("INTRO peers_dict : %s" % str(peers_dict))
         peers_list = peers_dict.keys()
         LOG.info("INTRO peers_list : %s" % str(peers_list))

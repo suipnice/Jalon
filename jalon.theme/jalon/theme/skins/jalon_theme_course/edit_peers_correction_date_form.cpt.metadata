@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_deposit_box_property
+
+[actions]
+action.failure = traverse_to:string:edit_peers_correction_date_form
+action.success_correction_date = traverse_to:string:edit_peers_correction_date_script

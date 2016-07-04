@@ -8,10 +8,12 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="errors options/state/getErrors | nothing;">
+            tal:define="errors options/state/getErrors | nothing;
+                        criteria_id request/criteria_id;
+                        crietria_dict python:context.getCriteriaDict(criteria_id)">
 
     <h2 i18n:translate="">
-        <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
+        <tal:block i18n:translate="">Modifier un critère d'évaluation</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
     <form id="js-addCriteria" method="post"
@@ -26,7 +28,7 @@
                  tal:condition="error"/>
             <input type="text" id="title" name="title" required="required"
                    placeholder="Saisie obligatoire" maxlength="255" size="30"
-                   tal:attributes="value request/title | nothing"
+                   tal:attributes="value request/title | crietria_dict/title | nothing"
                    i18n:attributes="placeholder"/>
         </div>
 
@@ -36,7 +38,7 @@
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <textarea id="description" name="description" rows="5"
                       required="required" placeholder="Saisie obligatoire"
-                      tal:content="request/description | nothing"
+                      tal:content="request/description | crietria_dict/description | nothing"
                       i18n:attributes="placeholder" />
         </div>
 
@@ -50,7 +52,7 @@
             <input type="number" name="notation" min="0" max="10"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/notation | string:10"/>
+                                   value request/notation | crietria_dict/notation | string:10"/>
         </div>
 
         <div id="archetypes-fieldname-coefficient"
@@ -63,7 +65,7 @@
             <input type="number" name="coefficient" min="0" max="5"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/coefficient | string:1"/>
+                                   value request/coefficient | crietria_dict/coefficient | string:1"/>
         </div>
 
         <div id="archetypes-fieldname-gap"
@@ -76,12 +78,12 @@
             <input type="number" name="gap" min="0" max="5"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/gap | string:1"/>
+                                   value request/gap | crietria_dict/gap | string:1"/>
         </div>
 
         <div id="archetypes-fieldname-comment"
              tal:define="error errors/comment | nothing;
-                         selection request/comment | string:2"
+                         selection request/comment | crietria_dict/comment | string:2"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
             <label for="title">Commentaire étudiant :</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
@@ -115,7 +117,7 @@
                     <input type="number" name="comment_min" min="1" max="500"
                            step="1" style="width:4em;display:inline;"
                            tal:attributes="class python:context.test(error, 'error', '');
-                                           value request/comment_min | string:1"/>
+                                           value request/comment_min | crietria_dict/comment_min | string:1"/>
                     <span class="fieldErrorBox" tal:condition="error" tal:content="error" /> caractère(s) (max : 500)
                 </li>
                 <li tal:define="error errors/comment_max | nothing;">
@@ -123,20 +125,21 @@
                     <input type="number" name="comment_max" min="300" max="1500"
                            step="1" style="width:4em;display:inline;"
                            tal:attributes="class python:context.test(error, 'error', '');
-                                           value request/comment_max | string:300"/> caractères (max : 1500)
+                                           value request/comment_max | crietria_dict/comment_max | string:300"/> caractères (max : 1500)
                     <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
                 </li>
             </ul>
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="tab" value="peers"/>
+        <input type="hidden" name="criteria_id" 
+               tal:attributes="value criteria_id"/>
 
         <div class="formControls">
-            <button type="submit" class="button small create"
+            <button type="submit" class="button small"
                     name="form.button.save">
-                <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Ajouter</tal:block>
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
             </button>
         </div>
 

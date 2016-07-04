@@ -22,4 +22,8 @@ if form.has_key("is_item_title"):
 else:
     context.editCourseItemVisibility(form["item_id"], item_date, form["item_property_name"], is_update_from_title)
 
-context.REQUEST.RESPONSE.redirect(context.absolute_url())
+redirection = context.absolute_url()
+if context.meta_type in ["JalonBoiteDepot", "JalonCoursWims"] and not (form["item_id"].startswith("BoiteDepot-") or form["item_id"].startswith("AutoEvaluation-") or form["item_id"].startswith("Examen-")):
+    redirection = "%s?tab=documents" % redirection
+
+context.REQUEST.RESPONSE.redirect(redirection)

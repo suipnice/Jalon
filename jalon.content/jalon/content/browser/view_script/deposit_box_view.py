@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
-
+from course_view import CourseView
 from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
-LOG = getLogger('[JalonDepositBoxView]')
+LOG = getLogger('[DepositBoxView]')
 
 
-class JalonDepositBoxView(BrowserView):
+class DepositBoxView(CourseView):
     """Class pour le first_page
     """
 
@@ -54,7 +54,6 @@ class JalonDepositBoxView(BrowserView):
         my_view["deposit_box_link"] = my_deposit_box.absolute_url()
 
         my_view["is_personnel"] = my_deposit_box.isPersonnel(user, mode_etudiant)
-        LOG.info(my_view["is_personnel"])
         my_view["mode_etudiant"] = "false" if (not mode_etudiant) and my_view["is_personnel"] else mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
@@ -75,9 +74,6 @@ class JalonDepositBoxView(BrowserView):
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
-        my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
-                                            "icon": "fa-cogs",
-                                            "text": "Profil"})
 
         my_view["deposit_box_tabs"] = []
 
@@ -103,10 +99,17 @@ class JalonDepositBoxView(BrowserView):
                                                "text": "Visualisation des dépôts entre étudiants"}]
 
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
-                                            "css_class": " selected" if tab == "2" else "",
+                                            "css_class": " selected" if tab == "documents" else "",
                                             "icon":      "fa-upload",
                                             "text":      "Documents enseignants",
                                             "nb":        my_deposit_box.getNbSujets()})
+
+        my_view["is_document_tab"] = True if tab == "documents" else False
+        if my_view["is_document_tab"]:
+            portal = my_deposit_box.portal_url.getPortalObject()
+            deposit_box_path = my_deposit_box.getPhysicalPath()
+            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), portal)["my_space"]
+            my_view["documents_list"] = my_deposit_box.displayDocumentsList(my_view["is_personnel"], portal)
 
         deposit_box_profile = my_deposit_box.getProfile() or "standard"
 
@@ -135,15 +138,10 @@ class JalonDepositBoxView(BrowserView):
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""
-            my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_date_form" % my_view["deposit_box_link"],
-                                                "class": "panel warning radius",
-                                                "icon":  "fa fa-clock-o fa-fw no-pad",
-                                                "text":  "Date limite de correction",
-                                                "value": my_deposit_box.getAffDate('dateCorrection')},
-                                               {"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
+            my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-users fa-fw no-pad",
-                                                "text":  "Corrections par étudiants",
+                                                "text":  "Évaluation(s) par étudiants",
                                                 "value": my_deposit_box.getNombreCorrection()},
                                                {"link":  "%s/edit_peers_penality_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
@@ -151,9 +149,22 @@ class JalonDepositBoxView(BrowserView):
                                                 "text":  "Pénalité",
                                                 "value": my_deposit_box.getDisplayPenality()}]
 
+        my_view["deposit_box_profile"] = {"href":  "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                          "icon": "fa-pencil",
+                                          "text": "Profil"}
+        my_view["deposit_box_profile_text"] = my_deposit_box.getDisplayProfile()
         my_view["deposit_box_date"] = {"href":  "%s/edit_deposit_box_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                        "icon": "fa-pencil",
                                        "text": "Modifier"}
+        my_view["is_peer_profile"] = False
+        if my_deposit_box.getProfile() == "pairs":
+            my_view["is_peer_profile"] = True
+            my_view["deposit_box_correction_date"] = {"link":  "%s/edit_peers_correction_date_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                                      "class": "panel warning radius",
+                                                      "icon":  "fa fa-pencil fa-fw no-pad",
+                                                      "text":  "Date limite d'évaluation",
+                                                      "value": my_deposit_box.getAffDate('dateCorrection')}
+
         my_view["deposit_box_instruction"] = {"href":  "%s/edit_deposit_box_instruction_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                               "icon":  "fa-pencil",
                                               "text":  "Modifier"}
@@ -166,10 +177,11 @@ class JalonDepositBoxView(BrowserView):
         else:
             my_view["is_late"] = False
             my_view["class_limit_date"] = "warning"
+            if my_view["is_authorized_deposit"] == 3:
+                my_view["is_authorized_deposit"] = 0
+                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 
-        LOG.info(my_view["deposit_box_visibility"])
         my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False
-        LOG.info(my_view["is_personnel_or_deposit_box_visible"])
         my_view["is_student_and_deposit_box_hidden"] = True if (not my_view["is_personnel"]) and my_view["deposit_box_visibility"]['val'] == 0 else False
         my_view["is_display_mod"] = my_deposit_box.isAuteurs(user.getId())
         LOG.info("----- getDepositBoxView (End) -----")

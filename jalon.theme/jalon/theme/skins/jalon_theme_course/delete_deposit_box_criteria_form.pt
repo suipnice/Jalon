@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-trash-o"></i>
+        <tal:block i18n:translate="">Supprimer un critère d'évaluation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-supp-annonce" method="POST"
+          tal:attributes="action string:${context/absolute_url}/delete_deposit_box_criteria_script">
+
+        <div class="panel alert radius">
+            <strong i18n:translate="">Attention :</strong>
+            <tal:block i18n:translate="">Vous allez supprimer ce critère d'évaluation, cette opération est définitive.</tal:block>
+        </div>
+
+        <input type="hidden" name="criteria_id"
+               tal:attributes="value request/criteria_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius alert">
+                <i class="fa fa-trash-o"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

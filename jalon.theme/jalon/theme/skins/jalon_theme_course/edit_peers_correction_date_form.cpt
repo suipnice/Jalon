@@ -7,37 +7,50 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        is_date_depot python:context.getProperty('dateDepot');
+                        tab request/tab">
 
     <h2 i18n:translate="">
-        <tal:block i18n:translate="">Modifier la date limite de corrections</tal:block>
+        <tal:block i18n:translate="">Modifier la date limite d'évaluation</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <div class="panel warning radius"
+         tal:condition="not:is_date_depot">
+        <strong><i class="fa fa-info-circle"></i> Attention :</strong> Vous ne pouvez choisir une date limite d'évaluation. Vous devez d'abord choisir une date limite de dépôts.
+    </div>
+
     <form id="js-modBoxDate" method="post"
-          tal:attributes="action string:${context/absolute_url}/edit_peers_correction_date_script">
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:condition="is_date_depot">
 
         <div class="text-center" i18n:translate="">
-            Date limite de correction affichée aux étudiants
+            Date limite d'évaluation affichée aux étudiants
         </div>
 
         <div id="archetypes-fieldname-dateCorrection"
-                tal:define="error errors/dateCorrection | nothing;
+                tal:define="error errors/datetime-dateCorrection | nothing;
                             inputname string:dateCorrection;
-                            inputvalue request/dateCorrection | context/getDateCorrection"
+                            inputvalue request/datetime-dateCorrection | context/getDateCorrection"
                 tal:attributes="class python:context.test(error, 'error field', 'field')">
 
-            <div class="fieldErrorBox"
-                   tal:condition="error"
-                   tal:content="error" />
+            <div class="fieldErrorBox text-center" tal:content="error"
+                 tal:condition="error"/>
 
             <div class="formControls">
                 <input id="datetime-dateCorrection" name="datetime-dateCorrection" type="datetime"
                        required="required" pattern="[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}"
-                       tal:attributes="value request/dateCorrection | inputvalue" />
+                       tal:attributes="value request/datetime-dateCorrection | inputvalue" />
             </div>
 
         </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="tab" 
+               tal:attributes="value tab"/>
+        <input type="hidden" name="validate_key" value="correction_date"/>
 
         <div class="formControls">
             <button type="submit" class="button small"

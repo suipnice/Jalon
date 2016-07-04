@@ -173,7 +173,7 @@ function setAttachmentCreator( ) {
 
 
 /*
-    Tri des elements et fonctionnalités attachées
+    Tri des elements et fonctionnalites attachees
 */
 
 function setSortablePlan( ) {
@@ -182,13 +182,19 @@ function setSortablePlan( ) {
         && !matchMedia( Foundation.media_queries.medium ).matches ) {
 
         //setAlertBox( 'warning', "Small media detected" );
+        /*
+            Une fois la position depliee / repliee memorisee cote srv,
+            l'appel à app/setPlanChapterDisclosure( ) devra être supprime
+            et remplace par app/setLegendBarButtonsActivation( ).
+        */
         setPlanChapterDisclosure( true );
-        setPlanChapterBehaviors( true );
+        //setLegendBarButtonsActivation( );
+        setPlanBehaviors( true );
+        setStaffPlanChapterDiscloseCommand( );
 
     } else {
 
         //setAlertBox( 'warning', "Medium & up media detected" );
-        //var $coursePlan = Foundation.utils.S( '#course_plan-plan:not(.js-course_empty)' );
         var $coursePlan = Foundation.utils.S( '#course_plan-plan' );
 
         $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-unsortable' );
@@ -209,11 +215,11 @@ function setSortablePlan( ) {
 
             leafClass: 'leaf',
             branchClass: 'branch',
-            disabledClass: 'legend',        // N'est pas prise en compte par la sérialisation.
+            disabledClass: 'legend',        // N'est pas prise en compte par la serialisation.
             hoveringClass: 'hovering',
             expandedClass: 'expanded',
             collapsedClass: 'collapsed',
-            disableNestingClass: 'element', // Ne prend pas de sous élément.
+            disableNestingClass: 'element', // Ne prend pas de sous-element.
             errorClass: 'error',
 
             update: function( event, ui ) {
@@ -251,7 +257,8 @@ function setSortablePlan( ) {
                             },
                             complete: function( ) {
                                 $title.html( MSG_LOADING_OK );
-                                $coursePlan.delay( 600 ).fadeTo( 200, 1, function( ) {
+                                //$coursePlan.delay( 600 ).fadeTo( 200, 1, function( ) {
+                                $coursePlan.fadeTo( 200, 1, function( ) {
                                     $title.html( titleOrgHtml );
                                     isRefreshing = false;
                                 } );
@@ -262,7 +269,9 @@ function setSortablePlan( ) {
             }
         } );
 
-        setPlanChapterBehaviors( true );
+        setPlanBehaviors( true );
+        //setLegendBarButtonsActivation( ); // Decommenter quand etat des chapitres memorise cote srv
+        setStaffPlanChapterDiscloseCommand( );
 
     }
 }
@@ -270,7 +279,7 @@ function setSortablePlan( ) {
 
 
 /*
-    Dépliage complet du plan ()
+    Initialisation de tous les chapitres du plan a l'etat deplie
 */
 
 function expandPlanChapters( ) {
@@ -278,6 +287,116 @@ function expandPlanChapters( ) {
     Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
         //.removeClass( 'collapsed' )
         .addClass( 'expanded' );
+}
+
+
+
+/*
+    Memorisation du pliage / repliage de tous les chapitres du plan de cours
+*/
+
+function setStaffPlanChapterDisclosure( disclosureState ) {
+
+    if ( !isRefreshing ) {
+
+        // Verrouilage
+        isRefreshing = true;
+
+        // Init
+        var $plan = Foundation.utils.S( '#course_plan-plan' ),
+            $title = Foundation.utils.S( '#js-update_title' ),
+            titleOrgHtml = $title.html( );
+
+        // Actualisation
+        $title.html( MSG_LOADING );
+        $plan.fadeTo( 200, 0.33, function( ) {
+
+            $.ajax( {
+                type: "GET",
+                url: ABSOLUTE_URL + "/open_course_map_item_script",
+                data: {
+                    id: "all" ,
+                    open: disclosureState,
+                },
+                success: function( data ) {
+                    //console.log( data );
+                    $title.html( MSG_LOADING_OK );
+                    setPlanChapterDisclosure( disclosureState );
+                    //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
+                    $plan.fadeTo( 200, 1, function( ) {
+                        $title.html( titleOrgHtml );
+                    } );
+                },
+                error: function( data, textStatus, errorThrown ) {
+                    //console.log( data );
+                    console.log( errorThrown );
+                    console.log( textStatus );
+                },
+                complete: function( ) {
+                    // Deverouillage
+                    isRefreshing = false;
+                }
+            } );
+        } );
+    }
+}
+
+
+
+/*
+    Commande et memorisation du pliage / repliage d'un chapitre du plan de cours
+*/
+
+function setStaffPlanChapterDiscloseCommand( ) {
+
+    var $plan = Foundation.utils.S( '#course_plan-plan' );
+
+    $plan.on( 'click', '.js-disclose', function( ) {
+
+        if ( !isRefreshing ) {
+
+            // Verrouilage
+            isRefreshing = true;
+
+            // Init
+            var $target = $( this ),
+                $parentListItem = $target.closest( 'li' ),
+                $title = Foundation.utils.S( '#js-update_title' ),
+                titleOrgHtml = $title.html( );
+
+            // Actualisation
+            $title.html( MSG_LOADING );
+            $plan.fadeTo( 200, 0.33, function( ) {
+
+                $.ajax( {
+                    type: "GET",
+                    url: ABSOLUTE_URL + "/open_course_map_item_script",
+                    data: {
+                        id: $parentListItem.attr('id') ,
+                        open: $parentListItem.hasClass( 'collapsed' ),
+                    },
+                    success: function( data ) {
+                        //console.log( data );
+                        $title.html( MSG_LOADING_OK );
+                        setPlanChapterDisclose( $target );
+                        //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
+                        $plan.fadeTo( 200, 1, function( ) {
+                            $title.html( titleOrgHtml );
+                        } );
+                    },
+                    error: function( data, textStatus, errorThrown ) {
+                        //console.log( data );
+                        console.log( errorThrown );
+                        console.log( textStatus );
+                    },
+                    complete: function( ) {
+                        // Deverouillage
+                        isRefreshing = false;
+                    }
+                } );
+            } );
+        }
+    } );
 }
 
 

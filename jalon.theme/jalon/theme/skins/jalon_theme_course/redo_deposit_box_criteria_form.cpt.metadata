@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_deposit_box_coefficient
+
+[actions]
+action.failure = traverse_to:string:redo_deposit_box_criteria_form
+action.success = traverse_to:string:redo_deposit_box_criteria_script

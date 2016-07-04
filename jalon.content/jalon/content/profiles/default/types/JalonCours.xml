@@ -10,15 +10,14 @@
  <property name="factory">addJalonCours</property>
  <property name="add_view_expr"></property>
  <property name="link_target"></property>
- <property name="immediate_view">cours_view</property>
+ <property name="immediate_view">course_view</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">False</property>
  <property name="allowed_content_types"/>
  <property name="allow_discussion">False</property>
- <property name="default_view">cours_view</property>
+ <property name="default_view">course_view</property>
  <property name="view_methods">
-  <element value="cours_view"/>
-  <element value="cours_plan_view"/>
+  <element value="course_view"/>
  </property>
  <property name="default_view_fallback">False</property>
  <alias from="(Default)" to="(dynamic view)"/>

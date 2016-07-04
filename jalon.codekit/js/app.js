@@ -20,7 +20,7 @@
 
 
 /*
-    Comportements des chapitres de plan de cours
+    Comportements des elements de plan de cours
 */
 
 function setPlanChapterDisclosure( disclosureState ) {
@@ -45,65 +45,89 @@ function setPlanChapterDisclosure( disclosureState ) {
 }
 
 
-function setPlanChapterBehaviors( init ) {
+function setPlanBehaviors( isNotStudent ) {
 
-    var $target = Foundation.utils.S( '#course_plan-plan' ),
+    Foundation.utils.S( '#course_plan .legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
+
+        event.preventDefault( );
+        event.stopPropagation( );
+
+        var isStaff = ( typeof isNotStudent === "undefined" ) ? false : true;
+
+        if ( ! $( this).hasClass( '.disabled' ) ) {
+
+            if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
+
+                if ( isStaff ) {
+                    setStaffPlanChapterDisclosure( true );
+                } else {
+                    setPlanChapterDisclosure( true );
+                }
+
+            } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
+
+                if ( isStaff ) {
+                    setStaffPlanChapterDisclosure( false );
+                } else {
+                    setPlanChapterDisclosure( false );
+                }
+            }
+
+            $( this ).blur( );
+
+        }
+    } );
+
+    Foundation.utils.S( '#course_plan-plan' ).on( {
+
+        mouseenter: function( ) {
+
+            $( this ).parent( 'li' ).addClass( 'outlineTitleContainer' );
+        },
+        mouseleave: function( ) {
+
+            $( this ).parent( 'li' ).removeClass( 'outlineTitleContainer' );
+        }
+    }, '.elemtitre' );
+
+}
+
+
+/*
+    Actualisation de l'activation des boutons « Tout deplier » et « Tout replier »
+*/
+
+function setLegendBarButtonsActivation( ) {
+
+    var $plan = Foundation.utils.S( '#course_plan-plan' ),
         $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
         $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
         $legendBardUp = $legendBar.find( ' > li:last-child > a' );
 
-    if ( init ) {
-        Foundation.utils.S( '#course_plan' ).find( '.legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
+    $legendBardDown.removeClass( 'disabled' );
+    $legendBardUp.removeClass( 'disabled' );
 
-            event.preventDefault( );
-            event.stopPropagation( );
+    if ( ! $plan.find( '.collapsed:visible' ).length ) {
 
-            if ( ! $( this).hasClass( '.disabled' ) ) {
-
-                if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
-
-                    setPlanChapterDisclosure( true );
-
-                } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
-
-                    setPlanChapterDisclosure( false );
-                }
-
-                $( this ).blur( );
-
-            }
-        } );
+        $legendBardDown.addClass( 'disabled' );
     }
 
-    $target.find( '.js-disclose' ).on( 'click', function( ) {
+    if ( ! $plan.find( '.expanded:visible' ).length ) {
 
-        $( this ).closest( 'li' ).toggleClass( 'collapsed' ).toggleClass( 'expanded' );
-        //$( this ).toggleClass( 'fa-arrow-circle-right' ).toggleClass( 'fa-arrow-circle-down' );
+        $legendBardUp.addClass( 'disabled' );
+    }
+}
 
-        $legendBardDown.removeClass( 'disabled' );
-        $legendBardUp.removeClass( 'disabled' );
 
-        if ( ! $target.find( '.collapsed:visible' ).length ) {
+/*
+    Pliage / repliage des chapitres du plan de cours
+*/
 
-            $legendBardDown.addClass( 'disabled' );
-        }
+function setPlanChapterDisclose( $target ) {
 
-        if ( ! $target.find( '.expanded:visible' ).length ) {
+    $target.closest( 'li' ).toggleClass( 'collapsed expanded' );
+    setLegendBarButtonsActivation( );
 
-            $legendBardUp.addClass( 'disabled' );
-        }
-    } );
-
-    $target.find( '.elemtitre' ).hover(
-        function( ) {
-
-            $( this ).parent( 'li' ).addClass( 'outlineTitleContainer' );
-        },
-        function( ) {
-
-            $( this ).parent( 'li' ).removeClass( 'outlineTitleContainer' );
-        }
-    );
 }
 
 
@@ -159,9 +183,22 @@ function setConditionalFormat( column_nbr, value_max, selector ) {
 
 /***************************************************************************************************
 
-    Spécifique étudiants
+    Specifique etudiants
 
 */
+
+
+/*
+    Commande du pliage / repliage des chapitres du plan de cours
+*/
+
+function setPlanChapterDiscloseCommand( ) {
+
+    Foundation.utils.S( '#course_plan-plan' ).on( 'click', '.js-disclose', function( ) {
+
+        setPlanChapterDisclose( $( this ) );
+    } );
+}
 
 
 /*
@@ -193,11 +230,10 @@ function readSwitcher( ) {
                     $updateTarget.fadeTo( 200, 1, function( ) {
                         $title.html( titleOrgHtml );
                         isRefreshing = false;
-                        //alert( "Data: " + data + "\nStatus: " + status );
+                        //console.log( "Data: " + data + "\nStatus: " + status );
                     } );
                 } );
             } );
-
         }
     } );
 }
@@ -222,7 +258,7 @@ var CKEDITOR_BASEPATH = '/++resource++jalon.theme.javascript/ckeditor/';
 // Message d'actualisation en cours
 var MSG_LOADING = '<i class="fa fa-spin fa-refresh"></i>' + MSG_LOADING_TEXT;
 
-// Message d'actualisation réussie
+// Message d'actualisation reussie
 var MSG_LOADING_OK = '<i class="fa fa-thumbs-o-up"></i>' + MSG_LOADING_OK_TEXT;
 
 // Verrou de rafraichissement en cours (listes)

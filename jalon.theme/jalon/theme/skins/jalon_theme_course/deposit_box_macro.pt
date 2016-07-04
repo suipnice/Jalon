@@ -34,6 +34,12 @@
                                                  i18n:translate=""/>
     </h2>
 
+    <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
+         tal:on-error="nothing">
+        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
+        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+    </div>
+
     <div tal:define="infos_depots dico_depots/infos_depots"
          tal:attributes="class string:panel ${infos_depots/css_class} radius"
          tal:content="structure infos_depots/text"
@@ -129,7 +135,11 @@
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
     <tal:condition condition="my_view/is_personnel">
-    <a class="dropdown right"
+    <a class="right"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
+        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
+    </a>
+    <!--a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
     </a>
@@ -142,7 +152,7 @@
                                                                                       i18n:translate=""/>
             </a>
         </li>
-    </ul>
+    </ul-->
     </tal:condition>
     <h2>
         <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
@@ -153,6 +163,12 @@
         <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
                                                  i18n:translate=""/>
     </h2>
+
+    <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
+         tal:on-error="nothing">
+        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
+        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+    </div>
 
     <div class="panel callout radius" tal:condition="not:criteria_dict"
          i18n:translate="">
@@ -205,7 +221,7 @@
                 <tr tal:repeat="peer evaluation_by_peers_dict/peers_list">
                     <td class="etudiant">
                         <span class="hide" tal:content="peer/nom" />
-                        <a tal:attributes="href string:${my_view/deposit_box_link}/student_evaluation_view?student_id=${peer/id}">
+                        <a tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_evaluation_view?student_id=${peer/id}">
                             <tal:replace replace="peer/nom" />
                         </a>
                     </td>

@@ -116,10 +116,10 @@
                   template="view_template/my_courses/my_courses_view.pt"
                   permission="zope2.View"/>
 
-    <browser:page name="cours_view"
+    <browser:page name="course_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonCours"
-                  class="jalon.content.browser.view_script.jalon_course_view.JalonCourseView"
-                  template="view_template/jalon_course/jalon_course_view.pt"
+                  class="jalon.content.browser.view_script.course_view.CourseView"
+                  template="view_template/jalon_course/course_view.pt"
                   permission="zope2.View"/>
 
     <browser:page name="course_add_view"
@@ -136,15 +136,22 @@
 
       <browser:page name="deposit_box_view"
                     for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.jalon_deposit_box_view.JalonDepositBoxView"
+                    class="jalon.content.browser.view_script.deposit_box_view.DepositBoxView"
                     template="view_template/jalon_course/deposit_box_view.pt"
                     permission="zope2.View"/>
 
-      <browser:page name="student_evaluation_view"
+      <browser:page name="deposit_box_criteria_view"
                     for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.jalon_student_evaluation_view.JalonStudentEvaluationView"
-                    template="view_template/jalon_course/student_evaluation_view.pt"
+                    class="jalon.content.browser.view_script.deposit_box_criteria_view.DepositBoxCriteriaView"
+                    template="view_template/jalon_course/deposit_box_criteria_view.pt"
                     permission="zope2.View"/>
+
+      <browser:page name="deposit_box_evaluation_view"
+                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                    class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
+                    template="view_template/jalon_course/deposit_box_evaluation_view.pt"
+                    permission="zope2.View"/>
+
 
     <!-- MyStudentsView Definition -->
     <browser:page name="mes_etudiants_view"

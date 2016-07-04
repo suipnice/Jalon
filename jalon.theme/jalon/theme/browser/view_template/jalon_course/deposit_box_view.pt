@@ -145,6 +145,18 @@
                 <i class="fa fa-info"></i><tal:block i18n:translate="">Instructions</tal:block>
             </h2>
             <div class="panel bkgrnd radius">
+                <h3 tal:define="deposit_box_profile my_view/deposit_box_profile">
+                    <a tal:attributes="href deposit_box_profile/href" class="right" tilte="Modifier"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:condition="my_view/is_personnel">
+                        <i tal:attributes="class string:fa ${deposit_box_profile/icon} fa-fw"></i>
+                    </a>
+                    <i class="fa fa-server fa-fw no-pad"></i>
+                    <tal:block i18n:translate="">Profil</tal:block>
+                </h3>
+                <div class="panel callout radius">
+                    <tal:block content="my_view/deposit_box_profile_text"/>
+                </div>
                 <h3 tal:define="deposit_box_date my_view/deposit_box_date">
                     <a tal:attributes="href deposit_box_date/href" class="right" tilte="Modifier"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"
@@ -161,6 +173,21 @@
                         <tal:block i18n:translate="">Dernières minutes !</tal:block>
                     </div>
                 </div>
+                <tal:condition condition="my_view/is_peer_profile">
+                <h3 tal:define="deposit_box_correction_date my_view/deposit_box_correction_date">
+                    <a tal:attributes="href deposit_box_correction_date/link" class="right" tilte="Modifier"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:condition="my_view/is_personnel">
+                        <i tal:attributes="class string:fa ${deposit_box_correction_date/icon} fa-fw"></i>
+                    </a>
+                    <i class="fa fa-clock-o fa-fw no-pad"></i>
+                    <tal:block content="deposit_box_correction_date/text"
+                               i18n:translate=""/>
+                </h3>
+                <div class="panel callout radius">
+                    <tal:block content="my_view/deposit_box_correction_date/value"/>
+                </div>
+                </tal:condition>
                 <h3 tal:define="deposit_box_instruction my_view/deposit_box_instruction">
                     <a tal:attributes="href deposit_box_instruction/href" class="right" tilte="Modifier"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"

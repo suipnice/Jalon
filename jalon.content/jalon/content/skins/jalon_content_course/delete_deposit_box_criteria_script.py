@@ -1,18 +1,24 @@
-## Controller Python Script "edit_peers_correction_date_script"
+# Controller Python Script "delete_deposit_box_criteria_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Ajoute un élément ou un sous-element au cours
+##title=
 ##
 
+param = {}
 form = context.REQUEST.form
 
-context.setAttributActivite({"DateCorrection": DateTime(form["datetime-dateCorrection"])})
+criteria_dict = dict(context.getCriteriaDict())
 
-redirection = "%s?tab=%s" % (context.absolute_url(), form["tab"])
+del criteria_dict[form["criteria_id"]]
+
+context.setCriteriaDict(criteria_dict)
+
+redirection = "%s/deposit_box_criteria_view" % context.absolute_url()
+
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(redirection)
 else:

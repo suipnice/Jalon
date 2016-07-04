@@ -25,6 +25,11 @@
       <role name="Owner"/>
       <role name="Personnel"/>
     </permission>
+    <permission name="Add Jalon Activity" acquire="True">
+      <role name="Manager"/>
+      <role name="Owner"/>
+      <role name="Personnel"/>
+    </permission>
     <permission name="Add Jalon Cours auto-evaluation, examen" acquire="True">
       <role name="Manager"/>
       <role name="Owner"/>
