@@ -1,6 +1,7 @@
 from jaloninterface import IJalonContent
 from jaloninterface import IJalonFolder
 from jaloninterface import IJalonCours
+from jaloninterface import IJalonActivity
 from jaloninterface import IJalonCoursWims
 from jaloninterface import IJalonBoiteDepot
 from jaloninterface import IJalonRessourceExterne

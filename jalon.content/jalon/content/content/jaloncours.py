@@ -1214,9 +1214,9 @@ class JalonCours(ATFolder):
         u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         item_properties = self.getCourseItemProperties(item_id)
 
-        if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
-            item_object = getattr(self, item_id)
-            item_object.afficherRessource(item_id, item_date, item_property_name)
+        #if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+        #    item_object = getattr(self, item_id)
+        #    item_object.afficherRessource(item_id, item_date, item_property_name)
 
         update_actuality = False
         if item_property_name == "affElement":

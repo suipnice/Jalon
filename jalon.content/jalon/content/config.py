@@ -6,6 +6,7 @@ ADD_PERMISSIONS = {
     # -*- extra stuff goes here -*-
     'JalonFolder'           : 'Add Jalon Folder',
     'JalonCours'            : 'Add Jalon Cours',
+    'JalonActivity'         : 'Add Jalon Activity',
     'JalonCoursWims'        : 'Add Jalon Cours auto-evaluation, examen',
     'JalonBoiteDepot'       : 'Add Jalon BoiteDepots',
     'JalonRessourceExterne' : 'Add Jalon RessourceExterne',

@@ -5,7 +5,7 @@ from zope.interface import implements
 from Products.Archetypes.public import *
 #from Products.ATExtensions.ateapi import *
 
-from Products.ATContentTypes.content.folder import ATFolder, ATFolderSchema
+from Products.ATContentTypes.content.folder import ATFolderSchema
 from Products.ATContentTypes.content.base import registerATCT
 from Products.CMFCore.utils import getToolByName
 
@@ -20,6 +20,7 @@ from os import close
 from zipfile import ZipFile, ZIP_DEFLATED
 
 import jalon_utils
+from jalon_activity import JalonActivity
 import os
 import copy
 import random
@@ -28,8 +29,6 @@ import string
 # Messages de debug :
 from logging import getLogger
 LOG = getLogger("[JalonBoiteDepot]")
-
-ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8"), u"Ressource bibliographie".encode("utf-8")]
 
 JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
     DateTimeField("dateDepot",
@@ -136,8 +135,8 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
 ))
 
 
-class JalonBoiteDepot(ATFolder):
-    """ Une ressource externe pour Jalon
+class JalonBoiteDepot(JalonActivity):
+    """ Une boite de dépôts pour Jalon
     """
 
     implements(IJalonBoiteDepot)
@@ -161,6 +160,9 @@ class JalonBoiteDepot(ATFolder):
                       "examen":      "Examen",
                       "competences": "Évaluation par compétences",
                       "pairs":       "Évaluation par les pairs"}
+
+    def __init__(self, *args, **kwargs):
+        super(JalonBoiteDepot, self).__init__(*args, **kwargs)
 
     ##-------------------##
     # Fonctions générales #
@@ -785,6 +787,7 @@ class JalonBoiteDepot(ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
+    """
     ##--------------------------##
     # Fonctions onglet Documents #
     ##--------------------------##
@@ -800,7 +803,7 @@ class JalonBoiteDepot(ATFolder):
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         LOG.info("----- editCourseItemVisibility -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        #Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer).
         is_deposit_box = True if item_id == self.getId() else False
 
         if is_deposit_box:
@@ -992,6 +995,7 @@ class JalonBoiteDepot(ATFolder):
         self.setRelatedItems(deposit_relatedItems)
 
         self.reindexObject()
+    """
 
     ##----------------------------##
     # Fonctions onglet Compétences #

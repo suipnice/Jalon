@@ -23,6 +23,11 @@ class IJalonCoursWims(Interface):
     '''
 
 
+class IJalonActivity(Interface):
+    ''' Interface for the JalonActivity type
+    '''
+
+
 class IJalonBoiteDepot(Interface):
     ''' Interface for the JalonBoiteDepot type
     '''
