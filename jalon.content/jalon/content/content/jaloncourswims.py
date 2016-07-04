@@ -20,6 +20,7 @@ from jalon.content.interfaces import IJalonCoursWims
 import json
 import copy
 import jalon_utils
+from jalon_activity import JalonActivity
 
 # Messages de debug :
 from logging import getLogger
@@ -200,7 +201,7 @@ _dicoRep = {"Image"                    : "Fichiers",
             }
 
 
-class JalonCoursWims(ATDocument):
+class JalonCoursWims(JalonActivity):
     u"""
     Une autoevaluation ou un examen pour Jalon.
 
@@ -224,29 +225,45 @@ class JalonCoursWims(ATDocument):
     # Liste des elements ajoutés à ce jalonCoursWims
     _infos_element = {}
 
-    def getInfosElement(self, key=None):
-        """Get Infos Element."""
+    def __init__(self, *args, **kwargs):
+        super(JalonCoursWims, self).__init__(*args, **kwargs)
+
+    ##-------------------##
+    # Fonctions générales #
+    ##-------------------##
+    def getDisplayProfile(self, profile_id=None):
+        LOG.info("----- getDisplayProfile -----")
+        deposit_box_profil = profile_id or self.getProfile() or "standard"
+        return self._profile_title[deposit_box_profil]
+
+    def getDocumentsProperties(self, key=None):
+        LOG.info("----- getDocumentsProperties -----")
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
-    def getElementCours(self, key=None):
-        u"""Renvoi vers la fonction getInfosElement() (utilisé depuis macro_form/detacher-cours)."""
-        return self.getInfosElement(key)
+    def getCourseItemProperties(self, key=None):
+        LOG.info("----- getCourseItemProperties -----")
+        return self.getDocumentsProperties(key)
 
-    def getKeyInfosElement(self):
-        """Get Key Infos Element."""
+    def getDocumentsList(self):
+        LOG.info("----- getDocumentsList -----")
         return self._infos_element.keys()
 
-    def setInfosElement(self, infos_element):
-        """setInfosElement."""
+    def setDocumentsProperties(self, infos_element):
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
             self._infos_element = infos_element
 
+    def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        LOG.info("----- editCourseItemVisibility -----")
+        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        super(JalonCoursWims, self).editCourseItemVisibility(item_id, item_date, item_property_name)
+
+    """
     def afficherRessource(self, idElement, dateAffichage, attribut):
-        """Modifie les dates de la ressource pour activer/desactiver son affichage."""
+        \"""Modifie les dates de la ressource pour activer/desactiver son affichage.\"""
         # On agit directement sur l'activité
         if idElement == self.getId():
 
@@ -353,7 +370,7 @@ class JalonCoursWims(ATDocument):
                 self.reindexObject()
 
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        u"""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen."""
+        u\"""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen.\"""
         menu = "sujets"
         rep = {"Image"                      : "Fichiers",
                "File"                       : "Fichiers",
@@ -441,7 +458,7 @@ class JalonCoursWims(ATDocument):
             self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
 
     def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        """ajouterInfosElement."""
+        \"""ajouterInfosElement.\"""
         infos_element = copy.deepcopy(self.getInfosElement())
         if idElement not in infos_element:
             infos_element[idElement] = {"titreElement": titreElement,
@@ -452,9 +469,9 @@ class JalonCoursWims(ATDocument):
             # self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
-    def ajouterTag(self, tag):
-        """ajouterTag."""
-        return jalon_utils.setTag(self, tag)
+    #def ajouterTag(self, tag):
+    #    \"""ajouterTag.\"""
+    #    return jalon_utils.setTag(self, tag)"""
 
     def authUser(self, quser=None, qclass=None, request=None, session_keep=False):
         """appelle la fonction authUser de jalon_utils (authentifie un user WIMS)."""
@@ -620,7 +637,7 @@ class JalonCoursWims(ATDocument):
         u"""renvoit la liste des elements d'une activité WIMS."""
         retour = []
         listeElement = self.getListeAttribut(attribut)
-        infos_element = self.getInfosElement()
+        infos_element = self.getDocumentsProperties()
         for idElement in listeElement:
             infos = infos_element.get(idElement, None)
             if infos:
@@ -1278,7 +1295,8 @@ class JalonCoursWims(ATDocument):
                 self.wims("modifierFeuille", proprietes)
         else:
             # Cas ou la feuille n'existe pas encore
-            self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
+            #self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
+            self.typeWims = self.getId().split("-")[0]
 
             for key in dico.keys():
                 # ici il faudrait peut etre faire un key.capitalize()

@@ -14,27 +14,6 @@
    />
 
   <browser:page
-      name="jalonfolder_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonFolder"
-      template="templates/jalon_folder.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
-      name="cours_wims_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
-      template="templates/cours_wims_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
-      name="cours_rss_view"
-      for="jalon.content.interfaces.jaloninterface.IJalonCours"
-      template="templates/cours_rss_view.pt"
-      permission="zope2.View"
-   />
-
-  <browser:page
       name="exercicewims_view"
       for="jalon.content.interfaces.jaloninterface.IJalonExerciceWims"
       template="templates/exercicewims_view.pt"

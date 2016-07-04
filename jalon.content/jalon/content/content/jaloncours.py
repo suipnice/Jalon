@@ -838,7 +838,7 @@ class JalonCours(ATFolder):
                 else:
                     if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "TexteLibre"]:
                         item["item_div_css"] = "elemactivite"
-                        item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"]])
+                        item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"], "view"])
                     else:
                         item["item_div_css"] = "elemressource"
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
