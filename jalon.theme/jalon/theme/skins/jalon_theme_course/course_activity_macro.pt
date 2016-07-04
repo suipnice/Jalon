@@ -35,7 +35,8 @@
          i18n:translate="">
         Aucun document enseignant n'est disponible.
     </div>
-    <div class="panel callout radius">
+    <div class="panel callout radius"
+         tal:condition="my_view/documents_list">
         <div tal:repeat="document my_view/documents_list">
             <tal:condition condition="my_view/is_personnel">
             <a class="dropdown right" data-options="align:left"
