@@ -178,7 +178,7 @@ class JalonBoiteDepot(ATFolder):
     def getDocumentsList(self):
         return self._infos_element.keys()
 
-    def setDocumentsElement(self, infos_element):
+    def setDocumentsProperties(self, infos_element):
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -302,6 +302,33 @@ class JalonBoiteDepot(ATFolder):
                 return 1
             return 0
 
+    def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        LOG.info("----- editCourseItemVisibility -----")
+        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        is_deposit_box = True if item_id == self.getId() else False
+
+        if is_deposit_box:
+            course = self.aq_parent
+            update_actuality = True
+            if item_property_name == "affElement":
+                self.dateAff = item_date
+                self.dateMasq = ""
+            else:
+                self.dateMasq = item_date
+                course.deleteCourseActuality(item_id)
+            course.editCourseItemVisibility(item_id, item_date, item_property_name, False)
+        else:
+            update_actuality = False
+            item_properties = self.getDocumentsProperties(item_id)
+            if item_property_name == "affElement":
+                item_properties["masquerElement"] = ""
+            item_properties[item_property_name] = item_date
+            self._infos_element[item_id] = item_properties
+            self.setDocumentsProperties(self._infos_element)
+
+        if not update_actuality:
+            self.setCourseProperties({"DateDerniereModif": DateTime()})
+
     def afficherRessource(self, idElement, dateAffichage, attribut):
         if idElement == self.getId():
             if attribut == "affElement":
@@ -373,7 +400,7 @@ class JalonBoiteDepot(ATFolder):
 
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
-            self.setDocumentsElement(items_properties)
+            self.setDocumentsProperties(items_properties)
             listeSujets = list(self.getListeSujets())
             listeSujets.append(item_id)
             setattr(self, "listeSujets", tuple(listeSujets))
@@ -419,48 +446,70 @@ class JalonBoiteDepot(ATFolder):
 
         return item_actions
 
-    """
-    def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        if "." in idElement:
-            idElement = idElement.replace(".", "*-*")
-        listeSujets = list(self.getListeSujets())
-        listeSujets.append(idElement)
-        setattr(self, "listeSujets", tuple(listeSujets))
+    def getDisplayItemForm(self, item_id):
+        LOG.info("----- getDisplayItemForm -----")
+        form_properties = {"is_authorized_form":       True,
+                           "is_item_title":            False,
+                           "is_item_parent_title":     False,
+                           "help_css":                 "panel callout radius",
+                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
+                           "is_wims_examen":           False}
+        if self.getId() == item_id:
+            form_properties = self.aq_parent.getDisplayItemForm(item_id)
+        else:
+            item_properties = self.getDocumentsProperties(item_id)
+            display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+            if display_properties["val"]:
+                form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
+                form_properties["help_css"] = "panel radius warning"
+                form_properties["form_button_css"] = "button small radius warning"
+                form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
+                form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
+                form_properties["item_property_name"] = "masquerElement"
+                form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
+                form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
+                form_properties["item_parent_title"] = ""
+                form_properties["wims_help_text"] = False
 
-        self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
-        rep = {"Image":                     "Fichiers",
-               "File":                      "Fichiers",
-               "Page":                      "Fichiers",
-               "Lien web":                  "Externes",
-               "Lecteur exportable":        "Externes",
-               "Reference bibliographique": "Externes",
-               "Catalogue BU":              "Externes",
-               "Webconference":             "Webconference",
-               "Presentations sonorisees":  "Sonorisation"}
-        if typeElement in rep:
-            if "*-*" in idElement:
-                idElement = idElement.replace("*-*", ".")
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), createurElement), rep[typeElement]), idElement)
-            relatedItems = objet.getRelatedItems()
-            if not self in relatedItems:
-                relatedItems.append(self)
-                objet.setRelatedItems(relatedItems)
-                objet.reindexObject()
-                depotRelatedItems = self.getRelatedItems()
-                depotRelatedItems.append(objet)
-                self.setRelatedItems(depotRelatedItems)
+                form_properties["text_title_lately"] = "… ou programmer son masquage."
+                if item_properties["typeElement"] == "Titre":
+                    form_properties["is_item_title"] = True
+                    form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
+                else:
+                    form_properties["text_title_directly"] = "Masquer directement…"
 
-    def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        infos_element = copy.deepcopy(self.getInfosElement())
-        if not idElement in infos_element:
-            infos_element[idElement] = {"titreElement": titreElement,
-                                        "typeElement": typeElement,
-                                        "createurElement": createurElement,
-                                        "affElement": affElement,
-                                        "masquerElement": ""}
-            #self.setInfos_element(infos_element)
-            self.setInfosElement(infos_element)
-    """
+                form_properties["form_name"] = "masquer-element"
+                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "masquerElement")
+            else:
+                form_properties["form_button_css"] = "button small radius"
+                form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
+                form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
+                form_properties["item_property_name"] = "affElement"
+                form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
+                form_properties["form_title_icon"] = "fa fa-eye no-pad"
+
+                form_properties["text_title_lately"] = "… ou programmer son affichage."
+                if item_properties["typeElement"] == "Titre":
+                    form_properties["is_item_title"] = True
+                    form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
+                    form_properties["wims_help_text"] = True
+                else:
+                    form_properties["text_title_directly"] = "L'afficher directement…"
+                    form_properties["wims_help_text"] = False
+
+                form_properties["form_name"] = "afficher-element"
+                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "affElement")
+
+        return form_properties
+
+    def getDisplayOrHiddenDate(self, item_properties, attribut):
+        LOG.info("----- getDisplayOrHiddenDate -----")
+        LOG.info("***** item_properties : %s" % item_properties)
+        if item_properties[attribut] != "":
+            LOG.info("***** attribut: %s" %  attribut)
+            LOG.info("***** item_properties[attribut]: %s" %  item_properties[attribut])
+            return item_properties[attribut].strftime("%Y/%m/%d %H:%M")
+        return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def retirerElement(self, idElement, menu):
         infos_element = self.getInfosElement()

@@ -46,7 +46,7 @@
                 tal:attributes="id string:${document/document_drop_id}">
                 <li tal:repeat="document_action document/document_actions">
                     <a data-reveal-ajax="true" data-reveal-id="reveal-main"
-                       tal:attributes="href string:${my_view/deposit_box_link}/${document_action/item_action_id}?document_id=${document/document_id}">
+                       tal:attributes="href string:${my_view/deposit_box_link}/${document_action/item_action_id}?item_id=${document/document_id}">
                         <i tal:attributes="class document_action/item_action_icon"></i>
                         <tal:replace tal:replace="document_action/item_action_name" i18n:translate=""/>
                     </a>
