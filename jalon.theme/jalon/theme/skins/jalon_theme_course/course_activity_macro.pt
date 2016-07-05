@@ -10,6 +10,18 @@
     </metal:macro>
 </metal:macro>
 
+<metal:macro define-macro="exercices-list">
+    <metal:macro use-macro="context/wims_activity_macro/macros/liste-exercices">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>
+
+<metal:macro define-macro="resultats-list">
+    <metal:macro use-macro="context/wims_activity_macro/macros/peers-list">
+        Page d'affichage de la liste des dépôts
+    </metal:macro>
+</metal:macro>
+
 <metal:macro define-macro="documents-list">
 <tal:condition condition="my_view/is_personnel">
     <a class="button small radius dropdown right show-for-medium-up" data-options="align:bottom" data-dropdown="add-space_el">
@@ -47,7 +59,8 @@
                 tal:attributes="id string:${document/document_drop_id}">
                 <li tal:repeat="document_action document/document_actions">
                     <a data-reveal-ajax="true" data-reveal-id="reveal-main"
-                       tal:attributes="href string:${my_view/deposit_box_link}/${document_action/item_action_id}?item_id=${document/document_id}">
+                       tal:define="home_link my_view/deposit_box_link | my_view/wims_activity_link"
+                       tal:attributes="href string:${home_link}/${document_action/item_action_id}?item_id=${document/document_id}">
                         <i tal:attributes="class document_action/item_action_icon"></i>
                         <tal:replace tal:replace="document_action/item_action_name" i18n:translate=""/>
                     </a>

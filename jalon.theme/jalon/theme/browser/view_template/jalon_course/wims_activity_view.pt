@@ -9,7 +9,7 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="tab request/tab | string:deposit;
+            tal:define="tab request/tab | string:exercices;
                         mode_etudiant_request request/mode_etudiant | nothing;
                         my_view python:view.getWimsActivityView(user, mode_etudiant_request, tab, is_ajax);
                         mode_etudiant my_view/mode_etudiant">
@@ -23,7 +23,7 @@
     <h3 class="texte_icone icone_consignes"
         i18n:translate="">Consigne</h3>
     <div tal:attributes="class my_view/instruction_class"
-         tal:content="my_view/instruction_text"
+         tal:content="structure my_view/instruction_text"
          i18n:translate=""/>
     <a class="button expand success" 
        tal:attributes="href string:${my_view/wims_activity_link}/view"
@@ -92,12 +92,71 @@
         <tal:condition condition="not:my_view/is_anonymous">
 
         <section id="boite" class="medium-8 small-12 columns">
+            <tal:condition condition="my_view/is_personnel">
+            <a class="right" data-options="align:bottom" data-dropdown="boite-options">
+                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+            </a>
+            <ul id="boite-options" data-dropdown-content class="f-dropdown">
+                <li tal:repeat="option my_view/wims_activity_edit">
+                    <a tal:attributes="href option/href"
+                       data-reveal-id="reveal-main" data-reveal-ajax="true">
+                       <i tal:attributes="class string:fa ${option/icon} fa-fw"></i> <tal:block tal:content="option/text"
+                                                                                                i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+            </tal:condition>
             <h1>
                 <i class="fa fa-inbox no-pad"></i>
                 <tal:replace replace="here/Title" />
             </h1>
-
+            <div class="panel alert radius"
+                 tal:condition="my_view/is_student_and_wims_activity_hidden">
+                <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette boîte de dépôts est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+            </div>
+            <ul id="tab_button-group" class="button-group radius"
+                tal:condition="my_view/is_personnel_or_wims_activity_visible">
+                <li tal:repeat="onglet my_view/wims_activity_tabs">
+                    <a tal:attributes="class string:button small${onglet/css_class};
+                                       href onglet/href"
+                       i18n:translate="">
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
+                                                                                          i18n:translate=""/>
+                        <tal:on-error on-error="nothing">
+                        <span class="sup" tal:content="onglet/nb"/>
+                        </tal:on-error>
+                    </a>
+                </li>
+            </ul>
+            <tal:condition condition="my_view/is_personnel_or_wims_activity_visible">
+            <metal:macro use-macro="python:context.course_activity_macro.macros.get('%s-list' % tab)">
+                Page d'affichage de la liste des sujets, dépôts ou des compétences
+            </metal:macro>
+            </tal:condition>
         </section>
+
+        <aside class="medium-4 small-12 columns">
+            <tal:condition condition="my_view/is_display_mod">
+            <metal:macro use-macro="context/course_life_macro/macros/display_mod">
+                Mode Enseignant / Etudiant
+            </metal:macro>
+            </tal:condition>
+            <h2>
+                <i class="fa fa-info"></i><tal:block i18n:translate="">Instructions</tal:block>
+            </h2>
+            <div class="panel bkgrnd radius">
+                <h3 tal:define="wims_activity_instruction my_view/wims_activity_instruction">
+                    <i class="fa fa-hand-paper-o fa-fw no-pad"></i>
+                    <tal:block i18n:translate="">Consigne</tal:block>
+                </h3>
+                <div class="panel callout radius">
+                    <tal:replace replace="structure my_view/instruction_text"
+                                 condition="my_view/instruction_text"/>
+                    <tal:replace replace="structure string:Aucune consigne."
+                                 condition="not:my_view/instruction_text"
+                                 i18n:translate=""/>
+                </div>
+            </div>
         </tal:condition>
     </main>
 

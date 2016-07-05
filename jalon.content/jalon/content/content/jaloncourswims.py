@@ -201,7 +201,7 @@ _dicoRep = {"Image"                    : "Fichiers",
             }
 
 
-class JalonCoursWims(JalonActivity):
+class JalonCoursWims(JalonActivity, ATDocument):
     u"""
     Une autoevaluation ou un examen pour Jalon.
 

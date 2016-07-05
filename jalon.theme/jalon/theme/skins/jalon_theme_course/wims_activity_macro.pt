@@ -90,9 +90,9 @@ En entrée :
 -->
 <metal:macro define-macro="liste-exercices">
 
-<tal:define define="listeExos  python:context.getInfosListeAttribut(menu, is_personnel);
+<tal:define define="listeExos  python:context.getInfosListeAttribut(tab, my_view['is_personnel']);
                     site_lang  portal_state/language;
-                    infosNotes python:context.getNotes(quser=user.getId(), actif=affElement['val'], isProf=is_personnel, site_lang=site_lang, request=request);
+                    infosNotes python:context.getNotes(quser=user.getId(), actif=my_view['wims_activity_visibility']['val'], isProf=my_view['is_personnel'], site_lang=site_lang, request=request);
                     qexam context/getIdExam;
                     isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
 
@@ -112,7 +112,7 @@ En entrée :
     </tal:condition>
     <tal:condition condition="python:infosNotes['status']=='OK'">
 
-    <tal:condition condition="not:is_personnel">
+    <tal:condition condition="not:my_view/is_personnel">
         <tal:comment replace="nothing"><!-- Boutons pour les etudiants --></tal:comment>
         <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
            tal:condition="not:qexam"
@@ -131,7 +131,7 @@ En entrée :
         </a>
     </tal:condition>
 
-    <tal:condition condition="python:is_personnel and not affElement['val'] and not context.getIdExam() and context.getCreateur()==user.getId()">
+    <tal:condition condition="python:my_view['is_personnel'] and not my_view['wims_activity_visibility']['val'] and not context.getIdExam() and context.getCreateur()==user.getId()">
     <!-- Boutons pour les enseignants -->
     <!-- Affichés uniquement pour le créateur de l'activité, qui est masquée et n'est pas un examen déjà activé -->
         <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="drop-action-activite">
@@ -163,20 +163,20 @@ En entrée :
             <i class="fa fa-random"></i>
             <tal:block i18n:translate="">Liste des exercices</tal:block>
         </h2>
-        <div class="panel warning radius" tal:condition="python:is_personnel and context.getIdExam()">
+        <div class="panel warning radius" tal:condition="python:my_view['is_personnel'] and context.getIdExam()">
             Cet examen a été affiché au moins une fois. Les exercices ne peuvent donc plus être modifiés.
         </div>
-        <div class="panel warning radius" tal:condition="python:is_personnel and affElement['val'] and not context.getIdExam()">
+        <div class="panel warning radius" tal:condition="python:my_view['is_personnel'] and my_view['wims_activity_visibility']['val'] and not context.getIdExam()">
             <span class="fa-stack no-pad text-center">
               <i class="fa fa-stack-2x text-danger">\</i>
               <i class="fa fa-stack-1x fa-pencil"></i>
             </span>
             <tal:block i18n:translate="">Les exercices ne peuvent pas être modifiés tant que l'activité est accessible aux étudiants.</tal:block>
         </div>
-        <div class="panel callout radius" tal:condition="python:is_personnel and not isExam and not affElement['val'] and listeExos">
+        <div class="panel callout radius" tal:condition="python:my_view['is_personnel'] and not isExam and not my_view['wims_activity_visibility']['val'] and listeExos">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel warning radius" tal:condition="python:is_personnel and context.getCreateur()!=user.getId() and not affElement['val']">
+        <div class="panel warning radius" tal:condition="python:my_view['is_personnel'] and context.getCreateur()!=user.getId() and not my_view['wims_activity_visibility']['val']">
             Vous ne pouvez pas ajouter un exercice dans une activité que vous n'avez pas créée. Demandez à son auteur (<tal:creator content="context/getCreateur"/>) de le faire.
         </div>
 
@@ -221,7 +221,7 @@ En entrée :
                     </th>
 
             <tal:block condition="not:isExam">
-                <tal:block condition="not:is_personnel">
+                <tal:block condition="not:my_view/is_personnel">
                     <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon la note"
                         i18n:attributes="title">
                         <span>
@@ -241,7 +241,7 @@ En entrée :
                         </span>
                     </th>
                 </tal:block>
-                <tal:block condition="is_personnel">
+                <tal:block condition="my_view/is_personnel">
                     <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon le Taux de réussite"
                         i18n:attributes="title">
                         <span>
@@ -265,7 +265,7 @@ En entrée :
                 </tal:block>
             </tal:block>
                     <th class="action show-for-medium-up"
-                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()"
+                        tal:condition="python:my_view['is_personnel'] and not my_view['wims_activity_visibility']['val'] and not context.getIdExam()"
                         i18n:translate="">
                         <i class="fa fa-cog no-pad"></i>
                     </th>
@@ -298,8 +298,8 @@ En entrée :
                     <!-- Cas des examens pas encore activés et des autoévaluation inactives -->
                 </tal:comment>
                     <td class="show-for-medium-up"
-                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()">
-                <tal:condition condition="python:not affElement['val'] and not context.getIdExam()">
+                        tal:condition="python:my_view['is_personnel'] and not my_view['wims_activity_visibility']['val'] and not context.getIdExam()">
+                <tal:condition condition="python:not my_view['wims_activity_visibility']['val'] and not context.getIdExam()">
                         <a class="dropdown" data-options="align:left"
                            tal:attributes="data-dropdown string:activite-options-${repeat/element/index}">
                             <i class="fa fa-cog fa-lg no-pad"></i>
@@ -344,7 +344,7 @@ En entrée :
             </tbody>
             <tfoot tal:condition="not:isExam">
                 <!-- pied de tableau des autoevaluations -->
-            <tal:condition condition="is_personnel">
+            <tal:condition condition="my_view/is_personnel">
             <tal:comment replace="nothing">
                 <!-- On n'affiche pas les maximums de la feuille ici, car ce sont des maximums globaux, pas détaillés par exercice
                 <th class="fullwidth" colspan="2"><span class="texte_icone icone_reussite">Maximums</span></th>
@@ -363,10 +363,10 @@ En entrée :
                         <tal:replace replace="infosNotes/qualite"/> / <tal:replace replace="context/getNoteMax"/>
                     </th>
                     <th class="show-for-medium-up"
-                        tal:condition="python:is_personnel and not affElement['val'] and not context.getIdExam()"/>
+                        tal:condition="python:my_view['is_personnel'] and not my_view['wims_activity_visibility']['val'] and not context.getIdExam()"/>
                 </tr>
             </tal:condition>
-            <tal:condition condition="not:is_personnel">
+            <tal:condition condition="not:my_view/is_personnel">
                 <tr>
                     <th class="text-right show-for-medium-up"
                         colspan="3">
@@ -388,7 +388,7 @@ En entrée :
             </tal:condition>
             </tfoot>
 
-            <tfoot tal:condition="python:isExam and not is_personnel">
+            <tfoot tal:condition="python:isExam and not my_view['is_personnel']">
             <tal:comment tal:replace="nothing">
                 <!-- pied de tableau des examens pour les etudiants -->
             </tal:comment>

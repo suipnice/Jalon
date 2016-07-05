@@ -3,10 +3,7 @@
 from zope.interface import implements
 
 from Products.Archetypes.public import *
-#from Products.ATExtensions.ateapi import *
-
-from Products.ATContentTypes.content.folder import ATFolder
-from Products.ATContentTypes.content.base import registerATCT
+from OFS.SimpleItem import SimpleItem
 
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonActivity
@@ -18,7 +15,7 @@ from logging import getLogger
 LOG = getLogger("[JalonActivity]")
 
 
-class JalonActivity(ATFolder):
+class JalonActivity(SimpleItem):
     """ Une activité pour Jalon
     """
 
@@ -232,5 +229,3 @@ class JalonActivity(ATFolder):
         self.setRelatedItems(deposit_relatedItems)
 
         self.reindexObject()
-
-registerATCT(JalonActivity, PROJECTNAME)

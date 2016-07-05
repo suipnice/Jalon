@@ -98,14 +98,13 @@ class DepositBoxView(CourseView):
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getAccesDepots() else "fa-toggle-off",
                                                "text": "Visualisation des dépôts entre étudiants"}]
 
+        my_view["is_documents_tab"] = True if tab == "documents" else False
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
-                                            "css_class": " selected" if tab == "documents" else "",
+                                            "css_class": " selected" if my_view["is_documents_tab"] else "",
                                             "icon":      "fa-upload",
                                             "text":      "Documents enseignants",
                                             "nb":        my_deposit_box.getNbSujets()})
-
-        my_view["is_document_tab"] = True if tab == "documents" else False
-        if my_view["is_document_tab"]:
+        if my_view["is_documents_tab"]:
             portal = my_deposit_box.portal_url.getPortalObject()
             deposit_box_path = my_deposit_box.getPhysicalPath()
             my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), portal)["my_space"]

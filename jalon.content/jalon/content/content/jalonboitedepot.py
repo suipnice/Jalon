@@ -5,7 +5,7 @@ from zope.interface import implements
 from Products.Archetypes.public import *
 #from Products.ATExtensions.ateapi import *
 
-from Products.ATContentTypes.content.folder import ATFolderSchema
+from Products.ATContentTypes.content.folder import ATFolder, ATFolderSchema
 from Products.ATContentTypes.content.base import registerATCT
 from Products.CMFCore.utils import getToolByName
 
@@ -135,7 +135,7 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
 ))
 
 
-class JalonBoiteDepot(JalonActivity):
+class JalonBoiteDepot(JalonActivity, ATFolder):
     """ Une boite de dépôts pour Jalon
     """
 
