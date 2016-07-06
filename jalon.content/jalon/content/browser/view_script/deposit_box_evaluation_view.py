@@ -26,6 +26,7 @@ class DepositBoxEvaluationView(BrowserView):
     def getBreadcrumbs(self):
         portal = self.context.portal_url.getPortalObject()
         parent = self.context.aq_parent
+        deposit_box_link = self.context.absolute_url()
         return [{"title": _(u"Mes cours"),
                  "icon":  "fa fa-university",
                  "link":  "%s/mes_cours" % portal.absolute_url()},
@@ -34,13 +35,23 @@ class DepositBoxEvaluationView(BrowserView):
                  "link":  parent.absolute_url()},
                 {"title": self.context.Title(),
                  "icon":  "fa fa-inbox",
-                 "link":  self.context.absolute_url()}]
+                 "link":  "%s?tab=peers" % deposit_box_link},
+                {"title": "Évaluation d'un étudiant",
+                 "icon":  "fa fa-th",
+                 "link":  "%s/deposit_box_evaluation_view" % deposit_box_link}]
 
     def getStudentEvaluationView(self, student_id):
         LOG.info("----- getStudentEvaluationView (Start) -----")
         deposit_box = self.context
         deposit_box_id = deposit_box.getId()
-        my_view = {"is_anonymous": self.isAnonymous()}
+        student_infos = deposit_box.getInfosMembre(student_id)
+        if student_infos:
+            student_name = "%s %s" % (student_infos["nom"], student_infos["prenom"])
+        else:
+            student_name = student_id
+
+        my_view = {"is_anonymous": self.isAnonymous(),
+                   "student_name": student_name}
         jalon_bdd = self.context.portal_jalon_bdd
         peer_evaluation_list = jalon_bdd.getPeerEvaluation(deposit_box_id, student_id)
         my_view["peer_evaluation"] = {}

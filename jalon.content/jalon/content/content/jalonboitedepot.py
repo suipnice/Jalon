@@ -406,7 +406,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             etudiant_id = str(depot.Creator)
             if not etudiant_id in liste_etudiants:
                 liste_etudiants.append(etudiant_id)
-                etudiant_infos = jalon_utils.getInfosMembre(etudiant_id)
+                etudiant_infos = self.getInfosMembre(etudiant_id)
                 if etudiant_infos:
                     etudiant_name = "%s %s" % (etudiant_infos["nom"], etudiant_infos["prenom"])
                 else:
@@ -1598,5 +1598,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     #   Suppression marquage HTML
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
+
+    def getInfosMembre(self, etudiant_id):
+        return jalon_utils.getInfosMembre(etudiant_id)
 
 registerATCT(JalonBoiteDepot, PROJECTNAME)
