@@ -1434,6 +1434,10 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU)
 
+    def getEvaluationByCorrectedSTU(self, DEPOSIT_BOX, CORRECTED_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU)
+
     def generatePeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()
         return jalon_mysql.generatePeersAverage(session, DEPOSIT_BOX)

@@ -135,10 +135,6 @@
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
     <tal:condition condition="my_view/is_personnel">
-    <a class="right"
-       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
-        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
-    </a>
     <a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
@@ -153,6 +149,10 @@
             </a>
         </li>
     </ul>
+    <a class="right"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
+        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
+    </a>
     </tal:condition>
     <h2>
         <tal:on-error on-error="nothing">
@@ -279,16 +279,19 @@
         </thead>
         <tfoot></tfoot>
         <tbody class="list"
-               tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+               tal:define="corrected_evaluations_dict evaluation_by_peers_dict/corrected_evaluations_dict">
             <tr tal:repeat="index evaluation_by_peers_dict/criteria_order">
+                <tal:define define="crtieria_evaluations_dict python:corrected_evaluations_dict[index]">
                 <td class="criteria"
                     tal:define="criteria python:criteria_dict[index]">
                     <span class="hide" tal:content="criteria/title" />
                     <tal:replace replace="criteria/title" />
                 </td>
-            <tal:repeat repeat="peer evaluation_by_peers_dict/peers_evaluations">
-                <td>VIDE</td>
-            </tal:repeat>
+                <td tal:repeat="peer_dict evaluation_by_peers_dict/peers_evaluations">
+                    <tal:replace replace="python:crtieria_evaluations_dict[peer_dict['peer']]"
+                                 on-error="string:Non évalué"/>
+                </td>
+                </tal:define>
             </tr>
         </tbody>
         </table>

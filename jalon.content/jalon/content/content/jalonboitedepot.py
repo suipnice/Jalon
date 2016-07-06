@@ -1284,7 +1284,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         if is_personnel:
             evaluation_by_peers_dict["macro_peers"] = "peers_teacher_macro"
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
-            """
+
             evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
                                                     "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
                                                     "icon": "fa fa-plus-circle fa-fw"},
@@ -1294,7 +1294,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                                    {"text": "Moyenne",
                                                     "link": "%s/average_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-calculator fa-fw"}]
-            """
+
             if not evaluation_by_peers_dict["criteria_dict"]:
                 evaluation_by_peers_dict["gride_button"] = "fa fa-plus-circle fa-lg fa-fw"
             else:
@@ -1307,13 +1307,23 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form?mode_etudiant=true" % deposit_box_link
             if self.getAccesGrille():
                 evaluation_by_peers_dict["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % deposit_box_link
-            evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user.getId())
+            user_id = user.getId()
+            evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
                     if evaluation["corrected"]:
                         number = number + 1
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
+                jalon_bdd = self.portal_jalon_bdd
+                corrected_evaluations_dict = {}
+                corrected_evaluations = jalon_bdd.getEvaluationByCorrectedSTU(self.getId(), user_id)
+                for criteria_id in evaluation_by_peers_dict["criteria_dict"].keys():
+                    corrected_evaluations_dict[criteria_id] = {}
+                for corrected_evaluation in corrected_evaluations.all():
+                    corrected_evaluations_dict[str(corrected_evaluation[0])][corrected_evaluation[1]] = corrected_evaluation[2]
+                evaluation_by_peers_dict["corrected_evaluations_dict"] = corrected_evaluations_dict
+                LOG.info("***** corrected_evaluations_dict : %s" % corrected_evaluations_dict)
             else:
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
         return evaluation_by_peers_dict

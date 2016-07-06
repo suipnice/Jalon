@@ -67,7 +67,7 @@
                     </label>
                     <div class="fieldErrorBox" tal:content="error"
                          tal:condition="error"/>
-                    <input type="number" min="1" step="1" style="width:3em;display:inline;"
+                    <input type="number" min="0" step="1" style="width:3em;display:inline;"
                            tal:define="error python:errors.get(criteria_note, None)"
                            tal:attributes="class python:context.test(error, 'error', '');
                                            name  criteria_note;
