@@ -155,6 +155,12 @@
     </ul-->
     </tal:condition>
     <h2>
+        <tal:on-error on-error="nothing">
+        <a tal:attributes="href evaluation_by_peers_dict/grid_link" class="button tiny radius right">
+            <i class="fa fa-th" aria-hidden="true"></i>
+            Grille d'évaluation
+        </a>
+        </tal:on-error>
         <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
            tal:condition="not:my_view/is_personnel">
             <i class="fa fa-check-square-o" aria-hidden="true"></i>

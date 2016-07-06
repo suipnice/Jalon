@@ -131,7 +131,12 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                 accessor="getPenalite",
                 default="aucune",
                 searchable=False,
-                widget=StringWidget(label=_(u"Pénalité"),))
+                widget=StringWidget(label=_(u"Pénalité"),)),
+    BooleanField("accesGrille",
+                 required=False,
+                 accessor="getAccesGrille",
+                 searchable=False,
+                 widget=BooleanWidget(label=_(u"Accéder à la grille d'évaluation avant d'évaluer"),)),
 ))
 
 
@@ -1300,6 +1305,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
             evaluation_by_peers_dict["table_title"] = "Mes évaluations"
             evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form?mode_etudiant=true" % deposit_box_link
+            if self.getAccesGrille():
+                evaluation_by_peers_dict["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % deposit_box_link
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user.getId())
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
@@ -1370,6 +1377,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             return "- %i %s" % (penality, self._penality_title["other"])
         except:
             return self._penality_title[penality]
+
+    def getDisplayGridAccess(self):
+        LOG.info("----- getDisplayGridAccess -----")
+        return "Autorisée avant évaluation" if self.getAccesGrille() else "Interdit avant évaluation"
 
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")

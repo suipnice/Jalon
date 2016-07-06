@@ -58,6 +58,13 @@
         </tal:condition>
         </tal:condition>
 
+
+        <div class="panel radius warning"
+             tal:condition="not:my_view/is_grid_access">
+            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> Vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !
+        </div>
+
+        <tal:condition condition="my_view/is_grid_access">
         <div class="panel callout radius"
              tal:condition="not:my_view/criteria_order">
             La grille d'évaluation ne contient aucun critère d'évaluation
@@ -131,6 +138,7 @@
             </section>
             </tal:repeat>
         </div>
+        </tal:condition>
     </main>
 </metal:main>
 

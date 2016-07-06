@@ -146,7 +146,12 @@ class DepositBoxView(CourseView):
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-thumbs-o-down fa-fw no-pad",
                                                 "text":  "Pénalité",
-                                                "value": my_deposit_box.getDisplayPenality()}]
+                                                "value": my_deposit_box.getDisplayPenality()},
+                                               {"link":  "%s/edit_peers_grid_access_form" % my_view["deposit_box_link"],
+                                                "class": "panel callout radius",
+                                                "icon":  "fa fa-th fa-fw no-pad",
+                                                "text":  "Accès à la grille d'évaluation",
+                                                "value": my_deposit_box.getDisplayGridAccess()}]
 
         my_view["deposit_box_profile"] = {"href":  "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                           "icon": "fa-pencil",
