@@ -139,7 +139,7 @@
        tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
         <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
     </a>
-    <!--a class="dropdown right"
+    <a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
     </a>
@@ -152,7 +152,7 @@
                                                                                       i18n:translate=""/>
             </a>
         </li>
-    </ul-->
+    </ul>
     </tal:condition>
     <h2>
         <tal:on-error on-error="nothing">
