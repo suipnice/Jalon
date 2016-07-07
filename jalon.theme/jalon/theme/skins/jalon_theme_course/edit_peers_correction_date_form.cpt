@@ -9,7 +9,7 @@
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing;
-                        is_date_depot python:context.getProperty('dateDepot');
+                        is_date_depot python:context.getDepositBoxProperty('dateDepot');
                         tab request/tab">
 
     <h2 i18n:translate="">
