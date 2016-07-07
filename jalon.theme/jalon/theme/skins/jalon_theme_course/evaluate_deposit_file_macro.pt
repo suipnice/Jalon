@@ -48,7 +48,7 @@
                      tal:attributes="id criteria_id">
                 <h2 tal:content="criteria/title"/>
                 <div class="panel callout radius"
-                     tal:content="criteria/description"/>
+                     tal:content="structure python:criteria['description'].replace('\n', '<br/>')"/>
                 <div tal:define="criteria_comment string:${criteria_id}-comment;
                                  error python:errors.get(criteria_comment, None)"
                      tal:attributes="id string:archetypes-fieldname-${criteria_comment};

@@ -122,7 +122,7 @@
                 </h2>
                 <h3>Description :</h3>
                 <div class="panel callout radius"
-                     tal:content="criteria/description"/>
+                     tal:content="structure python:criteria['description'].replace('\n', '<br/>')"/>
                 <h3>
                     Coefficient : <tal:replace replace="criteria/coefficient"/>
                 </h3>
