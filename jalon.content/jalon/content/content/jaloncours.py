@@ -357,6 +357,7 @@ class JalonCours(ATFolder):
                 return True
         if not self.getId() in request.SESSION.get("course_authorized_list", []):
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
+        #return True
 
     def getLastLogin(self):
         LOG.info("----- getLastLogin -----")
