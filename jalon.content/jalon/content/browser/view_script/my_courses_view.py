@@ -271,6 +271,8 @@ class MyCoursesView(BrowserView):
                         #    pass
                         #course_data["course_access"] = course_access_list
                         course_list.append(course_data)
+                        course_authorized_list.append(course_data["course_id"])
+                        self.request.SESSION.set("course_authorized_list", course_authorized_list)
                     diploma_list.append({"diploma_name":        user_diploma_data[0],
                                          "diploma_course_list": course_list})
         else:
