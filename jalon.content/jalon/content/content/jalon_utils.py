@@ -672,15 +672,16 @@ def jalon_urlencode(chaine):
 
 
 def isAfficherElement(affElement, masquerElement):
+    LOG.info("***** affElement : %s" % affElement)
     if not affElement:
         return {"val": 0, "icon": "fa-eye-slash", "legende": "masqué"}
     if cmp(DateTime(), affElement) == -1:
-        return {"val": 0, "icon": "fa-calendar-o success", "legende": "affichage programmé au %s" % getLocaleDate(affElement, format="%d/%m/%Y à %Hh%M")}
+        return {"val": 0, "icon": "fa-calendar-o success", "legende": u"affichage programmé au %s" % getLocaleDate(affElement, format="%d/%m/%Y à %Hh%M")}
     if not masquerElement:
         return {"val": 1, "icon": "", "legende": "masquage non programmé"}
     if cmp(masquerElement, DateTime()) == -1:
         return {"val": 0, "icon": "fa-eye-slash", "legende": "masquage programmé et depassé"}
-    return {"val": 1, "icon": "", "icon2": "fa-calendar-o alert", "legende": "masquage programmé au %s" % getLocaleDate(masquerElement, format="%d/%m/%Y à %Hh%M")}
+    return {"val": 1, "icon": "", "icon2": "fa-calendar-o alert", "legende": u"masquage programmé au %s" % getLocaleDate(masquerElement, format="%d/%m/%Y à %Hh%M")}
 
 
 """
