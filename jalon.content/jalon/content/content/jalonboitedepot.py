@@ -202,9 +202,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 "date":  ['dateDepot', 'dateRetard']}
         return dico[info]
 
-    #def getProperty(self, property_name):
-    #    LOG.info("----- getProperty -----")
-    #    return getattr(self, property_name, None)
+    def getDepositBoxProperty(self, property_name):
+        LOG.info("----- getDepositBoxProperty -----")
+        return getattr(self, property_name, None)
 
     def setProperties(self, dico):
         for key in dico.keys():
