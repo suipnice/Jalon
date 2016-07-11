@@ -164,19 +164,15 @@
             </div>
 
             <div class="row">
-                <div class="small-12 columns">
-                    <metal:macro use-macro="context/course_bibliography_macro/macros/display_bibliography">
-                        Affichage de la bibliographie
-                    </metal:macro>
-                </div>
+                <metal:macro use-macro="context/course_bibliography_macro/macros/display_bibliography">
+                    Affichage de la bibliographie
+                </metal:macro>
             </div>
 
             <div class="row">
-                <div class="small-12 columns">
-                    <metal:macro use-macro="context/course_glossary_macro/macros/display_glossary">
-                        Affichage du glossarie
-                    </metal:macro>
-                </div>
+                <metal:macro use-macro="context/course_glossary_macro/macros/display_glossary">
+                    Affichage du glossarie
+                </metal:macro>
             </div>
         </section>
 
