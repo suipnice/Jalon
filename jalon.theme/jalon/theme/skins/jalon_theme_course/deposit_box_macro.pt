@@ -163,11 +163,6 @@
     </a-->
     </tal:condition>
     <h2>
-        <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
-           tal:condition="not:my_view/is_personnel">
-            <i class="fa fa-check-square-o" aria-hidden="true"></i>
-            Évaluer
-        </a>
         <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
                                                  i18n:translate=""/>
     </h2>
@@ -263,8 +258,30 @@
 </metal:macro>
 
 <!--
-    Évaluation par les pairs Liste role Étudiant
+    Évaluation par les pairs Liste role Étudiant V1
 -->
+<metal:macro define-macro="peers_student_macro">
+    <div class="panel callout radius"
+         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
+
+    <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius">
+        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        <tal:replace replace="evaluation_by_peers_dict/evaluate_button_name"/>
+    </a>
+
+    <h2>
+        <i class="fa fa-check-square-o"></i>
+        Dépôt(s) évalué(s)
+    </h2>
+    <div tal:repeat="number evaluation_by_peers_dict/corrected_evaluation_list">
+        <a class="button small radius right">
+            <i class="fa fa-check-square-o"></i> Ré-évaluer
+        </a>
+        Dépôts n°<tal:replace replace="number"/>
+    </div>
+</metal:macro>
+<!--
+    Évaluation par les pairs Liste role Étudiant V1
 <metal:macro define-macro="peers_student_macro">
     <div class="panel callout radius"
          tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
@@ -310,3 +327,5 @@
         </table>
     </div>
 </metal:macro>
+
+-->

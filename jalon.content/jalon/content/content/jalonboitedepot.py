@@ -1307,22 +1307,31 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form?mode_etudiant=true" % deposit_box_link
 
             user_id = user.getId()
+            evaluation_number = self.getNombreCorrection()
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
                     if evaluation["corrected"]:
                         number = number + 1
-                evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, self.getNombreCorrection())
-                jalon_bdd = self.portal_jalon_bdd
-                corrected_evaluations_dict = {}
-                corrected_evaluations = jalon_bdd.getEvaluationByCorrectedSTU(self.getId(), user_id)
-                for criteria_id in evaluation_by_peers_dict["criteria_dict"].keys():
-                    corrected_evaluations_dict[criteria_id] = {}
-                for corrected_evaluation in corrected_evaluations.all():
-                    corrected_evaluations_dict[str(corrected_evaluation[0])][corrected_evaluation[1]] = corrected_evaluation[2]
-                evaluation_by_peers_dict["corrected_evaluations_dict"] = corrected_evaluations_dict
-                LOG.info("***** corrected_evaluations_dict : %s" % corrected_evaluations_dict)
+                evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
+
+                if number == 0:
+                    evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
+                elif number < evaluation_number:
+                    evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
+
+                evaluation_by_peers_dict["corrected_evaluation_list"] = range(1, number + 1)
+                LOG.info("***** corrected_evaluation_list : %s" % evaluation_by_peers_dict["corrected_evaluation_list"])
+                #jalon_bdd = self.portal_jalon_bdd
+                #corrected_evaluations_dict = {}
+                #corrected_evaluations = jalon_bdd.getEvaluationByCorrectedSTU(self.getId(), user_id)
+                #for criteria_id in evaluation_by_peers_dict["criteria_dict"].keys():
+                #    corrected_evaluations_dict[criteria_id] = {}
+                #for corrected_evaluation in corrected_evaluations.all():
+                #    corrected_evaluations_dict[str(corrected_evaluation[0])][corrected_evaluation[1]] = corrected_evaluation[2]
+                #evaluation_by_peers_dict["corrected_evaluations_dict"] = corrected_evaluations_dict
+                #LOG.info("***** corrected_evaluations_dict : %s" % corrected_evaluations_dict)
             else:
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
         return evaluation_by_peers_dict
@@ -1453,6 +1462,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getStudentEvaluateDepositFileForm(self, user_id):
         LOG.info("----- getStudentEvaluateDepositFileForm -----")
+        index = 1
         evaluation = {}
         peers_evaluations = self.getPeersDict(user_id)
         for corrected_evaluation in peers_evaluations:
@@ -1460,6 +1470,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             if not corrected_evaluation["corrected"]:
                 evaluation = corrected_evaluation
                 break
+            index = index + 1
 
         deposit_link = ""
         if evaluation:
@@ -1468,7 +1479,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 if deposit_brain.getActif:
                     deposit_link = deposit_brain.getURL()
 
-        return {"evaluation":     evaluation,
+        return {"index":          index,
+                "evaluation":     evaluation,
                 "deposit_link":   "%s/at_download/file" % deposit_link,
                 "criteria_dict":  self.getCriteriaDict(),
                 "criteria_order": self.getCriteriaOrder(),

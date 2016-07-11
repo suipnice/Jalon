@@ -1,7 +1,7 @@
 <metal:macro define-macro="student_evaluate">
     <h1>
         <i class="fa fa-check-square-o no-pad"></i>
-        Évaluer un devoir
+        Évaluer le dépôt <tal:replace replace="my_evaluate_form/index"/>
     </h1>
 
     <div class="panel warning radius"
@@ -12,7 +12,7 @@
     <tal:condition condition="my_evaluate_form/evaluation">
     <a class="button expand radius"
        tal:attributes="href my_evaluate_form/deposit_link">
-        <i class="fa fa-download"></i> Télécharger ce dépôt
+        <i class="fa fa-download"></i> Télécharger le dépôt n°<tal:replace replace="my_evaluate_form/index"/>
     </a>
 
     <div class="panel alert radius"
