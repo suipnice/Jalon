@@ -366,7 +366,7 @@ class JalonFolder(ATFolder):
         else:
             favorites.remove(user_id)
         course.setSubject(tuple(favorites))
-        course.setProperties({"DateDerniereModif": DateTime()})
+        course.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def modifyArchiveCourse(self, user_id, course_id):
         #LOG.info("----- modifyFavorite -----")
@@ -382,7 +382,7 @@ class JalonFolder(ATFolder):
         else:
             archives.remove(user_id)
         course.setArchive(tuple(archives))
-        course.setProperties({"DateDerniereModif": DateTime()})
+        course.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getDataCourseFormAction(self, user_id, course_id):
         #LOG.info("----- getDataCourseFormAction -----")
