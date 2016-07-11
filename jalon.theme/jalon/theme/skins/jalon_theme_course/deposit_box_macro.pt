@@ -261,24 +261,64 @@
     Évaluation par les pairs Liste role Étudiant V1
 -->
 <metal:macro define-macro="peers_student_macro">
-    <div class="panel callout radius"
-         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
-
-    <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius">
+    <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius"
+       tal:condition="evaluation_by_peers_dict/evaluate_button">
         <i class="fa fa-check-square-o" aria-hidden="true"></i>
         <tal:replace replace="evaluation_by_peers_dict/evaluate_button_name"/>
     </a>
-
+    <div class="panel callout radius">
+        Vous avez évalué tous les dépôts.
+    </div>
     <h2>
         <i class="fa fa-check-square-o"></i>
         Dépôt(s) évalué(s)
     </h2>
-    <div tal:repeat="number evaluation_by_peers_dict/corrected_evaluation_list">
-        <a class="button small radius right">
-            <i class="fa fa-check-square-o"></i> Ré-évaluer
-        </a>
-        Dépôts n°<tal:replace replace="number"/>
-    </div>
+    <div class="panel callout radius"
+         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
+    <table summary="Liste des dépôts évalués">
+    <thead>
+        <tr>
+            <th class="sort has-tip" data-tooltip data-sort="depot"
+                title="Cliquer pour trier selon le dépôt"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Dépôt</tal:block>
+                </span>
+            </th>
+            <th class="sort has-tip" data-tooltip data-sort="note"
+                title="Cliquer pour trier selon la note"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Note</tal:block>
+                </span>
+            </th>
+            <th class="show-for-medium-up has-tip" title="Action"
+                i18n:attributes="title">
+                <tal:block i18n:translate="">Réévaluer</tal:block>
+            </th>
+        </tr>
+    </thead>
+    <tfoot></tfoot>
+    <tbody class="list">
+        <tr tal:repeat="number evaluation_by_peers_dict/corrected_evaluation_list">
+            <td>
+                Dépôts n°<tal:replace replace="number"/>
+            </td>
+            <td>Non renseignée</td>
+            <td>
+                <a class="button small radius">
+                    <i class="fa fa-check-square-o"></i>Réévaluer
+                </a>
+            </td>
+        </tr>
+    </tbody>
+    </table>
 </metal:macro>
 <!--
     Évaluation par les pairs Liste role Étudiant V1

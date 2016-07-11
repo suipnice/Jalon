@@ -1303,7 +1303,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
         else:
             evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
-            evaluation_by_peers_dict["table_title"] = "Mes évaluations"
+            evaluation_by_peers_dict["table_title"] = "Dépôts à évaluer"
             evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form?mode_etudiant=true" % deposit_box_link
 
             user_id = user.getId()
@@ -1316,10 +1316,13 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                         number = number + 1
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
 
+                evaluation_by_peers_dict["evaluate_button"] = True
                 if number == 0:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
                 elif number < evaluation_number:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
+                else:
+                    evaluation_by_peers_dict["evaluate_button"] = False
 
                 evaluation_by_peers_dict["corrected_evaluation_list"] = range(1, number + 1)
                 LOG.info("***** corrected_evaluation_list : %s" % evaluation_by_peers_dict["corrected_evaluation_list"])
