@@ -28,6 +28,7 @@
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main class="row" role="main" aria-labelledby="page_title">
+        <section>
         <h1>
             <i class="fa fa-th falfw"></i>Grille d'évaluation
         </h1>
@@ -139,6 +140,7 @@
             </tal:repeat>
         </div>
         </tal:condition>
+        </section>
     </main>
 </metal:main>
 

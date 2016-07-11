@@ -21,14 +21,22 @@
         </li>
     </ul>
     </tal:condition>
+    <tal:condition condition="not:my_view/is_personnel">
     <a tal:attributes="href string:${context/absolute_url}/deposit_file_form"
        title="Déposer un fichier" class="button small radius right"
        data-reveal-id="reveal-main" data-reveal-ajax="true"
-       tal:condition="python:not my_view['is_personnel'] and my_view['is_authorized_deposit']"
+       tal:condition="my_view/is_authorized_deposit"
        i18n:translate="">
         <i class="fa fa-download"></i>
         <tal:block i18n:translate="">Déposer un fichier</tal:block>
     </a>
+    <tal:on-error on-error="nothing">
+    <a tal:attributes="href my_view/grid_link" class="button small radius right">
+        <i class="fa fa-th" aria-hidden="true"></i>
+        Grille d'évaluation
+    </a>
+    </tal:on-error>
+    </tal:condition>
     <h2>
         <i class="fa fa-download"></i><tal:block replace="dico_depots/table_title"
                                                  i18n:translate=""/>
@@ -149,18 +157,12 @@
             </a>
         </li>
     </ul>
-    <a class="right"
+    <!--a class="right"
        tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
-        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
-    </a>
+        <i tal:attributes="class evaluation_by_peers_dict/grid_button"></i>
+    </a-->
     </tal:condition>
     <h2>
-        <tal:on-error on-error="nothing">
-        <a tal:attributes="href evaluation_by_peers_dict/grid_link" class="button tiny radius right">
-            <i class="fa fa-th" aria-hidden="true"></i>
-            Grille d'évaluation
-        </a>
-        </tal:on-error>
         <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
            tal:condition="not:my_view/is_personnel">
             <i class="fa fa-check-square-o" aria-hidden="true"></i>
@@ -176,12 +178,23 @@
         <span tal:content="structure my_view/is_authorized_deposit_text"/>
     </div>
 
-    <div class="panel callout radius" tal:condition="not:criteria_dict"
+    <tal:condition condition="not:criteria_dict">
+    <div class="panel callout radius" 
          i18n:translate="">
         La grille d'évaluation ne contient aucun critère.
     </div>
+    <a class="button expand radius"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
+       <i class="fa fa-th"></i>Accèder à la grille d'évaluation
+    </a>
+    </tal:condition>
 
     <tal:condition condition="criteria_dict">
+        <a class="button expand radius"
+           tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view"
+           tal:condition="my_view/is_personnel">
+           <i class="fa fa-th"></i>Accèder à la grille d'évaluation
+        </a>
         <metal:macro use-macro="python:context.deposit_box_macro.macros.get(evaluation_by_peers_dict['macro_peers'])"/>
     </tal:condition>
     </tal:define>

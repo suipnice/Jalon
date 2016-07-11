@@ -76,7 +76,22 @@ class DepositBoxView(CourseView):
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
 
+        if my_deposit_box.getAccesGrille():
+            my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
+
         my_view["deposit_box_tabs"] = []
+
+        my_view["is_documents_tab"] = True if tab == "documents" else False
+        my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
+                                            "css_class": " selected" if my_view["is_documents_tab"] else "",
+                                            "icon":      "fa-upload",
+                                            "text":      "Documents enseignants",
+                                            "nb":        my_deposit_box.getNbSujets()})
+        if my_view["is_documents_tab"]:
+            portal = my_deposit_box.portal_url.getPortalObject()
+            deposit_box_path = my_deposit_box.getPhysicalPath()
+            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), portal)["my_space"]
+            my_view["documents_list"] = my_deposit_box.displayDocumentsList(my_view["is_personnel"], portal)
 
         my_view["is_deposit_tab"] = True if tab == "deposit" else False
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=deposit&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
@@ -84,7 +99,6 @@ class DepositBoxView(CourseView):
                                             "icon":      "fa-download",
                                             "text":      "Mes dépôts" if not my_view["is_personnel"] and not my_deposit_box.getAccesDepots() else "Dépôts étudiants",
                                             "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user_id)})
-
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
             my_view["deposit_tab_options_link"] = ""
@@ -98,18 +112,6 @@ class DepositBoxView(CourseView):
                                                "text": "Notification des notations"},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getAccesDepots() else "fa-toggle-off",
                                                "text": "Visualisation des dépôts entre étudiants"}]
-
-        my_view["is_documents_tab"] = True if tab == "documents" else False
-        my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
-                                            "css_class": " selected" if my_view["is_documents_tab"] else "",
-                                            "icon":      "fa-upload",
-                                            "text":      "Documents enseignants",
-                                            "nb":        my_deposit_box.getNbSujets()})
-        if my_view["is_documents_tab"]:
-            portal = my_deposit_box.portal_url.getPortalObject()
-            deposit_box_path = my_deposit_box.getPhysicalPath()
-            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["deposit_box_link"], "/".join([deposit_box_path[-3], deposit_box_path[-2], deposit_box_path[-1]]), portal)["my_space"]
-            my_view["documents_list"] = my_deposit_box.displayDocumentsList(my_view["is_personnel"], portal)
 
         deposit_box_profile = my_deposit_box.getProfile() or "standard"
 
@@ -134,7 +136,7 @@ class DepositBoxView(CourseView):
             my_view["deposit_box_tabs"].append({"href":      "%s?tab=peers&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                                 "css_class": " selected" if my_view["is_peers_tab"] else "",
                                                 "icon":      "fa-users",
-                                                "text":      "Par les pairs",
+                                                "text":      "Dépôts à évaluer" if not my_view["is_personnel"] else "Par les pairs",
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
             my_view["deposit_tab_options_link"] = ""

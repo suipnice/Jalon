@@ -1295,18 +1295,17 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                                     "link": "%s/average_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-calculator fa-fw"}]
 
-            if not evaluation_by_peers_dict["criteria_dict"]:
-                evaluation_by_peers_dict["gride_button"] = "fa fa-plus-circle fa-lg fa-fw"
-            else:
-                evaluation_by_peers_dict["gride_button"] = "fa fa-pencil fa-lg fa-fw"
+            #if not evaluation_by_peers_dict["criteria_dict"]:
+            #    evaluation_by_peers_dict["grid_button"] = "fa fa-plus-circle fa-lg fa-fw"
+            #else:
+            #    evaluation_by_peers_dict["grid_button"] = "fa fa-pencil fa-lg fa-fw"
             evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
         else:
             evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
             evaluation_by_peers_dict["table_title"] = "Mes évaluations"
             evaluation_by_peers_dict["evaluate_link"] = "%s/evaluate_deposit_file_form?mode_etudiant=true" % deposit_box_link
-            if self.getAccesGrille():
-                evaluation_by_peers_dict["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % deposit_box_link
+
             user_id = user.getId()
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
