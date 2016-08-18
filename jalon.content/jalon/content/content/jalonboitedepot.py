@@ -1129,10 +1129,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         import tempfile
         from xlwt import Workbook, XFStyle, Style, Pattern, Font
 
-        dicoGradation = {"acquerir" : "À acquérir",
-                         "encours"  : "En cours d'acquisition",
+        dicoGradation = {"acquerir":  "À acquérir",
+                         "encours":   "En cours d'acquisition",
                          "partielle": "Partiellement acquis",
-                         "acquise"  : "Acquis"}
+                         "acquise":   "Acquis"}
         portal_membership = getToolByName(self, "portal_membership")
         authMember = portal_membership.getAuthenticatedMember()
 

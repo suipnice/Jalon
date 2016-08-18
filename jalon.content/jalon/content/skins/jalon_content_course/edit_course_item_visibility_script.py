@@ -8,10 +8,14 @@
 ##title=
 ##
 
-form = context.REQUEST.form
-
 context_object = context
-if context.meta_type in ["JalonBoiteDepot", "JalonCoursWims"]:
+form = context.REQUEST.form
+redirection = context.absolute_url()
+
+is_activity = False
+object_type = form["item_id"].split("-", 1)[0]
+if object_type in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+    is_activity = True
     context_object = getattr(context, form["item_id"])
 
 item_date = DateTime() if form.has_key("date-affichage-now") else DateTime(form["datetime"])
@@ -26,8 +30,7 @@ if form.has_key("is_item_title"):
 else:
     context_object.editCourseItemVisibility(form["item_id"], item_date, form["item_property_name"], is_update_from_title)
 
-redirection = context_object.absolute_url()
-if context.meta_type in ["JalonBoiteDepot", "JalonCoursWims"] and not (form["item_id"].startswith("BoiteDepot-") or form["item_id"].startswith("AutoEvaluation-") or form["item_id"].startswith("Examen-")):
-    redirection = "%s?tab=documents" % redirection
+if context.meta_type in ["JalonBoiteDepot", "JalonCoursWims"] and not is_activity:
+    redirection = "%s?tab=documents" % context_object.absolute_url()
 
 context.REQUEST.RESPONSE.redirect(redirection)

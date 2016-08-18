@@ -64,6 +64,7 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_visibility"] = my_deposit_box.isAfficherElement(my_deposit_box.getDateAff(), my_deposit_box.getDateMasq())
 
         my_view["deposit_box_edit"] = []
+        LOG.info("***** deposit_box_visibility : %s" % my_view["deposit_box_visibility"])
         if my_view["deposit_box_visibility"]["val"]:
             my_view["deposit_box_edit"].append({"href": "%s/edit_course_item_visibility_form?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
                                                 "icon": "fa-eye-slash",
