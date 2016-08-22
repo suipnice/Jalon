@@ -157,10 +157,6 @@
             </a>
         </li>
     </ul>
-    <!--a class="right"
-       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
-        <i tal:attributes="class evaluation_by_peers_dict/grid_button"></i>
-    </a-->
     </tal:condition>
     <h2>
         <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
@@ -266,9 +262,9 @@
         <i class="fa fa-check-square-o" aria-hidden="true"></i>
         <tal:replace replace="evaluation_by_peers_dict/evaluate_button_name"/>
     </a>
-    <div class="panel callout radius">
+    <!--div class="panel callout radius">
         Vous avez évalué tous les dépôts.
-    </div>
+    </div-->
     <h2>
         <i class="fa fa-check-square-o"></i>
         Dépôt(s) évalué(s)
@@ -312,7 +308,8 @@
             </td>
             <td>Non renseignée</td>
             <td>
-                <a class="button small radius">
+                <a class="button small radius"
+                tal:attributes="href string:${evaluation_by_peers_dict/evaluate_link}&amp;deposit_id=${repeat/number/index}">
                     <i class="fa fa-check-square-o"></i>Réévaluer
                 </a>
             </td>

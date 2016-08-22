@@ -1447,7 +1447,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         self.setPeersDict(peers_dict)
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
 
-    def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id):
+    def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id, deposit_id=None):
         LOG.info("----- getEvaluateDepositFileForm -----")
         is_personnel = self.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
@@ -1456,24 +1456,37 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             my_evaluate_form = self.getTeacherEvaluateDepositFileForm(student_id)
         else:
             macro_form = "student_evaluate"
-            my_evaluate_form = self.getStudentEvaluateDepositFileForm(user.getId())
+            my_evaluate_form = self.getStudentEvaluateDepositFileForm(user.getId(), deposit_id)
         return {"breadcrumbs":      self.getEvaluateBreadcrumbs(),
                 "is_personnel":     is_personnel,
                 "mode_etudiant":    mode_etudiant,
                 "macro_form":       macro_form,
                 "my_evaluate_form": my_evaluate_form}
 
-    def getStudentEvaluateDepositFileForm(self, user_id):
+    def getStudentEvaluateDepositFileForm(self, user_id, deposit_id=None):
         LOG.info("----- getStudentEvaluateDepositFileForm -----")
         index = 1
         evaluation = {}
+        criteria_evaluated_dict = {}
+        seconde_evaluation = ""
         peers_evaluations = self.getPeersDict(user_id)
-        for corrected_evaluation in peers_evaluations:
-            LOG.info("***** corrected_evaluation : %s" % str(corrected_evaluation))
-            if not corrected_evaluation["corrected"]:
-                evaluation = corrected_evaluation
-                break
-            index = index + 1
+
+        if not deposit_id:
+            for corrected_evaluation in peers_evaluations:
+                LOG.info("***** corrected_evaluation : %s" % str(corrected_evaluation))
+                if not corrected_evaluation["corrected"]:
+                    evaluation = corrected_evaluation
+                    break
+                index = index + 1
+        else:
+            evaluation = peers_evaluations[int(deposit_id)]
+            LOG.info("***** evaluation : %s" % str(evaluation))
+            criteria_evaluated_list = self.portal_jalon_bdd.getEvaluationByCorrectedAndDepositSTU(self.getId(), user_id, evaluation["peer"])
+            LOG.info("***** criteria_evaluated_list : %s" % criteria_evaluated_list.all())
+            for criteria_dict in criteria_evaluated_list.all():
+                criteria_evaluated_dict[criteria_dict[0]] = {"criteria_note":    criteria_dict[1],
+                                                             "criteria_comment": criteria_dict[2]}
+            LOG.info("****** criteria_evaluated_dict : %s" % criteria_evaluated_dict)
 
         deposit_link = ""
         if evaluation:
@@ -1482,12 +1495,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 if deposit_brain.getActif:
                     deposit_link = deposit_brain.getURL()
 
-        return {"index":          index,
-                "evaluation":     evaluation,
-                "deposit_link":   "%s/at_download/file" % deposit_link,
-                "criteria_dict":  self.getCriteriaDict(),
-                "criteria_order": self.getCriteriaOrder(),
-                "form_link":      "%s/evaluate_deposit_file_form" % self.absolute_url()}
+        return {"index":              index,
+                "evaluation":         evaluation,
+                "deposit_link":       "%s/at_download/file" % deposit_link,
+                "criteria_dict":      self.getCriteriaDict(),
+                "criteria_order":     self.getCriteriaOrder(),
+                "criteria_evaluated": criteria_evaluated_dict,
+                "deposit_id":         deposit_id,
+                "form_link":          "%s/evaluate_deposit_file_form" % self.absolute_url()}
 
     def getTeacherEvaluateDepositFileForm(self, student_id):
         LOG.info("----- getTeacherEvaluateDepositFileForm -----")
@@ -1526,12 +1541,16 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info("----- setStudentEvaluatePeer -----")
         evaluation = {}
         peers_dict = copy.deepcopy(self.getPeersDict())
-        corrected_evaluation_index = 0
-        for corrected_evaluation in peers_dict[param_dict["user_id"]]:
-            if not corrected_evaluation["corrected"]:
-                evaluation = corrected_evaluation
-                break
-            corrected_evaluation_index = corrected_evaluation_index + 1
+        if param_dict["deposit_id"]:
+            corrected_evaluation_index = int(param_dict["deposit_id"])
+            evaluation = peers_dict[param_dict["user_id"]][corrected_evaluation_index]
+        else:
+            corrected_evaluation_index = 0
+            for corrected_evaluation in peers_dict[param_dict["user_id"]]:
+                if not corrected_evaluation["corrected"]:
+                    evaluation = corrected_evaluation
+                    break
+                corrected_evaluation_index = corrected_evaluation_index + 1
 
         index = 1
         criteria_loop = param_dict["criteria_order"].split(",")

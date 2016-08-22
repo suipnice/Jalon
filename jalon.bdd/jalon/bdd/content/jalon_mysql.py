@@ -256,22 +256,33 @@ def getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, I
 # Évaluation par les pairs #
 #--------------------------#
 def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
+    PE = aliased(tables.PeersEvaluationMySQL)
+    for line in session.query(PE).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU, PE.CORRECTED_STU == CORRECTED_STU, PE.CRITERIA == CRITERIA):
+        line.FOR_AVG = False
+    session.commit()
     session.add(tables.PeersEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
     session.commit()
 
 
 def getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
-    peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU)
+    peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE_FIRST, PE.CRITERIA_COMMENT_FIRST).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU)
     #return convertirResultatBDD(peer_evaluation)
     return peer_evaluation
 
 
 def getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
-    peers_evaluations = session.query(PE.CRITERIA, PE.DEPOSIT_STU, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.CORRECTED_STU == CORRECTED_STU)
+    peers_evaluations = session.query(PE.CRITERIA, PE.DEPOSIT_STU, PE.CRITERIA_NOTE_FIRST, PE.CRITERIA_COMMENT_FIRST).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.CORRECTED_STU == CORRECTED_STU)
     #return convertirResultatBDD(peer_evaluation)
     return peers_evaluations
+
+
+def getEvaluationByCorrectedAndDepositSTU(session, DEPOSIT_BOX, CORRECTED_STU, DEPOSIT_STU):
+    PE = aliased(tables.PeersEvaluationMySQL)
+    criteria_evaluated_list = session.query(PE.CRITERIA, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.CORRECTED_STU == CORRECTED_STU, PE.DEPOSIT_STU == DEPOSIT_STU, PE.FOR_AVG == 1)
+    #return convertirResultatBDD(peer_evaluation)
+    return criteria_evaluated_list
 
 
 def generatePeersAverage(session, DEPOSIT_BOX):
