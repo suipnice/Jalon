@@ -154,9 +154,7 @@
                 <div class="text-center"
                      tal:define="crit_number repeat/index/number;
                                  crit_prev python:'%s' % (int(crit_number) - 1);
-                                 crit_next python:'%s' % (int(crit_number) + 1);
-                                 tab_prev_id python:'tab%s' % (int(crit_number) - 1);
-                                 tab_next_id python:'tab%s' % (int(crit_number) + 1)">
+                                 crit_next python:'%s' % (int(crit_number) + 1)">
                     <a class="button small"
                        tal:attributes="onclick string:document.getElementById('tab${crit_prev}').click();
                                        aria-controls string:#criteria${crit_prev}"
