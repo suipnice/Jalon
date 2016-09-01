@@ -41,31 +41,36 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     remote_addr = None
     url_connexion = context.wims("getAttribut", "url_connexion")
     if request:
-        # HTTP_X_REAL_IP n'existe que si la configuration de Nginx fournit bien ce parametre à Zope.
+        # HTTP_X_REAL_IP n'existe que si la configuration de Nginx fournit bien ce
+        # parametre à Zope.
         remote_addr = request.get('HTTP_X_REAL_IP', None)
         if not remote_addr:
             remote_addr = request['REMOTE_ADDR']
 
         if session_keep is True:
-            #Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
-            # Attention : ici il faudrait vérifier sur WIMS que la session ouverte était bien celle de l'utilisateur courant.
+            # Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
+            # Attention : ici il faudrait vérifier sur WIMS que la session ouverte
+            # était bien celle de l'utilisateur courant.
             wims_session = request.get('wims_session', None)
             if wims_session:
                 return {'wims_session': wims_session,
                         'status':       'OK',
                         'home_url':     "%s?session=%s" % (url_connexion, wims_session)}
-    dico = {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "data1": remote_addr}
+    dico = {"qclass": qclass, "quser": quser, "code": quser,
+        "option": "lightpopup", "data1": remote_addr}
     rep = context.wims("authUser", dico)
     try:
         rep = json.loads(rep)
         #rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "1ere identification de l'utilisateur %s." % quser, "requete": dico})
     except ValueError, e:
-            rep = '{"status":"ERROR","exception_raised":"%s","message":"%s"}' % (string_for_json(rep), e)
+            rep = '{"status":"ERROR","exception_raised":"%s","message":"%s"}' % (
+                string_for_json(rep), e)
             rep = json.loads(rep)
 
     if rep["status"] == "ERROR":
         # On prépare un éventuel message d'erreur à renvoyer
-        message = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
+        message = _(
+            u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
         mess_type = "error"
         if quser != 'supervisor':
 
@@ -88,14 +93,18 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                 firstname, lastname = fullname.split(" ", 1)
             """
 
-            # Sur une premiere erreur, on considere que l'utilisateur est inexistant. on tente alors de le créer.
-            user = context.wims("creerUser", {"quser": quser, "qclass": qclass, "firstname": dico_ETU["prenom"], "lastname": dico_ETU["nom"]})
+            # Sur une premiere erreur, on considere que l'utilisateur est inexistant.
+            # on tente alors de le créer.
+            user = context.wims("creerUser", {"quser": quser, "qclass": qclass, "firstname": dico_ETU[
+                                "prenom"], "lastname": dico_ETU["nom"]})
             if user["status"] == "ERROR":
                 # Si la creation de l'utilisateur plante, alors WIMS doit être indisponible.
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
-            rep = context.wims("authUser", {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "remote_addr": remote_addr})
-            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
+            rep = context.wims("authUser", {"qclass": qclass, "quser": quser,
+                               "code": quser, "option": "lightpopup", "remote_addr": remote_addr})
+            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser",
+                               "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
             # L'authentification du supervisor a planté => WIMS doit être indisponible.
             context.plone_utils.addPortalMessage(message, type=mess_type)
@@ -152,7 +161,8 @@ def envoyerMail(form):
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
     if "auteur" in form:
-        message = "Message envoyé par %s depuis le cours %s\n\n%s" % (form["auteur"], form["cours"], form["message"])
+        message = "Message envoyé par %s depuis le cours %s\n\n%s" % (
+            form["auteur"], form["cours"], form["message"])
     else:
         message = form["message"]
 
@@ -274,6 +284,7 @@ def getClefsDico(dico):
     clefs.sort()
     return clefs
 
+
 def getIndividu(sesame, type=None, portal=None):
     u""" getIndividu renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
 
@@ -368,9 +379,10 @@ def getDepotDate(data, sortable=False):
 
 
 def getPhotoTrombi(login):
-    #here.portal_membership.getPersonalPortrait(creator)
+    # here.portal_membership.getPersonalPortrait(creator)
     # à mettre en config admin
-    req = urllib2.Request("http://camus.unice.fr/unicampus/images/Photos/%sApog0060931E.jpg" % login)
+    req = urllib2.Request(
+        "http://camus.unice.fr/unicampus/images/Photos/%sApog0060931E.jpg" % login)
     req.add_header("Expires", "Mon, 26 Jul 1997 05:00:00 GMT")
     req.add_header("Last-Modified", datetime.today())
     req.add_header("Cache-Control", "no-store, no-cache, must-revalidate, post-check=0, pre-check=0")
@@ -435,7 +447,8 @@ def getInfosMembre(username):
                 ldap = "ldap-plugin"
                 member = rechercherUserLDAPSupann(username, "supannAliasLogin", ldap, True)
             if schema == "eduPerson":
-                member = rechercherUserLDAPEduPerson(username, "supannAliasLogin", "ldap-plugin", True)
+                member = rechercherUserLDAPEduPerson(
+                    username, "supannAliasLogin", "ldap-plugin", True)
             try:
                 fullname = member[0]["name"]
                 email = member[0]["email"]
@@ -472,7 +485,7 @@ def rechercherUtilisateur(username, typeUser, match=False, isJson=True):
     portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
     retour = portal_jalon_bdd.rechercherUtilisateursByName(username, typeUser)
 
-    #Dans le cas ou l'enseignant n'existe pas dans la base de données,
+    # Dans le cas ou l'enseignant n'existe pas dans la base de données,
     # on effectue tout de même une recherche LDAP (si possible)
     if len(retour) < 1 and isLDAP() and typeUser == "Personnel":
         portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
@@ -674,14 +687,14 @@ def jalon_urlencode(chaine):
 def isAfficherElement(affElement, masquerElement):
     LOG.info("***** affElement : %s" % affElement)
     if not affElement:
-        return {"val": 0, "icon": "fa-eye-slash", "legende": "masqué"}
+        return {"val": 0, "icon": "fa-eye-slash", "legende": "Masqué"}
     if cmp(DateTime(), affElement) == -1:
-        return {"val": 0, "icon": "fa-calendar-o success", "legende": u"affichage programmé au %s" % getLocaleDate(affElement, format="%d/%m/%Y à %Hh%M")}
+        return {"val": 0, "icon": "fa-calendar-o success", "legende": u"Affichage programmé au %s à %s." % (getLocaleDate(affElement, format="%d/%m/%Y"), getLocaleDate(affElement, format="%Hh%M"))}
     if not masquerElement:
-        return {"val": 1, "icon": "", "legende": "masquage non programmé"}
+        return {"val": 1, "icon": "", "legende": "Masquage non programmé"}
     if cmp(masquerElement, DateTime()) == -1:
-        return {"val": 0, "icon": "fa-eye-slash", "legende": "masquage programmé et depassé"}
-    return {"val": 1, "icon": "", "icon2": "fa-calendar-o alert", "legende": u"masquage programmé au %s" % getLocaleDate(masquerElement, format="%d/%m/%Y à %Hh%M")}
+        return {"val": 0, "icon": "fa-eye-slash", "legende": "Date de masquage programmé depassée."}
+    return {"val": 1, "icon": "", "icon2": "fa-calendar-o alert", "legende": u"Masquage programmé au %s à %s." % (getLocaleDate(masquerElement, format="%d/%m/%Y"), getLocaleDate(masquerElement, format="%Hh%M"))}
 
 
 """
@@ -707,7 +720,7 @@ def retirerEspace(mot):
 
 def getFilAriane(portal, folder, authMemberId, page=None):
     url_portal = portal.absolute_url()
-    #print "jalon_utils/getFilAriane folder.getId() = %s" %folder.getId()
+    # print "jalon_utils/getFilAriane folder.getId() = %s" %folder.getId()
 
     if authMemberId is not None:
         # Cas d'un utilisateur connecté
@@ -777,7 +790,7 @@ def getFilAriane(portal, folder, authMemberId, page=None):
         return liste
 
     if folder.getId().startswith("Examen"):
-        #print "jalon_utils/getFilAriane page = %s" % page
+        # print "jalon_utils/getFilAriane page = %s" % page
         if page in ["examen", "auto"]:
             liste.append({"titre": folder.Title(),
                           "icone": "fa fa-graduation-cap",
@@ -1052,11 +1065,14 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
             retour["titreElement"] = boite.Title()
             retour["descriptionElement"] = boite.Description().replace("\n", "<br/>")
             if typeElement == "AutoEvaluation":
-                retour["urlElement"] = "%s/%s/cours_wims_view?mode_etudiant=%s" % (context.absolute_url(), idElement, mode_etudiant)
+                retour["urlElement"] = "%s/%s/cours_wims_view?mode_etudiant=%s" % (
+                    context.absolute_url(), idElement, mode_etudiant)
             if typeElement == "BoiteDepot":
-                retour["urlElement"] = "%s/%s?mode_etudiant=%s" % (context.absolute_url(), idElement, mode_etudiant)
+                retour[
+                    "urlElement"] = "%s/%s?mode_etudiant=%s" % (context.absolute_url(), idElement, mode_etudiant)
             if typeElement == "Examen":
-                retour["urlElement"] = "%s/%s/cours_wims_view?mode_etudiant=%s" % (context.absolute_url(), idElement, mode_etudiant)
+                retour["urlElement"] = "%s/%s/cours_wims_view?mode_etudiant=%s" % (
+                    context.absolute_url(), idElement, mode_etudiant)
             if typeElement == "Forum":
                 retour["urlElement"] = "%s/%s?section=forum" % (context.absolute_url(), idElement)
             return retour
@@ -1114,7 +1130,8 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
             if typeElement in ["Presentationssonorisees", "Webconference"]:
                 retour["urlElement"] = element.getUrlEnr()
             if typeElement == "ExercicesWims":
-                retour["urlElement"] = "cours_autoevaluation_view?qexo=%s" % (int(indexElement) + 1)
+                retour["urlElement"] = "cours_autoevaluation_view?qexo=%s" % (
+                    int(indexElement) + 1)
             if typeElement in ["Lecteurexportable", "Video"]:
                 retour["urlElement"] = element.getLecteurExportable()
                 retour["auteurVideoElement"] = element.getVideoauteurname()

@@ -15,5 +15,4 @@
 //@codekit-prepend "static/jqueryui/plugins/jquery.ui.nestedSortable.js";
 //@codekit-prepend "static/tokeninput/jquery.tokeninput.js";
 //@codekit-prepend "../bower_components/jquery-mousewheel/jquery.mousewheel.js";
-//@codekit-prepend "../bower_components/php-date-formatter/js/php-date-formatter.js";
-//@codekit-prepend "../bower_components/datetimepicker/jquery.datetimepicker.js";
+//@codekit-prepend "../bower_components/datetimepicker/jquery.datetimepicker.full.js";
