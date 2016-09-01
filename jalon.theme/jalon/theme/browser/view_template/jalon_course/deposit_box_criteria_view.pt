@@ -150,7 +150,8 @@
                     </div>
                 </div>
 
-                <div class="formControls"
+                <!--div class="formControls"-->
+                <div class="text-center"
                      tal:define="crit_number repeat/index/number;
                                  crit_prev python:'%s' % (int(crit_number) - 1);
                                  crit_next python:'%s' % (int(crit_number) + 1);
