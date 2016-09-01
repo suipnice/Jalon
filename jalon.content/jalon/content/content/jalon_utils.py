@@ -94,7 +94,8 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                 # Si la creation de l'utilisateur plante, alors WIMS doit être indisponible.
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
-            rep = context.wims("authUser", {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "remote_addr": remote_addr})
+            # dico = {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "data1": remote_addr}
+            rep = context.wims("authUser", dico)
             rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
             # L'authentification du supervisor a planté => WIMS doit être indisponible.
