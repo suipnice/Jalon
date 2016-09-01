@@ -94,11 +94,11 @@ class Wims(SimpleItem):
                    "externe":                    "Exercice de la base WIMS"}
 
     def getWimsProperty(self, key):
-        u""" obtient les propriétés."""
+        u"""Obtient les propriétés."""
         return getattr(self, "%s" % key)
 
     def setProperties(self, form):
-        u""" modifie les propriétés."""
+        u"""Modifie les propriétés."""
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
@@ -106,7 +106,7 @@ class Wims(SimpleItem):
             setattr(self, "%s" % key, val.decode("utf-8"))
 
     def authUser(self, param):
-        """demande a Wims d'ouvrir une session pour un utilisateur."""
+        """Demande a Wims d'ouvrir une session pour un utilisateur."""
         # Cette fonction ne renvoit pas un json, car elle peux etre utilisée pour tester si un utilisateur existe.
         param["quser"] = self.validerUserID(param["quser"])
         param["job"] = "authUser"
@@ -115,14 +115,14 @@ class Wims(SimpleItem):
     security.declarePrivate('convertirDate')
 
     def convertirDate(self, d, us=False):
-        """convertit une date d au format us ou fr."""
+        """Convertit une date d au format us ou fr."""
         if not us:
             return DateTime(d).strftime("%d.%m.%Y - %Hh%M")
         else:
             return DateTime(d).strftime("%Y-%m-%d")
 
     def callJob(self, param):
-        """fonction d'appel generique des jobs du module adm/raw de Wims."""
+        """Appel generique des jobs du module adm/raw de Wims."""
         param["module"] = "adm/raw"
         param["ident"] = self.login
         param["passwd"] = self.password

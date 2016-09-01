@@ -32,7 +32,7 @@ LOG = getLogger('[jalon_utils]')
 
 
 def authUser(context, quser=None, qclass=None, request=None, session_keep=False):
-    u""" AuthUser WIMS : permet d'authentifier "quser" dans une classe wims "qclass".
+    u"""AuthUser WIMS : permet d'authentifier "quser" dans une classe wims "qclass".
 
     # request représente les parametres envoyés à la page (GET/POST)
     # session_keep permet de définir si on réutilise une eventuelle session wims existante ou pas.
@@ -47,7 +47,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             remote_addr = request['REMOTE_ADDR']
 
         if session_keep is True:
-            #Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
+            # Si session_keep=True et qu'une session wims était déjà ouverte, on la conserve.
             # Attention : ici il faudrait vérifier sur WIMS que la session ouverte était bien celle de l'utilisateur courant.
             wims_session = request.get('wims_session', None)
             if wims_session:
@@ -58,7 +58,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     rep = context.wims("authUser", dico)
     try:
         rep = json.loads(rep)
-        #rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "1ere identification de l'utilisateur %s." % quser, "requete": dico})
+        # rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "1ere identification de l'utilisateur %s." % quser, "requete": dico})
     except ValueError, e:
             rep = '{"status":"ERROR","exception_raised":"%s","message":"%s"}' % (string_for_json(rep), e)
             rep = json.loads(rep)
@@ -72,7 +72,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             if "in an exam session started on another IP" in rep["message"]:
                 message = _(u"Vous tentez de vous connecter à un examen commencé sur une machine différente.<br/>\n\
                 Veuillez retourner sur la machine où vous avez commencé votre examen pour pouvoir le finir.")
-                #mess_title = "Impossible d'accéder à cet examen."
+                # mess_title = "Impossible d'accéder à cet examen."
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
 
@@ -111,7 +111,7 @@ def string_for_json(self, chaine):
 
 
 def convertirDate(date):
-    """ convertir Date."""
+    """convertir Date."""
     return DateTime(date, datefmt='international').strftime("%d/%m/%Y %H:%M")
 
 
@@ -132,7 +132,7 @@ def encodeUTF8(itemAEncoder):
 
 
 def convertUTF8ToHTMLEntities(source):
-    u""" iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €."""
+    u"""iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €."""
     source = source.replace("€", "&euro;")
     source = source.replace("œ", "&oelig;")
     source = source.replace("’", "&rsquo;")
@@ -140,7 +140,7 @@ def convertUTF8ToHTMLEntities(source):
 
 
 def convertHTMLEntitiesToUTF8(source):
-    u""" Pour éviter d'avoir des erreur XML 'unrecognized entity', on reconvertit en UTF-8."""
+    u"""Pour éviter d'avoir des erreur XML 'unrecognized entity', on reconvertit en UTF-8."""
     source = source.replace("&euro;", "€")
     source = source.replace("&oelig;", "œ")
     source = source.replace("&rsquo;", "’")
@@ -148,7 +148,7 @@ def convertHTMLEntitiesToUTF8(source):
 
 
 def envoyerMail(form):
-    u""" envoie un email selon les parametres spécifiés."""
+    u"""envoie un email selon les parametres spécifiés."""
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
@@ -157,9 +157,9 @@ def envoyerMail(form):
     else:
         message = form["message"]
 
-    if not "de" in form:
+    if "de" not in form:
         form["de"] = portal.getProperty("email_from_address")
-    if not "a" in form:
+    if "a" not in form:
         if mail_properties["activer_email_erreur"]:
             form["a"] = mail_properties["adresse_email_erreur"]
         else:
@@ -181,25 +181,25 @@ def envoyerMail(form):
 
 
 def envoyerMailErreur(form):
-    u""" envoie un email de signalement d'erreur à l'administrateur."""
+    u"""envoie un email de signalement d'erreur à l'administrateur."""
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
     if mail_properties["activer_erreur"]:
-        if not "de" in form:
+        if "de" not in form:
             if mail_properties["activer_email_erreur"]:
                 form["de"] = mail_properties["adresse_email_erreur"]
             else:
                 form["de"] = portal.getProperty("email_from_address")
-        if not "a" in form:
+        if "a" not in form:
             if mail_properties["activer_email_erreur"]:
                 form["a"] = mail_properties["adresse_email_erreur"]
             else:
                 form["a"] = portal.getProperty("email_from_address")
 
         if "entry" in form:
-            #error_log = portal.error_log
-            #entries = error_log.getLogEntries()
+            # error_log = portal.error_log
+            # entries = error_log.getLogEntries()
 
             dico = {}
             entry = portal.error_log.getLogEntryById(form["entry"])
@@ -219,7 +219,7 @@ def envoyerMailErreur(form):
                 dico['request'] = entry['req_html']
 
                 text = "\n\n".join(["Traceback", dico['traceback'], "Request", dico['request']])
-            if (not "__ac" in text) or (not "__accas" in text):
+            if ("__ac" not in text) or ("__accas" not in text):
                 text = None
         else:
             text = form["message"]
@@ -275,8 +275,9 @@ def getClefsDico(dico):
     clefs.sort()
     return clefs
 
+
 def getIndividu(sesame, type=None, portal=None):
-    u""" getIndividu renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
+    u"""getIndividu renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
 
     # Si l'individu n'existe pas dans la base, il ne sera pas renvoyé.
     # si type="dict", les infos sont retraitées sous forme de dico.
@@ -293,7 +294,7 @@ def getIndividu(sesame, type=None, portal=None):
     individu = bdd.getIndividuLITE(sesame)
     if type == "dict":
         if individu:
-            #individu = individu[0]
+            # individu = individu[0]
             dico = {"sesame": sesame,
                     "nom": individu["LIB_NOM_PAT_IND"],
                     "prenom": individu["LIB_PR1_IND"],
@@ -316,7 +317,7 @@ def getIndividus(listeSesames, type=None, portal=None):
     if portal is None:
         portal = getUtility(IPloneSiteRoot)
     bdd = getToolByName(portal, 'portal_jalon_bdd')
-    #bdd = portal.portal_apogee
+    # bdd = portal.portal_apogee
     recherche = bdd.getIndividus(listeSesames)
     if not type:
         return recherche
@@ -369,7 +370,7 @@ def getDepotDate(data, sortable=False):
 
 
 def getPhotoTrombi(login):
-    #here.portal_membership.getPersonalPortrait(creator)
+    # here.portal_membership.getPersonalPortrait(creator)
     # à mettre en config admin
     req = urllib2.Request("http://camus.unice.fr/unicampus/images/Photos/%sApog0060931E.jpg" % login)
     req.add_header("Expires", "Mon, 26 Jul 1997 05:00:00 GMT")
@@ -418,16 +419,16 @@ def getInfosMembre(username):
     portal_membership = getToolByName(portal, "portal_membership")
     member = portal_membership.getMemberById(username)
     if member:
-        #LOG.info("member ok")
+        # LOG.info("member ok")
         fullname = member.getProperty("fullname")
-        #LOG.info("fullname : %s" % fullname)
+        # LOG.info("fullname : %s" % fullname)
         if not fullname:
             fullname = username
         email = member.getProperty("email")
         if not email:
             email = username
     else:
-        #LOG.info("not member")
+        # LOG.info("not member")
         fullname = email = str(username)
         if isLDAP():
             portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
@@ -460,7 +461,7 @@ def getInfosMembre(username):
 
 
 def getCourseUserFolder(context, user_id):
-    #LOG.info("----- getUserFolder -----")
+    # LOG.info("----- getUserFolder -----")
     portal = context.portal_url.getPortalObject()
     return getattr(portal.cours, user_id)
 
@@ -473,7 +474,7 @@ def rechercherUtilisateur(username, typeUser, match=False, isJson=True):
     portal_jalon_bdd = getToolByName(portal, "portal_jalon_bdd")
     retour = portal_jalon_bdd.rechercherUtilisateursByName(username, typeUser)
 
-    #Dans le cas ou l'enseignant n'existe pas dans la base de données,
+    # Dans le cas ou l'enseignant n'existe pas dans la base de données,
     # on effectue tout de même une recherche LDAP (si possible)
     if len(retour) < 1 and isLDAP() and typeUser == "Personnel":
         portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
@@ -486,7 +487,7 @@ def rechercherUtilisateur(username, typeUser, match=False, isJson=True):
         if schema == "eduPerson":
             retour = rechercherUserLDAPEduPerson(username, "displayName", "ldap-plugin", match)
 
-    #LOG.info("retour = %s" % retour)
+    # LOG.info("retour = %s" % retour)
 
     if isJson:
         return json.dumps(retour)
@@ -581,7 +582,7 @@ def isLDAP():
 
 
 def setTag(context, tag):
-    if not tag in context.Subject():
+    if tag not in context.Subject():
         tags = list(context.Subject())
         tags.append(tag)
         context.setSubject(tuple(tags))
@@ -707,7 +708,7 @@ def retirerEspace(mot):
 
 def getFilAriane(portal, folder, authMemberId, page=None):
     url_portal = portal.absolute_url()
-    #print "jalon_utils/getFilAriane folder.getId() = %s" %folder.getId()
+    # print "jalon_utils/getFilAriane folder.getId() = %s" %folder.getId()
 
     if authMemberId is not None:
         # Cas d'un utilisateur connecté
@@ -777,7 +778,7 @@ def getFilAriane(portal, folder, authMemberId, page=None):
         return liste
 
     if folder.getId().startswith("Examen"):
-        #print "jalon_utils/getFilAriane page = %s" % page
+        # print "jalon_utils/getFilAriane page = %s" % page
         if page in ["examen", "auto"]:
             liste.append({"titre": folder.Title(),
                           "icone": "fa fa-graduation-cap",
@@ -1125,7 +1126,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
                 retour["videothumbnail"] = element.getVideothumbnail()
             if typeElement == "Lienweb":
                 urlWEB = element.getURLWEB()
-                if not "://" in urlWEB:
+                if "://" not in urlWEB:
                     urlWEB = "http://%s" % urlWEB
                 retour["urlElement"] = urlWEB
             if typeElement == "CatalogueBU":
@@ -1138,7 +1139,7 @@ def getElementView(context, typeContext, idElement, createurElement=None, typeEl
 
 
 def getJalonMenu(context, portal_url, user, request):
-    #context.plone_log("***** getJalonMenu")
+    # context.plone_log("***** getJalonMenu")
     member_id = user.getId()
     is_etudiant = user.has_role(["Etudiant", "EtudiantJalon"])
     is_manager = user.has_role(["Manager"])
