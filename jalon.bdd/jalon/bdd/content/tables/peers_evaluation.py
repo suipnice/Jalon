@@ -16,7 +16,7 @@ class PeersEvaluationMySQL(Base):
     CRITERIA = Column(String(5))
     CRITERIA_DATE = Column(DateTime(True))
     CRITERIA_NOTE = Column(Integer)
-    CRITERIA_COMMENT = Column(String(300))
+    CRITERIA_COMMENT = Column(TEXT)
     FOR_AVG = Column(Boolean)
     UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CORRECTED_STU", "CRITERIA")
 

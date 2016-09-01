@@ -96,7 +96,7 @@
 <main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
       tal:define="gestion request/gestion | string:gestion_utilisateurs">
 
-    <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
         Message de session
     </metal:macro>
 

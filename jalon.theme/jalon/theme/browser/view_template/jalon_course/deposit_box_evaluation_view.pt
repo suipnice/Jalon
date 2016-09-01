@@ -43,7 +43,7 @@
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_view['criteria_dict'][index];
                                  criteria_id string:criteria${repeat/index/number};
-                                 criteria_list python:my_view['peer_evaluation'].get(int(index), [])"
+                                 criteria_list python:my_view['peer_evaluation'].get(index, [])"
                      tal:attributes="id criteria_id">
                 <h2>
                     <tal:replace replace="criteria/title"/> (coefficient : <tal:replace replace="criteria/coefficient"/>)

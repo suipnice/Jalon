@@ -266,7 +266,7 @@ def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, 
 
 def getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
-    peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE_FIRST, PE.CRITERIA_COMMENT_FIRST).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU)
+    peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU, PE.FOR_AVG == 1)
     #return convertirResultatBDD(peer_evaluation)
     return peer_evaluation
 
@@ -287,7 +287,7 @@ def getEvaluationByCorrectedAndDepositSTU(session, DEPOSIT_BOX, CORRECTED_STU, D
 
 def generatePeersAverage(session, DEPOSIT_BOX):
     PE = aliased(tables.PeersEvaluationMySQL)
-    peers_average = session.query(PE.DEPOSIT_STU, PE.CRITERIA, func.avg(PE.CRITERIA_NOTE).label("CRITERIA_AVG")).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX).group_by(PE.DEPOSIT_STU, PE.CRITERIA)
+    peers_average = session.query(PE.DEPOSIT_STU, PE.CRITERIA, func.avg(PE.CRITERIA_NOTE).label("CRITERIA_AVG")).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.FOR_AVG == 1).group_by(PE.DEPOSIT_STU, PE.CRITERIA)
     #return convertirResultatBDD(peers_average)
     return peers_average
 
