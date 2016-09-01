@@ -2134,6 +2134,35 @@ $activatorSwitch-height: 2rem;
 // Retour à la ligne forcé
 .break-word { word-wrap: break-word; }
 
+// Listes de définitions
+dl.deflist {
+    overflow: hidden;
+    position: relative;
+    font-size: .8rem;
+    line-height: 1;
+
+    dt {
+        float: left;
+        width: 39%;
+        clear: both;
+        padding: 0;
+        position: relative;
+        font-weight: normal;
+        font-style: italic;
+    }
+
+    dd {
+        float: right;
+        width: 60%;
+        padding: 0;
+        font-weight: bold;
+    }
+
+    dd + dd {
+        margin-top: -.4rem;
+    }
+}
+
 // Lien Adobe Connect
 #connect {
     target-name: new;
