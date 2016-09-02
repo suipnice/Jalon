@@ -98,9 +98,9 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             rep = context.wims("authUser", dico)
             rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
-            # L'authentification du supervisor a planté => WIMS doit être indisponible.
+            # L'authentification du supervisor a planté => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            return user
+            return None
     rep["url_connexion"] = url_connexion
     return rep
 
