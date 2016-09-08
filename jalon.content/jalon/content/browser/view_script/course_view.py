@@ -84,7 +84,7 @@ class CourseView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getCourseView(self, user, mode_etudiant):
-        LOG.info("----- getCourseView (Start) -----")
+        # LOG.info("----- getCourseView (Start) -----")
         portal = self.context.portal_url.getPortalObject()
 
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
@@ -206,7 +206,7 @@ class CourseView(BrowserView):
             my_view["course_news_title"] = "Les 3 dernières nouveautés du cours"
 
         my_view["course_announce"] = self.context.getAnnonces(user, mode_etudiant, False)
-        LOG.info("***** course_announce : %s" % str(my_view["course_announce"]))
+        # LOG.info("***** course_announce : %s" % str(my_view["course_announce"]))
         my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-annonces",
                                                  "tab_number": my_view["course_announce"]["nbAnnonces"],
                                                  "tab_icon":   "fa fa-bullhorn fa-2x",
@@ -218,7 +218,7 @@ class CourseView(BrowserView):
                                                  "tab_icon":   "fa fa-comments fa-2x",
                                                  "tab_name":   "Forums"})
 
-        LOG.info("----- getCourseView (End) -----")
+        # LOG.info("----- getCourseView (End) -----")
         return my_view
 
     def getCourseItemAdderList(self, course_link, course_path, portal):

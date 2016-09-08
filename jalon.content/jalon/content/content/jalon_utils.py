@@ -684,7 +684,7 @@ def jalon_urlencode(chaine):
 
 
 def isAfficherElement(affElement, masquerElement):
-    LOG.info("***** affElement : %s" % affElement)
+    # LOG.info("***** affElement : %s" % affElement)
     if not affElement:
         return {"val": 0, "icon": "fa-eye-slash", "legende": "Masqué"}
     if cmp(DateTime(), affElement) == -1:
