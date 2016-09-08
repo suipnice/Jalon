@@ -41,18 +41,21 @@ class PeersAverageMySQL(Base):
     DEPOSIT_BOX = Column(String(50))
     DEPOSIT_STU = Column(String(50))
     CRITERIA = Column(String(5))
-    CRITERIA_STATE = Column(Boolean)
+    CRITERIA_CODE = Column(Integer)
+    # 1 : OK ; 2 : Pas assez d'évaluation ; 3 : MARGE du critère dépassée
+    CRITERIA_VALUE = Column(TEXT)
     CRITERIA_DATE = Column(DateTime(True))
     CRITERIA_AVERAGE = Column(Float)
     CRITERIA_NOTE_T = Column(Integer)
     CRITERIA_COMMENT_T = Column(TEXT)
     UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CRITERIA")
 
-    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_STATE=False, CRITERIA_DATE=None, CRITERIA_AVERAGE=0, CRITERIA_NOTE_T=0, CRITERIA_COMMENT_T=""):
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE=0, CRITERIA_VALUE=None, CRITERIA_DATE=None, CRITERIA_AVERAGE=0, CRITERIA_NOTE_T=0, CRITERIA_COMMENT_T=""):
         self.DEPOSIT_BOX = DEPOSIT_BOX
         self.DEPOSIT_STU = DEPOSIT_STU
         self.CRITERIA = CRITERIA
-        self.CRITERIA_STATE = CRITERIA_STATE
+        self.CRITERIA_CODE = CRITERIA_CODE
+        self.CRITERIA_VALUE = CRITERIA_VALUE
         self.CRITERIA_DATE = CRITERIA_DATE
         self.CRITERIA_AVERAGE = CRITERIA_AVERAGE
         self.CRITERIA_NOTE_T = CRITERIA_NOTE_T

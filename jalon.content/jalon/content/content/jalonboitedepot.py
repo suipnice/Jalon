@@ -1468,7 +1468,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         index = 1
         evaluation = {}
         criteria_evaluated_dict = {}
-        seconde_evaluation = ""
         peers_evaluations = self.getPeersDict(user_id)
 
         if not deposit_id:
@@ -1510,9 +1509,64 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         for deposit_brain in deposit_files:
             if deposit_brain.getActif:
                 deposit_link = deposit_brain.getURL()
-        return {"deposit_link":   "%s/at_download/file" % deposit_link,
+
+        jalon_bdd = self.portal_jalon_bdd
+        evaluation = jalon_bdd.getPeerEvaluation(self.getId(), student_id)
+        average = jalon_bdd.getPeerAverage(self.getId(), student_id)
+
+        criteria_avg = {}
+        evaluation_number = self.getNombreCorrection()
+        for average_dict in average.all():
+            criteria_error = False
+            criteria_text = ""
+            criteria_value = []
+            if average_dict[2] == 2:
+                criteria_error = True
+                criteria_text = "Nombre d'évaluation attendu insuffisant : %s sur %s" % (criteria_value, evaluation_number)
+            if average_dict[2] == 3:
+                criteria_error = True
+                criteria_text = "Marge dépassée entre la note minimum et la note maximal"
+                criteria_value = average_dict[3].split(";")
+            criteria_avg[average_dict[0]] = {"criteria_avg":     average_dict[1],
+                                             "criteria_value":   criteria_value,
+                                             "criteria_error":   criteria_error,
+                                             "criteria_text":    criteria_text,
+                                             "criteria_note":    average_dict[-2],
+                                             "criteria_comment": average_dict[-1]}
+        LOG.info("***** criteria_avg : %s" % str(criteria_avg))
+
+        criteria_eval = {}
+        corrected_stu_dict = {}
+        portal = self.portal_url.getPortalObject()
+        for evaluation_dict in evaluation.all():
+            if not evaluation_dict[1] in corrected_stu_dict:
+                student = self.getIndividu(evaluation_dict[1], "dict", portal)
+                if student:
+                    corrected_stu_dict[evaluation_dict[1]] = "%s %s" % (student["nom"].upper(), student["prenom"].capitalize())
+                else:
+                    corrected_stu_dict[evaluation_dict[1]] = evaluation_dict[1]
+
+            criteria_error = True if str(evaluation_dict[2]) in criteria_avg[evaluation_dict[0]]["criteria_value"] else False
+
+            try:
+                criteria_eval[evaluation_dict[0]].append({"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
+                                                          "criteria_note":    evaluation_dict[2],
+                                                          "criteria_comment": evaluation_dict[3],
+                                                          "criteria_error":   criteria_error})
+            except:
+                criteria_eval[evaluation_dict[0]] = [{"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
+                                                      "criteria_note":    evaluation_dict[2],
+                                                      "criteria_comment": evaluation_dict[3],
+                                                      "criteria_error":   criteria_error}]
+        LOG.info("***** criteria_eval : %s" % str(criteria_eval))
+
+        student = self.getIndividu(student_id, "dict")
+        return {"student_name":   "%s %s" % (student["nom"].upper(), student["prenom"].capitalize()),
+                "deposit_link":   "%s/at_download/file" % deposit_link,
                 "criteria_dict":  self.getCriteriaDict(),
                 "criteria_order": self.getCriteriaOrder(),
+                "criteria_eval":  criteria_eval,
+                "criteria_avg":   criteria_avg,
                 "form_link":      "%s/evaluate_deposit_file_form" % self.absolute_url()}
 
     def getEvaluateBreadcrumbs(self):
@@ -1577,9 +1631,24 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def setAveragePeer(self):
         LOG.info("----- setAveragePeer -----")
         jalon_bdd = self.portal_jalon_bdd
-        average_list = jalon_bdd.generatePeersAverage(self.getId())
-        for average in average_list.all():
-            jalon_bdd.setAveragePeer(self.getId(), average[0], int(average[1]), True, int(average[2]), 0, "")
+        criteria_dict = self.getCriteriaDict()
+        correction_number = self.getNombreCorrection()
+        average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
+        for average in average_list:
+            LOG.info("***** average : %s" % str(average))
+            criteria_data = criteria_dict[average[1]]
+            if average[2] < correction_number:
+                criteria_code = 2
+                criteria_value = average[3]
+            elif average[-1] - average[-2] >= int(criteria_data["gap"]):
+                criteria_code = 3
+                criteria_value = "%s;%s" % (average[-1], average[-2])
+            else:
+                criteria_code = 1
+                criteria_value = None
+            LOG.info("***** criteria_code : %s" % str(criteria_code))
+            LOG.info("***** criteria_value : %s" % str(criteria_value))
+            jalon_bdd.setAveragePeer(self.getId(), average[0], int(average[1]), criteria_code, criteria_value, average[2], 0, "")
 
     def getAveragePeer(self):
         LOG.info("----- getAveragePeer -----")
@@ -1634,5 +1703,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getInfosMembre(self, etudiant_id):
         return jalon_utils.getInfosMembre(etudiant_id)
+
+    def getIndividu(self, sesame, data_type=None, portal=None):
+        return jalon_utils.getIndividu(sesame, data_type, portal)
 
 registerATCT(JalonBoiteDepot, PROJECTNAME)
