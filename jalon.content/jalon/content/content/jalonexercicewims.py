@@ -609,7 +609,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
             retour = json.loads(fichier)
-            # LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
 
@@ -628,7 +628,16 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # LOG.info("[getExoWims] modele = %s" % modele)
         # Il faudra faire un traitement specifique aux exercices externes ici
         if modele == "externe":
-            return {"status": "OK"}
+            if "permalink" in requete :
+                # Cas où on recharge la page de modification (permalien incorrect).
+                LOG.error("[getExoWims] PERMALINK = %s" % requete["permalink"])
+                return requete
+            else:
+                if self.permalink != "":
+                    displayed_permalink = "%s?%s&cmd=new" % (self.getUrlServeur(), self.permalink)
+                else:
+                    displayed_permalink = ""
+                return {"status": "OK", "permalink": displayed_permalink}
         # Cas où on recharge la page de modification (un parametre doit etre manquant).
         # on recharge alors simplement le formulaire precedent.
         if "option" in requete and requete["option"] == "force_rewrite":
@@ -956,6 +965,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         """
         new_permalink = ""
+        message = ""
         # On applique un ensemble de filtre pour éviter que des utilisateurs collent des liens mal formés, du style
         # http://ticewims.unice.fr/wims/wims.cgi?module=local/qcmC2i.fr" title="
         # ==> sera remplacé par
@@ -963,9 +973,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # strip retire les espace avant/apres, split[0] coupe au premier espace, et split('"') ne prend que ce qui se trouve avant un guillemet
         new_permalink = permalien.strip().split()[0].split('"')[0]
 
-        message = _(u"Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement.")
+        test_string = "http://"
+        if new_permalink.count(test_string) > 1:
+            # We take only the last URL.
+            new_permalink = "%s%s" % (test_string, new_permalink.split(test_string)[-1])
+            message = _(u"Un exercice ne peux avoir qu'un seul permalien.<br/>")
+
         if new_permalink != permalien:
-            self.plone_utils.addPortalMessage(message, type='warning')
+            message = message + _(u"Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement.")
 
         url = urlparse(new_permalink)
         params = {}
@@ -979,10 +994,17 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     params[variable[0]] = params[variable[0]] + "," + variable[1]
         if "module" in params.keys():
             new_permalink = "module=%s" % params['module']
-            for key in params.keys():
+            for key in sorted(params.iterkeys()):
                 if key not in ['cmd', 'session', 'module']:
                     new_permalink = "%s&%s=%s" % (new_permalink, key, params[key])
-        return new_permalink
+            if message != "":
+                self.plone_utils.addPortalMessage(message, type='warning')
+            return new_permalink
+        else:
+            message = _(u"Permalien incorrect. Assurez-vous de coller un permalien correct svp.")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            # Dans ce cas, l'exercice ne sera pas modifié.
+            return ""
 
     def addRelatedItem(self, item_a_ajouter):
         u"""Ajoute un objet aux relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""

@@ -228,7 +228,7 @@ class Wims(SimpleItem):
         # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
         # dans la classe, mais seulement dans un bac à sable pour compilation.
 
-        #data = self.getAttribut(param["modele"])
+        # data = self.getAttribut(param["modele"])
 
         if "sandbox" in param:
             job = "testexo"
@@ -236,17 +236,17 @@ class Wims(SimpleItem):
         else:
             job = "addexo"
 
-        #LOG.info("[creerExercice] param[source]=\n%s"%param["source"])
+        # LOG.info("[creerExercice] param[source]=\n%s"%param["source"])
         dico = {"job": job, "code": param["authMember"], "data1": param["source"], "qexo": param["qexo"], "qclass": param["qclass"]}
         if "option" in param:
             dico["option"] = param["option"]
-        #try:
+        # try:
         result = self.verifierRetourWims({"rep": self.callJob(dico), "fonction": "jalon.wims/utility.py/creerExercice", "requete": dico})
-        #if job == "testexo":
+        # if job == "testexo":
         #    del param["data_q"]
 
-        #except:
-        #result={"status" : "ERROR","type": "JSON_DECODING", "infos":sys.exc_info()[0]}
+        # except:
+        # result={"status" : "ERROR","type": "JSON_DECODING", "infos":sys.exc_info()[0]}
         return result
 
     def creerFeuille(self, param):

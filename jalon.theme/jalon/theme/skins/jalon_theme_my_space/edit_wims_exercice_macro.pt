@@ -176,13 +176,6 @@
 
 <metal:macro define-macro="edit_wims_exercice_externe">
 
-    <div class="alert-box warning radius"
-         tal:condition="errors">
-        <span i18n:translate="">Des erreurs se sont glissées dans votre demande : l'exercice n'a pas été sauvegardé.</span><br />
-        <tal:block i18n:translate="" tal:condition="not:errors/syntax_error|nothing">Veuillez compléter les champs requis svp.</tal:block>
-        <a class="close"></a>
-    </div>
-
     <div id="wims_modules" tal:define="
              module_path request/module_path | nothing;
              qclass python:'%s_1' % context.getComplement();
@@ -332,7 +325,7 @@
                          i18n:attributes="placeholder"
                          aria-describedby="title_help" />
                 </div>
-                <div tal:define="permalink context/permalink | nothing;
+                <div tal:define="permalink QCM_parsed/permalink | nothing;
                                  error errors/permalink | nothing;
                                  arch_class string:panel radius ArchetypesStringWidget kssattr-atfieldname-permalink;"
                      tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
@@ -342,7 +335,7 @@
                     <input type="url" name="permalink" id="permalink"
                            required="required"
                            placeholder="Collez ici le permalien de l'exercice" i18n:attributes="placeholder"
-                           tal:attributes="value string:${param_wims/url_connexion}?${permalink}&amp;cmd=new"
+                           tal:attributes="value permalink"
                            aria-describedby="permalink_help" />
                 </div>
                 <p class="formHelp" i18n:translate="">NB : si vous avez déja placé cet exercice dans une activité d'un cours, ce dernier ne sera pas affecté par une modification du permalien.</p>
