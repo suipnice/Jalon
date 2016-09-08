@@ -189,8 +189,10 @@ class MyCoursesView(BrowserView):
         authors_dict = {}
         for course_brain in courses_list:
             if not course_brain.getId in courses_ids_list:
-                if not tab in ["1", "5"]:
-                    if (not member_id in course_brain.Subject) and (not member_id in course_brain.getArchive):
+                #if not tab in ["1", "5"]:
+                if not tab == "5":
+                    #if (not member_id in course_brain.Subject) and (not member_id in course_brain.getArchive):
+                    if not member_id in course_brain.getArchive:
                         courses_list_filter.append(
                             self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
                 else:
@@ -271,6 +273,8 @@ class MyCoursesView(BrowserView):
                         #    pass
                         #course_data["course_access"] = course_access_list
                         course_list.append(course_data)
+                        course_authorized_list.append(course_data["course_id"])
+                        self.request.SESSION.set("course_authorized_list", course_authorized_list)
                     diploma_list.append({"diploma_name":        user_diploma_data[0],
                                          "diploma_course_list": course_list})
         else:

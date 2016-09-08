@@ -12,7 +12,8 @@
             tal:define="errors options/state/getErrors | nothing;
                         student_id request/student_id | nothing;
                         mode_etudiant_request request/mode_etudiant | nothing;
-                        my_form python:context.getEvaluateDepositFileForm(user, mode_etudiant_request, student_id);
+                        deposit_id request/deposit_id | nothing;
+                        my_form python:context.getEvaluateDepositFileForm(user, mode_etudiant_request, student_id, deposit_id);
                         mode_etudiant my_form/mode_etudiant">
 
     <tal:define define="breadcrumbs my_form/breadcrumbs">

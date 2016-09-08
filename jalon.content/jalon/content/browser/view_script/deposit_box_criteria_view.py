@@ -46,12 +46,14 @@ class DepositBoxCriteriaView(BrowserView):
         deposit_box = self.context
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
+        is_grid_access = True if deposit_box.getAccesGrille() or is_personnel else False
         my_view = {"is_anonymous":        self.isAnonymous(),
                    "deposit_box_link":    deposit_box.absolute_url(),
                    "is_depot_actif":      True,
                    "is_correction_actif": True,
                    "is_personnel":        is_personnel,
-                   "mode_etudiant":       mode_etudiant}
+                   "mode_etudiant":       mode_etudiant,
+                   "is_grid_access":      is_grid_access}
 
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()

@@ -154,7 +154,7 @@ class JalonBDD(SimpleItem):
             #tables.IndividuMySQL.__table__.create(bind=engine)
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
-            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
             tables.PeersAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
@@ -1434,21 +1434,33 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU)
 
+    def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
+
+    def getEvaluationByCorrectedSTU(self, DEPOSIT_BOX, CORRECTED_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU)
+
+    def getEvaluationByCorrectedAndDepositSTU(self, DEPOSIT_BOX, CORRECTED_STU, DEPOSIT_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getEvaluationByCorrectedAndDepositSTU(session, DEPOSIT_BOX, CORRECTED_STU, DEPOSIT_STU)
+
     def generatePeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()
         return jalon_mysql.generatePeersAverage(session, DEPOSIT_BOX)
 
-    def setAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_STATE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
+    def setAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
         session = self.getSessionMySQL()
-        jalon_mysql.setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_STATE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
+        jalon_mysql.setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
 
     def getPeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeersAverage(session, DEPOSIT_BOX)
 
-    def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
-        session = self.getSessionMySQL()
-        return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
+    #def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
+    #    session = self.getSessionMySQL()
+    #    return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
 
     #-----------------------#
     # Fonctions utilitaires #

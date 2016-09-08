@@ -21,7 +21,7 @@
     Localisation datetimepicker
 */
 
-jQuery.datetimepicker.setLocale('fr');
+$.datetimepicker.setLocale('fr');
 
 
 /***************************************************************************************************

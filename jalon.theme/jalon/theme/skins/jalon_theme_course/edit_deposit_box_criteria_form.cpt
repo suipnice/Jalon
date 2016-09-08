@@ -78,7 +78,7 @@
             <input type="number" name="gap" min="0" max="5"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/gap | crietria_dict/gap | string:1"/>
+                                   value request/gap | crietria_dict/gap | string:3"/>
         </div>
 
         <div id="archetypes-fieldname-comment"

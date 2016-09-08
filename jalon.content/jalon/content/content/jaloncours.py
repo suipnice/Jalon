@@ -357,6 +357,7 @@ class JalonCours(ATFolder):
                 return True
         if not self.getId() in request.SESSION.get("course_authorized_list", []):
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
+        #return True
 
     def getLastLogin(self):
         LOG.info("----- getLastLogin -----")
@@ -1404,6 +1405,7 @@ class JalonCours(ATFolder):
 
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
+        return activity_id
 
     def detachCourseItem(self, item_id, item_creator, folder_id):
         LOG.info("----- detachCourseItem -----")

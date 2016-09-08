@@ -26,7 +26,7 @@ for tmp in criteria_order:
         state.setError(criteria_comment, _(u"Champ obligatoire"), "%s_required" % criteria_comment)
         error = True
         error_index.append(str(index))
-    if int(form[criteria_note]) < 1  or int(form[criteria_note]) > int(form[criteria_note_max]):
+    if int(form[criteria_note]) < 0  or int(form[criteria_note]) > int(form[criteria_note_max]):
         state.setError(criteria_note, _(u"Note invalide"), "%s_required" % criteria_note)
         error = True
         if not index in error_index: error_index.append(str(index))

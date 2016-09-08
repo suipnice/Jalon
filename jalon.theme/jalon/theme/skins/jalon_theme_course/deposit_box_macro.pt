@@ -21,14 +21,22 @@
         </li>
     </ul>
     </tal:condition>
+    <tal:condition condition="not:my_view/is_personnel">
     <a tal:attributes="href string:${context/absolute_url}/deposit_file_form"
        title="Déposer un fichier" class="button small radius right"
        data-reveal-id="reveal-main" data-reveal-ajax="true"
-       tal:condition="python:not my_view['is_personnel'] and my_view['is_authorized_deposit']"
+       tal:condition="my_view/is_authorized_deposit"
        i18n:translate="">
         <i class="fa fa-download"></i>
         <tal:block i18n:translate="">Déposer un fichier</tal:block>
     </a>
+    <tal:on-error on-error="nothing">
+    <a tal:attributes="href my_view/grid_link" class="button small radius right">
+        <i class="fa fa-th" aria-hidden="true"></i>
+        Grille d'évaluation
+    </a>
+    </tal:on-error>
+    </tal:condition>
     <h2>
         <i class="fa fa-download"></i><tal:block replace="dico_depots/table_title"
                                                  i18n:translate=""/>
@@ -135,11 +143,7 @@
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
     <tal:condition condition="my_view/is_personnel">
-    <a class="right"
-       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
-        <i tal:attributes="class evaluation_by_peers_dict/gride_button"></i>
-    </a>
-    <!--a class="dropdown right"
+    <a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
         <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
     </a>
@@ -152,14 +156,9 @@
                                                                                       i18n:translate=""/>
             </a>
         </li>
-    </ul-->
+    </ul>
     </tal:condition>
     <h2>
-        <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button tiny radius right"
-           tal:condition="not:my_view/is_personnel">
-            <i class="fa fa-check-square-o" aria-hidden="true"></i>
-            Évaluer
-        </a>
         <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
                                                  i18n:translate=""/>
     </h2>
@@ -170,12 +169,23 @@
         <span tal:content="structure my_view/is_authorized_deposit_text"/>
     </div>
 
-    <div class="panel callout radius" tal:condition="not:criteria_dict"
+    <tal:condition condition="not:criteria_dict">
+    <div class="panel callout radius" 
          i18n:translate="">
         La grille d'évaluation ne contient aucun critère.
     </div>
+    <a class="button expand radius"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
+       <i class="fa fa-th"></i>Accèder à la grille d'évaluation
+    </a>
+    </tal:condition>
 
     <tal:condition condition="criteria_dict">
+        <a class="button expand radius"
+           tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view"
+           tal:condition="my_view/is_personnel">
+           <i class="fa fa-th"></i>Accèder à la grille d'évaluation
+        </a>
         <metal:macro use-macro="python:context.deposit_box_macro.macros.get(evaluation_by_peers_dict['macro_peers'])"/>
     </tal:condition>
     </tal:define>
@@ -244,8 +254,71 @@
 </metal:macro>
 
 <!--
-    Évaluation par les pairs Liste role Étudiant
+    Évaluation par les pairs Liste role Étudiant V1
 -->
+<metal:macro define-macro="peers_student_macro">
+    <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius"
+       tal:condition="evaluation_by_peers_dict/evaluate_button">
+        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        <tal:replace replace="evaluation_by_peers_dict/evaluate_button_name"/>
+    </a>
+    <!--div class="panel callout radius">
+        Vous avez évalué tous les dépôts.
+    </div-->
+    <h2>
+        <i class="fa fa-check-square-o"></i>
+        Dépôt(s) évalué(s)
+    </h2>
+    <div class="panel callout radius"
+         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
+    <table summary="Liste des dépôts évalués">
+    <thead>
+        <tr>
+            <th class="sort has-tip" data-tooltip data-sort="depot"
+                title="Cliquer pour trier selon le dépôt"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Dépôt</tal:block>
+                </span>
+            </th>
+            <th class="sort has-tip" data-tooltip data-sort="note"
+                title="Cliquer pour trier selon la note"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Note</tal:block>
+                </span>
+            </th>
+            <th class="show-for-medium-up has-tip" title="Action"
+                i18n:attributes="title">
+                <tal:block i18n:translate="">Réévaluer</tal:block>
+            </th>
+        </tr>
+    </thead>
+    <tfoot></tfoot>
+    <tbody class="list">
+        <tr tal:repeat="number evaluation_by_peers_dict/corrected_evaluation_list">
+            <td>
+                Dépôts n°<tal:replace replace="number"/>
+            </td>
+            <td>Non renseignée</td>
+            <td>
+                <a class="button small radius"
+                tal:attributes="href string:${evaluation_by_peers_dict/evaluate_link}&amp;deposit_id=${repeat/number/index}">
+                    <i class="fa fa-check-square-o"></i>Réévaluer
+                </a>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+</metal:macro>
+<!--
+    Évaluation par les pairs Liste role Étudiant V1
 <metal:macro define-macro="peers_student_macro">
     <div class="panel callout radius"
          tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
@@ -273,18 +346,23 @@
         </thead>
         <tfoot></tfoot>
         <tbody class="list"
-               tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+               tal:define="corrected_evaluations_dict evaluation_by_peers_dict/corrected_evaluations_dict">
             <tr tal:repeat="index evaluation_by_peers_dict/criteria_order">
+                <tal:define define="crtieria_evaluations_dict python:corrected_evaluations_dict[index]">
                 <td class="criteria"
                     tal:define="criteria python:criteria_dict[index]">
                     <span class="hide" tal:content="criteria/title" />
                     <tal:replace replace="criteria/title" />
                 </td>
-            <tal:repeat repeat="peer evaluation_by_peers_dict/peers_evaluations">
-                <td>VIDE</td>
-            </tal:repeat>
+                <td tal:repeat="peer_dict evaluation_by_peers_dict/peers_evaluations">
+                    <tal:replace replace="python:crtieria_evaluations_dict[peer_dict['peer']]"
+                                 on-error="string:Non évalué"/>
+                </td>
+                </tal:define>
             </tr>
         </tbody>
         </table>
     </div>
 </metal:macro>
+
+-->
