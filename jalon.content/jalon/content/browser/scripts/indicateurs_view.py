@@ -273,7 +273,7 @@ class IndicateursView(BrowserView):
                     {"css_class": "button radius%s" % (" selected" if box == "2" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=3&box=2" % cours_url,
                      "icon":      "fa-gamepad",
-                     "link_text": "Auto-évaluation WIMS"},
+                     "link_text": "Entrainement WIMS"},
                     {"css_class": "button radius%s" % (" selected" if box == "3" else " off"),
                      "link_url":  "%s/cours_indicateurs_view?onglet=3&box=3" % cours_url,
                      "icon":      "fa-graduation-cap",

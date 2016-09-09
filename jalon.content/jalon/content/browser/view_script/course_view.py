@@ -288,7 +288,7 @@ class CourseView(BrowserView):
         if my_space["activer_exercices_wims"]:
             item_adder_list["activity"].append({"item_link": "%s/add_course_activity_form?activity_type=2" % course_link,
                                                 "item_icon": "fa fa-fw fa-gamepad",
-                                                "item_name": "Auto évaluation WIMS"})
+                                                "item_name": "Entrainement WIMS"})
             item_adder_list["activity"].append({"item_link": "%s/add_course_activity_form?activity_type=3" % course_link,
                                                 "item_icon": "fa fa-fw fa-graduation-cap",
                                                 "item_name": "Examen WIMS"})

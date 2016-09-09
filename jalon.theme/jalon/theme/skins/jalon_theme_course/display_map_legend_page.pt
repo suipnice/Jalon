@@ -26,7 +26,7 @@
         <dl class="typeElement type_Activite">
             <dt i18n:translate="">Activité pédagogique</dt>
                 <dd class="typeexamen" i18n:translate="">Examen</dd>
-                <dd class="typeautoevaluation" i18n:translate="">Auto-évaluation</dd>
+                <dd class="typeautoevaluation" i18n:translate="">Entrainement</dd>
                 <dd class="typeboitedepot" i18n:translate="">Boite de dépôt</dd>
                 <dd class="typesallevirtuelle" i18n:translate="">Salle virtuelle</dd>
         </dl>

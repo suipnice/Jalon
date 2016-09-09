@@ -260,7 +260,7 @@ class JalonCours(ATFolder):
                             "activity_title":       "Boite de dépots",
                             "activity_portal_type": "JalonBoiteDepot"},
                       "2": {"activity_id":          "AutoEvaluation",
-                            "activity_title":       "Auto-évaluation WIMS",
+                            "activity_title":       "Entrainement WIMS",
                             "activity_portal_type": "JalonCoursWims"},
                       "3": {"activity_id":          "Examen",
                             "activity_title":       "Examen WIMS",
