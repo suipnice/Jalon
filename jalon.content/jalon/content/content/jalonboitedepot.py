@@ -1517,19 +1517,24 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_avg = {}
         evaluation_number = self.getNombreCorrection()
         for average_dict in average.all():
+            LOG.info("***** average_dict : %s" % str(average_dict[0]))
             criteria_error = False
             criteria_text = ""
+            criteria_style = ""
             criteria_value = []
             if average_dict[2] == 2:
                 criteria_error = True
+                criteria_style = "color: #f04124;"
                 criteria_text = "Nombre d'évaluation attendu insuffisant : %s sur %s" % (criteria_value, evaluation_number)
             if average_dict[2] == 3:
                 criteria_error = True
-                criteria_text = "Marge dépassée entre la note minimum et la note maximal"
+                criteria_style = "color: #f04124;"
+                criteria_text = "Marge dépassée entre la note minimale et la note maximale"
                 criteria_value = average_dict[3].split(";")
             criteria_avg[average_dict[0]] = {"criteria_avg":     average_dict[1],
                                              "criteria_value":   criteria_value,
                                              "criteria_error":   criteria_error,
+                                             "criteria_style":   criteria_style,
                                              "criteria_text":    criteria_text,
                                              "criteria_note":    average_dict[-2],
                                              "criteria_comment": average_dict[-1]}
@@ -1547,17 +1552,19 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     corrected_stu_dict[evaluation_dict[1]] = evaluation_dict[1]
 
             criteria_error = True if str(evaluation_dict[2]) in criteria_avg[evaluation_dict[0]]["criteria_value"] else False
-
+            criteria_style = "color: #f04124;" if criteria_error else ""
             try:
                 criteria_eval[evaluation_dict[0]].append({"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
                                                           "criteria_note":    evaluation_dict[2],
                                                           "criteria_comment": evaluation_dict[3],
-                                                          "criteria_error":   criteria_error})
+                                                          "criteria_error":   criteria_error,
+                                                          "criteria_style":   criteria_style})
             except:
                 criteria_eval[evaluation_dict[0]] = [{"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
                                                       "criteria_note":    evaluation_dict[2],
                                                       "criteria_comment": evaluation_dict[3],
-                                                      "criteria_error":   criteria_error}]
+                                                      "criteria_error":   criteria_error,
+                                                      "criteria_style":   criteria_style}]
         LOG.info("***** criteria_eval : %s" % str(criteria_eval))
 
         student = self.getIndividu(student_id, "dict")

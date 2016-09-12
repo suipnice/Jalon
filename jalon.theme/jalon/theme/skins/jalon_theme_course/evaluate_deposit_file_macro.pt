@@ -139,8 +139,11 @@
         <li class="tab-title" role="presentation">
             <a role="tab" tabindex="0" aria-selected="true"
                tal:attributes="href string:#criteria${repeat/index/number};
-                               aria-controls string:#criteria${repeat/index/number}"
-               tal:content="string:Critère ${repeat/index/number}"/>
+                               aria-controls string:#criteria${repeat/index/number}">
+                <i class="fa fa-exclamation-triangle alert"
+                   tal:condition="python:my_evaluate_form['criteria_avg'][index]['criteria_error']"></i>
+                <tal:replace replace="string:Critère ${repeat/index/number}"/>
+            </a>
         </li>
         </tal:repeat>
     </ul>
@@ -156,6 +159,7 @@
             <tal:repeat repeat="index my_evaluate_form/criteria_order">
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
+                                 criteria_avg python:my_evaluate_form['criteria_avg'][index];
                                  criteria_id string:criteria${repeat/index/number};
                                  evaluation_list python:my_evaluate_form['criteria_eval'].get(index, [])"
                      tal:attributes="id criteria_id">
@@ -165,13 +169,19 @@
                 <div class="panel callout radius"
                      tal:content="criteria/description"/>
                 <div>Marge d'alerte : <tal:replace replace="criteria/gap"/> point(s)</div>
-                <div>Moyenne du critère : <strong style="color: #f04124;">5,8</strong></div>
+                <div>Moyenne du critère : <strong tal:attributes="style criteria_avg/criteria_style">5,8</strong></div>
+                <div class="panel warning radius"
+                     tal:condition="criteria_avg/criteria_error">
+                     <i class="fa fa-exclamation-triangle alert"></i>
+                     <tal:replace replace="criteria_avg/criteria_text"/>
+                </div>
                 <h2 tal:condition="evaluation_list">
                     Évaluation des étudiants
                 </h2>
                 <div tal:repeat="evaluation evaluation_list">
-                    <h3 style="color: #f04124;">
-                        <i class="fa fa-exclamation-triangle alert"></i>Évaluation de <tal:replace replace="evaluation/corrected_stu"/> : <tal:replace replace="evaluation/criteria_note"/> point(s)
+                    <h3 tal:attributes="style evaluation/criteria_style">
+                        <i class="fa fa-exclamation-triangle alert"
+                           tal:condition="evaluation/criteria_error"></i>Évaluation de <tal:replace replace="evaluation/corrected_stu"/> : <tal:replace replace="evaluation/criteria_note"/> point(s)
                     </h3>
                     <div class="panel callout radius"
                          tal:content="evaluation/criteria_comment">
