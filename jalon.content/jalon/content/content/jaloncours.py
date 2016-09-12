@@ -483,6 +483,14 @@ class JalonCours(ATFolder):
         LOG.info("----- jalon_quote -----")
         return jalon_utils.jalon_quote(encode)
 
+    def getBaseAnnuaire(self):
+        LOG.info("----- getBaseAnnuaire -----")
+        return jalon_utils.getBaseAnnuaire()
+
+    def getFicheAnnuaire(self, valeur, base=None):
+        LOG.info("----- getFicheAnnuaire -----")
+        return jalon_utils.getFicheAnnuaire(valeur, base)
+
     #--------------------------#
     # Course action My Courses #
     #--------------------------#

@@ -209,12 +209,15 @@ class JalonBDD(SimpleItem):
     # Interrogation de la base de données #
     #-------------------------------------#
     def getIndividuLITE(self, sesame):
+        LOG.info("----- getIndividuLITE -----")
         session = self.getSession()
         if self._typeBDD == "sqlite":
             result = jalonsqlite.getIndividuLITE(session, sesame)
             if result:
+                LOG.info("***** result : %s" % result)
                 return result[0]
             else:
+                LOG.info("***** result : None")
                 return None
 
     def getTousIndividuLITE(self, page):
@@ -516,9 +519,11 @@ class JalonBDD(SimpleItem):
             return jalonsqlite.supprimerELP(session, param)
 
     def creerUtilisateur(self, param):
+        LOG.info("----- creerUtilisateur -----")
         retour = 0
         session = self.getSession()
         if self._typeBDD == "sqlite":
+            LOG.info("SQLITE")
             retour = jalonsqlite.creerUtilisateur(session, param)
 
         if self._use_mysql:

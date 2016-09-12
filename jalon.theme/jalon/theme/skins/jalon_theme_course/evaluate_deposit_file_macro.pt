@@ -138,7 +138,8 @@
         <tal:repeat repeat="index my_evaluate_form/criteria_order">
         <li class="tab-title" role="presentation">
             <a role="tab" tabindex="0" aria-selected="true"
-               tal:attributes="href string:#criteria${repeat/index/number};
+               tal:attributes="id string:tab${repeat/index/number};
+                               href string:#criteria${repeat/index/number};
                                aria-controls string:#criteria${repeat/index/number}">
                 <i class="fa fa-exclamation-triangle alert"
                    tal:condition="python:my_evaluate_form['criteria_avg'][index]['criteria_error']"></i>
@@ -166,10 +167,21 @@
                 <h2>
                     <tal:replace replace="criteria/title"/> (coefficient : <tal:replace replace="criteria/coefficient"/>)
                 </h2>
-                <div class="panel callout radius"
-                     tal:content="criteria/description"/>
-                <div>Marge d'alerte : <tal:replace replace="criteria/gap"/> point(s)</div>
-                <div>Moyenne du critère : <strong tal:attributes="style criteria_avg/criteria_style">5,8</strong></div>
+                <div class="row">
+                    <div class="small-12 columns">
+                        <h3>Description :</h3>
+                    </div>
+                    <div class="small-12 medium-7 columns">
+                         <div class="panel callout radius"
+                              tal:content="structure python:criteria['description'].replace('\n', '<br/>')"/>
+                    </div>
+                    <div class="small-12 medium-5 columns">
+                        <dl class="deflist">
+                            <dt>Marge d'alerte :</dt><dd><tal:replace replace="criteria/gap"/> point(s)</dd>
+                            <dt>Moyenne du critère :</dt><dd><strong tal:attributes="style criteria_avg/criteria_style">5,8</strong></dd>
+                        </dl>
+                    </div>
+                </div>
                 <div class="panel warning radius"
                      tal:condition="criteria_avg/criteria_error">
                      <i class="fa fa-exclamation-triangle alert"></i>
@@ -218,23 +230,27 @@
                            tal:attributes="name string:${criteria_note}_max;
                                            value criteria/notation"/>
                 </div>
-                <!--
-                <ul class="tabs" data-tab role="tablist">
-                    <li class="tab-title" role="presentation">
-                        <a role="tab" tabindex="0" aria-selected="true" class="button radius"
-                           tal:define="criteria_number repeat/index/number;
-                                       criteria_next python:'%s%s' % ('criteria', int(criteria_number) + 1)"
-                           tal:attributes="href string:#${criteria_next};
-                                           aria-controls string:#${criteria_next}">
-                            <i class="fa fa-arrow-right"></i>Suivant
-                        </a>
-                    </li>
-                </ul>
-                -->
-                <div class="formControls"
-                     tal:condition="repeat/index/end">
+                <div class="text-center"
+                     tal:define="crit_number repeat/index/number;
+                                 crit_prev python:'%s' % (int(crit_number) - 1);
+                                 crit_next python:'%s' % (int(crit_number) + 1)">
+                    <a class="button small"
+                       tal:attributes="onclick string:document.getElementById('tab${crit_prev}').click();
+                                       aria-controls string:#criteria${crit_prev}"
+                       tal:condition="not: repeat/index/start">
+                        <i class="fa fa-arrow-left"></i>
+                        Précédent
+                    </a>
+                    <a class="button small"
+                       tal:attributes="onclick string:document.getElementById('tab${crit_next}').click();
+                                       aria-controls string:#criteria${crit_next}"
+                       tal:condition="not: repeat/index/end">
+                        <i class="fa fa-arrow-right"></i>
+                        Suivant
+                    </a>
                     <button type="submit" class="button small"
-                            name="form.button.save">
+                            name="form.button.save"
+                            tal:condition="repeat/index/end">
                         <i class="fa fa-pencil"></i>
                         <tal:block i18n:translate="">Enregistrer</tal:block>
                     </button>
