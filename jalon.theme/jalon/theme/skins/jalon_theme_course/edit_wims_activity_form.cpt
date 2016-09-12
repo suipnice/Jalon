@@ -14,8 +14,8 @@
 <!--
         Modification des informations d'une activité Wims
 -->
-<tal:define define="page request/page;
-                    menu request/menu | nothing;
+<tal:define define="tag request/tag | nothing;
+                    mode_etudiant request/mode_etudiant | nothing;
                     isExamen python:context.getTypeWims()=='Examen'">
     <h2>
         <tal:block tal:condition="not:isExamen"
@@ -128,8 +128,8 @@
             wims_lang
         </metal:field>
 
-        <input type="hidden" name="page" tal:attributes="value page"/>
-        <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu"/>
+        <input type="hidden" name="tag" tal:attributes="value tag"/>
+        <input type="hidden" name="mode_etudiant" tal:attributes="value mode_etudiant" tal:condition="mode_etudiant"/>
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" value="macro_form" name="macro" />
         <input type="hidden" value="modifier-activite" name="formulaire" />

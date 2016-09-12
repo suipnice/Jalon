@@ -6,20 +6,27 @@
 
 <metal:macro define-macro="peers-list">
     <metal:macro use-macro="context/deposit_box_macro/macros/peers-list">
-        Page d'affichage de la liste des dépôts
+        Page d'affichage de la liste des évaluations par les pairs
     </metal:macro>
 </metal:macro>
 
 <metal:macro define-macro="exercices-list">
     <metal:macro use-macro="context/wims_activity_macro/macros/liste-exercices">
-        Page d'affichage de la liste des dépôts
+        Page d'affichage de la liste des exercices
     </metal:macro>
 </metal:macro>
 
-<metal:macro define-macro="resultats-list">
-    <metal:macro use-macro="context/wims_activity_macro/macros/peers-list">
-        Page d'affichage de la liste des dépôts
-    </metal:macro>
+<metal:macro define-macro="resultats-list" tal:define="activity_type my_view/activity_type">
+    <tal:condition condition="python:activity_type=='AutoEvaluation'">
+        <metal:macro use-macro="context/wims_activity_macro/macros/resultats-auto">
+            Page d'affichage des résultats d'un entrainement WIMS
+        </metal:macro>
+    </tal:condition>
+    <tal:condition condition="python:activity_type=='Examen'">
+        <metal:macro use-macro="context/wims_activity_macro/macros/resultats-exam">
+            Page d'affichage des résultats d'un examen WIMS
+        </metal:macro>
+    </tal:condition>
 </metal:macro>
 
 <metal:macro define-macro="documents-list">
@@ -59,7 +66,7 @@
                 tal:attributes="id string:${document/document_drop_id}">
                 <li tal:repeat="document_action document/document_actions">
                     <a data-reveal-ajax="true" data-reveal-id="reveal-main"
-                       tal:define="home_link my_view/deposit_box_link | my_view/wims_activity_link"
+                       tal:define="home_link my_view/deposit_box_link | my_view/activity_link"
                        tal:attributes="href string:${home_link}/${document_action/item_action_id}?item_id=${document/document_id}">
                         <i tal:attributes="class document_action/item_action_icon"></i>
                         <tal:replace tal:replace="document_action/item_action_name" i18n:translate=""/>

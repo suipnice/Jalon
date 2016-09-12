@@ -16,7 +16,7 @@
 <!-- Affiche les informations d'une activité -->
 <metal:macro define-macro="informations">
     <h3>
-        <i class="fa fa-align-justify"></i>
+        <i class="fa fa-hand-paper-o"></i>
         <tal:block i18n:translate="">Consigne</tal:block>
     </h3>
     <div style="margin-left:2em;">
@@ -34,7 +34,7 @@
     <div class="text-right">
         <tal:replace replace="context/getNoteMax"/> <tal:block i18n:translate="">points</tal:block>
     </div>
-<tal:condition condition="python:tag == 'Examen'">
+<tal:condition condition="python:my_view['activity_type']=='Examen'">
     <h3>
         <i class="fa fa-clock-o"></i>
         <tal:block i18n:translate="">Durée</tal:block>
@@ -49,7 +49,7 @@
     <div class="text-right"
          tal:content="context/getAttempts"/>
 
-<tal:condition condition="is_personnel">
+<tal:condition condition="my_view/is_personnel">
     <h3>
         <i class="fa fa-lock"></i>
         <tal:block i18n:translate="">Mot de passe</tal:block>
@@ -90,7 +90,7 @@ En entrée :
 -->
 <metal:macro define-macro="liste-exercices">
 
-<tal:define define="listeExos  python:context.getInfosListeAttribut(tab, my_view['is_personnel']);
+<tal:define define="listeExos  python:context.displayExercicesList();
                     site_lang  portal_state/language;
                     infosNotes python:context.getNotes(quser=user.getId(), actif=my_view['wims_activity_visibility']['val'], isProf=my_view['is_personnel'], site_lang=site_lang, request=request);
                     qexam context/getIdExam;
@@ -307,7 +307,7 @@ En entrée :
                         <ul tal:attributes="id string:activite-options-${repeat/element/index}"
                             class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-exercice&amp;qexo=${index}&amp;page=${idpage}&amp;menu=${menu}&amp;idElement=${element/idElement}&amp;sur=${sur}"
+                                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-exercice&amp;qexo=${index}&amp;idElement=${element/idElement}&amp;sur=${sur}"
                                    title="Modifier l'exercice"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">
@@ -316,8 +316,8 @@ En entrée :
                                 </a>
                             </li>
                             <li>
-                                <a tal:define="typeElement python:context.jalon_quote(element['typeElement'])"
-                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;retour=${idpage}&amp;menu=${menu}&amp;indexElement=${repeat/element/index}"
+                                <a tal:define="typeElement string:ExerciceWims"
+                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;indexElement=${repeat/element/index}"
                                    title="Détacher l'exercice"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">
@@ -368,13 +368,8 @@ En entrée :
             </tal:condition>
             <tal:condition condition="not:my_view/is_personnel">
                 <tr>
-                    <th class="text-right show-for-medium-up"
+                    <th class="text-right"
                         colspan="3">
-                        <i class="fa fa-trophy"></i>
-                        <tal:block i18n:translate="">Mon résultat</tal:block>
-                    </th>
-                    <th class="text-right show-for-small-only"
-                        colspan="2">
                         <i class="fa fa-trophy"></i>
                         <tal:block i18n:translate="">Mon résultat</tal:block>
                     </th>
@@ -428,6 +423,8 @@ En entrée :
 <metal:macro define-macro="resultats-exam">
 
     <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                        is_personnel my_view/is_personnel;
+                        activity_type my_view/activity_type;
                         site_lang  portal_state/language;
                         infosNotes python:context.getNotes(user.getId(), affElement['val'], is_personnel, site_lang=site_lang, request=request);
                         data_scores infosNotes/data_scores | nothing;">
@@ -451,21 +448,21 @@ En entrée :
             </p>
             <ul tal:condition="is_personnel">
                 <li>
-                <tal:condition tal:condition="python:tag=='Examen'"
+                <tal:condition tal:condition="python:activity_type=='Examen'"
                                i18n:translate="">
                     Nombre de participants à cet examen :
                 </tal:condition>
-                <tal:condition condition="python:tag=='AutoEvaluation'"
+                <tal:condition condition="python:activity_type=='AutoEvaluation'"
                                i18n:translate="">
                     Nombre de participants :
                 </tal:condition>
                     <strong tal:content="infosNotes/user_cnt"/>
                 </li>
-                <li tal:condition="python:tag in ['Examen']">
+                <li tal:condition="python:activity_type in ['Examen']">
                     <tal:block i18n:translate="">Meilleure note : </tal:block>
                     <tal:replace replace="infosNotes/score_max"/> / <tal:replace replace="context/getNoteMax"/>
                 </li>
-                <li tal:condition="python:tag in ['Examen']">
+                <li tal:condition="python:activity_type in ['Examen']">
                     <tal:block i18n:translate="">Note moyenne : </tal:block>
                     <tal:replace replace="infosNotes/score_mean"/> / <tal:replace replace="context/getNoteMax"/>
                 </li>
@@ -549,7 +546,7 @@ En entrée :
                 </td>
                 <td class="nb_essais"
                     tal:content="etudiant/attempts"
-                    tal:condition="python:tag in ['Examen']"/>
+                    tal:condition="python:activity_type in ['Examen']"/>
                 <td class="note" tal:content="etudiant/score"/>
                 <td>
                     <a class="dropdown"
@@ -603,6 +600,7 @@ En entrée :
 <!-- Resultats d'une autoévaluation WIMS -->
 <metal:macro define-macro="resultats-auto">
 <tal:define define="affElement python:context.isAfficherElement(context.getDateAff(), context.getDateMasq());
+                    is_personnel my_view/is_personnel;
                     actif python:affElement['val'];
                     site_lang  portal_state/language;
                     infosNotes python:context.getNotes(user.getId(), actif, is_personnel, detailed=True, site_lang=site_lang, request=request);
