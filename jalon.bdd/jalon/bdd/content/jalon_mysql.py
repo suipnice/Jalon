@@ -264,6 +264,18 @@ def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, 
     session.commit()
 
 
+def setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
+    insert = True
+    PEN = aliased(tables.PeersEvaluationNoteMySQL)
+    note_list = session.query(PEN).filter(PEN.DEPOSIT_BOX == DEPOSIT_BOX, PEN.DEPOSIT_STU == DEPOSIT_STU, PEN.CORRECTED_STU == CORRECTED_STU)
+    for line in note_list:
+        line.NOTE = NOTE
+        insert = False
+    if insert:
+        session.add(tables.PeersEvaluationNoteMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE))
+    session.commit()
+
+
 def getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
     peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU, PE.FOR_AVG == 1)

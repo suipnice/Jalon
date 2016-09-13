@@ -1330,11 +1330,12 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                         number = number + 1
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
 
-                evaluation_by_peers_dict["evaluate_button"] = True
                 if number == 0:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
+                    evaluation_by_peers_dict["evaluate_button"] = True
                 elif number < evaluation_number:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
+                    evaluation_by_peers_dict["evaluate_button"] = True
 
                 evaluation_by_peers_dict["corrected_evaluation_list"] = range(1, number + 1)
                 LOG.info("***** corrected_evaluation_list : %s" % evaluation_by_peers_dict["corrected_evaluation_list"])
@@ -1615,6 +1616,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def setStudentEvaluatePeer(self, param_dict):
         LOG.info("----- setStudentEvaluatePeer -----")
         evaluation = {}
+        evaluation_note = 0
+        evaluation_coeff = 0
         peers_dict = copy.deepcopy(self.getPeersDict())
         if param_dict["deposit_id"]:
             corrected_evaluation_index = int(param_dict["deposit_id"])
@@ -1628,14 +1631,26 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 corrected_evaluation_index = corrected_evaluation_index + 1
 
         index = 1
-        criteria_loop = param_dict["criteria_order"].split(",")
         jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        criteria_loop = param_dict["criteria_order"].split(",")
         for loop in criteria_loop:
             criteria_id = "criteria%i" % index
+            criteria_coefficient = int(criteria_dict[str(param_dict[criteria_id])]["coefficient"])
+            LOG.info("***** criteria_coefficient : %s" % criteria_coefficient)
+            evaluation_note = evaluation_note + (int(param_dict["%s-note" % criteria_id]) * criteria_coefficient)
+            evaluation_coeff = evaluation_coeff + criteria_coefficient
             jalon_bdd.setEvaluatePeer(self.getId(), evaluation["peer"], param_dict["user_id"], param_dict[criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
             evaluation["corrected"] = True
             index = index + 1
+
+        evaluation_note_20 = (float(evaluation_note) / float(evaluation_coeff)) * 2.0
+
         LOG.info("***** evaluation : %s" % str(evaluation))
+        LOG.info("***** evaluation_note : %s" % evaluation_note)
+        LOG.info("***** evaluation_coeff : %s" % evaluation_coeff)
+        LOG.info("***** evaluation_note_20 : %s" % evaluation_note_20)
+        jalon_bdd.setPeerEvaluationNote(self.getId(), evaluation["peer"], param_dict["user_id"], evaluation_note_20)
         peers_dict[param_dict["user_id"]][corrected_evaluation_index] = evaluation
         self.setPeersDict(peers_dict)
 

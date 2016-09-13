@@ -154,8 +154,10 @@ class JalonBDD(SimpleItem):
             #tables.IndividuMySQL.__table__.create(bind=engine)
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
-            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
-            tables.PeersAverageMySQL.__table__.create(bind=engine)
+            #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
+            #tables.PeersAverageMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
     # Utilitaire base de données #
@@ -1434,6 +1436,10 @@ class JalonBDD(SimpleItem):
     def setEvaluatePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_NOTE, CRITERIA_COMMENT):
         session = self.getSessionMySQL()
         jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
+
+    def setPeerEvaluationNote(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
+        session = self.getSessionMySQL()
+        jalon_mysql.setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE)
 
     def getPeerEvaluation(self, DEPOSIT_BOX, DEPOSIT_STU):
         session = self.getSessionMySQL()
