@@ -1329,10 +1329,11 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
                     if evaluation["corrected"]:
                         number = number + 1
+                        LOG.info("***** evaluation['corrected'] : %s" % number)
                         evaluations_note_dict[number] = evaluation.get("note", "Non renseignée")
-                    else:
-                        evaluations_note_dict[number] = "Non renseignée"
+                        LOG.info("***** evaluations_note_dict[%s] : %s" % (number, evaluations_note_dict[number]))
                 evaluation_by_peers_dict["evaluations_note_dict"] = evaluations_note_dict
+                LOG.info("evaluation_by_peers_dict['evaluations_note_dict'] : %s" % evaluation_by_peers_dict["evaluations_note_dict"])
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
 
                 if number == 0:
