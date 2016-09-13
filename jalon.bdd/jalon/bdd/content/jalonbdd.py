@@ -155,7 +155,7 @@ class JalonBDD(SimpleItem):
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
             #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
-            tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
+            #tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
             #tables.PeersAverageMySQL.__table__.create(bind=engine)
             tables.PeersEvaluationAverageMySQL.__table__.create(bind=engine)
 
@@ -1465,9 +1465,17 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.generatePeersAverage(session, DEPOSIT_BOX)
 
+    def generateEvaluationsAverage(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.generateEvaluationsAverage(session, DEPOSIT_BOX)
+
     def setAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
         session = self.getSessionMySQL()
         jalon_mysql.setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
+
+    def setEvaluationAverage(self, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
+        session = self.getSessionMySQL()
+        jalon_mysql.setEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION)
 
     def getPeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()

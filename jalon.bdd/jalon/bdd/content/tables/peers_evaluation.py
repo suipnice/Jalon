@@ -92,13 +92,14 @@ class PeersEvaluationAverageMySQL(Base):
     DEPOSIT_BOX = Column(String(50))
     DEPOSIT_STU = Column(String(50))
     AVERAGE = Column(Float)
-    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CORRECTED_STU")
+    IS_VERIFICATION = Column(Boolean)
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
 
-    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, AVERAGE):
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
         self.DEPOSIT_BOX = DEPOSIT_BOX
         self.DEPOSIT_STU = DEPOSIT_STU
-        self.CORRECTED_STU = CORRECTED_STU
         self.AVERAGE = AVERAGE
+        self.IS_VERIFICATION = IS_VERIFICATION
 
     def __repr__(self):
-        return "<PeersEvaluationAverageMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CORRECTED_STU=%s AVERAGE=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CORRECTED_STU, self.AVERAGE)
+        return "<PeersEvaluationAverageMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s AVERAGE=%s IS_VERIFICATION=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.AVERAGE, self.IS_VERIFICATION)

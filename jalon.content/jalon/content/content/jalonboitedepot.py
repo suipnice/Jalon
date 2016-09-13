@@ -1675,25 +1675,35 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def setAveragePeer(self):
         LOG.info("----- setAveragePeer -----")
+        is_verification_evaluation = {}
         jalon_bdd = self.portal_jalon_bdd
         criteria_dict = self.getCriteriaDict()
         correction_number = self.getNombreCorrection()
-        average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
-        for average in average_list:
+        criteria_average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
+        for average in criteria_average_list:
             LOG.info("***** average : %s" % str(average))
             criteria_data = criteria_dict[average[1]]
             if average[2] < correction_number:
                 criteria_code = 2
                 criteria_value = average[3]
+                is_verification_evaluation[average[0]] = True
             elif average[-1] - average[-2] >= int(criteria_data["gap"]):
                 criteria_code = 3
                 criteria_value = "%s;%s" % (average[-1], average[-2])
+                is_verification_evaluation[average[0]] = True
             else:
                 criteria_code = 1
                 criteria_value = None
+                is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
-            jalon_bdd.setAveragePeer(self.getId(), average[0], int(average[1]), criteria_code, criteria_value, average[2], 0, "")
+            jalon_bdd.setAveragePeer(self.getId(), average[0], float(average[1]), criteria_code, criteria_value, average[2], 0, "")
+
+        LOG.info("***** is_verification_evaluation : %s" % is_verification_evaluation)
+        evaluation_average_list = jalon_bdd.generateEvaluationsAverage(self.getId()).all()
+        for average in evaluation_average_list:
+            LOG.info("***** average : %s" % str(average))
+            jalon_bdd.setEvaluationAverage(self.getId(), average[0], float(average[1]), is_verification_evaluation[average[0]])
 
     def getAveragePeer(self):
         LOG.info("----- getAveragePeer -----")
