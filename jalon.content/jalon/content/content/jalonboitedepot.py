@@ -1289,6 +1289,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info("----- getEvaluationByPeers -----")
         evaluation_by_peers_dict = {}
         deposit_box_link = self.absolute_url()
+        evaluation_by_peers_dict["is_evaluable"] = self.isEvaluable()
         evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
         evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         if is_personnel:
@@ -1481,6 +1482,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 "comment_dict":     {"0": "Aucun",
                                      "1": "Optionnel",
                                      "2": "Obligatoire"},
+                "is_evaluable":     self.isEvaluable(),
                 "macro_form":       macro_form,
                 "my_evaluate_form": my_evaluate_form}
 
@@ -1706,6 +1708,19 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             except:
                 average_dict[ligne[0]] = {ligne[1]: criteria_note}
         return average_dict
+
+    def isEvaluable(self):
+        LOG.info("----- isEvaluable -----")
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        date_depot = DateTime(self.getDateDepot()).strftime("%Y/%m/%d %H:%M")
+
+        LOG.info("***** now : %s" % now)
+        LOG.info("***** date_depot : %s" % date_depot)
+        date_correction = DateTime(self.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+        LOG.info("***** date_correction : %s" % date_correction)
+
+        # En profil évaluation par les pairs la date de correction est obligatoire
+        return False if date_correction <= now else True
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #
