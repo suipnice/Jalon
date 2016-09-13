@@ -183,7 +183,7 @@
     <tal:condition condition="criteria_dict">
         <a class="button expand radius"
            tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view"
-           tal:condition="my_view/is_personnel">
+           tal:condition="my_view/grid_access">
            <i class="fa fa-th"></i>Accèder à la grille d'évaluation
         </a>
         <metal:macro use-macro="python:context.deposit_box_macro.macros.get(evaluation_by_peers_dict['macro_peers'])"/>
@@ -265,13 +265,14 @@
     <!--div class="panel callout radius">
         Vous avez évalué tous les dépôts.
     </div-->
-    <h2>
+    <h2 tal:condition="evaluation_by_peers_dict/corrected_evaluation_list">
         <i class="fa fa-check-square-o"></i>
         Dépôt(s) évalué(s)
     </h2>
     <div class="panel callout radius"
          tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
-    <table summary="Liste des dépôts évalués">
+    <table summary="Liste des dépôts évalués"
+           tal:condition="evaluation_by_peers_dict/corrected_evaluation_list">
     <thead>
         <tr>
             <th class="sort has-tip" data-tooltip data-sort="depot"

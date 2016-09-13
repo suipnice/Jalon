@@ -77,8 +77,8 @@ class DepositBoxView(CourseView):
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
 
-        if my_deposit_box.getAccesGrille():
-            my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
+        my_view["grid_access"] = True if my_deposit_box.getAccesGrille(my_view["is_personnel"]) else False
+        #my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
 
         my_view["deposit_box_tabs"] = []
 

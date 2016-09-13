@@ -584,6 +584,12 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             return self.dateRetard.strftime("%Y/%m/%d %H:%M")
 
+    def getDateCorrection(self):
+        if not self.dateCorrection:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
+
     def getNbDepots(self, is_personnel, user_id):
         if not is_personnel and not self.getAccesDepots():
             #nbDepots = 0
@@ -1274,6 +1280,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def isEvaluationByPeers(self):
         LOG.info("----- isEvaluationByPeers -----")
         return True if self.getProfile() == "pairs" else False
+
+    def getAccesGrille(self, is_personnel=False):
+        LOG.info("----- getAccesGrille -----")
+        return True if is_personnel else self.accesGrille
 
     def getEvaluationByPeers(self, user, is_personnel):
         LOG.info("----- getEvaluationByPeers -----")
