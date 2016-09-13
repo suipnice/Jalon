@@ -1308,6 +1308,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
             user_id = user.getId()
             evaluation_number = self.getNombreCorrection()
+            evaluation_by_peers_dict["evaluate_button"] = False
+            evaluation_by_peers_dict["corrected_evaluation_list"] = []
+            evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
+
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
@@ -1321,8 +1325,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
                 elif number < evaluation_number:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
-                else:
-                    evaluation_by_peers_dict["evaluate_button"] = False
 
                 evaluation_by_peers_dict["corrected_evaluation_list"] = range(1, number + 1)
                 LOG.info("***** corrected_evaluation_list : %s" % evaluation_by_peers_dict["corrected_evaluation_list"])
@@ -1335,8 +1337,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 #    corrected_evaluations_dict[str(corrected_evaluation[0])][corrected_evaluation[1]] = corrected_evaluation[2]
                 #evaluation_by_peers_dict["corrected_evaluations_dict"] = corrected_evaluations_dict
                 #LOG.info("***** corrected_evaluations_dict : %s" % corrected_evaluations_dict)
-            else:
-                evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
         return evaluation_by_peers_dict
 
     def getCriteriaDict(self, key=None):
