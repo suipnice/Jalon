@@ -1322,12 +1322,17 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["corrected_evaluation_list"] = []
             evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
 
+            evaluations_note_dict = {}
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
                     if evaluation["corrected"]:
                         number = number + 1
+                        evaluations_note_dict[number] = evaluation.get("note", "Non renseignée")
+                    else:
+                        evaluations_note_dict[number] = "Non renseignée"
+                evaluation_by_peers_dict["evaluations_note_dict"] = evaluations_note_dict
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
 
                 if number == 0:
@@ -1450,9 +1455,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 affected_peer = peers_list[peer_interval]
                 LOG.info("PEER affected_peer : %s" % affected_peer)
                 try:
-                    peers_dict[peer].append({"peer": affected_peer, "corrected": False})
+                    peers_dict[peer].append({"peer": affected_peer, "corrected": False, "note": "Non renseignée"})
                 except:
-                    peers_dict[peer] = [{"peer": affected_peer, "corrected": False}]
+                    peers_dict[peer] = [{"peer": affected_peer, "corrected": False, "note": "Non renseignée"}]
             peer_index = peer_index + 1
 
         self.setPeersDict(peers_dict)
@@ -1651,6 +1656,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info("***** evaluation_coeff : %s" % evaluation_coeff)
         LOG.info("***** evaluation_note_20 : %s" % evaluation_note_20)
         jalon_bdd.setPeerEvaluationNote(self.getId(), evaluation["peer"], param_dict["user_id"], evaluation_note_20)
+        evaluation["note"] = evaluation_note_20
         peers_dict[param_dict["user_id"]][corrected_evaluation_index] = evaluation
         self.setPeersDict(peers_dict)
 

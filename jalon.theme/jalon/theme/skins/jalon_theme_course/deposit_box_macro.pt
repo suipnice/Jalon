@@ -307,7 +307,9 @@
             <td>
                 Dépôts n°<tal:replace replace="number"/>
             </td>
-            <td>Non renseignée</td>
+            <td>
+                <tal:replace replace="python:evaluation_by_peers_dict['evaluations_note_dict'][number]"/>
+            </td>
             <td>
                 <a class="button small radius"
                 tal:attributes="href string:${evaluation_by_peers_dict/evaluate_link}&amp;deposit_id=${repeat/number/index}">
