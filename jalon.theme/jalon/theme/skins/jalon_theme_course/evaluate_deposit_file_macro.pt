@@ -47,7 +47,7 @@
             <tal:repeat repeat="index my_evaluate_form/criteria_order">
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
-                                 criteria_evaluate python:criteria_evaluated.get(index, {});
+                                 criteria_evaluate python:criteria_evaluated.get(index, {'criteria_comment': '', 'criteria_note': '10'});
                                  criteria_id string:criteria${repeat/index/number}"
                      tal:attributes="id criteria_id">
                 <h2 tal:content="criteria/title"/>
@@ -112,7 +112,7 @@
                          tal:condition="error"/>
                     <input type="number" min="0" step="1" style="width:3em;display:inline;"
                            tal:define="error python:errors.get(criteria_note, None);
-                                       value request/criteria_note | criteria_evaluate/criteria_note | string:1"
+                                       value python:request.get(criteria_note, criteria_evaluate['criteria_note'])"
                            tal:attributes="class python:context.test(error, 'error', '');
                                            name  criteria_note;
                                            value value;

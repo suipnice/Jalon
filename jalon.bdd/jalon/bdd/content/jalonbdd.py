@@ -154,7 +154,7 @@ class JalonBDD(SimpleItem):
             #tables.IndividuMySQL.__table__.create(bind=engine)
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
-            #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
             tables.PeersAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
