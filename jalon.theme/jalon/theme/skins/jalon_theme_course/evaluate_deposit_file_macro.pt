@@ -79,12 +79,27 @@
                                  error python:errors.get(criteria_comment, None);"
                      tal:attributes="id string:archetypes-fieldname-${criteria_comment};
                                      class python:context.test(error, 'error field', 'field')">
+                    <tal:condition condition="python:criteria['comment'] != '0'">
                     <label tal:attributes="for criteria_comment">Commentaire</label>
                     <div class="fieldErrorBox" tal:content="error"
                          tal:condition="error"/>
                     <textarea tal:attributes="name criteria_comment; 
                                               id criteria_comment;
                                               maxlength criteria/comment_max" rows="5"><tal:block replace="python:request.get(criteria_comment, criteria_evaluate['criteria_comment'])" on-error="nothing"/></textarea>
+                    </tal:condition>
+                    <tal:condition condition="python:criteria['comment'] == '0'">
+                    <input type="hidden" value=""
+                           tal:attributes="name criteria_comment"/>
+                    </tal:condition>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_comment}-code;
+                                           value criteria/comment"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_comment}-min;
+                                           value criteria/comment_min"/>
+                    <input type="hidden"
+                           tal:attributes="name string:${criteria_comment}-max;
+                                           value criteria/comment_max"/>
                 </div>
                 <div tal:define="criteria_note string:${criteria_id}-note;
                                  error python:errors.get(criteria_note, None)"
