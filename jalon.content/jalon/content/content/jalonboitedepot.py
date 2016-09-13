@@ -1467,9 +1467,13 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             macro_form = "student_evaluate"
             my_evaluate_form = self.getStudentEvaluateDepositFileForm(user.getId(), deposit_id)
+
         return {"breadcrumbs":      self.getEvaluateBreadcrumbs(),
                 "is_personnel":     is_personnel,
                 "mode_etudiant":    mode_etudiant,
+                "comment_dict":     {"0": "Aucun",
+                                     "1": "Optionnel",
+                                     "2": "Obligatoire"},
                 "macro_form":       macro_form,
                 "my_evaluate_form": my_evaluate_form}
 
