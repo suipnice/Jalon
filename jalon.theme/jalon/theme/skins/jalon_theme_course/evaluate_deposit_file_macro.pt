@@ -227,10 +227,12 @@
                               tal:content="structure python:criteria['description'].replace('\n', '<br/>')"/>
                     </div>
                     <div class="small-12 medium-5 columns">
-                        <dl class="deflist">
+                        <dl class="deflist"
+                            tal:define="comment_dict my_form/comment_dict">
                             <dt>Marge d'alerte :</dt><dd><tal:replace replace="criteria/gap"/> point(s)</dd>
                             <dt>Moyenne du critère :</dt><dd><strong tal:attributes="style criteria_avg/criteria_style"
                                                                      tal:content="criteria_avg/criteria_avg"/></dd>
+                            <dt>Commentaire étudiant :</dt><dd><tal:replace replace="python:comment_dict[criteria['comment']]"/></dd>
                         </dl>
                     </div>
                 </div>
@@ -248,7 +250,8 @@
                            tal:condition="evaluation/criteria_error"></i>Évaluation de <tal:replace replace="evaluation/corrected_stu"/> : <tal:replace replace="evaluation/criteria_note"/> point(s)
                     </h3>
                     <div class="panel callout radius"
-                         tal:content="evaluation/criteria_comment">
+                         tal:content="evaluation/criteria_comment"
+                         tal:condition="evaluation/criteria_comment">
                     </div>
                 </div>
                 <div tal:define="criteria_comment string:${criteria_id}-comment;
