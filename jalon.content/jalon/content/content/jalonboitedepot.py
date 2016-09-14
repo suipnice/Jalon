@@ -584,6 +584,12 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             return self.dateRetard.strftime("%Y/%m/%d %H:%M")
 
+    def getDateCorrection(self):
+        if not self.dateCorrection:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        else:
+            return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
+
     def getNbDepots(self, is_personnel, user_id):
         if not is_personnel and not self.getAccesDepots():
             #nbDepots = 0
@@ -1275,20 +1281,22 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info("----- isEvaluationByPeers -----")
         return True if self.getProfile() == "pairs" else False
 
+    def getAccesGrille(self, is_personnel=False):
+        LOG.info("----- getAccesGrille -----")
+        return True if is_personnel else self.accesGrille
+
     def getEvaluationByPeers(self, user, is_personnel):
         LOG.info("----- getEvaluationByPeers -----")
         evaluation_by_peers_dict = {}
         deposit_box_link = self.absolute_url()
+        evaluation_by_peers_dict["is_evaluable"] = self.isEvaluable()
         evaluation_by_peers_dict["criteria_dict"] = self.getCriteriaDict()
         evaluation_by_peers_dict["criteria_order"] = self.getCriteriaOrder()
         if is_personnel:
             evaluation_by_peers_dict["macro_peers"] = "peers_teacher_macro"
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
 
-            evaluation_by_peers_dict["options"] = [{"text": "Ajouter",
-                                                    "link": "%s/add_deposit_box_criteria_form" % deposit_box_link,
-                                                    "icon": "fa fa-plus-circle fa-fw"},
-                                                   {"text": "Affecter",
+            evaluation_by_peers_dict["options"] = [{"text": "Affecter",
                                                     "link": "%s/affect_deposit_file_script" % deposit_box_link,
                                                     "icon": "fa fa-rss fa-fw"},
                                                    {"text": "Moyenne",
@@ -1301,6 +1309,29 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             #    evaluation_by_peers_dict["grid_button"] = "fa fa-pencil fa-lg fa-fw"
             evaluation_by_peers_dict["peers_list"] = self.getPeersOrder()
             evaluation_by_peers_dict["peers_average_dict"] = self.getAveragePeer()
+
+            jalon_bdd = self.portal_jalon_bdd
+            evaluation_by_peers_dict["evaluations_notes"] = jalon_bdd.getCountEvaluationsNotes(self.getId()).first()[0]
+            evaluation_by_peers_dict["verif_evaluations_notes"] = jalon_bdd.getCountVerifEvaluationsNotes(self.getId()).first()[0]
+            evaluation_by_peers_dict["evaluations_validate"] = evaluation_by_peers_dict["evaluations_notes"] - evaluation_by_peers_dict["verif_evaluations_notes"]
+            LOG.info("***** evaluations_notes : %s" % evaluation_by_peers_dict["evaluations_notes"])
+            LOG.info("***** verif_evaluations_notes : %s" % evaluation_by_peers_dict["verif_evaluations_notes"])
+            LOG.info("***** evaluations_validate : %s" % evaluation_by_peers_dict["evaluations_validate"])
+
+            evaluations_notes_informations = jalon_bdd.getInfoEvaluationsNotes(self.getId()).first()
+            if evaluations_notes_informations:
+                evaluation_by_peers_dict["evaluations_notes_min"] = "%.2f" % evaluations_notes_informations[0] if evaluations_notes_informations[0] else 0
+                evaluation_by_peers_dict["evaluations_notes_max"] = "%.2f" % evaluations_notes_informations[1] if evaluations_notes_informations[1] else 0
+                evaluation_by_peers_dict["evaluations_notes_avg"] = "%.2f" % evaluations_notes_informations[2] if evaluations_notes_informations[2] else 0
+
+            criteria_notes_dict = {}
+            criteria_notes_informations = jalon_bdd.getInfoCriteriaNotes(self.getId())
+            for criteria_note in criteria_notes_informations:
+                criteria_notes_dict[criteria_note[0]] = {"min": "%.2f" % criteria_note[1],
+                                                         "max": "%.2f" % criteria_note[2],
+                                                         "avg": "%.2f" % criteria_note[3]}
+            evaluation_by_peers_dict["criteria_notes_dict"] = criteria_notes_dict
+            LOG.info("***** criteria_notes_dict : %s" % str(criteria_notes_dict))
         else:
             evaluation_by_peers_dict["macro_peers"] = "peers_student_macro"
             evaluation_by_peers_dict["table_title"] = "Dépôts à évaluer"
@@ -1308,21 +1339,30 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
             user_id = user.getId()
             evaluation_number = self.getNombreCorrection()
+            evaluation_by_peers_dict["evaluate_button"] = False
+            evaluation_by_peers_dict["corrected_evaluation_list"] = []
+            evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
+
+            evaluations_note_dict = {}
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
             if len(evaluation_by_peers_dict["peers_evaluations"]):
                 number = 0
                 for evaluation in evaluation_by_peers_dict["peers_evaluations"]:
                     if evaluation["corrected"]:
                         number = number + 1
+                        LOG.info("***** evaluation['corrected'] : %s" % number)
+                        evaluations_note_dict[number] = evaluation.get("note", "Non renseignée")
+                        LOG.info("***** evaluations_note_dict[%s] : %s" % (number, evaluations_note_dict[number]))
+                evaluation_by_peers_dict["evaluations_note_dict"] = evaluations_note_dict
+                LOG.info("evaluation_by_peers_dict['evaluations_note_dict'] : %s" % evaluation_by_peers_dict["evaluations_note_dict"])
                 evaluation_by_peers_dict["peers_correction_indication"] = "Vous avez évalué %i dépôts sur les %i évaluations attendues" % (number, evaluation_number)
 
-                evaluation_by_peers_dict["evaluate_button"] = True
                 if number == 0:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
+                    evaluation_by_peers_dict["evaluate_button"] = True
                 elif number < evaluation_number:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
-                else:
-                    evaluation_by_peers_dict["evaluate_button"] = False
+                    evaluation_by_peers_dict["evaluate_button"] = True
 
                 evaluation_by_peers_dict["corrected_evaluation_list"] = range(1, number + 1)
                 LOG.info("***** corrected_evaluation_list : %s" % evaluation_by_peers_dict["corrected_evaluation_list"])
@@ -1335,9 +1375,50 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 #    corrected_evaluations_dict[str(corrected_evaluation[0])][corrected_evaluation[1]] = corrected_evaluation[2]
                 #evaluation_by_peers_dict["corrected_evaluations_dict"] = corrected_evaluations_dict
                 #LOG.info("***** corrected_evaluations_dict : %s" % corrected_evaluations_dict)
-            else:
-                evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
         return evaluation_by_peers_dict
+
+    def getDetailsVerificationEvaluations(self, user, mode_etudiant):
+        LOG.info("----- getDetailsVerificationEvaluations -----")
+        my_view = {}
+        my_view["is_personnel"] = self.isPersonnel(user, mode_etudiant)
+        my_view["mode_etudiant"] = "false" if (not mode_etudiant) and my_view["is_personnel"] else mode_etudiant
+
+        portal = self.portal_url.getPortalObject()
+        parent = self.aq_parent
+        my_view["deposit_box_link"] = self.absolute_url()
+        my_view["breadcrumbs"] = [{"title": _(u"Mes cours"),
+                                   "icon":  "fa fa-university",
+                                   "link":  "%s/mes_cours" % portal.absolute_url()},
+                                  {"title": parent.Title(),
+                                   "icon":  "fa fa-book",
+                                   "link":  parent.absolute_url()},
+                                  {"title": self.Title(),
+                                   "icon":  "fa fa-inbox",
+                                   "link":  "%s?tab=peers" % my_view["deposit_box_link"]},
+                                  {"title": "Évaluations à vérifier",
+                                   "icon":  "fa fa-list",
+                                   "link":  "%s/details_verification_evaluations" % my_view["deposit_box_link"]}]
+
+        my_view["criteria_dict"] = self.getCriteriaDict()
+        my_view["criteria_order"] = self.getCriteriaOrder()
+        if my_view["is_personnel"]:
+            my_view["peers_list"] = self.getPeersOrder()
+            #my_view["peers_average_dict"] = self.getAveragePeer()
+
+            my_view["peers_average_dict"] = {}
+            jalon_bdd = self.portal_jalon_bdd
+            for criteria_note in jalon_bdd.getInfoCriteriaNoteByDepositStu(self.getId()).all():
+                if not criteria_note[0] in my_view["peers_average_dict"]:
+                    my_view["peers_average_dict"][criteria_note[0]] = {criteria_note[1]: {"criteria_note":  criteria_note[2],
+                                                                                          "criteria_error": True if criteria_note[3] in [2, 3] else False}}
+                else:
+                    my_view["peers_average_dict"][criteria_note[0]][criteria_note[1]] = {"criteria_note":  criteria_note[2],
+                                                                                         "criteria_error": True if criteria_note[3] in [2, 3] else False}
+
+            for evaluation_note in jalon_bdd.getInfoEvaluationNoteByDepositStu(self.getId()).all():
+                my_view["peers_average_dict"][evaluation_note[0]]["evaluation_note"] = evaluation_note[1]
+                my_view["peers_average_dict"][evaluation_note[0]]["evaluation_error"] = evaluation_note[2]
+        return my_view
 
     def getCriteriaDict(self, key=None):
         LOG.info("----- getCriteriaDict -----")
@@ -1439,9 +1520,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 affected_peer = peers_list[peer_interval]
                 LOG.info("PEER affected_peer : %s" % affected_peer)
                 try:
-                    peers_dict[peer].append({"peer": affected_peer, "corrected": False})
+                    peers_dict[peer].append({"peer": affected_peer, "corrected": False, "note": "Non renseignée"})
                 except:
-                    peers_dict[peer] = [{"peer": affected_peer, "corrected": False}]
+                    peers_dict[peer] = [{"peer": affected_peer, "corrected": False, "note": "Non renseignée"}]
             peer_index = peer_index + 1
 
         self.setPeersDict(peers_dict)
@@ -1457,9 +1538,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             macro_form = "student_evaluate"
             my_evaluate_form = self.getStudentEvaluateDepositFileForm(user.getId(), deposit_id)
+
         return {"breadcrumbs":      self.getEvaluateBreadcrumbs(),
                 "is_personnel":     is_personnel,
                 "mode_etudiant":    mode_etudiant,
+                "comment_dict":     {"0": "Aucun",
+                                     "1": "Optionnel",
+                                     "2": "Obligatoire"},
+                "is_evaluable":     self.isEvaluable(),
                 "macro_form":       macro_form,
                 "my_evaluate_form": my_evaluate_form}
 
@@ -1517,19 +1603,24 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_avg = {}
         evaluation_number = self.getNombreCorrection()
         for average_dict in average.all():
+            LOG.info("***** average_dict : %s" % str(average_dict[0]))
             criteria_error = False
             criteria_text = ""
+            criteria_style = ""
             criteria_value = []
             if average_dict[2] == 2:
                 criteria_error = True
+                criteria_style = "color: #f04124;"
                 criteria_text = "Nombre d'évaluation attendu insuffisant : %s sur %s" % (criteria_value, evaluation_number)
             if average_dict[2] == 3:
                 criteria_error = True
-                criteria_text = "Marge dépassée entre la note minimum et la note maximal"
+                criteria_style = "color: #f04124;"
+                criteria_text = "Marge dépassée entre la note minimale et la note maximale"
                 criteria_value = average_dict[3].split(";")
             criteria_avg[average_dict[0]] = {"criteria_avg":     average_dict[1],
                                              "criteria_value":   criteria_value,
                                              "criteria_error":   criteria_error,
+                                             "criteria_style":   criteria_style,
                                              "criteria_text":    criteria_text,
                                              "criteria_note":    average_dict[-2],
                                              "criteria_comment": average_dict[-1]}
@@ -1547,17 +1638,19 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     corrected_stu_dict[evaluation_dict[1]] = evaluation_dict[1]
 
             criteria_error = True if str(evaluation_dict[2]) in criteria_avg[evaluation_dict[0]]["criteria_value"] else False
-
+            criteria_style = "color: #f04124;" if criteria_error else ""
             try:
                 criteria_eval[evaluation_dict[0]].append({"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
                                                           "criteria_note":    evaluation_dict[2],
                                                           "criteria_comment": evaluation_dict[3],
-                                                          "criteria_error":   criteria_error})
+                                                          "criteria_error":   criteria_error,
+                                                          "criteria_style":   criteria_style})
             except:
                 criteria_eval[evaluation_dict[0]] = [{"corrected_stu":    corrected_stu_dict[evaluation_dict[1]],
                                                       "criteria_note":    evaluation_dict[2],
                                                       "criteria_comment": evaluation_dict[3],
-                                                      "criteria_error":   criteria_error}]
+                                                      "criteria_error":   criteria_error,
+                                                      "criteria_style":   criteria_style}]
         LOG.info("***** criteria_eval : %s" % str(criteria_eval))
 
         student = self.getIndividu(student_id, "dict")
@@ -1594,6 +1687,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def setStudentEvaluatePeer(self, param_dict):
         LOG.info("----- setStudentEvaluatePeer -----")
         evaluation = {}
+        evaluation_note = 0
+        evaluation_coeff = 0
         peers_dict = copy.deepcopy(self.getPeersDict())
         if param_dict["deposit_id"]:
             corrected_evaluation_index = int(param_dict["deposit_id"])
@@ -1607,48 +1702,81 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 corrected_evaluation_index = corrected_evaluation_index + 1
 
         index = 1
-        criteria_loop = param_dict["criteria_order"].split(",")
         jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        criteria_loop = param_dict["criteria_order"].split(",")
         for loop in criteria_loop:
             criteria_id = "criteria%i" % index
+            criteria_coefficient = int(criteria_dict[str(param_dict[criteria_id])]["coefficient"])
+            LOG.info("***** criteria_coefficient : %s" % criteria_coefficient)
+            evaluation_note = evaluation_note + (int(param_dict["%s-note" % criteria_id]) * criteria_coefficient)
+            evaluation_coeff = evaluation_coeff + criteria_coefficient
             jalon_bdd.setEvaluatePeer(self.getId(), evaluation["peer"], param_dict["user_id"], param_dict[criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
             evaluation["corrected"] = True
             index = index + 1
+
+        evaluation_note_20 = (float(evaluation_note) / float(evaluation_coeff)) * 2.0
+
         LOG.info("***** evaluation : %s" % str(evaluation))
+        LOG.info("***** evaluation_note : %s" % evaluation_note)
+        LOG.info("***** evaluation_coeff : %s" % evaluation_coeff)
+        LOG.info("***** evaluation_note_20 : %s" % evaluation_note_20)
+        jalon_bdd.setPeerEvaluationNote(self.getId(), evaluation["peer"], param_dict["user_id"], evaluation_note_20)
+        evaluation["note"] = evaluation_note_20
         peers_dict[param_dict["user_id"]][corrected_evaluation_index] = evaluation
         self.setPeersDict(peers_dict)
 
     def setTeacherEvaluatePeer(self, user_id, param_dict):
         LOG.info("----- setTeacherEvaluatePeer -----")
         index = 1
-        criteria_loop = param_dict["criteria_order"].split(",")
+        evaluation_note = 0
+        evaluation_coeff = 0
         jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        criteria_loop = param_dict["criteria_order"].split(",")
         for loop in criteria_loop:
             criteria_id = "criteria%i" % index
-            jalon_bdd.setAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], False, param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+            criteria_coefficient = int(criteria_dict[str(param_dict[criteria_id])]["coefficient"])
+            jalon_bdd.updateAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], 1, "", param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+
+            evaluation_note = evaluation_note + (int(param_dict["%s-note" % criteria_id]) * criteria_coefficient)
+            evaluation_coeff = evaluation_coeff + criteria_coefficient
             index = index + 1
+
+        evaluation_note_20 = (float(evaluation_note) / float(evaluation_coeff)) * 2.0
+        jalon_bdd.updateEvaluationAverage(self.getId(), param_dict["student_id"], evaluation_note_20, False)
 
     def setAveragePeer(self):
         LOG.info("----- setAveragePeer -----")
+        is_verification_evaluation = {}
         jalon_bdd = self.portal_jalon_bdd
         criteria_dict = self.getCriteriaDict()
         correction_number = self.getNombreCorrection()
-        average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
-        for average in average_list:
+        criteria_average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
+        for average in criteria_average_list:
             LOG.info("***** average : %s" % str(average))
             criteria_data = criteria_dict[average[1]]
             if average[2] < correction_number:
                 criteria_code = 2
                 criteria_value = average[3]
+                is_verification_evaluation[average[0]] = True
             elif average[-1] - average[-2] >= int(criteria_data["gap"]):
                 criteria_code = 3
                 criteria_value = "%s;%s" % (average[-1], average[-2])
+                is_verification_evaluation[average[0]] = True
             else:
                 criteria_code = 1
                 criteria_value = None
+                is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
-            jalon_bdd.setAveragePeer(self.getId(), average[0], int(average[1]), criteria_code, criteria_value, average[2], 0, "")
+            jalon_bdd.setAveragePeer(self.getId(), average[0], float(average[1]), criteria_code, criteria_value, average[2], 0, "")
+
+        LOG.info("***** is_verification_evaluation : %s" % is_verification_evaluation)
+        evaluation_average_list = jalon_bdd.generateEvaluationsAverage(self.getId()).all()
+        for average in evaluation_average_list:
+            LOG.info("***** average : %s" % str(average))
+            jalon_bdd.setEvaluationAverage(self.getId(), average[0], float(average[1]), is_verification_evaluation[average[0]])
 
     def getAveragePeer(self):
         LOG.info("----- getAveragePeer -----")
@@ -1663,6 +1791,19 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             except:
                 average_dict[ligne[0]] = {ligne[1]: criteria_note}
         return average_dict
+
+    def isEvaluable(self):
+        LOG.info("----- isEvaluable -----")
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        date_depot = DateTime(self.getDateDepot()).strftime("%Y/%m/%d %H:%M")
+
+        LOG.info("***** now : %s" % now)
+        LOG.info("***** date_depot : %s" % date_depot)
+        date_correction = DateTime(self.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+        LOG.info("***** date_correction : %s" % date_correction)
+
+        # En profil évaluation par les pairs la date de correction est obligatoire
+        return False if date_correction <= now else True
 
     ##-----------------------------##
     # Fonctions appel à jalon_utils #

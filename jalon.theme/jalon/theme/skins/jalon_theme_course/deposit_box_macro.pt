@@ -142,6 +142,11 @@
 <metal:macro define-macro="peers-list">
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
+    <a class="button expand radius"
+       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view"
+       tal:condition="my_view/grid_access">
+       <i class="fa fa-th"></i>Accèder à la grille d'évaluation
+    </a>
     <tal:condition condition="my_view/is_personnel">
     <a class="dropdown right"
        data-options="align:left" data-dropdown="drop-action-peers">
@@ -174,18 +179,9 @@
          i18n:translate="">
         La grille d'évaluation ne contient aucun critère.
     </div>
-    <a class="button expand radius"
-       tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view">
-       <i class="fa fa-th"></i>Accèder à la grille d'évaluation
-    </a>
     </tal:condition>
 
     <tal:condition condition="criteria_dict">
-        <a class="button expand radius"
-           tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_criteria_view"
-           tal:condition="my_view/is_personnel">
-           <i class="fa fa-th"></i>Accèder à la grille d'évaluation
-        </a>
         <metal:macro use-macro="python:context.deposit_box_macro.macros.get(evaluation_by_peers_dict['macro_peers'])"/>
     </tal:condition>
     </tal:define>
@@ -198,7 +194,47 @@
     <form id="js-list_competences" method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
           tal:condition="my_view/is_personnel">
-        <div class="table-overflow_container">
+        <div class="panel callout radius">
+            <strong>Étudiants évalués :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_notes"/>
+            <br/>
+            <strong>Évaluations correctes :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_validate"/>
+            <br/>
+            <a class="button tiny radius right" tal:attributes="href string:${my_view/deposit_box_link}/details_verification_evaluations">Consulter</a>
+            <strong>Évaluations à vérifier :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/verif_evaluations_notes"/>
+        </div>
+        <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes</h2>
+        <div class="panel callout radius">
+            <strong>Note minimale :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_notes_min"/>
+            <br/>
+            <strong>Note maximale :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_notes_max"/>
+            <br/>
+            <strong>Moyenne :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_notes_avg"/>
+        </div>
+        <h2><i class="fa fa-th"></i>Critères d'évaluation</h2>
+        <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
+            <tal:define define="criteria python:criteria_dict[index]">
+            <h3 tal:replace="criteria/title">Titre du critère</h3>
+            <div class="panel callout radius"
+                 tal:define="criteria_notes python:evaluation_by_peers_dict['criteria_notes_dict'][index]"
+                 tal:on-error="nothing">
+                <strong>Note minimale :</strong>
+                <tal:replace replace="criteria_notes/min"/>
+                <br/>
+                <strong>Note maximale :</strong>
+                <tal:replace replace="criteria_notes/max"/>
+                <br/>
+                <strong>Moyenne :</strong>
+                <tal:replace replace="criteria_notes/avg"/>
+            </div>
+            </tal:define>
+        </tal:repeat>
+        <!--div class="table-overflow_container">
             <table summary="Liste des compétences">
             <thead>
                 <tr>
@@ -249,7 +285,7 @@
                 </tal:condition>
             </tbody>
             </table>
-        </div>
+        </div-->
     </form>
 </metal:macro>
 
@@ -265,13 +301,14 @@
     <!--div class="panel callout radius">
         Vous avez évalué tous les dépôts.
     </div-->
-    <h2>
+    <h2 tal:condition="evaluation_by_peers_dict/corrected_evaluation_list">
         <i class="fa fa-check-square-o"></i>
         Dépôt(s) évalué(s)
     </h2>
     <div class="panel callout radius"
          tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
-    <table summary="Liste des dépôts évalués">
+    <table summary="Liste des dépôts évalués"
+           tal:condition="evaluation_by_peers_dict/corrected_evaluation_list">
     <thead>
         <tr>
             <th class="sort has-tip" data-tooltip data-sort="depot"
@@ -295,6 +332,7 @@
                 </span>
             </th>
             <th class="show-for-medium-up has-tip" title="Action"
+                tal:condition="evaluation_by_peers_dict/is_evaluable"
                 i18n:attributes="title">
                 <tal:block i18n:translate="">Réévaluer</tal:block>
             </th>
@@ -306,10 +344,12 @@
             <td>
                 Dépôts n°<tal:replace replace="number"/>
             </td>
-            <td>Non renseignée</td>
             <td>
+                <tal:replace replace="python:evaluation_by_peers_dict['evaluations_note_dict'][number]"/>
+            </td>
+            <td tal:condition="evaluation_by_peers_dict/is_evaluable">
                 <a class="button small radius"
-                tal:attributes="href string:${evaluation_by_peers_dict/evaluate_link}&amp;deposit_id=${repeat/number/index}">
+                   tal:attributes="href string:${evaluation_by_peers_dict/evaluate_link}&amp;deposit_id=${repeat/number/index}">
                     <i class="fa fa-check-square-o"></i>Réévaluer
                 </a>
             </td>

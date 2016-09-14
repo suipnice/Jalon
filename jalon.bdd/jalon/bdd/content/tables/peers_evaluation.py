@@ -34,6 +34,26 @@ class PeersEvaluationMySQL(Base):
         return "<PeersEvaluationMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CORRECTED_STU=%s CRITERIA=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CORRECTED_STU, self.CRITERIA)
 
 
+class PeersEvaluationNoteMySQL(Base):
+    __tablename__ = "peers_evaluation_note_mysql"
+
+    PKEY = Column(Integer, primary_key=True, autoincrement=True)
+    DEPOSIT_BOX = Column(String(50))
+    DEPOSIT_STU = Column(String(50))
+    CORRECTED_STU = Column(String(50))
+    NOTE = Column(Float)
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CORRECTED_STU")
+
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
+        self.DEPOSIT_BOX = DEPOSIT_BOX
+        self.DEPOSIT_STU = DEPOSIT_STU
+        self.CORRECTED_STU = CORRECTED_STU
+        self.NOTE = NOTE
+
+    def __repr__(self):
+        return "<PeersEvaluationNoteMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CORRECTED_STU=%s NOTE=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CORRECTED_STU, self.NOTE)
+
+
 class PeersAverageMySQL(Base):
     __tablename__ = "peers_average_mysql"
 
@@ -63,3 +83,23 @@ class PeersAverageMySQL(Base):
 
     def __repr__(self):
         return "<PeersEvaluationMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CRITERIA=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CRITERIA)
+
+
+class PeersEvaluationAverageMySQL(Base):
+    __tablename__ = "peers_evaluation_average_mysql"
+
+    PKEY = Column(Integer, primary_key=True, autoincrement=True)
+    DEPOSIT_BOX = Column(String(50))
+    DEPOSIT_STU = Column(String(50))
+    AVERAGE = Column(Float)
+    IS_VERIFICATION = Column(Boolean)
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
+
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
+        self.DEPOSIT_BOX = DEPOSIT_BOX
+        self.DEPOSIT_STU = DEPOSIT_STU
+        self.AVERAGE = AVERAGE
+        self.IS_VERIFICATION = IS_VERIFICATION
+
+    def __repr__(self):
+        return "<PeersEvaluationAverageMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s AVERAGE=%s IS_VERIFICATION=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.AVERAGE, self.IS_VERIFICATION)

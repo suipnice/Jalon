@@ -303,13 +303,17 @@ def getIndividu(sesame, type=None, portal=None):
     if type == "dict":
         if individu:
             # individu = individu[0]
-            dico = {"sesame": sesame,
-                    "nom": individu["LIB_NOM_PAT_IND"],
-                    "prenom": individu["LIB_PR1_IND"],
+            dico = {"sesame":  sesame,
+                    "nom":     individu["LIB_NOM_PAT_IND"],
+                    "prenom":  individu["LIB_PR1_IND"],
                     "num_etu": individu["COD_ETU"],
-                    "email": individu["EMAIL_ETU"]}
+                    "email":   individu["EMAIL_ETU"]}
             return dico
-        return None
+        return {"sesame":  sesame,
+                "nom":     sesame,
+                "prenom":  sesame,
+                "num_etu": sesame,
+                "email":   sesame}
 
     return individu
 

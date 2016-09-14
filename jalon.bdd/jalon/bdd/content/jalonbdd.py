@@ -154,8 +154,10 @@ class JalonBDD(SimpleItem):
             #tables.IndividuMySQL.__table__.create(bind=engine)
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
-            #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
             tables.PeersAverageMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
     # Utilitaire base de données #
@@ -209,12 +211,15 @@ class JalonBDD(SimpleItem):
     # Interrogation de la base de données #
     #-------------------------------------#
     def getIndividuLITE(self, sesame):
+        LOG.info("----- getIndividuLITE -----")
         session = self.getSession()
         if self._typeBDD == "sqlite":
             result = jalonsqlite.getIndividuLITE(session, sesame)
             if result:
+                LOG.info("***** result : %s" % result)
                 return result[0]
             else:
+                LOG.info("***** result : None")
                 return None
 
     def getTousIndividuLITE(self, page):
@@ -516,9 +521,11 @@ class JalonBDD(SimpleItem):
             return jalonsqlite.supprimerELP(session, param)
 
     def creerUtilisateur(self, param):
+        LOG.info("----- creerUtilisateur -----")
         retour = 0
         session = self.getSession()
         if self._typeBDD == "sqlite":
+            LOG.info("SQLITE")
             retour = jalonsqlite.creerUtilisateur(session, param)
 
         if self._use_mysql:
@@ -1430,9 +1437,17 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
 
+    def setPeerEvaluationNote(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
+        session = self.getSessionMySQL()
+        jalon_mysql.setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE)
+
     def getPeerEvaluation(self, DEPOSIT_BOX, DEPOSIT_STU):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU)
+
+    def getPeerEvaluationsNotes(self, DEPOSIT_BOX, CORRECTED_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getPeerEvaluationsNotes(session, DEPOSIT_BOX, CORRECTED_STU)
 
     def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
         session = self.getSessionMySQL()
@@ -1450,13 +1465,53 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.generatePeersAverage(session, DEPOSIT_BOX)
 
+    def generateEvaluationsAverage(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.generateEvaluationsAverage(session, DEPOSIT_BOX)
+
     def setAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
         session = self.getSessionMySQL()
         jalon_mysql.setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
 
+    def updateAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
+        session = self.getSessionMySQL()
+        jalon_mysql.updateAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
+
+    def setEvaluationAverage(self, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
+        session = self.getSessionMySQL()
+        jalon_mysql.setEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION)
+
+    def updateEvaluationAverage(self, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
+        session = self.getSessionMySQL()
+        jalon_mysql.updateEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION)
+
     def getPeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeersAverage(session, DEPOSIT_BOX)
+
+    def getCountEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getCountEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getCountVerifEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getCountVerifEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getInfoEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getInfoCriteriaNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoCriteriaNotes(session, DEPOSIT_BOX)
+
+    def getInfoCriteriaNoteByDepositStu(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX)
+
+    def getInfoEvaluationNoteByDepositStu(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX)
 
     #def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
     #    session = self.getSessionMySQL()
