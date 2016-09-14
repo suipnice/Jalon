@@ -229,7 +229,8 @@
                     <div class="small-12 medium-5 columns">
                         <dl class="deflist">
                             <dt>Marge d'alerte :</dt><dd><tal:replace replace="criteria/gap"/> point(s)</dd>
-                            <dt>Moyenne du critère :</dt><dd><strong tal:attributes="style criteria_avg/criteria_style">5,8</strong></dd>
+                            <dt>Moyenne du critère :</dt><dd><strong tal:attributes="style criteria_avg/criteria_style"
+                                                                     tal:content="criteria_avg/criteria_avg"/></dd>
                         </dl>
                     </div>
                 </div>

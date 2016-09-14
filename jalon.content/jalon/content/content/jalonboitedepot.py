@@ -1414,30 +1414,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 else:
                     my_view["peers_average_dict"][criteria_note[0]][criteria_note[1]] = {"criteria_note":  criteria_note[2],
                                                                                          "criteria_error": True if criteria_note[3] in [2, 3] else False}
-            """
-            jalon_bdd = self.portal_jalon_bdd
-            evaluation_by_peers_dict["evaluations_notes"] = jalon_bdd.getCountEvaluationsNotes(self.getId()).first()[0]
-            evaluation_by_peers_dict["verif_evaluations_notes"] = jalon_bdd.getCountVerifEvaluationsNotes(self.getId()).first()[0]
-            evaluation_by_peers_dict["evaluations_validate"] = evaluation_by_peers_dict["evaluations_notes"] - evaluation_by_peers_dict["verif_evaluations_notes"]
-            LOG.info("***** evaluations_notes : %s" % evaluation_by_peers_dict["evaluations_notes"])
-            LOG.info("***** verif_evaluations_notes : %s" % evaluation_by_peers_dict["verif_evaluations_notes"])
-            LOG.info("***** evaluations_validate : %s" % evaluation_by_peers_dict["evaluations_validate"])
-
-            evaluations_notes_informations = jalon_bdd.getInfoEvaluationsNotes(self.getId()).first()
-            if evaluations_notes_informations:
-                evaluation_by_peers_dict["evaluations_notes_min"] = "%.2f" % evaluations_notes_informations[0] if evaluations_notes_informations[0] else 0
-                evaluation_by_peers_dict["evaluations_notes_max"] = "%.2f" % evaluations_notes_informations[1] if evaluations_notes_informations[1] else 0
-                evaluation_by_peers_dict["evaluations_notes_avg"] = "%.2f" % evaluations_notes_informations[2] if evaluations_notes_informations[2] else 0
-
-            criteria_notes_dict = {}
-            criteria_notes_informations = jalon_bdd.getInfoCriteriaNotes(self.getId())
-            for criteria_note in criteria_notes_informations:
-                criteria_notes_dict[criteria_note[0]] = {"min": "%.2f" % criteria_note[1],
-                                                         "max": "%.2f" % criteria_note[2],
-                                                         "avg": "%.2f" % criteria_note[3]}
-            evaluation_by_peers_dict["criteria_notes_dict"] = criteria_notes_dict
-            LOG.info("***** criteria_notes_dict : %s" % str(criteria_notes_dict))
-            """
         return my_view
 
     def getCriteriaDict(self, key=None):
