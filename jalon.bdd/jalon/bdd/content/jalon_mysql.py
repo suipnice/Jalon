@@ -372,7 +372,8 @@ def getCountEvaluationsNotes(session, DEPOSIT_BOX):
 
 def getCountVerifEvaluationsNotes(session, DEPOSIT_BOX):
     PEA = aliased(tables.PeersEvaluationAverageMySQL)
-    verif_evaluations_notes = session.query(func.count(PEA.DEPOSIT_STU)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX and PEA.IS_VERIFICATION == 1)
+    verif_evaluations_notes = session.query(func.count(PEA.DEPOSIT_STU)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == True)
+    LOG.info("***** getCountVerifEvaluationsNotes : %s" % verif_evaluations_notes)
     #return convertirResultatBDD(peers_average)
     return verif_evaluations_notes
 
