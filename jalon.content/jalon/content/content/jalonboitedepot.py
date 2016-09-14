@@ -1725,12 +1725,22 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def setTeacherEvaluatePeer(self, user_id, param_dict):
         LOG.info("----- setTeacherEvaluatePeer -----")
         index = 1
-        criteria_loop = param_dict["criteria_order"].split(",")
+        evaluation_note = 0
+        evaluation_coeff = 0
         jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        criteria_loop = param_dict["criteria_order"].split(",")
         for loop in criteria_loop:
             criteria_id = "criteria%i" % index
-            jalon_bdd.setAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], False, param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+            criteria_coefficient = int(criteria_dict[str(param_dict[criteria_id])]["coefficient"])
+            jalon_bdd.updateAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], 1, "", param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+
+            evaluation_note = evaluation_note + (int(param_dict["%s-note" % criteria_id]) * criteria_coefficient)
+            evaluation_coeff = evaluation_coeff + criteria_coefficient
             index = index + 1
+
+        evaluation_note_20 = (float(evaluation_note) / float(evaluation_coeff)) * 2.0
+        jalon_bdd.updateEvaluationAverage(self.getId(), param_dict["student_id"], evaluation_note_20, False)
 
     def setAveragePeer(self):
         LOG.info("----- setAveragePeer -----")

@@ -330,8 +330,29 @@ def setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, C
     session.commit()
 
 
+def updateAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_DATE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
+    PA = aliased(tables.PeersAverageMySQL)
+    peer_average = session.query(PA).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU, PA.CRITERIA == CRITERIA)
+    for line in peer_average:
+        line.CRITERIA_CODE = CRITERIA_CODE
+        line.CRITERIA_VALUE = CRITERIA_VALUE
+        line.CRITERIA_AVERAGE = CRITERIA_AVERAGE
+        line.CRITERIA_NOTE_T = CRITERIA_NOTE_T
+        line.CRITERIA_COMMENT_T = CRITERIA_COMMENT_T
+    session.commit()
+
+
 def setEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
     session.add(tables.PeersEvaluationAverageMySQL(DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION))
+    session.commit()
+
+
+def updateEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
+    PEA = aliased(tables.PeersEvaluationAverageMySQL)
+    peer_average = session.query(PEA).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.DEPOSIT_STU == DEPOSIT_STU)
+    for line in peer_average:
+        line.AVERAGE = AVERAGE
+        line.IS_VERIFICATION = IS_VERIFICATION
     session.commit()
 
 
