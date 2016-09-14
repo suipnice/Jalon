@@ -340,3 +340,38 @@ def getPeersAverage(session, DEPOSIT_BOX):
     peers_average = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_CODE, PA.CRITERIA_VALUE, PA.CRITERIA_AVERAGE, PA.CRITERIA_NOTE_T, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
     #return convertirResultatBDD(peers_average)
     return peers_average
+
+
+def getCountEvaluationsNotes(session, DEPOSIT_BOX):
+    PEA = aliased(tables.PeersEvaluationAverageMySQL)
+    evaluations_notes = session.query(func.count(PEA.DEPOSIT_STU)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
+    #return convertirResultatBDD(peers_average)
+    return evaluations_notes
+
+
+def getCountVerifEvaluationsNotes(session, DEPOSIT_BOX):
+    PEA = aliased(tables.PeersEvaluationAverageMySQL)
+    verif_evaluations_notes = session.query(func.count(PEA.DEPOSIT_STU)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX and PEA.IS_VERIFICATION == 1)
+    #return convertirResultatBDD(peers_average)
+    return verif_evaluations_notes
+
+
+def getInfoEvaluationsNotes(session, DEPOSIT_BOX):
+    PEA = aliased(tables.PeersEvaluationAverageMySQL)
+    evaluations_notes = session.query(func.min(PEA.AVERAGE), func.max(PEA.AVERAGE), func.avg(PEA.AVERAGE)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
+    #return convertirResultatBDD(peers_average)
+    return evaluations_notes
+
+
+def getInfoCriteriaNotes(session, DEPOSIT_BOX):
+    PA = aliased(tables.PeersAverageMySQL)
+    evaluations_notes = session.query(PA.CRITERIA, func.min(PA.CRITERIA_AVERAGE), func.max(PA.CRITERIA_AVERAGE), func.avg(PA.CRITERIA_AVERAGE)).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX).group_by(PA.CRITERIA)
+    #return convertirResultatBDD(peers_average)
+    return evaluations_notes
+
+
+def getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX):
+    PA = aliased(tables.PeersAverageMySQL)
+    evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
+    #return convertirResultatBDD(peers_average)
+    return evaluations_notes

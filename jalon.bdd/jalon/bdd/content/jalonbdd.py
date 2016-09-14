@@ -154,9 +154,9 @@ class JalonBDD(SimpleItem):
             #tables.IndividuMySQL.__table__.create(bind=engine)
             #tables.ConnexionINDMySQL.__table__.create(bind=engine)
             #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
-            #tables.PeersEvaluationMySQL.__table__.create(bind=engine)
-            #tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
-            #tables.PeersAverageMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationMySQL.__table__.create(bind=engine)
+            tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
+            tables.PeersAverageMySQL.__table__.create(bind=engine)
             tables.PeersEvaluationAverageMySQL.__table__.create(bind=engine)
 
     #----------------------------#
@@ -1480,6 +1480,26 @@ class JalonBDD(SimpleItem):
     def getPeersAverage(self, DEPOSIT_BOX):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeersAverage(session, DEPOSIT_BOX)
+
+    def getCountEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getCountEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getCountVerifEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getCountVerifEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getInfoEvaluationsNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoEvaluationsNotes(session, DEPOSIT_BOX)
+
+    def getInfoCriteriaNotes(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoCriteriaNotes(session, DEPOSIT_BOX)
+
+    def getInfoCriteriaNoteByDepositStu(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX)
 
     #def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
     #    session = self.getSessionMySQL()
