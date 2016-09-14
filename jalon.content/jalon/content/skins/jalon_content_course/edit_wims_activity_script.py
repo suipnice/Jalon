@@ -8,7 +8,7 @@
 ##title=Activite edit
 ##
 
-#context = context
+# context = context
 form = context.REQUEST.form
 
 if "title" in form:

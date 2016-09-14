@@ -9,10 +9,9 @@ LOG = getLogger('[CourseView]')
 
 
 class CourseView(BrowserView):
-    """Class pour le first_page
-    """
+    """Class pour la vue du Cours."""
 
-    #to : training offer
+    # to : training offer
     _course_to_actions_list = [{"action_link": "add_course_training_offer_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -22,7 +21,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_training_offer_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #nr : nominative registraion
+    # nr : nominative registraion
     _course_nr_actions_list = [{"action_link": "add_course_nominative_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -32,7 +31,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_nominative_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #er : email registraion
+    # er : email registraion
     _course_er_actions_list = [{"action_link": "add_course_email_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -42,7 +41,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_email_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #pr : password registraion
+    # pr : password registraion
     _course_pr_actions_list = [{"action_link": "add_course_password_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -52,7 +51,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_password_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #cr : coreader registraion
+    # cr : coreader registraion
     _course_cr_actions_list = [{"action_link": "add_course_coreader_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -64,7 +63,7 @@ class CourseView(BrowserView):
                                 "action_name": "Voir"}]
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request

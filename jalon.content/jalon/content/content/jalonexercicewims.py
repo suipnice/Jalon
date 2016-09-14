@@ -608,7 +608,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
-            retour = json.loads(fichier)
+            json.loads(fichier)
             # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
@@ -630,7 +630,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         if modele == "externe":
             if "permalink" in requete :
                 # Cas où on recharge la page de modification (permalien incorrect).
-                LOG.error("[getExoWims] PERMALINK = %s" % requete["permalink"])
+                # LOG.info("[getExoWims] PERMALINK = %s" % requete["permalink"])
                 return requete
             else:
                 if self.permalink != "":
