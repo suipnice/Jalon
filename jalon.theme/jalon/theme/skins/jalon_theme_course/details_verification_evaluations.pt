@@ -43,7 +43,16 @@
                             Critère <tal:replace tal:replace="index"/>
                         </th>
                     </tal:repeat>
-                    </tr>
+                        <th class="sort has-tip" data-tooltip data-sort="note"
+                            title="Cliquer pour trier selon la note"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Note sur 20</tal:block>
+                            </span>
+                        </th>
                 </thead>
                 <tfoot></tfoot>
                 <tbody class="list">
@@ -67,6 +76,11 @@
                                    tal:condition="criteria_note/criteria_error"></i>
                                 <tal:replace replace="criteria_note/criteria_note"/>
                             </tal:define>
+                        </td>
+                        <td>
+                            <i class="fa fa-exclamation-triangle alert"
+                               tal:condition="criteria_stu/evaluation_error"></i>
+                            <tal:replace replace="criteria_stu/evaluation_note"/>
                         </td>
                         </tal:define>
                     </tr>

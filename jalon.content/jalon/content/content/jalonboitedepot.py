@@ -1414,6 +1414,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 else:
                     my_view["peers_average_dict"][criteria_note[0]][criteria_note[1]] = {"criteria_note":  criteria_note[2],
                                                                                          "criteria_error": True if criteria_note[3] in [2, 3] else False}
+
+            for evaluation_note in jalon_bdd.getInfoEvaluationNoteByDepositStu(self.getId()).all():
+                my_view["peers_average_dict"][evaluation_note[0]]["evaluation_note"] = evaluation_note[1]
+                my_view["peers_average_dict"][evaluation_note[0]]["evaluation_error"] = evaluation_note[2]
         return my_view
 
     def getCriteriaDict(self, key=None):
