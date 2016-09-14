@@ -276,7 +276,7 @@
                            tal:define="error python:errors.get(criteria_note, None)"
                            tal:attributes="class python:context.test(error, 'error', '');
                                            name  criteria_note;
-                                           value python:request.get(criteria_note, '1');
+                                           value python:request.get(criteria_note, int(criteria_avg['criteria_avg']));
                                            max criteria/notation"/>
                     <input type="hidden"
                            tal:attributes="name string:${criteria_id};
