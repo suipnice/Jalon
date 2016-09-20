@@ -392,15 +392,25 @@ def getInfoCriteriaNotes(session, DEPOSIT_BOX):
     return evaluations_notes
 
 
-def getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX):
+def getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX, CHECK=None):
     PA = aliased(tables.PeersAverageMySQL)
-    evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
-    #return convertirResultatBDD(peers_average)
+    if not CHECK:
+        evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
+    else:
+        if CHECK != 1:
+            evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.CRITERIA_CODE <> 1)
+        if CHECK == 1:
+            evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.CRITERIA_CODE == 1)
     return evaluations_notes
 
 
-def getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX):
+def getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX, CHECK=None):
     PEA = aliased(tables.PeersEvaluationAverageMySQL)
-    evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
-    #return convertirResultatBDD(peers_average)
+    if not CHECK:
+        evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
+    else:
+        if CHECK == 1:
+            evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == False)
+        if CHECK != 1:
+            evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == True)
     return evaluations_notes

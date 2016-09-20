@@ -152,6 +152,12 @@
                     template="view_template/jalon_course/deposit_box_evaluation_view.pt"
                     permission="zope2.View"/>
 
+      <browser:page name="deposit_box_details_evaluations_view"
+                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                    class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
+                    template="view_template/jalon_course/deposit_box_details_evaluations_view.pt"
+                    permission="zope2.View"/>
+
       <browser:page name="wims_activity_view"
                     for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
                     class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"

@@ -53,7 +53,7 @@
             <tal:repeat repeat="index my_evaluate_form/criteria_order">
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
-                                 criteria_evaluate python:criteria_evaluated.get(index, {'criteria_comment': '', 'criteria_note': '10'});
+                                 criteria_evaluate python:criteria_evaluated.get(index, {'criteria_comment': '', 'criteria_note': criteria['notation']});
                                  criteria_id string:criteria${repeat/index/number}"
                      tal:attributes="id criteria_id">
                 <h2 tal:content="criteria/title"/>

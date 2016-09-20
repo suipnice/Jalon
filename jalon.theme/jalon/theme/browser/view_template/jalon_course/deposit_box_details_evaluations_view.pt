@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="tab request/tab | nothing;
+                        mode_etudiant_request request/mode_etudiant | nothing;
+                        my_view python:view.getDetailsVerificationEvaluations(user, mode_etudiant_request, tab);
+                        mode_etudiant my_view/mode_etudiant">
+
+    <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
+    <tal:define define="no_return python:context.insererConsultation(user, 'Cours', '')"/>
+    
+    <tal:define define="breadcrumbs my_view/breadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium" 
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_second" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main-large" class="reveal-modal large"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <section id="boite" class="small-12 columns">
+            <ul id="tab_button-group" class="button-group radius">
+                <li tal:repeat="onglet my_view/details_evaluations_tabs">
+                    <a tal:attributes="class string:button small${onglet/css_class};
+                                       href onglet/href"
+                       i18n:translate="">
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
+                                                                                           i18n:translate=""/>
+                        <span class="sup" tal:content="onglet/nb"/>
+                    </a>
+                </li>
+            </ul>
+            <h2>
+                <i class="fa fa-list"></i><tal:replace replace="my_view/title"/>
+            </h2>
+            <div class="panel callout radius"
+                 tal:condition="not:my_view/peers_average_dict">
+                Aucun élément ne correspondant à ce critère.
+            </div>
+            <div class="table-overflow_container"
+                 tal:define="criteria_dict my_view/criteria_dict"
+                 tal:condition="my_view/peers_average_dict">
+                <table summary="Liste des compétences">
+                <thead>
+                    <tr>
+                        <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                            title="Cliquer pour trier selon l'étudiant"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                            </span>
+                        </th>
+                    <tal:repeat repeat="index my_view/criteria_order">
+                        <th tal:define="criteria python:criteria_dict[index]">
+                            Critère <tal:replace tal:replace="index"/>
+                        </th>
+                    </tal:repeat>
+                        <th class="sort has-tip" data-tooltip data-sort="note"
+                            title="Cliquer pour trier selon la note"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Note sur 20</tal:block>
+                            </span>
+                        </th>
+                </thead>
+                <tfoot></tfoot>
+                <tbody class="list">
+                    <tr tal:repeat="peer my_view/peers_list">
+                        <tal:define define="criteria_stu python:my_view['peers_average_dict'][peer['id']]">
+                        <td class="etudiant">
+                            <span class="hide" tal:content="peer/nom" />
+                            <a tal:attributes="href string:${my_view/deposit_box_link}/evaluate_deposit_file_form?student_id=${peer/id}">
+                                <tal:replace replace="peer/nom" />
+                            </a>
+                        </td>
+                        <td tal:repeat="criteria my_view/criteria_order">
+                            <tal:define define="criteria_note python:criteria_stu[criteria]">
+                                <i class="fa fa-exclamation-triangle alert"
+                                   tal:condition="criteria_note/criteria_error"></i>
+                                <tal:replace replace="criteria_note/criteria_note"/>
+                            </tal:define>
+                        </td>
+                        <td>
+                            <i class="fa fa-exclamation-triangle alert"
+                               tal:condition="criteria_stu/evaluation_error"></i>
+                            <tal:replace replace="criteria_stu/evaluation_note"/>
+                        </td>
+                        </tal:define>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_deposit_box_property
+
+[actions]
+action.failure = traverse_to:string:edit_peers_adjustement_form
+action.success_penality = traverse_to:string:edit_peers_adjustement_script
