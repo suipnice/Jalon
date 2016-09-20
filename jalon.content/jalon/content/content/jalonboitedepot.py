@@ -1710,11 +1710,11 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             jalon_bdd.updateAveragePeer(self.getId(), param_dict["student_id"], param_dict[criteria_id], 1, "", param_dict["%s-note" % criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
 
             #evaluation_note = evaluation_note + (int(param_dict["%s-note" % criteria_id]) * criteria_coefficient)
-            evaluation_note = evaluation_note + (((int(param_dict["%s-note" % criteria_id]) * 10) / criteria_dict[str(param_dict[criteria_id])]["notation"]) * criteria_coefficient)
+            evaluation_note = evaluation_note + (((int(param_dict["%s-note" % criteria_id]) * 10) / int(criteria_dict[str(param_dict[criteria_id])]["notation"])) * criteria_coefficient)
             evaluation_coeff = evaluation_coeff + criteria_coefficient
             index = index + 1
 
-        evaluation_note_20 = (float(evaluation_note) / float(evaluation_coeff)) * 2.0
+        evaluation_note_20 = "%.2f" % ((float(evaluation_note) / float(evaluation_coeff)) * 2.0)
         jalon_bdd.updateEvaluationAverage(self.getId(), param_dict["student_id"], evaluation_note_20, False)
 
     def setAveragePeer(self):
@@ -1741,7 +1741,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
-            jalon_bdd.setAveragePeer(self.getId(), average[0], float(average[1]), criteria_code, criteria_value, average[2], 0, "")
+            jalon_bdd.setAveragePeer(self.getId(), average[0], "%.2f" % float(average[1]), criteria_code, criteria_value, average[2], 0, "")
 
         LOG.info("***** is_verification_evaluation : %s" % is_verification_evaluation)
         evaluation_average_list = jalon_bdd.generateEvaluationsAverage(self.getId()).all()
