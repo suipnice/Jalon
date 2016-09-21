@@ -42,6 +42,7 @@
 
         </div>
 
+        <tal:condition condition="python:context.getProfile() != 'pairs'">
         <div class="text-center" i18n:translate="">
             Tolérer les dépôts jusqu'au
         </div>
@@ -64,6 +65,10 @@
             </div>
 
         </div>
+        </tal:condition>
+        <input name="datetime-retard" type="hidden"
+               tal:attributes="value context/getDateRetard"
+               tal:condition="python:context.getProfile() == 'pairs'"/>
 
         <input type="hidden" name="tab" tal:attributes="value tab"/>
 
