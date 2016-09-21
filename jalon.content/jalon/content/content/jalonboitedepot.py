@@ -143,6 +143,12 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                  accessor="getAccesGrille",
                  searchable=False,
                  widget=BooleanWidget(label=_(u"Accéder à la grille d'évaluation avant d'évaluer"),)),
+    BooleanField("accesEvaluation",
+                 required=False,
+                 accessor="getAccesEvaluation",
+                 default=False,
+                 searchable=False,
+                 widget=BooleanWidget(label=_(u"Accéder aux résultats des évaluations"),)),
 ))
 
 
@@ -597,7 +603,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
 
     def getNbDepots(self, is_personnel, user_id):
+        LOG.info("----- getNbDepots -----")
         if not is_personnel and not self.getAccesDepots():
+            LOG.info("***** 1")
             #nbDepots = 0
             #authMember = self.portal_membership.getAuthenticatedMember().getId()
             #for iddepot in self.objectIds():
@@ -605,11 +613,15 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             #        nbDepots = nbDepots + 1
             #return nbDepots
             return len(self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": user_id}))
-        depots = self.objectIds()
-        if "corrections" in depots:
-            return len(depots) - 1
-        else:
-            return len(depots)
+        return len(self.getFolderContents(contentFilter={"portal_type": "JalonFile"}))
+        #depots = self.objectIds()
+        #if "corrections" in depots:
+        #    LOG.info("***** 2")
+        #    return len(depots) - 1
+        #else:
+        #    LOG.info("***** 3")
+        #    LOG.info(depots)
+        #    return len(depots)
 
     """
     isDepotActif renvoit :

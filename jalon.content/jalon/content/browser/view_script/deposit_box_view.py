@@ -76,6 +76,9 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
+        my_view["deposit_box_edit"].append({"href": "%s/edit_peers_results_form?tab=%s" % (my_view["deposit_box_link"], tab),
+                                            "icon": "fa-trophy",
+                                            "text": "Résultats"})
 
         my_view["grid_access"] = True if my_deposit_box.getAccesGrille(my_view["is_personnel"]) else False
         #my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
@@ -140,6 +143,7 @@ class DepositBoxView(CourseView):
                                                 "text":      "Dépôts à évaluer" if not my_view["is_personnel"] else "Par les pairs",
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
+            my_view["accessEvaluation"] = not my_view["is_personnel"] and my_deposit_box.getAccesEvaluation()
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",

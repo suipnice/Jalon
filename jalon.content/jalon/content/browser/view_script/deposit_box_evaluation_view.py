@@ -36,8 +36,8 @@ class DepositBoxEvaluationView(BrowserView):
                 {"title": self.context.Title(),
                  "icon":  "fa fa-inbox",
                  "link":  "%s?tab=peers" % deposit_box_link},
-                {"title": "Évaluation d'un étudiant",
-                 "icon":  "fa fa-th",
+                {"title": "Mon évaluation",
+                 "icon":  "fa fa-trophy",
                  "link":  "%s/deposit_box_evaluation_view" % deposit_box_link}]
 
     def getStudentEvaluationView(self, student_id):
@@ -66,14 +66,15 @@ class DepositBoxEvaluationView(BrowserView):
         my_view["peer_average"] = {}
         average_list = jalon_bdd.getPeerAverage(deposit_box_id, student_id)
         for ligne in average_list.all():
-            criteria_note = ligne[2] if ligne[1] else ligne[3]
-            try:
-                my_view["peer_average"][ligne[0]] = {"criteria_state": ligne[1], "criteria_note": criteria_note, "criteria_comment": ligne[-1]}
-            except:
-                my_view["peer_average"] = {ligne[0]: {"criteria_state": ligne[1], "criteria_note": criteria_note, "criteria_comment": ligne[-1]}}
+            criteria_state = True if ligne[2] else False
+            my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[2], "criteria_comment": ligne[-1]}
 
+        my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()
+        my_view["comment_dict"] = {"0": "Aucun",
+                                   "1": "Optionnel",
+                                   "2": "Obligatoire"}
         LOG.info("----- getStudentEvaluationView (End) -----")
 
         return my_view

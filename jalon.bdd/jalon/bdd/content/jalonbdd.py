@@ -1513,6 +1513,11 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX, CHECK)
 
+    def getEvaluationNoteByDeposiSTU(self, DEPOSIT_BOX, DEPOSIT_STU):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getEvaluationNoteByDeposiSTU(session, DEPOSIT_BOX, DEPOSIT_STU)
+        
+
     #def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
     #    session = self.getSessionMySQL()
     #    return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
