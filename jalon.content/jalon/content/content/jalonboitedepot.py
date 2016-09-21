@@ -1534,7 +1534,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getStudentEvaluateDepositFileForm(self, user_id, deposit_id=None):
         LOG.info("----- getStudentEvaluateDepositFileForm -----")
-        index = 1
         evaluation = {}
         criteria_evaluated_dict = {}
         peers_evaluations = self.getPeersDict(user_id)
@@ -1545,10 +1544,13 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 if not corrected_evaluation["corrected"]:
                     evaluation = corrected_evaluation
                     break
-                index = index + 1
+                deposit_name = deposit_name + 1
+            deposit_name = "le dépôt n°%i" % deposit_name
         elif user_id == deposit_id:
             evaluation["peer"] = deposit_id
+            deposit_name = "mon dépôt"
         else:
+            deposit_name = "le dépôt n°%i" % (int(deposit_id) + 1)
             evaluation = peers_evaluations[int(deposit_id)]
             LOG.info("***** evaluation : %s" % str(evaluation))
             criteria_evaluated_list = self.portal_jalon_bdd.getEvaluationByCorrectedAndDepositSTU(self.getId(), user_id, evaluation["peer"])
@@ -1565,7 +1567,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 if deposit_brain.getActif:
                     deposit_link = deposit_brain.getURL()
 
-        return {"index":              index,
+        return {"deposit_name":       deposit_name,
                 "evaluation":         evaluation,
                 "deposit_link":       "%s/at_download/file" % deposit_link,
                 "criteria_dict":      self.getCriteriaDict(),
@@ -1667,7 +1669,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         if self.isPersonnel(user):
             self.setTeacherEvaluatePeer(user.getId(), param_dict)
         else:
-            self.setStudentEvaluatePeer(param_dict)
+            if param_dict["deposit_id"] == param_dict["user_id"]:
+                self.setAutoEvaluatePeer(param_dict)
+            else:
+                self.setStudentEvaluatePeer(param_dict)
 
     def setStudentEvaluatePeer(self, param_dict):
         LOG.info("----- setStudentEvaluatePeer -----")
@@ -1711,6 +1716,31 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         evaluation["note"] = evaluation_note_20
         peers_dict[param_dict["user_id"]][corrected_evaluation_index] = evaluation
         self.setPeersDict(peers_dict)
+
+    def setAutoEvaluatePeer(self, param_dict):
+        LOG.info("----- setAutoEvaluatePeer -----")
+        index = 1
+        evaluation_note = 0
+        evaluation_coeff = 0
+        jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        criteria_loop = param_dict["criteria_order"].split(",")
+        for loop in criteria_loop:
+            criteria_id = "criteria%i" % index
+            criteria_coefficient = int(criteria_dict[str(param_dict[criteria_id])]["coefficient"])
+            LOG.info("***** criteria_coefficient : %s" % criteria_coefficient)
+
+            evaluation_note = evaluation_note + (((int(param_dict["%s-note" % criteria_id]) * 10) / int(criteria_dict[str(param_dict[criteria_id])]["notation"])) * criteria_coefficient)
+            evaluation_coeff = evaluation_coeff + criteria_coefficient
+            jalon_bdd.setSelfEvaluate(self.getId(), param_dict["user_id"], param_dict[criteria_id], param_dict["%s-note" % criteria_id], param_dict["%s-comment" % criteria_id])
+            index = index + 1
+
+        evaluation_note_20 = "%.2f" % ((float(evaluation_note) / float(evaluation_coeff)) * 2.0)
+
+        LOG.info("***** evaluation_note : %s" % evaluation_note)
+        LOG.info("***** evaluation_coeff : %s" % evaluation_coeff)
+        LOG.info("***** evaluation_note_20 : %s" % evaluation_note_20)
+        jalon_bdd.setSelfEvaluationNote(self.getId(), param_dict["user_id"], evaluation_note_20)
 
     def setTeacherEvaluatePeer(self, user_id, param_dict):
         LOG.info("----- setTeacherEvaluatePeer -----")

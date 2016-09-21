@@ -1439,9 +1439,17 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
 
+    def setSelfEvaluate(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_NOTE, CRITERIA_COMMENT):
+        session = self.getSessionMySQL()
+        jalon_mysql.setSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
+
     def setPeerEvaluationNote(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
         session = self.getSessionMySQL()
         jalon_mysql.setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE)
+
+    def setSelfEvaluationNote(self, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
+        session = self.getSessionMySQL()
+        jalon_mysql.setSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, NOTE)
 
     def getPeerEvaluation(self, DEPOSIT_BOX, DEPOSIT_STU):
         session = self.getSessionMySQL()

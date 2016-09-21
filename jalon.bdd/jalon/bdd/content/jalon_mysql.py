@@ -264,6 +264,11 @@ def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, 
     session.commit()
 
 
+def setSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
+    session.add(tables.PeersSelfEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
+    session.commit()
+
+
 def setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
     insert = True
     PEN = aliased(tables.PeersEvaluationNoteMySQL)
@@ -273,6 +278,11 @@ def setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE
         insert = False
     if insert:
         session.add(tables.PeersEvaluationNoteMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE))
+    session.commit()
+
+
+def setSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
+    session.add(tables.PeersSelfEvaluationNoteMySQL(DEPOSIT_BOX, DEPOSIT_STU, NOTE))
     session.commit()
 
 
