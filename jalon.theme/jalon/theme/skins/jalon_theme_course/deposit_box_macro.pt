@@ -147,11 +147,13 @@
        tal:condition="my_view/grid_access">
        <i class="fa fa-th"></i>Accèder à la grille d'évaluation
     </a>
+    <tal:condition condition="my_view/accessEvaluation">
         <h2><i class="fa fa-user"></i>Mon auto-évaluation</h2>
         <a class="button expand radius"
-           tal:attributes="href string:${my_view/deposit_box_link}/evaluate_deposit_file_form">
-           <i class="fa fa-user"></i>Réaliser mon auto-évaluation
+           tal:attributes="href my_view/self_evalution_link">
+           <i tal:attributes="class my_view/self_evalution_button"></i><tal:replace replace="my_view/self_evalution_name"/>
         </a>
+    </tal:condition>
     <tal:condition condition="my_view/accessEvaluation">
         <h2><i class="fa fa-th"></i>Mon évaluation</h2>
         <a class="button expand radius"

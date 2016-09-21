@@ -286,6 +286,12 @@ def setSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
     session.commit()
 
 
+def getSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU):
+    PSE = aliased(tables.PeersSelfEvaluationNoteMySQL)
+    peer_evaluation = session.query(PSE).filter(PSE.DEPOSIT_BOX == DEPOSIT_BOX, PSE.DEPOSIT_STU == DEPOSIT_STU)
+    return peer_evaluation
+
+
 def getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
     peer_evaluation = session.query(PE.CRITERIA, PE.CORRECTED_STU, PE.CRITERIA_NOTE, PE.CRITERIA_COMMENT).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.DEPOSIT_STU == DEPOSIT_STU, PE.FOR_AVG == 1)

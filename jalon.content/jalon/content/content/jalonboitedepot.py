@@ -143,12 +143,12 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                  accessor="getAccesGrille",
                  searchable=False,
                  widget=BooleanWidget(label=_(u"Accéder à la grille d'évaluation avant d'évaluer"),)),
-    BooleanField("accesEvaluation",
+    BooleanField("autoriserAutoEvaluation",
                  required=False,
-                 accessor="getAccesEvaluation",
+                 accessor="getAutoriserAutoEvaluation",
                  default=False,
                  searchable=False,
-                 widget=BooleanWidget(label=_(u"Accéder aux résultats des évaluations"),)),
+                 widget=BooleanWidget(label=_(u"Autoriser les étudiants à réaliser une auto-évaluation"),)),
 ))
 
 
@@ -1464,6 +1464,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def getDisplayGridAccess(self):
         LOG.info("----- getDisplayGridAccess -----")
         return "Autorisée avant évaluation" if self.getAccesGrille() else "Interdit avant évaluation"
+
+    def getDisplayAuthoriezSelfEvaluation(self):
+        LOG.info("----- getDisplayAuthoriezSelfEvaluation -----")
+        return "Auto-évaluation possible" if self.getAutoriserAutoEvaluation() else "Pas d'auto-évaluation"
 
     def affectDepositFile(self):
         LOG.info("----- affectDepositFile -----")

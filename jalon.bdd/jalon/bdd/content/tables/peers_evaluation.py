@@ -85,7 +85,7 @@ class PeersSelfEvaluationNoteMySQL(Base):
     DEPOSIT_BOX = Column(String(50))
     DEPOSIT_STU = Column(String(50))
     NOTE = Column(Float)
-    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CORRECTED_STU")
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
 
     def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
         self.DEPOSIT_BOX = DEPOSIT_BOX
