@@ -20,5 +20,7 @@ from consultationcours import ConsultationCoursSQLITE
 from consultationcours import ConsultationCoursMySQL
 from peers_evaluation import PeersEvaluationMySQL
 from peers_evaluation import PeersEvaluationNoteMySQL
+from peers_evaluation import PeersSelfEvaluationMySQL
+from peers_evaluation import PeersSelfEvaluationNoteMySQL
 from peers_evaluation import PeersAverageMySQL
 from peers_evaluation import PeersEvaluationAverageMySQL
