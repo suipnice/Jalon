@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;
+                        mode_etudiant_request request/mode_etudiant | nothing;
+                        my_form python:context.getEvaluateDepositFileForm(user, mode_etudiant_request);
+                        mode_etudiant my_form/mode_etudiant">
+
+    <tal:define define="breadcrumbs my_form/breadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium" 
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main_second" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+    <div id="reveal-main-large" class="reveal-modal large"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <section id="evaluate_deposit_file" class="small-12 columns"
+                 tal:define="my_evaluate_form my_form/my_evaluate_form">
+            <metal:macro use-macro="python:context.evaluate_deposit_file_macro.macros.get(my_form['macro_form'])"/>
+        </section>
+
+    </main>
+
+</metal:main>
+
+</body>
+
+</html>

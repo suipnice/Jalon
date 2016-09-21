@@ -1509,8 +1509,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         self.setPeersDict(peers_dict)
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
 
-    def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id, deposit_id=None):
+    def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id=None, deposit_id=None):
         LOG.info("----- getEvaluateDepositFileForm -----")
+        if not student_id and not deposit_id:
+            student_id = deposit_id = user.getId()
         is_personnel = self.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
         if is_personnel:
@@ -1544,6 +1546,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     evaluation = corrected_evaluation
                     break
                 index = index + 1
+        elif user_id == deposit_id:
+            evaluation["peer"] = deposit_id
         else:
             evaluation = peers_evaluations[int(deposit_id)]
             LOG.info("***** evaluation : %s" % str(evaluation))
