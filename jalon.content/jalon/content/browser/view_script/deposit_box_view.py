@@ -169,13 +169,13 @@ class DepositBoxView(CourseView):
 
             if my_view["accessSelfEvaluation"]:
                 self_evaluation_note = my_deposit_box.portal_jalon_bdd.getSelfEvaluationNote(my_view["deposit_box_id"], user_id).first()
-                if self_evaluation_note or my_deposit_box.getAutoriserAutoEvaluation():
+                if self_evaluation_note:
                     my_view["self_evalution_button"] = "fa fa-trophy"
                     my_view["self_evalution_link"] = "%s/deposit_box_evaluation_view" % my_view["deposit_box_link"]
                     my_view["self_evalution_name"] = "Consulter mon auto-évaluation"
                 else:
                     my_view["self_evalution_button"] = "fa fa-user"
-                    my_view["self_evalution_link"] = "%s/evaluate_deposit_file_form" % my_view["deposit_box_link"]
+                    my_view["self_evalution_link"] = "%s/evaluate_deposit_file_form?deposit_id=auto" % my_view["deposit_box_link"]
                     my_view["self_evalution_name"] = "Réaliser mon auto-évaluation"
 
         my_view["deposit_box_profile"] = {"href":  "%s/edit_deposit_box_profile_form?tab=%s" % (my_view["deposit_box_link"], tab),

@@ -1521,7 +1521,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id=None, deposit_id=None):
         LOG.info("----- getEvaluateDepositFileForm -----")
-        if not student_id and not deposit_id:
+        if deposit_id == "auto":
             student_id = deposit_id = user.getId()
         is_personnel = self.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
@@ -1549,13 +1549,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         peers_evaluations = self.getPeersDict(user_id)
 
         if not deposit_id:
+            deposit_index = 1
             for corrected_evaluation in peers_evaluations:
                 LOG.info("***** corrected_evaluation : %s" % str(corrected_evaluation))
                 if not corrected_evaluation["corrected"]:
                     evaluation = corrected_evaluation
                     break
-                deposit_name = deposit_name + 1
-            deposit_name = "le dépôt n°%i" % deposit_name
+                deposit_index = deposit_index + 1
+            deposit_name = "le dépôt n°%i" % deposit_index
         elif user_id == deposit_id:
             evaluation["peer"] = deposit_id
             deposit_name = "mon dépôt"
@@ -1814,13 +1815,20 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
-            jalon_bdd.setAveragePeer(self.getId(), average[0], "%.2f" % float(average[1]), criteria_code, criteria_value, average[2], 0, "")
+            jalon_bdd.setAveragePeer(self.getId(), average[0], average[1], criteria_code, criteria_value, "%.2f" % float(average[2]), 0, "")
 
         LOG.info("***** is_verification_evaluation : %s" % is_verification_evaluation)
         evaluation_average_list = jalon_bdd.generateEvaluationsAverage(self.getId()).all()
         for average in evaluation_average_list:
             LOG.info("***** average : %s" % str(average))
-            jalon_bdd.setEvaluationAverage(self.getId(), average[0], float(average[1]), is_verification_evaluation[average[0]])
+            jalon_bdd.setEvaluationAverage(self.getId(), average[0], "%.2f" % float(average[1]), is_verification_evaluation[average[0]])
+
+    def regenerateAverage(self):
+        LOG.info("----- regenerateAverage -----")
+        #jalon_bdd = self.portal_jalon_bdd
+        #jalon_bdd.deleteAverageByDepositBox(self.getId())
+        #jalon_bdd.deleteEvaluationsAverageByDepositBox(self.getId())
+        #self.setAveragePeer()
 
     def getAveragePeer(self):
         LOG.info("----- getAveragePeer -----")
