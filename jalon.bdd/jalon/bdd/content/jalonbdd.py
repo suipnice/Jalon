@@ -40,6 +40,7 @@ LOG = getLogger('[JalonBDD]')
 
 
 class JalonBDD(SimpleItem):
+    """Classe Jalon BDD."""
 
     implements(IJalonBDD)
     _urlConnexion = "/home/zope/sites/bdd_jalon/"
@@ -64,9 +65,9 @@ class JalonBDD(SimpleItem):
     def __init__(self, *args, **kwargs):
         super(JalonBDD, self).__init__(*args, **kwargs)
 
-    #-------------------------------------#
-    # Gestion des variables du connecteur #
-    #-------------------------------------#
+    # -------------------------------------#
+    #  Gestion des variables du connecteur #
+    # -------------------------------------#
     def getBDDProperty(self, key):
         return getattr(self, "_%s" % key)
 
@@ -105,7 +106,7 @@ class JalonBDD(SimpleItem):
         else:
             # si le chemin filesystem est valide mais le fichier jalonBDD.db n'existe pas
             liste_export = os.listdir(variablesBDD["urlConnexion"])
-            if not "jalonBDD.db" in liste_export:
+            if "jalonBDD.db" not in liste_export:
                 self.creerBDD(variablesBDD)
                 retour = 3
         for key in variablesBDD.keys():
@@ -122,11 +123,11 @@ class JalonBDD(SimpleItem):
         else:
             chemin = self._urlConnexion
 
-        #LOG.info("-------------- création et connexion jalonBDD.db --------------")
+        # LOG.info("-------------- création et connexion jalonBDD.db --------------")
         conn = sqlite3.connect('%s/jalonBDD.db' % chemin)
         c = conn.cursor()
 
-        #creation tables
+        # Creation tables
         c.execute('''CREATE TABLE individu_lite
                         (SESAME_ETU TEXT PRIMARY KEY, DATE_NAI_IND TEXT, LIB_NOM_PAT_IND TEXT, LIB_NOM_USU_IND TEXT, LIB_PR1_IND TEXT, TYPE_IND TEXT, COD_ETU INTEGER, EMAIL_ETU TEXT, ADR1_IND TEXT, ADR2_IND TEXT, COD_POST_IND TEXT, VIL_IND TEXT, UNIV_IND TEXT, PROMO_IND TEXT, STATUS_IND TEXT)''')
         c.execute('''CREATE TABLE element_pedagogi_lite
@@ -151,75 +152,75 @@ class JalonBDD(SimpleItem):
     def creerTablesMySQL(self):
             connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
             engine = create_engine(connexion, echo=True)
-            #tables.IndividuMySQL.__table__.create(bind=engine)
-            #tables.ConnexionINDMySQL.__table__.create(bind=engine)
-            #tables.ConsultationCoursMySQL.__table__.create(bind=engine)
+            # tables.IndividuMySQL.__table__.create(bind=engine)
+            # tables.ConnexionINDMySQL.__table__.create(bind=engine)
+            # tables.ConsultationCoursMySQL.__table__.create(bind=engine)
             tables.PeersEvaluationMySQL.__table__.create(bind=engine)
             tables.PeersEvaluationNoteMySQL.__table__.create(bind=engine)
             tables.PeersAverageMySQL.__table__.create(bind=engine)
             tables.PeersEvaluationAverageMySQL.__table__.create(bind=engine)
 
-    #----------------------------#
-    # Utilitaire base de données #
-    #----------------------------#
+    # ---------------------------- #
+    #  Utilitaire base de données  #
+    # ---------------------------- #
     def getSession(self):
-        #LOG.info("----------- getSession -----------")
+        # LOG.info("----------- getSession -----------")
         try:
             self.Session().get_bind()
-            #LOG.info(self.Session())
+            # LOG.info(self.Session())
         except:
-            #LOG.info("except Session")
+            # LOG.info("except Session")
             self._typeBDDActif = None
         if (not self._typeBDDActif) or (self._typeBDDActif != self._typeBDD):
-            #LOG.info("initialiser session")
+            # LOG.info("initialiser session")
             try:
                 self.Session().close()
             except:
                 pass
             if self._typeBDD == "sqlite":
-                #LOG.info("sqlite:///%s/jalonBDD.db" % self._urlConnexion)
+                # LOG.info("sqlite:///%s/jalonBDD.db" % self._urlConnexion)
                 engine = create_engine("sqlite:///%s/jalonBDD.db" % self._urlConnexion, module=sqlite, echo=False, poolclass=NullPool)
             if self._typeBDD == "apogee":
                 engine = create_engine("apogee:///%s" % self._urlConnexion, echo=False, poolclass=NullPool)
-            #LOG.info("ouverture connexion")
+            # LOG.info("ouverture connexion")
             self.Session.configure(bind=engine)
             self._typeBDDActif = self._typeBDD
         return self.Session()
 
     def getSessionMySQL(self):
-        #LOG.info("----------- getSessionMySQL -----------")
+        # LOG.info("----------- getSessionMySQL -----------")
         try:
             self.SessionMySQL().get_bind()
-            #LOG.info(self.Session())
+            # LOG.info(self.Session())
         except:
-            #LOG.info("except Session")
+            # LOG.info("except Session")
             self._session_mysql_open = False
         if not self._session_mysql_open:
-            #LOG.info("initialiser session")
+            # LOG.info("initialiser session")
             try:
                 self.SessionMySQL().close()
             except:
                 pass
             connexion = "mysql+mysqldb://%s:%s@%s:%s/%s" % (self._user_mysql, self._password_mysql, self._host_mysql, self._port_mysql, self._db_name_mysql)
             engine = create_engine(connexion, echo=False, poolclass=NullPool)
-            #LOG.info("ouverture connexion")
+            # LOG.info("ouverture connexion")
             self.SessionMySQL.configure(bind=engine)
             self._session_mysql_open = True
         return self.SessionMySQL()
 
-    #-------------------------------------#
-    # Interrogation de la base de données #
-    #-------------------------------------#
+    # ------------------------------------- #
+    #  Interrogation de la base de données  #
+    # ------------------------------------- #
     def getIndividuLITE(self, sesame):
-        LOG.info("----- getIndividuLITE -----")
+        # LOG.info("----- getIndividuLITE -----")
         session = self.getSession()
         if self._typeBDD == "sqlite":
             result = jalonsqlite.getIndividuLITE(session, sesame)
             if result:
-                LOG.info("***** result : %s" % result)
+                # LOG.info("***** result : %s" % result)
                 return result[0]
             else:
-                LOG.info("***** result : None")
+                # LOG.info("***** result : None")
                 return None
 
     def getTousIndividuLITE(self, page):
@@ -289,7 +290,7 @@ class JalonBDD(SimpleItem):
 
     def getToutesInfosELP(self, COD_ELP):
         session = self.getSession()
-        #if self._typeBDD == "sqlite":
+        # if self._typeBDD == "sqlite":
         infosElp = jalonsqlite.getInfosELP(session, COD_ELP)
         infosElp = self.ajouterResponsable([infosElp])[0]
         infosElp["etape"] = len(self.getElpAttach(COD_ELP, "etape", infosElp["TYP_ELP"]))
@@ -477,31 +478,31 @@ class JalonBDD(SimpleItem):
                 return True
         return False
 
-    #-------------------------------------#
-    # Modification de la base de données  #
-    #-------------------------------------#
+    # ------------------------------------ #
+    #  Modification de la base de données  #
+    # ------------------------------------ #
     def addConnexionUtilisateur(self, SESAME_ETU):
-        #LOG.info('----- addConnexionUtilisateur -----')
+        # LOG.info('----- addConnexionUtilisateur -----')
         if self._activer_stockage_connexion:
             if self._use_mysql:
-                #LOG.info('Appel MySQL')
+                # LOG.info('Appel MySQL')
                 session = self.getSessionMySQL()
-                #LOG.info("datetime : %s" % str(datetime.now()))
+                # LOG.info("datetime : %s" % str(datetime.now()))
                 jalon_mysql.addConnexionIND(session, SESAME_ETU, datetime.now())
             else:
-                #LOG.info('Appel SQLITE')
+                # LOG.info('Appel SQLITE')
                 session = self.getSession()
                 jalonsqlite.addConnexionIND(session, SESAME_ETU, str(DateTime()))
 
     def insererConsultation(self, SESAME_ETU, ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS):
-        #LOG.info('----- insererConsultation -----')
+        # LOG.info('----- insererConsultation -----')
         if self._activer_stockage_consultation:
             if self._use_mysql:
-                #LOG.info('Appel MySQL')
+                # LOG.info('Appel MySQL')
                 session = self.getSessionMySQL()
                 jalon_mysql.addConsultationIND(session, SESAME_ETU, datetime.now(), ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS)
             else:
-                #LOG.info('Appel SQLITE')
+                # LOG.info('Appel SQLITE')
                 session = self.getSession()
                 jalonsqlite.insererConsultation(session, SESAME_ETU, str(DateTime()), ID_COURS, TYPE_CONS, ID_CONS, PUBLIC_CONS)
 
@@ -521,11 +522,11 @@ class JalonBDD(SimpleItem):
             return jalonsqlite.supprimerELP(session, param)
 
     def creerUtilisateur(self, param):
-        LOG.info("----- creerUtilisateur -----")
+        # LOG.info("----- creerUtilisateur -----")
         retour = 0
         session = self.getSession()
         if self._typeBDD == "sqlite":
-            LOG.info("SQLITE")
+            # LOG.info("SQLITE")
             retour = jalonsqlite.creerUtilisateur(session, param)
 
         if self._use_mysql:
@@ -542,9 +543,9 @@ class JalonBDD(SimpleItem):
             if param["TYPE_IND"] == "Secretaire":
                 roles = ("Personnel", "Secretaire", "Member",)
             portal_membership.addMember(sesame, param["PASSWORD"], roles, "")
-            #try:
+            # try:
             #    portal_registration.registeredNotify(sesame)
-            #except:
+            # except:
             #    pass
 
     def creerUtilisateurTest(self, param, use_mysql=False):
@@ -647,9 +648,9 @@ class JalonBDD(SimpleItem):
         session = self.getSession()
         return jalonsqlite.ajouterActuCours(session, param)
 
-    #------------------------#
-    # Fonctions Statistiques #
-    #------------------------#
+    # ----------------------- #
+    #  Fonctions Statistiques #
+    # ----------------------- #
     def updateTableConnexion(self):
         session = self.getSession()
         if self._typeBDD == "sqlite":
@@ -1045,7 +1046,7 @@ class JalonBDD(SimpleItem):
         return listeCours
 
     def getConsultationByCoursByDate(self, ID_COURS, month=None, year=None):
-        #LOG.info("----- getConsultationByCoursByDate -----")
+        # LOG.info("----- getConsultationByCoursByDate -----")
         consultation_dict = {}
         for public in self._public_bdd:
             consultation_dict[public] = {"public":               public,
@@ -1071,7 +1072,7 @@ class JalonBDD(SimpleItem):
             session = self.getSessionMySQL()
 
             consultationCours = jalon_mysql.getConsultationByCoursByUniversityYear(session, ID_COURS, year)
-            #LOG.info("Consultation Année Courant")
+            # LOG.info("Consultation Année Courant")
             for ligne in consultationCours.all():
                 #LOG.info(ligne)
                 try:
@@ -1080,26 +1081,26 @@ class JalonBDD(SimpleItem):
                         consultations_list.append(consultation_dict[ligne[0]])
                 except:
                     pass
-            #LOG.info(consultation_dict)
+            # LOG.info(consultation_dict)
 
             consultationCoursPrec = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, monthPrec, yearPrec)
-            #LOG.info("Consultation Mois Précédent")
+            # LOG.info("Consultation Mois Précédent")
             for ligne in consultationCoursPrec.all():
-                #LOG.info(ligne)
+                # LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
                 except:
-                    #consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
+                    # consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
                     pass
 
             consultationCours = jalon_mysql.getConsultationByCoursByMonth(session, ID_COURS, month, year)
-            #LOG.info("Consultation Mois Courant")
+            # LOG.info("Consultation Mois Courant")
             for ligne in consultationCours.all():
-                #LOG.info(ligne)
+                # LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
                 except:
-                    #consultation_dict[ligne[0]]["nb_cons_month"] = 0
+                    # consultation_dict[ligne[0]]["nb_cons_month"] = 0
                     pass
         else:
             if int(month) < 10:
@@ -1133,7 +1134,7 @@ class JalonBDD(SimpleItem):
                 except:
                     pass
 
-        #LOG.info(consultations_list)
+        # LOG.info(consultations_list)
         for consultation in consultations_list:
             consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
             if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
@@ -1141,7 +1142,7 @@ class JalonBDD(SimpleItem):
         return consultations_list
 
     def getConsultationByCoursByUniversityYearByDate(self, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
-        #LOG.info("----- getConsultationByCoursByUniversityYear -----")
+        # LOG.info("----- getConsultationByCoursByUniversityYear -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
@@ -1149,7 +1150,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getConsultationByCoursByYearForGraph(self, ID_COURS, year=None):
-        #LOG.info("----- getConsultationByCoursByYearForGraph -----")
+        # LOG.info("----- getConsultationByCoursByYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
@@ -1157,7 +1158,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getConsultationByCoursByUniversityYearForGraph(self, ID_COURS, year=None):
-        #LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+        # LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
@@ -1165,7 +1166,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getFrequentationByCoursByUniversityYearByDateForGraph(self, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR=None):
-        #LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
+        # LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
         session = self.getSessionMySQL()
@@ -1173,7 +1174,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getConsultationElementsByCours(self, ID_COURS, month=None, year=None, elements_list=[], elements_dict={}):
-        #LOG.info("----- getConsultationElementsByCours -----")
+        # LOG.info("----- getConsultationElementsByCours -----")
         consultation_dict = {}
         for element in elements_list:
             consultation_dict[element] = {"element_id":           element,
@@ -1204,34 +1205,34 @@ class JalonBDD(SimpleItem):
         elements_consultation = jalon_mysql.getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list)
 
         for ligne in elements_consultation.all():
-            #LOG.info(ligne)
-            #try:
+            # LOG.info(ligne)
+            # try:
             consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
             consultation_dict[ligne[0]]["nb_freq_year"] = ligne[2]
             if not consultation_dict[ligne[0]] in consultations_list:
                 consultations_list.append(consultation_dict[ligne[0]])
-            #except:
+            # except:
             #    pass
-        #LOG.info(consultation_dict)
+        # LOG.info(consultation_dict)
 
         elements_consultation_month_before = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, monthPrec, yearPrec, elements_list)
         for ligne in elements_consultation_month_before.all():
-            #try:
+            # try:
             consultation_dict[ligne[0]]["nb_cons_month_before"] = ligne[1]
             consultation_dict[ligne[0]]["nb_freq_month_before"] = ligne[2]
-            #except:
+            # except:
             #    consultation_dict[ligne[0]]["nb_cons_month_before"] = 0
             #    pass
 
         elements_consultation_month = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year, elements_list)
         for ligne in elements_consultation_month.all():
-            #try:
+            # try:
             consultation_dict[ligne[0]]["nb_cons_month"] = ligne[1]
             consultation_dict[ligne[0]]["nb_freq_month"] = ligne[2]
-            #except:
+            # except:
             #    consultation_dict[ligne[0]]["nb_cons_month"] = 0
 
-        #LOG.info(consultations_list)
+        # LOG.info(consultations_list)
         for consultation in consultations_list:
             consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_freq_month"] < consultation["nb_freq_month_before"] else "fa fa-arrow-up no-pad success"
             if consultation["nb_freq_month"] == consultation["nb_freq_month_before"]:
@@ -1239,7 +1240,7 @@ class JalonBDD(SimpleItem):
         return consultations_list
 
     def getConsultationByElementByCours(self, ID_COURS, ID_CONS, month=None, year=None):
-        #LOG.info("----- getConsultationByElementByCours -----")
+        # LOG.info("----- getConsultationByElementByCours -----")
         consultation_dict = {}
         for public in self._public_bdd:
             consultation_dict[public] = {"public":               public,
@@ -1266,14 +1267,14 @@ class JalonBDD(SimpleItem):
 
             consultation_element = jalon_mysql.getConsultationByElementByCoursByUniversityYear(session, ID_COURS, ID_CONS, year)
             for ligne in consultation_element.all():
-                #LOG.info(ligne)
+                # LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
                     if not consultation_dict[ligne[0]] in consultations_list:
                         consultations_list.append(consultation_dict[ligne[0]])
                 except:
                     pass
-            #LOG.info(consultation_dict)
+            # LOG.info(consultation_dict)
 
             consultation_element = jalon_mysql.getConsultationByElementByCoursByMonth(session, ID_COURS, ID_CONS, monthPrec, yearPrec)
             for ligne in consultation_element.all():
@@ -1289,7 +1290,7 @@ class JalonBDD(SimpleItem):
                 except:
                     pass
 
-        #LOG.info(consultations_list)
+        # LOG.info(consultations_list)
         for consultation in consultations_list:
             consultation["icon"] = "fa fa-arrow-down no-pad warning" if consultation["nb_cons_month"] < consultation["nb_cons_month_before"] else "fa fa-arrow-up no-pad success"
             if consultation["nb_cons_month"] == consultation["nb_cons_month_before"]:
@@ -1297,7 +1298,7 @@ class JalonBDD(SimpleItem):
         return consultations_list
 
     def getConsultationByElementByCoursByYearForGraph(self, ID_COURS, ID_CONS, year=None):
-        #LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
+        # LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
@@ -1305,7 +1306,7 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def getConsultationByElementByCoursByUniversityYearForGraph(self, ID_COURS, ID_CONS, year=None):
-        #LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
+        # LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
         session = self.getSessionMySQL()
@@ -1313,8 +1314,8 @@ class JalonBDD(SimpleItem):
         return consultationCours
 
     def genererGraphIndicateurs(self, months_dict):
-        #LOG.info("----- genererGraphIndicateurs -----")
-        #LOG.info(months_dict)
+        # LOG.info("----- genererGraphIndicateurs -----")
+        # LOG.info(months_dict)
         dicoLabel = {1:  u"Janvier",
                      2:  u"Février",
                      3:  u"Mars",
@@ -1338,7 +1339,7 @@ class JalonBDD(SimpleItem):
             if month in months_dict:
                 for month_consultation in months_dict[month]:
                     graph.append('  "%s": %s,' % (month_consultation["public"], str(month_consultation["consultations"])))
-                    #legend_list.append(month_consultation["public"])
+                    # legend_list.append(month_consultation["public"])
 
             graph.append('},')
 
@@ -1348,7 +1349,7 @@ class JalonBDD(SimpleItem):
             if month in months_dict:
                 for month_consultation in months_dict[month]:
                     graph.append('  "%s": %s,' % (month_consultation["public"], str(month_consultation["consultations"])))
-                    #legend_list.append(month_consultation["public"])
+                    # legend_list.append(month_consultation["public"])
 
             graph.append('},')
 
@@ -1384,7 +1385,7 @@ class JalonBDD(SimpleItem):
                         "Etudiant":   "#69A55C",
                         "Manager":    "#B5B8D3",
                         "Secretaire": "#F4E23B"}
-        #legend_list = list(set(legend_list))
+        # legend_list = list(set(legend_list))
         legend_list = self._public_bdd
         for legend in legend_list:
             graph.append('''
@@ -1430,9 +1431,9 @@ class JalonBDD(SimpleItem):
         else:
             return jalonsqlite.getMinMaxYearByELP(session, COD_ELP, listeInds)
 
-    #--------------------------#
-    # Évaluation par les pairs #
-    #--------------------------#
+    # -------------------------- #
+    #  Évaluation par les pairs  #
+    # -------------------------- #
     def setEvaluatePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, CRITERIA_NOTE, CRITERIA_COMMENT):
         session = self.getSessionMySQL()
         jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
@@ -1513,13 +1514,13 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX)
 
-    #def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
+    # def getPeerAverage(self, DEPOSIT_BOX, DEPOSIT_STU):
     #    session = self.getSessionMySQL()
     #    return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
 
-    #-----------------------#
-    # Fonctions utilitaires #
-    #-----------------------#
+    # ----------------------- #
+    #  Fonctions utilitaires  #
+    # ----------------------- #
     def getTypeAttachementELP(self, type="tous"):
         dico = {"etape":  [{"type":    "ue",
                             "libelle": _(u"Unité d'enseignement")},
@@ -1552,8 +1553,8 @@ class JalonBDD(SimpleItem):
         return dico[type]
 
     def genererFrequentationGraph(self, dates_dict, DATE_CONS_YEAR=None):
-        #LOG.info("----- genererFrequentationGraph -----")
-        #LOG.info(dates_dict)
+        # LOG.info("----- genererFrequentationGraph -----")
+        # LOG.info(dates_dict)
 
         graph = ['<script type="text/javascript">']
         graph.append("""var chart = AmCharts.makeChart("frequentationchartdiv", {
@@ -1640,7 +1641,7 @@ class JalonBDD(SimpleItem):
         date_value = []
         for dt in rrule.rrule(rrule.DAILY, dtstart=date_start, until=date_stop):
             date = dt.date()
-            #LOG.info(date)
+            # LOG.info(date)
             frequentation = dates_dict[date] if date in dates_dict else 0
             date_value.append("""{"date": "%s", "value": %s}""" % (date, frequentation))
         graph.append(",\n".join(date_value))
@@ -1653,7 +1654,7 @@ class JalonBDD(SimpleItem):
                             chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
                         }""")
         graph.append("</script>")
-        #LOG.info("\n".join(graph))
+        # LOG.info("\n".join(graph))
         return "\n".join(graph)
 
     def isBDD(self):
@@ -1700,7 +1701,7 @@ class JalonBDD(SimpleItem):
     def alterBDD(self):
         session = self.getSession()
         session.execute("ALTER TABLE individu_lite ADD COLUMN STATUS_IND TEXT")
-        #session.execute("DROP TABLE connexion")
+        # session.execute("DROP TABLE connexion")
         session.execute('''CREATE TABLE connexion
                         (NUM_CONN INTEGER PRIMARY KEY AUTOINCREMENT, SESAME_ETU TEXT, DATE_CONN TEXT, FOREIGN KEY(SESAME_ETU) REFERENCES individu_lite(SESAME_ETU))''')
         session.commit()

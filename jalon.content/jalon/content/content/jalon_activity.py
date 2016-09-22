@@ -16,16 +16,16 @@ LOG = getLogger("[JalonActivity]")
 
 
 class JalonActivity(SimpleItem):
-    """ Une activité pour Jalon
-    """
+    u"""Une activité d'un cours Jalon."""
 
     implements(IJalonActivity)
     meta_type = 'JalonActivity'
 
-    ##--------------------------##
+    # -------------------------- #
     # Fonctions onglet Documents #
-    ##--------------------------##
+    # -------------------------- #
     def isChecked(self, idElement, formulaire, listeElement=None):
+        LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
                 return 1
@@ -36,8 +36,8 @@ class JalonActivity(SimpleItem):
             return 0
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        u"""Modifie l'etat de la ressource quand on modifie sa visibilité."""
         LOG.info("----- editCourseItemVisibility -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         is_deposit_box = True if item_id == self.getId() else False
 
         if is_deposit_box:
@@ -71,13 +71,13 @@ class JalonActivity(SimpleItem):
                                   "image":  item_object.getVideothumbnail()}
 
         item_object_related = item_object.getRelatedItems()
-        if not self in item_object_related:
+        if self not in item_object_related:
             item_object_related.append(self)
             item_object.setRelatedItems(item_object_related)
             item_object.reindexObject()
 
         deposit_box_related = self.getRelatedItems()
-        if not item_object in deposit_box_related:
+        if item_object not in deposit_box_related:
             deposit_box_related.append(item_object)
             self.setRelatedItems(deposit_box_related)
 
@@ -87,7 +87,7 @@ class JalonActivity(SimpleItem):
         LOG.info("----- addItemProperty -----")
 
         items_properties = self.getDocumentsProperties()
-        if not item_id in items_properties:
+        if item_id not in items_properties:
             items_properties[item_id] = {"titreElement":    item_title,
                                          "typeElement":     item_type,
                                          "createurElement": item_creator,
@@ -102,6 +102,7 @@ class JalonActivity(SimpleItem):
             setattr(self, "listeSujets", tuple(listeSujets))
 
     def displayDocumentsList(self, is_personnel, portal):
+        """Display Documents List."""
         LOG.info("----- displayDocumentsList -----")
         course_parent = self.aq_parent
 
@@ -128,6 +129,7 @@ class JalonActivity(SimpleItem):
         return documents_list
 
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
+        """get Item Actions."""
         LOG.info("----- getItemActions -----")
         item_actions = course_parent._item_actions[:]
 

@@ -17,10 +17,10 @@ from jalon.content.interfaces import IJalonCours
 
 from DateTime import DateTime
 from os import close
-from zipfile import ZipFile, ZIP_DEFLATED
+# from zipfile import ZipFile, ZIP_DEFLATED
 
 import json
-import urllib2
+# import urllib2
 import string
 import jalon_utils
 import random
@@ -326,9 +326,9 @@ class JalonCours(ATFolder):
         super(JalonCours, self).__init__(*args, **kwargs)
         self._elements_cours = {}
 
-    #------------#
-    # Utilitaire #
-    #------------#
+    # ------------ #
+    #  Utilitaire  #
+    # ------------ #
     def getCoursePasswordBreadcrumbs(self):
         # LOG.info("----- getCoursePasswordBreadcrumbs -----")
         portal_link = self.portal_url.getPortalObject().absolute_url()
@@ -357,7 +357,7 @@ class JalonCours(ATFolder):
                 return True
         if not self.getId() in request.SESSION.get("course_authorized_list", []):
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
-        #return True
+        # return True
 
     def getLastLogin(self):
         # LOG.info("----- getLastLogin -----")
@@ -437,7 +437,7 @@ class JalonCours(ATFolder):
             roles["colecteur"] = True
         return roles
 
-    #def getSousObjet(self, idElement):
+    # def getSousObjet(self, idElement):
     #    à remplacer par
     #    getattr(self, idElement)
 
@@ -1207,23 +1207,23 @@ class JalonCours(ATFolder):
                 self.editCourseItemVisibility(item["idElement"], item_date, item_property_name, True)
                 if "listeElement" in item:
                     for sub_item in item["listeElement"]:
-                        #Puis on affiche tous les elements du chapitre
+                        # Puis on affiche tous les elements du chapitre
                         self.editCourseItemVisibility(sub_item["idElement"], item_date, item_property_name, True)
                         if "listeElement" in sub_item:
                             # Si un des éléments est un sous-chapitre, on affiche son contenu recursivement.
                             self.editCourseTitleVisibility("all", item_date, item_property_name, sub_item["listeElement"])
-                #Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
+                # Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
                 if item["idElement"] == item_id:
                     break
             elif "listeElement" in item:
                 self.editCourseItemVisibility(item_id, item_date, item_property_name, item["listeElement"])
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        u"""Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         # LOG.info("----- editCourseItemVisibility -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         item_properties = self.getCourseItemProperties(item_id)
 
-        #if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+        # if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
         #    item_object = getattr(self, item_id)
         #    item_object.afficherRessource(item_id, item_date, item_property_name)
 
@@ -1254,6 +1254,7 @@ class JalonCours(ATFolder):
             self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def editCourseParentTitleVisibility(self, item_parent_id, item_date):
+        """Edit Course Parent Title Visibility."""
         # LOG.info("----- editCourseParentTitleVisibility -----")
         item_properties = self.getCourseItemProperties(item_parent_id)
 
@@ -1269,6 +1270,7 @@ class JalonCours(ATFolder):
             self.editCourseParentTitleVisibility(item_parent["idElement"], item_date)
 
     def updateActualities(self, item_id, item_date, actuality_code):
+        """Update Actualities."""
         # LOG.info("----- updateActualities -----")
         actualities_list = list(self.getActualites())
         actuality_dict = {"reference":      item_id,
