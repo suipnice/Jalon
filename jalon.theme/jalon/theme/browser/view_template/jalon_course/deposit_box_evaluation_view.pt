@@ -20,9 +20,11 @@
     <main class="row" role="main" aria-labelledby="page_title">
         <section>
         <h1>
+            <tal:condition condition="my_view/acces_evaluations">
             <i class="fa fa-users"></i>Mon évaluation (<tal:replace replace="my_view/evaluation_note"/> / 20)
+            </tal:condition>
             <tal:condition condition="my_view/has_self_evaluation">
-            / <i class="fa fa-user"></i>Mon auto-évaluation (<tal:replace replace="my_view/self_evaluation_note"/> / 20)
+            <i class="fa fa-user"></i>Mon auto-évaluation (<tal:replace replace="my_view/self_evaluation_note"/> / 20)
             </tal:condition>
         </h1>
 
@@ -45,8 +47,7 @@
             <tal:repeat repeat="index my_view/criteria_order">
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_view['criteria_dict'][index];
-                                 criteria_id string:criteria${repeat/index/number};
-                                 criteria_list python:my_view['peer_evaluation'].get(index, [])"
+                                 criteria_id string:criteria${repeat/index/number};"
                      tal:attributes="id criteria_id">
                 <h2>
                     <tal:replace replace="criteria/title"/>
@@ -82,6 +83,8 @@
                          tal:content="comment"
                          tal:condition="comment"/>
                 </div>
+                <tal:condition condition="my_view/acces_evaluations">
+                <tal:define define="criteria_list python:my_view['peer_evaluation'].get(index, [])">
                 <div tal:repeat="criteria_dict criteria_list">
                     <h3>
                         Évaluation numéro <tal:replace replace="repeat/criteria_dict/number"/> (<tal:replace replace="criteria_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points)
@@ -103,6 +106,8 @@
                         Note du critère : <tal:replace replace="average_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points
                     </h2>
                 </div>
+                </tal:define>
+                </tal:condition>
             </section>
             </tal:repeat>
         </div>

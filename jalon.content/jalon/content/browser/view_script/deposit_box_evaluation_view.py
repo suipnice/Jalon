@@ -52,6 +52,7 @@ class DepositBoxEvaluationView(BrowserView):
 
         my_view = {"is_anonymous":          self.isAnonymous(),
                    "student_name":          student_name,
+                   "acces_evaluations":     deposit_box.getAccesEvaluation(),
                    "acces_self_evaluation": deposit_box.getAutoriserAutoEvaluation(),
                    "has_self_evaluation":   False}
         jalon_bdd = self.context.portal_jalon_bdd
@@ -67,23 +68,24 @@ class DepositBoxEvaluationView(BrowserView):
                     my_view["self_evaluation_dict"][line[0]] = {"criteria_note":    line[1],
                                                                 "criteria_comment": line[-1]}
 
-        peer_evaluation_list = jalon_bdd.getPeerEvaluation(deposit_box_id, student_id)
-        my_view["peer_evaluation"] = {}
-        for ligne in peer_evaluation_list.all():
-            LOG.info("***** ligne : %s" % str(ligne))
-            try:
-                my_view["peer_evaluation"][ligne[0]].append({"corrected_stu": ligne[1], "criteria_note": ligne[2], "criteria_comment": ligne[-1]})
-            except:
-                my_view["peer_evaluation"][ligne[0]] = [{"corrected_stu": ligne[1], "criteria_note": ligne[2], "criteria_comment": ligne[-1]}]
-        LOG.info("***** peer_evaluation : %s" % str(my_view["peer_evaluation"]))
+        if my_view["acces_evaluations"]:
+            peer_evaluation_list = jalon_bdd.getPeerEvaluation(deposit_box_id, student_id)
+            my_view["peer_evaluation"] = {}
+            for ligne in peer_evaluation_list.all():
+                LOG.info("***** ligne : %s" % str(ligne))
+                try:
+                    my_view["peer_evaluation"][ligne[0]].append({"corrected_stu": ligne[1], "criteria_note": ligne[2], "criteria_comment": ligne[-1]})
+                except:
+                    my_view["peer_evaluation"][ligne[0]] = [{"corrected_stu": ligne[1], "criteria_note": ligne[2], "criteria_comment": ligne[-1]}]
+            LOG.info("***** peer_evaluation : %s" % str(my_view["peer_evaluation"]))
 
-        my_view["peer_average"] = {}
-        average_list = jalon_bdd.getPeerAverage(deposit_box_id, student_id)
-        for ligne in average_list.all():
-            criteria_state = True if ligne[2] else False
-            my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[2], "criteria_comment": ligne[-1]}
+            my_view["peer_average"] = {}
+            average_list = jalon_bdd.getPeerAverage(deposit_box_id, student_id)
+            for ligne in average_list.all():
+                criteria_state = True if ligne[2] else False
+                my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[2], "criteria_comment": ligne[-1]}
 
-        my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
+            my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()
         my_view["comment_dict"] = {"0": "Aucun",
