@@ -237,6 +237,15 @@
                         </dl>
                     </div>
                 </div>
+                <div tal:condition="my_evaluate_form/has_self_evaluation">
+                    <h2>
+                        Auto-évaluation de <tal:replace replace="my_evaluate_form/student_name"/> (<tal:replace replace="python:my_evaluate_form['self_evaluation_dict'][index]['criteria_note']"/> / <tal:replace replace="criteria/notation"/> points)
+                    </h2>
+                    <div class="panel callout radius"
+                         tal:define="comment python:my_evaluate_form['self_evaluation_dict'][index]['criteria_comment']"
+                         tal:content="comment"
+                         tal:condition="comment"/>
+                </div>
                 <div class="panel warning radius"
                      tal:condition="criteria_avg/criteria_error">
                      <i class="fa fa-exclamation-triangle alert"></i>

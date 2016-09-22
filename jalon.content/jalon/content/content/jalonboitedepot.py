@@ -1588,14 +1588,28 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getTeacherEvaluateDepositFileForm(self, student_id):
         LOG.info("----- getTeacherEvaluateDepositFileForm -----")
+        deposit_box_id = self.getId()
         deposit_files = self.getFolderContents(contentFilter={"portal_type": "JalonFile", "Creator": student_id})
         for deposit_brain in deposit_files:
             if deposit_brain.getActif:
                 deposit_link = deposit_brain.getURL()
 
         jalon_bdd = self.portal_jalon_bdd
-        evaluation = jalon_bdd.getPeerEvaluation(self.getId(), student_id)
-        average = jalon_bdd.getPeerAverage(self.getId(), student_id)
+
+        self_evaluation_dict = {}
+        self_evaluation_note = ""
+        has_self_evaluation = False
+        request = jalon_bdd.getSelfEvaluationNote(deposit_box_id, student_id).first()
+        if request:
+            has_self_evaluation = True
+            self_evaluation_note = request[0]
+
+            for line in jalon_bdd.getSelfEvaluate(deposit_box_id, student_id).all():
+                self_evaluation_dict[line[0]] = {"criteria_note":    line[1],
+                                                 "criteria_comment": line[-1]}
+
+        evaluation = jalon_bdd.getPeerEvaluation(deposit_box_id, student_id)
+        average = jalon_bdd.getPeerAverage(deposit_box_id, student_id)
 
         criteria_avg = {}
         evaluation_number = self.getNombreCorrection()
@@ -1651,13 +1665,16 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info("***** criteria_eval : %s" % str(criteria_eval))
 
         student = self.getIndividu(student_id, "dict")
-        return {"student_name":   "%s %s" % (student["nom"].upper(), student["prenom"].capitalize()),
-                "deposit_link":   "%s/at_download/file" % deposit_link,
-                "criteria_dict":  self.getCriteriaDict(),
-                "criteria_order": self.getCriteriaOrder(),
-                "criteria_eval":  criteria_eval,
-                "criteria_avg":   criteria_avg,
-                "form_link":      "%s/evaluate_deposit_file_form" % self.absolute_url()}
+        return {"student_name":         "%s %s" % (student["nom"].upper(), student["prenom"].capitalize()),
+                "deposit_link":         "%s/at_download/file" % deposit_link,
+                "criteria_dict":        self.getCriteriaDict(),
+                "criteria_order":       self.getCriteriaOrder(),
+                "has_self_evaluation":  has_self_evaluation,
+                "self_evaluation_dict": self_evaluation_dict,
+                "self_evaluation_note": self_evaluation_note,
+                "criteria_eval":        criteria_eval,
+                "criteria_avg":         criteria_avg,
+                "form_link":            "%s/evaluate_deposit_file_form" % self.absolute_url()}
 
     def getEvaluateBreadcrumbs(self):
         LOG.info("----- getEvaluateBreadcrumbs -----")
