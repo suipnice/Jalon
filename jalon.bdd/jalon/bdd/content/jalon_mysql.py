@@ -319,6 +319,12 @@ def getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU):
     return peer_average
 
 
+def getCriteriaAverage(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA):
+    PA = aliased(tables.PeersAverageMySQL)
+    criteria_average = session.query(PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU, PA.CRITERIA == CRITERIA)
+    return criteria_average
+
+
 def getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU):
     PE = aliased(tables.PeersEvaluationMySQL)
     peers_evaluations = session.query(PE.CRITERIA, PE.DEPOSIT_STU, PE.CRITERIA_NOTE_FIRST, PE.CRITERIA_COMMENT_FIRST).filter(PE.DEPOSIT_BOX == DEPOSIT_BOX, PE.CORRECTED_STU == CORRECTED_STU)
@@ -364,6 +370,12 @@ def updateAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE
     session.commit()
 
 
+def deleteAverageByDepositBox(session, DEPOSIT_BOX):
+    session.execute("delete from peers_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.flush()
+    session.commit()
+
+
 def setEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
     session.add(tables.PeersEvaluationAverageMySQL(DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION))
     session.commit()
@@ -375,6 +387,12 @@ def updateEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIF
     for line in peer_average:
         line.AVERAGE = AVERAGE
         line.IS_VERIFICATION = IS_VERIFICATION
+    session.commit()
+
+
+def deleteEvaluationsAverageByDepositBox(session, DEPOSIT_BOX):
+    session.execute("delete from peers_evaluation_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.flush()
     session.commit()
 
 

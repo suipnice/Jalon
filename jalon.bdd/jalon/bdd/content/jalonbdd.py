@@ -1471,6 +1471,10 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         return jalon_mysql.getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU)
 
+    def getCriteriaAverage(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA):
+        session = self.getSessionMySQL()
+        return jalon_mysql.getCriteriaAverage(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA)
+
     def getEvaluationByCorrectedSTU(self, DEPOSIT_BOX, CORRECTED_STU):
         session = self.getSessionMySQL()
         return jalon_mysql.getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU)
@@ -1490,6 +1494,14 @@ class JalonBDD(SimpleItem):
     def setAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
         session = self.getSessionMySQL()
         jalon_mysql.setAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, datetime.now(), CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T)
+
+    def deleteAverageByDepositBox(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        jalon_mysql.deleteAverageByDepositBox(session, DEPOSIT_BOX)
+
+    def deleteEvaluationsAverageByDepositBox(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        jalon_mysql.deleteEvaluationsAverageByDepositBox(session, DEPOSIT_BOX)
 
     def updateAveragePeer(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE, CRITERIA_VALUE, CRITERIA_AVERAGE, CRITERIA_NOTE_T, CRITERIA_COMMENT_T):
         session = self.getSessionMySQL()

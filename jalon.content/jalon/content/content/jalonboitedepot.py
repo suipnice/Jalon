@@ -1825,8 +1825,25 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def regenerateAverage(self):
         LOG.info("----- regenerateAverage -----")
-        #jalon_bdd = self.portal_jalon_bdd
-        #jalon_bdd.deleteAverageByDepositBox(self.getId())
+        deposit_id = self.getId()
+        jalon_bdd = self.portal_jalon_bdd
+        criteria_dict = self.getCriteriaDict()
+        for student in self.getPeersOrder():
+            evaluation_note = 0
+            evaluation_coeff = 0
+            evaluation_verification = False
+            for criteria_id in self.getCriteriaOrder():
+                criteria_coefficient = int(criteria_dict[criteria_id]["coefficient"])
+                note = jalon_bdd.getCriteriaAverage(deposit_id, student["id"], criteria_id).first()
+                if note:
+                    evaluation_note = evaluation_note + (((note[0] * 10) / int(criteria_dict[criteria_id]["notation"])) * criteria_coefficient)
+                    evaluation_coeff = evaluation_coeff + criteria_coefficient
+                    if note[1] != 1:
+                        evaluation_verification = True
+
+            evaluation_note_20 = "%.2f" % ((float(evaluation_note) / float(evaluation_coeff)) * 2.0)
+            jalon_bdd.updateEvaluationAverage(deposit_id, student["id"], evaluation_note_20, evaluation_verification)
+
         #jalon_bdd.deleteEvaluationsAverageByDepositBox(self.getId())
         #self.setAveragePeer()
 
