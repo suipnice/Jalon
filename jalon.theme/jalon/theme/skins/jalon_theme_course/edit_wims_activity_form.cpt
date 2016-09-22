@@ -19,7 +19,7 @@
                     isExamen python:context.getTypeWims()=='Examen'">
     <h2>
         <tal:block tal:condition="not:isExamen"
-                   i18n:translate="">Modifier les informations de l'auto-évaluation
+                   i18n:translate="">Modifier les informations de l'entrainement
         </tal:block>
         <tal:block tal:condition="isExamen"
                    i18n:translate="">Modifier les informations de l'examen
