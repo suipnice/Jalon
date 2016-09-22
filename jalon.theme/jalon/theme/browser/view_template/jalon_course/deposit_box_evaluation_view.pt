@@ -18,8 +18,12 @@
     </tal:define>
 
     <main class="row" role="main" aria-labelledby="page_title">
+        <section>
         <h1>
-            Mon évaluation (<tal:replace replace="my_view/evaluation_note"/> / 20)
+            <i class="fa fa-users"></i>Mon évaluation (<tal:replace replace="my_view/evaluation_note"/> / 20)
+            <tal:condition condition="my_view/has_self_evaluation">
+            / <i class="fa fa-user"></i>Mon auto-évaluation (<tal:replace replace="my_view/self_evaluation_note"/> / 20)
+            </tal:condition>
         </h1>
 
         <ul class="tabs" data-tab role="tablist">
@@ -69,28 +73,40 @@
                         </dl>
                     </div>
                 </div>
+                <div tal:condition="my_view/has_self_evaluation">
+                    <h3>
+                        Mon auto-évaluation de ce critère (<tal:replace replace="python:my_view['self_evaluation_dict'][index]['criteria_note']"/> / <tal:replace replace="criteria/notation"/> points)
+                    </h3>
+                    <div class="panel callout radius"
+                         tal:define="comment python:my_view['self_evaluation_dict'][index]['criteria_comment']"
+                         tal:content="comment"
+                         tal:condition="comment"/>
+                </div>
                 <div tal:repeat="criteria_dict criteria_list">
                     <h3>
                         Évaluation numéro <tal:replace replace="repeat/criteria_dict/number"/> (<tal:replace replace="criteria_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points)
                     </h3>
                     <div class="panel callout radius"
-                         tal:content="criteria_dict/criteria_comment"/>
+                         tal:content="criteria_dict/criteria_comment"
+                         tal:condition="criteria_dict/criteria_comment"/>
                 </div>
                 <div tal:define="average_dict python:my_view['peer_average'][index]">
                     <tal:condition condition="python:average_dict['criteria_state']">
-                    <h3>
-                        Évaluation de l'enseignant (<tal:replace replace="average_dict/criteria_note"/>  / <tal:replace replace="criteria/notation"/>points)
-                    </h3>
+                    <h2>
+                        Évaluation de l'enseignant (<tal:replace replace="average_dict/criteria_note"/>  / <tal:replace replace="criteria/notation"/> points)
+                    </h2>
                     <div class="panel callout radius"
-                         tal:content="average_dict/criteria_comment"/>
+                         tal:content="average_dict/criteria_comment"
+                         tal:condition="average_dict/criteria_comment"/>
                     </tal:condition>
-                    <h3>
+                    <h2>
                         Note du critère : <tal:replace replace="average_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points
-                    </h3>
+                    </h2>
                 </div>
             </section>
             </tal:repeat>
         </div>
+        </section>
     </main>
 </metal:main>
 

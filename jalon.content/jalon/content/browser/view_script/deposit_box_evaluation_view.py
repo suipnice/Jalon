@@ -50,9 +50,23 @@ class DepositBoxEvaluationView(BrowserView):
         else:
             student_name = student_id
 
-        my_view = {"is_anonymous": self.isAnonymous(),
-                   "student_name": student_name}
+        my_view = {"is_anonymous":          self.isAnonymous(),
+                   "student_name":          student_name,
+                   "acces_self_evaluation": deposit_box.getAutoriserAutoEvaluation(),
+                   "has_self_evaluation":   False}
         jalon_bdd = self.context.portal_jalon_bdd
+
+        if my_view["acces_self_evaluation"]:
+            self_evaluation_note = jalon_bdd.getSelfEvaluationNote(deposit_box_id, student_id).first()
+            if self_evaluation_note:
+                my_view["has_self_evaluation"] = True
+                my_view["self_evaluation_note"] = self_evaluation_note[0]
+
+                my_view["self_evaluation_dict"] = {}
+                for line in jalon_bdd.getSelfEvaluate(deposit_box_id, student_id).all():
+                    my_view["self_evaluation_dict"][line[0]] = {"criteria_note":    line[1],
+                                                                "criteria_comment": line[-1]}
+
         peer_evaluation_list = jalon_bdd.getPeerEvaluation(deposit_box_id, student_id)
         my_view["peer_evaluation"] = {}
         for ligne in peer_evaluation_list.all():
