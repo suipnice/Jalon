@@ -557,7 +557,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         """
         identifiant = self.getId().split("-")
-        # LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
+        LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
         if len(identifiant) > 1:
             return identifiant[1]
         else:
@@ -670,8 +670,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
             infos = infos_element.get(idElement, None)
             if infos:
                 infos["idElement"] = idElement
-                # LOG.info("***** attribut = %s" % attribut)
-                # LOG.info("***** infos = %s" % infos)
+                LOG.info("***** attribut = %s" % attribut)
+                LOG.info("***** infos = %s" % infos)
                 affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
                 if personnel or not affElement['val'] == 0:
                     # infos["affElement"] = affElement
@@ -790,7 +790,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                     # DEBUG
                     retour["sheet_summaries"] = rep["sheet_summaries"]
                     if len(rep["sheet_summaries"]) > 1:
-                        # LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
+                        LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
                         retour["pourcentage"] = rep["sheet_summaries"][0]
                         retour["qualite"] = (rep["sheet_summaries"][1] * float(self.getNoteMax())) / 10
                     else:
@@ -828,7 +828,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                                                "fonction": "jaloncourswims.py/getNotes",
                                                                "message": 'stats globales de la feuille demandees par un auteur/coauteur',
                                                                "requete": dico})
-                    # LOG.info('Retour WIMS = %s' % rep)
+                    LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
                         for indice, poids in enumerate(rep["weights"]):

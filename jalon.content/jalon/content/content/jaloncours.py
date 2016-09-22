@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" L'objet "Cours" de Jalon."""
+"""L'objet "Cours" de Jalon."""
 from zope.interface import implements
 
 from Products.Archetypes.public import *
@@ -225,8 +225,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
 
 
 class JalonCours(ATFolder):
-
-    """ Un cours Jalon."""
+    """Un cours Jalon."""
 
     implements(IJalonCours)
     meta_type = 'JalonCours'

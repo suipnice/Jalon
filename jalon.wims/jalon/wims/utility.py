@@ -236,7 +236,7 @@ class Wims(SimpleItem):
         else:
             job = "addexo"
 
-        # LOG.info("[creerExercice] param[source]=\n%s"%param["source"])
+        LOG.info("[creerExercice] param[source]=\n%s"%param["source"])
         dico = {"job": job, "code": param["authMember"], "data1": param["source"], "qexo": param["qexo"], "qclass": param["qclass"]}
         if "option" in param:
             dico["option"] = param["option"]
