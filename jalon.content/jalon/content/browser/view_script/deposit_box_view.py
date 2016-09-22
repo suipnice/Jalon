@@ -143,7 +143,8 @@ class DepositBoxView(CourseView):
                                                 "text":      "Dépôts à évaluer" if not my_view["is_personnel"] else "Par les pairs",
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
-            my_view["accessEvaluation"] = not my_view["is_personnel"] and my_deposit_box.getAutoriserAutoEvaluation()
+            my_view["accessEvaluation"] = not my_view["is_personnel"] and my_deposit_box.getAccesEvaluation()
+            my_view["accessSelfEvaluation"] = not my_view["is_personnel"] and my_deposit_box.getAutoriserAutoEvaluation()
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
@@ -164,9 +165,9 @@ class DepositBoxView(CourseView):
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-user fa-fw no-pad",
                                                 "text":  "Autoriser l'auto-évaluation",
-                                                "value": my_deposit_box.getDisplayAuthoriezSelfEvaluation()}]
+                                                "value": my_deposit_box.getDisplayAuthorizeSelfEvaluation()}]
 
-            if my_view["accessEvaluation"]:
+            if my_view["accessSelfEvaluation"]:
                 self_evaluation_note = my_deposit_box.portal_jalon_bdd.getSelfEvaluationNote(my_view["deposit_box_id"], user_id).first()
                 if self_evaluation_note or my_deposit_box.getAutoriserAutoEvaluation():
                     my_view["self_evalution_button"] = "fa fa-trophy"

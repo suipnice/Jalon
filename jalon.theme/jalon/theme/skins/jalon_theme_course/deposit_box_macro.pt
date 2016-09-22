@@ -147,7 +147,7 @@
        tal:condition="my_view/grid_access">
        <i class="fa fa-th"></i>Accèder à la grille d'évaluation
     </a>
-    <tal:condition condition="my_view/accessEvaluation">
+    <tal:condition condition="my_view/accessSelfEvaluation">
         <h2><i class="fa fa-user"></i>Mon auto-évaluation</h2>
         <a class="button expand radius"
            tal:attributes="href my_view/self_evalution_link">
