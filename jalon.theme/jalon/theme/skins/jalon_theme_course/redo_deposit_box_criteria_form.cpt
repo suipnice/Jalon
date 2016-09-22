@@ -16,7 +16,9 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <form id="js-activateCriteria" method="POST"
-          tal:attributes="action string:${context/absolute_url}/${template/id}">
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="criteria_id request/criteria_id;
+                      criteria_dict python:context.getCriteriaDict(criteria_id)">
 
         <div class="panel alert radius">
             <strong i18n:translate="">Attention :</strong>
@@ -30,10 +32,10 @@
             <label for="coefficient" i18n:translate="">Coefficient (max 5)</label>
             <div class="fieldErrorBox" tal:content="error"
                  tal:condition="error"/>
-            <input type="number" name="coefficient" min="1" max="5"
+            <input type="number" name="coefficient" min="0" max="5"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/coefficient | crietria_dict/coefficient | string:1"/>
+                                   value request/coefficient | criteria_dict/coefficient | string:1"/>
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>
