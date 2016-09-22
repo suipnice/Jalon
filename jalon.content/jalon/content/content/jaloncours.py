@@ -381,7 +381,7 @@ class JalonCours(ATFolder):
         else:
             self._elements_cours = elements_cours
 
-    #def getKeyElementCours(self):
+    # def getKeyElementCours(self):
     #    LOG.info("----- getKeyElementCours -----")
     #    return self._elements_cours.keys()
 
@@ -389,7 +389,7 @@ class JalonCours(ATFolder):
         LOG.info("----- getDisplayOrHiddenDate -----")
         infos_element = self.getCourseItemProperties(idElement)
         if infos_element:
-            LOG.info("item_property : %s" % str(infos_element))
+            # LOG.info("item_property : %s" % str(infos_element))
             if infos_element[attribut] != "":
                 return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
         return DateTime().strftime("%Y/%m/%d %H:%M")
@@ -493,11 +493,11 @@ class JalonCours(ATFolder):
         return jalon_utils.jalon_quote(encode)
 
     def getBaseAnnuaire(self):
-        LOG.info("----- getBaseAnnuaire -----")
+        # LOG.info("----- getBaseAnnuaire -----")
         return jalon_utils.getBaseAnnuaire()
 
     def getFicheAnnuaire(self, valeur, base=None):
-        LOG.info("----- getFicheAnnuaire -----")
+        # LOG.info("----- getFicheAnnuaire -----")
         return jalon_utils.getFicheAnnuaire(valeur, base)
 
     #--------------------------#
@@ -739,7 +739,7 @@ class JalonCours(ATFolder):
         if username in self.coAuteurs:
             return True
         # Dans le cas de l'admin, isCoAuteurs renvoi 0 aussi
-        LOG.info("----- isCoAuteurs = 0 (ni auteur, ni coAuteur)")
+        # LOG.info("----- isCoAuteurs = 0 (ni auteur, ni coAuteur)")
         return 0
 
     def isCoLecteurs(self, username):
@@ -1693,7 +1693,7 @@ class JalonCours(ATFolder):
                         liste_activitesWIMS.append("sheet%s" % activite.getIdFeuille())
         retour = {}
         if len(liste_activitesWIMS) > 0:
-            LOG.info("----- [jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
+            # LOG.info("----- [jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
             #for user in dicoClasses:
             #    if auteur == "All" or user == auteur:
             columns = "login,name,%s" % (",".join(liste_activitesWIMS))
@@ -1703,7 +1703,7 @@ class JalonCours(ATFolder):
                         "job": "getcsv",
                         "format": file_format,
                         "option": columns}
-                LOG.info("----- [jaloncours/getScoresWims] callJob dico :'%s'" % dico)
+                # LOG.info("----- [jaloncours/getScoresWims] callJob dico :'%s'" % dico)
                 rep_wims = self.wims("callJob", dico)
 
                 try:
@@ -1778,7 +1778,7 @@ class JalonCours(ATFolder):
                 activite = getattr(self, idElement)
 
                 if utilisateur == "All" or activite.getCreateur() == utilisateur:
-                    LOG.info("----- [jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
+                    # LOG.info("----- [jaloncours/supprimerActivitesWims] suppression de '%s'" % element)
                     liste_activitesWIMS.append(idElement)
 
                     # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
@@ -1800,7 +1800,7 @@ class JalonCours(ATFolder):
         listeClasses = list(self.getListeClasses())
         removing_classes = []
         dico = listeClasses[0]
-        LOG.info("----- [jaloncours/supprimerActivitesWims] Ancienne liste :'%s'" % listeClasses)
+        # LOG.info("----- [jaloncours/supprimerActivitesWims] Ancienne liste :'%s'" % listeClasses)
         new_listeClasses = []
         for auteur in dico:
             if utilisateur == "All" or utilisateur == auteur:
@@ -1814,7 +1814,7 @@ class JalonCours(ATFolder):
             self.aq_parent.delClassesWims(removing_classes, request)
 
         # Et enfin remettre à zero la liste des classes du cours.
-        LOG.info("----- [jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
+        # LOG.info("----- [jaloncours/supprimerActivitesWims] Nouvelle liste :'%s'" % new_listeClasses)
         self.setListeClasses(new_listeClasses)
 
         # Renvoit le nombre d'activités supprimées.
