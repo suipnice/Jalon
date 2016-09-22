@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-
+"""jalon_activity.py definit la class JalonActivity."""
 from zope.interface import implements
 
 from Products.Archetypes.public import *
 from OFS.SimpleItem import SimpleItem
 
-from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonActivity
 
 from DateTime import DateTime
@@ -145,69 +144,17 @@ class JalonActivity(SimpleItem):
         return item_actions
 
     def getDisplayItemForm(self, item_id):
+        """Fournit les infos du formulaire d'affichage/masquage de l'activité."""
         LOG.info("----- getDisplayItemForm -----")
-        form_properties = {"is_authorized_form":       True,
-                           "is_item_title":            False,
-                           "is_item_parent_title":     False,
-                           "help_css":                 "panel callout radius",
-                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
-                           "is_wims_examen":           False}
         if self.getId() == item_id:
+            # Pour l'affichage de l'activité elle-même, on fait appel à la fonction getDisplayItemForm() du cours.
             form_properties = self.aq_parent.getDisplayItemForm(item_id)
         else:
+            # Pour l'affichage des elements inclus dans l'activité, on appelle getDisplayItemFormProperties() du cours.
             item_properties = self.getDocumentsProperties(item_id)
-            display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
-            if display_properties["val"]:
-                form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
-                form_properties["help_css"] = "panel radius warning"
-                form_properties["form_button_css"] = "button small radius warning"
-                form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
-                form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
-                form_properties["item_property_name"] = "masquerElement"
-                form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
-                form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
-                form_properties["item_parent_title"] = ""
-                form_properties["wims_help_text"] = False
-
-                form_properties["text_title_lately"] = "… ou programmer son masquage."
-                if item_properties["typeElement"] == "Titre":
-                    form_properties["is_item_title"] = True
-                    form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
-                else:
-                    form_properties["text_title_directly"] = "Masquer directement…"
-
-                form_properties["form_name"] = "masquer-element"
-                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "masquerElement")
-            else:
-                form_properties["form_button_css"] = "button small radius"
-                form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
-                form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
-                form_properties["item_property_name"] = "affElement"
-                form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
-                form_properties["form_title_icon"] = "fa fa-eye no-pad"
-
-                form_properties["text_title_lately"] = "… ou programmer son affichage."
-                if item_properties["typeElement"] == "Titre":
-                    form_properties["is_item_title"] = True
-                    form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
-                    form_properties["wims_help_text"] = True
-                else:
-                    form_properties["text_title_directly"] = "L'afficher directement…"
-                    form_properties["wims_help_text"] = False
-
-                form_properties["form_name"] = "afficher-element"
-                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "affElement")
+            form_properties = self.aq_parent.getDisplayItemFormProperties(item_properties)
 
         return form_properties
-
-    def getDisplayOrHiddenDate(self, item_properties, attribut):
-        LOG.info("----- getDisplayOrHiddenDate -----")
-        LOG.info("***** item_properties : %s" % item_properties)
-        if item_properties[attribut] != "":
-            LOG.info("***** attribut: %s" % attribut)
-            LOG.info("***** item_properties[attribut]: %s" % item_properties[attribut])
-            return item_properties[attribut].strftime("%Y/%m/%d %H:%M")
-        return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def detachDocument(self, item_id):
         LOG.info("----- detachDocument -----")

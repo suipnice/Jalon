@@ -925,8 +925,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                            "is_item_title":            False,
                            "is_item_parent_title":     False,
                            "help_css":                 "panel callout radius",
-                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
-                           "is_wims_examen":           False}
+                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants."}
         if self.getId() == item_id:
             form_properties = self.aq_parent.getDisplayItemForm(item_id)
         else:

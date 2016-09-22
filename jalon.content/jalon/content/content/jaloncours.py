@@ -385,14 +385,23 @@ class JalonCours(ATFolder):
     #    LOG.info("----- getKeyElementCours -----")
     #    return self._elements_cours.keys()
 
-    def getDisplayOrHiddenDate(self, idElement, attribut):
-        # LOG.info("----- getDisplayOrHiddenDate -----")
+    """def getDisplayOrHiddenDate(self, idElement, attribut):
+        LOG.info("----- getDisplayOrHiddenDate -----")
         infos_element = self.getCourseItemProperties(idElement)
         if infos_element:
             LOG.info("item_property : %s" % str(infos_element))
             if infos_element[attribut] != "":
                 return infos_element[attribut].strftime("%Y/%m/%d %H:%M")
         return DateTime().strftime("%Y/%m/%d %H:%M")
+    """
+
+    def getFormattedDate(self, date):
+        """Fournit une date au format "Y/m/d H:M"."""
+        LOG.info("----- getFormattedDate -----")
+        if date != "":
+            return date.strftime("%Y/%m/%d %H:%M")
+        else:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def setCourseProperties(self, dico):
         # LOG.info("----- setCourseProperties -----")
@@ -1119,14 +1128,40 @@ class JalonCours(ATFolder):
                 "mark_out_item_text": self.getCommentaireEpingler(item_id)}
 
     def getDisplayItemForm(self, item_id):
-        # LOG.info("----- getDisplayItemForm -----")
-        form_properties = {"is_authorized_form":       True,
-                           "is_item_title":            False,
+        """Fournit les infos du formulaire d'affichage/masquage d'un element "item_id" directement inclus dans le cours."""
+        LOG.info("----- getDisplayItemForm -----")
+        item_properties = self.getCourseItemProperties(item_id)
+        form_properties = self.getDisplayItemFormProperties(item_properties)
+
+        item_parent_properties = self.getParentPlanElement(item_id, "racine", "")
+        if item_parent_properties["idElement"] != "racine":
+            display_parent_properties = self.isAfficherElement(item_parent_properties["affElement"], item_parent_properties["masquerElement"])
+            if not display_parent_properties["val"]:
+                form_properties["is_item_parent_title"] = True
+                form_properties["item_parent_title_id"] = item_parent_properties["idElement"]
+                form_properties["item_parent_title"] = item_parent_properties["titreElement"]
+
+        if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
+            form_properties["is_delay_allowed"] = False
+            is_authorized_activity = getattr(self, item_id).autoriser_Affichage()
+            if not is_authorized_activity["val"]:
+                form_properties["is_display_allowed"] = False
+                form_properties["help_css"] = "panel warning radius"
+                if is_authorized_activity["reason"] == "listeExos":
+                    form_properties["help_text"] = "Vous ne pouvez pas afficher un entrainement ou un examen tant que sa liste d'exercices est vide."
+                else:
+                    form_properties["help_text"] = "Vous ne pouvez pas afficher cette ressource. %s" % is_authorized_activity["reason"]
+        return form_properties
+
+    def getDisplayItemFormProperties(self, item_properties):
+        """Fournit les infos du formulaire d'affichage/masquage a partir des "item_properties" fournies."""
+        form_properties = {"is_item_title":            False,
                            "is_item_parent_title":     False,
                            "help_css":                 "panel callout radius",
-                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants."}
-        item_properties = self.getCourseItemProperties(item_id)
-        form_properties["is_wims_examen"] = True if item_properties["typeElement"] == "Examen" else False
+                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
+                           "wims_help_text":           "",
+                           "is_display_allowed":       True,
+                           "is_delay_allowed":         True}
 
         display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
         if display_properties["val"]:
@@ -1139,7 +1174,6 @@ class JalonCours(ATFolder):
             form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
             form_properties["item_parent_title"] = ""
-            form_properties["wims_help_text"] = False
 
             form_properties["text_title_lately"] = "… ou programmer son masquage."
             if item_properties["typeElement"] == "Titre":
@@ -1149,49 +1183,32 @@ class JalonCours(ATFolder):
                 form_properties["text_title_directly"] = "Masquer directement…"
 
             form_properties["form_name"] = "masquer-element"
-            form_properties["item_date"] = self.getDisplayOrHiddenDate(item_id, "masquerElement")
+            form_properties["item_date"] = self.getFormattedDate(item_properties["masquerElement"])
         else:
             form_properties["form_button_css"] = "button small radius"
             form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
             form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
             form_properties["item_property_name"] = "affElement"
-            form_properties["is_wims_examen"] = False
             form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye no-pad"
-
-            item_parent_properties = self.getParentPlanElement(item_id, "racine", "")
-            if item_parent_properties["idElement"] != "racine":
-                display_parent_properties = self.isAfficherElement(item_parent_properties["affElement"], item_parent_properties["masquerElement"])
-                if not display_parent_properties["val"]:
-                    form_properties["is_item_parent_title"] = True
-                    form_properties["item_parent_title_id"] = item_parent_properties["idElement"]
-                    form_properties["item_parent_title"] = item_parent_properties["titreElement"]
-
-            if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
-                is_authorized_activity = getattr(self, item_id).autoriser_Affichage()
-                if not is_authorized_activity["val"]:
-                    form_properties["is_authorized_form"] = False
-                    form_properties["help_css"] = "panel warning radius"
-                    if is_authorized_activity["reason"] == "listeExos":
-                        form_properties["help_text"] = "Vous ne pouvez pas afficher une auto-évaluation ou un examen tant que sa liste d'exercices est vide."
-                    else:
-                        form_properties["help_text"] = "Vous ne pouvez pas afficher cette ressource. %s" % is_authorized_activity["reason"]
 
             form_properties["text_title_lately"] = "… ou programmer son affichage."
             if item_properties["typeElement"] == "Titre":
                 form_properties["is_item_title"] = True
                 form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
-                form_properties["wims_help_text"] = True
+                form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> les autoévaluations et examens vides ne seront pas affichés avec le titre."
+            elif item_properties["typeElement"] == "Examen":
+                form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié."
             else:
                 form_properties["text_title_directly"] = "L'afficher directement…"
-                form_properties["wims_help_text"] = False
 
             form_properties["form_name"] = "afficher-element"
-            form_properties["item_date"] = self.getDisplayOrHiddenDate(item_id, "affElement")
+            form_properties["item_date"] = self.getFormattedDate(item_properties["affElement"])
 
         return form_properties
 
     def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
+        """Edit Course Title Visibility."""
         # LOG.info("----- editCourseTitleVisibility -----")
         actuality_code = "chapdispo" if item_property_name == "affElement" else ""
 
