@@ -22,6 +22,7 @@
     <property name="view_methods">
         <element value="deposit_box_view"/>
         <element value="deposit_box_evaluation_view"/>
+        <element value="deposit_box_verification_evaluations_view"/>
     </property>
     <property name="default_view_fallback">False</property>
     <alias from="(Default)" to="(dynamic view)"/>

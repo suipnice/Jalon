@@ -44,8 +44,8 @@ if validate_key == "correction_number":
 if validate_key == "penality":
     failed = False
     try:
-        nombrePoints = int(form["nombrePoints"])
-        failed = True if nombrePoints < 1 or nombrePoints > 5 else False 
+        adjustementPoints = int(form["adjustementPoints"])
+        failed = True if adjustementPoints < 1 or adjustementPoints > 5 else False 
     except:
         failed = True
     if failed:

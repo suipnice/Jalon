@@ -9,10 +9,10 @@
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing;
-                        penality request/penalite | string:aucune">
+                        penality request/penalite | context/getPenalite | string:none">
 
     <h2 i18n:translate="">
-        <tal:block i18n:translate="">Modifier la pénalite</tal:block>
+        <tal:block i18n:translate="">Modifier l'ajustement de la note étudiante</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
     <form id="js-editNombreCorrection" method="post"
@@ -24,20 +24,21 @@
 
             <label for="penalite" i18n:translate="">Pénalité</label>
             <div class="panel warning radius">
-                Appliquer une pénalité si un étudiant ne corrige pas le nombre de devoirs attendu.
+                Appliquer un bonus ou une pénalité en fonction du nombre d'évaluations réalisées par l'étudiant.
             </div>
             <div class="fieldErrorBox" tal:content="error"
                  tal:condition="error"/>
-            <input type="radio" name="penalite" id="aucune" value="aucune"
-                   tal:attributes="checked python:context.test(penality == 'aucune', 'checked', '')"/> <label for="aucune">Aucune</label><br/>
-            <input type="radio" name="penalite" id="consultation" value="consultation"
-                   tal:attributes="checked python:context.test(penality == 'consultation', 'checked', '')"/> <label for="consultation">Consultation de note interdite</label><br/>
-            <input type="radio" name="penalite" id="points" value="points"
-                   tal:attributes="checked python:context.test(penality == 'points', 'checked', '')"/> <label for="points">Points négatifs par devoir non corrigé</label>
-            <input type="number" name="nombrePoints" min="1" max="5"
+            <input type="radio" name="penalite" id="none" value="none"
+                   tal:attributes="checked python:context.test(penality == 'none', 'checked', '')"/> <label for="none">Aucun</label><br/>
+            <input type="radio" name="penalite" id="negative" value="negative"
+                   tal:attributes="checked python:context.test(penality == 'negative', 'checked', '')"/> <label for="negative"> Soustraire des points si toutes les évaluations attendues ne sont pas réalisées.</label><br/>
+            <input type="radio" name="penalite" id="positive" value="positive"
+                   tal:attributes="checked python:context.test(penality == 'positive', 'checked', '')"/> <label for="positive"> Ajouter des points si toutes les évaluations attendues sont réalisées.</label><br/>
+            <label for="adjustementPoints"> Ajustement du nombre de points :</label>
+            <input type="number" name="adjustementPoints" min="1" max="5"
                    step="1" style="width:3em;display:inline;"
                    tal:attributes="class python:context.test(error, 'error', '');
-                                   value request/nombrePoints | string:1"/>
+                                   value request/adjustementPoints | context/getAdjustementPoints"/>
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>

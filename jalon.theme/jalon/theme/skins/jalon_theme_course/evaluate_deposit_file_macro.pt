@@ -7,7 +7,7 @@
     <tal:condition condition="my_form/is_evaluable">
     <h1>
         <i class="fa fa-check-square-o no-pad"></i>
-        Évaluer le dépôt <tal:replace replace="my_evaluate_form/index"/>
+        Évaluer <tal:replace replace="my_evaluate_form/deposit_name"/>
     </h1>
 
     <div class="panel warning radius"
@@ -18,7 +18,7 @@
     <tal:condition condition="my_evaluate_form/evaluation">
     <a class="button expand radius"
        tal:attributes="href my_evaluate_form/deposit_link">
-        <i class="fa fa-download"></i> Télécharger le dépôt n°<tal:replace replace="my_evaluate_form/index"/>
+        <i class="fa fa-download"></i> Télécharger <tal:replace replace="my_evaluate_form/deposit_name"/>
     </a>
 
     <div class="panel alert radius"
@@ -53,7 +53,7 @@
             <tal:repeat repeat="index my_evaluate_form/criteria_order">
             <section role="tabpanel" aria-hidden="true" class="content"
                      tal:define="criteria python:my_evaluate_form['criteria_dict'][index];
-                                 criteria_evaluate python:criteria_evaluated.get(index, {'criteria_comment': '', 'criteria_note': '10'});
+                                 criteria_evaluate python:criteria_evaluated.get(index, {'criteria_comment': '', 'criteria_note': criteria['notation']});
                                  criteria_id string:criteria${repeat/index/number}"
                      tal:attributes="id criteria_id">
                 <h2 tal:content="criteria/title"/>
@@ -237,6 +237,15 @@
                         </dl>
                     </div>
                 </div>
+                <div tal:condition="my_evaluate_form/has_self_evaluation">
+                    <h2>
+                        Auto-évaluation de <tal:replace replace="my_evaluate_form/student_name"/> (<tal:replace replace="python:my_evaluate_form['self_evaluation_dict'][index]['criteria_note']"/> / <tal:replace replace="criteria/notation"/> points)
+                    </h2>
+                    <div class="panel callout radius"
+                         tal:define="comment python:my_evaluate_form['self_evaluation_dict'][index]['criteria_comment']"
+                         tal:content="comment"
+                         tal:condition="comment"/>
+                </div>
                 <div class="panel warning radius"
                      tal:condition="criteria_avg/criteria_error">
                      <i class="fa fa-exclamation-triangle alert"></i>
@@ -262,7 +271,7 @@
                     <label tal:attributes="for criteria_comment">Commentaire</label>
                     <div class="fieldErrorBox" tal:content="error"
                          tal:condition="error"/>
-                    <textarea tal:attributes="name criteria_comment; id criteria_comment" rows="5"><tal:block replace="python:request.get(criteria_comment, None)"/></textarea>
+                    <textarea tal:attributes="name criteria_comment; id criteria_comment" rows="5"><tal:block replace="python:request.get(criteria_comment, criteria_avg['criteria_comment'])"/></textarea>
                 </div>
                 <div tal:define="criteria_note string:${criteria_id}-note;
                                  error python:errors.get(criteria_note, None)"

@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Autoriser l'auto-évaluation</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-modifDepot" method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_peers_self_evaluation_script">
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="self_evaluation context/getAutoriserAutoEvaluation">
+
+            <legend>Autoriser les étudiants à faire une auto-évaluation</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, les étudiants pourront réaliser une auto-évaluation. Cette auto-évaluation ne sera pas prise en compte pour le calcul de la note de l'évaluation par les pairs.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="self_evaluation"
+                       value="1" id="authorize_self_evaluation"
+                       tal:attributes="checked python:context.test(self_evaluation, 'checked', '')"/>
+                <label for="authorize_self_evaluation"
+                       class="success"
+                       i18n:translate="">Autoriser</label>
+                <input type="radio" name="self_evaluation"
+                       value="0" id="decline_self_evaluation"
+                       tal:attributes="checked python:context.test(self_evaluation, '', 'checked')"/>
+                <label for="decline_self_evaluation"
+                       class="warning"
+                       i18n:translate="">Interdire</label>
+            </div>
+
+        </fieldset>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

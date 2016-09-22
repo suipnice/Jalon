@@ -17,6 +17,8 @@ criteria_id = form["criteria_id"]
 criteria_dict[criteria_id]["coefficient"] = form["coefficient"]
 context.setCriteriaDict(criteria_dict)
 
+context.regenerateAverage()
+
 redirection = "%s/deposit_box_criteria_view?criteria_id=%s" % (context.absolute_url(), criteria_id)
 
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':

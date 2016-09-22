@@ -54,6 +54,48 @@ class PeersEvaluationNoteMySQL(Base):
         return "<PeersEvaluationNoteMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CORRECTED_STU=%s NOTE=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CORRECTED_STU, self.NOTE)
 
 
+class PeersSelfEvaluationMySQL(Base):
+    __tablename__ = "peers_self_evaluation_mysql"
+
+    PKEY = Column(Integer, primary_key=True, autoincrement=True)
+    DEPOSIT_BOX = Column(String(50))
+    DEPOSIT_STU = Column(String(50))
+    CRITERIA = Column(String(5))
+    CRITERIA_DATE = Column(DateTime(True))
+    CRITERIA_NOTE = Column(Integer)
+    CRITERIA_COMMENT = Column(TEXT)
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CRITERIA")
+
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE=None, CRITERIA_NOTE=None, CRITERIA_COMMENT=None):
+        self.DEPOSIT_BOX = DEPOSIT_BOX
+        self.DEPOSIT_STU = DEPOSIT_STU
+        self.CRITERIA = CRITERIA
+        self.CRITERIA_DATE = CRITERIA_DATE
+        self.CRITERIA_NOTE = CRITERIA_NOTE
+        self.CRITERIA_COMMENT = CRITERIA_COMMENT
+
+    def __repr__(self):
+        return "<PeersEvaluationMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s CRITERIA=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.CRITERIA)
+
+
+class PeersSelfEvaluationNoteMySQL(Base):
+    __tablename__ = "peers_self_evaluation_note_mysql"
+
+    PKEY = Column(Integer, primary_key=True, autoincrement=True)
+    DEPOSIT_BOX = Column(String(50))
+    DEPOSIT_STU = Column(String(50))
+    NOTE = Column(Float)
+    UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
+
+    def __init__(self, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
+        self.DEPOSIT_BOX = DEPOSIT_BOX
+        self.DEPOSIT_STU = DEPOSIT_STU
+        self.NOTE = NOTE
+
+    def __repr__(self):
+        return "<PeersEvaluationNoteMySQL DEPOSIT_BOX=%s DEPOSIT_STU=%s NOTE=%s>" % (self.DEPOSIT_BOX, self.DEPOSIT_STU, self.NOTE)
+
+
 class PeersAverageMySQL(Base):
     __tablename__ = "peers_average_mysql"
 

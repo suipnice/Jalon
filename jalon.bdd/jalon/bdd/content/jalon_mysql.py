@@ -264,6 +264,17 @@ def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, 
     session.commit()
 
 
+def setSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
+    session.add(tables.PeersSelfEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
+    session.commit()
+
+
+def getSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU):
+    PSE = aliased(tables.PeersSelfEvaluationMySQL)
+    self_evaluation = session.query(PSE.CRITERIA, PSE.CRITERIA_NOTE, PSE.CRITERIA_COMMENT).filter(PSE.DEPOSIT_BOX == DEPOSIT_BOX, PSE.DEPOSIT_STU == DEPOSIT_STU)
+    return self_evaluation
+
+
 def setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE):
     insert = True
     PEN = aliased(tables.PeersEvaluationNoteMySQL)
@@ -274,6 +285,17 @@ def setPeerEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE
     if insert:
         session.add(tables.PeersEvaluationNoteMySQL(DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, NOTE))
     session.commit()
+
+
+def setSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU, NOTE):
+    session.add(tables.PeersSelfEvaluationNoteMySQL(DEPOSIT_BOX, DEPOSIT_STU, NOTE))
+    session.commit()
+
+
+def getSelfEvaluationNote(session, DEPOSIT_BOX, DEPOSIT_STU):
+    PSEN = aliased(tables.PeersSelfEvaluationNoteMySQL)
+    peer_evaluation = session.query(PSEN.NOTE).filter(PSEN.DEPOSIT_BOX == DEPOSIT_BOX, PSEN.DEPOSIT_STU == DEPOSIT_STU)
+    return peer_evaluation
 
 
 def getPeerEvaluation(session, DEPOSIT_BOX, DEPOSIT_STU):
@@ -292,9 +314,15 @@ def getPeerEvaluationsNotes(session, DEPOSIT_BOX, CORRECTED_STU):
 
 def getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU):
     PA = aliased(tables.PeersAverageMySQL)
-    peer_average = session.query(PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE, PA.CRITERIA_VALUE, PA.CRITERIA_NOTE_T, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU)
+    peer_average = session.query(PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_AVERAGE, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU)
     #return convertirResultatBDD(peer_evaluation)
     return peer_average
+
+
+def getCriteriaAverage(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA):
+    PA = aliased(tables.PeersAverageMySQL)
+    criteria_average = session.query(PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU, PA.CRITERIA == CRITERIA)
+    return criteria_average
 
 
 def getEvaluationByCorrectedSTU(session, DEPOSIT_BOX, CORRECTED_STU):
@@ -342,6 +370,12 @@ def updateAveragePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_CODE
     session.commit()
 
 
+def deleteAverageByDepositBox(session, DEPOSIT_BOX):
+    session.execute("delete from peers_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.flush()
+    session.commit()
+
+
 def setEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION):
     session.add(tables.PeersEvaluationAverageMySQL(DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIFICATION))
     session.commit()
@@ -353,6 +387,12 @@ def updateEvaluationAverage(session, DEPOSIT_BOX, DEPOSIT_STU, AVERAGE, IS_VERIF
     for line in peer_average:
         line.AVERAGE = AVERAGE
         line.IS_VERIFICATION = IS_VERIFICATION
+    session.commit()
+
+
+def deleteEvaluationsAverageByDepositBox(session, DEPOSIT_BOX):
+    session.execute("delete from peers_evaluation_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.flush()
     session.commit()
 
 
@@ -392,15 +432,31 @@ def getInfoCriteriaNotes(session, DEPOSIT_BOX):
     return evaluations_notes
 
 
-def getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX):
+def getInfoCriteriaNoteByDepositStu(session, DEPOSIT_BOX, CHECK=None):
     PA = aliased(tables.PeersAverageMySQL)
-    evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
-    #return convertirResultatBDD(peers_average)
+    if not CHECK:
+        evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX)
+    else:
+        if CHECK != 1:
+            evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.CRITERIA_CODE <> 1)
+        if CHECK == 1:
+            evaluations_notes = session.query(PA.DEPOSIT_STU, PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.CRITERIA_CODE == 1)
     return evaluations_notes
 
 
-def getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX):
+def getInfoEvaluationNoteByDepositStu(session, DEPOSIT_BOX, CHECK=None):
     PEA = aliased(tables.PeersEvaluationAverageMySQL)
-    evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
-    #return convertirResultatBDD(peers_average)
+    if not CHECK:
+        evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX)
+    else:
+        if CHECK == 1:
+            evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == False)
+        if CHECK != 1:
+            evaluations_notes = session.query(PEA.DEPOSIT_STU, PEA.AVERAGE, PEA.IS_VERIFICATION).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == True)
     return evaluations_notes
+
+
+def getEvaluationNoteByDeposiSTU(session, DEPOSIT_BOX, DEPOSIT_STU):
+    PEA = aliased(tables.PeersEvaluationAverageMySQL)
+    evaluation_note = session.query(PEA.AVERAGE).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.DEPOSIT_STU == DEPOSIT_STU)
+    return evaluation_note

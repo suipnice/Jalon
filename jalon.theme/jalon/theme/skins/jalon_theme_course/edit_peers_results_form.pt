@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Afficher les résultats des évaluations</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-modifDepot" method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_peers_results_access_script">
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="results_access context/getAccesEvaluation">
+
+            <legend>Autoriser la consultations les résultats des évaluations</legend>
+
+            <p class="text-justify" i18n:translate="">
+                Une fois la consultation des résultats autorisée, les étudiants pourront consulter les résultats de leurs évaluations. Chaque étudiant pourra consulter pour le devoir qu'il a déposé la note qu'il a obtenu, le détail des notes de chaque critère et les commentaires associés. Les notes données par les étudiants et les commentaires associés sont anonymisés.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="results_access"
+                       value="1" id="results_access_autoriser"
+                       tal:attributes="checked python:context.test(results_access, 'checked', '')"/>
+                <label for="results_access_autoriser"
+                       class="success"
+                       i18n:translate="">Autoriser</label>
+                <input type="radio" name="results_access"
+                       value="0" id="results_access_interdire"
+                       tal:attributes="checked python:context.test(results_access, '', 'checked')"/>
+                <label for="results_access_interdire"
+                       class="warning"
+                       i18n:translate="">Interdire</label>
+            </div>
+
+        </fieldset>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>
