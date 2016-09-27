@@ -1,15 +1,16 @@
-## Controller Python Script "add_course_map_item_script"
+## Controller Python Script "edit_course_map_item_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Ajoute un élément au plan intéractif
+##title=Edite un élément du plan interactif
 ##
 from DateTime import DateTime
 
 now = DateTime()
+# context = context
 form = context.REQUEST.form
 
 if not form.has_key("item_id"):
