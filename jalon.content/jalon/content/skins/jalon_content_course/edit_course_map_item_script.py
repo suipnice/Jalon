@@ -20,7 +20,9 @@ if not form.has_key("item_id"):
 else:
     item_display_in_course_map = True if form.has_key("display_in_plan") else False
     context.editCourseMapItem(form["item_id"], form["title"], item_display_in_course_map)
-
+    if form["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+        activite = getattr(context, form["item_id"])
+        activite.setProperties({"Title": form["title"]})
 context.setCourseProperties({"DateDerniereModif": DateTime()})
 
 return "%s/display_course_map_page" % context.absolute_url()

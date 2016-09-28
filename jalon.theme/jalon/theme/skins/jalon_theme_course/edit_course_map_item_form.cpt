@@ -12,7 +12,9 @@
                         item_type request/item_type | nothing;
                         item_id request/item_id | nothing;
                         my_form python:context.getCourseMapItemForm(item_type=item_type, item_id=item_id)">
-
+<!--
+        Modification des informations d'un element du cours Jalon
+-->
     <h2>
         <tal:replace replace="my_form/form_title_text"/>
         <tal:replace replace="my_form/form_title_type"/>
@@ -62,10 +64,12 @@
         </tal:condition>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="validate_key" 
+        <input type="hidden" name="validate_key"
                tal:attributes="value my_form/validate_key"/>
         <input type="hidden" name="item_type"
                tal:attributes="value my_form/item_type"/>
+        <input type="hidden" name="typeElement"
+               tal:attributes="value my_form/typeElement"/>
         <input type="hidden" name="item_id"
                tal:attributes="value my_form/item_id"
                tal:condition="not:my_form/is_add_form"/>

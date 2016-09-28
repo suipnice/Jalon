@@ -128,7 +128,7 @@ class JalonActivity(SimpleItem):
         return documents_list
 
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
-        """get Item Actions."""
+        """Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
         LOG.info("----- getItemActions -----")
         item_actions = course_parent._item_actions[:]
 
@@ -137,8 +137,11 @@ class JalonActivity(SimpleItem):
         else:
             del item_actions[1]
 
+        # Retire l'option "supprimer"
         del item_actions[-1]
+        # Retire l'option "jalonner"
         del item_actions[-2]
+        # Retire l'option "modifier"
         del item_actions[-2]
 
         return item_actions

@@ -221,6 +221,7 @@ class CourseView(BrowserView):
         return my_view
 
     def getCourseItemAdderList(self, course_link, course_path, portal):
+        """Fournit la liste des types d'elements a ajouter dans un cours Jalon."""
         item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path, portal)
         return [{"menu_adder_class":         "button small course-title dropdown",
                  "menu_adder_data-dropdown": "add-title-text",
@@ -249,6 +250,7 @@ class CourseView(BrowserView):
                  "menu_adder_items":         item_adder_list["add"]}]
 
     def getCourseItemAdderMenuList(self, course_link, course_path, portal):
+        """Fournit la liste des liens permettant d'ajouter des elements dans un cours Jalon."""
         portal_link = portal.absolute_url()
         my_space = portal.portal_jalon_properties.getPropertiesMonEspace()
 

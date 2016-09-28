@@ -367,6 +367,7 @@ class JalonCours(ATFolder):
         return last_login
 
     def getCourseItemProperties(self, key=None):
+        """Fournit les propriétés d'un element du cours."""
         # LOG.info("----- getCourseItemProperties -----")
         # LOG.info("***** item_id : %s" % key)
         if key:
@@ -374,6 +375,7 @@ class JalonCours(ATFolder):
         return self._elements_cours
 
     def setCourseItemsProperties(self, elements_cours):
+        """Définit les propriétés d'un element du cours."""
         # LOG.info("----- setCourseItemsProperties -----")
         if type(self._elements_cours).__name__ != "PersistentMapping":
             self._elements_cours = PersistentDict(elements_cours)
@@ -780,6 +782,7 @@ class JalonCours(ATFolder):
                 "portal":               self.portal_url.getPortalObject()}
 
     def getCourseMapItemForm(self, item_type, item_id):
+        """Fournit les infos pour le formulaire de creation/modification d'un element du cours."""
         # LOG.info("----- getCourseMapItemForm -----")
         if not item_type:
             item_properties = self.getCourseItemProperties(item_id)
@@ -804,6 +807,8 @@ class JalonCours(ATFolder):
             form_properties["validate_key"] = "edit_course_map_item"
 
             form_properties["item_title"] = item_properties["titreElement"]
+            form_properties["typeElement"] = item_properties["typeElement"]
+
             if item_properties["typeElement"] in self._type_folder_my_space_dict.keys():
                 form_properties["item_title_in_my_space"] = item_properties["titreElement"]
                 if "titreElementMonEspace" in item_properties:
@@ -978,6 +983,7 @@ class JalonCours(ATFolder):
         return item_jalonner
 
     def getItemActions(self, item_properties, is_display_item_bool):
+        """Fournit la liste des actions possibles pour l'item "item_properties"."""
         # LOG.info("----- getItemActions -----")
         item_actions = self._item_actions[:]
 
@@ -987,11 +993,14 @@ class JalonCours(ATFolder):
             del item_actions[1]
 
         if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "Titre", "TexteLibre"]:
+            # Retire l'option "détacher"
             del item_actions[-2]
         else:
+            # Retire l'option "supprimer"
             del item_actions[-1]
 
         if item_properties["typeElement"] in ["AutoEvaluation", "Examen"]:
+            # Retire l'option "supprimer"
             del item_actions[-1]
 
         return item_actions
@@ -1421,6 +1430,7 @@ class JalonCours(ATFolder):
             self.setCourseItemsProperties(items_properties)
 
     def addCourseActivity(self, user_id, activity_type, activity_title, activity_description, map_position):
+        """Ajoute une activité dans le cours."""
         # LOG.info("----- addCourseActivity -----")
         activity_dict = self._activity_dict[activity_type]
         activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
@@ -1458,6 +1468,7 @@ class JalonCours(ATFolder):
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def editCourseMapItem(self, item_id, item_title, display_item_in_course_map):
+        """Modifie le titre d'un element existant du plan de cours."""
         # LOG.info("----- editCourseMapItem -----")
         item_properties = self.getCourseItemProperties(item_id)
 
