@@ -53,7 +53,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getTypeWims",
                 searchable=False,
                 widget=StringWidget(label=_(u"Type de l'activité"),
-                                    description=_(u"Description du type de l'objet JalonCoursWims (feuille (AutoEvaluation) ou Examen)"),
+                                    description=_(u"Type de l'objet JalonCoursWims (feuille (Entrainement) ou Examen)"),
                                     )
                 ),
     StringField("idFeuille",
@@ -61,7 +61,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getIdFeuille",
                 searchable=False,
                 widget=StringWidget(label=_(u"Identifiant Wims de la feuille"),
-                                    description=_(u"Description de l'identifiant Wims de la feuille"),
+                                    description=_(u"Numero de la feuille sur WIMS"),
                                     )
                 ),
     StringField("idExam",
@@ -69,7 +69,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getIdExam",
                 searchable=False,
                 widget=StringWidget(label=_(u"Identifiant Wims de l'examen"),
-                                    description=_(u"Description de l'identifiant Wims de l'examen"),
+                                    description=_(u"Numero de l'examen sur WIMS"),
                                     )
                 ),
     StringField("note_max",
@@ -227,11 +227,21 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def __init__(self, *args, **kwargs):
         """Initialize JalonCoursWims."""
+        LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
 
     # #-------------------# #
     #  Fonctions générales  #
     # #-------------------# #
+
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        """addMySpaceItem."""
+        item = super(JalonCoursWims, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
+        if folder_object.getId() == "Wims":
+            i=1
+        else:
+            self.addItemProperty(item["item_id_no_dot"], item["item_type"], item["item_title"], user_id, display_item, item["item_complement"])
+
     def getDisplayProfile(self, profile_id=None):
         """get Display Profile."""
         LOG.info("----- getDisplayProfile -----")
@@ -257,9 +267,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # return self._infos_element.keys()
         return self.getListeSujets()
 
-
     def setDocumentsProperties(self, infos_element):
         """Set Documents Properties."""
+        LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -272,7 +282,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     """
     def afficherRessource(self, idElement, dateAffichage, attribut):
-        \"""Modifie les dates de la ressource pour activer/desactiver son affichage.\"""
+        #""Modifie les dates de la ressource pour activer/desactiver son affichage.""
         # On agit directement sur l'activité
         if idElement == self.getId():
 
@@ -379,7 +389,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.reindexObject()
 
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        u\"""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen.\"""
+        # u""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen.""
         menu = "sujets"
         rep = {"Image"                      : "Fichiers",
                "File"                       : "Fichiers",
@@ -467,7 +477,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
 
     def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        \"""ajouterInfosElement.\"""
+        # ajouter Infos Element.
         infos_element = copy.deepcopy(self.getInfosElement())
         if idElement not in infos_element:
             infos_element[idElement] = {"titreElement": titreElement,
@@ -492,6 +502,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         utile pour empecher l'affichage des activités vides par exemple
 
         """
+        LOG.info("----- autoriser_Affichage -----")
         listeExos = self.getListeExercices()
         if not listeExos:
             return {"val": False, "reason": "listeExos"}
@@ -526,6 +537,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # TODO
 
         """
+        LOG.info('----- getAllNotes -----')
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
         # Cas des Autoevaluations activées:
@@ -536,6 +548,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getClasse(self):
         u"""retourne l'identifiant de la classe du cours associée à l'auteur de cette activite."""
+        LOG.info('----- getClasse -----')
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
         idClasse = None
@@ -556,8 +569,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Exemple : AutoEvaluation-bado-20140910153227291052
 
         """
+        LOG.info('----- getCreateur -----')
         identifiant = self.getId().split("-")
-        LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
+        # LOG.info('*** len(identifiant)= %s ***' % len(identifiant))
         if len(identifiant) > 1:
             return identifiant[1]
         else:
@@ -565,6 +579,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def setClasse(self):
         u"""crée une classe associée au cours dans le groupe de classes de l'auteur de cette activite."""
+        LOG.info('----- setClasse -----')
+
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
         idClasse = None
@@ -603,6 +619,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getDisplayLang(self):
         """retourne la langue de l'exercice, dans un format affichable, ainsi qu'un code d'icone de drapeau."""
+        LOG.info('----- getDisplayLang -----')
         icone = code_langue = self.getWims_lang()
         if icone == "en":
             icone = "gb"
@@ -616,6 +633,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # utile pour les duplicatas par exemple.
 
         """
+        LOG.info('----- getDicoProperties -----')
         dico = {"Title": self.Title(),
                 "Description": self.Description(),
                 "InfosElement": copy.deepcopy(self.getInfosElement()),
@@ -695,7 +713,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         return len(self.getListeExercices())
 
     def getListeAttribut(self, attribut):
-        """getListeAttribut."""
+        """get Liste Attribut."""
         LOG.info("----- getListeAttribut -----")
         return self.__getattribute__("liste%s" % attribut.capitalize())
 
@@ -1316,7 +1334,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         LOG.info("----- setProperties -----")
         auteur = self.getCreateur()
 
-        # Cas où la feuille existe déjà
+        # Cas où la feuille existe déjà sur WIMS
         if self.idFeuille:
             proprietes = {}
             proprietes["qclass"] = self.getClasse()
@@ -1413,5 +1431,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                        "affElement": dicoElements[idElement]["affElement"],
                                        "masquerElement": dicoElements[idElement]["masquerElement"]}
             self.setInfosElement(dico)
+
 
 registerATCT(JalonCoursWims, PROJECTNAME)

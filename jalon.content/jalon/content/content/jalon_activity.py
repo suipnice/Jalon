@@ -80,7 +80,11 @@ class JalonActivity(SimpleItem):
             deposit_box_related.append(item_object)
             self.setRelatedItems(deposit_box_related)
 
-        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+        return {"item_id_no_dot":  item_id_no_dot,
+                "item_type":       item_type,
+                "item_title":      item_object.Title(),
+                "item_complement": complement_element}
+        # self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
         LOG.info("----- addItemProperty -----")

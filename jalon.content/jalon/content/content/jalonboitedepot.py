@@ -3,7 +3,7 @@
 from zope.interface import implements
 
 from Products.Archetypes.public import *
-#from Products.ATExtensions.ateapi import *
+# from Products.ATExtensions.ateapi import *
 
 from Products.ATContentTypes.content.folder import ATFolder, ATFolderSchema
 from Products.ATContentTypes.content.base import registerATCT
@@ -68,13 +68,13 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                 required=False,
                 accessor="getDateMasq",
                 searchable=False,
-                widget=StringWidget(label=_(u"Profile de la boite de dépots"),)),
+                widget=StringWidget(label=_(u"Date de masquage de la boite de dépôts"),)),
     StringField("profile",
                 required=False,
                 accessor="getProfile",
                 default="standard",
                 searchable=False,
-                widget=StringWidget(label=_(u"Date d'affichage de la boite de dépôts"),)),
+                widget=StringWidget(label=_(u"Profil de la boite de dépots"),)),
     BooleanField("correctionIndividuelle",
                  required=False,
                  accessor="getCorrectionIndividuelle",
@@ -159,8 +159,7 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
 
 
 class JalonBoiteDepot(JalonActivity, ATFolder):
-    """ Une boite de dépôts pour Jalon
-    """
+    u"""Une boite de dépôts pour Jalon."""
 
     implements(IJalonBoiteDepot)
     meta_type = 'JalonBoiteDepot'
@@ -187,9 +186,15 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def __init__(self, *args, **kwargs):
         super(JalonBoiteDepot, self).__init__(*args, **kwargs)
 
-    ##-------------------##
-    # Fonctions générales #
-    ##-------------------##
+    # #-------------------# #
+    #  Fonctions générales  #
+    # #-------------------# #
+
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        """addMySpaceItem."""
+        item = super(JalonBoiteDepot, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
+        self.addItemProperty(item["item_id_no_dot"], item["item_type"], item["item_title"], user_id, display_item, item["item_complement"])
+
     def getDisplayProfile(self, profile_id=None):
         LOG.info("----- getDisplayProfile -----")
         deposit_box_profil = profile_id or self.getProfile() or "standard"
@@ -344,9 +349,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                  "deposit_box_profile_value":   "pairs",
                  "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
 
-    ##-----------------------##
-    # Fonctions onglet Dépots #
-    ##-----------------------##
+    # #-----------------------# #
+    #  Fonctions onglet Dépots  #
+    # #-----------------------# #
+
     def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id, is_evaluation_by_peers):
         LOG.info("----- addDepositFile -----")
         if is_evaluation_by_peers:
@@ -1031,9 +1037,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         self.reindexObject()
     """
 
-    ##----------------------------##
-    # Fonctions onglet Compétences #
-    ##----------------------------##
+    # #----------------------------# #
+    #  Fonctions onglet Compétences  #
+    # #----------------------------# #
     def getOrdreCompetences(self):
         ordre = self._competences.keys()
         ordre.sort(lambda x, y: cmp(int(x), int(y)))
@@ -1297,9 +1303,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         fp.close()
         return {"length": str(os.stat(path)[6]), "data": data}
 
-    ##------------------------##
-    # Évaluation par les pairs #
-    ##------------------------##
+    # #------------------------# #
+    #  Évaluation par les pairs  #
+    # #------------------------# #
     def isEvaluationByPeers(self):
         LOG.info("----- isEvaluationByPeers -----")
         return True if self.getProfile() == "pairs" else False
@@ -1873,9 +1879,9 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         # En profil évaluation par les pairs la date de correction est obligatoire
         return False if date_correction <= now else True
 
-    ##-----------------------------##
-    # Fonctions appel à jalon_utils #
-    ##-----------------------------##
+    # #-----------------------------# #
+    #  Fonctions appel à jalon_utils  #
+    # #-----------------------------# #
     def test(self, condition, valeurVrai, valeurFaux):
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
