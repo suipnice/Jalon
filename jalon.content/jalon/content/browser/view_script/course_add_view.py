@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Vue du template "jalon/theme/browser/view_template/jalon_course/course_add_view.pt"."""
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
 
@@ -7,8 +8,7 @@ LOG = getLogger('[CourseAddView]')
 
 
 class CourseAddView(MySpaceView):
-    """ Class View du fichier course_add_view.pt
-    """
+    """Class View du fichier course_add_view.pt."""
 
     _course_add_dict = {"mes_fichiers":                 {"folder_id":            "Fichiers",
                                                          "macro_file":           "add_course_files_macro",
@@ -55,6 +55,7 @@ class CourseAddView(MySpaceView):
         return portal_state.anonymous()
 
     def getCourseAddView(self, user, course_path):
+        """Fournit les infos d'ajout d'un element dans le cours."""
         LOG.info("----- getCourseAddView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
@@ -106,6 +107,7 @@ class CourseAddView(MySpaceView):
                 "course_map_form":      course_map_form,
                 "is_display_hide":      course_add_dict["is_display_hide"],
                 "folder_id":            course_add_dict["folder_id"],
+                "folder_link":          folder.absolute_url(),
                 "course_link":          course_object.absolute_url(),
                 "course_add_js":        course_add_js}
 
