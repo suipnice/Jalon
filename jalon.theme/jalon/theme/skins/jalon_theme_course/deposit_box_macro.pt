@@ -225,7 +225,7 @@
             <strong>Évaluations à vérifier :</strong>
             <tal:replace replace="evaluation_by_peers_dict/verif_evaluations_notes"/>
         </div>
-        <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes</h2>
+        <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes sur 20</h2>
         <div class="panel callout radius">
             <strong>Note minimale :</strong>
             <tal:replace replace="evaluation_by_peers_dict/evaluations_notes_min"/>
@@ -245,19 +245,30 @@
                  tal:condition="not:has_notes">
                 Aucune note n'est actuellement disponible pour ce critère.
             </div>
-            <tal:condition condition="has_notes">
-            <div class="panel callout radius"
-                 tal:define="criteria_notes python:evaluation_by_peers_dict['criteria_notes_dict'][index]">
-                <strong>Note minimale :</strong>
-                <tal:replace replace="criteria_notes/min"/>
-                <br/>
-                <strong>Note maximale :</strong>
-                <tal:replace replace="criteria_notes/max"/>
-                <br/>
-                <strong>Moyenne :</strong>
-                <tal:replace replace="criteria_notes/avg"/>
+            <div class="row"
+                 tal:condition="has_notes">
+                <div class="small-12 medium-6 columns">
+                    <div class="panel callout radius"
+                         tal:define="criteria_notes python:evaluation_by_peers_dict['criteria_notes_dict'][index]">
+                        <strong>Note minimale :</strong>
+                        <tal:replace replace="criteria_notes/min"/>
+                        <br/>
+                        <strong>Note maximale :</strong>
+                        <tal:replace replace="criteria_notes/max"/>
+                        <br/>
+                        <strong>Moyenne :</strong>
+                        <tal:replace replace="criteria_notes/avg"/>
+                    </div>
+                </div>
+                <div class="small-12 medium-6 columns">
+                    <dl class="deflist">
+                        <dt>Nombre de points</dt>
+                        <dd tal:content="criteria/notation" />
+                        <dt>Coefficient</dt>
+                        <dd tal:content="criteria/coefficient" />
+                    </dl>
+                </div>
             </div>
-            </tal:condition>
             </tal:define>
         </tal:repeat>
     </form>
