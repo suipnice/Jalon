@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Calculer les moyennes</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <form id="js-modifDepot" method="post"
+          tal:attributes="action string:${context/absolute_url}/average_deposit_file_script">
+
+        <fieldset class="panel bkgrnd radius">
+
+            <legend>Calculer les moyennes des évaluations</legend>
+
+            <p class="text-justify" i18n:translate="">
+                Cette opération n'est réalisable qu'une fois la "date limite d'évaluation" dépassée. Pour chaque étudiant, une moyenne sera calculé pour chaque critère et une note sur 20. Lors du calcul de la moyenne d'un critère, la meilleure note que l'étudiant aura obtenu sur le critère sera comparé à la moins bonne note qu'il a obtenu sur ce même critère. Si l'écart entre ces deux note est supérieure ou égale à la marge du critère l'évaluation de cet étudiant vous sera signalé "<i class="fa fa-exclamation-triangle alert"></i> à vérifier"
+            </p>
+
+        </fieldset>
+
+        <div class="panel radius callout">
+            Pour réaliser le calcul des moyennes, cliquez sur <strong>"Moyenne"</strong>. Ce calcul n'est possible qu'une seule fois. Il sera automatiquement refait en cas de modification du coefficient d'un critère.
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-calculator"></i>
+                <tal:block i18n:translate="">Moyenne</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

@@ -1321,11 +1321,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
 
             evaluation_by_peers_dict["options"] = [{"text": "Affecter",
-                                                    "link": "%s/affect_deposit_file_script" % deposit_box_link,
+                                                    "link": "%s/affect_deposit_file_form" % deposit_box_link,
                                                     "icon": "fa fa-rss fa-fw"},
                                                    {"text": "Moyenne",
-                                                    "link": "%s/average_deposit_file_script" % deposit_box_link,
-                                                    "icon": "fa fa-calculator fa-fw"}]
+                                                    "link": "%s/average_deposit_file_form" % deposit_box_link,
+                                                    "icon": "fa fa-calculator fa-fw"},
+                                                   {"text": "Résultats",
+                                                    "link": "%s/edit_peers_results_form" % deposit_box_link,
+                                                    "icon": "fa-trophy"}]
 
             #if not evaluation_by_peers_dict["criteria_dict"]:
             #    evaluation_by_peers_dict["grid_button"] = "fa fa-plus-circle fa-lg fa-fw"
