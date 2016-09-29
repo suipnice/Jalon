@@ -4,6 +4,8 @@ from zope.component import getMultiAdapter
 from course_view import CourseView
 from jalon.content import contentMessageFactory as _
 
+from DateTime import DateTime
+
 from logging import getLogger
 LOG = getLogger('[DepositBoxView]')
 
@@ -163,6 +165,11 @@ class DepositBoxView(CourseView):
                                                 "icon":  "fa fa-user fa-fw no-pad",
                                                 "text":  "Autoriser l'auto-évaluation",
                                                 "value": my_deposit_box.getDisplayAuthorizeSelfEvaluation()}]
+            my_view["is_correction_actif"] = True
+            now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+            date_correction = DateTime(my_deposit_box.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+            if now >= date_correction:
+                my_view["is_correction_actif"] = False
 
             if my_view["accessSelfEvaluation"]:
                 self_evaluation_note = my_deposit_box.portal_jalon_bdd.getSelfEvaluationNote(my_view["deposit_box_id"], user_id).first()
