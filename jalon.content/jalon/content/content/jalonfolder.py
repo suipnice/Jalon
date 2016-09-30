@@ -396,6 +396,7 @@ class JalonFolder(ATFolder):
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseWimsActivity(user_id, course_id)
 
+    """
     def getMesCoursView(self, user, tab=None):
         #LOG.info("----- getMesCoursView -----")
 
@@ -468,7 +469,6 @@ class JalonFolder(ATFolder):
 
     def getListeCoursEns(self, member, onglet):
         #LOG.info("----- getListeCoursEns -----")
-        """ Renvoi la liste des cours pour authMember."""
         courses_list = []
         courses_ids_list = []
         courses_list_filter = []
@@ -759,6 +759,7 @@ class JalonFolder(ATFolder):
             listeCours.sort(lambda x,y: cmp(x["auteur"], y["auteur"]))
             listeDiplome.append({"listeCours": listeCours})
         return listeDiplome
+    """
 
     def getClefsDico(self, dico):
         return jalon_utils.getClefsDico(dico)

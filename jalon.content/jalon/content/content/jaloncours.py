@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ L'objet "Cours" de Jalon."""
 from zope.interface import implements
+from zope.component import getMultiAdapter
 
 from Products.Archetypes.public import *
 
@@ -347,17 +348,28 @@ class JalonCours(ATFolder):
         #LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
         if self.getLibre():
             return True
+
         if user.has_role(["Manager", "Owner"]):
             return True
+
+        user_id = user.getId()
         if user.has_role(["Personnel", "Secretaire"]):
-            user_id = user.getId()
             if self.isAuteurs(user_id):
                 return True
             if self.isCoLecteurs(user_id):
                 return True
-        if not self.getId() in request.SESSION.get("course_authorized_list", []):
+
+        course_authorized_list = request.SESSION.get("course_authorized_list", None)
+        if course_authorized_list is None:
+            portal = self.portal_url.getPortalObject()
+            my_courses = getattr(portal.cours, user_id)
+            view = getMultiAdapter((my_courses, request), name="mes_cours_view")
+            view.getStudentCoursesList(user, "1", my_courses, False)
+            course_authorized_list = request.SESSION.get("course_authorized_list", [])
+
+        if not self.getId() in course_authorized_list:
             request.RESPONSE.redirect("%s/insufficient_privileges" % self.absolute_url())
-        #return True
+        return True
 
     def getLastLogin(self):
         LOG.info("----- getLastLogin -----")
