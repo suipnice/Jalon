@@ -1815,6 +1815,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         for average in criteria_average_list:
             LOG.info("***** average : %s" % str(average))
             criteria_data = criteria_dict[average[1]]
+            if not average[0] in is_verification_evaluation:
+                is_verification_evaluation[average[0]] = False
             if average[2] < correction_number:
                 criteria_code = 2
                 criteria_value = average[3]
@@ -1826,7 +1828,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             else:
                 criteria_code = 1
                 criteria_value = None
-                is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
             jalon_bdd.setAveragePeer(self.getId(), average[0], average[1], criteria_code, criteria_value, "%.2f" % float(average[2]), 0, "")
