@@ -12,4 +12,8 @@ form = context.REQUEST.form
 
 context.setEvaluatePeer(form)
 
-context.REQUEST.RESPONSE.redirect("%s?tab=peers" % context.absolute_url())
+redirection = "%s?tab=peers" % context.absolute_url()
+if "teacher" in form:
+    redirection = "%s/deposit_box_details_evaluations_view" % context.absolute_url()
+
+context.REQUEST.RESPONSE.redirect(redirection)
