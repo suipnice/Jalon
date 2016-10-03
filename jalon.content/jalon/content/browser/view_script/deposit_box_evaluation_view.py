@@ -82,8 +82,8 @@ class DepositBoxEvaluationView(BrowserView):
             my_view["peer_average"] = {}
             average_list = jalon_bdd.getPeerAverage(deposit_box_id, student_id)
             for ligne in average_list.all():
-                criteria_state = True if ligne[2] else False
-                my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[2], "criteria_comment": ligne[-1]}
+                criteria_state = True if ligne[2] != 1 else False
+                my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[1], "criteria_comment": ligne[-1]}
 
             my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()

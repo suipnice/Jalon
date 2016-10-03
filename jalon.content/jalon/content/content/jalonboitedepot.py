@@ -1629,7 +1629,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_avg = {}
         evaluation_number = self.getNombreCorrection()
         for average_dict in average.all():
-            LOG.info("***** average_dict : %s" % str(average_dict[0]))
+            LOG.info("***** average_dict : %s" % str(average_dict))
             criteria_error = False
             criteria_text = ""
             criteria_style = ""
@@ -1648,7 +1648,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                              "criteria_error":   criteria_error,
                                              "criteria_style":   criteria_style,
                                              "criteria_text":    criteria_text,
-                                             "criteria_note":    average_dict[-2],
+                                             "criteria_note":    average_dict[1],
                                              "criteria_comment": average_dict[-1]}
         LOG.info("***** criteria_avg : %s" % str(criteria_avg))
 
@@ -1814,6 +1814,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
         for average in criteria_average_list:
             LOG.info("***** average : %s" % str(average))
+            criteria_code = 1
+            criteria_value = None
             criteria_data = criteria_dict[average[1]]
             if not average[0] in is_verification_evaluation:
                 is_verification_evaluation[average[0]] = False
@@ -1825,9 +1827,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 criteria_code = 3
                 criteria_value = "%s;%s" % (average[-1], average[-2])
                 is_verification_evaluation[average[0]] = True
-            else:
-                criteria_code = 1
-                criteria_value = None
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
             jalon_bdd.setAveragePeer(self.getId(), average[0], average[1], criteria_code, criteria_value, "%.2f" % float(average[2]), 0, "")
