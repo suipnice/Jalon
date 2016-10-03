@@ -240,6 +240,16 @@
         <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
             <tal:define define="criteria python:criteria_dict[index];
                                 has_notes python:index in evaluation_by_peers_dict['criteria_notes_dict']">
+            <tal:condition condition="my_view/is_depot_actif">
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/delete_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-trash-o alert"></i>
+            </a>
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/edit_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-pencil"></i>
+            </a>
+            </tal:condition>
             <tal:condition condition="not:my_view/is_correction_actif">
             <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
                tal:attributes="href string:${my_view/deposit_box_link}/undo_deposit_box_criteria_form?criteria_id=${index}">
