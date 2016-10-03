@@ -155,6 +155,12 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                  default=False,
                  searchable=False,
                  widget=BooleanWidget(label=_(u"Autoriser les étudiants à réaliser une auto-évaluation"),)),
+    BooleanField("affectationEvaluation",
+                 required=False,
+                 accessor="getAffectationEvaluation",
+                 default=False,
+                 searchable=False,
+                 widget=BooleanWidget(label=_(u"Indique si l'affectation des évaluations a été faite."),)),
 ))
 
 
@@ -1521,6 +1527,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         self.setPeersDict(peers_dict)
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
+        self.setAttributActivite({"AffectationEvaluation": True})
 
     def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id=None, deposit_id=None):
         LOG.info("----- getEvaluateDepositFileForm -----")
