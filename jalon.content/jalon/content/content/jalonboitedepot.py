@@ -614,6 +614,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
 
+    def isFinishEvaluation(self):
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        return True if now > self.getDateCorrection() else False
+
     def getNbDepots(self, is_personnel, user_id):
         LOG.info("----- getNbDepots -----")
         if not is_personnel and not self.getAccesDepots():

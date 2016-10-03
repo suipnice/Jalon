@@ -7,14 +7,20 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="is_finish_evaluation context/isFinishEvaluation">
 
     <h2 i18n:translate="">
         <tal:block i18n:translate="">Calculer les moyennes</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+    <div class="panel warning radius"
+         tal:condition="not:is_finish_evaluation">
+        <strong><i class="fa fa-info-circle"></i> Attention :</strong> Les moyennes ne peuvent être calculée qu'une fois la date limite d'évaluation dépassée.
+    </div>
     <form id="js-modifDepot" method="post"
-          tal:attributes="action string:${context/absolute_url}/average_deposit_file_script">
+          tal:attributes="action string:${context/absolute_url}/average_deposit_file_script"
+          tal:condition="is_finish_evaluation">
 
         <fieldset class="panel bkgrnd radius">
 
