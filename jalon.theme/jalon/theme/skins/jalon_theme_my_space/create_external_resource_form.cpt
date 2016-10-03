@@ -69,7 +69,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealForm('js-webLinkCreator','reveal-main')" />
+            tal:content="structure string:setRevealForm('js-webLinkCreator','reveal-main')"></script>
 
 </metal:content-core>
 

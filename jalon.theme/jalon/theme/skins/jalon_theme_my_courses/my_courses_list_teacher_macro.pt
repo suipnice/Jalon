@@ -22,7 +22,7 @@
     <table summary="Liste des cours de la catégorie">
         <thead>
             <tr>
-                <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre" 
+                <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre"
                     i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -40,7 +40,7 @@
                         <span class="fa fa-bell-o fa-fw no-pad"></span>
                     </span>
                 </th>
-                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_etu" 
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_etu"
                     title="Trier selon l'accès étudiant" i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -49,7 +49,7 @@
                         <tal:block i18n:translate="">Ac. étu.</tal:block>
                     </span>
                 </th>
-                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_pass" 
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_pass"
                     title="Trier selon l'accès par mot de passe" i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -58,7 +58,7 @@
                         <tal:block i18n:translate="">Ac. pass.</tal:block>
                     </span>
                 </th>
-                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_anon" 
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_anon"
                     title="Trier selon l'accès public" i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -67,7 +67,7 @@
                         <tal:block i18n:translate="">Ac. pub.</tal:block>
                     </span>
                 </th>
-                <th class="action show-for-medium-up has-tip" data-tooltip title="Actions (auteur uniquement)" 
+                <th class="action show-for-medium-up has-tip" data-tooltip title="Actions (auteur uniquement)"
                     i18n:attributes="title">
                     <i class="fa fa-cog fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
                 </th>
@@ -131,9 +131,9 @@
 
     <tal:condition condition="is_ajax">
         <script charset="UTF-8"
-                tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+                tal:content="structure string:$$(document).foundation('reveal', 'reflow')"></script>
         <script charset="UTF-8"
-                tal:content="structure string:$$(document).foundation({dropdown:{align:'left'}})" />
+                tal:content="structure string:$$(document).foundation({dropdown:{align:'left'}})"></script>
 
         <tal:block define="script1 string:setSortableList('js-list-cours',['title','new','acc_etu','acc_pass','acc_anon'],'new','desc');">
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
