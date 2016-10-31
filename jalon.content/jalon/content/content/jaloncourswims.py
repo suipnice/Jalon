@@ -661,6 +661,104 @@ class JalonCoursWims(JalonActivity, ATDocument):
         idgroupement = getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), auteur), "Wims").getComplement()
         return idgroupement
 
+    def updateExercicesList(self, infos_elements):
+        """ Met à jour la liste des exercices coté Jalon en fonction des exercices côté WIMS."""
+        LOG.info("----- updateExercicesList -----")
+
+        listeExercices = list(self.getListeExercices())
+        # infos_elements = self.getDocumentsProperties()
+        portal = self.portal_url.getPortalObject()
+        auteur = self.getCreateur()
+
+        dico = {"job": "getsheet",
+                "code": portal.portal_membership.getAuthenticatedMember().getId(),
+                "qclass": self.setClasse(),
+                "qsheet": self.getIdFeuilleWIMS(auteur)}
+        donnees_feuille = self.wims("callJob", dico)
+        donnees_feuille = self.wims("verifierRetourWims", {"rep": donnees_feuille,
+                                                           "fonction": "jaloncourswims.py/updateExercicesList",
+                                                           "message": "job = getsheet | parametres de la requete : %s" % dico
+                                                           })
+        if donnees_feuille["status"] != "OK":
+            return donnees_feuille
+
+        """for exoID in listeExercices:
+            if exoID.split("-")[0] == "recover":
+                self.retirerElement(exoID, "Exercices")
+        return True
+        """
+
+        # ICI il est impossible de retrouver l'id jalon d'un exercice WIMS.
+        #  La seule chose qu'on peut faire, c'est savoir s'il y en a plus sur WIMS que sur Jalon...
+        nb_jalon = len(listeExercices)
+        nb_wims = 0
+        inner_module = "classes/%s" % self.getWims_lang()
+        """
+        "exolist":[{"module":"U2/analysis/oeffourier.fr",
+                    "title":"in addition de fourier au hasard",
+                    "params":"exo=addfourier2&exo=addfourier1&exo=addfourier4&exo=addfourier3&qnum=1&qcmlevel=3",
+                    "points":"45",
+                    "weight":"2",
+                    "description":"un exo au hasard parmi les additions de fourier"}]
+        """
+        for exo_wims in donnees_feuille["exolist"]:
+            nb_wims += 1
+            if nb_wims > nb_jalon:
+                if exo_wims["module"] == inner_module:
+                    exowimsID = exo_wims["params"]
+                    """if exo_wims["params"] not in listeExercices:
+                            recup_id = "recover-%s-%s" % (auteur, DateTime.DateTime().strftime("%Y%m%d%H%M%S"))
+                    """
+                else:
+                    exowimsID = "recover-%s-%s-%s" % (auteur, DateTime().strftime("%Y%m%d%H%M%S"), nb_wims)
+
+                self.addItemProperty(exowimsID, "Exercice Wims", exo_wims["title"], auteur, "", "", "Exercices")
+            """
+            else:
+                # L'exercice est déja présent dans Jalon
+                idElement = listeExercices[nb_wims - 1]
+                # On met à jour les titres Jalon en fonction des titres WIMS (mais on pourrait plutot faire l'inverse ?)
+                infos_elements[idElement]["titreElement"] = exo_wims["title"]
+            """
+
+    def cleanActivity(self):
+        """ Supprime tout élément indésirable de l'activité (issu de mauvaises manipulations)."""
+        LOG.info("----- cleanActivity -----")
+
+        listeSujets = list(self.getListeSujets())
+        listeExercices = list(self.getListeExercices())
+        infos_elements = self.getDocumentsProperties()
+
+        # 1 Suppression d'eventuels exercices présents dans la liste des sujets
+        for idElement in listeSujets:
+            if idElement in infos_elements:
+                if infos_elements[idElement]["typeElement"] == "Exercice Wims":
+                    listeSujets.remove(idElement)
+
+        # 2 mise à jour de la liste des exercices a partir des infos de WIMS
+        self.updateExercicesList(infos_elements)
+
+        # 3 Suppression d'eventuels elements présents la liste des exos mais qui ne sont pas des exos.
+        for idElement in listeExercices:
+            if idElement in infos_elements:
+                if infos_elements[idElement]["typeElement"] != "Exercice Wims":
+                    listeExercices.remove(idElement)
+
+        # Nettoyage du dico "infos_elements"
+        infos_elements_copy = copy.deepcopy(infos_elements)
+        for idElement in infos_elements_copy:
+            # Suppression d'eventuels elements présents dans infos_elements mais ni dans les sujets ni dans les exos.
+            if (idElement not in listeSujets) and (idElement not in listeExercices):
+                del infos_elements[idElement]
+
+            # Suppression d'eventuels attributs inutiles
+            for useless in ["idElement", "classElement", "iconElement"]:
+                if useless in infos_elements[idElement]:
+                    del infos_elements[idElement][useless]
+
+        setattr(self, "listeSujets", tuple(listeSujets))
+        setattr(self, "listeExercices", tuple(listeExercices))
+
     def displayExercicesList(self):
         """Fournit une liste de couples (ID/titre) des exercices de l'activite."""
         LOG.info("----- displayExercicesList -----")
