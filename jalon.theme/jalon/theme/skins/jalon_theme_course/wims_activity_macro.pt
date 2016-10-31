@@ -114,7 +114,7 @@ En entrée :
 
     <tal:condition condition="not:my_view/is_personnel">
         <tal:comment replace="nothing"><!-- Boutons pour les etudiants --></tal:comment>
-        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
+        <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?mode_etudiant=${mode_etudiant}"
            tal:condition="not:qexam"
            class="button small radius right">
             <span class="inline">
@@ -123,7 +123,7 @@ En entrée :
                 <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
             </span>
         </a>
-        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?mode_etudiant=${mode_etudiant}"
+        <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?mode_etudiant=${mode_etudiant}"
            tal:condition="qexam"
            class="button small radius right">
             <i class="fa fa-play"></i>
@@ -281,7 +281,7 @@ En entrée :
                                 qualite        infosNotes_exo/qualite | string:&#8212;;">
                     <td class="order tdcenter" tal:content="order"/>
                     <td class="title">
-                        <a tal:attributes="href string:${context/absolute_url}/cours_autoevaluation_view?index_exo=${order}&amp;mode_etudiant=${mode_etudiant}"
+                        <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?index_exo=${order}&amp;mode_etudiant=${mode_etudiant}"
                            data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:content="element/titreElement"
                            tal:condition="not:isExam"/>
@@ -478,7 +478,7 @@ En entrée :
                 <i class="fa fa-trophy fa-fw"></i>
                 <tal:block i18n:translate="">Détails des notes :</tal:block>
             </h2>
-            <div class="panel callout radius"
+            <div class="panel warning radius"
                  tal:condition="not:data_scores">
                 <tal:block i18n:translate="">Aucun résultat</tal:block>
             </div>
@@ -644,7 +644,7 @@ En entrée :
              tal:condition="python: is_personnel and not data_scores and not affElement['val'] ">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel callout radius"
+        <div class="panel warning radius"
              tal:condition="not:data_scores">
             <tal:block i18n:translate="">Aucun résultat</tal:block>
         </div>
