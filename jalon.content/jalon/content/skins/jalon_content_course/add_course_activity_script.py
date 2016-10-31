@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Ajoute un élément ou un sous-element au cours
+##title=Ajoute une activité au cours
 ##
 
 form = context.REQUEST.form

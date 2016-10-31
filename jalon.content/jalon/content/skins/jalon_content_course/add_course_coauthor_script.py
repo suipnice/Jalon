@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=
+##title=Ajoute un coauteur au cours
 ##
 
 context.addCoAuteurs(context.REQUEST.form)

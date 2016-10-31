@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=
+##title=Ajoute une annonce au cours
 ##
 
 form = context.REQUEST.form
