@@ -10,6 +10,7 @@ from Products.ATContentTypes.content.document import ATDocument, ATDocumentSchem
 from Products.ATContentTypes.content.base import registerATCT
 from Products.CMFCore.utils import getToolByName
 
+from DateTime import DateTime
 from persistent.dict import PersistentDict
 
 from jalon.content import contentMessageFactory as _
@@ -235,12 +236,103 @@ class JalonCoursWims(JalonActivity, ATDocument):
     # #-------------------# #
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        """addMySpaceItem."""
+        """Ajoute un element de mon espace et met a jour les related items de l'activité et de l'élément."""
         item = super(JalonCoursWims, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
         if folder_object.getId() == "Wims":
-            i=1
+            liste = "Exercices"
+            idClasse = self.getClasse()
+            # A SUPPRIMER :
+            rep_wims = {"status": "OK"}
+            if item_id.startswith("externe-"):
+                item_title = item["item_title"].decode("utf-8")
+                item_object = item['item_object']
+                permalien = item_object.permalink
+                dico = {"job": "putexo", "code": user_id, "qclass": idClasse, "qsheet": self.idFeuille}
+                if permalien != "":
+                    # exemple de permalien : module=U2/analysis/oeffourier.fr&exo=addfourier2,addfourier1,addfourier4,addfourier3&qnum=1&qcmlevel=3
+                    parsed_permalien = permalien.split("&", 1)
+                    if len(parsed_permalien) == 1:
+                        # par defaut, si aucun parametre n'a ete defini, on definie au minima le parametre de sévérité
+                        parsed_permalien.append("qcmlevel=1")
+                    donnees_exercice = u"%s\nparams=%s\npoints=%s\nweight=%s\ntitle=%s\ndescription=%s" % (parsed_permalien[0],
+                                                                                                           parsed_permalien[1],
+                                                                                                           "10",
+                                                                                                           "1",
+                                                                                                           item_title,
+                                                                                                           "")
+                    dico["data1"] = donnees_exercice.encode("utf-8")
+                    rep_wims = self.wims("callJob", dico)
+                else:
+                    rep_wims = '{"status": "ERROR", "message": "pas de permalien pour cet exercice externe"}'
+                rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/addMySpaceItem", "message": "parametres de la requete : %s" % dico})
+
+            # TODO !!! TRAITER les AUTRES CAS.
+
+            if rep_wims['status'] != "OK":
+                portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
+                contact_link = portal_jalon_properties.getLienContact()
+                admin_link = u"%s?subject=[%s] Erreur d'insertion exercice WIMS&amp;body=exercice : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
+                    contact_link["contact_link"], contact_link["portal_title"], item_id)
+                message = _(u'Une erreur est survenue. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter un administrateur</a> svp.' % admin_link)
+                message = "<p>%s</p><p><strong>%s:</strong> %s</p>" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
+                self.plone_utils.addPortalMessage(message, type='error')
+
+                # L'exercice n'est pas ajouté.
+                # LOG.info("\n####### jaloncourswims/addMySpaceItem -- Attention : '%s'\n" % rep_wims['message'])
+                self.detachExercice(item_object)
+                # message = _(u"Une erreur est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.")
+                # message = "%s<br/><strong>%s:</strong>%s" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
+                # self.plone_utils.addPortalMessage(message, type='error')
+                return item
+
         else:
-            self.addItemProperty(item["item_id_no_dot"], item["item_type"], item["item_title"], user_id, display_item, item["item_complement"])
+            liste = "Sujets"
+        """Ajoute l'element à la liste des items de l'activité."""
+        self.addItemProperty(item["item_id_no_dot"], item["item_type"], item["item_title"], user_id, display_item, item["item_complement"], liste)
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element, liste):
+        """Ajoute un element aux liste des items d'une activité."""
+        LOG.info("----- addItemProperty (liste = %s) -----" % liste)
+
+        items_properties = self.getDocumentsProperties()
+        if item_id not in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            # self.setDocumentsProperties(items_properties)
+
+        if liste == "Exercices":
+            listeExercices = list(self.getListeExercices())
+            listeExercices.append(item_id)
+            setattr(self, "listeExercices", tuple(listeExercices))
+            message = _(u"L'exercice '%s' a bien été ajouté." % item_title.decode("utf-8"))
+        else:
+            listeSujets = list(self.getListeSujets())
+            listeSujets.append(item_id)
+            setattr(self, "listeSujets", tuple(listeSujets))
+            message = _(u"'%s' a bien été ajouté aux documents enseignants." % item_title.decode("utf-8"))
+
+        self.plone_utils.addPortalMessage(message, type='success')
+
+    def detachExercice(self, item_object):
+        """Retire l'exercice item_object des related_items de l'activité, et inversement."""
+        LOG.info("----- detachExercice -----")
+
+        item_relatedItems = item_object.getRelatedItems()
+        item_relatedItems.remove(self)
+        item_object.setRelatedItems(item_relatedItems)
+        item_object.reindexObject()
+
+        activity_relatedItems = self.getRelatedItems()
+        activity_relatedItems.remove(item_object)
+        self.setRelatedItems(activity_relatedItems)
+
+        self.reindexObject()
 
     def getDisplayProfile(self, profile_id=None):
         """get Display Profile."""
@@ -494,6 +586,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def authUser(self, quser=None, qclass=None, request=None, session_keep=False):
         """appelle la fonction authUser de jalon_utils (authentifie un user WIMS)."""
+        LOG.info("----- authUser -----")
         return jalon_utils.authUser(self, quser, qclass, request, session_keep)
 
     def autoriser_Affichage(self):
@@ -707,7 +800,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 if exo_wims["module"] == inner_module:
                     exowimsID = exo_wims["params"]
                     """if exo_wims["params"] not in listeExercices:
-                            recup_id = "recover-%s-%s" % (auteur, DateTime.DateTime().strftime("%Y%m%d%H%M%S"))
+                            recup_id = "recover-%s-%s" % (auteur, DateTime().strftime("%Y%m%d%H%M%S"))
                     """
                 else:
                     exowimsID = "recover-%s-%s-%s" % (auteur, DateTime().strftime("%Y%m%d%H%M%S"), nb_wims)
@@ -763,17 +856,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """Fournit une liste de couples (ID/titre) des exercices de l'activite."""
         LOG.info("----- displayExercicesList -----")
 
-        documents_list = []
+        exercices_list = []
         documents_dict = self.getDocumentsProperties()
         for document_id in self.getListeExercices():
             document_properties = documents_dict[document_id]
 
-            document_dict = {"idElement":      document_id,
-                             "titreElement":   document_properties["titreElement"]
-                             }
+            exo_dict = {"idElement":      document_id,
+                        "titreElement":   document_properties["titreElement"]
+                        }
 
-            documents_list.append(document_dict)
-        return documents_list
+            exercices_list.append(exo_dict)
+        return exercices_list
 
     def getInfosListeAttribut(self, attribut, personnel=False):
         u"""renvoit la liste des elements d'une activité WIMS."""
@@ -785,15 +878,19 @@ class JalonCoursWims(JalonActivity, ATDocument):
         for idElement in listeElement:
             infos = infos_element.get(idElement, None)
             if infos:
-                infos["idElement"] = idElement
                 LOG.info("***** attribut = %s" % attribut)
                 LOG.info("***** infos = %s" % infos)
                 affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
                 if personnel or not affElement['val'] == 0:
-                    # infos["affElement"] = affElement
-                    infos["iconElement"] = affElement["icon"],
-                    infos["classElement"] = self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
-                    retour.append(infos)
+                    new = {"idElement":       idElement,
+                           "titreElement":    infos["titreElement"],
+                           "typeElement":     infos["typeElement"].replace(" ", ""),
+                           "createurElement": infos["createurElement"],
+                           "affElement":      affElement,
+                           "iconElement":     affElement["icon"],
+                           "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
+                           }
+                    retour.append(new)
 
         # if retour:
         #    retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
@@ -1368,35 +1465,25 @@ class JalonCoursWims(JalonActivity, ATDocument):
                     objet.setRelatedItems(relatedItems)
                     objet.reindexObject()
 
-    def setAttributActivite(self, form):
-        """modifie les attribut de l'objet jaloncourswims."""
-        LOG.info("----- setAttributActivite -----")
-        for key in form.keys():
-            method_name = "set%s%s" % (key[0].upper(), key[1:])
-            try:
-                self.__getattribute__(method_name)(form[key])
-            except AttributeError:
-                pass
-        if "Title" in form:
-            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
-
-        self.setProperties()
-        self.reindexObject()
-
-    def getIdFeuilleWIMS(self, authMember):
+    def getIdFeuilleWIMS(self, authMember, sheet_properties={}):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
         LOG.info("----- getIdFeuilleWIMS -----")
         idFeuille = self.getIdFeuille()
+        # Cas ou la feuille n'existe pas côté WIMS
         if not idFeuille:
+            # Si sheet_properties n'est pas donné, c'est que l'activité existe côté Jalon mais pas côté WIMS.
+            if "Title" not in sheet_properties:
+                sheet_properties["Title"] = self.Title()
+                sheet_properties["Description"] = self.Description()
             # On crée la classe si elle n'existe pas.
             idclasse = self.setClasse()
             if idclasse:
                 if self.typeWims == "Examen":
-                    sheet_title = "Feuille dediée à l'examen '%s'" % self.Title()
+                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["title"]
                 else:
-                    sheet_title = self.Title()
+                    sheet_title = sheet_properties["Title"]
                 # Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)
-                reponse = self.wims("creerFeuille", {"authMember": authMember, "title": sheet_title, "description": self.Description(), "qclass": idclasse})
+                reponse = self.wims("creerFeuille", {"authMember": authMember, "title": sheet_title, "description": sheet_properties["Description"], "qclass": idclasse})
                 if reponse["status"] != "OK":
                     return None
                 idFeuille = str(reponse["sheet_id"])
@@ -1420,8 +1507,24 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self.reindexObject()
         return dico
 
+    """
+    def setAttributActivite(self, form):
+        # modifie les attribut de l'objet jaloncourswims.
+        LOG.info("----- setAttributActivite -----")
+        for key in form.keys():
+            method_name = "set%s%s" % (key[0].upper(), key[1:])
+            try:
+                self.__getattribute__(method_name)(form[key])
+            except AttributeError:
+                pass
+        if "title" in form:
+            # self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
+            self.aq_parent.editCourseMapItem(self.getId(), form["title"], item_display_in_course_map)
+        self.setProperties()
+        """
+
     def setProperties(self, dico={}):
-        u"""Modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen).
+        u"""Modifie les propriétés de l'objet jalonCoursWims courant, ainsi que son homologue côté WIMS.
 
         # dico est renseigné lors de la création de l'objet. (issu de creerSousObjet de jaloncours)
         # Attention : si on modifie un parametre a l'interieur d'une fonction,
@@ -1431,6 +1534,14 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """
         LOG.info("----- setProperties -----")
         auteur = self.getCreateur()
+
+        # On met à jour les propriétés côté Jalon
+        for key in dico.keys():
+            # method_name = "set%s%s" % (key[0].upper(), key[1:])
+            # self.__getattribute__(method_name)(form[key])
+            self.__getattribute__("set%s" % key)(dico[key])
+
+        # Puis on le fait côté WIMS :
 
         # Cas où la feuille existe déjà sur WIMS
         if self.idFeuille:
@@ -1445,6 +1556,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.wims("modifierFeuille", proprietes)
 
                 proprietes["title"]     = self.Title()
+                LOG.info("proprietes['title']=%s" % proprietes["title"])
                 proprietes["duration"]  = self.duree
                 proprietes["attempts"]  = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
@@ -1458,16 +1570,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 proprietes["title"] = self.Title()
                 self.wims("modifierFeuille", proprietes)
         else:
-            # Cas ou la feuille n'existe pas encore
+            # Cas ou la feuille n'existe pas encore sur WIMS
             # self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
             self.typeWims = self.getId().split("-")[0]
 
-            for key in dico.keys():
-                # ici il faudrait peut etre faire un key.capitalize()
-                self.__getattribute__("set%s" % key)(dico[key])
-
             # On crée la feuille côté WIMS
-            self.getIdFeuilleWIMS(auteur)
+            self.getIdFeuilleWIMS(auteur, dico)
 
         self.reindexObject()
 
@@ -1503,15 +1611,15 @@ class JalonCoursWims(JalonActivity, ATDocument):
         LOG.info("----- wims(%s) -----" % methode)
         return self.portal_wims.__getattribute__(methode)(param)
 
+    """
     def majActiviteWims(self):
-        u"""Mise à jour des activités WIMS.
+        #Mise à jour des activités WIMS.
 
-        Pour utiliser cette fonction :
-        1 - décommenter import ATExtensions puis RecordField infos_element
-        2 - mettre getInfosElement en commentaire
-        3 - appeler cette fonction depuis un script en ZMI
+        #Pour utiliser cette fonction :
+        #1 - décommenter import ATExtensions puis RecordField infos_element
+        #2 - mettre getInfosElement en commentaire
+        #3 - appeler cette fonction depuis un script en ZMI
 
-        """
         LOG.info("----- majActiviteWims -----")
         listeSujets = list(self.getListeSujets())
         listeExercices = list(self.getListeExercices())
@@ -1529,6 +1637,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                        "affElement": dicoElements[idElement]["affElement"],
                                        "masquerElement": dicoElements[idElement]["masquerElement"]}
             self.setInfosElement(dico)
+    """
 
 
 registerATCT(JalonCoursWims, PROJECTNAME)

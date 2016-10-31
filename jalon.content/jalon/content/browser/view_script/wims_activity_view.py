@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """WimsActivityView python Class."""
 # from Products.Five.browser import BrowserView
-from zope.component import getMultiAdapter
+# from zope.component import getMultiAdapter
 from course_view import CourseView
 from jalon.content import contentMessageFactory as _
 
@@ -18,15 +18,8 @@ class WimsActivityView(CourseView):
         CourseView.__init__(self, context, request)
     """
 
-    def isAnonymous(self):
-        """Test if connected user is Anonymous."""
-        LOG.info("----- isAnonymous ? -----")
-        portal_state = getMultiAdapter((self.context, self.request),
-                                       name=u'plone_portal_state')
-        return portal_state.anonymous()
-
     def getIcon(self):
-        """ Returns icon adaptated to activity type (Training or Exam)."""
+        """Return icon adaptated to activity type (Training or Exam)."""
         LOG.info("----- getIcon -----")
         return "fa fa-gamepad no-pad" if self.context.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
 
@@ -63,12 +56,13 @@ class WimsActivityView(CourseView):
         my_view["activity_id"] = my_wims_activity.getId()
         my_view["activity_link"] = my_wims_activity.absolute_url()
         my_view["activity_type"] = my_wims_activity.getTypeWims()
+
         if my_view["activity_type"] == "Examen":
-            my_view["activity_icon"] = self.getIcon()
             my_view["activity_link_title"] = "Accéder à cet examen WIMS"
         else:
-            my_view["activity_icon"] = self.getIcon()
-            my_view["activity_link_title"] = "Accéder à cette entrainement WIMS"
+            my_view["activity_link_title"] = "Accéder à cet entrainement WIMS"
+
+        my_view["activity_icon"] = self.getIcon()
         my_view["duree"] = my_wims_activity.getDuree()
 
         my_view["is_personnel"] = my_wims_activity.isPersonnel(user, mode_etudiant)
@@ -80,7 +74,7 @@ class WimsActivityView(CourseView):
 
         if is_ajax or my_view["is_anonymous"]:
             my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"])),
-            LOG.info("----- getWimsActivityView (Early Ended) -----")
+            LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
             return my_view
 
         # my_view["wims_activity_instruction"] = {"href":  "%s/edit_wims_activity_instruction_form?tab=%s" % (my_view["activity_link"], tab),
@@ -109,30 +103,55 @@ class WimsActivityView(CourseView):
 
         my_view["wims_activity_tabs"] = []
 
-        my_view["is_exercices_tab"] = True if tab == "exercices" else False
         my_view["wims_activity_tabs"].append({"href":      "%s?tab=exercices&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
-                                              "css_class": " selected" if my_view["is_exercices_tab"] else "",
+                                              "css_class": " selected" if tab == "exercices" else "",
                                               "icon":      "fa-random",
                                               "text":      "Exercices",
                                               "nb":        my_wims_activity.getNbExercices()})
+        portal = my_wims_activity.portal_url.getPortalObject()
+        activity_path = my_wims_activity.getPhysicalPath()
+        activity_path = "/".join([activity_path[-3], activity_path[-2], activity_path[-1]])
 
-        my_view["is_documents_tab"] = True if tab == "documents" else False
+        # Boutons d'ajouts d'exercices, affichés uniquement pour le créateur d'une activité masquée et qui n'est pas un examen déjà activé
+        if (tab == "exercices" and
+                my_view['is_personnel'] and
+                not my_view['wims_activity_visibility']['val'] and
+                not my_wims_activity.getIdExam() and
+                my_wims_activity.getCreateur() == user.getId()):
+
+            portal_link = portal.absolute_url()
+            my_view["exercices_add"] = self.getExerciceAdderMenuList(portal_link, activity_path)
+            # my_view["exercices_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
+
         my_view["wims_activity_tabs"].append({"href":      "%s?tab=documents&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
-                                              "css_class": " selected" if my_view["is_documents_tab"] else "",
+                                              "css_class": " selected" if tab == "documents" else "",
                                               "icon":      "fa-upload",
                                               "text":      "Documents enseignants",
                                               "nb":        my_wims_activity.getNbSujets()})
-        if my_view["is_documents_tab"]:
-            portal = my_wims_activity.portal_url.getPortalObject()
-            wims_activity_path = my_wims_activity.getPhysicalPath()
-            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["activity_link"], "/".join([wims_activity_path[-3], wims_activity_path[-2], wims_activity_path[-1]]), portal)["my_space"]
+        if tab == "documents":
+            my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["activity_link"], activity_path, portal)["my_space"]
             my_view["documents_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
 
         my_view["is_resultats_tab"] = True if tab == "resultats" else False
         my_view["wims_activity_tabs"].append({"href":      "%s?tab=resultats&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
-                                              "css_class": " selected" if my_view["is_resultats_tab"] else "",
+                                              "css_class": " selected" if tab == "results" else "",
                                               "icon":      "fa-trophy",
                                               "text":      "Résultats"})
 
         LOG.info("----- getWimsActivityView (End) -----")
         return my_view
+
+    def getExerciceAdderMenuList(self, portal_link, activity_path):
+        """Fournit la liste des liens permettant d'ajouter des exercices à une activité WIMS."""
+        # portal_link = portal.absolute_url()
+        # portal_link = self.portal_url
+        item_adder_list = [{"item_link":  "%s/mon_espace/mes_exercices_wims/course_add_view?course_path=%s" % (portal_link, activity_path),
+                                "item_title": "Attacher un exercice WIMS de mon espace",
+                                "item_icon":  "fa fa-fw fa-random",
+                                "item_name":  "Exercice WIMS"},
+                           {"item_link":  "%s/mon_espace/mes_exercices_wims/wims_activity_import_view?type=hotpot&activity_path=%s" % (portal_link, activity_path),
+                                "item_title": "Importer des exercices",
+                                "item_icon":  "fa fa-fw fa-level-down",
+                                "item_name":  "HotPotatoes"}]
+
+        return item_adder_list

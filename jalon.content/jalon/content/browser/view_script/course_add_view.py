@@ -40,11 +40,17 @@ class CourseAddView(MySpaceView):
                                                          "course_add_list_icon": "fa fa-youtube-play",
                                                          "is_display_hide":      True,
                                                          "course_add_js":        "setAttachmentCreator()"},
+                        "mes_exercices_wims":           {"folder_id":            "Wims",
+                                                         "macro_file":           "add_wims_activity_exercice_macro",
+                                                         "portal_type":          ["JalonExerciceWims"],
+                                                         "course_add_list_icon": "fa fa-random",
+                                                         "is_display_hide":      False,
+                                                         "course_add_js":        "setAttachmentCreator()"},
                         "glossaire":    {"course_add_js": "setTagFilter(True)"},
                         "biblio":       {"course_add_js": "setTagFilter(True)"}}
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -88,8 +94,13 @@ class CourseAddView(MySpaceView):
             course_add_js = course_add_dict["course_add_js"]
         else:
             is_course = False
+            wims_exercice_model_list = ""
             course_object = getattr(course_object, course_path_list[-1])
-            course_map = course_object.getDocumentsList()
+            if course_add_dict["folder_id"] == "Wims":
+                course_map = course_object.getListeExercices()
+                wims_exercice_model_list = folder.getModelesWims()
+            else:
+                course_map = course_object.getDocumentsList()
             course_add_js = "setTagFilter(true)"
 
         return {"tags_list":            tags_list,
@@ -109,8 +120,9 @@ class CourseAddView(MySpaceView):
                 "folder_id":            course_add_dict["folder_id"],
                 "folder_link":          folder.absolute_url(),
                 "course_link":          course_object.absolute_url(),
-                "course_add_js":        course_add_js}
+                "course_add_js":        course_add_js,
+                "wims_exercice_model_list": wims_exercice_model_list}
 
     def getCourseMapForm(self, course_path):
-        #LOG.info("----- getCourseMapForm -----")
+        # LOG.info("----- getCourseMapForm -----")
         return self.context.restrictedTraverse("cours/%s/course_map_form" % course_path)()
