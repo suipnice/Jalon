@@ -368,8 +368,67 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self._infos_element = infos_element
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
-        u"""Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+        u"""Modifie la visibilité de l'activité ("item_property_name" fournit l'info afficher / masquer)."""
         LOG.info("----- editCourseItemVisibility -----")
+
+        portal = self.portal_url.getPortalObject()
+        dico = {"authMember": portal.portal_membership.getAuthenticatedMember().getId()}
+
+        auteur = self.getCreateur()
+        dico["qclass"] = self.setClasse()
+        dico["qsheet"] = self.getIdFeuilleWIMS(auteur)
+
+        # Affichage
+        if item_property_name == "affElement":
+            aff_autorise = self.autoriser_Affichage()
+            # Si l'affichage de l'objet est impossible, on arrete la.
+            #  (cas habituel : liste d'exos vide)
+            if not aff_autorise["val"]:
+                return aff_autorise
+            dico["status"] = 1
+        # Masquage
+        else:
+            dico["status"] = 0
+
+        # cas des Examens
+        if self.typeWims == "Examen":
+
+            dico_feuille = dico.copy()
+            # Lorsqu'on active l'examen, la feuille doit passer
+            # dans l'etat 3 (périmé+caché), et y rester.
+            if dico["status"] or self.idExam:
+                dico_feuille["status"] = 3
+            self.wims("modifierFeuille", dico_feuille)
+
+            dico["title"] = self.Title()
+            dico["description"] = self.Description()
+            dico["duration"] = self.duree
+            dico["attempts"] = self.attempts
+            dico["cut_hours"] = self.cut_hours
+
+            # Lors du 1er affichage de l'examen, on le crée
+            if dico["status"] and not self.idExam:
+                # print "jaloncourswims/afficherRessource // dico =%s" % str(dico)
+                reponse = self.wims("creerExamen", dico)
+                self.idExam = str(reponse["exam_id"])
+                # L'examen est créé, on lui ajoute alors la liste des exercices de la feuille
+                reponse = self.wims("injecter_exercice", {"authMember": dico["authMember"], "qclass": dico["qclass"], "qsheet": dico["qsheet"], "qexam": self.idExam})
+
+            # Cas de l'examen créé
+            if self.idExam:
+                # On cree un dictionnaire épuré, pour ne changer que le statut.
+                newdico = {"status": dico["status"], "qclass": dico["qclass"], "authMember": dico["authMember"]}
+                # une fois un examen activé, on ne peut plus le désactiver.
+                # le statut passe à 3 (périmé+caché) pour le masquer
+                if newdico["status"] == 0:
+                    newdico["status"] = 3
+                newdico["qexam"] = self.idExam
+                self.wims("modifierExamen", newdico)
+
+        # Cas des autoevaluations
+        else:
+            self.wims("modifierFeuille", dico)
+
         super(JalonCoursWims, self).editCourseItemVisibility(item_id, item_date, item_property_name)
 
     """
@@ -580,9 +639,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
-    #def ajouterTag(self, tag):
-    #    \"""ajouterTag.\"""
-    #    return jalon_utils.setTag(self, tag)"""
+    def ajouterTag(self, tag):
+        # ajouterTag.
+        return jalon_utils.setTag(self, tag)"""
 
     def authUser(self, quser=None, qclass=None, request=None, session_keep=False):
         """appelle la fonction authUser de jalon_utils (authentifie un user WIMS)."""

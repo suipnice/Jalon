@@ -8,6 +8,7 @@
 ##title=
 ##
 
+# context = context
 context_object = context
 form = context.REQUEST.form
 redirection = context.absolute_url()
@@ -30,6 +31,7 @@ if form.has_key("is_item_title"):
 else:
     context_object.editCourseItemVisibility(form["item_id"], item_date, form["item_property_name"], is_update_from_title)
 
+# Cas ou on affiche un document d'une activité
 if context.meta_type in ["JalonBoiteDepot", "JalonCoursWims"] and not is_activity:
     redirection = "%s?tab=documents" % context_object.absolute_url()
 
