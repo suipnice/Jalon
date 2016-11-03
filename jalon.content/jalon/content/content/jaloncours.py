@@ -387,7 +387,7 @@ class JalonCours(ATFolder):
     #    return self._elements_cours.keys()
 
     """def getDisplayOrHiddenDate(self, idElement, attribut):
-        LOG.info("----- getDisplayOrHiddenDate -----")
+        # LOG.info("----- getDisplayOrHiddenDate -----")
         infos_element = self.getCourseItemProperties(idElement)
         if infos_element:
             # LOG.info("item_property : %s" % str(infos_element))
@@ -398,7 +398,7 @@ class JalonCours(ATFolder):
 
     def getFormattedDate(self, date):
         """Fournit une date au format "Y/m/d H:M"."""
-        LOG.info("----- getFormattedDate -----")
+        # LOG.info("----- getFormattedDate -----")
         if date != "":
             return date.strftime("%Y/%m/%d %H:%M")
         else:
@@ -526,7 +526,7 @@ class JalonCours(ATFolder):
     def modifyFavorite(self, user_id):
         # LOG.info("----- modifyFavorite -----")
         subjects = list(self.Subject())
-        if not user_id in subjects:
+        if user_id not in subjects:
             subjects.append(user_id)
             archives = list(self.getArchive())
             if user_id in archives:
@@ -540,7 +540,7 @@ class JalonCours(ATFolder):
     def modifyArchive(self, user_id):
         # LOG.info("----- modifyArchive -----")
         archives = list(self.getArchive())
-        if not user_id in archives:
+        if user_id not in archives:
             archives.append(user_id)
             subjects = list(self.Subject())
             if user_id in subjects:
@@ -836,10 +836,10 @@ class JalonCours(ATFolder):
             if is_personnel:
                 ol_css_class = "sortable ui-sortable"
 
-        #index = 0
+        # index = 0
         course_map_list = []
         for course_map_item in course_map_items_list:
-            #index = index + 1
+            # index = index + 1
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
 
             item = {"item_id":      course_map_item["idElement"],
@@ -966,7 +966,7 @@ class JalonCours(ATFolder):
 
         self.plan = tuple(plan)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
-        #return self.getPlanCours(True)
+        # return self.getPlanCours(True)
 
     def isAfficherElement(self, affElement, masquerElement):
         # LOG.info("----- isAfficherElement -----")
@@ -1140,7 +1140,7 @@ class JalonCours(ATFolder):
 
     def getDisplayItemForm(self, item_id):
         """Fournit les infos du formulaire d'affichage/masquage d'un element "item_id" directement inclus dans le cours."""
-        LOG.info("----- getDisplayItemForm -----")
+        # LOG.info("----- getDisplayItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
         form_properties = self.getDisplayItemFormProperties(item_properties)
 
@@ -1358,13 +1358,13 @@ class JalonCours(ATFolder):
                     portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
 
         item_object_related = item_object.getRelatedItems()
-        if not self in item_object_related:
+        if self not in item_object_related:
             item_object_related.append(self)
             item_object.setRelatedItems(item_object_related)
             item_object.reindexObject()
 
         course_related = self.getRelatedItems()
-        if not item_object in course_related:
+        if item_object not in course_related:
             course_related.append(item_object)
             self.setRelatedItems(course_related)
 
@@ -1475,7 +1475,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- editCourseMapItem -----")
         item_properties = self.getCourseItemProperties(item_id)
 
-        if not "titreElementMonEspace" in item_properties:
+        if "titreElementMonEspace" not in item_properties:
             item_properties["titreElementMonEspace"] = item_properties["titreElement"][:]
 
         if item_title == "":
@@ -1565,19 +1565,19 @@ class JalonCours(ATFolder):
             start = True
         for element in listeElement:
             if element["idElement"] == idElement or idElement == "all":
-                #Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
+                # Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
                 if "listeElement" in element and element["listeElement"] != []:
                     self.deleteCourseMapItem("all", element["listeElement"], force_WIMS)
 
-                #on supprime element de la liste où il etait dans le plan
+                # On supprime element de la liste où il etait dans le plan
                 while element in listeElement:
                     listeElement.remove(element)
 
                 infosElement = self.getCourseItemProperties().get(element["idElement"])
 
                 if infosElement:
-                    #dans le cas des autoevaluations et examens, on ne supprime pas l'element du plan, on ne fait que le déplacer
+                    # Dans le cas des activités WIMS, on ne supprime pas l'element du plan, on ne fait que le déplacer
                     if infosElement["typeElement"] in ["AutoEvaluation", "Examen"] and force_WIMS is False:
                         self.addItemInCourseMap(element["idElement"], "fin_racine")
                     elif not (element["idElement"] in self.getGlossaire() or element["idElement"] in self.getBibliographie()):
