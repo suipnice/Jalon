@@ -18,25 +18,10 @@ class WimsActivityView(CourseView):
         CourseView.__init__(self, context, request)
     """
 
-    def getIcon(self):
-        """Return icon adaptated to activity type (Training or Exam)."""
-        LOG.info("----- getIcon -----")
-        return "fa fa-gamepad no-pad" if self.context.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
-
     def getBreadcrumbs(self):
         """Get current page breadcrumbs."""
         LOG.info("----- getBreadcrumbs -----")
-        portal = self.context.portal_url.getPortalObject()
-        parent = self.context.aq_parent
-        return [{"title": _(u"Mes cours"),
-                 "icon":  "fa fa-university",
-                 "link":  "%s/mes_cours" % portal.absolute_url()},
-                {"title": parent.Title(),
-                 "icon":  "fa fa-book",
-                 "link":  parent.absolute_url()},
-                {"title": self.context.Title(),
-                 "icon":  self.getIcon(),
-                 "link":  self.context.absolute_url()}]
+        return self.context.getBreadcrumbs()
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""
@@ -66,7 +51,7 @@ class WimsActivityView(CourseView):
         else:
             my_view["activity_link_title"] = "Accéder à cet entrainement WIMS"
 
-        my_view["activity_icon"] = self.getIcon()
+        my_view["activity_icon"] = self.context.getIcon()
         my_view["duree"] = my_wims_activity.getDuree()
 
         my_view["is_personnel"] = my_wims_activity.isPersonnel(user, mode_etudiant)

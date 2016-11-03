@@ -27,4 +27,7 @@ for item in request.form["paths"]:
 if context.getId().startswith("Cours-"):
     return "%s/display_course_map_page" % context.absolute_url()
 else:
-    request.RESPONSE.redirect("%s?tab=documents" % context.absolute_url())
+    if form.has_key("tab"):
+        request.RESPONSE.redirect("%s?tab=%s" % (context.absolute_url(), form["tab"]))
+    else:
+        request.RESPONSE.redirect("%s?tab=documents" % context.absolute_url())

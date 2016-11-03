@@ -33,9 +33,10 @@ elif "note_max" in form:
 # context.setAttributActivite(dico)
 context.setProperties(dico)
 
-# Met à jour le titre dans le plan du cours
+# Met à jour le titre dans le plan du cours, et la date de dernière modif du cours.
 if "Title" in dico:
     context.aq_parent.editCourseMapItem(context.getId(), dico["Title"], False)
+    context.aq_parent.setCourseProperties({"DateDerniereModif": DateTime()})
 
 # tab n'existe pas si on modifie l'activite depuis le plan du cours
 if "tab" in form:

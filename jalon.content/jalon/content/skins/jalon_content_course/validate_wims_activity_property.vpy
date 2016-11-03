@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##Script (Python) "validate_deposit_box_property"
+##Script (Python) "validate_wims_activity_property"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -7,76 +7,65 @@
 ##bind state=state
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Validation des formulaires
+##title=Validation du formulaire des propriétés d'activite wims
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
 
-#context.plone_log("[valider_form]")
+# context.plone_log("[valider_form]")
+# state = state
 error = False
 form = context.REQUEST.form
-validate_key = form["validate_key"]
+# validate_key = form["validate_key"]
 
-validate_dict = {"edit_deposit_box":  ["title"],
-                 "deposit_file":      ["title", "file_file"],
-                 "add_criteria":      ["title", "description", "notation", "coefficient"],
-                 "correction_number": ["nombreCorrection"],
-                 "penality":          ["penalite"]}
+required_fields = ["title"]
 
-for validate_field in validate_dict[validate_key]:
+# Les parenthèses doivent être placées par paires correctement fermées pour WIMS.
+listeReplace_desc_wims = [["{", "}", u"Accolades"],
+                          ["(", ")", u"Parenthèses"],
+                          ["[", "]", u"Crochets"]]
+
+desc = form["description"]
+incoherence = []
+typ_parenthese = []
+for couple in listeReplace_desc_wims:
+    nb_ouvre = desc.count(couple[0])
+    nb_ferme = desc.count(couple[1])
+    if nb_ouvre != nb_ferme:
+        incoherence.append("%s '%s' contre %s '%s'" % (nb_ouvre, couple[0], nb_ferme, couple[1]))
+        typ_parenthese.append(couple[2])
+if len(incoherence) > 0:
+    incoherence = " et ".join(incoherence)
+    typ_parenthese = " et ".join(typ_parenthese)
+    message = _(u"${typ_parenthese} mal fermées : ${incoherence}",
+                        mapping={'typ_parenthese': typ_parenthese, 'incoherence': incoherence})
+    state.setError("description", message, "bad_parenthesis")
+    state.set(status='failure')
+    error = True
+
+# Cas de l'examen
+if "duree" in form:
+    required_numbers = ["note_max", "duree", "attempts"]
+# Cas de l'entrainement
+elif "note_max" in form:
+    required_numbers = ["note_max"]
+
+required_fields.extend(required_numbers)
+
+for validate_field in required_fields:
     if not validate_field in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 
-if validate_key == "add_criteria":
-    failed = False
-    try:
-        notation = int(form["notation"])
-        failed = True if notation < 1 or notation > 10 else False 
-    except:
-        failed = True
-    if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 10"), "%s_required" % validate_field)
-        state.set(status='failure')
-        error = True
-
-    failed = False
-    try:
-        coefficient = int(form["coefficient"])
-        failed = True if coefficient < 1 and coefficient > 5 else False 
-    except:
-        failed = True
-    if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
-        state.set(status='failure')
-        error = True
-
-if validate_key == "correction_number":
-    failed = False
-    try:
-        nombreCorrection = int(form["nombreCorrection"])
-        failed = True if nombreCorrection < 1 or nombreCorrection > 5 else False 
-    except:
-        failed = True
-    if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
-        state.set(status='failure')
-        error = True
-
-if validate_key == "penality":
-    failed = False
-    try:
-        nombrePoints = int(form["nombrePoints"])
-        failed = True if nombrePoints < 1 or nombrePoints > 5 else False 
-    except:
-        failed = True
-    if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
+for validate_field in required_numbers:
+    if not form[validate_field].isdigit():
+        state.setError(validate_field, _(u"Vous devez taper un nombre"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 
 if not error:
+    validate_key = "edit_wims_activity"
     state.set(status="success_%s" % validate_key)
 
 return state

@@ -191,6 +191,7 @@ class JalonFolder(ATFolder):
         # return self.getFolderContents(contentFilter=dico)
 
     def getContentsWims(self, authMember):
+        """Fournit la liste des contenus WIMS de l'utilisateur courant (et crée la classe WIMS si necessaire)."""
         classe = self.getComplement()
         if not classe:
             # 1er  cas : Aucune classe n'existe pour cet utilisateur
@@ -1176,7 +1177,8 @@ class JalonFolder(ATFolder):
                    "CatalogueBU":              "Externes",
                    "TermeGlossaire":           "Glossaire",
                    "Presentationssonorisees":  "Sonorisation",
-                   "ExerciceWims":             "Wims"}
+                   "ExerciceWims":             "Wims",
+                   "ExercicesWims":            "Wims"}
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 

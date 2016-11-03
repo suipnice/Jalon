@@ -340,6 +340,29 @@ class JalonCoursWims(JalonActivity, ATDocument):
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
+    def getBreadcrumbs(self, sub_page=""):
+        """Get current page breadcrumbs."""
+        LOG.info("----- getBreadcrumbs -----")
+        portal = self.portal_url.getPortalObject()
+        parent = self.aq_parent
+        response = [{"title": _(u"Mes cours"),
+                     "icon":  "fa fa-university",
+                     "link":  "%s/mes_cours" % portal.absolute_url()},
+                    {"title": parent.Title(),
+                     "icon":  "fa fa-book",
+                     "link":  parent.absolute_url()},
+                    {"title": self.Title(),
+                     "icon":  self.getIcon(),
+                     "link":  self.absolute_url()}]
+        if sub_page != "":
+            response.append({"title": sub_page, "icon":  "fa fa-edit"})
+        return response
+
+    def getIcon(self):
+        """Return icon adaptated to activity type (Training or Exam)."""
+        LOG.info("----- getIcon -----")
+        return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
+
     def getDocumentsProperties(self, key=None):
         """get Properties for one or all Documents."""
         LOG.info("----- getDocumentsProperties -----")

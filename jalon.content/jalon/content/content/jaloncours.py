@@ -791,13 +791,16 @@ class JalonCours(ATFolder):
         form_properties = copy.deepcopy(self._course_map_item_dict[item_type])
 
         if not item_id:
+            form_properties["data-success_msg"] = _(u"L'élément de plan a été créé.")
             form_properties["form_title_text"] = "Créer un"
             form_properties["is_add_form"] = True
             form_properties["form_button_css"] = "button small create radius"
             form_properties["form_button_text"] = "Créer"
             form_properties["form_button_icon"] = "fa fa-plus-circle"
             form_properties["validate_key"] = "create_course_map_item"
+            form_properties["typeElement"] = ""
         else:
+            form_properties["data-success_msg"] = _(u"L'élément de plan a été modifié.")
             form_properties["form_title_text"] = "Modifier un"
             form_properties["is_add_form"] = False
             form_properties["item_id"] = item_id
@@ -1205,10 +1208,10 @@ class JalonCours(ATFolder):
                 form_properties["is_item_title"] = True
                 form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
                 form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> les autoévaluations et examens vides ne seront pas affichés avec le titre."
-            elif item_properties["typeElement"] == "Examen":
-                form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié."
             else:
                 form_properties["text_title_directly"] = "L'afficher directement…"
+                if item_properties["typeElement"] == "Examen":
+                    form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié."
 
             form_properties["form_name"] = "afficher-element"
             form_properties["item_date"] = self.getFormattedDate(item_properties["affElement"])

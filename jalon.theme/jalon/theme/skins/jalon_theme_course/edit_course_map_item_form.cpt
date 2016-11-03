@@ -13,7 +13,9 @@
                         item_id request/item_id | nothing;
                         my_form python:context.getCourseMapItemForm(item_type=item_type, item_id=item_id)">
 <!--
-        Modification des informations d'un element du cours Jalon
+        Création/Modification d'un element du cours Jalon
+            * en cas de creation, on ne connait que item_type
+            * en cas de modification, on ne connait que item_id
 -->
     <h2>
         <tal:replace replace="my_form/form_title_text"/>
@@ -24,7 +26,7 @@
     <form id="js-editCourseMapItem" method="POST"
           tal:define="title request/title | my_form/item_title | nothing"
           tal:attributes="action string:${context/absolute_url}/${template/id};
-                          data-success_msg string:L'élément de plan a été crée.">
+                          data-success_msg my_form/data-success_msg">
 
         <div class="field"
              tal:define="error python:errors.get('title', None);"
