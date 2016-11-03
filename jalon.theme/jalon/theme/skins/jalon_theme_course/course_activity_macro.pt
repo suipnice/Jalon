@@ -16,7 +16,7 @@
     </metal:macro>
 </metal:macro>
 
-<metal:macro define-macro="resultats-list" tal:define="activity_type my_view/activity_type">
+<metal:macro define-macro="results-list" tal:define="activity_type my_view/activity_type">
     <tal:condition condition="python:activity_type=='AutoEvaluation'">
         <metal:macro use-macro="context/wims_activity_macro/macros/resultats-auto">
             Page d'affichage des résultats d'un entrainement WIMS

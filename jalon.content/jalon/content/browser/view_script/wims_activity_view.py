@@ -3,7 +3,7 @@
 # from Products.Five.browser import BrowserView
 # from zope.component import getMultiAdapter
 from course_view import CourseView
-from jalon.content import contentMessageFactory as _
+# from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
 LOG = getLogger('[WimsActivityView]')
@@ -29,7 +29,7 @@ class WimsActivityView(CourseView):
         # user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
-        if tab not in ["exercices", "documents", "resultats"]:
+        if tab not in ["exercices", "documents", "results"]:
             tab = "exercices"
         my_view["tab"] = tab
 
@@ -121,8 +121,8 @@ class WimsActivityView(CourseView):
             my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["activity_link"], activity_path, portal)["my_space"]
             my_view["documents_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
 
-        my_view["is_resultats_tab"] = True if tab == "resultats" else False
-        my_view["wims_activity_tabs"].append({"href":      "%s?tab=resultats&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
+        # my_view["is_resultats_tab"] = True if tab == "results" else False
+        my_view["wims_activity_tabs"].append({"href":      "%s?tab=results&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
                                               "css_class": " selected" if tab == "results" else "",
                                               "icon":      "fa-trophy",
                                               "text":      "Résultats"})

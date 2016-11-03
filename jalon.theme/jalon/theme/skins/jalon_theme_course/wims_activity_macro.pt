@@ -476,7 +476,7 @@ En entrée :
 
     <tal:condition condition="data_scores">
 
-        <table id="js-list-resultats">
+        <table id="js-list-results">
         <thead>
             <tr>
                 <th class="sort text-left has-tip" title="Trier selon l'étudiant"
@@ -570,7 +570,7 @@ En entrée :
         </table>
 
         <!-- Tri du tableau -->
-        <tal:block define="sort_script string:setSortableList('js-list-resultats',['title', 'nb_essais', 'note'],'title','asc');">
+        <tal:block define="sort_script string:setSortableList('js-list-results',['title', 'nb_essais', 'note'],'title','asc');">
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
         </tal:block>
 
@@ -640,7 +640,7 @@ En entrée :
 
         <tal:condition condition="data_scores">
 
-        <table id="js-list-resultats">
+        <table id="js-list-results">
         <thead>
             <tr>
                 <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
@@ -736,7 +736,7 @@ En entrée :
     </tal:block>
 
     <!--Tri du tableau -->
-    <tal:block define="sort_script string:setSortableList('js-list-resultats',['title','score', 'wims_quality'],'title','asc');">
+    <tal:block define="sort_script string:setSortableList('js-list-results',['title','score', 'wims_quality'],'title','asc');">
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(sort_script)" />
     </tal:block>
 
