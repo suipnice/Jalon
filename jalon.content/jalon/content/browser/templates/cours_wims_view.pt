@@ -8,6 +8,8 @@
 
 <body>
 
+<!-- ANCIENNE page de consultation d'une activité WIMS (a supprimer) -->
+
 <metal:core fill-slot="main"
             tal:define="idpage string:cours_wims_view;
                         tag context/getTypeWims;
@@ -18,7 +20,7 @@
                         anonymous python:user.has_role('Anonymous');
                         mode_etudiant request/mode_etudiant | string:false;">
 
-<style type="text/css">
+<!--style type="text/css">
     /* texte informatif */
     .note_info{
         font-style: italic;
@@ -138,7 +140,7 @@
                 </li>
 
                 <tal:comment replace="nothing">
-                    <!-- Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché-->
+                    <!-- Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché>
                 </tal:comment>
                 <li tal:condition="python:is_personnel and tag == 'Examen'">
                     <a tal:define="qexam context/getIdExam;"
@@ -257,7 +259,7 @@
         </section>
     </tal:define>
     </tal:condition>
-    </main>
+    </main-->
 
 </metal:core>
 

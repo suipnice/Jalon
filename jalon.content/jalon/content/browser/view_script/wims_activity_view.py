@@ -40,9 +40,13 @@ class WimsActivityView(CourseView):
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""
-        LOG.info("----- getWimsActivityView (Start) -----")
+        LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
         # user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
+
+        if tab not in ["exercices", "documents", "resultats"]:
+            tab = "exercices"
+        my_view["tab"] = tab
 
         my_wims_activity = self.context
         instruction_text = my_wims_activity.Description()

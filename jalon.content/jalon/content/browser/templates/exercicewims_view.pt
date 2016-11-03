@@ -7,6 +7,8 @@
       i18n:domain="jalon.content">
 
 <body>
+    <h1 class="debug"> exercicewims_view DEPRECATED</h1>
+<!-- ATTENTION : Ceci est l'ancienne template d'affiche des exos WIMS. Elle n'est plus utilisée ?
 
 <metal:core fill-slot="content"
             tal:define="qclass python:'%s_1' % context.getComplement();
@@ -116,6 +118,6 @@
 
     </main>
 
-</metal:core>
+</metal:core-->
 </body>
 </html>
