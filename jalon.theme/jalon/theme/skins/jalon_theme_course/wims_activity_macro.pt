@@ -131,29 +131,18 @@ En entrée :
         </a>
     </tal:condition>
 
-    <tal:condition condition="python:my_view['is_personnel'] and not my_view['wims_activity_visibility']['val'] and not context.getIdExam() and context.getCreateur()==user.getId()">
-    <!-- Boutons pour les enseignants -->
-    <!-- Affichés uniquement pour le créateur de l'activité, qui est masquée et n'est pas un examen déjà activé -->
-        <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="drop-action-activite">
+    <tal:condition tal:define="exercices_add_list my_view/exercices_add | nothing" condition="exercices_add_list">
+    <!-- Boutons d'ajouts, affichés uniquement pour le créateur d'une activité masquée et qui n'est pas un examen déjà activé -->
+        <a class="button small dropdown radius right show-for-medium-up" data-options="align:bottom" data-dropdown="add-exo_el">
             <i class="fa fa-plus-circle"></i>
             <tal:block i18n:translate="">Ajouter</tal:block>
         </a>
-        <ul id="drop-action-activite" class="f-dropdown"
-            data-dropdown-content="data-dropdown-content">
-            <li>
-                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours&amp;formulaire=ajout-sujets&amp;ajout=ExerciceWims&amp;espace=Exercices Wims"
-                    title="Attacher un exercice wims"
-                    data-reveal-id="reveal-main" data-reveal-ajax="true">
-                    <i class="fa fa-random"></i>
-                    <tal:block i18n:translate="">Exercice Wims</tal:block>
-                </a>
-            </li>
-            <li>
-                <a title="Importer des exercices" target="new"
-                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_creer_mon_espace&amp;formulaire=importer-exercices"
+        <ul id="add-exo_el" class="f-dropdown" data-dropdown-content="data-dropdown-content">
+            <li tal:repeat="menu_adder_item exercices_add_list">
+                <a tal:attributes="href menu_adder_item/item_link;title menu_adder_item/item_title"
                    data-reveal-id="reveal-main" data-reveal-ajax="true">
-                    <i class="fa fa-fw fa-level-down"></i>
-                    <tal:block i18n:translate="">HotPotatoes</tal:block>
+                    <i tal:attributes="class menu_adder_item/item_icon"></i>
+                    <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
                 </a>
             </li>
         </ul>

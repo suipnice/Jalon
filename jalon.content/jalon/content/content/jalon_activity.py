@@ -2,10 +2,11 @@
 """jalon_activity.py definit la class JalonActivity."""
 from zope.interface import implements
 
-from Products.Archetypes.public import *
+# from Products.Archetypes.public import *
 from OFS.SimpleItem import SimpleItem
 
 from jalon.content.interfaces import IJalonActivity
+from jalon.content import contentMessageFactory as _
 
 from DateTime import DateTime
 
@@ -58,6 +59,7 @@ class JalonActivity(SimpleItem):
             self.setDocumentsProperties(self._infos_element)
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        """Met a jour les related Items de l'activité et de l'element de mon espace qu'on lui ajoute."""
         LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
 
@@ -75,18 +77,20 @@ class JalonActivity(SimpleItem):
             item_object.setRelatedItems(item_object_related)
             item_object.reindexObject()
 
-        deposit_box_related = self.getRelatedItems()
-        if item_object not in deposit_box_related:
-            deposit_box_related.append(item_object)
-            self.setRelatedItems(deposit_box_related)
+        activity_related = self.getRelatedItems()
+        if item_object not in activity_related:
+            activity_related.append(item_object)
+            self.setRelatedItems(activity_related)
 
         return {"item_id_no_dot":  item_id_no_dot,
                 "item_type":       item_type,
                 "item_title":      item_object.Title(),
-                "item_complement": complement_element}
+                "item_complement": complement_element,
+                "item_object":     item_object}
         # self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        """Ajoute un element à la liste des sujets d'une activité."""
         LOG.info("----- addItemProperty -----")
 
         items_properties = self.getDocumentsProperties()
@@ -103,9 +107,12 @@ class JalonActivity(SimpleItem):
             listeSujets = list(self.getListeSujets())
             listeSujets.append(item_id)
             setattr(self, "listeSujets", tuple(listeSujets))
+            message = _(u"'${item_title}' a bien été ajouté aux documents enseignants.",
+                        mapping={'item_title': item_title.decode("utf-8")})
+            self.plone_utils.addPortalMessage(message, type='success')
 
     def displayDocumentsList(self, is_personnel, portal):
-        """Display Documents List."""
+        """Fournit la liste des documents à afficher."""
         LOG.info("----- displayDocumentsList -----")
         course_parent = self.aq_parent
 
@@ -180,8 +187,8 @@ class JalonActivity(SimpleItem):
         item_object.setRelatedItems(item_relatedItems)
         item_object.reindexObject()
 
-        deposit_relatedItems = self.getRelatedItems()
-        deposit_relatedItems.remove(item_object)
-        self.setRelatedItems(deposit_relatedItems)
+        activity_relatedItems = self.getRelatedItems()
+        activity_relatedItems.remove(item_object)
+        self.setRelatedItems(activity_relatedItems)
 
         self.reindexObject()
