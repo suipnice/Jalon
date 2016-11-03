@@ -20,7 +20,7 @@
 
         <div class="panel alert radius">
             <strong i18n:translate="">Attention :</strong>
-            <tal:block i18n:translate="">Vous allez annuler ce critère d'évaluation, ça marge sera passée à 0, les notes de ce critère seront annulées dans le calcul de la moyenne.</tal:block>
+            <tal:block i18n:translate="">Vous allez annuler ce critère d'évaluation, son coefficient sera passé à 0, les notes de ce critère seront annulées dans le calcul de la moyenne.</tal:block>
         </div>
 
         <input type="hidden" name="criteria_id"

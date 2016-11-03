@@ -20,5 +20,5 @@ date_fin_maintenance = "%s/%s/%s %s:%s" % (form["date_fin_maintenance_year"], fo
 dico["date_debut_maintenance"] = date_debut_maintenance
 dico["date_fin_maintenance"] = date_fin_maintenance
 
-context.setPropertiesMaintenance(dico)
+context.setPropertiesMaintenance(dico, context.REQUEST)
 context.REQUEST.RESPONSE.redirect("%s/gestion_maintenance" % context.absolute_url())

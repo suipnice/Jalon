@@ -68,6 +68,8 @@
                     </div>
                     <div class="small-12 medium-5 columns">
                         <dl class="deflist">
+                            <dt>Noter sur</dt>
+                            <dd tal:content="criteria/notation" />
                             <dt>Coefficient</dt>
                             <dd tal:content="criteria/coefficient" />
                             <dt>Commentaire étudiant</dt>
@@ -230,6 +232,7 @@
                     <div class="small-12 medium-5 columns">
                         <dl class="deflist"
                             tal:define="comment_dict my_form/comment_dict">
+                            <dt>Noter sur :</dt><dd tal:content="criteria/notation" />
                             <dt>Marge d'alerte :</dt><dd><tal:replace replace="criteria/gap"/> point(s)</dd>
                             <dt>Moyenne du critère :</dt><dd><strong tal:attributes="style criteria_avg/criteria_style"
                                                                      tal:content="criteria_avg/criteria_avg"/></dd>

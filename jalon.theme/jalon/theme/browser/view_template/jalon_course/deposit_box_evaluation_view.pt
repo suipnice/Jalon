@@ -94,7 +94,7 @@
                          tal:condition="criteria_dict/criteria_comment"/>
                 </div>
                 <div tal:define="average_dict python:my_view['peer_average'][index]">
-                    <tal:condition condition="python:average_dict['criteria_state']">
+                    <tal:condition condition="python:average_dict['criteria_note_t']">
                     <h2>
                         Évaluation de l'enseignant (<tal:replace replace="average_dict/criteria_note"/>  / <tal:replace replace="criteria/notation"/> points)
                     </h2>

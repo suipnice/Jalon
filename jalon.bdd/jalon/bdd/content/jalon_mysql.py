@@ -314,7 +314,7 @@ def getPeerEvaluationsNotes(session, DEPOSIT_BOX, CORRECTED_STU):
 
 def getPeerAverage(session, DEPOSIT_BOX, DEPOSIT_STU):
     PA = aliased(tables.PeersAverageMySQL)
-    peer_average = session.query(PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE, PA.CRITERIA_VALUE, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU)
+    peer_average = session.query(PA.CRITERIA, PA.CRITERIA_AVERAGE, PA.CRITERIA_CODE, PA.CRITERIA_VALUE, PA.CRITERIA_NOTE_T, PA.CRITERIA_COMMENT_T).filter(PA.DEPOSIT_BOX == DEPOSIT_BOX, PA.DEPOSIT_STU == DEPOSIT_STU)
     #return convertirResultatBDD(peer_evaluation)
     return peer_average
 
