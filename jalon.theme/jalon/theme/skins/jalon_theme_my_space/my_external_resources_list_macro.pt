@@ -22,7 +22,7 @@
     <tal:listing condition="my_view/my_items_list">
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items" />
-        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block i18n:translate="">sur</tal:block>
         <tal:block replace="my_view/nb_items" />
     </div>
 
@@ -196,9 +196,9 @@
 
         <tal:condition condition="is_ajax">
             <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('reveal', 'reflow')" />
+                    tal:content="structure string:$$(document).foundation('reveal', 'reflow')"></script>
             <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')" />
+                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>>
 
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
@@ -207,7 +207,7 @@
 
             <script charset="UTF-8"
                     tal:define="buffer python:jsBuffer.getDirectBuffer()"
-                    tal:content="structure buffer" />
+                    tal:content="structure buffer"></script>
         </tal:condition>
     </tal:define>
 
