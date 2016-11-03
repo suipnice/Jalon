@@ -30,7 +30,7 @@ if request.has_key("listeCours"):
                     cours.tagBU("remove", idElement)
             except:
                 pass
-            cours.retirerElementPlan(idElement, None)
+            cours.deleteCourseMapItem(idElement, None)
             if isBiblioOrGlo:
                 cours.retirerElement(idElement)
         else:
