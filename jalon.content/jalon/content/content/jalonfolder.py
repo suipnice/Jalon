@@ -471,7 +471,7 @@ class JalonFolder(ATFolder):
 
     def getListeCoursEns(self, member, onglet):
         # LOG.info("----- getListeCoursEns -----")
-        """ Renvoi la liste des cours pour authMember."""
+        # Renvoi la liste des cours pour authMember.
         courses_list = []
         courses_ids_list = []
         courses_list_filter = []
@@ -787,7 +787,7 @@ class JalonFolder(ATFolder):
         for cours in listeCours:
             for acces in cours.getListeAcces:
                 type, code = acces.split("*-*")
-                if not code in dicoAccess:
+                if code not in dicoAccess:
                     if type == "etape":
                         retour = bdd.getInfosEtape(code)
                         if not retour:
