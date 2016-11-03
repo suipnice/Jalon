@@ -1462,17 +1462,18 @@ class JalonCoursWims(JalonActivity, ATDocument):
         u"""détache un élément de l'activité."""
         LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
-        liste_elements = self.getInfosElement()
-        # On demande les infos de l'element à supprimer
-        infosElement = liste_elements[idElement]
+        liste_elements = self.getDocumentsProperties()
 
         # On met à jour la liste des elements du menu
         menu_list = list(self.__getattribute__("liste%s" % menu.capitalize()))
         menu_list.remove(idElement)
         self.__getattribute__("setListe%s" % menu.capitalize())(tuple(menu_list))
 
-        # On supprime l'element de la liste
-        del liste_elements[idElement]
+        # On demande les infos de l'element à supprimer
+        if idElement in liste_elements:
+            infosElement = liste_elements[idElement]
+            # On supprime l'element de la liste
+            del liste_elements[idElement]
 
         repertoire = infosElement["typeElement"]
         if repertoire in _dicoRep:
