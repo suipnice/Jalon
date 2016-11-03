@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2 i18n:translate="">
+        <tal:block i18n:translate="">Affecter les dépôts</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <div class="panel warning radius"
+         tal:condition="context/getAffectationEvaluation">
+         <strong><i class="fa fa-info-circle"></i> Attention : </strong> L'affectation des évaluations a déjà été réalisée.
+    </div>
+    <form id="js-modifDepot" method="post"
+          tal:attributes="action string:${context/absolute_url}/affect_deposit_file_script"
+          tal:condition="not:context/getAffectationEvaluation">
+
+        <fieldset class="panel bkgrnd radius">
+
+            <legend>Affecter les dépôts pour évaluation</legend>
+
+            <p class="text-justify" i18n:translate="">
+                Cette opération n'est réalisable <strong>qu'une seule fois</strong> et seulement lorsque la "date limite de dépôts" et la date "Tolérer les dépôts juqu'au" sont dépassées. Elle affecte à chaque étudiant ayant réalisé un dépot dans la boite le nombre d'évaluations de la boite réglé en option
+            </p>
+
+        </fieldset>
+
+        <div class="panel radius callout">
+            Pour affecter <strong><tal:replace replace="context/getNombreCorrection"/> évaluations par étudiant</strong>, cliquez sur <strong>"Affecter"</strong>.
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-rss"></i>
+                <tal:block i18n:translate="">Affecter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

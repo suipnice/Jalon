@@ -601,14 +601,14 @@ class JalonProperties(SimpleItem):
                     "activer_message_enseignant": self._activer_message_enseignant,
                     "message_enseignant":         self._message_enseignant}
 
-    def setPropertiesMessages(self, form):
+    def setPropertiesMessages(self, form, request):
         #LOG.info("----- setPropertiesMessages -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
-        self.generatePageMonEspace()
+        self.generatePageMonEspace(request)
 
     #-----------------------------#
     # Fonctions du bloc Courriels #
@@ -990,7 +990,7 @@ class JalonProperties(SimpleItem):
                 "annoncer_vider_cache":       self._annoncer_vider_cache,
                 "url_news_maintenance":       self._url_news_maintenance}
 
-    def setPropertiesMaintenance(self, form):
+    def setPropertiesMaintenance(self, form, request):
         #LOG.info("----- setPropertiesMaintenance -----")
         for key in form.keys():
             val = form[key]
@@ -999,7 +999,7 @@ class JalonProperties(SimpleItem):
             if key.startswith("date_"):
                 val = DateTime(val)
             setattr(self, "_%s" % key, val)
-        self.generatePageMonEspace()
+        self.generatePageMonEspace(request)
 
     #------------------------#
     # Fonction Elasticsearch #

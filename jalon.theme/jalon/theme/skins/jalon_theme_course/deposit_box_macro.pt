@@ -225,7 +225,7 @@
             <strong>Évaluations à vérifier :</strong>
             <tal:replace replace="evaluation_by_peers_dict/verif_evaluations_notes"/>
         </div>
-        <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes</h2>
+        <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes sur 20</h2>
         <div class="panel callout radius">
             <strong>Note minimale :</strong>
             <tal:replace replace="evaluation_by_peers_dict/evaluations_notes_min"/>
@@ -240,24 +240,55 @@
         <tal:repeat repeat="index evaluation_by_peers_dict/criteria_order">
             <tal:define define="criteria python:criteria_dict[index];
                                 has_notes python:index in evaluation_by_peers_dict['criteria_notes_dict']">
+            <tal:condition condition="my_view/is_depot_actif">
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/delete_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-trash-o alert"></i>
+            </a>
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/edit_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-pencil"></i>
+            </a>
+            </tal:condition>
+            <tal:condition condition="not:my_view/is_correction_actif">
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/undo_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-undo warning"></i>
+            </a>
+            <a class="right" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${my_view/deposit_box_link}/redo_deposit_box_criteria_form?criteria_id=${index}">
+                <i class="fa fa-pencil"></i>
+            </a>
+            </tal:condition>
             <h3 tal:replace="criteria/title">Titre du critère</h3>
             <div class="panel callout radius"
                  tal:condition="not:has_notes">
                 Aucune note n'est actuellement disponible pour ce critère.
             </div>
-            <tal:condition condition="has_notes">
-            <div class="panel callout radius"
-                 tal:define="criteria_notes python:evaluation_by_peers_dict['criteria_notes_dict'][index]">
-                <strong>Note minimale :</strong>
-                <tal:replace replace="criteria_notes/min"/>
-                <br/>
-                <strong>Note maximale :</strong>
-                <tal:replace replace="criteria_notes/max"/>
-                <br/>
-                <strong>Moyenne :</strong>
-                <tal:replace replace="criteria_notes/avg"/>
+            <div class="row"
+                 tal:condition="has_notes">
+                <div class="small-12 medium-6 columns">
+                    <div class="panel callout radius"
+                         tal:define="criteria_notes python:evaluation_by_peers_dict['criteria_notes_dict'][index]">
+                        <strong>Note minimale :</strong>
+                        <tal:replace replace="criteria_notes/min"/>
+                        <br/>
+                        <strong>Note maximale :</strong>
+                        <tal:replace replace="criteria_notes/max"/>
+                        <br/>
+                        <strong>Moyenne :</strong>
+                        <tal:replace replace="criteria_notes/avg"/>
+                    </div>
+                </div>
+                <div class="small-12 medium-6 columns">
+                    <dl class="deflist">
+                        <dt>Nombre de points</dt>
+                        <dd tal:content="criteria/notation" />
+                        <dt>Coefficient</dt>
+                        <dd tal:content="criteria/coefficient" />
+                    </dl>
+                </div>
             </div>
-            </tal:condition>
             </tal:define>
         </tal:repeat>
     </form>

@@ -10,4 +10,11 @@
 
 context.setAveragePeer()
 
-context.REQUEST.RESPONSE.redirect("%s?tab=peers&amp;mode_etudiant=false" % context.absolute_url())
+HTTP_X_REQUESTED_WITH = False
+if context.REQUEST.HTTP_X_REQUESTED_WITH == 'XMLHttpRequest':
+    HTTP_X_REQUESTED_WITH = True
+
+if not HTTP_X_REQUESTED_WITH:
+    context.REQUEST.RESPONSE.redirect("%s?tab=peers&amp;mode_etudiant=false" % context.absolute_url())
+else:
+    return context.absolute_url()

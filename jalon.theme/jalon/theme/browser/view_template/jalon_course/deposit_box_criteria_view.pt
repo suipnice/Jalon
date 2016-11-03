@@ -135,6 +135,8 @@
                     </div>
                     <div class="small-12 medium-5 columns">
                         <dl class="deflist">
+                            <dt>Noter sur</dt>
+                            <dd tal:content="criteria/notation" />
                             <dt>Coefficient</dt>
                             <dd tal:content="criteria/coefficient" />
                             <dt>Marge</dt>

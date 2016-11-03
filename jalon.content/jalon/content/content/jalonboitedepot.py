@@ -155,6 +155,12 @@ JalonBoiteDepotSchema = ATFolderSchema.copy() + Schema((
                  default=False,
                  searchable=False,
                  widget=BooleanWidget(label=_(u"Autoriser les étudiants à réaliser une auto-évaluation"),)),
+    BooleanField("affectationEvaluation",
+                 required=False,
+                 accessor="getAffectationEvaluation",
+                 default=False,
+                 searchable=False,
+                 widget=BooleanWidget(label=_(u"Indique si l'affectation des évaluations a été faite."),)),
 ))
 
 
@@ -613,6 +619,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             return DateTime().strftime("%Y/%m/%d %H:%M")
         else:
             return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
+
+    def isFinishEvaluation(self):
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        return True if now > self.getDateCorrection() else False
 
     def getNbDepots(self, is_personnel, user_id):
         LOG.info("----- getNbDepots -----")
@@ -1326,11 +1336,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_by_peers_dict["table_title"] = "Évaluation par les pairs"
 
             evaluation_by_peers_dict["options"] = [{"text": "Affecter",
-                                                    "link": "%s/affect_deposit_file_script" % deposit_box_link,
+                                                    "link": "%s/affect_deposit_file_form" % deposit_box_link,
                                                     "icon": "fa fa-rss fa-fw"},
                                                    {"text": "Moyenne",
-                                                    "link": "%s/average_deposit_file_script" % deposit_box_link,
-                                                    "icon": "fa fa-calculator fa-fw"}]
+                                                    "link": "%s/average_deposit_file_form" % deposit_box_link,
+                                                    "icon": "fa fa-calculator fa-fw"},
+                                                   {"text": "Résultats",
+                                                    "link": "%s/edit_peers_results_form" % deposit_box_link,
+                                                    "icon": "fa-trophy"}]
 
             #if not evaluation_by_peers_dict["criteria_dict"]:
             #    evaluation_by_peers_dict["grid_button"] = "fa fa-plus-circle fa-lg fa-fw"
@@ -1523,6 +1536,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         self.setPeersDict(peers_dict)
         LOG.info("***** FINAL peers_dict : %s" % str(peers_dict))
+        self.setAttributActivite({"AffectationEvaluation": True})
 
     def getEvaluateDepositFileForm(self, user, mode_etudiant, student_id=None, deposit_id=None):
         LOG.info("----- getEvaluateDepositFileForm -----")
@@ -1620,7 +1634,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_avg = {}
         evaluation_number = self.getNombreCorrection()
         for average_dict in average.all():
-            LOG.info("***** average_dict : %s" % str(average_dict[0]))
+            LOG.info("***** average_dict : %s" % str(average_dict))
             criteria_error = False
             criteria_text = ""
             criteria_style = ""
@@ -1639,7 +1653,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                              "criteria_error":   criteria_error,
                                              "criteria_style":   criteria_style,
                                              "criteria_text":    criteria_text,
-                                             "criteria_note":    average_dict[-2],
+                                             "criteria_note":    average_dict[1],
                                              "criteria_comment": average_dict[-1]}
         LOG.info("***** criteria_avg : %s" % str(criteria_avg))
 
@@ -1805,7 +1819,11 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         criteria_average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
         for average in criteria_average_list:
             LOG.info("***** average : %s" % str(average))
+            criteria_code = 1
+            criteria_value = None
             criteria_data = criteria_dict[average[1]]
+            if not average[0] in is_verification_evaluation:
+                is_verification_evaluation[average[0]] = False
             if average[2] < correction_number:
                 criteria_code = 2
                 criteria_value = average[3]
@@ -1814,10 +1832,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 criteria_code = 3
                 criteria_value = "%s;%s" % (average[-1], average[-2])
                 is_verification_evaluation[average[0]] = True
-            else:
-                criteria_code = 1
-                criteria_value = None
-                is_verification_evaluation[average[0]] = False
             LOG.info("***** criteria_code : %s" % str(criteria_code))
             LOG.info("***** criteria_value : %s" % str(criteria_value))
             jalon_bdd.setAveragePeer(self.getId(), average[0], average[1], criteria_code, criteria_value, "%.2f" % float(average[2]), 0, "")

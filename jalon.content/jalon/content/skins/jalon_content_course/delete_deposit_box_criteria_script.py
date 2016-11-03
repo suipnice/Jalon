@@ -17,7 +17,10 @@ del criteria_dict[form["criteria_id"]]
 
 context.setCriteriaDict(criteria_dict)
 
-redirection = "%s/deposit_box_criteria_view" % context.absolute_url()
+if "deposit_box_criteria_view" in context.REQUEST.HTTP_REFERER:
+    redirection = "%s/deposit_box_criteria_view" % context.absolute_url()
+else:
+    redirection = "%s?tab=peers" % context.absolute_url()
 
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(redirection)

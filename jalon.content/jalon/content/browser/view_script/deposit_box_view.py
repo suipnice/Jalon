@@ -4,6 +4,8 @@ from zope.component import getMultiAdapter
 from course_view import CourseView
 from jalon.content import contentMessageFactory as _
 
+from DateTime import DateTime
+
 from logging import getLogger
 LOG = getLogger('[DepositBoxView]')
 
@@ -76,9 +78,18 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_edit"].append({"href": "%s/edit_deposit_box_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                             "icon": "fa-pencil",
                                             "text": "Titre"})
-        my_view["deposit_box_edit"].append({"href": "%s/edit_peers_results_form?tab=%s" % (my_view["deposit_box_link"], tab),
-                                            "icon": "fa-trophy",
-                                            "text": "Résultats"})
+
+        my_view["deposit_box_deposit_date"] = my_deposit_box.getAffDate('dateDepot')
+        my_view["is_authorized_deposit"] = my_deposit_box.isDepotActif()
+        if my_view["is_authorized_deposit"] == 2:
+            my_view["is_late"] = True
+            my_view["class_limit_date"] = "callout"
+        else:
+            my_view["is_late"] = False
+            my_view["class_limit_date"] = "warning"
+            if my_view["is_authorized_deposit"] == 3:
+                my_view["is_authorized_deposit"] = 0
+                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 
         my_view["grid_access"] = True if my_deposit_box.getAccesGrille(my_view["is_personnel"]) else False
         #my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
@@ -166,6 +177,16 @@ class DepositBoxView(CourseView):
                                                 "icon":  "fa fa-user fa-fw no-pad",
                                                 "text":  "Autoriser l'auto-évaluation",
                                                 "value": my_deposit_box.getDisplayAuthorizeSelfEvaluation()}]
+            my_view["is_depot_actif"] = True
+            my_view["is_correction_actif"] = True
+            if my_view["is_authorized_deposit"] != 3:
+                now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+                date_depot = DateTime(my_deposit_box.getDateDepot()).strftime("%Y/%m/%d %H:%M")
+                if now >= date_depot:
+                    my_view["is_depot_actif"] = False
+                date_correction = DateTime(my_deposit_box.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
+                if now >= date_correction:
+                    my_view["is_correction_actif"] = False
 
             if my_view["accessSelfEvaluation"]:
                 self_evaluation_note = my_deposit_box.portal_jalon_bdd.getSelfEvaluationNote(my_view["deposit_box_id"], user_id).first()
@@ -197,18 +218,6 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_instruction"] = {"href":  "%s/edit_deposit_box_instruction_form?tab=%s" % (my_view["deposit_box_link"], tab),
                                               "icon":  "fa-pencil",
                                               "text":  "Modifier"}
-
-        my_view["deposit_box_deposit_date"] = my_deposit_box.getAffDate('dateDepot')
-        my_view["is_authorized_deposit"] = my_deposit_box.isDepotActif()
-        if my_view["is_authorized_deposit"] == 2:
-            my_view["is_late"] = True
-            my_view["class_limit_date"] = "callout"
-        else:
-            my_view["is_late"] = False
-            my_view["class_limit_date"] = "warning"
-            if my_view["is_authorized_deposit"] == 3:
-                my_view["is_authorized_deposit"] = 0
-                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 
         my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False
         LOG.info("***** is_personnel : %s" % my_view["is_personnel"])

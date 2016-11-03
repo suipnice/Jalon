@@ -79,7 +79,7 @@
 
                 <div class="large-6 medium-6 small-12 columns" data-equalizer-watch="data-equalizer-watch">
                     <a class="connection-button split has-tip"
-                       tal:attributes="href string:${here/absolute_url}/casloginunice;
+                       tal:attributes="href python:test(came_from, '%s/casloginunice?came_from=%s' % (here.absolute_url(), came_from), '%s/casloginunice' % here.absolute_url());
                                        title string:Identifiant et mot de passe de votre compte de messagerie de l'${infos_connexion/etablissement}."
                        i18n:attributes="title">
                         <i class="fa fa-key"></i><tal:block i18n:translate="">Se connecter avec son compte UNS</tal:block>

@@ -60,7 +60,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealForm('js-courseCreator','reveal-main','description')" />
+            tal:content="structure string:setRevealForm('js-courseCreator','reveal-main','description')"></script>
 
     </metal:main>
 </body>
