@@ -51,7 +51,7 @@ class WimsActivityView(CourseView):
         else:
             my_view["activity_link_title"] = "Accéder à cet entrainement WIMS"
 
-        my_view["activity_icon"] = self.context.getIcon()
+        my_view["activity_icon"] = self.context.getIconClass()
         my_view["duree"] = my_wims_activity.getDuree()
 
         my_view["is_personnel"] = my_wims_activity.isPersonnel(user, mode_etudiant)

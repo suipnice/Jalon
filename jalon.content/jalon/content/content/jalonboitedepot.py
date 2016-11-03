@@ -212,10 +212,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             return self._infos_element.get(key, None)
         return self._infos_element
 
-    def getCourseItemProperties(self, key=None):
-        LOG.info("----- getCourseItemProperties -----")
-        return self.getDocumentsProperties(key)
-
     def getDocumentsList(self):
         LOG.info("----- getDocumentsList -----")
         return self._infos_element.keys()

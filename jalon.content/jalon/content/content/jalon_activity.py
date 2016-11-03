@@ -138,6 +138,10 @@ class JalonActivity(SimpleItem):
             documents_list.append(document_dict)
         return documents_list
 
+    def getCourseItemProperties(self, key=None):
+        LOG.info("----- getCourseItemProperties -----")
+        return self.getDocumentsProperties(key)
+
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
         """Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
         LOG.info("----- getItemActions -----")

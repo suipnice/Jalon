@@ -352,15 +352,15 @@ class JalonCoursWims(JalonActivity, ATDocument):
                      "icon":  "fa fa-book",
                      "link":  parent.absolute_url()},
                     {"title": self.Title(),
-                     "icon":  self.getIcon(),
+                     "icon":  self.getIconClass(),
                      "link":  self.absolute_url()}]
         if sub_page != "":
             response.append({"title": sub_page, "icon":  "fa fa-edit"})
         return response
 
-    def getIcon(self):
+    def getIconClass(self):
         """Return icon adaptated to activity type (Training or Exam)."""
-        LOG.info("----- getIcon -----")
+        LOG.info("----- getIconClass -----")
         return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
 
     def getDocumentsProperties(self, key=None):
