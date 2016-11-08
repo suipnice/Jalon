@@ -33,6 +33,7 @@
                     </tal:block>
                 </div>
                 <div class="panel radius">
+                    <strong>Éditeur :</strong>
                     <tal:block replace="ressource/publisher"/>
                     <tal:block content="ressource/creationdate"/>
                 </div>
@@ -50,6 +51,7 @@
                      i18n:translate="">
                     La ressource n'est plus disponible dans le catalogue de la BU.
                 </div>
+            <input type="hidden" name="is_bu" value="1"/>
             </tal:define>
         </tal:block>
 

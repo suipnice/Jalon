@@ -15,6 +15,11 @@ from Products.CMFPlone import PloneMessageFactory as _
 # context.plone_log("[valider_form]")
 error = False
 form = context.REQUEST.form
+
+if "is_bu" in form:
+    state.set(status="success_edit_external_resource")
+    return state
+
 validate_key = form["validate_key"]
 
 validate_dict = {"create_tag":               ["title"],

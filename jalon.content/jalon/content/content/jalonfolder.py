@@ -1532,13 +1532,13 @@ class JalonFolder(ATFolder):
     #----------------------#
     #   Utilitaire Primo   #
     #----------------------#
-    def rechercherCatalogueBU(self, termeRecherche, typeRecherche):
+    def searchBUCatalog(self, term_search, type_search="liste"):
         portal_primo = getToolByName(self, "portal_primo")
-        if typeRecherche == "liste":
-            resultat = portal_primo.rechercherCatalogueBU(termeRecherche)
-        elif typeRecherche == "BU":
-            resultat = portal_primo.BUResult(termeRecherche)
-        elif typeRecherche == "suggestion":
+        if type_search == "liste":
+            resultat = portal_primo.searchBUCatalog(term_search)
+        elif type_search == "BU":
+            resultat = portal_primo.BUResult(term_search)
+        elif type_search == "suggestion":
             resultat = portal_primo.BUacquisition()
         else:
             pass

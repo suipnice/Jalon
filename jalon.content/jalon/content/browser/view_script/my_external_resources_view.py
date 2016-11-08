@@ -45,9 +45,9 @@ class MyExternalResourcesView(MySpaceView):
             nb_button_action += 1
         if jalon_properties["activer_liens_catalogue_bu"]:
             item_adder_list.append({"action_name":      "Rechercher et ajouter depuis le catalogue BU",
-                                    "action_icon":      "fa fa-plus-circle",
+                                    "action_icon":      "fa fa-search",
                                     "action_css_class": "button expand create",
-                                    "action_link":      "create_external_resource_form"})
+                                    "action_link":      "search_bu_catalog_form"})
             nb_button_action += 1
         if nb_button_action == 2:
             is_two_actions = True

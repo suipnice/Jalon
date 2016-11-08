@@ -31,6 +31,40 @@
          tal:condition="context/Description"
          tal:content="structure python:context.Description().replace('\n', '<br/>')"></div>
 
+    <tal:condition condition="python:external_resource_type == 'Catalogue BU'">
+    <tal:define define="external_resource context/getRessourceCatalogueBU">
+    <div id="js-primoContainer">
+        <tal:block repeat="image_src external_resource/image">
+            <img class="primo_img"
+                 tal:condition="image_src"
+                 tal:attributes="src image_src" />
+        </tal:block>
+    </div>
+
+    <div class="panel radius">
+        <strong>Éditeur : </strong>
+        <tal:block replace="external_resource/publisher" />
+        <tal:block content="external_resource/creationdate" />
+    </div>
+
+    <a class="button expand success" target="_blank"
+       tal:condition="external_resource/urlcatalogue"
+       tal:attributes="href external_resource/urlcatalogue">
+        <i class="fa fa-eye"></i><tal:block i18n:translate="">Voir cette ressource sur le catalogue de la BU</tal:block>
+    </a>
+
+    <div class="panel warning radius"
+         tal:condition="not:external_resource/urlcatalogue"
+         i18n:translate="">
+        La ressource n'est plus disponible dans le catalogue de la BU.
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:removeErrorImages('js-primoContainer')"></script>
+
+    </tal:define>
+    </tal:condition>
+
     <a class="button expand success" target="_blank"
        tal:attributes="href context/getURLLien"
        tal:condition="python:external_resource_type == 'Lien web'">

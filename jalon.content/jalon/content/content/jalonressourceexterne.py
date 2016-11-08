@@ -227,7 +227,7 @@ class JalonRessourceExterne(ATDocumentBase):
                     #item.setInfos_element(dico)
                     item.setInfosElement(dico)
 
-    def majCatalogueBU(self, recordid):
+    def editFromBUCatalogBU(self, recordid):
         portal_primo = getToolByName(self, "portal_primo")
         resultat = portal_primo.rechercherRecordById(recordid)
         dico = {"Title":                 resultat["title"],

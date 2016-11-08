@@ -131,7 +131,7 @@ class Primo(SimpleItem):
         return None
 
     #plus d'info concernant un element
-    def rechercherCatalogueBU(self, termeRecherche):
+    def searchBUCatalog(self, termeRecherche):
         params = {"institution": self.getGenerique("etablissement"),
                     "onCampus": "false",
                     "query": "any,contains,%s" % termeRecherche,

@@ -1,0 +1,155 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="errors options/state/getErrors | nothing;
+                                term_search request/term_search | nothing">
+
+    <h2>
+        <i class="fa fa-search"></i><tal:block i18n:translate="">Rechercher dans le catalogue de la BU</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form class="js-BULinkSearch" id="js-BULinkCreator_search" method="POST"
+          tal:attributes="action string:${context/absolute_url}/search_bu_catalog_form">
+
+        <div class="field ArchetypesStringWidget" id="archetypes-fieldname-recherche">
+            <label for="term_search" i18n:translate="">Mot clé ou code :</label>
+            <input type="text" size="30" maxlength="255"
+                   name="term_search" id="term_search"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value term_search" />
+
+            <button type="submit" class="button small radius"
+                    name="form.button.save">
+                <i class="fa fa-search"></i>
+                <tal:block i18n:translate="">Rechercher</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <br/><br/>
+    <tal:condition condition="term_search">
+    <form name="element_add" id="js-BULinkCreator" method="POST"
+          tal:attributes="action string:${context/absolute_url}/create_external_bu_script;
+                          data-success_msg string:La sélection a été ajoutée aux ressources externes."
+          tal:define="results_search python:context.searchBUCatalog(term_search)">
+
+        <div class="panel warning radius"
+             tal:condition="not:results_search"
+             i18n:translate="">
+            La recherche n'a donné aucun résultat.
+        </div>
+
+        <tal:listing condition="results_search">
+        <h2 class="texte_icone icone_liste">Les 10 premiers résultats dans le catalogue de la BU</h2>
+        <table summary="Liste des ressources BU">
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" id="switch_reveal-all" name="checkall" role="recordsid:list" />
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </th>
+                    <th i18n:translate="">Image</th>
+                    <th class="sort text-left" data-sort="title" title="Trier selon le titre" i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre / Informations</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="list">
+            <tal:entry repeat="item results_search">
+                <tr>
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round">
+                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
+                                   tal:attributes="id string:switch_reveal-${repeat/item/index};
+                                                   value item/recordid"
+                                   i18n:attributes="title" />
+                            <label title="Action par lot : sélectionner / désélectionner"
+                                   tal:attributes="for string:switch_reveal-${repeat/item/index}"
+                                   i18n:attributes="title"></label>
+                        </div>
+                    </td>
+                    <td>
+                    <tal:block repeat="image_src item/image">
+                        <img class="primo_img"
+                             tal:attributes="src image_src"/>
+                    </tal:block>
+                    </td>
+                    <td class="title"
+                        tal:define="resTitle python:here.getShortText(item['title'].encode('utf-8'), 75)">
+                        <span class="hide" tal:content="resTitle" />
+                        <a target="_blank" title="Voir ce document sur le site de la BU (dans une nouvelle page)."
+                           tal:attributes="href item/urlcatalogue"
+                           tal:content="resTitle"
+                           i18n:attributes="title" />
+                        <span>
+                            <strong tal:content="item/creator" /><br />
+                            <tal:block replace="item/publisher"/><br />
+                            <tal:block content="item/creationdate"/>
+                        </span>
+                    </td>
+                </tr>
+            </tal:entry>
+            </tbody>
+        </table>
+
+        <a class="button tiny expand success radius" target="_blank"
+           tal:attributes="href python:context.searchBUCatalog(term_search, 'BU')">
+            <i class="fa fa-search-plus"></i>
+            <tal:block i18n:translate="">Consulter plus de résultats sur le catalogue de la BU</tal:block>
+        </a>
+        <a class="button tiny expand secondary radius" target="_blank"
+           tal:attributes="href python:context.searchBUCatalog(term_search, 'suggestion')">
+            <i class="fa fa-asterisk"></i>
+            <tal:block i18n:translate="">Suggestions d’acquisitions</tal:block>
+        </a>
+
+        <input type="hidden" name="member_id" tal:attributes="value user/getId"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Créer</tal:block>
+            </button>
+        </div>
+
+        <script charset="UTF-8"
+                tal:content="structure string:removeErrorImages('js-BULinkCreator')"></script>
+        <script charset="UTF-8"
+                tal:content="structure string:setSortableList('js-BULinkCreator',['title'],'title','desc')"></script>
+        <script charset="UTF-8"
+                tal:content="structure string:setBatchSelect('js-BULinkCreator')"></script>
+        <script charset="UTF-8"
+                tal:content="structure string:setBULinkCreator()"></script>
+
+        </tal:listing>
+    </form>
+    </tal:condition>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setBULinkSearch()"></script>
+
+</metal:content-core>
+
+</body>
+
+</html>
