@@ -71,6 +71,7 @@ class JalonExerciceWims(ATDocumentBase):
 
     def getBreadcrumbs(self, edit_mode=False):
         """Fournit le fil d'ariane de l'exercice courant."""
+        LOG.info("----- getBreadcrumbs -----")
         portal_url = self.portal_url.getPortalObject().absolute_url()
         crumbs_list = [{"title" : _(u"Mon espace"),
                         "icon"  : "fa fa-home",
@@ -90,6 +91,7 @@ class JalonExerciceWims(ATDocumentBase):
 
     def getEditWimsExerciceMacroName(self):
         """Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
+        LOG.info("----- getEditWimsExerciceMacroName -----")
         edit_wims_exercice_macro_name = "edit_wims_exercice_createxo"
         if self.getModele() == "externe":
             edit_wims_exercice_macro_name = "edit_wims_exercice_externe"
@@ -97,6 +99,7 @@ class JalonExerciceWims(ATDocumentBase):
 
     def getVariablesDefaut(self, modele):
         """Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
+        LOG.info("----- getVariablesDefaut -----")
         variables_defaut = {"qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
@@ -312,6 +315,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def addExoWims(self, idobj=None, title=None, author=None, modele=None, form=None, sandbox=False):
         """Ajoute ou modifie un exercice wims."""
+        LOG.info("----- addExoWims -----")
         title = self.formaterTitreWIMS(title)
         member = self.portal_membership.getMemberById(author)
         auth_email = member.getProperty("email")
@@ -322,7 +326,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             fullname = member.getProperty("displayName")
 
         source = str(getattr(self, "modele_%s.oef" % modele))
-        # LOG.info("addExoWims / original source=\n%s"%source)
+        LOG.info("addExoWims / original source=\n%s" % source)
         # La source de départ contient des caracteres html echapés, qu'il faut rétablir avant de les renvoyer à WIMS.
         source = source.replace("&amp;", "&")
         source = source.replace("&lt;", "<")
@@ -466,6 +470,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def genererDataQuestionSuite(self, enonce, feedback, reponses, id_question):
         u"""Genere une chaine au format spécifique des questions du modele "QCM Suite"."""
+        LOG.info("----- genererDataQuestionSuite -----")
         enonce = enonce.replace("\n", "<br/>")
         # Si la premiere ligne contient "Qtitle", alors on ne remplace pas le premier saut de ligne
         if enonce.startswith("Qtitle"):
@@ -477,6 +482,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def ajouterSerie(self, author):
         """Ajoute un groupe d'exercices wims."""
+        LOG.info("----- ajouterSerie -----")
         liste_exos = self.getListeIdsExos()
         if len(liste_exos) > 0:
             # qclass = "%s_1" % self.aq_parent.getComplement()
@@ -496,6 +502,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def supprimerSerie(self):
         """Supprime un groupe d'exercices wims."""
+        LOG.info("----- supprimerSerie -----")
         liste_exos = self.getListeIdsExos()
         if len(liste_exos) > 0:
             for exo_id in liste_exos:
@@ -509,10 +516,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def ajouterTag(self, tag):
         """ajoute Tag."""
+        LOG.info("----- ajouterTag -----")
         return jalon_utils.setTag(self, tag)
 
     def authUser(self, quser=None, qclass=None, request=None):
         """AuthUser WIMS : permet d'authentifier "quser" dans une classe wims "qclass"."""
+        LOG.info("----- authUser -----")
         return jalon_utils.authUser(self.aq_parent, quser, qclass, request)
 
     def delExoWims(self):
@@ -521,6 +530,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         La suppression coté jalon se fait ensuite dans folder_delete.cpy
 
         """
+        LOG.info("----- delExoWims -----")
         qclass = "%s_1" % self.aq_parent.getComplement()
         author = self.portal_membership.getAuthenticatedMember().getId()
         qexo = self.getId()
@@ -538,22 +548,26 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def lister_modules_wims(self, authMember, module_path="/"):
         u"""Liste tous les modules wims publiés sous le niveau "module_path"."""
+        LOG.info("----- lister_modules_wims -----")
         dico = {"job": "listmodules", "option": module_path, "code": authMember}
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/lister_modules_wims", "message": "demande une Liste de modules wims publiés ", "requete": dico})
 
     def getExoXML(self, formatXML="OLX", version="latest"):
         """Appelle la fonction getExoXML de jalonexportswims."""
+        LOG.info("----- getExoXML -----")
         import jalonexportswims
         return jalonexportswims.getExoXML(context=self, formatXML=formatXML, version=version)
 
     def getExoZIP(self, filename_path, exo_donnees):
         """Appelle la fonction getExoXML de jalonexportswims."""
+        LOG.info("----- getExoZIP -----")
         import jalonexportswims
         return jalonexportswims.getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
 
     def getListeExports(self):
         u"""Fournit la liste des formats exportables a partir du modèle courant."""
+        LOG.info("----- getListeExports -----")
         liste_formats = {"qcmsimple":                  ["QTI", "OLX", "OEF", "FLL"],
                          "equation":                   ["OEF"],
                          "texteatrous":                ["OEF"],
@@ -575,12 +589,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def getModule(self, authMember, module_path):
         """retourne toutes les infos disponibles pour le module "module_path"."""
+        LOG.info("----- getModule -----")
         dico = {"job": "getmodule", "option": module_path, "code": authMember}
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/getModule", "message": "demande les infos d'un module", "requete": dico})
 
     def getTypeWims(self):
         """Retourne le type d'element (exercice / groupe)."""
+        LOG.info("----- getTypeWims -----")
         if self.modele == "groupe":
             return "Groupe"
         else:
@@ -593,7 +609,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # 2/ attention aux }\n qui pourraient etre contenus.
         #   1ere Solution envisagee ==> remplacer "}" par "&#125;" ? ==> non car le code doit etre interprete par wims.
         #   2e solution ==> remplacer "}\n" par  "}\t\n". Les \t ne seront pas affiches en HTML
-
+        LOG.info("----- cleanData -----")
         input_data = input_data.replace("\r\n", "\n")
         input_data = input_data.replace("\r", "\n")
         input_data = input_data.replace("\n\n", "\n")
@@ -606,10 +622,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def getExoOEF(self, modele, authMember, requete={}):
         """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
+        LOG.info("----- getExoOEF -----")
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
         try:
-            retour = json.loads(fichier)
-            # LOG.error("[getExoWims] ERREUR WIMS / retour = %s" % retour)
+            json.loads(fichier)
+            # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
             # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
             # autre erreur possible : l'exercice demandé a disparu de WIMS.
 
@@ -625,10 +642,19 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def getExoWims(self, modele, authMember, requete={}):
         """Permet de parser le code source d'un exercice WIMS."""
-        # LOG.info("[getExoWims] modele = %s" % modele)
+        LOG.info("[getExoWims] modele = %s" % modele)
         # Il faudra faire un traitement specifique aux exercices externes ici
         if modele == "externe":
-            return {"status": "OK"}
+            if "permalink" in requete :
+                # Cas où on recharge la page de modification (permalien incorrect).
+                LOG.info("[getExoWims] PERMALINK = %s" % requete["permalink"])
+                return requete
+            else:
+                if self.permalink != "":
+                    displayed_permalink = "%s?%s&cmd=new" % (self.getUrlServeur(), self.permalink)
+                else:
+                    displayed_permalink = ""
+                return {"status": "OK", "permalink": displayed_permalink}
         # Cas où on recharge la page de modification (un parametre doit etre manquant).
         # on recharge alors simplement le formulaire precedent.
         if "option" in requete and requete["option"] == "force_rewrite":
@@ -797,7 +823,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
                 m = re.compile(pattern)
                 recherche = m.search(fichier)
-                # LOG.info("[getExoWims] variable : %s // valeur : %s" % (key,recherche.group(1))
+                LOG.info("[getExoWims] variable : %s // valeur : %s" % (key, recherche.group(1)))
                 if recherche is not None:
                     variable = recherche.group(1)
                     # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
@@ -865,6 +891,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def extendResearch(self, variable, fichier, end_offset):
         u"""Permet d'etendre une recherche d'expression reguliere dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""
+        LOG.info("----- extendResearch -----")
         CountLeft = len(re.findall("\{", variable))
         CountRight = len(re.findall("\}", variable))
         if CountLeft > CountRight:
@@ -881,6 +908,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def getParamListeExos(self, exo_params, mode="autoeval"):
         u"""permet d'obtenir des parametres par défaut pour visualiser un exo en dehors d'une feuille."""
+        LOG.info("----- getParamListeExos -----")
         if exo_params:
             exo = exo_params.replace("*-*", "&")
             return exo
@@ -912,18 +940,22 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def convertLangToWIMS(self, portal_lang):
         """Permet d'obtenir le code de langue WIMS a partir du code de langue de Plone."""
+        LOG.info("----- convertLangToWIMS -----")
         return jalon_utils.convertLangToWIMS(portal_lang)
 
     def test(self, condition, valeurVrai, valeurFaux):
         """permet de tester une condition, puis de renvoyer une valeur en fonction."""
+        LOG.info("----- test -----")
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
     def getUrlServeur(self):
         """fournit l'URL du serveur WIMS."""
+        LOG.info("----- getUrlServeur -----")
         return self.aq_parent.wims("getAttribut", "url_connexion")
 
     def formaterTitreWIMS(self, titre):
         u"""Renvoit une chaine dépourvye d'un ensemble de caracteres susceptibles de corrompre un exercice."""
+        LOG.info("----- formaterTitreWIMS -----")
         listeReplace_titre_wims = ["<", ">", "{", "}", "(", ")", "[", "]", "$", "&", "?", "!", ",", "\"", "\'", ";", "\\", "/"]
         for lettre in listeReplace_titre_wims:
             titre = titre.replace(lettre, " ")
@@ -932,6 +964,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def setProperties(self, dico):
         u"""Définit les propriétés d'un jalonexercicewims."""
+        LOG.info("----- setProperties -----")
         for key in dico.keys():
             if key == "Title":
                 dico[key] = self.formaterTitreWIMS(dico[key])
@@ -955,7 +988,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         Cette fonction ne renvoit que les variables de l'URL. Inutile de sauvegarder le DNS et "http://"...
 
         """
+        LOG.info("----- parser_permalien -----")
         new_permalink = ""
+        message = ""
         # On applique un ensemble de filtre pour éviter que des utilisateurs collent des liens mal formés, du style
         # http://ticewims.unice.fr/wims/wims.cgi?module=local/qcmC2i.fr" title="
         # ==> sera remplacé par
@@ -963,9 +998,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # strip retire les espace avant/apres, split[0] coupe au premier espace, et split('"') ne prend que ce qui se trouve avant un guillemet
         new_permalink = permalien.strip().split()[0].split('"')[0]
 
-        message = _(u"Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement.")
+        test_string = "http://"
+        if new_permalink.count(test_string) > 1:
+            # We take only the last URL.
+            new_permalink = "%s%s" % (test_string, new_permalink.split(test_string)[-1])
+            message = _(u"Un exercice ne peux avoir qu'un seul permalien.<br/>")
+
         if new_permalink != permalien:
-            self.plone_utils.addPortalMessage(message, type='warning')
+            message = message + _(u"Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement.")
 
         url = urlparse(new_permalink)
         params = {}
@@ -979,13 +1019,21 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     params[variable[0]] = params[variable[0]] + "," + variable[1]
         if "module" in params.keys():
             new_permalink = "module=%s" % params['module']
-            for key in params.keys():
+            for key in sorted(params.iterkeys()):
                 if key not in ['cmd', 'session', 'module']:
                     new_permalink = "%s&%s=%s" % (new_permalink, key, params[key])
-        return new_permalink
+            if message != "":
+                self.plone_utils.addPortalMessage(message, type='warning')
+            return new_permalink
+        else:
+            message = _(u"Permalien incorrect. Assurez-vous de coller un permalien correct svp.")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            # Dans ce cas, l'exercice ne sera pas modifié.
+            return ""
 
     def addRelatedItem(self, item_a_ajouter):
         u"""Ajoute un objet aux relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        LOG.info("----- addRelatedItem -----")
         relatedItems = self.getRelatedItems()
         if item_a_ajouter not in relatedItems:
             relatedItems.append(item_a_ajouter)
@@ -994,6 +1042,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def removeRelatedItem(self, item_a_retirer):
         u"""Retire un objet des relatedItems du JalonExerciceWims actuel, puis réindexe l'exo."""
+        LOG.info("----- removeRelatedItem -----")
         relatedItems = self.getRelatedItems()
         if item_a_retirer in relatedItems:
             relatedItems.remove(item_a_retirer)
@@ -1009,6 +1058,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         """
         # Pour le moment, action n'est pas utile. Le même role permet d'acceder en lecture / ecriture.
+        LOG.info("----- checkRoles -----")
         user_roles = user.getRolesInContext(context)
         if 'Owner' in user_roles or 'Manager' in user_roles:
             return True

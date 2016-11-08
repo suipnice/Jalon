@@ -98,11 +98,11 @@
                        tal:define="permalink context/permalink">
 
             <iframe id="insert_wims"
-                    condition="permalink"
+                    tal:condition="permalink"
                     tal:attributes="src string:${param_wims/home_url}?${permalink}&amp;cmd=new&amp;lang=${wims_lang}"></iframe>
 
-            <div tal:condition="not:permalink" class="panel warning radius">
-                <p i18n:translate="">
+            <div tal:condition="not:permalink" class="small-12 columns">
+                <p class="panel warning radius" i18n:translate="">
                     Vous n'avez choisi aucun élément dans la banque d'exercices WIMS.
                 </p>
             </div>

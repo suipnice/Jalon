@@ -103,6 +103,9 @@
                             onclick="this.select();"
                             tal:content="QCM_parsed/code_source | string:Enregistrez votre exercice pour afficher son code source."
                             readonly="readonly" />
+                    <div class="texte_icone icone_information text-right">
+                        Notez que ce code source n'est mis à jour qu'au moment de l'enregistrement de l'exercice.
+                    </div>
                 </div>
                 <div class="text-right">
                     <a data-reveal-id="reveal-main" data-reveal-ajax="true"

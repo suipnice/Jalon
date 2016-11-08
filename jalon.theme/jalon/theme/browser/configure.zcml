@@ -164,6 +164,12 @@
                     template="view_template/jalon_course/wims_activity_view.pt"
                     permission="zope2.View"/>
 
+      <browser:page name="wims_activity_exercice_view"
+                    for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
+                    class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"
+                    template="view_template/jalon_course/wims_activity_exercice_view.pt"
+                    permission="zope2.View"/>
+
     <!-- MyStudentsView Definition -->
     <browser:page name="mes_etudiants_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"

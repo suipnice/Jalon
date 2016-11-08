@@ -10,6 +10,7 @@ from Products.ATContentTypes.content.document import ATDocument, ATDocumentSchem
 from Products.ATContentTypes.content.base import registerATCT
 from Products.CMFCore.utils import getToolByName
 
+from DateTime import DateTime
 from persistent.dict import PersistentDict
 
 from jalon.content import contentMessageFactory as _
@@ -24,7 +25,7 @@ from jalon_activity import JalonActivity
 
 # Messages de debug :
 from logging import getLogger
-LOG = getLogger('jaloncourswims')
+LOG = getLogger('[jaloncourswims]')
 """
 # Log examples :
 LOG.debug('debug message')
@@ -53,7 +54,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getTypeWims",
                 searchable=False,
                 widget=StringWidget(label=_(u"Type de l'activité"),
-                                    description=_(u"Description du type de l'objet JalonCoursWims (feuille (AutoEvaluation) ou Examen)"),
+                                    description=_(u"Type de l'objet JalonCoursWims (feuille (Entrainement) ou Examen)"),
                                     )
                 ),
     StringField("idFeuille",
@@ -61,7 +62,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getIdFeuille",
                 searchable=False,
                 widget=StringWidget(label=_(u"Identifiant Wims de la feuille"),
-                                    description=_(u"Description de l'identifiant Wims de la feuille"),
+                                    description=_(u"Numero de la feuille sur WIMS"),
                                     )
                 ),
     StringField("idExam",
@@ -69,7 +70,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                 accessor="getIdExam",
                 searchable=False,
                 widget=StringWidget(label=_(u"Identifiant Wims de l'examen"),
-                                    description=_(u"Description de l'identifiant Wims de l'examen"),
+                                    description=_(u"Numero de l'examen sur WIMS"),
                                     )
                 ),
     StringField("note_max",
@@ -107,7 +108,7 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                accessor="getListeExercices",
                searchable=False,
                widget=LinesWidget(label=_(u"Liste des exercices"),
-                                  description=_(u"Liste des exercices de l&rsquo;autoévaluation / examen"),
+                                  description=_(u"Liste des exercices de l&rsquo;entrainement / examen"),
                                   visible={'view': 'visible', 'edit': 'invisible'},
                                   )
                ),
@@ -115,8 +116,8 @@ JalonCoursWimsSchema = ATDocumentSchema.copy() + Schema((
                required=False,
                accessor="getListeSujets",
                searchable=False,
-               widget=LinesWidget(label=_(u"Liste des sujets"),
-                                  description=_(u"Liste des sujets de cet autoevaluation ou examen"),
+               widget=LinesWidget(label=_(u"Liste des documents"),
+                                  description=_(u"Liste des documents de cette activité"),
                                   visible={'view': 'visible', 'edit': 'invisible'},
                                   )
                ),
@@ -226,44 +227,236 @@ class JalonCoursWims(JalonActivity, ATDocument):
     _infos_element = {}
 
     def __init__(self, *args, **kwargs):
+        """Initialize JalonCoursWims."""
+        LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
 
-    ##-------------------##
-    # Fonctions générales #
-    ##-------------------##
+    # #-------------------# #
+    #  Fonctions générales  #
+    # #-------------------# #
+
+    def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        """Ajoute un element de mon espace et met a jour les related items de l'activité et de l'élément."""
+        item = super(JalonCoursWims, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
+        if folder_object.getId() == "Wims":
+            liste = "Exercices"
+            idClasse = self.getClasse()
+            # A SUPPRIMER :
+            rep_wims = {"status": "OK"}
+            if item_id.startswith("externe-"):
+                item_title = item["item_title"].decode("utf-8")
+                item_object = item['item_object']
+                permalien = item_object.permalink
+                dico = {"job": "putexo", "code": user_id, "qclass": idClasse, "qsheet": self.idFeuille}
+                if permalien != "":
+                    # exemple de permalien : module=U2/analysis/oeffourier.fr&exo=addfourier2,addfourier1,addfourier4,addfourier3&qnum=1&qcmlevel=3
+                    parsed_permalien = permalien.split("&", 1)
+                    if len(parsed_permalien) == 1:
+                        # par defaut, si aucun parametre n'a ete defini, on definie au minima le parametre de sévérité
+                        parsed_permalien.append("qcmlevel=1")
+                    donnees_exercice = u"%s\nparams=%s\npoints=%s\nweight=%s\ntitle=%s\ndescription=%s" % (parsed_permalien[0],
+                                                                                                           parsed_permalien[1],
+                                                                                                           "10",
+                                                                                                           "1",
+                                                                                                           item_title,
+                                                                                                           "")
+                    dico["data1"] = donnees_exercice.encode("utf-8")
+                    rep_wims = self.wims("callJob", dico)
+                else:
+                    rep_wims = '{"status": "ERROR", "message": "pas de permalien pour cet exercice externe"}'
+                rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/addMySpaceItem", "message": "parametres de la requete : %s" % dico})
+
+            # TODO !!! TRAITER les AUTRES CAS.
+
+            if rep_wims['status'] != "OK":
+                portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
+                contact_link = portal_jalon_properties.getLienContact()
+                admin_link = u"%s?subject=[%s] Erreur d'insertion exercice WIMS&amp;body=exercice : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
+                    contact_link["contact_link"], contact_link["portal_title"], item_id)
+                message = _(u'Une erreur est survenue. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter un administrateur</a> svp.' % admin_link)
+                message = "<p>%s</p><p><strong>%s:</strong> %s</p>" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
+                self.plone_utils.addPortalMessage(message, type='error')
+
+                # L'exercice n'est pas ajouté.
+                # LOG.info("\n####### jaloncourswims/addMySpaceItem -- Attention : '%s'\n" % rep_wims['message'])
+                self.detachExercice(item_object)
+                # message = _(u"Une erreur est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.")
+                # message = "%s<br/><strong>%s:</strong>%s" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
+                # self.plone_utils.addPortalMessage(message, type='error')
+                return item
+
+        else:
+            liste = "Sujets"
+        """Ajoute l'element à la liste des items de l'activité."""
+        self.addItemProperty(item["item_id_no_dot"], item["item_type"], item["item_title"], user_id, display_item, item["item_complement"], liste)
+
+    def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element, liste):
+        """Ajoute un element aux liste des items d'une activité."""
+        LOG.info("----- addItemProperty (liste = %s) -----" % liste)
+
+        items_properties = self.getDocumentsProperties()
+        if item_id not in items_properties:
+            items_properties[item_id] = {"titreElement":    item_title,
+                                         "typeElement":     item_type,
+                                         "createurElement": item_creator,
+                                         "affElement":      display_item,
+                                         "masquerElement":  ""}
+
+            if complement_element:
+                items_properties[item_id]["complementElement"] = complement_element
+            # self.setDocumentsProperties(items_properties)
+
+        if liste == "Exercices":
+            listeExercices = list(self.getListeExercices())
+            listeExercices.append(item_id)
+            setattr(self, "listeExercices", tuple(listeExercices))
+            message = _(u"L'exercice '%s' a bien été ajouté." % item_title.decode("utf-8"))
+        else:
+            listeSujets = list(self.getListeSujets())
+            listeSujets.append(item_id)
+            setattr(self, "listeSujets", tuple(listeSujets))
+            message = _(u"'%s' a bien été ajouté aux documents enseignants." % item_title.decode("utf-8"))
+
+        self.plone_utils.addPortalMessage(message, type='success')
+
+    def detachExercice(self, item_object):
+        """Retire l'exercice item_object des related_items de l'activité, et inversement."""
+        LOG.info("----- detachExercice -----")
+
+        item_relatedItems = item_object.getRelatedItems()
+        item_relatedItems.remove(self)
+        item_object.setRelatedItems(item_relatedItems)
+        item_object.reindexObject()
+
+        activity_relatedItems = self.getRelatedItems()
+        activity_relatedItems.remove(item_object)
+        self.setRelatedItems(activity_relatedItems)
+
+        self.reindexObject()
+
     def getDisplayProfile(self, profile_id=None):
+        """get Display Profile."""
         LOG.info("----- getDisplayProfile -----")
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
+    def getBreadcrumbs(self, sub_page=""):
+        """Get current page breadcrumbs."""
+        LOG.info("----- getBreadcrumbs -----")
+        portal = self.portal_url.getPortalObject()
+        parent = self.aq_parent
+        response = [{"title": _(u"Mes cours"),
+                     "icon":  "fa fa-university",
+                     "link":  "%s/mes_cours" % portal.absolute_url()},
+                    {"title": parent.Title(),
+                     "icon":  "fa fa-book",
+                     "link":  parent.absolute_url()},
+                    {"title": self.Title(),
+                     "icon":  self.getIconClass(),
+                     "link":  self.absolute_url()}]
+        if sub_page != "":
+            response.append({"title": sub_page, "icon":  "fa fa-edit"})
+        return response
+
+    def getIconClass(self):
+        """Return icon adaptated to activity type (Training or Exam)."""
+        LOG.info("----- getIconClass -----")
+        return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
+
     def getDocumentsProperties(self, key=None):
+        """get Properties for one or all Documents."""
         LOG.info("----- getDocumentsProperties -----")
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
-    def getCourseItemProperties(self, key=None):
+    """def getCourseItemProperties(self, key=None):
+        # Get Course Item Properties (alias to getDocumentsProperties(key)).
         LOG.info("----- getCourseItemProperties -----")
         return self.getDocumentsProperties(key)
+    """
 
     def getDocumentsList(self):
+        """Fournit la liste de tous les document enseignants (requis par jalon_activity)."""
         LOG.info("----- getDocumentsList -----")
-        return self._infos_element.keys()
+        # return self._infos_element.keys()
+        return self.getListeSujets()
 
     def setDocumentsProperties(self, infos_element):
+        """Set Documents Properties."""
+        LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
             self._infos_element = infos_element
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        u"""Modifie la visibilité de l'activité ("item_property_name" fournit l'info afficher / masquer)."""
         LOG.info("----- editCourseItemVisibility -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
+
+        portal = self.portal_url.getPortalObject()
+        dico = {"authMember": portal.portal_membership.getAuthenticatedMember().getId()}
+
+        auteur = self.getCreateur()
+        dico["qclass"] = self.setClasse()
+        dico["qsheet"] = self.getIdFeuilleWIMS(auteur)
+
+        # Affichage
+        if item_property_name == "affElement":
+            aff_autorise = self.autoriser_Affichage()
+            # Si l'affichage de l'objet est impossible, on arrete la.
+            #  (cas habituel : liste d'exos vide)
+            if not aff_autorise["val"]:
+                return aff_autorise
+            dico["status"] = 1
+        # Masquage
+        else:
+            dico["status"] = 0
+
+        # cas des Examens
+        if self.typeWims == "Examen":
+
+            dico_feuille = dico.copy()
+            # Lorsqu'on active l'examen, la feuille doit passer
+            # dans l'etat 3 (périmé+caché), et y rester.
+            if dico["status"] or self.idExam:
+                dico_feuille["status"] = 3
+            self.wims("modifierFeuille", dico_feuille)
+
+            dico["title"] = self.Title()
+            dico["description"] = self.Description()
+            dico["duration"] = self.duree
+            dico["attempts"] = self.attempts
+            dico["cut_hours"] = self.cut_hours
+
+            # Lors du 1er affichage de l'examen, on le crée
+            if dico["status"] and not self.idExam:
+                # print "jaloncourswims/afficherRessource // dico =%s" % str(dico)
+                reponse = self.wims("creerExamen", dico)
+                self.idExam = str(reponse["exam_id"])
+                # L'examen est créé, on lui ajoute alors la liste des exercices de la feuille
+                reponse = self.wims("injecter_exercice", {"authMember": dico["authMember"], "qclass": dico["qclass"], "qsheet": dico["qsheet"], "qexam": self.idExam})
+
+            # Cas de l'examen créé
+            if self.idExam:
+                # On cree un dictionnaire épuré, pour ne changer que le statut.
+                newdico = {"status": dico["status"], "qclass": dico["qclass"], "authMember": dico["authMember"]}
+                # une fois un examen activé, on ne peut plus le désactiver.
+                # le statut passe à 3 (périmé+caché) pour le masquer
+                if newdico["status"] == 0:
+                    newdico["status"] = 3
+                newdico["qexam"] = self.idExam
+                self.wims("modifierExamen", newdico)
+
+        # Cas des autoevaluations
+        else:
+            self.wims("modifierFeuille", dico)
+
         super(JalonCoursWims, self).editCourseItemVisibility(item_id, item_date, item_property_name)
 
     """
     def afficherRessource(self, idElement, dateAffichage, attribut):
-        \"""Modifie les dates de la ressource pour activer/desactiver son affichage.\"""
+        #""Modifie les dates de la ressource pour activer/desactiver son affichage.""
         # On agit directement sur l'activité
         if idElement == self.getId():
 
@@ -370,7 +563,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.reindexObject()
 
     def ajouterElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        u\"""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen.\"""
+        # u""permet d'ajouter un element (sujet ou exercice) à une autoevaluation ou un examen.""
         menu = "sujets"
         rep = {"Image"                      : "Fichiers",
                "File"                       : "Fichiers",
@@ -458,7 +651,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self.ajouterInfosElement(idElement, typeElement, titreElement, createurElement, affElement=affElement)
 
     def ajouterInfosElement(self, idElement, typeElement, titreElement, createurElement, affElement=""):
-        \"""ajouterInfosElement.\"""
+        # ajouter Infos Element.
         infos_element = copy.deepcopy(self.getInfosElement())
         if idElement not in infos_element:
             infos_element[idElement] = {"titreElement": titreElement,
@@ -469,12 +662,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # self.setInfos_element(infos_element)
             self.setInfosElement(infos_element)
 
-    #def ajouterTag(self, tag):
-    #    \"""ajouterTag.\"""
-    #    return jalon_utils.setTag(self, tag)"""
+    def ajouterTag(self, tag):
+        # ajouterTag.
+        return jalon_utils.setTag(self, tag)"""
 
     def authUser(self, quser=None, qclass=None, request=None, session_keep=False):
         """appelle la fonction authUser de jalon_utils (authentifie un user WIMS)."""
+        LOG.info("----- authUser -----")
         return jalon_utils.authUser(self, quser, qclass, request, session_keep)
 
     def autoriser_Affichage(self):
@@ -483,6 +677,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         utile pour empecher l'affichage des activités vides par exemple
 
         """
+        LOG.info("----- autoriser_Affichage -----")
         listeExos = self.getListeExercices()
         if not listeExos:
             return {"val": False, "reason": "listeExos"}
@@ -517,6 +712,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # TODO
 
         """
+        LOG.info('----- getAllNotes -----')
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
         # Cas des Autoevaluations activées:
@@ -527,6 +723,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getClasse(self):
         u"""retourne l'identifiant de la classe du cours associée à l'auteur de cette activite."""
+        LOG.info('----- getClasse -----')
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
         idClasse = None
@@ -547,8 +744,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Exemple : AutoEvaluation-bado-20140910153227291052
 
         """
+        LOG.info('----- getCreateur -----')
         identifiant = self.getId().split("-")
-        # LOG.info('[getCreateur] len(identifiant)= %s' % len(identifiant))
+        # LOG.info('*** len(identifiant)= %s ***' % len(identifiant))
         if len(identifiant) > 1:
             return identifiant[1]
         else:
@@ -556,6 +754,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def setClasse(self):
         u"""crée une classe associée au cours dans le groupe de classes de l'auteur de cette activite."""
+        LOG.info('----- setClasse -----')
+
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
         idClasse = None
@@ -594,6 +794,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getDisplayLang(self):
         """retourne la langue de l'exercice, dans un format affichable, ainsi qu'un code d'icone de drapeau."""
+        LOG.info('----- getDisplayLang -----')
         icone = code_langue = self.getWims_lang()
         if icone == "en":
             icone = "gb"
@@ -607,6 +808,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # utile pour les duplicatas par exemple.
 
         """
+        LOG.info('----- getDicoProperties -----')
         dico = {"Title": self.Title(),
                 "Description": self.Description(),
                 "InfosElement": copy.deepcopy(self.getInfosElement()),
@@ -628,44 +830,168 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getGroupement(self, auteur=None):
         u"""Renvoit le groupement de classe associé a l'auteur en parametre."""
+        LOG.info("----- getGroupement -----")
         if auteur is None:
             auteur = self.getCreateur()
         idgroupement = getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), auteur), "Wims").getComplement()
         return idgroupement
 
+    def updateExercicesList(self, infos_elements):
+        """ Met à jour la liste des exercices coté Jalon en fonction des exercices côté WIMS."""
+        LOG.info("----- updateExercicesList -----")
+
+        listeExercices = list(self.getListeExercices())
+        # infos_elements = self.getDocumentsProperties()
+        portal = self.portal_url.getPortalObject()
+        auteur = self.getCreateur()
+
+        dico = {"job": "getsheet",
+                "code": portal.portal_membership.getAuthenticatedMember().getId(),
+                "qclass": self.setClasse(),
+                "qsheet": self.getIdFeuilleWIMS(auteur)}
+        donnees_feuille = self.wims("callJob", dico)
+        donnees_feuille = self.wims("verifierRetourWims", {"rep": donnees_feuille,
+                                                           "fonction": "jaloncourswims.py/updateExercicesList",
+                                                           "message": "job = getsheet | parametres de la requete : %s" % dico
+                                                           })
+        if donnees_feuille["status"] != "OK":
+            return donnees_feuille
+
+        """for exoID in listeExercices:
+            if exoID.split("-")[0] == "recover":
+                self.retirerElement(exoID, "Exercices")
+        return True
+        """
+
+        # ICI il est impossible de retrouver l'id jalon d'un exercice WIMS.
+        #  La seule chose qu'on peut faire, c'est savoir s'il y en a plus sur WIMS que sur Jalon...
+        nb_jalon = len(listeExercices)
+        nb_wims = 0
+        inner_module = "classes/%s" % self.getWims_lang()
+        """
+        "exolist":[{"module":"U2/analysis/oeffourier.fr",
+                    "title":"in addition de fourier au hasard",
+                    "params":"exo=addfourier2&exo=addfourier1&exo=addfourier4&exo=addfourier3&qnum=1&qcmlevel=3",
+                    "points":"45",
+                    "weight":"2",
+                    "description":"un exo au hasard parmi les additions de fourier"}]
+        """
+        for exo_wims in donnees_feuille["exolist"]:
+            nb_wims += 1
+            if nb_wims > nb_jalon:
+                if exo_wims["module"] == inner_module:
+                    exowimsID = exo_wims["params"]
+                    """if exo_wims["params"] not in listeExercices:
+                            recup_id = "recover-%s-%s" % (auteur, DateTime().strftime("%Y%m%d%H%M%S"))
+                    """
+                else:
+                    exowimsID = "recover-%s-%s-%s" % (auteur, DateTime().strftime("%Y%m%d%H%M%S"), nb_wims)
+
+                self.addItemProperty(exowimsID, "Exercice Wims", exo_wims["title"], auteur, "", "", "Exercices")
+            """
+            else:
+                # L'exercice est déja présent dans Jalon
+                idElement = listeExercices[nb_wims - 1]
+                # On met à jour les titres Jalon en fonction des titres WIMS (mais on pourrait plutot faire l'inverse ?)
+                infos_elements[idElement]["titreElement"] = exo_wims["title"]
+            """
+
+    def cleanActivity(self):
+        """ Supprime tout élément indésirable de l'activité (issu de mauvaises manipulations)."""
+        LOG.info("----- cleanActivity -----")
+
+        listeSujets = list(self.getListeSujets())
+        listeExercices = list(self.getListeExercices())
+        infos_elements = self.getDocumentsProperties()
+
+        # 1 Suppression d'eventuels exercices présents dans la liste des sujets
+        for idElement in listeSujets:
+            if idElement in infos_elements:
+                if infos_elements[idElement]["typeElement"] == "Exercice Wims":
+                    listeSujets.remove(idElement)
+
+        # 2 mise à jour de la liste des exercices a partir des infos de WIMS
+        self.updateExercicesList(infos_elements)
+
+        # 3 Suppression d'eventuels elements présents la liste des exos mais qui ne sont pas des exos.
+        for idElement in listeExercices:
+            if idElement in infos_elements:
+                if infos_elements[idElement]["typeElement"] != "Exercice Wims":
+                    listeExercices.remove(idElement)
+
+        # Nettoyage du dico "infos_elements"
+        infos_elements_copy = copy.deepcopy(infos_elements)
+        for idElement in infos_elements_copy:
+            # Suppression d'eventuels elements présents dans infos_elements mais ni dans les sujets ni dans les exos.
+            if (idElement not in listeSujets) and (idElement not in listeExercices):
+                del infos_elements[idElement]
+
+            # Suppression d'eventuels attributs inutiles
+            for useless in ["idElement", "classElement", "iconElement"]:
+                if useless in infos_elements[idElement]:
+                    del infos_elements[idElement][useless]
+
+        setattr(self, "listeSujets", tuple(listeSujets))
+        setattr(self, "listeExercices", tuple(listeExercices))
+
+    def displayExercicesList(self):
+        """Fournit une liste de couples (ID/titre) des exercices de l'activite."""
+        LOG.info("----- displayExercicesList -----")
+
+        exercices_list = []
+        documents_dict = self.getDocumentsProperties()
+        for document_id in self.getListeExercices():
+            document_properties = documents_dict[document_id]
+
+            exo_dict = {"idElement":      document_id,
+                        "titreElement":   document_properties["titreElement"]
+                        }
+
+            exercices_list.append(exo_dict)
+        return exercices_list
+
     def getInfosListeAttribut(self, attribut, personnel=False):
         u"""renvoit la liste des elements d'une activité WIMS."""
+        LOG.info("----- getInfosListeAttribut -----")
         retour = []
         listeElement = self.getListeAttribut(attribut)
         infos_element = self.getDocumentsProperties()
+
         for idElement in listeElement:
             infos = infos_element.get(idElement, None)
             if infos:
+                LOG.info("***** attribut = %s" % attribut)
+                LOG.info("***** infos = %s" % infos)
                 affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
-                if personnel or attribut == "exercices" or not affElement['val'] == 0:
-                    new = {"idElement": idElement,
-                           "titreElement": infos["titreElement"],
-                           "typeElement": infos["typeElement"],
+                if personnel or not affElement['val'] == 0:
+                    new = {"idElement":       idElement,
+                           "titreElement":    infos["titreElement"],
+                           "typeElement":     infos["typeElement"].replace(" ", ""),
                            "createurElement": infos["createurElement"],
-                           "affElement": affElement,
-                           "iconElement": affElement["icon"],
-                           "classElement": self.test(affElement['val'] == 0 and attribut != "exercices", 'arrondi off', 'arrondi')
+                           "affElement":      affElement,
+                           "iconElement":     affElement["icon"],
+                           "classElement":    self.test(affElement['val'] == 0, 'arrondi off', 'arrondi')
                            }
                     retour.append(new)
+
         # if retour:
         #    retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
 
     def getNbSujets(self):
-        """getNbSujets."""
+        """Obtient le nombre de sujets à afficher."""
+        LOG.info("----- getNbSujets -----")
         return len(self.getInfosListeAttribut("sujets", True))
 
     def getNbExercices(self):
-        """getNbExercices."""
-        return len(self.getInfosListeAttribut("exercices", True))
+        """Obtient le nombre d'exercices."""
+        LOG.info("----- getNbExercices -----")
+        # return len(self.getInfosListeAttribut("exercices", True))
+        return len(self.getListeExercices())
 
     def getListeAttribut(self, attribut):
-        """getListeAttribut."""
+        """get Liste Attribut."""
+        LOG.info("----- getListeAttribut -----")
         return self.__getattribute__("liste%s" % attribut.capitalize())
 
     def getNotes(self, quser, actif, isProf, detailed=False, site_lang="", request=None):
@@ -676,6 +1002,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             - ou les notes de l'activité (dans ce cas, detailed permet d'obtenir les notes par etudiants)
 
         """
+        LOG.info("----- getNotes -----")
         no_user_message = "There is no user in this class"
         param = {"quser": quser}
         # On fait un setClasse() pour créer eventuellement la classe si ce n'etait deja fait.
@@ -758,7 +1085,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                     # DEBUG
                     retour["sheet_summaries"] = rep["sheet_summaries"]
                     if len(rep["sheet_summaries"]) > 1:
-                        # LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
+                        LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
                         retour["pourcentage"] = rep["sheet_summaries"][0]
                         retour["qualite"] = (rep["sheet_summaries"][1] * float(self.getNoteMax())) / 10
                     else:
@@ -796,7 +1123,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                                                "fonction": "jaloncourswims.py/getNotes",
                                                                "message": 'stats globales de la feuille demandees par un auteur/coauteur',
                                                                "requete": dico})
-                    # LOG.info('Retour WIMS = %s' % rep)
+                    LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
                         for indice, poids in enumerate(rep["weights"]):
@@ -990,6 +1317,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
+        LOG.info("----- getNotesTableur -----")
         separateurs = {"tsv": "\t", "csv": ";"}
         if format not in separateurs:
             format = "csv"
@@ -1033,7 +1361,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 return "Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord."
 
     def getRubriqueEspace(self, ajout=None):
-        """getRubriqueEspace."""
+        """get Rubrique Espace."""
+        LOG.info("----- getRubriqueEspace -----")
         rubriques = []
         for rubrique in ["Fichiers", "Presentations sonorisees", "Ressources Externes", "Webconference"]:
             rubriques.append({"rubrique": self.jalon_quote(rubrique), "titre": rubrique})
@@ -1041,6 +1370,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getTagDefaut(self):
         """getTagDefaut."""
+        LOG.info("----- getTagDefaut -----")
         return jalon_utils.getTagDefaut(self)
 
     def getUserLog(self, quser, authUser, isProf, option="score"):
@@ -1050,6 +1380,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # On ne fournit les informations de log qu'a un enseignant du cours, ou l'etudiant lui-même
 
         """
+        LOG.info("----- getUserLog -----")
         param = {}
         if (isProf or quser == authUser):
             param["job"]    = "getlog"
@@ -1084,6 +1415,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Cela correspond par défaut a la langue du site, sinon à la langue choisie par l'enseignant
 
         """
+        LOG.info("----- getWimsLang -----")
         if site_lang != '' and self.getWims_lang() == '':
             return jalon_utils.convertLangToWIMS(site_lang)
         else:
@@ -1091,20 +1423,24 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def isActif(self):
         u"""Permet de savoir si l'activité courante est active (affichée ou masquée)."""
+        LOG.info("----- isActif -----")
         return self.isAfficherElement(self.dateAff, self.dateMasq)["val"] == 1
 
     def isAfficherElement(self, affElement, masquerElement):
-        """isAfficherElement."""
+        """isAfficherElement aLias to jalon_utils."""
+        LOG.info("----- isAfficherElement ? -----")
         return jalon_utils.isAfficherElement(affElement, masquerElement)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
-        """getParentPlanElement."""
+        """get Parent Plan Element."""
+        LOG.info("----- getParentPlanElement -----")
         if idElement == self.getId():
             return self.aq_parent.getParentPlanElement(idElement, idParent, listeElement)
         return {"idElement": "racine", "affElement": "", "masquerElement": ""}
 
     def isChecked(self, idElement, formulaire, listeElement=None):
         """isChecked."""
+        LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
                 return 1
@@ -1114,6 +1450,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
+        LOG.info("----- modifierExoFeuille -----")
         param = form
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
@@ -1123,18 +1460,20 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def retirerElement(self, idElement, menu, ordre=None):
         u"""détache un élément de l'activité."""
+        LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
-        liste_elements = self.getInfosElement()
-        # On demande les infos de l'element à supprimer
-        infosElement = liste_elements[idElement]
+        liste_elements = self.getDocumentsProperties()
 
         # On met à jour la liste des elements du menu
         menu_list = list(self.__getattribute__("liste%s" % menu.capitalize()))
         menu_list.remove(idElement)
         self.__getattribute__("setListe%s" % menu.capitalize())(tuple(menu_list))
 
-        # On supprime l'element de la liste
-        del liste_elements[idElement]
+        # On demande les infos de l'element à supprimer
+        if idElement in liste_elements:
+            infosElement = liste_elements[idElement]
+            # On supprime l'element de la liste
+            del liste_elements[idElement]
 
         repertoire = infosElement["typeElement"]
         if repertoire in _dicoRep:
@@ -1164,6 +1503,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def retirerTousElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""
+        LOG.info("----- retirerTousElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
@@ -1208,33 +1548,25 @@ class JalonCoursWims(JalonActivity, ATDocument):
                     objet.setRelatedItems(relatedItems)
                     objet.reindexObject()
 
-    def setAttributActivite(self, form):
-        """modifie les attribut de l'objet jaloncourswims."""
-        for key in form.keys():
-            method_name = "set%s%s" % (key[0].upper(), key[1:])
-            try:
-                self.__getattribute__(method_name)(form[key])
-            except AttributeError:
-                pass
-        if "Title" in form:
-            self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
-
-        self.setProperties()
-        self.reindexObject()
-
-    def getIdFeuilleWIMS(self, authMember):
+    def getIdFeuilleWIMS(self, authMember, sheet_properties={}):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
+        LOG.info("----- getIdFeuilleWIMS -----")
         idFeuille = self.getIdFeuille()
+        # Cas ou la feuille n'existe pas côté WIMS
         if not idFeuille:
+            # Si sheet_properties n'est pas donné, c'est que l'activité existe côté Jalon mais pas côté WIMS.
+            if "Title" not in sheet_properties:
+                sheet_properties["Title"] = self.Title()
+                sheet_properties["Description"] = self.Description()
             # On crée la classe si elle n'existe pas.
             idclasse = self.setClasse()
             if idclasse:
                 if self.typeWims == "Examen":
-                    sheet_title = "Feuille dediée à l'examen '%s'" % self.Title()
+                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["title"]
                 else:
-                    sheet_title = self.Title()
+                    sheet_title = sheet_properties["Title"]
                 # Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)
-                reponse = self.wims("creerFeuille", {"authMember": authMember, "title": sheet_title, "description": self.Description(), "qclass": idclasse})
+                reponse = self.wims("creerFeuille", {"authMember": authMember, "title": sheet_title, "description": sheet_properties["Description"], "qclass": idclasse})
                 if reponse["status"] != "OK":
                     return None
                 idFeuille = str(reponse["sheet_id"])
@@ -1249,6 +1581,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Utilisé notemment lors de la duplication de cours
 
         """
+        LOG.info("----- setJalonProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
 
@@ -1257,8 +1590,24 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self.reindexObject()
         return dico
 
+    """
+    def setAttributActivite(self, form):
+        # modifie les attribut de l'objet jaloncourswims.
+        LOG.info("----- setAttributActivite -----")
+        for key in form.keys():
+            method_name = "set%s%s" % (key[0].upper(), key[1:])
+            try:
+                self.__getattribute__(method_name)(form[key])
+            except AttributeError:
+                pass
+        if "title" in form:
+            # self.aq_parent.modifierInfosElementPlan(self.getId(), form["Title"])
+            self.aq_parent.editCourseMapItem(self.getId(), form["title"], item_display_in_course_map)
+        self.setProperties()
+        """
+
     def setProperties(self, dico={}):
-        u"""Modifie les propriétés de l'objet jalonCoursWims courant (Autoevaluation ou Examen).
+        u"""Modifie les propriétés de l'objet jalonCoursWims courant, ainsi que son homologue côté WIMS.
 
         # dico est renseigné lors de la création de l'objet. (issu de creerSousObjet de jaloncours)
         # Attention : si on modifie un parametre a l'interieur d'une fonction,
@@ -1266,9 +1615,18 @@ class JalonCoursWims(JalonActivity, ATDocument):
         #   si ce parametre n'est pas obligatoire. (cas de dico ici)
 
         """
+        LOG.info("----- setProperties -----")
         auteur = self.getCreateur()
 
-        # Cas où la feuille existe déjà
+        # On met à jour les propriétés côté Jalon
+        for key in dico.keys():
+            # method_name = "set%s%s" % (key[0].upper(), key[1:])
+            # self.__getattribute__(method_name)(form[key])
+            self.__getattribute__("set%s" % key)(dico[key])
+
+        # Puis on le fait côté WIMS :
+
+        # Cas où la feuille existe déjà sur WIMS
         if self.idFeuille:
             proprietes = {}
             proprietes["qclass"] = self.getClasse()
@@ -1281,6 +1639,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.wims("modifierFeuille", proprietes)
 
                 proprietes["title"]     = self.Title()
+                LOG.info("proprietes['title']=%s" % proprietes["title"])
                 proprietes["duration"]  = self.duree
                 proprietes["attempts"]  = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
@@ -1294,21 +1653,18 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 proprietes["title"] = self.Title()
                 self.wims("modifierFeuille", proprietes)
         else:
-            # Cas ou la feuille n'existe pas encore
-            #self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
+            # Cas ou la feuille n'existe pas encore sur WIMS
+            # self.typeWims = self.aq_parent.getTypeSousObjet(self.getId())
             self.typeWims = self.getId().split("-")[0]
 
-            for key in dico.keys():
-                # ici il faudrait peut etre faire un key.capitalize()
-                self.__getattribute__("set%s" % key)(dico[key])
-
             # On crée la feuille côté WIMS
-            self.getIdFeuilleWIMS(auteur)
+            self.getIdFeuilleWIMS(auteur, dico)
 
         self.reindexObject()
 
     def importerHotPotatoes(self, member_auth, import_file):
         """Importe un ensemble d'exercice hotpotatoes, les place dans mon espace et dans l'autoevaluation/examen."""
+        LOG.info("----- importerHotPotatoes -----")
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, member_auth), "Wims")
         # import_name = import_file.filename[:-4]
@@ -1325,26 +1681,29 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getShortText(self, text, limit=75):
         """getShortText."""
+        LOG.info("----- getShortText -----")
         return jalon_utils.getShortText(text, limit)
 
     def supprimerMarquageHTML(self, chaine):
         """Suppression marquage HTML."""
+        LOG.info("----- supprimerMarquageHTML -----")
         return jalon_utils.supprimerMarquageHTML(chaine)
 
     def wims(self, methode, param):
         """permet d'appeler la methode definie en parametre depuis le connecteur wims, en lui envoyant le dico "param"."""
-        # LOG.info("----- wims -----")
+        LOG.info("----- wims(%s) -----" % methode)
         return self.portal_wims.__getattribute__(methode)(param)
 
+    """
     def majActiviteWims(self):
-        u"""Mise à jour des activités WIMS.
+        #Mise à jour des activités WIMS.
 
-        Pour utiliser cette fonction :
-        1 - décommenter import ATExtensions puis RecordField infos_element
-        2 - mettre getInfosElement en commentaire
-        3 - appeler cette fonction depuis un script en ZMI
+        #Pour utiliser cette fonction :
+        #1 - décommenter import ATExtensions puis RecordField infos_element
+        #2 - mettre getInfosElement en commentaire
+        #3 - appeler cette fonction depuis un script en ZMI
 
-        """
+        LOG.info("----- majActiviteWims -----")
         listeSujets = list(self.getListeSujets())
         listeExercices = list(self.getListeExercices())
         listeSujets.extend(listeExercices)
@@ -1361,5 +1720,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                        "affElement": dicoElements[idElement]["affElement"],
                                        "masquerElement": dicoElements[idElement]["masquerElement"]}
             self.setInfosElement(dico)
+    """
+
 
 registerATCT(JalonCoursWims, PROJECTNAME)

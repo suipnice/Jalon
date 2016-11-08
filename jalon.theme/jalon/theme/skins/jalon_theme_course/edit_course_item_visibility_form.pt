@@ -27,17 +27,11 @@
          tal:content="my_form/help_text"
          i18n:translate=""/>
 
-    <tal:condition condition="my_form/is_authorized_form">
+<tal:condition condition="my_form/is_display_allowed">
     <div class="panel warning radius"
          tal:condition="my_form/wims_help_text"
+         tal:content="structure my_form/wims_help_text"
          i18n:translate="">
-        <strong><i class="fa fa-warning"></i>Attention :</strong> les autoévaluations et examens vides ne seront pas affichés avec le titre.
-    </div>
-
-    <div class="panel warning radius"
-         tal:condition="my_form/is_wims_examen"
-         i18n:translate="">
-        <strong><i class="fa fa-warning"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié.
     </div>
 
     <div class="text-center"
@@ -52,7 +46,7 @@
 
         <input type="hidden" name="is_item_title" value="true"
                tal:condition="my_form/is_item_title"/>
-        <input type="hidden" name="item_parent_title_id" 
+        <input type="hidden" name="item_parent_title_id"
                tal:attributes="value my_form/item_parent_title_id"
                tal:condition="my_form/is_item_parent_title"/>
 
@@ -65,6 +59,7 @@
         </div>
     </form>
 
+  <tal:condition condition="my_form/is_delay_allowed">
     <div class="text-center"
          tal:content="my_form/text_title_lately"/>
 
@@ -82,7 +77,7 @@
 
         <input type="hidden" name="is_item_title" value="true"
                tal:condition="my_form/is_item_title"/>
-        <input type="hidden" name="item_parent_title_id" 
+        <input type="hidden" name="item_parent_title_id"
                tal:attributes="value my_form/item_parent_title_id"
                tal:condition="my_form/is_item_parent_title"/>
 
@@ -95,10 +90,10 @@
         </div>
 
     </form>
-        
+  </tal:condition>
     <script charset="UTF-8"
             tal:content="structure string:setDateTimePicker('datetime')"></script>
-    </tal:condition>
+</tal:condition>
 
 </metal:main>
 

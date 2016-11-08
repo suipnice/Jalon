@@ -14,7 +14,7 @@ from Products.CMFPlone import PloneMessageFactory as _
 
 """ Script d'edition des exercices WIMS de Mon Espace."""
 # Le contexte est un JalonExerciceWims
-#context = context
+# context = context
 REQUEST = context.REQUEST
 form = REQUEST.form
 
@@ -52,7 +52,7 @@ else:
     if not("status" in rep):
         # La creation a planté (Cause : modele inconnu ?)
         # nb : ceci ne devrait jamais survenir en modification a priori.
-        #wims_exercice_folder.manage_delObjects(ids=[object_id])
+        # wims_exercice_folder.manage_delObjects(ids=[object_id])
         context.plone_utils.addPortalMessage(unknown_model_message, 'error')
     else:
         if rep["status"] == "OK":

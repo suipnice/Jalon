@@ -8,26 +8,42 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="errors options/state/getErrors | nothing;
-                        tab request/tab">
+            tal:define="errors options/state/getErrors | nothing;">
 
 <!--
         Modification des informations d'une activité Wims
 -->
-<tal:define define="page request/page;
-                    menu request/menu | nothing;
+
+<tal:define define="tab request/tab | nothing;
+                    mode_etudiant request/mode_etudiant | nothing;
                     isExamen python:context.getTypeWims()=='Examen'">
-    <h2>
+    <h2 tal:condition="is_ajax">
         <tal:block tal:condition="not:isExamen"
-                   i18n:translate="">Modifier les informations de l'auto-évaluation
+                   i18n:translate="">Modifier les informations de l'entrainement
         </tal:block>
         <tal:block tal:condition="isExamen"
                    i18n:translate="">Modifier les informations de l'examen
         </tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+
+    <tal:define define="breadcrumbs python:context.getBreadcrumbs('propriétés')"  tal:condition="not:is_ajax | nothing">
+        <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+            Page d'affichage du fil d'ariane
+        </metal:macro>
+    </tal:define>
+
+    <metal:macro tal:condition="not:is_ajax | nothing"
+                 use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
+
     <form tal:attributes="action string:${context/absolute_url}/${template/id}"
-          method="post">
+          method="post"
+          class="row">
+
+        <h1 tal:condition="not:is_ajax">
+            <i class="fa fa-edit no-pad"></i>
+            <span i18n:translate="">Propriétés de l'activité</span> «<tal:replace replace="here/Title" />»
+        </h1>
 
         <div id="archetypes-fieldname-title"
                 tal:define="error errors/title | nothing;
@@ -53,6 +69,9 @@
             <label for="description" tal:content="structure python:widget.Label(here)"/>
             <span class="formHelp"
                   tal:content="structure python:widget.Description(here)"/>
+            <div class="fieldErrorBox"
+                   tal:condition="error"
+                   tal:content="error" />
             <textarea id="description" name="description" rows="5"><tal:replace replace="request/description | context/Description"/></textarea>
         </div>
 
@@ -128,11 +147,12 @@
             wims_lang
         </metal:field>
 
-        <input type="hidden" name="page" tal:attributes="value page"/>
-        <input type="hidden" name="menu" tal:attributes="value menu" tal:condition="menu"/>
+        <input type="hidden" name="tab" tal:attributes="value tab"/>
+        <!--input type="hidden" name="validate_key" value="edit_wims_activity"/-->
+        <input type="hidden" name="mode_etudiant" tal:attributes="value mode_etudiant" tal:condition="mode_etudiant"/>
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" value="macro_form" name="macro" />
-        <input type="hidden" value="modifier-activite" name="formulaire" />
+        <!--input type="hidden" value="modifier-activite" name="formulaire" /-->
 
         <div class="formControls">
             <button type="submit" class="button small radius"

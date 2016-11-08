@@ -5,7 +5,7 @@
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=
+##title=Ajoute un lecteur enseignant au cours
 ##
 
 form = context.REQUEST.form

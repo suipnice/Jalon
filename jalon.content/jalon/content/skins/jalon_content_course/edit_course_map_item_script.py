@@ -1,15 +1,16 @@
-## Controller Python Script "add_course_map_item_script"
+## Controller Python Script "edit_course_map_item_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Ajoute un élément au plan intéractif
+##title=Edite un élément du plan interactif
 ##
 from DateTime import DateTime
 
 now = DateTime()
+# context = context
 form = context.REQUEST.form
 
 if not form.has_key("item_id"):
@@ -19,7 +20,9 @@ if not form.has_key("item_id"):
 else:
     item_display_in_course_map = True if form.has_key("display_in_plan") else False
     context.editCourseMapItem(form["item_id"], form["title"], item_display_in_course_map)
-
+    if form["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+        activite = getattr(context, form["item_id"])
+        activite.setProperties({"Title": form["title"]})
 context.setCourseProperties({"DateDerniereModif": DateTime()})
 
 return "%s/display_course_map_page" % context.absolute_url()

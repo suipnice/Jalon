@@ -9,10 +9,9 @@ LOG = getLogger('[CourseView]')
 
 
 class CourseView(BrowserView):
-    """Class pour le first_page
-    """
+    """Class pour la vue du Cours."""
 
-    #to : training offer
+    # to : training offer
     _course_to_actions_list = [{"action_link": "add_course_training_offer_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -22,7 +21,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_training_offer_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #nr : nominative registraion
+    # nr : nominative registraion
     _course_nr_actions_list = [{"action_link": "add_course_nominative_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -32,7 +31,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_nominative_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #er : email registraion
+    # er : email registraion
     _course_er_actions_list = [{"action_link": "add_course_email_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -42,7 +41,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_email_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #pr : password registraion
+    # pr : password registraion
     _course_pr_actions_list = [{"action_link": "add_course_password_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -52,7 +51,7 @@ class CourseView(BrowserView):
                                {"action_link": "course_display_password_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
-    #cr : coreader registraion
+    # cr : coreader registraion
     _course_cr_actions_list = [{"action_link": "add_course_coreader_registration_form",
                                 "action_icon": "fa fa-plus-circle fa-fw no-pad",
                                 "action_name": "Ajouter"},
@@ -64,7 +63,7 @@ class CourseView(BrowserView):
                                 "action_name": "Voir"}]
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -84,7 +83,7 @@ class CourseView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getCourseView(self, user, mode_etudiant):
-        LOG.info("----- getCourseView (Start) -----")
+        # LOG.info("----- getCourseView (Start) -----")
         portal = self.context.portal_url.getPortalObject()
 
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
@@ -206,7 +205,7 @@ class CourseView(BrowserView):
             my_view["course_news_title"] = "Les 3 dernières nouveautés du cours"
 
         my_view["course_announce"] = self.context.getAnnonces(user, mode_etudiant, False)
-        LOG.info("***** course_announce : %s" % str(my_view["course_announce"]))
+        # LOG.info("***** course_announce : %s" % str(my_view["course_announce"]))
         my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-annonces",
                                                  "tab_number": my_view["course_announce"]["nbAnnonces"],
                                                  "tab_icon":   "fa fa-bullhorn fa-2x",
@@ -218,10 +217,11 @@ class CourseView(BrowserView):
                                                  "tab_icon":   "fa fa-comments fa-2x",
                                                  "tab_name":   "Forums"})
 
-        LOG.info("----- getCourseView (End) -----")
+        # LOG.info("----- getCourseView (End) -----")
         return my_view
 
     def getCourseItemAdderList(self, course_link, course_path, portal):
+        """Fournit la liste des types d'elements a ajouter dans un cours Jalon."""
         item_adder_list = self.getCourseItemAdderMenuList(course_link, course_path, portal)
         return [{"menu_adder_class":         "button small course-title dropdown",
                  "menu_adder_data-dropdown": "add-title-text",
@@ -250,6 +250,7 @@ class CourseView(BrowserView):
                  "menu_adder_items":         item_adder_list["add"]}]
 
     def getCourseItemAdderMenuList(self, course_link, course_path, portal):
+        """Fournit la liste des liens permettant d'ajouter des elements dans un cours Jalon."""
         portal_link = portal.absolute_url()
         my_space = portal.portal_jalon_properties.getPropertiesMonEspace()
 
@@ -288,7 +289,7 @@ class CourseView(BrowserView):
         if my_space["activer_exercices_wims"]:
             item_adder_list["activity"].append({"item_link": "%s/add_course_activity_form?activity_type=2" % course_link,
                                                 "item_icon": "fa fa-fw fa-gamepad",
-                                                "item_name": "Auto évaluation WIMS"})
+                                                "item_name": "Entrainement WIMS"})
             item_adder_list["activity"].append({"item_link": "%s/add_course_activity_form?activity_type=3" % course_link,
                                                 "item_icon": "fa fa-fw fa-graduation-cap",
                                                 "item_name": "Examen WIMS"})

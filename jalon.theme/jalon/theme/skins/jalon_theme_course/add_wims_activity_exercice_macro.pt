@@ -1,20 +1,17 @@
 <metal:macro define-macro="add_course_items">
-
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
             <i class="fa fa-info-circle no-pad"></i>
-            <strong i18n:translate="">Il n'y a aucune ressource de type « Enregistrement Adobe Connect » dans votre espace.</strong><br />
-            <tal:block i18n:translate="">Rendez-vous dans votre espace de Présentations sonorisées ou Webconférences pour en ajouter.</tal:block>
+            <strong i18n:translate="">Il n'y a aucun Exercice WIMS dans votre espace.</strong><br />
+            <tal:block i18n:translate="">Rendez-vous dans votre espace pour en ajouter.</tal:block>
         </div>
-        <div class="text-center">
-            <a class="button radius"
-               tal:attributes="href my_view/folder_link">
-               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
-            </a>
-        </div>
+        <p class="text-center"><a class="button radius"
+               tal:attributes="href my_view/folder_link"
+               tal:content="context/Title"/></p>
     </tal:no_items>
 
     <tal:listing condition="my_view/course_add_list">
+    <input type="hidden" name="tab" value="exercices"/>
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items" />
         <tal:block i18n:translate="">sur</tal:block>
@@ -24,7 +21,7 @@
     <script charset="UTF-8"
             tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
 
-    <table summary="Liste des enregistrements Adobe Connect">
+    <table summary="Liste des fichiers">
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
@@ -43,28 +40,29 @@
                     <tal:block i18n:translate="">Date</tal:block>
                 </span>
             </th>
+            <th class="sort has-tip" data-tooltip data-sort="model" title="Trier selon le modèle"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Modèle</tal:block>
+                </span>
+            </th>
             <th class="sort text-left" data-sort="title" title="Trier selon le titre"
                 i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Titre / Adresse</tal:block>
-                </span>
-            </th>
-            <th class="sort show-for-medium-up" data-sort="length" title="Trier selon la durée"
-                i18n:attributes="title">
-                <span>
-                    <i class="fa fa-sort"></i>
-                    <i class="fa fa-sort-asc"></i>
-                    <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Durée</tal:block>
+                    <tal:block i18n:translate="">Titre / Description</tal:block>
                 </span>
             </th>
         </tr>
     </thead>
     <tbody class="list"
-           tal:define="user_id user/getId">
+           tal:define="user_id user/getId;
+                       wims_exercice_model_list my_view/wims_exercice_model_list">
         <tr tal:repeat="item my_view/course_add_list">
             <tal:define define="item_title python:here.getShortText(item['Title'])">
             <td class="show-for-medium-up"
@@ -74,37 +72,45 @@
                      i18n:attributes="title">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
-                                           value string:${item/getId}/${my_view/folder_id};
-                                           data-res_name item_title;
-                                           data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '')"/>
+                                           value string:${item/getId}/${item/Type};
+                                           data-res_name item_title"/>
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
                 <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
             </td>
             <td class="date show-for-medium-up">
-                <span class="hide" tal:content="python:context.getConnectDate(item['getDateAjout'], True)"/>
-                <span tal:content="python:context.getConnectDate(item['getDateAjout'])"/>
+                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')"/>
+                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])"/>
+            </td>
+            <td class="model"
+                tal:define="exo_model item/getModele">
+                <span class="label bkgrnd"
+                      tal:define="model python:wims_exercice_model_list[exo_model]"
+                      tal:content="model | string:modele inconnu"
+                      i18n:translate="" />
             </td>
             <td class="title">
-                <strong tal:content="item_title"/>
+                <span class="hide" tal:content="item/Title" />
+                <strong tal:content="item_title"
+                        i18n:attributes="title"/>
                 <span class="show-for-medium-up"
-                      tal:content="item/getUrlEnr"/>
+                      tal:condition="item/Description"
+                      tal:content="python:here.getShortText(item['Description'], 200)"/>
             </td>
-            <td class="length show-for-medium-up" tal:content="item/getDuree"/>
             </tal:define>
         </tr>
     </tbody>
     </table>
 
     <tal:define define="script1 string:setBatchSelect('js-attachmentCreator');
-                       script2 string:setSortableList('js-list-ressource',['date','title','length'],'date','desc')">
-        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)"/>
-        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)"/>
+                        script2 string:setSortableList('js-list-ressource',['date','filetype','title'],'date','desc')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
     </tal:define>
 
     <script charset="UTF-8"
             tal:define="buffer python:jsBuffer.getDirectBuffer()"
             tal:content="structure buffer"></script>
-
     </tal:listing>
+
 </metal:macro>

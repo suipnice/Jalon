@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" WIMS Connector for Jalon LMS."""
+"""WIMS Connector for Jalon LMS."""
 from zope.interface import implements
 from zope.schema.fieldproperty import FieldProperty
 from zope.component import getUtility
@@ -44,7 +44,6 @@ def form_adapter(context):
 
 
 class Wims(SimpleItem):
-
     """Wims Utility."""
 
     implements(IWims)
@@ -94,11 +93,11 @@ class Wims(SimpleItem):
                    "externe":                    "Exercice de la base WIMS"}
 
     def getWimsProperty(self, key):
-        u""" obtient les propriétés."""
+        u"""Obtient les propriétés."""
         return getattr(self, "%s" % key)
 
     def setProperties(self, form):
-        u""" modifie les propriétés."""
+        u"""Modifie les propriétés."""
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
@@ -106,7 +105,7 @@ class Wims(SimpleItem):
             setattr(self, "%s" % key, val.decode("utf-8"))
 
     def authUser(self, param):
-        """demande a Wims d'ouvrir une session pour un utilisateur."""
+        """Demande a Wims d'ouvrir une session pour un utilisateur."""
         # Cette fonction ne renvoit pas un json, car elle peux etre utilisée pour tester si un utilisateur existe.
         param["quser"] = self.validerUserID(param["quser"])
         param["job"] = "authUser"
@@ -115,20 +114,20 @@ class Wims(SimpleItem):
     security.declarePrivate('convertirDate')
 
     def convertirDate(self, d, us=False):
-        """convertit une date d au format us ou fr."""
+        """Convertit une date d au format us ou fr."""
         if not us:
             return DateTime(d).strftime("%d.%m.%Y - %Hh%M")
         else:
             return DateTime(d).strftime("%Y-%m-%d")
 
     def callJob(self, param):
-        """fonction d'appel generique des jobs du module adm/raw de Wims."""
+        """Appel generique des jobs du module adm/raw de Wims."""
         param["module"] = "adm/raw"
         param["ident"] = self.login
         param["passwd"] = self.password
         param["rclass"] = self.classe_locale
         data = urllib.urlencode(param)
-        #print "\nrequete WIMS envoyee : %s" % data
+        # print "\nrequete WIMS envoyee : %s" % data
         try:
             req = urllib2.Request(self.url_connexion, data)
             handle = urllib2.urlopen(req, timeout=self.timeout)
@@ -142,7 +141,8 @@ class Wims(SimpleItem):
                 error_body = e.read()
                 error_body = error_body.decode("iso-8859-1")
             except:
-                # Si l'exception ne peux etre lue, c'est probablement un timeout... (AttributeError: 'timeout' object has no attribute 'read')
+                # Si l'exception ne peux etre lue, c'est probablement un timeout...
+                # (AttributeError: 'timeout' object has no attribute 'read')
                 error_body = str(e)
             error_body = self.string_for_json(error_body)
 
@@ -162,11 +162,11 @@ class Wims(SimpleItem):
                 rep = '%s, "type":"HTTPError", "error_code":"%s", "message":"%s"}' % (rep, e.code, error_body)
             else:
                 rep = '%s, "type":"Unknown IOError", "message":"%s"}' % (rep, error_body)
-            #mail = rep.decode("iso-8859-1")
-            #self.verifierRetourWims({"rep": mail.encode("utf-8"), "fonction": "jalon.wims/utility.py/callJob", "requete" : param})
-        #print "--- REP Wims ---"
-        #print rep
-        #print "--- REP Wims (fin) ---"
+            # mail = rep.decode("iso-8859-1")
+            # self.verifierRetourWims({"rep": mail.encode("utf-8"), "fonction": "jalon.wims/utility.py/callJob", "requete" : param})
+        # print "--- REP Wims ---"
+        # print rep
+        # print "--- REP Wims (fin) ---"
 
         return rep.encode("utf-8")
 
@@ -200,8 +200,8 @@ class Wims(SimpleItem):
 
     def creerClasse(self, param):
         """Creation d'une classe ou d'un groupement de classes WIMS."""
-        #LOG.info("---creerClasse---")
-        if not "titre_classe" in param:
+        # LOG.info("---creerClasse---")
+        if "titre_classe" not in param:
             param["titre_classe"] = "Classes de %s" % param["fullname"]
         # Il faut supprimer les éventuels parenthèses/accolades/crochets du titre de la classe :
         param["titre_classe"] = self.string_for_wims(param["titre_classe"])
@@ -213,9 +213,15 @@ class Wims(SimpleItem):
                                                 param["type"].decode("utf-8"))
 
         firstname, lastname = param["fullname"].split(" ", 1)
-        donnees_superviseur = self.donnees_superviseur % (lastname.decode("utf-8"), firstname.decode("utf-8"), DateTime().strftime("%d%H%M%S"))
+        donnees_superviseur = self.donnees_superviseur % (lastname.decode("utf-8"),
+                                                          firstname.decode("utf-8"),
+                                                          DateTime().strftime("%d%H%M%S"))
 
-        dico = {"job": "addclass", "code": param["authMember"], "data1": donnees_classe.encode("iso-8859-1", "replace"), "data2": donnees_superviseur.encode("iso-8859-1", "replace"), "qclass": param["qclass"]}
+        dico = {"job": "addclass",
+                "code": param["authMember"],
+                "data1": donnees_classe.encode("iso-8859-1", "replace"),
+                "data2": donnees_superviseur.encode("iso-8859-1", "replace"),
+                "qclass": param["qclass"]}
 
         rep = self.callJob(dico)
 
@@ -228,7 +234,7 @@ class Wims(SimpleItem):
         # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
         # dans la classe, mais seulement dans un bac à sable pour compilation.
 
-        #data = self.getAttribut(param["modele"])
+        # data = self.getAttribut(param["modele"])
 
         if "sandbox" in param:
             job = "testexo"
@@ -236,66 +242,83 @@ class Wims(SimpleItem):
         else:
             job = "addexo"
 
-        #LOG.info("[creerExercice] param[source]=\n%s"%param["source"])
-        dico = {"job": job, "code": param["authMember"], "data1": param["source"], "qexo": param["qexo"], "qclass": param["qclass"]}
+        LOG.info("[creerExercice] param[source]=\n%s" % param["source"])
+        dico = {"job": job,
+                "code": param["authMember"],
+                "data1": param["source"],
+                "qexo": param["qexo"],
+                "qclass": param["qclass"]}
         if "option" in param:
             dico["option"] = param["option"]
-        #try:
-        result = self.verifierRetourWims({"rep": self.callJob(dico), "fonction": "jalon.wims/utility.py/creerExercice", "requete": dico})
-        #if job == "testexo":
+        # try:
+        result = self.verifierRetourWims({"rep": self.callJob(dico),
+                                          "fonction": "jalon.wims/utility.py/creerExercice",
+                                          "requete": dico})
+        # if job == "testexo":
         #    del param["data_q"]
 
-        #except:
-        #result={"status" : "ERROR","type": "JSON_DECODING", "infos":sys.exc_info()[0]}
+        # except:
+        # result={"status" : "ERROR","type": "JSON_DECODING", "infos":sys.exc_info()[0]}
         return result
 
     def creerFeuille(self, param):
         u"""ajoute une feuille d'entrainement à une classe Wims."""
         if param["qclass"] and param["qclass"] is not None:
             donnees_feuille = self.formaterDonnees(param)
-            #modele = "expiration=%s\ntitle=%s\ndescription=%s"
-            #donnees_feuille = modele % (self.expiration_date, param["title"].decode("utf-8"), param["description"].decode("utf-8"))
-            requete = {"job": "addsheet", "code": param["authMember"], "data1": donnees_feuille.encode("iso-8859-1", "replace"), "qclass": param["qclass"]}
+            # modele = "expiration=%s\ntitle=%s\ndescription=%s"
+            # donnees_feuille = modele % (self.expiration_date, param["title"].decode("utf-8"), param["description"].decode("utf-8"))
+            requete = {"job": "addsheet",
+                       "code": param["authMember"],
+                       "data1": donnees_feuille.encode("iso-8859-1", "replace"),
+                       "qclass": param["qclass"]}
             rep = self.callJob(requete)
-            rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/creerFeuille", "requete": requete})
+            rep = self.verifierRetourWims(
+                {"rep": rep, "fonction": "jalon.wims/utility.py/creerFeuille", "requete": requete})
             return rep
         else:
             return None
 
     def creerExamen(self, param):
         """Ajoute un examen a une classe wims."""
-        #modele = "expiration=%s\ntitle=%s\ndescription=%s\nduration=%s\nattempts=%s\ncut_hours=%s\n"
-        #donnees = modele % (self.expiration_date, param["title"].decode("utf-8"), param["description"].decode("utf-8"),
+        # modele = "expiration=%s\ntitle=%s\ndescription=%s\nduration=%s\nattempts=%s\ncut_hours=%s\n"
+        # donnees = modele % (self.expiration_date, param["title"].decode("utf-8"), param["description"].decode("utf-8"),
         #                    param["duration"], param["attempts"], param["cut_hours"].decode("utf-8"))
         donnees = self.formaterDonnees(param)
-        requete = {"job": "addexam", "code": param["authMember"], "data1": donnees.encode("iso-8859-1", "replace"), "qclass": param["qclass"]}
+        requete = {"job": "addexam",
+                   "code": param["authMember"],
+                   "data1": donnees.encode("iso-8859-1", "replace"),
+                   "qclass": param["qclass"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/creerExamen", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/creerExamen", "requete": requete})
         return rep
 
     def creerUser(self, param):
         """Ajoute un utilisateur a une classe wims."""
         quser = self.validerUserID(param["quser"])
         try:
-            data = "lastname=%s\nfirstname=%s\npassword=%s\n" % (param["lastname"].encode("iso-8859-1"), param["firstname"].encode("iso-8859-1"), DateTime().strftime("%d%H%M%S"))
+            data = "lastname=%s\nfirstname=%s\npassword=%s\n" % (param["lastname"].encode("iso-8859-1"),
+                                                                 param["firstname"].encode("iso-8859-1"),
+                                                                 DateTime().strftime("%d%H%M%S"))
         except:
-            data = "lastname=%s\nfirstname=%s\npassword=%s\n" % (param["lastname"], param["firstname"], DateTime().strftime("%d%H%M%S"))
+            data = "lastname=%s\nfirstname=%s\npassword=%s\n" % (
+                param["lastname"], param["firstname"], DateTime().strftime("%d%H%M%S"))
         requete = {"job": "adduser", "qclass": param["qclass"], "quser": quser, "data1": data, "code": quser}
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/creerUser", "requete": requete})
         return rep
 
     def getAttribut(self, attribut):
-        u"""renvoie l'attribut demandé."""
+        u"""Renvoie l'attribut demandé."""
         return self.__getattribute__(attribut)
 
     def getURLWims(self):
-        """construit et renvoie l'url d'appel au module adm/raw de wims."""
+        """Construit et renvoie l'url d'appel au module adm/raw de wims."""
         # ici il faudra remplacer "lang=fr" par la langue d'affichage de Jalon.
         return "%s?lang=fr&module=adm/raw&ident=%s&passwd=%s" % (self.url_connexion, self.login, self.password)
 
     def getExercicesWims(self, param):
-        """permet d'obtenir la liste des exercices d'une classe."""
+        """Permet d'obtenir la liste des exercices d'une classe."""
         requete = {"job": "listExos", "code": param["authMember"], "qclass": param["qclass"]}
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep,
@@ -306,35 +329,41 @@ class Wims(SimpleItem):
         return rep
 
     def getNote(self, param):
-        """permet d'obtenir la liste des notes d'un utilisateur param["quser"]."""
+        """Permet d'obtenir la liste des notes d'un utilisateur param["quser"]."""
         requete = {"job": "getscore", "code": param["quser"], "qclass": param["qclass"], "quser": param["quser"]}
 
         # Si param["qsheet"] est précisé, on filtre les notes pour n'afficher que la feuille "qsheet"
         if "qsheet" in param:
             requete["qsheet"] = param["qsheet"]
         rep_wims = self.callJob(requete)
-        #print "\nrep : %s\n" % rep_wims
+        # print "\nrep : %s\n" % rep_wims
         retour = json.loads(rep_wims)
 
         if retour["status"] != "OK":
-                # Tant que l'etudiant n'a pas répondu à un exercice donné par le prof, WIMS donnera une erreur "user not present"
-                # et Tant que l'etudiant n'aura pas répondu à un exercice de cette classe, WIMS donnera une erreur "does not participates..."
-                # on n'enverra donc pas de message d'erreur dans ces 2 cas.
-                if not ("not present in superclass" in retour["message"] or "does not participates to this subclass" in retour["message"]):
-                    self.verifierRetourWims({"rep": rep_wims,
-                                             "fonction": "jalon.wims/utility.py/getNote",
-                                             "requete": requete,
-                                             "jalon_request": param["jalon_request"]
-                                             })
-                    # Attention, il peut y avoir un decalage si une des feuilles precedente n'a pas ete activées...
-                    # print "****\n  [Jalon.wims/utility] ERREUR WIMS : pas de notes pour la feuille demandee. \n rep = %s \n****" % rep
+            # Tant que l'etudiant n'a pas répondu à un exercice donné par le prof, WIMS donnera une erreur "user not present"
+            # et Tant que l'etudiant n'aura pas répondu à un exercice de cette classe, WIMS donnera une erreur "does not participates..."
+            # on n'enverra donc pas de message d'erreur dans ces 2 cas.
+            if not ("not present in superclass" in retour["message"] or "does not participates to this subclass" in retour["message"]):
+                self.verifierRetourWims({"rep": rep_wims,
+                                         "fonction": "jalon.wims/utility.py/getNote",
+                                         "requete": requete,
+                                         "jalon_request": param["jalon_request"]
+                                         })
+                # Attention, il peut y avoir un decalage si une des feuilles precedente n'a pas ete activées...
+                # print "****\n  [Jalon.wims/utility] ERREUR WIMS : pas de notes pour la
+                # feuille demandee. \n rep = %s \n****" % rep
         return retour
 
     def injecter_exercice(self, param):
-        """injecte tous les exercices d'une feuille dans un examen."""
-        requete = {"job": "linksheet", "code": param["authMember"], "qclass": param["qclass"], "qexam": param["qexam"], "qsheet": param["qsheet"]}
+        """Injecte tous les exercices d'une feuille dans un examen."""
+        requete = {"job": "linksheet",
+                   "code": param["authMember"],
+                   "qclass": param["qclass"],
+                   "qexam": param["qexam"],
+                   "qsheet": param["qsheet"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/injecter_exercice", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/injecter_exercice", "requete": requete})
         return rep
 
     def lierExoFeuille(self, param):
@@ -358,7 +387,8 @@ class Wims(SimpleItem):
         """
         intro_check = "1,2,4"
 
-        #intro_check="3" affiche la bonne réponse en cas d'erreur ( à utiliser dans le cas des entrainements uniquement)
+        # intro_check="3" affiche la bonne réponse en cas d'erreur
+        # (à utiliser dans le cas des entrainements uniquement)
         if "afficher_reponses" in param and param["afficher_reponses"] is True:
             intro_check = "1,2,3,4"
 
@@ -378,11 +408,12 @@ class Wims(SimpleItem):
         requete = {"job": "putexo", "code": param["authMember"], "data1": donnees_exercice.encode("iso-8859-1", "ignore"),
                    "qclass": param["qclass"], "qsheet": param["qsheet"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/lierExoFeuille", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/lierExoFeuille", "requete": requete})
         return rep
 
     def modifierExoFeuille(self, param):
-        """modifie l'exercice d'une feuille."""
+        """Modifie l'exercice d'une feuille."""
         donnees_exercice = self.donnees_exercice % ("",
                                                     "",
                                                     "",
@@ -399,14 +430,15 @@ class Wims(SimpleItem):
         requete = {"job": "modexosheet", "code": param["authMember"], "data1": donnees_exercice.encode("iso-8859-1", "ignore"),
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
         return rep
 
     def retirerExoFeuille(self, param):
-        u""" Retire l'exercice param["qexo"] de la feuille param["qsheet"]."""
+        u"""Retire l'exercice param["qexo"] de la feuille param["qsheet"]."""
         requete = {"job": "modexosheet", "code": param["authMember"], "option": "remove forced",
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}
-        #print "jalon.wims/retirerExoFeuille : Suppression de l'exercice %s" % param["qexo"]
+        # print "jalon.wims/retirerExoFeuille : Suppression de l'exercice %s" % param["qexo"]
         rep = self.callJob(requete)
         rep = self.verifierRetourWims({"rep": rep,
                                        "fonction": "jalon.wims/utility.py/retirerExoFeuille",
@@ -421,14 +453,15 @@ class Wims(SimpleItem):
         requete = {"job": "modexosheet", "code": param["authMember"], "option": "moveup",
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/modifierExoFeuille", "requete": requete})
         return rep
 
     def formaterDonnees(self, param):
         u"""fournit la variable "data1" des propriétés d'une autoeval au bon format."""
         donnees = []
 
-        #donnees Communes
+        # donnees Communes
         if "status" in param:
             donnees.append("status=%s" % param["status"])
 
@@ -443,7 +476,7 @@ class Wims(SimpleItem):
             title = title.strip()
             donnees.append(u"title=%s" % title.decode("utf-8"))
 
-        #donnees exclusives aux examens
+        # donnees exclusives aux examens
         if "duration" in param:
             # dans modexam, duration_and_attempts sont dans une seule variable, alors que dans addexam ils sont séparés.
             # on envoit donc les 2 pour être sûr.
@@ -457,12 +490,16 @@ class Wims(SimpleItem):
 
     def modifierFeuille(self, param):
         """Modifie les parametres d'une feuille."""
+        LOG.info("---- modifierFeuille | param = %s----" % param)
+
         donnees_feuille = self.formaterDonnees(param)
 
         requete = {"job": "modsheet", "code": param["authMember"], "data1": donnees_feuille.encode("iso-8859-1", "replace"),
                    "qclass": param["qclass"], "qsheet": param["qsheet"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierFeuille", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/modifierFeuille", "requete": requete})
+        LOG.info("---- modifierFeuille | REP_WIMS = %s----" % rep)
         return rep
 
     def modifierExamen(self, param):
@@ -472,11 +509,12 @@ class Wims(SimpleItem):
         requete = {"job": "modexam", "code": param["authMember"], "data1": donnees.encode("iso-8859-1", "replace"),
                    "qclass": param["qclass"], "qexam": param["qexam"]}
         rep = self.callJob(requete)
-        rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/modifierExamen", "requete": requete})
+        rep = self.verifierRetourWims(
+            {"rep": rep, "fonction": "jalon.wims/utility.py/modifierExamen", "requete": requete})
         return rep
 
     def reordonnerFeuille(self, param):
-        u""" reordonnerFeuille :  reordonne les exercices d'une feuille.
+        u"""Reordonne les exercices d'une feuille.
 
         # TODO : Le plus simple sera surement de procéder ainsi :
         #  1. stockge des infos des exos de la feuille
@@ -527,7 +565,7 @@ class Wims(SimpleItem):
         h = HTMLParser.HTMLParser()
         tree = ET.parse(import_file)
         root = tree.getroot()
-        #groupe_title = h.unescape(root.find('./data/title').text).encode("utf-8")
+        # groupe_title = h.unescape(root.find('./data/title').text).encode("utf-8")
         questions = root.find('./data/questions')
         questions_list = []
         i = 1
@@ -544,12 +582,13 @@ class Wims(SimpleItem):
                     else:
                         question_dict["bad_rep"].append(h.unescape(answer_text).encode("utf-8"))
 
-            obj_id = folder.invokeFactory(type_name='JalonExerciceWims', id="%s-%s-%s-%s" % ("qcmsimple", member_auth, DateTime().strftime("%Y%m%d%H%M%S"), i))
+            obj_id = folder.invokeFactory(type_name='JalonExerciceWims', id="%s-%s-%s-%s" %
+                                          ("qcmsimple", member_auth, DateTime().strftime("%Y%m%d%H%M%S"), i))
             question_dict["id_jalon"] = obj_id
             questions_list.append(question_dict)
             obj = getattr(folder, obj_id)
             ennonce = question_record.find('question').text
-            #if "#x2019;" in ennonce:
+            # if "#x2019;" in ennonce:
             #    print ennonce
             ennonce = ennonce.replace("&#x2019;", "'")
 
@@ -570,14 +609,14 @@ class Wims(SimpleItem):
             if not("status" in wims_response):
                 # La creation a planté (Cause : modele inconnu ?)
                 folder.manage_delObjects(ids=[obj_id])
-                #self.plone_log("unknown_model")
+                # self.plone_log("unknown_model")
             else:
-                #L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
+                # L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
                 if wims_response["status"] == "OK":
                     obj.setProperties({"Title": question_dict["title"],
                                        "Modele": "qcmsimple",
                                        })
-        #self.plone_log(questions_list)
+        # self.plone_log(questions_list)
         return questions_list
 
     def verifierRetourWims(self, params):
@@ -614,21 +653,25 @@ class Wims(SimpleItem):
             # jalon_utils.envoyerMailErreur(mail_erreur)
             # print "@@@@@@ ==> envoi d'un mail d'erreur WIMS a %s" % mail_erreur["a"]
             message = "<p>%s</p><p>Reponse originale de WIMS : %s</p>" % (message, rep)
-            rep = {"status": "ERROR", "message": "No JSON object could be decoded : %s" % e, "error_type": "Exception Raised (ValueError)"}
+            rep = {"status": "ERROR",
+                   "message": "No JSON object could be decoded : %s" % e,
+                   "error_type": "Exception Raised (ValueError)"}
         except TypeError, e:
-            # A priori si on tombe dans ce cas, c'est une erreur d'appel de "verifierRetourWims", a qui on a donné un json au lieu d'une string.
+            # A priori si on tombe dans ce cas, c'est une erreur d'appel de "verifierRetourWims",
+            # a qui on a donné un JSON au lieu d'une string.
             message = "<p>%s</p><p>Reponse originale de WIMS : %s</p>" % (message, rep)
             rep = {"status": "ERROR", "message": "Type Error : %s" % e, "error_type": "Exception Raised (TypeError)"}
 
         if rep["status"] == "ERROR":
-            if not "message" in rep:
+            if "message" not in rep:
                 rep["message"] = "aucun"
             if message == "":
                 message = "aucune info supplémentaire"
             mail_erreur["message"] = "<h1>Retour d'erreur de WIMS</h1>"
 
             if "jalon_URL" in params:
-                mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"], params["jalon_URL"])
+                mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"],
+                                                                                                                                                                                                                     params["jalon_URL"])
             mail_erreur["message"] = "%s <h2>Fonction appelante :</h2><p>%s</p>" % (mail_erreur["message"], fonction)
             mail_erreur["message"] = '%s <h2>Requ&ecirc;te effectu&eacute;e :</h2><pre>%s</pre>' % (mail_erreur["message"], requete)
 

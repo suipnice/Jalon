@@ -7,4 +7,4 @@ validators=validate_wims_activity_property
 
 [actions]
 action.failure = traverse_to:string:edit_wims_activity_form
-action.success_edit_deposit_box = traverse_to:string:edit_wims_activity_script
+action.success_edit_wims_activity = traverse_to:string:edit_wims_activity_script

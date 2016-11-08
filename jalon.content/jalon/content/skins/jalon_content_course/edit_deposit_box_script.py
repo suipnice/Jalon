@@ -8,11 +8,13 @@
 ##title=Activite edit
 ##
 
-#context = context
+# context = context
 form = context.REQUEST.form
 
 if "title" in form:
     context.setProperties({"Title": form["title"]})
+    # Met à jour le titre dans le plan du cours
+    context.aq_parent.editCourseMapItem(context.getId(), form["title"], False)
 else:
     context.setProperties({"Profile": form["profile"]})
 

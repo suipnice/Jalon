@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Jalon Folder."""
+"""Jalon Folder."""
 from zope.interface import implements
 from zope.component import getMultiAdapter, getUtility
 
@@ -77,7 +77,7 @@ def addSubJalonFolder(obj, event):
 
 
 class JalonFolder(ATFolder):
-    """ Un dossier Jalon. """
+    """Un dossier Jalon."""
 
     implements(IJalonFolder)
     meta_type = 'JalonFolder'
@@ -95,9 +95,9 @@ class JalonFolder(ATFolder):
         super(JalonFolder, self).__init__(*args, **kwargs)
         self.uploader_id = self._uploader_id()
 
-    #---------------------#
-    # Installation method #
-    #---------------------#
+    # --------------------- #
+    #  Installation method  #
+    # --------------------- #
     def addSubJalonFolder(self, memberid):
         addSubJalonFolder(self, memberid)
 
@@ -107,15 +107,15 @@ class JalonFolder(ATFolder):
         blacklist.setBlacklistStatus("context", True)
         self.reindexObject()
 
-    #--------------------#
-    # My Space Utilities #
-    #--------------------#
+    # -------------------- #
+    #  My Space Utilities  #
+    # -------------------- #
     def getMySpaceFolder(self):
-        #LOG.info("----- getMySpaceFolder -----")
+        # LOG.info("----- getMySpaceFolder -----")
         return self.folder_my_space_dict[self.getId()]
 
     def getMySubSpaceFolder(self, user_id, folder_id):
-        #LOG.info("----- getMySubSpaceFolder -----")
+        # LOG.info("----- getMySubSpaceFolder -----")
         portal = self.portal_url.getPortalObject()
         return getattr(getattr(portal.Members, user_id), folder_id)
 
@@ -170,11 +170,11 @@ class JalonFolder(ATFolder):
         if not idreunion:
             idreunion = self.getReunion(authMember, None)["idreunion"]
         enregistrements_connect = self.connect('rechercherEnregistrements', {'id': idreunion})
-        #setConnect = set([o["id"] for o in enregistrements_connect])
-        #enregistrements_jalon = self.getFolderContents(contentFilter=dico)
+        # setConnect = set([o["id"] for o in enregistrements_connect])
+        # enregistrements_jalon = self.getFolderContents(contentFilter=dico)
         reindex = False
         listeIdJalon = self.objectIds()
-        #listeIdJalon = [o.getId for o in enregistrements_jalon]
+        # listeIdJalon = [o.getId for o in enregistrements_jalon]
         for enregistrement in enregistrements_connect:
             if not enregistrement["id"] in listeIdJalon:
                 idobj = self.invokeFactory(type_name='JalonConnect', id=enregistrement["id"])
@@ -191,6 +191,7 @@ class JalonFolder(ATFolder):
         # return self.getFolderContents(contentFilter=dico)
 
     def getContentsWims(self, authMember):
+        """Fournit la liste des contenus WIMS de l'utilisateur courant (et crée la classe WIMS si necessaire)."""
         classe = self.getComplement()
         if not classe:
             # 1er  cas : Aucune classe n'existe pour cet utilisateur
@@ -265,7 +266,7 @@ class JalonFolder(ATFolder):
                             obj.setProperties({"Title": exo_wims["title"],
                                                "Modele": modele})
             else:
-                #*****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
+                # *****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
                 # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
                 # print "*****    Mauvais parametrage de votre connexion WIMS  *****"
                 # print "[jalonfolder.py] getExercicesWims : %s" % exercices
@@ -292,7 +293,7 @@ class JalonFolder(ATFolder):
                             dico_videos_pod[video["id"]] = video
 
                 videos_ids = set(videos_ids)
-                #videos_del = jalon_videos_id.difference(videos_ids)
+                # videos_del = jalon_videos_id.difference(videos_ids)
 
                 videos_add = videos_ids.difference(jalon_videos_id)
                 for video_id in videos_add:
@@ -332,7 +333,7 @@ class JalonFolder(ATFolder):
         return size
 
     def isObjectAttached(self, object_context):
-        #LOG.info("----- isObjectAttached -----")
+        # LOG.info("----- isObjectAttached -----")
         return "is_object_attached" if len(object_context.getRelatedItems()) else "isnt_object_attached"
 
     def getSearchPodVideosBreadcrumbs(self):
@@ -346,18 +347,19 @@ class JalonFolder(ATFolder):
                  "icon":  "fa fa-search",
                  "link":  "%s/search_pod_videos_form" % self.absolute_url()}]
 
-    #----------------------#
-    # My Courses utilities #
-    #----------------------#
+    # ---------------------- #
+    #  My Courses utilities  #
+    # ---------------------- #
+
     def getCourseUserFolder(self, user_id):
         return jalon_utils.getCourseUserFolder(self, user_id)
 
     def modifyFavoriteCourse(self, user_id, course_id):
-        #LOG.info("----- modifyFavorite -----")
+        # LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         favorites = list(course.Subject())
-        if not user_id in favorites:
+        if user_id not in favorites:
             favorites.append(user_id)
             archives = list(course.getArchive())
             if user_id in archives:
@@ -369,11 +371,11 @@ class JalonFolder(ATFolder):
         course.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def modifyArchiveCourse(self, user_id, course_id):
-        #LOG.info("----- modifyFavorite -----")
+        # LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course = getattr(course_user_folder, course_id)
         archives = list(course.getArchive())
-        if not user_id in archives:
+        if user_id not in archives:
             archives.append(user_id)
             favorites = list(course.Subject())
             if user_id in favorites:
@@ -385,20 +387,20 @@ class JalonFolder(ATFolder):
         course.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def getDataCourseFormAction(self, user_id, course_id):
-        #LOG.info("----- getDataCourseFormAction -----")
+        # LOG.info("----- getDataCourseFormAction -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseFormAction(user_id, course_id)
 
     def getDataCourseWimsActivity(self, user_id, course_id):
-        #LOG.info("----- getDataCourseWimsActivity -----")
+        # LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
         course_object = getattr(course_user_folder, course_id)
         return course_object.getDataCourseWimsActivity(user_id, course_id)
 
     """
     def getMesCoursView(self, user, tab=None):
-        #LOG.info("----- getMesCoursView -----")
+        # LOG.info("----- getMesCoursView -----")
 
         folder_link = self.absolute_url()
         is_manager = user.has_role("Manager")
@@ -441,7 +443,7 @@ class JalonFolder(ATFolder):
                 "tabs_list":    tabs_list}
 
     def getInfosCours(self, cours_brain, authors_dict, member_id, member_login_time, onglet, actions_list):
-        #LOG.info("----- getInfosCours -----")
+        # LOG.info("----- getInfosCours -----")
 
         cours_infos = {"id":                cours_brain.getId,
                        "title":             cours_brain.Title,
@@ -468,7 +470,8 @@ class JalonFolder(ATFolder):
         return cours_infos
 
     def getListeCoursEns(self, member, onglet):
-        #LOG.info("----- getListeCoursEns -----")
+        # LOG.info("----- getListeCoursEns -----")
+        # Renvoi la liste des cours pour authMember.
         courses_list = []
         courses_ids_list = []
         courses_list_filter = []
@@ -755,8 +758,8 @@ class JalonFolder(ATFolder):
                                    "email"       : dicoAuteur[auteur]["email"],
                                    "idauteur"    : auteur,
                                    "url"         : "%s" % cours.getURL(),
-                                   "modified"    : cours.modified,})
-            listeCours.sort(lambda x,y: cmp(x["auteur"], y["auteur"]))
+                                   "modified"    : cours.modified})
+            listeCours.sort(lambda x, y: cmp(x["auteur"], y["auteur"]))
             listeDiplome.append({"listeCours": listeCours})
         return listeDiplome
     """
@@ -784,7 +787,7 @@ class JalonFolder(ATFolder):
         for cours in listeCours:
             for acces in cours.getListeAcces:
                 type, code = acces.split("*-*")
-                if not code in dicoAccess:
+                if code not in dicoAccess:
                     if type == "etape":
                         retour = bdd.getInfosEtape(code)
                         if not retour:
@@ -814,9 +817,9 @@ class JalonFolder(ATFolder):
                     dicoAccess[code]["listeCours"].append(cours.Title)
         return dicoAccess
 
-    #-----------------------#
-    # My Students Utilities #
-    #-----------------------#
+    # ----------------------- #
+    #  My Students Utilities  #
+    # ----------------------- #
     def getInfosApogee(self, code, type):
         portal = self.portal_url.getPortalObject()
         bdd = getToolByName(portal, "portal_jalon_bdd")
@@ -943,9 +946,9 @@ class JalonFolder(ATFolder):
         # self.plone_log("getPlainShortText")
         return jalon_utils.getPlainShortText(html, limit)
 
-    #---------------------------------#
-    # OLD TAG -> DELETE WHEN FINISHED #
-    #---------------------------------#
+    # --------------------------------- #
+    #  OLD TAG -> DELETE WHEN FINISHED  #
+    # --------------------------------- #
     def getSelectedTab(self, cle="onglet", defaut=""):
         # Init
         tabs = {}
@@ -973,11 +976,11 @@ class JalonFolder(ATFolder):
             self.setSubject(tuple(tags))
             self.reindexObject()
 
-    #---------------------------------#
-    # NEW TAG                         #
-    #---------------------------------#
+    # --------------------------------- #
+    #  NEW TAG                          #
+    # --------------------------------- #
     def getSelectedTags(self):
-        #LOG.info("----- getSelectedTags -----")
+        # LOG.info("----- getSelectedTags -----")
         # Init
         tags = {}
         subjects = ""
@@ -990,7 +993,7 @@ class JalonFolder(ATFolder):
             subjects = self.REQUEST.form['subject']
             tags[spaceName] = subjects
             self.REQUEST.SESSION.set('tags', tags)
-            #LOG.info(tags)
+            # LOG.info(tags)
         else:
             # Pas de sélection
             if spaceName in tags:
@@ -1069,9 +1072,9 @@ class JalonFolder(ATFolder):
             tags_in_session[spaceName] = ','.join(selected)
             self.REQUEST.SESSION.set('tags', tags_in_session)
 
-    #--------#
-    # DIVERS #
-    #--------#
+    # -------- #
+    #  DIVERS  #
+    # -------- #
     def ajouterUtilisateurJalon(self, form):
         portal = self.portal_url.getPortalObject()
         portal_registration = getToolByName(portal, 'portal_registration')
@@ -1126,7 +1129,7 @@ class JalonFolder(ATFolder):
         # On duplique chaque classe de la liste getListeClasses() coté Wims,
         # et on assigne les identifiants des nouvelles classes au cours dupliqué
         listeClasses = cours.getListeClasses()
-        #LOG.error('original.getListeClasses() : %s' % listeClasses)
+        # LOG.error('original.getListeClasses() : %s' % listeClasses)
         new_listeClasses = []
 
         # Cree une nouvelle classe WIMS pour chaque createur d'activité
@@ -1134,15 +1137,14 @@ class JalonFolder(ATFolder):
             new_listeClasses.append({})
             for auteur in dico:
                 classe_id = dico[auteur]
-                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember(
-                    ).getId(), "qclass": classe_id}
+                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
                 rep_wims = self.wims("verifierRetourWims",
                                      {"rep": rep_wims,
                                       "fonction": "jalonfolder.py/dupliquerCours",
                                       "message":  "parametres de la requete : %s\ncours d'origine : %s\nduplicata : %s\nauteur : %s\n" % (dico_wims, idcours, idobj, auteur)})
                 if rep_wims["status"] == "OK":
-                    #LOG.info('rep_wims["status"] : %s' % rep_wims["status"])
+                    # LOG.info('rep_wims["status"] : %s' % rep_wims["status"])
                     new_listeClasses[index][auteur] = rep_wims["new_class"]
                 else:
                     portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
@@ -1152,7 +1154,7 @@ class JalonFolder(ATFolder):
                     message = _(
                         u'Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter votre administrateur</a> svp.' % admin_link)
                     self.plone_utils.addPortalMessage(message, type='error')
-        #LOG.info('new_listeClasses : %s' % new_listeClasses)
+        # LOG.info('new_listeClasses : %s' % new_listeClasses)
 
         duplicata.setListeClasses(new_listeClasses)
         param = {"Title":                  "%s (Duplicata du %s)" % (cours.Title(), DateTime().strftime("%d/%m/%Y - %H:%M:%S")),
@@ -1177,7 +1179,8 @@ class JalonFolder(ATFolder):
                    "CatalogueBU":              "Externes",
                    "TermeGlossaire":           "Glossaire",
                    "Presentationssonorisees":  "Sonorisation",
-                   "ExerciceWims":             "Wims"}
+                   "ExerciceWims":             "Wims",
+                   "ExercicesWims":            "Wims"}
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 
@@ -1187,7 +1190,7 @@ class JalonFolder(ATFolder):
 
         new_infos_element = copy.deepcopy(infos_element)
         for key in infos_element:
-            #LOG.info('[dupliquerCours] KEY : %s' % key)
+            # LOG.info('[dupliquerCours] KEY : %s' % key)
             duplicataObjet = None
 
             if key.startswith("BoiteDepot"):
@@ -1208,8 +1211,9 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents.
                     infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(
-                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
+                                                  infos_elements_activite, dico_espaces,
+                                                  dicoRep, portal_members)
 
                 else:
                     duplicataObjet = "Invalide"
@@ -1224,10 +1228,12 @@ class JalonFolder(ATFolder):
 
                     # Met a jour les relatedItems des documents et exercices.
                     infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(
-                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(
-                        ), infos_elements_activite, dico_espaces, dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
+                                                  infos_elements_activite, dico_espaces,
+                                                  dicoRep, portal_members)
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeExercices(),
+                                                  infos_elements_activite, dico_espaces,
+                                                  dicoRep, portal_members)
                 else:
                     duplicataObjet = "Invalide"
                     # On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le
@@ -1251,7 +1257,7 @@ class JalonFolder(ATFolder):
         relatedItems = cours.getRelatedItems()
         duplicata.setRelatedItems(relatedItems)
         duplicata.reindexObject()
-        #LOG.error('duplicata.getListeClasses : %s' % str(duplicata.getListeClasses()))
+        # LOG.error('duplicata.getListeClasses : %s' % str(duplicata.getListeClasses()))
         return duplicata.getId()
 
     def associerCoursListeObjets(self, idElement, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
@@ -1263,7 +1269,7 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
-        #LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
+        # LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
             infos_objet = infos_elements[id_objet]
             repertoire = infos_objet["typeElement"].replace(" ", "")
@@ -1314,11 +1320,11 @@ class JalonFolder(ATFolder):
             return True
         return False
 
-    #------------------------#
-    #   Utilitaire Connect   #
-    #------------------------#
+    # ------------------------ #
+    #    Utilitaire Connect    #
+    # ------------------------ #
     def connect(self, methode, param):
-        #LOG.info("----- connect -----")
+        # LOG.info("----- connect -----")
         return self.portal_connect.__getattribute__(methode)(param)
 
     def getSessionConnect(self, authMember):
@@ -1389,12 +1395,12 @@ class JalonFolder(ATFolder):
         """ renvoit true si url1 pointe sur le meme serveur qu'url2. """
         return jalon_utils.isSameServer(url1, url2)
 
-    #----------------------#
-    #   Utilitaires Wims   #
-    #----------------------#
+    # ---------------------- #
+    #    Utilitaires Wims    #
+    # ---------------------- #
     def wims(self, methode, param):
         """ Lien vers la fonction WIMS du connecteur. """
-        #LOG.info("----- wims -----")
+        # LOG.info("----- wims -----")
         return self.portal_wims.__getattribute__(methode)(param)
 
     def transfererExosWIMS(self, user_source):
@@ -1467,13 +1473,13 @@ class JalonFolder(ATFolder):
                         "qclass": "%s_1" % self.getComplement()}
                 json.loads(self.wims("callJob", dico))
 
-            #self.setTagDefaut(newExo)
+            # self.setTagDefaut(newExo)
             subject = list(newExo.Subject())
             subject.append(urllib.quote(etiquette))
             newExo.setSubject(subject)
 
             # Mise à jour des étiquettes du parent
-            if not etiquette in listeSubject:
+            if etiquette not in listeSubject:
                 listeSubject.append(etiquette)
             newExo.reindexObject()
 
@@ -1544,9 +1550,9 @@ class JalonFolder(ATFolder):
             pass
         return resultat
 
-    #-----------------------#
-    # Utilitaire JalonBDD   #
-    #-----------------------#
+    # ----------------------- #
+    #  Utilitaire JalonBDD    #
+    # ----------------------- #
     def jalonBDD(self, methode, param):
         bdd = getToolByName(self, "portal_jalon_bdd")
         return bdd.__getattribute__(methode)(**param)
@@ -1557,9 +1563,9 @@ class JalonFolder(ATFolder):
     def getIndividus(self, sesame_list, return_type=None):
         return jalon_utils.getIndividus(sesame_list, return_type)
 
-    #----------------------------#
-    # Utilitaire Elasticsearch   #
-    #----------------------------#
+    # --------------------------- #
+    #  Utilitaire Elasticsearch   #
+    # --------------------------- #
     def searchElasticsearch(self, type_search=None, term_search=None, page=1):
         portal = self.portal_url.getPortalObject()
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
@@ -1575,9 +1581,9 @@ class JalonFolder(ATFolder):
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         return portal_elasticsearch.getPropertiesElasticsearch()["url_connexion"]
 
-    #------------------#
-    # Utilitaire Wowza #
-    #------------------#
+    # ------------------ #
+    #  Utilitaire Wowza  #
+    # ------------------ #
     def searchVod(self, page, term_search=None):
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
@@ -1600,9 +1606,9 @@ class JalonFolder(ATFolder):
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         portal_jalon_wowza.askStreaming(streaming_id, member_id)
 
-    #-----------------#
-    #   Utilitaires   #
-    #-----------------#
+    # ---------------- #
+    #    Utilitaires   #
+    # ---------------- #
     def getPropertiesMessages(self, key=None):
         jalon_properties = self.portal_jalon_properties
         return jalon_properties.getPropertiesMessages(key)
@@ -1680,15 +1686,15 @@ class JalonFolder(ATFolder):
     def getFooter(self):
         return jalon_utils.getFooter()
 
-    #--------------------------------#
+    # ------------------------------ #
     #   Utilitaire GoogleAnalytics   #
-    #--------------------------------#
+    # ------------------------------ #
     def gaEncodeTexte(self, chemin, texte):
         return jalon_utils.gaEncodeTexte(chemin, texte)
 
-    #----------------------------#
+    # -------------------------- #
     #   Utilitaire Intracursus   #
-    #----------------------------#
+    # -------------------------- #
     def creationSeance(self, codeMatiere, annee, periode, publiable, intitule, typeseance, dateseance, heureseance, dureeseance, avecnote, coefficient):
         intracursus = getToolByName(self, "portal_jalon_intracursus")
         return intracursus.creationSeanceServer(codeMatiere, annee, periode, publiable, intitule, typeseance, dateseance, heureseance, dureeseance, avecnote, coefficient)

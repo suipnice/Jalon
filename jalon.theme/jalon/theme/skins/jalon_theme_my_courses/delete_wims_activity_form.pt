@@ -54,7 +54,7 @@
     <div class="panel callout radius">
         <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">
-            Pour des raisons techniques il est impossible de supprimer de manière individuelle une activité WIMS (auto-évaluation ou examen). Cette fonction permet toutefois de supprimer toutes les auto-évaluations et examens WIMS de ce cours.
+            Pour des raisons techniques il est impossible de supprimer <strong>de manière individuelle</strong> une activité WIMS (entrainement ou examen). Cette fonction permet toutefois de supprimer <strong>toutes</strong> les activités WIMS de ce cours.
         </tal:block>
     </div>
 

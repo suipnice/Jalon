@@ -27,7 +27,7 @@
     <tal:condition condition="course_data/is_course_owner">
     <div class="panel callout radius">
         <tal:block i18n:translate="">Dupliquer un cours crée un nouveau cours avec le même nom suivi de l'indication</tal:block> « <strong>Duplicata</strong> ».<br />
-        <tal:block i18n:translate="">Le duplicata contient tous les éléments du cours à l'exception des dépôts des étudiants (dans les boîtes de dépôt) et des notes d'auto-évaluations et d'examens WIMS.</tal:block>
+        <tal:block i18n:translate="">Le duplicata contient tous les éléments du cours à l'exception des dépôts des étudiants (dans les boîtes de dépôt) et des notes des activités WIMS.</tal:block>
     </div>
 
     <form id="js-courseDuplicator" method="POST"

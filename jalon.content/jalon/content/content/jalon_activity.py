@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-
+"""jalon_activity.py definit la class JalonActivity."""
 from zope.interface import implements
 
-from Products.Archetypes.public import *
+# from Products.Archetypes.public import *
 from OFS.SimpleItem import SimpleItem
 
-from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonActivity
+from jalon.content import contentMessageFactory as _
 
 from DateTime import DateTime
 
@@ -16,16 +16,16 @@ LOG = getLogger("[JalonActivity]")
 
 
 class JalonActivity(SimpleItem):
-    """ Une activité pour Jalon
-    """
+    u"""Une activité d'un cours Jalon."""
 
     implements(IJalonActivity)
     meta_type = 'JalonActivity'
 
-    ##--------------------------##
+    # -------------------------- #
     # Fonctions onglet Documents #
-    ##--------------------------##
+    # -------------------------- #
     def isChecked(self, idElement, formulaire, listeElement=None):
+        LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
                 return 1
@@ -36,8 +36,8 @@ class JalonActivity(SimpleItem):
             return 0
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
+        u"""Modifie l'etat de la ressource quand on modifie sa visibilité."""
         LOG.info("----- editCourseItemVisibility -----")
-        u""" Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
         is_deposit_box = True if item_id == self.getId() else False
 
         if is_deposit_box:
@@ -59,6 +59,7 @@ class JalonActivity(SimpleItem):
             self.setDocumentsProperties(self._infos_element)
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
+        """Met a jour les related Items de l'activité et de l'element de mon espace qu'on lui ajoute."""
         LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
 
@@ -71,23 +72,29 @@ class JalonActivity(SimpleItem):
                                   "image":  item_object.getVideothumbnail()}
 
         item_object_related = item_object.getRelatedItems()
-        if not self in item_object_related:
+        if self not in item_object_related:
             item_object_related.append(self)
             item_object.setRelatedItems(item_object_related)
             item_object.reindexObject()
 
-        deposit_box_related = self.getRelatedItems()
-        if not item_object in deposit_box_related:
-            deposit_box_related.append(item_object)
-            self.setRelatedItems(deposit_box_related)
+        activity_related = self.getRelatedItems()
+        if item_object not in activity_related:
+            activity_related.append(item_object)
+            self.setRelatedItems(activity_related)
 
-        self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
+        return {"item_id_no_dot":  item_id_no_dot,
+                "item_type":       item_type,
+                "item_title":      item_object.Title(),
+                "item_complement": complement_element,
+                "item_object":     item_object}
+        # self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
+        """Ajoute un element à la liste des sujets d'une activité."""
         LOG.info("----- addItemProperty -----")
 
         items_properties = self.getDocumentsProperties()
-        if not item_id in items_properties:
+        if item_id not in items_properties:
             items_properties[item_id] = {"titreElement":    item_title,
                                          "typeElement":     item_type,
                                          "createurElement": item_creator,
@@ -100,8 +107,12 @@ class JalonActivity(SimpleItem):
             listeSujets = list(self.getListeSujets())
             listeSujets.append(item_id)
             setattr(self, "listeSujets", tuple(listeSujets))
+            message = _(u"'${item_title}' a bien été ajouté aux documents enseignants.",
+                        mapping={'item_title': item_title.decode("utf-8")})
+            self.plone_utils.addPortalMessage(message, type='success')
 
     def displayDocumentsList(self, is_personnel, portal):
+        """Fournit la liste des documents à afficher."""
         LOG.info("----- displayDocumentsList -----")
         course_parent = self.aq_parent
 
@@ -127,7 +138,12 @@ class JalonActivity(SimpleItem):
             documents_list.append(document_dict)
         return documents_list
 
+    def getCourseItemProperties(self, key=None):
+        LOG.info("----- getCourseItemProperties -----")
+        return self.getDocumentsProperties(key)
+
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
+        """Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
         LOG.info("----- getItemActions -----")
         item_actions = course_parent._item_actions[:]
 
@@ -136,76 +152,27 @@ class JalonActivity(SimpleItem):
         else:
             del item_actions[1]
 
+        # Retire l'option "supprimer"
         del item_actions[-1]
+        # Retire l'option "jalonner"
         del item_actions[-2]
+        # Retire l'option "modifier"
         del item_actions[-2]
 
         return item_actions
 
     def getDisplayItemForm(self, item_id):
+        """Fournit les infos du formulaire d'affichage/masquage de l'activité."""
         LOG.info("----- getDisplayItemForm -----")
-        form_properties = {"is_authorized_form":       True,
-                           "is_item_title":            False,
-                           "is_item_parent_title":     False,
-                           "help_css":                 "panel callout radius",
-                           "help_text":                "Vous êtes sur le point d'afficher cette ressource à vos étudiants.",
-                           "is_wims_examen":           False}
         if self.getId() == item_id:
+            # Pour l'affichage de l'activité elle-même, on fait appel à la fonction getDisplayItemForm() du cours.
             form_properties = self.aq_parent.getDisplayItemForm(item_id)
         else:
+            # Pour l'affichage des elements inclus dans l'activité, on appelle getDisplayItemFormProperties() du cours.
             item_properties = self.getDocumentsProperties(item_id)
-            display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
-            if display_properties["val"]:
-                form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
-                form_properties["help_css"] = "panel radius warning"
-                form_properties["form_button_css"] = "button small radius warning"
-                form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
-                form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
-                form_properties["item_property_name"] = "masquerElement"
-                form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
-                form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
-                form_properties["item_parent_title"] = ""
-                form_properties["wims_help_text"] = False
-
-                form_properties["text_title_lately"] = "… ou programmer son masquage."
-                if item_properties["typeElement"] == "Titre":
-                    form_properties["is_item_title"] = True
-                    form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
-                else:
-                    form_properties["text_title_directly"] = "Masquer directement…"
-
-                form_properties["form_name"] = "masquer-element"
-                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "masquerElement")
-            else:
-                form_properties["form_button_css"] = "button small radius"
-                form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
-                form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
-                form_properties["item_property_name"] = "affElement"
-                form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
-                form_properties["form_title_icon"] = "fa fa-eye no-pad"
-
-                form_properties["text_title_lately"] = "… ou programmer son affichage."
-                if item_properties["typeElement"] == "Titre":
-                    form_properties["is_item_title"] = True
-                    form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
-                    form_properties["wims_help_text"] = True
-                else:
-                    form_properties["text_title_directly"] = "L'afficher directement…"
-                    form_properties["wims_help_text"] = False
-
-                form_properties["form_name"] = "afficher-element"
-                form_properties["item_date"] = self.getDisplayOrHiddenDate(item_properties, "affElement")
+            form_properties = self.aq_parent.getDisplayItemFormProperties(item_properties)
 
         return form_properties
-
-    def getDisplayOrHiddenDate(self, item_properties, attribut):
-        LOG.info("----- getDisplayOrHiddenDate -----")
-        LOG.info("***** item_properties : %s" % item_properties)
-        if item_properties[attribut] != "":
-            LOG.info("***** attribut: %s" % attribut)
-            LOG.info("***** item_properties[attribut]: %s" % item_properties[attribut])
-            return item_properties[attribut].strftime("%Y/%m/%d %H:%M")
-        return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def detachDocument(self, item_id):
         LOG.info("----- detachDocument -----")
@@ -224,8 +191,8 @@ class JalonActivity(SimpleItem):
         item_object.setRelatedItems(item_relatedItems)
         item_object.reindexObject()
 
-        deposit_relatedItems = self.getRelatedItems()
-        deposit_relatedItems.remove(item_object)
-        self.setRelatedItems(deposit_relatedItems)
+        activity_relatedItems = self.getRelatedItems()
+        activity_relatedItems.remove(item_object)
+        self.setRelatedItems(activity_relatedItems)
 
         self.reindexObject()
