@@ -241,11 +241,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
         if folder_object.getId() == "Wims":
             liste = "Exercices"
             idClasse = self.getClasse()
-            # A SUPPRIMER :
-            rep_wims = {"status": "OK"}
+
+            item_title = item["item_title"].decode("utf-8")
+            item_object = item['item_object']
+
+            # Exo Externes
             if item_id.startswith("externe-"):
-                item_title = item["item_title"].decode("utf-8")
-                item_object = item['item_object']
+
                 permalien = item_object.permalink
                 dico = {"job": "putexo", "code": user_id, "qclass": idClasse, "qsheet": self.idFeuille}
                 if permalien != "":
@@ -265,10 +267,27 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 else:
                     rep_wims = '{"status": "ERROR", "message": "pas de permalien pour cet exercice externe"}'
                 rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/addMySpaceItem", "message": "parametres de la requete : %s" % dico})
+            # Exo Internes
+            else:
+                if item_id.startswith("groupe-"):
+                    listeExos = item_object.getListeIdsExos()
+                    qnum = item_object.getQnum()
+                else:
+                    listeExos = [item_id]
+                    qnum = "1"
 
-            # TODO !!! TRAITER les AUTRES CAS.
+                if self.typeWims != "Examen":
+                    afficher_reponses = True
+                else:
+                    afficher_reponses = False
+
+                rep_wims = self.wims("lierExoFeuille", {"authMember": user_id, "title": item_title,
+                                                        "qclass": idClasse, "qsheet": self.idFeuille,
+                                                        "listeExos": listeExos, "qnum": qnum,
+                                                        "afficher_reponses": afficher_reponses})
 
             if rep_wims['status'] != "OK":
+                # Attention : si la creation n'a pas eu lieu coté WIMS, il ne faut rien créer côté Jalon.
                 portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
                 contact_link = portal_jalon_properties.getLienContact()
                 admin_link = u"%s?subject=[%s] Erreur d'insertion exercice WIMS&amp;body=exercice : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
