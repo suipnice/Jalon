@@ -1405,6 +1405,27 @@ class JalonCours(ATFolder):
 
         self.plan = tuple(course_map)
 
+    def addMySpaceItemGlossary(self, folder_object, item_id, item_type, user_id):
+        # LOG.info("----- addMySpaceItemGlossary -----")
+        glossary = list(self.getGlossaire())
+        glossary.append(item_id)
+        self.setElements_glossaire(glossary)
+
+        item_object = getattr(folder_object, item_id)
+
+        item_object_related = item_object.getRelatedItems()
+        if self not in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+
+        course_related = self.getRelatedItems()
+        if item_object not in course_related:
+            course_related.append(item_object)
+            self.setRelatedItems(course_related)
+
+        self.addItemProperty(item_id, item_type, item_object.Title(), user_id, "", None)
+
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
         # LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
@@ -2593,8 +2614,10 @@ class JalonCours(ATFolder):
         dicoLettres = {}
         if glo_bib == "glossaire":
             elements = self.getGlossaire()
+            folder_id = "Glossaire"
         else:
             elements = self.getBibliographie()
+            folder_id = "Externes"
         if elements:
             infos_element = self.getCourseItemProperties()
 
@@ -2604,7 +2627,7 @@ class JalonCours(ATFolder):
             if info_element:
                 info_element["idElement"] = idElement
                 lettre = info_element["titreElement"][0].upper()
-                info_element["urlElement"] = "%s/Members/Externes/%s/%s" % (portal_link, idElement, info_element["createurElement"])
+                info_element["urlElement"] = "%s/Members/%s/%s/%s/view" % (portal_link, info_element["createurElement"], folder_id, idElement)
                 if not lettre in dicoLettres:
                     dicoLettres[lettre] = [info_element]
                 else:
