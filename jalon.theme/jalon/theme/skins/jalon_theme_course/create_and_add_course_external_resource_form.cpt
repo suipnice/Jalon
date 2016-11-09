@@ -12,32 +12,45 @@
 
     <h2>
         <i class="fa fa-plus-circle no-pad"></i>
-        <tal:block i18n:translate="">Ajouter un fichier au cours et dans "Mon espace > Fichiers"</tal:block>
+        <tal:block i18n:translate="">Ajouter une ressource externe au cours et dans "Mon espace > Ressources externes"</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <form id="js-directExtFileCreator" method="POST" enctype="multipart/form-data"
+    <form id="js-directExtResCreator" method="POST"
           tal:attributes="action string:${context/absolute_url}/${template/id};
-                          data-success_msg string:Le fichier a été créé et ajouté au cours.">
+                          data-success_msg string:La ressource externe a été créée et ajouté au cours.">
 
-        <div id="archetypes-fieldname-title" class="field"
-            tal:define="error errors/title | nothing">
-            <label for="title" class="formQuestion" i18n:translate="">Titre</label>
-            <input type="text" id="title" name="title" value=""
-                   maxlength="255" size="30"/>
+        <div id="title"
+             tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input id="title" name="title" type="text" maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
         </div>
 
         <div id="archetypes-fieldname-description" class="field">
-            <label for="description" i18n:translate="">Description</label>
-            <textarea name="description" rows="5"></textarea>
+            <label for="description" class="formQuestion" i18n:translate="label_description">
+                Description
+            </label>
+            <textarea id="description" cols="40" name="description" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format" />
         </div>
 
-        <div id="archetypes-fieldname-file"
-            tal:define="error errors/file_file | nothing;"
-            tal:attributes="class python:context.test(error, 'field error', 'field')">
-            <label for="file" i18n:translate="">Fichier</label>
-            <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
-            <input id="file_file" name="file_file" type="file" size="30" required="required" />
+        <div id="archetypes-fieldname-lien"
+             tal:define="error errors/lien | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="lien" class="formQuestion" i18n:translate="label_lecteur_exportable">
+                URL ou Lecteur exportable
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="lien" cols="40" name="lien" rows="5"
+                      required="required" placeholder="Saisie obligatoire"
+                      i18n:attributes="placeholder"><tal:replace replace="requet/lien | nothing" /></textarea>
         </div>
 
         <tal:define define="course_map_form context/getCourseMapForm">
@@ -60,7 +73,7 @@
 
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="user_id" tal:attributes="value user/getId" />
-        <input type="hidden" name="validate_key" value="create_file" />
+        <input type="hidden" name="validate_key" value="create_external_resource" />
 
         <div class="formControls">
             <button type="submit" class="button small create radius">
@@ -71,10 +84,8 @@
 
     </form>
 
-    <tal:comment replace="nothing">
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormPlanRefresh('js-directExtFileCreator','reveal-main')"></script>
-    </tal:comment>
+            tal:content="structure string:setRevealFormPlanRefresh('js-directExtResCreator','reveal-main')" />
 
 </metal:main>
 
