@@ -88,13 +88,13 @@ class CourseAddView(MySpaceView):
 
         is_course = True
         course_map_form = ""
+        wims_exercice_model_list = ""
         if course_path_list[-1].startswith("Cours-"):
             course_map = course_object.getCourseMapList()
             course_map_form = self.getCourseMapForm(course_path)
             course_add_js = course_add_dict["course_add_js"]
         else:
             is_course = False
-            wims_exercice_model_list = ""
             course_object = getattr(course_object, course_path_list[-1])
             if course_add_dict["folder_id"] == "Wims":
                 course_map = course_object.getListeExercices()
