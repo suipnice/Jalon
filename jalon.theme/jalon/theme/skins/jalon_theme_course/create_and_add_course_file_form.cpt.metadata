@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_course_property
+
+[actions]
+action.failure = traverse_to:string:create_and_add_course_file_form
+action.success_create_file = traverse_to:string:add_course_file_script

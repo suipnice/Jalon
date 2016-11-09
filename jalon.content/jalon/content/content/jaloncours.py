@@ -1640,6 +1640,9 @@ class JalonCours(ATFolder):
         self.getCourseItemProperties()
         self.setCourseItemsProperties(self._elements_cours)
 
+    def get_id_from_filename(self, filename, context):
+        return jalon_utils.get_id_from_filename(filename, context)
+
     #---------------------------------#
     # Course Activity (WIMS Activity) #
     #---------------------------------#
