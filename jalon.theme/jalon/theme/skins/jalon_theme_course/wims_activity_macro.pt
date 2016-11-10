@@ -114,38 +114,32 @@ En entrée :
     </tal:condition>
     <tal:condition condition="python:infosNotes['status']=='OK'">
 
-    <tal:condition condition="not:my_view/is_personnel">
-        <tal:comment replace="nothing"><!-- Boutons pour les etudiants --></tal:comment>
-        <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?mode_etudiant=${mode_etudiant}"
-           tal:condition="not:qexam"
-           class="button small radius right">
-            <span class="inline">
-                <i class="fa fa-gamepad"></i>
-                <span class="show-for-small-only" i18n:translate="">Commencer</span>
-                <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
-            </span>
-        </a>
+    <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?mode_etudiant=${mode_etudiant}"
+       tal:condition="python: isActif and not isExam"
+       class="button small radius right">
+        <span class="inline">
+            <i class="fa fa-gamepad"></i>
+            <span class="show-for-small-only" i18n:translate="">Commencer</span>
+            <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
+        </span>
+    </a>
+
+    <tal:etu condition="not:my_view/is_personnel">
         <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view?mode_etudiant=${mode_etudiant}"
            tal:condition="qexam"
            class="button small radius right">
             <i class="fa fa-play"></i>
             <tal:block i18n:translate="">Démarrer mon examen</tal:block>
         </a>
-    </tal:condition>
+    </tal:etu>
 
-    <tal:condition condition="my_view/is_personnel">
-        <tal:comment replace="nothing"><!-- Boutons pour les enseignants --></tal:comment>
+    <tal:condition condition="python: my_view['is_personnel'] and qexam">
+        <tal:comment replace="nothing"><!-- Boutons enseignants pour un examen activé --></tal:comment>
         <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view"
            class="button small right">
-            <tal:condition condition="isExam">
-                <i class="fa fa-laptop"></i>
-                <tal:block tal:condition="not:isActif" i18n:translate="">Tester les exercices</tal:block>
-                <tal:block tal:condition="isActif" i18n:translate="">Simuler l'examen</tal:block>
-            </tal:condition>
-            <tal:condition condition="not:isExam">
-                <i class="fa fa-gamepad"></i>
-                <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
-            </tal:condition>
+            <i class="fa fa-laptop"></i>
+            <tal:block tal:condition="not:isActif" i18n:translate="">Tester les exercices</tal:block>
+            <tal:block tal:condition="isActif" i18n:translate="">Simuler l'examen</tal:block>
         </a>
     </tal:condition>
 
