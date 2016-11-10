@@ -1671,6 +1671,19 @@ class JalonCours(ATFolder):
                 self.setCourseItemsProperties(self._elements_cours)
             self.detachCourseItem(item_id, item_data["createurElement"], item_data["typeElement"].replace(" ", ""))
 
+    def detachBibliographyItem(self, item_id):
+        # LOG.info("----- detachBibliographyItem -----")
+        bibliography_items = list(self.getBibliographie())
+        if item_id in bibliography_items:
+            bibliography_items.remove(item_id)
+            self.elements_bibliographie = tuple(bibliography_items)
+            if not self.isInCourseMap(item_id):
+                item_data = self.getCourseItemProperties().get(item_id)
+                if item_data:
+                    del self._elements_cours[item_id]
+                    self.setCourseItemsProperties(self._elements_cours)
+                self.detachCourseItem(item_id, item_data["createurElement"], item_data["typeElement"].replace(" ", ""))
+
     def getCourseDeleteItemForm(self, item_id):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
