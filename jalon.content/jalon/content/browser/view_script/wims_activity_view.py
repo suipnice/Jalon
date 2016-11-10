@@ -23,6 +23,7 @@ class WimsActivityView(CourseView):
         LOG.info("----- getBreadcrumbs -----")
         portal = self.context.portal_url.getPortalObject()
         parent = self.context.aq_parent
+        self_link = self.context.absolute_url()
         response = [{"title": _(u"Mes cours"),
                      "icon":  "fa fa-university",
                      "link":  "%s/mes_cours" % portal.absolute_url()},
@@ -31,9 +32,9 @@ class WimsActivityView(CourseView):
                      "link":  parent.absolute_url()},
                     {"title": self.context.Title(),
                      "icon":  self.context.getIconClass(),
-                     "link":  self.context.absolute_url()}]
+                     "link":  self_link}]
         if self.request.ACTUAL_URL.split("/")[-1] == "wims_activity_exercice_view":
-            response.append({"title": _("Exercice(s)"), "icon":  "fa fa-random"})
+            response.append({"title": _("Exercice(s)"), "icon":  "fa fa-random", "link": "%s/wims_activity_exercice_view" % self_link})
         return response
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):

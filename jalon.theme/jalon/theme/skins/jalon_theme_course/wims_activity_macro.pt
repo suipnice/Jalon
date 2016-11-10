@@ -92,7 +92,9 @@ En entrée :
 
 <tal:define define="listeExos  python:context.displayExercicesList();
                     site_lang  portal_state/language;
-                    infosNotes python:context.getNotes(quser=user.getId(), actif=my_view['wims_activity_visibility']['val'], isProf=my_view['is_personnel'], site_lang=site_lang, request=request);
+                    isActif    my_view/wims_activity_visibility/val;
+                    infosNotes python:context.getNotes(quser=user.getId(), actif=isActif,
+                                                       isProf=my_view['is_personnel'], site_lang=site_lang, request=request);
                     qexam context/getIdExam;
                     isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
 
@@ -128,6 +130,22 @@ En entrée :
            class="button small radius right">
             <i class="fa fa-play"></i>
             <tal:block i18n:translate="">Démarrer mon examen</tal:block>
+        </a>
+    </tal:condition>
+
+    <tal:condition condition="my_view/is_personnel">
+        <tal:comment replace="nothing"><!-- Boutons pour les enseignants --></tal:comment>
+        <a tal:attributes="href string:${context/absolute_url}/wims_activity_exercice_view"
+           class="button small right">
+            <tal:condition condition="isExam">
+                <i class="fa fa-laptop"></i>
+                <tal:block tal:condition="not:isActif" i18n:translate="">Tester les exercices</tal:block>
+                <tal:block tal:condition="isActif" i18n:translate="">Simuler l'examen</tal:block>
+            </tal:condition>
+            <tal:condition condition="not:isExam">
+                <i class="fa fa-gamepad"></i>
+                <span class="show-for-medium-up" i18n:translate="">Commencer les exercices</span>
+            </tal:condition>
         </a>
     </tal:condition>
 

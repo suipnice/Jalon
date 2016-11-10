@@ -118,11 +118,11 @@
                                 <div class="panel callout radius" i18n:translate="">
                                     Donnez le mot de passe fourni par votre enseignant pour continuer :
                                 </div>
-                                <p class="fieldErrorBox alert" tal:condition="unlock_key">
+                                <div class="fieldErrorBox alert" tal:condition="unlock_key">
                                     <span i18n:translate="">
                                         Mauvais mot de passe. Veuillez verifier celui-ci auprès de votre enseignant svp...
                                     </span>
-                                </p>
+                                </div>
                                 <div class="row">
                                     <div class="small-3 columns">
                                         <label class="right inline" for="unlock_key" i18n:translate="">
