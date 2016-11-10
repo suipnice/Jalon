@@ -52,8 +52,12 @@ class CourseAddView(MySpaceView):
                                                          "course_add_list_icon": "fa fa-random",
                                                          "is_display_hide":      False,
                                                          "course_add_js":        "setAttachmentCreator()"},
-                        "glossaire":    {"course_add_js": "setTagFilter(True)"},
-                        "biblio":       {"course_add_js": "setTagFilter(True)"}}
+                        "course_bibliography":          {"folder_id":            "Externes",
+                                                         "macro_file":           "add_course_bibliography_macro",
+                                                         "portal_type":          ["JalonRessourceExterne"],
+                                                         "course_add_list_icon": "fa fa-external-link",
+                                                         "is_display_hide":      False,
+                                                         "course_add_js": "setTagFilter(true)"}}
 
     def __init__(self, context, request):
         # LOG.info("----- Init -----")
@@ -96,9 +100,12 @@ class CourseAddView(MySpaceView):
         course_map_form = ""
         wims_exercice_model_list = ""
         if course_path_list[-1].startswith("Cours-"):
-            if self.context.getId() in ["mes_termes_glossaire"]:
+            if self.context.getId() == "mes_termes_glossaire":
                 is_course = False
                 course_map = course_object.getGlossaire()
+            elif self.context.getId() == "course_bibliography":
+                is_course = False
+                course_map = course_object.getBibliographie()
             else:
                 course_map = course_object.getCourseMapList()
                 course_map_form = self.getCourseMapForm(course_path)

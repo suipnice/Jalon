@@ -1,9 +1,10 @@
 <metal:macro define-macro="display_bibliography">
 <h2>
     <i class="fa fa-book"></i><tal:block i18n:translate="">Bibliographie</tal:block>
-    <a class="button tiny radius show-for-medium-up" data-reveal-id="reveal-main-large" data-reveal-ajax="true"
-       tal:condition="my_view/is_personnel"
-       tal:attributes="href string:${context/absolute_url}/course_add_bibliography_element_form">
+    <a class="button tiny radius show-for-medium-up"
+       data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+       tal:attributes="href my_view/course_add_bibliography_link"
+       tal:condition="my_view/is_personnel">
         <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Attacher une ressource externe</tal:block>
     </a>
 </h2>
@@ -37,7 +38,7 @@
                     <tal:define define="res_name python:context.getShortText(course_bibliography_element['titreElement'], 80)">
                     <a class="right" title="Détacher du cours"
                        data-reveal-ajax="true" data-reveal-id="reveal-main_second"
-                       tal:attributes="href string:${context/absolute_url}/course_bibliography_remove_form"
+                       tal:attributes="href string:${context/absolute_url}/course_detach_bibliography_form?item_id=${course_bibliography_element/idElement}"
                        tal:condition="my_view/is_personnel"
                        i18n:attributes="title">
                        <i class="fa fa-chain-broken fa-fw warning"></i>

@@ -131,6 +131,7 @@ class CourseView(BrowserView):
             course_path = self.context.getPhysicalPath()
             my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
             my_view["course_add_glossary_link"] = "%s/mon_espace/mes_termes_glossaire/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
+            my_view["course_add_bibliography_link"] = "%s/mon_espace/course_bibliography/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
 
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")

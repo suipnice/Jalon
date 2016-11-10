@@ -25,6 +25,10 @@ if form.has_key("glossary_or_bibliography"):
         for item in request.form["paths"]:
             item_id, item_type = item.split("/")
             context.addMySpaceItemGlossary(folder_object, item_id, item_type, user_id)
+    if form["glossary_or_bibliography"] == "bibliography":
+        for item in request.form["paths"]:
+            item_id, item_type = item.split("/")
+            context.addMySpaceItemBibliography(folder_object, item_id, item_type, user_id)
     request.RESPONSE.redirect(context.absolute_url())
 else:
     for item in request.form["paths"]:

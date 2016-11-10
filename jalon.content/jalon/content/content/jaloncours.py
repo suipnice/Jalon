@@ -1426,6 +1426,29 @@ class JalonCours(ATFolder):
 
         self.addItemProperty(item_id, item_type, item_object.Title(), user_id, "", None)
 
+    def addMySpaceItemBibliography(self, folder_object, item_id, item_type, user_id):
+        # LOG.info("----- addMySpaceItemBibliography -----")
+        bibliography = list(self.getBibliographie())
+        bibliography.append(item_id)
+        self.setElements_bibliographie(bibliography)
+
+        item_object = getattr(folder_object, item_id)
+
+        item_object_related = item_object.getRelatedItems()
+        if self not in item_object_related:
+            item_object_related.append(self)
+            item_object.setRelatedItems(item_object_related)
+            item_object.reindexObject()
+
+        course_related = self.getRelatedItems()
+        if item_object not in course_related:
+            course_related.append(item_object)
+            self.setRelatedItems(course_related)
+
+        item_data = self.getCourseItemProperties().get(item_id)
+        if not item_data:
+            self.addItemProperty(item_id, item_type, item_object.Title(), user_id, "", None)
+
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
         # LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
