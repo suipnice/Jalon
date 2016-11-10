@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="res_name python:context.getShortText(context.getCourseItemProperties(request['item_id'])['titreElement'], 80)">
+
+    <h2>
+        <tal:block i18n:translate="">Détacher l'élément de « Mon espace » : </tal:block>
+        « <tal:content content="res_name" /> »
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel warning radius">
+        <strong i18n:translate="">Attention :</strong>
+        <tal:block i18n:translate="">les étudiants n'auront plus accès à cet terme de glossaire.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/course_detach_glossary_script"
+          method="POST">
+
+        <input type="hidden" name="item_id" tal:attributes="value request/item_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small warning"
+                    name="detacher">
+                <i class="fa fa-chain-broken"></i>
+                <tal:block i18n:translate="">Détacher</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

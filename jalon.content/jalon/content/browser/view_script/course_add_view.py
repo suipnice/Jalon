@@ -28,6 +28,12 @@ class CourseAddView(MySpaceView):
                                                          "course_add_list_icon": "fa fa-external-link",
                                                          "is_display_hide":      True,
                                                          "course_add_js":        "setAttachmentCreator()"},
+                        "mes_termes_glossaire":         {"folder_id":            "Glossaire",
+                                                         "macro_file":           "add_course_glossary_term_macro",
+                                                         "portal_type":          ["JalonTermeGlossaire"],
+                                                         "course_add_list_icon": "fa fa-font",
+                                                         "is_display_hide":      False,
+                                                         "course_add_js":        "setTagFilter(true)"},
                         "mes_webconferences":           {"folder_id":            "Webconference",
                                                          "macro_file":           "add_course_adobe_connect_recording_macro",
                                                          "portal_type":          ["JalonConnect"],
@@ -46,8 +52,12 @@ class CourseAddView(MySpaceView):
                                                          "course_add_list_icon": "fa fa-random",
                                                          "is_display_hide":      False,
                                                          "course_add_js":        "setAttachmentCreator()"},
-                        "glossaire":    {"course_add_js": "setTagFilter(True)"},
-                        "biblio":       {"course_add_js": "setTagFilter(True)"}}
+                        "course_bibliography":          {"folder_id":            "Externes",
+                                                         "macro_file":           "add_course_bibliography_macro",
+                                                         "portal_type":          ["JalonRessourceExterne"],
+                                                         "course_add_list_icon": "fa fa-external-link",
+                                                         "is_display_hide":      False,
+                                                         "course_add_js": "setTagFilter(true)"}}
 
     def __init__(self, context, request):
         # LOG.info("----- Init -----")
@@ -90,8 +100,15 @@ class CourseAddView(MySpaceView):
         course_map_form = ""
         wims_exercice_model_list = ""
         if course_path_list[-1].startswith("Cours-"):
-            course_map = course_object.getCourseMapList()
-            course_map_form = self.getCourseMapForm(course_path)
+            if self.context.getId() == "mes_termes_glossaire":
+                is_course = False
+                course_map = course_object.getGlossaire()
+            elif self.context.getId() == "course_bibliography":
+                is_course = False
+                course_map = course_object.getBibliographie()
+            else:
+                course_map = course_object.getCourseMapList()
+                course_map_form = self.getCourseMapForm(course_path)
             course_add_js = course_add_dict["course_add_js"]
         else:
             is_course = False
@@ -118,7 +135,7 @@ class CourseAddView(MySpaceView):
                 "course_map_form":      course_map_form,
                 "is_display_hide":      course_add_dict["is_display_hide"],
                 "folder_id":            course_add_dict["folder_id"],
-                "folder_link":          folder.absolute_url(),
+                "folder_link":          "%s/mon_espace/%s" % (portal.absolute_url(), self.context.getId()),
                 "course_link":          course_object.absolute_url(),
                 "course_add_js":        course_add_js,
                 "wims_exercice_model_list": wims_exercice_model_list}

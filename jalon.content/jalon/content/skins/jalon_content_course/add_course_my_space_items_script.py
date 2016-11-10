@@ -20,9 +20,20 @@ display_item = DateTime() if "display_item" in form and form["display_item"] == 
 display_in_plan = True if "display_in_plan" in form and form["display_in_plan"] == "1" else False
 map_items_position = form["map_position"] if form.has_key("map_position") else None
 
-for item in request.form["paths"]:
-    item_id, item_type = item.split("/")
-    context.addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
+if form.has_key("glossary_or_bibliography"):
+    if form["glossary_or_bibliography"] == "glossary":
+        for item in request.form["paths"]:
+            item_id, item_type = item.split("/")
+            context.addMySpaceItemGlossary(folder_object, item_id, item_type, user_id)
+    if form["glossary_or_bibliography"] == "bibliography":
+        for item in request.form["paths"]:
+            item_id, item_type = item.split("/")
+            context.addMySpaceItemBibliography(folder_object, item_id, item_type, user_id)
+    request.RESPONSE.redirect(context.absolute_url())
+else:
+    for item in request.form["paths"]:
+        item_id, item_type = item.split("/")
+        context.addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
 
 if context.getId().startswith("Cours-"):
     return "%s/display_course_map_page" % context.absolute_url()
