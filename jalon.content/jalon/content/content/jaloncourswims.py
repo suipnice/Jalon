@@ -359,11 +359,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
-    def getBreadcrumbs(self, sub_page=""):
-        """Get current page breadcrumbs."""
-        LOG.info("----- getBreadcrumbs -----")
+    def getCrumbs(self, sub_page=""):
+        """Get crumbs for some jaloncourswims subpages."""
+        LOG.info("----- getCrumbs -----")
         portal = self.portal_url.getPortalObject()
         parent = self.aq_parent
+        self_link = self.absolute_url()
         response = [{"title": _(u"Mes cours"),
                      "icon":  "fa fa-university",
                      "link":  "%s/mes_cours" % portal.absolute_url()},
@@ -372,9 +373,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
                      "link":  parent.absolute_url()},
                     {"title": self.Title(),
                      "icon":  self.getIconClass(),
-                     "link":  self.absolute_url()}]
-        if sub_page != "":
-            response.append({"title": sub_page, "icon":  "fa fa-edit"})
+                     "link":  self_link}]
+        if sub_page == "edit":
+            response.append({"title": _(u"Propriétés"), "icon":  "fa fa-edit", "link": "%s/edit_wims_activity_form" % self_link})
         return response
 
     def getIconClass(self):

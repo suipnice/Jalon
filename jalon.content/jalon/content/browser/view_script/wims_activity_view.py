@@ -3,7 +3,7 @@
 # from Products.Five.browser import BrowserView
 # from zope.component import getMultiAdapter
 from course_view import CourseView
-# from jalon.content import contentMessageFactory as _
+from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
 LOG = getLogger('[WimsActivityView]')
@@ -21,7 +21,20 @@ class WimsActivityView(CourseView):
     def getBreadcrumbs(self):
         """Get current page breadcrumbs."""
         LOG.info("----- getBreadcrumbs -----")
-        return self.context.getBreadcrumbs()
+        portal = self.context.portal_url.getPortalObject()
+        parent = self.context.aq_parent
+        response = [{"title": _(u"Mes cours"),
+                     "icon":  "fa fa-university",
+                     "link":  "%s/mes_cours" % portal.absolute_url()},
+                    {"title": parent.Title(),
+                     "icon":  "fa fa-book",
+                     "link":  parent.absolute_url()},
+                    {"title": self.context.Title(),
+                     "icon":  self.context.getIconClass(),
+                     "link":  self.context.absolute_url()}]
+        if self.request.ACTUAL_URL.split("/")[-1] == "wims_activity_exercice_view":
+            response.append({"title": _("Exercice(s)"), "icon":  "fa fa-random"})
+        return response
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""

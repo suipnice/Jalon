@@ -1655,9 +1655,6 @@ class JalonFolder(ATFolder):
     def envoyerMailErreur(self, form):
         jalon_utils.envoyerMailErreur(form)
 
-    def getFilAriane(self, portal, folder, authMemberId, pageCours=None):
-        return jalon_utils.getFilAriane(portal, folder, authMemberId, pageCours)
-
     def isLDAP(self):
         return jalon_utils.isLDAP()
 

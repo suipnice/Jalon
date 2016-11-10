@@ -18,8 +18,9 @@
                     mode_etudiant request/mode_etudiant | nothing;
                     isExamen python:context.getTypeWims()=='Examen'">
     <h2 tal:condition="is_ajax">
+        <i tal:attributes="class context/getIconClass"></i>
         <tal:block tal:condition="not:isExamen"
-                   i18n:translate="">Modifier les informations de l'entrainement
+                   i18n:translate="">Modifier les informations de «<tal:replace replace="here/Title" />»
         </tal:block>
         <tal:block tal:condition="isExamen"
                    i18n:translate="">Modifier les informations de l'examen
@@ -27,7 +28,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <tal:define define="breadcrumbs python:context.getBreadcrumbs('propriétés')"  tal:condition="not:is_ajax | nothing">
+    <tal:define define="breadcrumbs python:context.getCrumbs('edit')"  tal:condition="not:is_ajax | nothing">
         <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
             Page d'affichage du fil d'ariane
         </metal:macro>
@@ -37,6 +38,7 @@
                  use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
     <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          id="js-editActivity"
           method="post"
           class="row">
 
@@ -165,6 +167,8 @@
     </form>
 </tal:define>
 
+<script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-editActivity','reveal-main')"></script>
 
 </metal:main>
 
