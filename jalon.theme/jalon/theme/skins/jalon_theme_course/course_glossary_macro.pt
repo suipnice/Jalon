@@ -38,7 +38,7 @@
                     <tal:define define="res_name python:here.getShortText(course_glossary_element['titreElement'], 80)">
                     <a class="right" title="Détacher la ressource du cours"
                        data-reveal-ajax="true" data-reveal-id="reveal-main_second"
-                       tal:attributes="href string:${context/absolute_url}/cours_glossary_remove_form"
+                       tal:attributes="href string:${context/absolute_url}/course_detach_glossary_form?item_id=${course_glossary_element/idElement}"
                        tal:condition="my_view/is_personnel"
                        i18n:attributes="title">
                        <i class="fa fa-chain-broken fa-fw warning"></i>

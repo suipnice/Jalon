@@ -1636,6 +1636,16 @@ class JalonCours(ATFolder):
             self.plan = tuple(listeElement)
         return listeElement
 
+    def detachGlossaryItem(self, item_id):
+        # LOG.info("----- detachGlossaryItem -----")
+        elements_glossaire = list(self.getGlossaire())
+        if item_id in elements_glossaire:
+            elements_glossaire.remove(item_id)
+            self.elements_glossaire = tuple(elements_glossaire)
+            if item_id in self._elements_cours:
+                del self._elements_cours[item_id]
+                self.setCourseItemsProperties(self._elements_cours)
+
     def getCourseDeleteItemForm(self, item_id):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
