@@ -31,8 +31,8 @@ if request.has_key("listeCours"):
             except:
                 pass
             cours.deleteCourseMapItem(idElement, None)
-            if isBiblioOrGlo:
-                cours.retirerElement(idElement)
+            if objet.portal_type == "JalonTermeGlossaire":
+                cours.detachGlossaryItem(idElement)
         else:
             cours.retirerElement(idElement, "sujets")
 
