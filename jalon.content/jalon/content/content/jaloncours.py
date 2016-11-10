@@ -1642,9 +1642,11 @@ class JalonCours(ATFolder):
         if item_id in elements_glossaire:
             elements_glossaire.remove(item_id)
             self.elements_glossaire = tuple(elements_glossaire)
-            if item_id in self._elements_cours:
+            item_data = self.getCourseItemProperties().get(item_id)
+            if item_data:
                 del self._elements_cours[item_id]
                 self.setCourseItemsProperties(self._elements_cours)
+            self.detachCourseItem(item_id, item_data["createurElement"], item_data["typeElement"].replace(" ", ""))
 
     def getCourseDeleteItemForm(self, item_id):
         # LOG.info("----- getCourseDeleteItemForm -----")
