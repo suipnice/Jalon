@@ -3,7 +3,7 @@
     <i class="fa fa-font"></i><tal:block i18n:translate="">Glossaire</tal:block>
     <a class="button tiny radius show-for-medium-up"
        data-reveal-id="reveal-main-large" data-reveal-ajax="true"
-       tal:attributes="href string:${context/absolute_url}/course_add_glossary_form"
+       tal:attributes="href my_view/course_add_glossary_link"
        tal:condition="my_view/is_personnel">
         <i class="fa fa-plus-circle"></i><tal:block i18n:translate="">Attacher un terme de glossaire</tal:block>
     </a>
@@ -21,7 +21,7 @@
         tal:repeat="glossary_letter my_view/course_glossary_letter_list">
 
         <a tal:attributes="href string:#glo-${glossary_letter}"
-           tal:define="tailleLettre python:len(dicoLettres[glossary_letter])">
+           tal:define="tailleLettre python:len(my_view['course_glossary_dict'][glossary_letter])">
             <span class="label round" tal:content="glossary_letter" />
             <tal:replace replace="tailleLettre" />
             <tal:block tal:condition="python:tailleLettre == 1" i18n:translate="">terme</tal:block>
@@ -32,13 +32,13 @@
              tal:define="cours context/getId"
              tal:attributes="id string:glo-${glossary_letter}">
 
-            <ul tal:define="course_glossary_element_list python:dicoLettres[glossary_letter];
+            <ul tal:define="course_glossary_element_list python:my_view['course_glossary_dict'][glossary_letter];
                             no_return python:course_glossary_element_list.sort(lambda x,y: cmp(x['titreElement'], y['titreElement']))">
                 <li tal:repeat="course_glossary_element course_glossary_element_list">
                     <tal:define define="res_name python:here.getShortText(course_glossary_element['titreElement'], 80)">
                     <a class="right" title="Détacher la ressource du cours"
                        data-reveal-ajax="true" data-reveal-id="reveal-main_second"
-                       tal:attributes="href string:${context/absolute_url}/cours_glossary_remove_form"
+                       tal:attributes="href string:${context/absolute_url}/course_detach_glossary_form?item_id=${course_glossary_element/idElement}"
                        tal:condition="my_view/is_personnel"
                        i18n:attributes="title">
                        <i class="fa fa-chain-broken fa-fw warning"></i>

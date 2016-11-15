@@ -16,9 +16,6 @@ if request.has_key("listeCours"):
 
     brains = context.portal_catalog(path={"query": request["listeCours"], "depth": 0})
 
-    isBiblioOrGlo = False
-    if objet.portal_type in ["JalonRessourceExterne", "JalonTermeGlossaire"]:
-        isBiblioOrGlo = True
     for brain in brains:
         cours = brain.getObject()
         relatedItems.remove(cours)
@@ -30,9 +27,13 @@ if request.has_key("listeCours"):
                     cours.tagBU("remove", idElement)
             except:
                 pass
-            cours.deleteCourseMapItem(idElement, None)
-            if isBiblioOrGlo:
-                cours.retirerElement(idElement)
+            if objet.portal_type == "JalonTermeGlossaire":
+                cours.detachGlossaryItem(idElement)
+            elif objet.portal_type == "JalonRessourceExterne":
+                cours.detachBibliographyItem(idElement)
+                cours.deleteCourseMapItem(idElement, None)
+            else:
+                cours.deleteCourseMapItem(idElement, None)
         else:
             cours.retirerElement(idElement, "sujets")
 

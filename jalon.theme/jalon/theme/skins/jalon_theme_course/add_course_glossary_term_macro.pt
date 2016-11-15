@@ -1,0 +1,105 @@
+<metal:macro define-macro="add_course_items">
+
+    <tal:no_items condition="my_view/is_no_items">
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <strong i18n:translate="">Il n'y a aucune ressource de type « Termes de glossaire » dans votre espace.</strong><br />
+            <tal:block i18n:translate="">Rendez-vous dans votre espace de termes de glossaire pour en ajouter.</tal:block>
+        </div>
+        <div class="text-center">
+            <a class="button radius"
+               tal:attributes="href my_view/folder_link">
+               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+            </a>
+        </div>
+    </tal:no_items>
+
+    <tal:listing condition="my_view/course_add_list">
+
+    <div class="el_counter">
+        <tal:block replace="my_view/nb_display_items"/>
+        <tal:block i18n:translate="">sur</tal:block>
+        <tal:block replace="my_view/nb_items"/>
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:var NB_LISTED_ELEMENTS = ${my_view/nb_display_items}"></script>
+
+    <table summary="Liste des termes de glossaires">
+    <thead>
+        <tr>
+            <th class="checkall show-for-medium-up">
+                <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
+                     i18n:attributes="title">
+                    <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
+                    <label for="switch-all"></label>
+                </div>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="date" title="Trier selon la date"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Date</tal:block>
+                </span>
+            </th>
+            <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le titre"
+                i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Titre / Définition</tal:block>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="list"
+           tal:define="user_id user/getId">
+        <tr tal:repeat="item my_view/course_add_list">
+            <tal:define define="item_title python:here.getShortText(item['Title'])">
+            <td class="show-for-medium-up"
+                tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
+                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                     tal:condition="not:attached"
+                     i18n:attributes="title">
+                    <input type="checkbox" name="paths:list"
+                           tal:attributes="id string:switch-${repeat/item/index};
+                                           value string:${item/getId}/TermeGlossaire;
+                                           data-res_name item_title"/>
+                    <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                </div>
+                <i class="fa fa-check fa-lg success" tal:condition="attached"></i>
+            </td>
+            <td class="date show-for-medium-up">
+                <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')"/>
+                <span tal:content="python:context.getLocaleDate(item['ModificationDate'])"/>
+            </td>
+            <td class="title">
+                <span class="hide" tal:content="item/Title"/>
+                <strong tal:content="item_title"
+                        i18n:attributes="title"/>
+                <span class="show-for-medium-up"
+                      tal:condition="item/Description"
+                      tal:content="python:here.getShortText(item['Description'], 160)"/>
+            </td>
+            </tal:define>
+        </tr>
+    </tbody>
+    </table>
+
+    <input type="hidden" name="glossary_or_bibliography" value="glossary"/>
+
+    <tal:define define="script1 string:setBatchSelect('js-attachmentCreator');
+                        script2 string:setSortableList('js-list-ressource',['date','type','title'],'date','desc')">
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)"/>
+        <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)"/>
+    </tal:define>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer"></script>
+
+    </tal:listing>
+</metal:macro>
