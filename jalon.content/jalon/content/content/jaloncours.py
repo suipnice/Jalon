@@ -2760,5 +2760,77 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
 
+    #---------------------------#
+    # Forum à modifier si mieux #
+    #---------------------------#
+    def getForumBreadcrumbs(self, item, page="basic"):
+        item_title = item.Title()
+        item_link = item.absolute_url()
+        item_parent_title = item.aq_parent.title_or_id()
+        item_parent_link = item.aq_parent.absolute_url()
+        item_root = item.aq_parent.aq_parent
+        item_root_title = item.aq_parent.aq_parent.title_or_id()
+        item_root_link = item.aq_parent.aq_parent.absolute_url()
+
+        breadcrumbs = {"Ploneboard": {"jalon_forum_search":    [{"title": item_title,
+                                                                 "icon":  "fa fa-comments",
+                                                                 "link":  item_link},
+                                                                {"title": "Recherche",
+                                                                 "icon":   "fa fa-search",
+                                                                 "link":  "%s/jalon_forum_search" % item_link}],
+                                      "ploneboard_recent":     [{"title": item_title,
+                                                                 "icon":  "fa fa-comments",
+                                                                 "link":  item_link},
+                                                                {"title": "Activité récente",
+                                                                 "icon":  "fa fa-comment",
+                                                                 "link":  "%s/ploneboard_recent" % item_link}],
+                                      "ploneboard_unanswered": [{"title": item_title,
+                                                                 "icon":  "fa fa-comments",
+                                                                 "link":  item_link},
+                                                                {"title": "Conversations sans réponse",
+                                                                 "icon":  "fa fa-comment-o",
+                                                                 "link":  "%s/ploneboard_unanswered" % item_link}],
+                                      "basic":                 [{"title": item_title,
+                                                                 "icon": "fa fa-comments",
+                                                                 "link":  item_link}]},
+                       "PloneboardForum": {"ploneboard_unanswered": [{"title": item_parent_title,
+                                                                      "icon":  "fa fa-comments",
+                                                                      "link":   item_parent_link},
+                                                                     {"title": "Conversations sans réponse",
+                                                                      "icon":  "fa fa-comment-o",
+                                                                      "link":  "%s/ploneboard_unanswered" % item_link}],
+                                           "basic":                 [{"title": item_parent_title,
+                                                                      "icon":  "fa fa-comments",
+                                                                      "link":  item_parent_link},
+                                                                     {"title": item_title,
+                                                                      "icon":  "fa fa-comments",
+                                                                      "link":  item_link}]},
+                       "PloneboardConversation": {"basic": [{"title": item_root_title,
+                                                             "icon": "fa fa-comments",
+                                                             "link": item_root_link},
+                                                            {"title": item_parent_title,
+                                                             "icon":  "fa fa-comments",
+                                                             "link":  item_parent_link},
+                                                            {"title": item_title,
+                                                             "icon": "fa fa-comments-o",
+                                                             "link":  item_link}]},
+                       "PloneboardComment": {"basic": [{"title": item_root.aq_parent.title_or_id(),
+                                                        "icon":  "fa fa-comments",
+                                                        "link":  item_root.aq_parent.absolute_url()},
+                                                       {"title": item_root_title,
+                                                        "icon":  "fa fa-comments",
+                                                        "link":  item_root_link},
+                                                       {"titre": item_title,
+                                                        "icone": "fa fa-comments-o",
+                                                        "link":  item_link}]}}
+        basic_breadcrumbs = [{"title": _(u"Mes cours"),
+                             "icon":  "fa fa-university",
+                             "link":  "%s/mes_cours" % self.portal_url.absolute_url()},
+                             {"title": self.Title(),
+                              "icon":  "fa fa-book",
+                              "link":  self.absolute_url()}]
+        basic_breadcrumbs.extend(breadcrumbs[item.meta_type][page])
+        return basic_breadcrumbs
+
 # enregistrement dans la registery Archetype
 registerATCT(JalonCours, PROJECTNAME)

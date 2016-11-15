@@ -14,6 +14,7 @@
   <cmf:registerDirectory name="jalon_theme_my_students"/>
   <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
   <cmf:registerDirectory name="jalon_theme_configuration"/>
+  <cmf:registerDirectory name="jalon_theme_forum"/>
 
   <!-- Note: This could also be done for all folders at once
        by replacing the previous lines with this one:

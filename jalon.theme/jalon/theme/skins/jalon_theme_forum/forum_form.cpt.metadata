@@ -1,0 +1,11 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=valider_forum
+
+[actions]
+action.failure                = traverse_to:string:forum_form
+action.success-ajout-forum    = traverse_to:string:cours_element_add
+action.success-modifier-forum = traverse_to:string:forum_edit

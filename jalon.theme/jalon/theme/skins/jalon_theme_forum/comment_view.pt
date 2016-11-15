@@ -1,0 +1,92 @@
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body metal:fill-slot="main">
+
+<tal:define define="view context/@@singlecomment_view;
+                    comment python:view/comment">
+
+<metal:comment metal:define-macro="comment"
+               tal:define="creator comment/Creator;
+                           mtool mtool | context/@@plone_tools/membership;
+                           creatorinfo python: mtool.getMemberInfo(creator);
+                           creation_date comment/creation_date;
+                           state comment/review_state;
+                           is_first repeat/comment/start | nothing;
+                           is_even repeat/comment/even | nothing;
+                           pss modules/Products/PythonScripts/standard;
+                           personnel python:context.isPersonnel(user);">
+
+        <!-- Ancre nommée utilisée pour les résultats de recherche -->
+        <a tal:attributes="name comment/getId"></a>
+
+        <span class="discreet">
+
+    <tal:isFirst condition="is_first">
+            <tal:block i18n:translate="">Lancée par</tal:block>
+            <strong tal:content="python:creatorinfo and creatorinfo['fullname'] or creator" /> -
+            <tal:block tal:content="creation_date" />
+    </tal:isFirst>
+
+    <tal:isNotFirst condition="not:is_first">
+            <i tal:attributes="class python:context.test(is_even, 'fa fa-comment no-pad', 'fa fa-comment-o no-pad')"></i>
+            <tal:block i18n:translate="">Par</tal:block>
+            <strong tal:content="python:creatorinfo and creatorinfo['fullname'] or creator" /> -
+            <tal:block tal:content="creation_date" />
+    </tal:isNotFirst>
+
+        </span>
+
+        <div tal:attributes="class python:context.test(is_even, 'panel callout radius', 'panel radius')">
+
+            <a class="action-button" title="Répondre"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:condition="python:comment['canReply'] and not personnel"
+               tal:attributes="href string:${comment/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-reponse"
+               i18n:attributes="title">
+                <i class="fa fa-plus-circle fa-lg fa-fw no-pad"></i>
+            </a>
+            <a class="dropdown" data-options="align:left"
+               tal:condition="personnel"
+               tal:attributes="data-dropdown string:drop-${repeat/comment/index}">
+                <i class="fa fa-cog fa-lg fa-fw no-pad"></i>
+            </a>
+            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                tal:condition="personnel"
+                tal:attributes="id string:drop-${repeat/comment/index}">
+                <li tal:condition="comment/canReply">
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${comment/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-reponse">
+                        <i class="fa fa-plus-circle fa-fw"></i>
+                        <tal:block i18n:translate="">Répondre</tal:block>
+                    </a>
+                </li>
+                <li tal:condition="comment/canEdit">
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${comment/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=modifier-conversation&amp;is_first=${is_first}">
+                        <i class="fa fa-edit fa-fw"></i>
+                        <tal:block i18n:translate="">Modifier</tal:block>
+                    </a>
+                </li>
+                <li tal:condition="python:comment['canDelete'] and not is_first">
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${comment/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=supprimer-forum&amp;type=message">
+                        <i class="fa fa-trash-o fa-fw"></i>
+                        <tal:block i18n:translate="">Supprimer</tal:block>
+                    </a>
+                </li>
+            </ul>
+
+            <tal:replace replace="structure python:comment['getText']" />
+        </div>
+
+</metal:comment>
+</tal:define>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+</body>
+
+</html>

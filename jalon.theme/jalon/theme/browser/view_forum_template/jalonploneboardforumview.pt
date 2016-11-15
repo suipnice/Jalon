@@ -1,0 +1,295 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="here/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core metal:fill-slot="content"
+            tal:define="numConversations view/getNumberOfConversations;
+                        DateTime nocall:modules/DateTime/DateTime;
+                        last_login view/last_login;
+                        isAnon context/@@plone_portal_state/anonymous;
+                        portal context/@@plone_portal_state/portal | nocall:portal;
+                        mtool context/@@plone_tools/membership;
+                        mode_etudiant request/mode_etudiant | string:false;
+                        personnel python:context.aq_parent.aq_parent.isPersonnel(user, mode_etudiant);">
+
+    <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context)">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <div id="reveal-main" class="reveal-modal medium"
+         data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
+
+        <div class="small-12 columns"
+             tal:define="message request/message | nothing"
+             tal:condition="message">
+            <!--
+                    A FUSIONNER AVEC "portal_message"
+            -->
+            <metal:macro use-macro="context/macro_messages/macros/messages">
+                encart d'affichage des messages de feedback
+            </metal:macro>
+        </div>
+
+        <nav id="item-adder" class="small-12 columns">
+            <a class="button expand create"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-conversation"
+               tal:condition="not:isAnon">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Créer une conversation dans ce forum</tal:block>
+            </a>
+        </nav>
+
+
+        <section class="medium-8 small-12 columns">
+
+            <h2>
+                <i class="fa fa-comments"></i>
+                <tal:content content="here/Title" />
+            </h2>
+
+    <tal:condition condition="not:numConversations">
+
+            <div class="panel callout radius"
+                  i18n:translate="">
+                Aucune conversation n'a été lancée dans ce forum.
+            </div>
+
+    </tal:condition>
+
+    <tal:condition condition="numConversations">
+
+            <span class="title-legend"
+                  tal:condition="python:not isAnon and numConversations > 0">
+                <tal:block i18n:translate="">Les conversation signalées par</tal:block>
+                <i class="fa fa-bell-o no-pad"></i>
+                <tal:block i18n:translate="">ont été actives depuis votre dernière visite.</tal:block>
+            </span>
+
+            <table id="js-update_target">
+                <thead>
+                    <tr>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="new" title="Trier selon la nouveauté" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <span class="fa fa-bell-o fa-fw no-pad"></span>
+                            </span>
+                        </th>
+                        <th data-sort="title" class="sort has-tip" data-tooltip title="Trier selon le titre de la conversation"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Conversations</tal:block>
+                            </span>
+                        </th>
+                        <th data-sort="number" class="sort has-tip" data-tooltip title="Trier selon le nombre de réponses"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Rép.</tal:block>
+                            </span>
+                        </th>
+                        <th data-sort="lastmsg" class="sort has-tip" data-tooltip title="Trier selon la date du dernier message"
+                            i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Dernière activité</tal:block>
+                            </span>
+                        </th>
+                        <th class="state has-tip" data-tooltip title="État (verrouillé / déverrouillé)"
+                            i18n:attributes="title">
+                            <span class="fa fa-unlock-alt fa-fw no-pad"></span>
+                        </th>
+                        <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
+                            tal:condition="personnel"
+                            i18n:attributes="title"
+                            i18n:translate=""><i class="fa fa-cog fa-fw fa-lg no-pad" title="Actions"></i></th>
+                    </tr>
+                </thead>
+                <tbody class="list">
+
+        <tal:repeat tal:repeat="conversation python:view.getConversations()">
+
+                    <tr tal:define="conv_url conversation/absolute_url;
+                                    conv_modified conversation/modified;
+                                    revstate conversation/review_state;
+                                    numComments conversation/getNumberOfComments"
+                        tal:attributes="class python:context.test(numComments > 1, 'answered', '')">
+
+                        <td class="new show-for-medium-up">
+                            <span class="hide"
+                                  tal:content="conv_modified" />
+                            <i class="fa fa-bell-o fa-fw no-pad"
+                               tal:condition="python:last_login and conv_modified > last_login"></i>
+                        </td>
+
+                        <td class="title">
+                            <a tal:attributes="href string:${conv_url}?mode_etudiant=${mode_etudiant}">
+                                <tal:replace replace="python:here.getShortText(conversation['Title'], 60)" />
+                            </a>
+                            <span>
+                                <tal:block i18n:translate="">par</tal:block>
+                                <tal:author define="creator conversation/Creator;
+                                                    creatorinfo python: mtool.getMemberInfo(creator);"
+                                            content="python:creatorinfo and creatorinfo['fullname'] or creator" />
+                            </span>
+                        </td>
+
+                        <td class="number">
+                            <span class="label bkgrnd"
+                                  tal:condition="python:numComments > 1"
+                                  tal:content="python:numComments - 1" />
+                            <span class="label bkgrnd"
+                                  tal:condition="python:1 >= numComments"
+                                  i18n:translate="">
+                                Aucune
+                            </span>
+                        </td>
+
+                        <td class="lastmsg">
+                            <span class="hide"
+                                  tal:content="conv_modified" />
+            <tal:condition condition="python:numComments > 1">
+                            <span class="label bkgrnd" tal:content="conversation/getLastCommentDate" />
+                            <div>
+                                <a title="Voir le message…"
+                                   tal:attributes="href string:${conversation/absolute_url}/${conversation/getLastCommentId}"
+                                   i18n:attributes="title">
+                                    <tal:block i18n:translate="">Par</tal:block>
+                                    <tal:content define="creator conversation/getLastCommentAuthor;
+                                                         creatorinfo python: mtool.getMemberInfo(creator)"
+                                                 content="python:creatorinfo and creatorinfo['fullname'] or creator" />
+                                </a>
+                            </div>
+            </tal:condition>
+            <tal:condition condition="python:1 >= numComments">
+                            <span class="label bkgrnd"
+                                  tal:content="conversation/getLastCommentDate" />
+            </tal:condition>
+                        </td>
+
+                        <td>
+                            <i class="fa fa-lock fa-fw no-pad"
+                               tal:condition="python:revstate == 'locked'"></i>
+                            <i class="fa fa-unlock fa-fw no-pad"
+                               tal:condition="python:revstate != 'locked'"></i>
+                        </td>
+
+                        <td class="show-for-medium-up"
+                            tal:condition="personnel">
+                            <a class="dropdown"
+                               data-options="align:left"
+                               tal:attributes="data-dropdown string:drop-action-forum-${repeat/conversation/index}">
+                                <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                            </a>
+                            <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
+                                tal:attributes="id string:drop-action-forum-${repeat/conversation/index}">
+                                <li>
+                                    <a tal:attributes="href string:${conversation/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=modifier-conversation&amp;is_head=True"
+                                    data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                        <i class="fa fa-edit"></i>
+                                        <tal:block i18n:translate="">Modifier</tal:block>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a tal:attributes="href string:${conversation/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=supprimer-forum&amp;type=conversation"
+                                    data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                        <i class="fa fa-trash-o"></i>
+                                        <tal:block i18n:translate="">Supprimer</tal:block>
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+
+                    </tr>
+
+        </tal:repeat>
+                </tbody>
+            </table>
+
+<tal:comment replace="nothing"><!--
+            <tal:block define="script1 string:setForumNoAnswerFilter();
+                               script2 string:setSortableList('js-update_target',['new','title','number','lastmsg'],'lastmsg','desc')">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+            </tal:block>
+--></tal:comment>
+
+            <tal:block define="script string:setSortableList('js-update_target',['new','title','number','lastmsg'],'lastmsg','desc')">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
+
+    </tal:condition>
+        </section>
+
+
+        <section class="medium-4 small-12 columns">
+
+            <h2>
+                <i class="fa fa-info-circle"></i>
+                <tal:block i18n:translate="">Description</tal:block>
+            </h2>
+            <div class="panel callout radius"
+                  tal:content="structure here/getRawDescription"
+                  tal:condition="here/Description" />
+            <div class="panel callout radius"
+                  tal:condition="not:here/Description"
+                  i18n:translate="">
+                Ce forum n'a pas de description.
+            </div>
+
+<tal:comment replace="nothing"><!--
+            <a id="js-filter" class="filter-button fixed_filter unselected"
+               tal:attributes="href string:${context/absolute_url}/ploneboard_unanswered">
+                <i class="fa fa-circle no-pad"></i>
+                <i class="fa fa-circle-thin no-pad"></i>
+                <tal:block i18n:translate="">Sans réponse</tal:block>
+            </a>
+--></tal:comment>
+
+            <h2>
+                <i class="fa fa-cogs no-pad"></i>
+                <tal:block i18n:translate="">Actions</tal:block>
+            </h2>
+            <div class="panel radius">
+                <a class="button small expand radius"
+                   tal:attributes="href string:${context/absolute_url}/ploneboard_unanswered">
+                    <i class="fa fa-comment-o"></i>
+                    <tal:block i18n:translate="">Afficher les conversations sans réponse</tal:block>
+                </a>
+            </div>
+
+            <tal:define define="search_url context/aq_parent/absolute_url">
+                <metal:search metal:use-macro="here/macro_forum/macros/forum-rechercher" />
+            </tal:define>
+
+        </section>
+
+    </main>
+
+    <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
+
+</metal:core>
+
+</body>
+
+</html>
