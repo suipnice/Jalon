@@ -10,9 +10,9 @@
 
 <metal:core fill-slot="main">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    <!--metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         Page d'affichage du fil d'ariane
-    </metal:macro>
+    </metal:macro-->
 
     <main id="mon_espace" class="row" role="main" aria-labelledby="page_title">
         <nav class="small-12 columns">

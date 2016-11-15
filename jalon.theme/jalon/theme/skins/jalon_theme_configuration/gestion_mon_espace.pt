@@ -68,11 +68,11 @@ div.panel label{
 }
 </style>
 
-<tal:block define="pageCours string:gestion_mon_espace">
+<!--tal:block define="pageCours string:gestion_mon_espace">
     <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
         Page d'affichage du fil d'ariane
     </metal:macro>
-</tal:block>
+</tal:block-->
 
 <main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
       tal:define="gestion request/gestion | string:gestion_mon_espace">
