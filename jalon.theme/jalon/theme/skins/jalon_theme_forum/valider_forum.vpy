@@ -16,8 +16,9 @@ error = False
 form = context.REQUEST.form
 formulaire = str(form["formulaire"])
 
-dicoObligatoire = {"ajout-forum":    ["title", "description"],
-                   "modifier-forum": ["title", "description"]}
+dicoObligatoire = {"ajout-forum":        ["title", "description"],
+                   "modifier-forum":     ["title", "description"],
+                   "ajout-conversation": ["title", "text"]}
 
 retour = context.absolute_url()
 numeriques_Obligatoires = []
