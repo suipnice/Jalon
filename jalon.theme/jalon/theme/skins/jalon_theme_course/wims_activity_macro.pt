@@ -308,7 +308,7 @@ En entrée :
                         <ul tal:attributes="id string:activite-options-${repeat/element/index}"
                             class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=modifier-exercice&amp;qexo=${index}&amp;idElement=${element/idElement}&amp;sur=${sur}"
+                                <a tal:attributes="href string:${context/absolute_url}/edit_wims_activity_exercice_form?qexo=${index}&amp;idElement=${element/idElement}&amp;sur=${sur}&amp;tab=${tab}"
                                    title="Modifier l'exercice"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">

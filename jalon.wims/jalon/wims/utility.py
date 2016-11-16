@@ -425,7 +425,7 @@ class Wims(SimpleItem):
                                                     "",
                                                     "",
                                                     param["weight"],
-                                                    param["title"].decode("utf-8"),
+                                                    param["title"],
                                                     "")
         requete = {"job": "modexosheet", "code": param["authMember"], "data1": donnees_exercice.encode("iso-8859-1", "ignore"),
                    "qclass": param["qclass"], "qsheet": param["qsheet"], "qexo": param["qexo"]}

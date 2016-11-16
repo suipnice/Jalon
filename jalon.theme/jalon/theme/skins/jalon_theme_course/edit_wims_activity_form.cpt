@@ -32,10 +32,8 @@
         <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
             Page d'affichage du fil d'ariane
         </metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
     </tal:define>
-
-    <metal:macro tal:condition="not:is_ajax | nothing"
-                 use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
     <form tal:attributes="action string:${context/absolute_url}/${template/id}"
           id="js-editActivity"

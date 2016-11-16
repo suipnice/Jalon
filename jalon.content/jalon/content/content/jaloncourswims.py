@@ -375,7 +375,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                      "icon":  self.getIconClass(),
                      "link":  self_link}]
         if sub_page == "edit":
-            response.append({"title": _(u"Propriétés"), "icon":  "fa fa-edit", "link": "%s/edit_wims_activity_form" % self_link})
+            response.append({"title": _(u"Propriétés de l'activité"), "icon":  "fa fa-edit", "link": "%s/edit_wims_activity_form" % self_link})
         return response
 
     def getIconClass(self):
@@ -1335,6 +1335,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         return retour
 
+    def getElementView(self, item_id):
+        """ Fournit les infos de l'exercice demandé (un exo WIMS)."""
+        LOG.info("----- getElementView -----")
+
+        return self.getDocumentsProperties()[item_id]
+
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         LOG.info("----- getNotesTableur -----")
@@ -1471,12 +1477,20 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
         LOG.info("----- modifierExoFeuille -----")
-        param = form
+        # param = form
+        portal = self.portal_url.getPortalObject()
+        param = {}
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
-        param["title"]  = form["titreElement"]
-        self.wims("modifierExoFeuille", param)
+        param["title"]  = form["titreElement"].decode("utf-8")
+        param["weight"] = form["weight"]
+        param["authMember"]  = portal.portal_membership.getAuthenticatedMember().getId()
+        resp = self.wims("modifierExoFeuille", param)
+        if resp["status"] == "OK":
+            message = _(u"Le coefficient de l'exercice '${item_title}' a bien été modifié.",
+                        mapping={'item_title': param["title"]})
+            self.plone_utils.addPortalMessage(message, type='success')
 
     def retirerElement(self, idElement, menu, ordre=None):
         u"""détache un élément de l'activité."""
