@@ -1,0 +1,14 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=valider_forum
+
+[actions]
+action.failure                       = traverse_to:string:forum_form
+action.success-ajout-forum           = traverse_to:string:forum_add
+action.success-modifier-forum        = traverse_to:string:forum_edit
+action.success-ajout-conversation    = traverse_to:string:add_conversation_script
+action.success-modifier-conversation = traverse_to:string:forum_edit
+action.success-ajout-reponse         = traverse_to:string:add_comment_script
