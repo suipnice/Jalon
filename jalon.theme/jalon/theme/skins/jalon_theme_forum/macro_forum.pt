@@ -485,7 +485,7 @@
     </h2>
 
     <form method="POST" name="modifier-activerEmailForum"
-          tal:attributes="action string:${context/absolute_url}/cours_edit">
+          tal:attributes="action string:${context/absolute_url}/edit_course_property_script">
 
         <div class="panel callout radius">
             <i class="fa fa-info-circle no-pad"></i>
@@ -504,7 +504,7 @@
 
         </div>
 
-        <input type="hidden" name="key" value="activer_email_forum" />
+        <input type="hidden" name="course_property" value="activer_email_forum" />
 
         <div class="formControls">
             <button type="submit" class="button small radius">
