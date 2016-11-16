@@ -99,9 +99,11 @@ div.panel label{
 }
 </style>
 
-<metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
-    Page d'affichage du fil d'ariane
-</metal:macro>
+    <tal:define define="breadcrumbs python:context.getBreadcrumbs(user)">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
 
 <div id="reveal-main" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 

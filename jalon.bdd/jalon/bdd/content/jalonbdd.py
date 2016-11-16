@@ -1788,3 +1788,13 @@ class JalonBDD(SimpleItem):
             session.commit()
             return "MAJ OK"
         return self.convertirResultatBDD(requete)
+
+    def getBreadcrumbs(self, user):
+        if user.has_role("Secretaire"):
+            return [{"title": _(u"Gestion pédagogique"),
+                     "icon":  "fa fa-database",
+                     "link":  "%s/gestion_utilisateurs" % self.absolute_url()}]
+        else:
+            return [{"title": _(u"Gestion pédagogique"),
+                     "icon":  "fa fa-database",
+                     "link":  "%s/@@jalon-bdd?gestion=gestion_bdd" % self.absolute_url()}]
