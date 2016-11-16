@@ -355,9 +355,8 @@
                tal:condition="not:is_head"
                tal:attributes="value context/Title" />
 
-        <input type="hidden" name="text"
-               tal:condition="is_head"
-               tal:attributes="value context/getText" />
+        <input type="hidden" name="text" value="head"
+               tal:condition="is_head"/>
 
         <input type="hidden" name="parent" value="1"
                tal:condition="is_head" />
