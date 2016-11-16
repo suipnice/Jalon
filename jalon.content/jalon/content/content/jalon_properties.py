@@ -1285,3 +1285,94 @@ class JalonProperties(SimpleItem):
         portal = self.portal_url.getPortalObject()
         portal_jalon_communication = getattr(portal, "portal_jalon_communication", None)
         portal_jalon_communication.setPropertiesCommunication(propertiesCommunication)
+
+    #----------------------#
+    # Fonction Breadcrumbs #
+    #----------------------#
+    def getBreadcrumbs(self, page="Basic"):
+        return self.__getattribute__("getBreadcrumbs%s" % page)()
+
+    def getBreadcrumbsBasic(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()}]
+
+    def getBreadcrumbsConnexion(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Connexion à Jalon"),
+                 "icon":  "fa fa-key",
+                 "link":  "%s/portal_jalon_properties/gestion_connexion" % self.absolute_url()}]
+
+    def getBreadcrumbsMonEspace(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion \"Mon Espace\""),
+                 "icon":  "fa fa-home",
+                 "link":  "%s/portal_jalon_properties/gestion_mon_espace" % self.absolute_url()}]
+
+    def getBreadcrumbsMesCours(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des Cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/portal_jalon_properties/gestion_mes_cours" % self.absolute_url()}]
+
+    def getBreadcrumbsInformations(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des liens d'informations"),
+                 "icon":  "fa fa-external-link-square",
+                 "link":  "%s/portal_jalon_properties/gestion_infos" % self.absolute_url()}]
+
+    def getBreadcrumbsDidacticiels(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des didacticiels"),
+                 "icon":  "fa fa-life-ring",
+                 "link":  "%s/portal_jalon_properties/gestion_didacticiels" % self.absolute_url()}]
+
+    def getBreadcrumbsMessages(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion de la diffusion de messages"),
+                 "icon":  "fa fa-bullhorn",
+                 "link":  "%s/portal_jalon_properties/gestion_messages" % self.absolute_url()}]
+
+    def getBreadcrumbsEmail(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des paramètres de courriels"),
+                 "icon":  "fa fa-envelope-o",
+                 "link":  "%s/portal_jalon_properties/gestion_email" % self.absolute_url()}]
+
+    def getBreadcrumbsUsers(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des données utilisateurs"),
+                 "icon":  "fa fa-users",
+                 "link":  "%s/portal_jalon_properties/gestion_donnees_utilisateurs" % self.absolute_url()}]
+
+    def getBreadcrumbsGA(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion de Google Analytics"),
+                 "icon":  "fa fa-line-chart",
+                 "link":  "%s/portal_jalon_properties/gestion_ga" % self.absolute_url()}]
+
+    def getBreadcrumbsMaintenance(self):
+        return [{"title": _(u"Configuration de Jalon"),
+                 "icon":  "fa fa-cogs",
+                 "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
+                {"title": _(u"Gestion des paramètres de maintenance"),
+                 "icon":  "fa fa-umbrella",
+                 "link":  "%s/portal_jalon_properties/gestion_maintenance" % self.absolute_url()}]

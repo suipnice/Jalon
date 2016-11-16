@@ -48,11 +48,11 @@ div.panel label{
 }
 </style>
 
-<tal:block define="pageCours string:gestion_email">
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    <tal:define define="breadcrumbs python:context.getBreadcrumbs('Email')">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
-</tal:block>
+    </tal:define>
 
     <main id="jalon_configuration" role="main" aria-labelledby="page_title"
           class="row">

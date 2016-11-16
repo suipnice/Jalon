@@ -27,10 +27,4 @@
                      class=".scripts.analytics.JalonAnalytics"
                      permission="zope2.View"/>
 
-    <!-- jalon control panel form view -->
-    <browser:page name="jalon_properties"
-                  for="jalon.content.browser.interfaces.IJalonProperties"
-                  template="templates/jalon_properties.pt"
-                  permission="cmf.ManagePortal"/>
-
 </configure>
