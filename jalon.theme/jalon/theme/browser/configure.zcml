@@ -196,4 +196,9 @@
                   template="view_template/my_students/my_students_view.pt"
                   permission="zope2.View"/>
 
+    <!-- JalonPopertiesView  Definition-->
+    <browser:page name="jalon_properties"
+                  for="jalon.content.browser.interfaces.IJalonProperties"
+                  template="view_template/jalon_properties/jalon_properties.pt"
+                  permission="cmf.ManagePortal"/>
 </configure>
