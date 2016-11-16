@@ -52,8 +52,7 @@
                       i18n:attributes="placeholder"><tal:block replace="request/description | nothing" /></textarea>
         </div>
 
-        <input type="hidden" name="type" value="Forum" />
-        <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+        <input type="hidden" name="user_id" tal:attributes="value user/getId" />
         <input type="hidden" name="macro" value="macro_forum" />
         <input type="hidden" name="formulaire" value="ajout-forum" />
         <input type="hidden" name="form.submitted" value="1" />
@@ -476,6 +475,48 @@
 </metal:macro>
 
 
+<!--
+        Notification par courriel d'activité des forums
+-->
+<metal:macro define-macro="alerte-forum">
+
+    <h2>
+        <tal:block i18n:translate="">Notification d'activité des forums</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="modifier-activerEmailForum"
+          tal:attributes="action string:${context/absolute_url}/cours_edit">
+
+        <div class="panel callout radius">
+            <i class="fa fa-info-circle no-pad"></i>
+            <tal:block i18n:translate="">Une fois cette option activée, les utilisateurs du cours (auteur, coauteurs, lecteurs et étudiants) recevront automatiquement par courriel chaque message posté dans un forum du cours.</tal:block>
+        </div>
+
+        <div class="formControls">
+
+            <input type="radio" id="activer_email_forum-true" name="activer_email_forum" value="True"
+                   tal:attributes="checked python:context.test(context.getActiverEmailForum(), 'checked', '')" />
+            <label for="activer_email_forum-true" class="success" i18n:translate="">Activer</label>
+
+            <input type="radio" id="activer_email_forum-false" name="activer_email_forum" value="False"
+                   tal:attributes="checked python:context.test(context.getActiverEmailForum(), '', 'checked')" />
+            <label for="activer_email_forum-false" class="warning" i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="key" value="activer_email_forum" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
 </metal:content-core>
 </body>
 </html>

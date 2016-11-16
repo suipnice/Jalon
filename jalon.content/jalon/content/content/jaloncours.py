@@ -2832,5 +2832,15 @@ class JalonCours(ATFolder):
         basic_breadcrumbs.extend(breadcrumbs[item.meta_type][page])
         return basic_breadcrumbs
 
+    def ajouterForum(self, user_id, titreElement, descriptionElement):
+        # LOG.info("----- ajouterForum -----")
+        forum_folder = self.forum
+        forum_id = forum_folder.invokeFactory(type_name="PloneboardForum", id="Forum-%s-%s" % (user_id, DateTime().strftime("%Y%m%d%H%M%S%f")))
+        forum_object = getattr(forum_folder, forum_id)
+        forum_object.setTitle(titreElement)
+        forum_object.setDescription(descriptionElement)
+        forum_object.setMaxAttachments(0)
+        forum_object.reindexObject()
+
 # enregistrement dans la registery Archetype
 registerATCT(JalonCours, PROJECTNAME)
