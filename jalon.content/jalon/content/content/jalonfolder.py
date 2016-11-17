@@ -1296,9 +1296,6 @@ class JalonFolder(ATFolder):
                     objet.setRelatedItems(relatedItems)
                     objet.reindexObject()
 
-    def getElementView(self, idElement):
-        return jalon_utils.getElementView(self, "MonEspace", idElement)
-
     def isNouveau(self, idcours):
         portal = self.portal_url.getPortalObject()
         portal_catalog = getToolByName(portal, "portal_catalog")
