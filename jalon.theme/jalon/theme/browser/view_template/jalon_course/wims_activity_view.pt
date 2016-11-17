@@ -9,9 +9,9 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="requested_tab request/tab | nothing;
+            tal:define="tab request/tab | nothing;
                         mode_etudiant_request request/mode_etudiant | nothing;
-                        my_view python:view.getWimsActivityView(user, mode_etudiant_request, requested_tab, is_ajax);
+                        my_view python:view.getWimsActivityView(user, mode_etudiant_request, tab, is_ajax);
                         mode_etudiant my_view/mode_etudiant">
 
 <tal:condition condition="is_ajax">

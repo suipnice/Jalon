@@ -38,8 +38,10 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     # session_keep permet de définir si on réutilise une eventuelle session wims existante ou pas.
 
     """
+    LOG.info("----- authUser -----")
     remote_addr = None
     url_connexion = context.wims("getAttribut", "url_connexion")
+    error_dict = {"status": "ERROR"}
     if request:
         # HTTP_X_REAL_IP n'existe que si la configuration de Nginx fournit bien ce
         # parametre à Zope.
@@ -57,7 +59,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                         'status':       'OK',
                         'home_url':     "%s?session=%s" % (url_connexion, wims_session)}
     dico = {"qclass": qclass, "quser": quser, "code": quser,
-        "option": "lightpopup", "data1": remote_addr}
+            "option": "lightpopup", "data1": remote_addr}
     rep = context.wims("authUser", dico)
     try:
         rep = json.loads(rep)
@@ -105,10 +107,14 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             rep = context.wims("authUser", dico)
             rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
-            # L'authentification du supervisor a planté => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
+            # L'authentification du supervisor a planté.
+            # => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
+            # Cas possible : supervisor is in an exam session started on another IP
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            return None
+            LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
+            return error_dict
     rep["url_connexion"] = url_connexion
+    # LOG.info("**** authUser | rep = %s" % rep)
     return rep
 
 

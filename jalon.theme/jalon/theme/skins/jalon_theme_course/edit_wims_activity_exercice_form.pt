@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<!--
+        edit_wims_activity_exercice_form : Modifier un exercice Wims (ancienne macro "modifier-exercice" de folder_form)
+        , demandeur, qexo, 'false');
+-->
+
+<metal:main fill-slot="content"
+            tal:define="tab request/tab | nothing">
+
+<tal:define define="qexo request/qexo;
+                    tab request/tab | nothing;
+                    idElement request/idElement;
+                    sur request/sur | string:1;
+                    demandeur user/getId;
+                    element python:context.getElementView(idElement);
+                    titreElement element/titreElement | idElement;">
+
+    <h2 tal:condition="is_ajax">
+        <tal:block i18n:translate="">Modifier l'exercice</tal:block>
+        <tal:content content="string:« ${titreElement} »" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:define tal:condition="not:is_ajax | nothing">
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
+    </tal:define>
+
+    <form id="js-modWIMS-activity-exo" name="edit_wims_activity_exercice_form"
+          tal:attributes="action string:${context/absolute_url}/edit_wims_activity_exercice_script"
+          method="post"
+          class="row">
+
+        <h1 tal:condition="not:is_ajax">
+            <i class="fa fa-edit no-pad"></i>
+            <span i18n:translate="">Modifier l'exercice</span> <tal:content content="string:« ${titreElement} »" />
+        </h1>
+
+        <!--div class="panel radius callout">
+            <label for="titreElement">Titre de l'exercice dans cette activité</label>
+            <div class="formHelp texte_icone icone_information">Le titre de l'exercice dans "Mon espace" ne sera pas modifié.</div-->
+            <input type="hidden" name="titreElement" id="titreElement"
+                   tal:attributes="value titreElement" />
+        <!--/div-->
+
+        <div id="archetypes-fieldname-weight" class="field">
+            <label for="weight">Coefficient</label>
+            <div class="formHelp texte_icone icone_information">Le coefficient est pris en compte dans les calculs de moyennes.</div>
+            <input name="weight" id="weight" type="number" min="0" max="10" tal:attributes="value sur" style="line-height: 2em;"/>
+        </div>
+
+        <input type="hidden" name="tab" tal:attributes="value tab" />
+        <input type="hidden" name="qexo" tal:attributes="value qexo" />
+        <!--input type="hidden" name="authMember" tal:attributes="value user/getId" /-->
+        <input type="hidden" name="idElement" tal:attributes="value idElement" />
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="form.button.save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</tal:define>
+
+<tal:block define="script1 string:setRevealFormNewPage('js-modWIMS-activity-exo','reveal-main')">
+    <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
+</tal:block>
+
+<script charset="UTF-8"
+        tal:define="buffer python:jsBuffer.getDirectBuffer()"
+        tal:content="structure buffer">
+</script>
+
+</metal:main>
+
+</body>
+</html>

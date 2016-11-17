@@ -51,7 +51,7 @@ class CourseAddView(MySpaceView):
                                                          "portal_type":          ["JalonExerciceWims"],
                                                          "course_add_list_icon": "fa fa-random",
                                                          "is_display_hide":      False,
-                                                         "course_add_js":        "setAttachmentCreator()"},
+                                                         "course_add_js":        "setTagFilter(true)"},
                         "course_bibliography":          {"folder_id":            "Externes",
                                                          "macro_file":           "add_course_bibliography_macro",
                                                          "portal_type":          ["JalonRessourceExterne"],
@@ -60,12 +60,14 @@ class CourseAddView(MySpaceView):
                                                          "course_add_js": "setTagFilter(true)"}}
 
     def __init__(self, context, request):
+        """initialise CourseAddView."""
         # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
 
     def isAnonymous(self):
+        """check if connected user is Anonymous."""
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
@@ -141,5 +143,6 @@ class CourseAddView(MySpaceView):
                 "wims_exercice_model_list": wims_exercice_model_list}
 
     def getCourseMapForm(self, course_path):
+        """redirige vers course_map_form."""
         # LOG.info("----- getCourseMapForm -----")
         return self.context.restrictedTraverse("cours/%s/course_map_form" % course_path)()

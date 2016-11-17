@@ -1296,9 +1296,6 @@ class JalonFolder(ATFolder):
                     objet.setRelatedItems(relatedItems)
                     objet.reindexObject()
 
-    def getElementView(self, idElement):
-        return jalon_utils.getElementView(self, "MonEspace", idElement)
-
     def isNouveau(self, idcours):
         portal = self.portal_url.getPortalObject()
         portal_catalog = getToolByName(portal, "portal_catalog")
@@ -1654,9 +1651,6 @@ class JalonFolder(ATFolder):
 
     def envoyerMailErreur(self, form):
         jalon_utils.envoyerMailErreur(form)
-
-    def getFilAriane(self, portal, folder, authMemberId, pageCours=None):
-        return jalon_utils.getFilAriane(portal, folder, authMemberId, pageCours)
 
     def isLDAP(self):
         return jalon_utils.isLDAP()

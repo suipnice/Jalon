@@ -3,7 +3,7 @@
 # from Products.Five.browser import BrowserView
 # from zope.component import getMultiAdapter
 from course_view import CourseView
-# from jalon.content import contentMessageFactory as _
+from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
 LOG = getLogger('[WimsActivityView]')
@@ -21,12 +21,26 @@ class WimsActivityView(CourseView):
     def getBreadcrumbs(self):
         """Get current page breadcrumbs."""
         LOG.info("----- getBreadcrumbs -----")
-        return self.context.getBreadcrumbs()
+        portal = self.context.portal_url.getPortalObject()
+        parent = self.context.aq_parent
+        self_link = self.context.absolute_url()
+        response = [{"title": _(u"Mes cours"),
+                     "icon":  "fa fa-university",
+                     "link":  "%s/mes_cours" % portal.absolute_url()},
+                    {"title": parent.Title(),
+                     "icon":  "fa fa-book",
+                     "link":  parent.absolute_url()},
+                    {"title": self.context.Title(),
+                     "icon":  self.context.getIconClass(),
+                     "link":  self_link}]
+        if self.request.ACTUAL_URL.split("/")[-1] == "wims_activity_exercice_view":
+            response.append({"title": _("Exercice(s)"), "icon":  "fa fa-random", "link": "%s/wims_activity_exercice_view" % self_link})
+        return response
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""
         LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
-        # user_id = user.getId()
+        user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
         if tab not in ["exercices", "documents", "results"]:
@@ -34,6 +48,7 @@ class WimsActivityView(CourseView):
         my_view["tab"] = tab
 
         my_wims_activity = self.context
+        nb_exos = my_wims_activity.getNbExercices()
         instruction_text = my_wims_activity.Description()
         if instruction_text:
             my_view["instruction_class"] = "panel callout radius"
@@ -51,7 +66,7 @@ class WimsActivityView(CourseView):
         else:
             my_view["activity_link_title"] = "Accéder à cet entrainement WIMS"
 
-        my_view["activity_icon"] = self.context.getIconClass()
+        my_view["activity_icon"] = my_wims_activity.getIconClass()
         my_view["duree"] = my_wims_activity.getDuree()
 
         my_view["is_personnel"] = my_wims_activity.isPersonnel(user, mode_etudiant)
@@ -81,14 +96,17 @@ class WimsActivityView(CourseView):
             my_view["wims_activity_edit"].append({"href": "%s/edit_course_item_visibility_form?item_id=%s&tab=%s" % (my_view["activity_link"], my_view["activity_id"], tab),
                                                   "icon": "fa-eye",
                                                   "text": "Afficher"})
+            if my_view["activity_type"] == "Examen" and nb_exos > 0:
+                my_view["wims_activity_edit"].append({"href" : "%s/wims_activity_exercice_view" % my_view["activity_link"],
+                                                      "icon": "fa-laptop",
+                                                      "text": "Tester les exercices"})
         my_view["wims_activity_edit"].append({"href": "%s/edit_wims_activity_form?tab=%s" % (my_view["activity_link"], tab),
                                               "icon": "fa-pencil",
                                               "text": "Modifier"})
-        # macro_cours_activites&formulaire=modifier-activite-wims&page=cours_wims_view&menu=exercices
 
         my_view["is_personnel_or_wims_activity_visible"] = True if my_view["is_personnel"] or my_view["wims_activity_visibility"]['val'] != 0 else False
         my_view["is_student_and_wims_activity_hidden"] = True if (not my_view["is_personnel"]) and my_view["wims_activity_visibility"]['val'] == 0 else False
-        my_view["is_display_mod"] = my_wims_activity.isAuteurs(user.getId())
+        my_view["is_display_mod"] = my_wims_activity.isAuteurs(user_id)
 
         my_view["wims_activity_tabs"] = []
 
@@ -106,7 +124,7 @@ class WimsActivityView(CourseView):
                 my_view['is_personnel'] and
                 not my_view['wims_activity_visibility']['val'] and
                 not my_wims_activity.getIdExam() and
-                my_wims_activity.getCreateur() == user.getId()):
+                my_wims_activity.getCreateur() == user_id):
 
             portal_link = portal.absolute_url()
             my_view["exercices_add"] = self.getExerciceAdderMenuList(portal_link, activity_path)
@@ -129,6 +147,16 @@ class WimsActivityView(CourseView):
 
         LOG.info("----- getWimsActivityView (End) -----")
         return my_view
+
+    def getWimsSession(self, user, isCoAuteur, isAnonymous):
+        """Obtain a new or existing session from WIMS, and returns wims params."""
+        if isAnonymous:
+            return None
+        elif isCoAuteur:
+            user_id = 'supervisor'
+        elif not isAnonymous:
+            user_id = user.getId()
+        return self.context.authUser(user_id, self.context.getClasse(), self.request, session_keep=True)
 
     def getExerciceAdderMenuList(self, portal_link, activity_path):
         """Fournit la liste des liens permettant d'ajouter des exercices à une activité WIMS."""

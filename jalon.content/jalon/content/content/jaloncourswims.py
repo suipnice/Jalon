@@ -241,11 +241,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
         if folder_object.getId() == "Wims":
             liste = "Exercices"
             idClasse = self.getClasse()
-            # A SUPPRIMER :
-            rep_wims = {"status": "OK"}
+
+            item_title = item["item_title"].decode("utf-8")
+            item_object = item['item_object']
+
+            # Exo Externes
             if item_id.startswith("externe-"):
-                item_title = item["item_title"].decode("utf-8")
-                item_object = item['item_object']
+
                 permalien = item_object.permalink
                 dico = {"job": "putexo", "code": user_id, "qclass": idClasse, "qsheet": self.idFeuille}
                 if permalien != "":
@@ -265,10 +267,27 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 else:
                     rep_wims = '{"status": "ERROR", "message": "pas de permalien pour cet exercice externe"}'
                 rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/addMySpaceItem", "message": "parametres de la requete : %s" % dico})
+            # Exo Internes
+            else:
+                if item_id.startswith("groupe-"):
+                    listeExos = item_object.getListeIdsExos()
+                    qnum = item_object.getQnum()
+                else:
+                    listeExos = [item_id]
+                    qnum = "1"
 
-            # TODO !!! TRAITER les AUTRES CAS.
+                if self.typeWims != "Examen":
+                    afficher_reponses = True
+                else:
+                    afficher_reponses = False
+
+                rep_wims = self.wims("lierExoFeuille", {"authMember": user_id, "title": item_title,
+                                                        "qclass": idClasse, "qsheet": self.idFeuille,
+                                                        "listeExos": listeExos, "qnum": qnum,
+                                                        "afficher_reponses": afficher_reponses})
 
             if rep_wims['status'] != "OK":
+                # Attention : si la creation n'a pas eu lieu coté WIMS, il ne faut rien créer côté Jalon.
                 portal_jalon_properties = getToolByName(self, 'portal_jalon_properties')
                 contact_link = portal_jalon_properties.getLienContact()
                 admin_link = u"%s?subject=[%s] Erreur d'insertion exercice WIMS&amp;body=exercice : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
@@ -340,11 +359,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
-    def getBreadcrumbs(self, sub_page=""):
-        """Get current page breadcrumbs."""
-        LOG.info("----- getBreadcrumbs -----")
+    def getCrumbs(self, sub_page=""):
+        """Get crumbs for some jaloncourswims subpages."""
+        LOG.info("----- getCrumbs -----")
         portal = self.portal_url.getPortalObject()
         parent = self.aq_parent
+        self_link = self.absolute_url()
         response = [{"title": _(u"Mes cours"),
                      "icon":  "fa fa-university",
                      "link":  "%s/mes_cours" % portal.absolute_url()},
@@ -353,9 +373,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
                      "link":  parent.absolute_url()},
                     {"title": self.Title(),
                      "icon":  self.getIconClass(),
-                     "link":  self.absolute_url()}]
-        if sub_page != "":
-            response.append({"title": sub_page, "icon":  "fa fa-edit"})
+                     "link":  self_link}]
+        if sub_page == "edit":
+            response.append({"title": _(u"Propriétés de l'activité"), "icon":  "fa fa-edit", "link": "%s/edit_wims_activity_form" % self_link})
         return response
 
     def getIconClass(self):
@@ -1315,6 +1335,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         return retour
 
+    def getElementView(self, item_id):
+        """ Fournit les infos de l'exercice demandé (un exo WIMS)."""
+        LOG.info("----- getElementView -----")
+
+        return self.getDocumentsProperties()[item_id]
+
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         LOG.info("----- getNotesTableur -----")
@@ -1451,12 +1477,20 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
         LOG.info("----- modifierExoFeuille -----")
-        param = form
+        # param = form
+        portal = self.portal_url.getPortalObject()
+        param = {}
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
-        param["title"]  = form["titreElement"]
-        self.wims("modifierExoFeuille", param)
+        param["title"]  = form["titreElement"].decode("utf-8")
+        param["weight"] = form["weight"]
+        param["authMember"]  = portal.portal_membership.getAuthenticatedMember().getId()
+        resp = self.wims("modifierExoFeuille", param)
+        if resp["status"] == "OK":
+            message = _(u"Le coefficient de l'exercice '${item_title}' a bien été modifié.",
+                        mapping={'item_title': param["title"]})
+            self.plone_utils.addPortalMessage(message, type='success')
 
     def retirerElement(self, idElement, menu, ordre=None):
         u"""détache un élément de l'activité."""

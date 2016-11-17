@@ -1080,4 +1080,5 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         context.plone_utils.addPortalMessage(message, type=mess_type)
         return False
 
+
 registerATCT(JalonExerciceWims, PROJECTNAME)
