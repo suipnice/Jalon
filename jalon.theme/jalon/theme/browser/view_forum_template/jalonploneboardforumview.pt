@@ -17,18 +17,18 @@
                         mode_etudiant request/mode_etudiant | string:false;
                         personnel python:context.aq_parent.aq_parent.isPersonnel(user, mode_etudiant);">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context)">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
+    </tal:define>
 
     <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
-            Messages de session
-        </metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="small-12 columns"
              tal:define="message request/message | nothing"
@@ -44,7 +44,7 @@
         <nav id="item-adder" class="small-12 columns">
             <a class="button expand create"
                data-reveal-id="reveal-main" data-reveal-ajax="true"
-               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-conversation"
+               tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-conversation"
                tal:condition="not:isAnon">
                 <i class="fa fa-plus-circle"></i>
                 <tal:block i18n:translate="">Créer une conversation dans ce forum</tal:block>
@@ -61,9 +61,9 @@
 
     <tal:condition condition="not:numConversations">
 
-            <div class="panel callout radius">
-                <i class="fa fa-info-circle"></i>
-                <tal:block i18n:translate="">Aucune conversation n'a été lancée dans ce forum.</tal:block>
+            <div class="panel callout radius"
+                  i18n:translate="">
+                Aucune conversation n'a été lancée dans ce forum.
             </div>
 
     </tal:condition>
@@ -174,7 +174,7 @@
                                 <a title="Voir le message…"
                                    tal:attributes="href string:${conversation/absolute_url}/${conversation/getLastCommentId}"
                                    i18n:attributes="title">
-                                    <tal:block i18n:translate="">par</tal:block>
+                                    <tal:block i18n:translate="">Par</tal:block>
                                     <tal:content define="creator conversation/getLastCommentAuthor;
                                                          creatorinfo python: mtool.getMemberInfo(creator)"
                                                  content="python:creatorinfo and creatorinfo['fullname'] or creator" />
@@ -204,14 +204,14 @@
                             <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                                 tal:attributes="id string:drop-action-forum-${repeat/conversation/index}">
                                 <li>
-                                    <a tal:attributes="href string:${conversation/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=modifier-conversation&amp;is_head=True"
+                                    <a tal:attributes="href string:${conversation/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=modifier-conversation&amp;is_head=True"
                                     data-reveal-id="reveal-main" data-reveal-ajax="true">
                                         <i class="fa fa-edit"></i>
                                         <tal:block i18n:translate="">Modifier</tal:block>
                                     </a>
                                 </li>
                                 <li>
-                                    <a tal:attributes="href string:${conversation/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=supprimer-forum&amp;type=conversation"
+                                    <a tal:attributes="href string:${conversation/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=supprimer-forum&amp;type=conversation"
                                     data-reveal-id="reveal-main" data-reveal-ajax="true">
                                         <i class="fa fa-trash-o"></i>
                                         <tal:block i18n:translate="">Supprimer</tal:block>

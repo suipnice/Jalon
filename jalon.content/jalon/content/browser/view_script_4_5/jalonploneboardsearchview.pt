@@ -8,16 +8,17 @@
 <body>
 
 <metal:core metal:fill-slot="content"
-            tal:define="results view/results;
-                        pageCours string:jalon_forum_search">
+            tal:define="results view/results">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane" />
+    <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context, 'jalon_forum_search')">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
-            Messages de session
-        </metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="small-12 columns"
              tal:define="message request/message | nothing"

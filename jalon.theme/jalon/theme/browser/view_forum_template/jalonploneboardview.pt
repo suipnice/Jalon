@@ -16,18 +16,18 @@
                    personnel python:context.aq_parent.isPersonnel(user, mode_etudiant);
                    anonymous python:user.has_role('Anonymous');">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context)">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
+    </tal:define>
 
     <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
-            Messages de session
-        </metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="small-12 columns"
              tal:define="message request/message | nothing"
@@ -44,7 +44,7 @@
             <a class="button expand create"
                data-reveal-id="reveal-main" data-reveal-ajax="true"
                tal:condition="not:anonymous"
-               tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=ajout-forum">
+               tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-forum">
                 <i class="fa fa-plus-circle"></i>
                 <tal:block i18n:translate="">Créer un forum dans ce cours</tal:block>
             </a>
@@ -60,8 +60,7 @@
 
     <tal:condition condition="not:keyedforums">
             <div class="panel callout radius">
-                <i class="fa fa-info-circle"></i>
-                <tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
+                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
             </div>
     </tal:condition>
 
@@ -154,14 +153,14 @@
                             <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
                                 tal:attributes="id string:drop-action-forum-${repeat/forum/index}">
                                 <li>
-                                    <a tal:attributes="href string:${forum/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=modifier-forum;"
+                                    <a tal:attributes="href string:${forum/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=modifier-forum;"
                                     data-reveal-id="reveal-main" data-reveal-ajax="true">
                                         <i class="fa fa-edit"></i>
                                         <tal:block i18n:translate="">Modifier</tal:block>
                                     </a>
                                 </li>
                                 <li>
-                                    <a tal:attributes="href string:${forum/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=supprimer-forum;"
+                                    <a tal:attributes="href string:${forum/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=supprimer-forum;"
                                     data-reveal-id="reveal-main" data-reveal-ajax="true">
                                         <i class="fa fa-trash-o"></i>
                                         <tal:block i18n:translate="">Supprimer</tal:block>
@@ -225,7 +224,7 @@
                 <a class="button small expand alert radius"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                    tal:condition="personnel"
-                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_forum&amp;formulaire=supprimer-tous-forum">
+                   tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=supprimer-tous-forum">
                     <i class="fa fa-trash-o"></i>
                     <tal:block i18n:translate="">Supprimer tous les forums</tal:block>
                 </a>

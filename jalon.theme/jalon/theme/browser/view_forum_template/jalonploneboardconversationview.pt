@@ -11,18 +11,18 @@
             tal:define="isAnon isAnon | context/@@plone_portal_state/anonymous;
                         mtool mtool | context/@@plone_tools/membership;">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
+    <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context)">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
         Page d'affichage du fil d'ariane
     </metal:macro>
+    </tal:define>
 
     <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <main class="row" role="main" aria-labelledby="page_title">
 
-        <metal:macro use-macro="here/macro_global_statusmessage/macros/portal_message">
-            Messages de session
-        </metal:macro>
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <div class="small-12 columns"
              tal:define="message request/message | nothing"
@@ -56,7 +56,7 @@
 
         <metal:block define-macro="quickreply">
 
-            <form method="POST" enctype="multipart/form-data"
+            <form id="forum-quickreply" method="POST" enctype="multipart/form-data"
                   tal:define="firstcomment here/getFirstComment"
                   tal:attributes="action string:${firstcomment/absolute_url}/add_comment_script"
                   tal:condition="not:isAnon">
@@ -65,7 +65,8 @@
                     <legend i18n:translate="label_quickreply">Réponse rapide</legend>
 
                     <div id="archetypes-fieldname-description" class="field">
-                        <textarea name="text" rows="8" id="js-forum-quickreply"
+                        <div class="fieldErrorBox hide">Champ obligatoire</div>
+                        <textarea name="text" rows="8" id="rapide"
                                   required="required" placeholder="Saisie obligatoire"
                                   i18n:attributes="placeholder" ></textarea>
                     </div>
@@ -82,7 +83,7 @@
                 </fieldset>
             </form>
 
-            <tal:define define="script string:setForumQuickReplyForm()">
+            <tal:define define="script string:setForumSearchReplyForm('forum-quickreply', 'rapide')">
                 <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
             </tal:define>
 

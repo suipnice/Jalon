@@ -6,10 +6,11 @@ from zope.component import getMultiAdapter
 from zope.component import getUtility
 
 from logging import getLogger
-LOG = getLogger( '[jalon.content.browser.search]' )
+LOG = getLogger('[jalon.content.browser.search]')
+
 
 class SearchView(BrowserView):
-    template = ViewPageTemplateFile("../templates/jalonploneboardsearchview.pt")
+    template = ViewPageTemplateFile("./jalonploneboardsearchview.pt")
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
@@ -43,7 +44,7 @@ class SearchView(BrowserView):
             return
 
         text = self.request.form["q"]
-        for char in [ "(", ")" ]:
+        for char in ["(", ")"]:
             text = text.replace(char, '"%s"' % char)
 
         ct = getToolByName(self.context, "portal_catalog")

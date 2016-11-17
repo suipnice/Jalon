@@ -134,41 +134,60 @@
                   template="view_template/jalon_course/course_add_view_ajax.pt"
                   permission="zope2.View"/>
 
-      <browser:page name="deposit_box_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.deposit_box_view.DepositBoxView"
-                    template="view_template/jalon_course/deposit_box_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="deposit_box_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                  class="jalon.content.browser.view_script.deposit_box_view.DepositBoxView"
+                  template="view_template/jalon_course/deposit_box_view.pt"
+                  permission="zope2.View"/>
 
-      <browser:page name="deposit_box_criteria_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.deposit_box_criteria_view.DepositBoxCriteriaView"
-                    template="view_template/jalon_course/deposit_box_criteria_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="deposit_box_criteria_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                  class="jalon.content.browser.view_script.deposit_box_criteria_view.DepositBoxCriteriaView"
+                  template="view_template/jalon_course/deposit_box_criteria_view.pt"
+                  permission="zope2.View"/>
 
-      <browser:page name="deposit_box_evaluation_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
-                    template="view_template/jalon_course/deposit_box_evaluation_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="deposit_box_evaluation_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                  class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
+                  template="view_template/jalon_course/deposit_box_evaluation_view.pt"
+                  permission="zope2.View"/>
 
-      <browser:page name="deposit_box_details_evaluations_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
-                    class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
-                    template="view_template/jalon_course/deposit_box_details_evaluations_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="deposit_box_details_evaluations_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
+                  class="jalon.content.browser.view_script.deposit_box_evaluation_view.DepositBoxEvaluationView"
+                  template="view_template/jalon_course/deposit_box_details_evaluations_view.pt"
+                  permission="zope2.View"/>
 
-      <browser:page name="wims_activity_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
-                    class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"
-                    template="view_template/jalon_course/wims_activity_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="wims_activity_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
+                  class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"
+                  template="view_template/jalon_course/wims_activity_view.pt"
+                  permission="zope2.View"/>
 
-      <browser:page name="wims_activity_exercice_view"
-                    for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
-                    class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"
-                    template="view_template/jalon_course/wims_activity_exercice_view.pt"
-                    permission="zope2.View"/>
+    <browser:page name="wims_activity_exercice_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonCoursWims"
+                  class="jalon.content.browser.view_script.wims_activity_view.WimsActivityView"
+                  template="view_template/jalon_course/wims_activity_exercice_view.pt"
+                  permission="zope2.View"/>
+
+    <!-- Course Forum definition -->
+    <browser:page name="jalon_ploneboard_view"
+                  for="Products.Ploneboard.interfaces.IPloneboard"
+                  class="Products.Ploneboard.browser.board.BoardView"
+                  template="view_forum_template/jalonploneboardview.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_ploneboardforum_view"
+                  for="Products.Ploneboard.interfaces.IForum"
+                  class="Products.Ploneboard.browser.forum.ForumView"
+                  template="view_forum_template/jalonploneboardforumview.pt"
+                  permission="zope2.View"/>
+
+    <browser:page name="jalon_ploneboardconversation_view"
+                  for="Products.Ploneboard.interfaces.IConversation"
+                  class="Products.Ploneboard.browser.comment.ConversationView"
+                  template="view_forum_template/jalonploneboardconversationview.pt"
+                  permission="zope2.View"/>
 
     <!-- MyStudentsView Definition -->
     <browser:page name="mes_etudiants_view"
@@ -177,4 +196,9 @@
                   template="view_template/my_students/my_students_view.pt"
                   permission="zope2.View"/>
 
+    <!-- JalonPopertiesView  Definition-->
+    <browser:page name="jalon_properties"
+                  for="jalon.content.browser.interfaces.IJalonProperties"
+                  template="view_template/jalon_properties/jalon_properties.pt"
+                  permission="cmf.ManagePortal"/>
 </configure>
