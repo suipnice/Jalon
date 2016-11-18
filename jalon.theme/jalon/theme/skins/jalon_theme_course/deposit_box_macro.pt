@@ -95,7 +95,7 @@
                        title="Attention ! Ce dépôt est peut être corrompu, merci de vérifier en le téléchargeant."
                        i18n:attributes="title">
                     </i>
-                    <a tal:attributes="href string:${context/absolute_url}/cours_element_view?idElement=${depot/depot_id}&amp;typeElement=JalonFile&amp;createurElement=${user/getId}&amp;indexElement=0"
+                    <a tal:attributes="href depot/depot_url"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:content="depot/depot_title" />
                     <span tal:content="depot/date_aff" />
