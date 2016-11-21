@@ -295,7 +295,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def getNbSujets(self):
         return len(self.getInfosListeAttribut("sujets", True))
 
-    def getOptionsAvancees(self):
+    def getDepositFileOptions(self):
         options = {}
         for option in ["getCorrectionIndividuelle", "getNotificationCorrection", "getNotation", "getNotificationNotation", "getAccesDepots", "getAccesCompetences"]:
             if self.__getattribute__(option)():
@@ -466,7 +466,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
             is_corrupt = False
             depot_action = {"action_title": "Consulter",
-                            "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
+                            "action_url":   "%s/%s" % (self.absolute_url(), depot_id),
                             "action_icon":  "fa-eye",
                             "action_text":  "Consulter"}
             if etudiant_id == auth_member_id:
@@ -485,7 +485,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                         "action_text":  "Ignorer"}
             if is_personnel and is_corriger_noter:
                 depot_action = {"action_title": is_corriger_noter["title"],
-                                "action_url":   "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction" % (self.absolute_url(), depot_id),
+                                "action_url":   "%s/%s/correct_and_evaluate_deposit_file_form" % (self.absolute_url(), depot_id),
                                 "action_icon":  "fa-legal",
                                 "action_text":  is_corriger_noter["title"]}
 
@@ -592,7 +592,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 "is_column_correction": is_column_correction,
                 "is_column_notation":   is_column_notation,
                 "is_column_actions":    is_column_actions,
-                "option":               self.getOptionsAvancees()}
+                "option":               self.getDepositFileOptions()}
         #        "is_personnel_and_is_actions": is_personnel_and_is_actions,
 
     def getDepotDate(self, data, sortable=False):

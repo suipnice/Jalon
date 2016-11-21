@@ -18,7 +18,7 @@
 
     <form method="post"
           tal:attributes="action string:${context/absolute_url}/edit_deposit_tab_script"
-          tal:define="option context/getOptionsAvancees">
+          tal:define="option context/getDepositFileOptions">
 
         <fieldset class="panel bkgrnd radius"
              tal:define="correction option/getCorrectionIndividuelle">
