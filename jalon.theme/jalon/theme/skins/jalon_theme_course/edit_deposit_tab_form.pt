@@ -11,7 +11,7 @@
 <metal:main fill-slot="content">
 
     <h2>
-        <i class="fa fa-plus-circle no-pad"></i>
+        <i class="fa fa-cogs no-pad"></i>
         <tal:block i18n:translate="">Modifier les options des dépôts</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>

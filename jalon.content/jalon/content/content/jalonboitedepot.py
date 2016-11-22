@@ -402,7 +402,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
                          "icon": "fa-file-archive-o",
                          "text": "Télécharger les dépôts (ZIP)"})
-            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
+            menus.append({"href": "%s/download_deposit_list_script" % self.absolute_url(),
                          "icon": "fa-list",
                          "text": "Télécharger listing"})
             menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
@@ -742,6 +742,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         return {"length": str(os.stat(path)[6]), "data": data}
 
     def telechargerListingDepots(self, HTTP_USER_AGENT):
+        LOG.info("----- telechargerListingDepots -----")
         import tempfile
         from xlwt import Workbook
 
@@ -773,14 +774,17 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         listeDepots = []
         listeEtudiants = []
-        for obj in self.objectValues("JalonFile"):
-            if obj.getActif() == "actif":
-                idEtudiant = obj.Creator()
+
+        for obj in self.getFolderContents(contentFilter={"portal_type": "JalonFile"}):
+            LOG.info("JalonFile")
+            if obj.getActif == "actif":
+                LOG.info("actif")
+                idEtudiant = obj.Creator
                 depot = {"idEtudiant": idEtudiant,
-                         "titreDepot": obj.Title(),
-                         "dateDepot":  self.getLocaleDate(obj.created(), '%d/%m/%Y - %Hh%M')}
+                         "titreDepot": obj.Title,
+                         "dateDepot":  self.getLocaleDate(obj.created, '%d/%m/%Y - %Hh%M')}
                 if isCorrection:
-                    correction = obj.getCorrection()
+                    correction = obj.getCorrection
                     if not correction:
                         dummy = _(u"Non corrigé")
                         msg_correction = u"Non corrigé"
@@ -790,7 +794,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                                                     context=object)
                     depot["correctionDepot"] = correction
                 if isNotation:
-                    note = obj.getNote()
+                    note = obj.getNote
                     if not note:
                         dummy = _(u"Non noté")
                         msg_note = u"Non noté"
@@ -802,6 +806,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 listeDepots.append(depot)
                 if not idEtudiant in listeEtudiants:
                     listeEtudiants.append(idEtudiant)
+        LOG.info(listeEtudiants)
         dicoEtudiants = jalon_utils.getIndividus(listeEtudiants, type="dict")
 
         i = 1
