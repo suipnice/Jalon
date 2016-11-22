@@ -10,6 +10,6 @@
 
 form = context.REQUEST.form
 
-context.addDepositFile(form["title"], form["description"], form["file_file"], form["user_id"], form["is_evaluation_by_peers"])
+context.addDepositFile(form["title"], form["description"], form["file_file"], form["user_id"])
 
 context.REQUEST.RESPONSE.redirect(context.absolute_url())

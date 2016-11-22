@@ -62,11 +62,9 @@ class JalonFile(ATDocumentBase):
     def getAuteur(self):
         return jalon_utils.getInfosMembre(self.Creator())["fullname"]
 
-    def isActivatable(self):
-        LOG.info("----- isActivatable -----")
-        LOG.info("***** Profile : %s" % self.aq_parent.getProfile())
-        is_activatable = True if self.aq_parent.getProfile() != "pairs" else False
-        return is_activatable
+    def isNotStandard(self):
+        LOG.info("----- isNotStandard -----")
+        return self.aq_parent.isNotStandard()
 
     def getCorrectionDepot(self):
         return str(self.correction)
