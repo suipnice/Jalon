@@ -1,0 +1,59 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="my_view view/getMyDepositFileBoxView">
+
+    <h2>
+        <tal:replace replace="my_view/deposit_title"/>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h4 i18n:translate="">Commentaire de l'étudiant</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure my_view/deposit_comment"/>
+
+    <h4 i18n:translate="">Correction</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure my_view/deposit_correction_text"/>
+
+    <h4>Note :</h4>
+    <div class="panel bkgrnd radius"
+         tal:content="structure my_view/deposit_note"/>
+
+    <div class="row">
+        <tal:condition condition="not:my_view/deposit_correction_file">
+        <a class="small-12 column button expand radius" tal:attributes="href my_view/deposit_link">
+            <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
+        </a>
+        </tal:condition>
+        <tal:condition condition="my_view/deposit_correction_file">
+        <div class="small-12 medium-6 column">
+            <a class="button expand radius"
+               tal:attributes="href my_view/deposit_link">
+                <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
+            </a>
+        </div>
+        <div class="small-12 medium-6 column">
+            <a class="button expand radius success"
+               tal:attributes="href my_view/deposit_correction_file"
+               target="_blank">
+                <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger le fichier de correction</tal:block>
+            </a>
+        </div>
+        </tal:condition>
+    </div>
+
+</metal:main>
+
+</body>
+
+</html>

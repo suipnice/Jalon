@@ -1,0 +1,203 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-cogs no-pad"></i>
+        <tal:block i18n:translate="">Modifier les options des dépôts</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_deposit_tab_script"
+          tal:define="option context/getDepositFileOptions">
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="correction option/getCorrectionIndividuelle">
+
+            <legend>Corrections des dépôts</legend>
+
+            <tal:comment replace="nothing"><!--
+            <div class="switch tiny round">
+                <input id="exampleRadioSwitch1" type="checkbox" checked="checked">
+                <label for="exampleRadioSwitch1"></label>
+            </div>
+            --></tal:comment>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous aurez la possibilité de remplir une correction textuelle propre à chaque dépôt étudiant que l'étudiant pourra consulter.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="CorrectionIndividuelle"
+                       value="1" id="CorrectionIndividuelle_activer"
+                       tal:attributes="checked python:context.test(correction['actif'], 'checked', '')"/>
+                <label for="CorrectionIndividuelle_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="CorrectionIndividuelle"
+                       value="0" id="CorrectionIndividuelle_desactiver"
+                       tal:attributes="checked python:context.test(correction['actif'], '', 'checked')"/>
+                <label for="CorrectionIndividuelle_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notification option/getNotificationCorrection">
+
+            <legend>Notification des corrections</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, lors de l'ajout de la correction d'un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="NotificationCorrection"
+                       value="1" id="NotificationCorrection_activer"
+                       tal:attributes="checked python:context.test(notification['actif'], 'checked', '')"/>
+                <label for="NotificationCorrection_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="NotificationCorrection"
+                       value="0" id="NotificationCorrection_desactiver"
+                       tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
+                <label for="NotificationCorrection_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notation option/getNotation">
+
+            <legend>Notation des dépôts</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous aurez la possibilité de noter chaque dépôt étudiant à l'aide d'une valeur numérique ou textuelle que l'étudiant pourra consulter (exemples : 12, 12.5/20, 45/100, Très bien, Bien, etc.).
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="Notation"
+                       value="1" id="Notation_activer"
+                       tal:attributes="checked python:context.test(notation['actif'], 'checked', '')"/>
+                <label for="Notation_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="Notation"
+                       value="0" id="Notation_desactiver"
+                       tal:attributes="checked python:context.test(notation['actif'], '', 'checked')"/>
+                <label for="Notation_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="notification option/getNotificationNotation">
+
+            <legend>Notification des notations</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, lors de l'ajout d'une note à un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="NotificationNotation"
+                       value="1" id="NotificationNotation_activer"
+                       tal:attributes="checked python:context.test(notification['actif'], 'checked', '')"/>
+                <label for="NotificationNotation_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="NotificationNotation"
+                       value="0" id="NotificationNotation_desactiver"
+                       tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
+                <label for="NotificationNotation_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+
+        <fieldset class="panel bkgrnd radius"
+             tal:define="acces_depot option/getAccesDepots">
+
+            <legend>Visualisation des dépôts entre étudiants</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, chaque étudiant(e) aura la possibilité de consulter les dépôts de tous les autres étudiants. Si les options avancées « Corrections des dépôts » et « Notation des dépôts » sont activées, chaque étudiant(e) pourra aussi consulter les corrections et les notes de l'ensemble des dépôts.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="AccesDepots"
+                       value="1" id="AccesDepots_activer"
+                       tal:attributes="checked python:context.test(acces_depot['actif'], 'checked', '')"/>
+                <label for="AccesDepots_activer"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="AccesDepots"
+                       value="0" id="AccesDepots_desactiver"
+                       tal:attributes="checked python:context.test(acces_depot['actif'], '', 'checked')"/>
+                <label for="AccesDepots_desactiver"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+
+        <tal:comment replace="nothing"><!--
+        <fieldset class="panel bkgrnd radius"
+             tal:define="acces_competences option/getAccesCompetences">
+
+            <legend>Évaluation des étudiants par compétences</legend>
+
+            <p i18n:translate="">
+                Une fois cette option activée, vous pourrez mettre en place une liste de compétences pour la boîte de dépôts à partir d'un onglet « Compétences ». L'évaluation des compétences se fait par étudiant. Un étudiant doit avoir déposé au moins un devoir pour être évalué.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="AccesCompetences" value="1"
+                       tal:attributes="checked python:context.test(acces_competences['actif'], 'checked', '')"/>
+                <label for="AccesDepots"
+                       class="success"
+                       i18n:translate="">Activer</label>
+                <input type="radio" name="AccesCompetences" value="0"
+                       tal:attributes="checked python:context.test(acces_competences['actif'], '', 'checked')"/>
+                <label for="AccesDepots"
+                       class="warning"
+                       i18n:translate="">Désactiver</label>
+            </div>
+
+        </fieldset>
+        --></tal:comment>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

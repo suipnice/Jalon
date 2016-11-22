@@ -140,6 +140,12 @@
                   template="view_template/jalon_course/deposit_box_view.pt"
                   permission="zope2.View"/>
 
+    <browser:page name="my_deposit_file_view"
+                  for="jalon.content.interfaces.jaloninterface.IJalonFile"
+                  class="jalon.content.browser.view_script.my_deposit_file_view.MyDepositFileBoxView"
+                  template="view_template/jalon_course/my_deposit_file_view.pt"
+                  permission="zope2.View"/>
+
     <browser:page name="deposit_box_criteria_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonBoiteDepot"
                   class="jalon.content.browser.view_script.deposit_box_criteria_view.DepositBoxCriteriaView"

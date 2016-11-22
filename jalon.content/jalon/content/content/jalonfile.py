@@ -59,6 +59,9 @@ class JalonFile(ATDocumentBase):
             self.__getattribute__("set%s" % key)(dico[key])
         self.reindexObject()
 
+    def getAuteur(self):
+        return jalon_utils.getInfosMembre(self.Creator())["fullname"]
+
     def isActivatable(self):
         LOG.info("----- isActivatable -----")
         LOG.info("***** Profile : %s" % self.aq_parent.getProfile())

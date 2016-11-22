@@ -1,0 +1,81 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+<tal:define define="corriger_noter context/isCorrigerNoter;
+                    errors python:{}">
+    <h2>
+        <i class="fa fa-legal no-pad"></i>
+        <tal:block replace="corriger_noter/title"
+                   i18n:translate=""></tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3>
+        Titre : <span tal:content="context/Title"/>
+    </h3>
+
+    <h3>
+        Auteur : <span tal:content="context/getAuteur"/>
+    </h3>
+
+    <form tal:attributes="action string:${context/absolute_url}/correct_and_evaluate_deposit_file_script"
+          enctype="multipart/form-data"
+          id="inform" method="post">
+
+
+        <div class="field"
+             tal:condition="corriger_noter/corriger">
+            <label for="correction">
+                Correction
+            </label>
+            <textarea id="correction" name="correction" rows="5"><tal:replace replace="context/getCorrectionDepot"/></textarea>
+        </div>
+
+        <div id="archetypes-fieldname-file" class="field row"
+             tal:condition="corriger_noter/corriger">
+            <label for="file_file">Fichier de correction</label>
+            <div class="small-6 column">
+                <input type="file" id="file_file" name="file_file" size="30"/>
+            </div>
+            <tal:define define="fichier context/getFichierCorrection">
+            <div class=" small-6 column"
+                tal:condition="fichier">
+                <a tal:attributes="href fichier"
+                   class="tiny button radius success"
+                   target="_blank">
+                    <i class="fa fa-download"></i>
+                    <tal:block i18n:translate="">Télécharger le fichier de correction</tal:block>
+                </a>
+            </div>
+            </tal:define>
+        </div>
+
+        <tal:condition condition="corriger_noter/noter">
+        <metal:field use-macro="python:context.widget('note', mode='edit')">Attribut Macro</metal:field>
+        </tal:condition>
+
+        <input type="hidden" name="correction_text_format" value="text/html">
+
+         <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+    </form>
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>
