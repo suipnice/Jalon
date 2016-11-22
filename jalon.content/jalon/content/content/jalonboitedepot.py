@@ -399,7 +399,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         menus = []
         if is_personnel:
-            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
+            menus.append({"href": "%s/download_deposit_zip_script" % self.absolute_url(),
                          "icon": "fa-file-archive-o",
                          "text": "Télécharger les dépôts (ZIP)"})
             menus.append({"href": "%s/download_deposit_list_script" % self.absolute_url(),
@@ -713,7 +713,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         listeDepots = []
         listeEtudiants = []
 
-        for obj in self.objectValues("JalonFile"):
+        for obj_brain in self.getFolderContents(contentFilter={"portal_type": "JalonFile"}):
+            obj = obj_brain.getObject()
             if obj.getActif() == "actif":
                 idEtudiant = obj.Creator()
                 if not idEtudiant in listeEtudiants:
