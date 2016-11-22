@@ -191,6 +191,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def __init__(self, *args, **kwargs):
         super(JalonBoiteDepot, self).__init__(*args, **kwargs)
+        super(ATFolder, self).__init__(*args, **kwargs)
 
     # #-------------------# #
     #  Fonctions générales  #
@@ -399,15 +400,15 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         menus = []
         if is_personnel:
-            menus.append({"href": "%s/download_deposit_zip_script" % self.absolute_url(),
-                         "icon": "fa-file-archive-o",
-                         "text": "Télécharger les dépôts (ZIP)"})
-            menus.append({"href": "%s/download_deposit_list_script" % self.absolute_url(),
-                         "icon": "fa-list",
-                         "text": "Télécharger listing"})
-            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
-                         "icon": "fa-filter",
-                         "text": "Purger les dépôts"})
+            menus.append({"href": "%s/download_deposit_zip_form" % self.absolute_url(),
+                          "icon": "fa-file-archive-o",
+                          "text": "Télécharger les dépôts (ZIP)"})
+            menus.append({"href": "%s/download_deposit_list_form" % self.absolute_url(),
+                          "icon": "fa-list",
+                          "text": "Télécharger listing"})
+            menus.append({"href": "%s/delete_deposit_files_form" % self.absolute_url(),
+                          "icon": "fa-trash-o alert",
+                          "text": "Supprimer les dépôts"})
 
         table_title = "Dépôts étudiants"
         content_filter = {"portal_type": "JalonFile"}
@@ -697,7 +698,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         depot.setProperties({"Actif": actif})
 
     def purgerDepots(self):
-        self.manage_delObjects(self.objectIds())
+        object_ids = [obj_brain.getId for obj_brain in self.getFolderContents(contentFilter={"portal_type": "JalonFile"})]
+        self.manage_delObjects(object_ids)
         self.setListeDevoirs(())
         self.setCompEtudiants({})
         self.reindexObject()

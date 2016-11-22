@@ -14,7 +14,8 @@
     <ul class="f-dropdown" data-dropdown-content="data-dropdown-content"
         id="drop-action-depots">
         <li tal:repeat="menu dico_depots/menus">
-            <a tal:attributes="href menu/href">
+            <a tal:attributes="href menu/href"
+               data-reveal-id="reveal-main" data-reveal-ajax="true">
                 <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i><tal:block replace="menu/text"
                                                                                       i18n:translate=""/>
             </a>
