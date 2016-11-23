@@ -191,6 +191,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def __init__(self, *args, **kwargs):
         super(JalonBoiteDepot, self).__init__(*args, **kwargs)
+        super(ATFolder, self).__init__(*args, **kwargs)
 
     # #-------------------# #
     #  Fonctions générales  #
@@ -295,7 +296,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def getNbSujets(self):
         return len(self.getInfosListeAttribut("sujets", True))
 
-    def getOptionsAvancees(self):
+    def getDepositFileOptions(self):
         options = {}
         for option in ["getCorrectionIndividuelle", "getNotificationCorrection", "getNotation", "getNotificationNotation", "getAccesDepots", "getAccesCompetences"]:
             if self.__getattribute__(option)():
@@ -399,15 +400,15 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         menus = []
         if is_personnel:
-            menus.append({"href": "%s/cours_telecharger_depots" % self.absolute_url(),
-                         "icon": "fa-file-archive-o",
-                         "text": "Télécharger les dépôts (ZIP)"})
-            menus.append({"href": "%s/cours_listing_depots" % self.absolute_url(),
-                         "icon": "fa-list",
-                         "text": "Télécharger listing"})
-            menus.append({"href": "%s/folder_form?macro=macro_cours_boite&amp;formulaire=purger_depots" % self.absolute_url(),
-                         "icon": "fa-filter",
-                         "text": "Purger les dépôts"})
+            menus.append({"href": "%s/download_deposit_zip_form" % self.absolute_url(),
+                          "icon": "fa-file-archive-o",
+                          "text": "Télécharger les dépôts (ZIP)"})
+            menus.append({"href": "%s/download_deposit_list_form" % self.absolute_url(),
+                          "icon": "fa-list",
+                          "text": "Télécharger listing"})
+            menus.append({"href": "%s/delete_deposit_files_form" % self.absolute_url(),
+                          "icon": "fa-trash-o alert",
+                          "text": "Supprimer les dépôts"})
 
         table_title = "Dépôts étudiants"
         content_filter = {"portal_type": "JalonFile"}
@@ -466,7 +467,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
             is_corrupt = False
             depot_action = {"action_title": "Consulter",
-                            "action_url":   "%s/cours_element_view?idElement=%s&amp;typeElement=JalonFile&amp;createurElement=%s&indexElement=0" % (self.absolute_url(), depot_id, etudiant_id),
+                            "action_url":   "%s/%s" % (self.absolute_url(), depot_id),
                             "action_icon":  "fa-eye",
                             "action_text":  "Consulter"}
             if etudiant_id == auth_member_id:
@@ -485,7 +486,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                         "action_text":  "Ignorer"}
             if is_personnel and is_corriger_noter:
                 depot_action = {"action_title": is_corriger_noter["title"],
-                                "action_url":   "%s/%s/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-correction" % (self.absolute_url(), depot_id),
+                                "action_url":   "%s/%s/correct_and_evaluate_deposit_file_form" % (self.absolute_url(), depot_id),
                                 "action_icon":  "fa-legal",
                                 "action_text":  is_corriger_noter["title"]}
 
@@ -592,7 +593,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 "is_column_correction": is_column_correction,
                 "is_column_notation":   is_column_notation,
                 "is_column_actions":    is_column_actions,
-                "option":               self.getOptionsAvancees()}
+                "option":               self.getDepositFileOptions()}
         #        "is_personnel_and_is_actions": is_personnel_and_is_actions,
 
     def getDepotDate(self, data, sortable=False):
@@ -697,7 +698,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         depot.setProperties({"Actif": actif})
 
     def purgerDepots(self):
-        self.manage_delObjects(self.objectIds())
+        object_ids = [obj_brain.getId for obj_brain in self.getFolderContents(contentFilter={"portal_type": "JalonFile"})]
+        self.manage_delObjects(object_ids)
         self.setListeDevoirs(())
         self.setCompEtudiants({})
         self.reindexObject()
@@ -713,7 +715,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         listeDepots = []
         listeEtudiants = []
 
-        for obj in self.objectValues("JalonFile"):
+        for obj_brain in self.getFolderContents(contentFilter={"portal_type": "JalonFile"}):
+            obj = obj_brain.getObject()
             if obj.getActif() == "actif":
                 idEtudiant = obj.Creator()
                 if not idEtudiant in listeEtudiants:
@@ -742,6 +745,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         return {"length": str(os.stat(path)[6]), "data": data}
 
     def telechargerListingDepots(self, HTTP_USER_AGENT):
+        LOG.info("----- telechargerListingDepots -----")
         import tempfile
         from xlwt import Workbook
 
@@ -773,14 +777,17 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
         listeDepots = []
         listeEtudiants = []
-        for obj in self.objectValues("JalonFile"):
-            if obj.getActif() == "actif":
-                idEtudiant = obj.Creator()
+
+        for obj in self.getFolderContents(contentFilter={"portal_type": "JalonFile"}):
+            LOG.info("JalonFile")
+            if obj.getActif == "actif":
+                LOG.info("actif")
+                idEtudiant = obj.Creator
                 depot = {"idEtudiant": idEtudiant,
-                         "titreDepot": obj.Title(),
-                         "dateDepot":  self.getLocaleDate(obj.created(), '%d/%m/%Y - %Hh%M')}
+                         "titreDepot": obj.Title,
+                         "dateDepot":  self.getLocaleDate(obj.created, '%d/%m/%Y - %Hh%M')}
                 if isCorrection:
-                    correction = obj.getCorrection()
+                    correction = obj.getCorrection
                     if not correction:
                         dummy = _(u"Non corrigé")
                         msg_correction = u"Non corrigé"
@@ -790,7 +797,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                                                     context=object)
                     depot["correctionDepot"] = correction
                 if isNotation:
-                    note = obj.getNote()
+                    note = obj.getNote
                     if not note:
                         dummy = _(u"Non noté")
                         msg_note = u"Non noté"
@@ -802,6 +809,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 listeDepots.append(depot)
                 if not idEtudiant in listeEtudiants:
                     listeEtudiants.append(idEtudiant)
+        LOG.info(listeEtudiants)
         dicoEtudiants = jalon_utils.getIndividus(listeEtudiants, type="dict")
 
         i = 1

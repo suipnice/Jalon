@@ -116,7 +116,7 @@ class DepositBoxView(CourseView):
                                             "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user_id)})
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
-            my_view["deposit_tab_options_link"] = ""
+            my_view["deposit_tab_options_link"] = "%s/edit_deposit_tab_form" % my_view["deposit_box_link"]
             my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getCorrectionIndividuelle() else "fa-toggle-off",
                                                "text": "Correction des dépôts"},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getNotificationCorrection() else "fa-toggle-off",
