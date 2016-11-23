@@ -13,7 +13,7 @@ form = context.REQUEST.form
 
 context.modifierExoFeuille(form)
 
-redirection = "%s?tab=%s" % (context.absolute_url(), form["tab"])
+redirection = "%s?tab=%s" % (context.absolute_url(), "exercices")
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(redirection)
 else:

@@ -298,7 +298,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
                 # L'exercice n'est pas ajouté.
                 # LOG.info("\n####### jaloncourswims/addMySpaceItem -- Attention : '%s'\n" % rep_wims['message'])
-                self.detachExercice(item_object)
+                self.removeRelatedExercice(item_object)
                 # message = _(u"Une erreur est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.")
                 # message = "%s<br/><strong>%s:</strong>%s" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
                 # self.plone_utils.addPortalMessage(message, type='error')
@@ -338,20 +338,64 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         self.plone_utils.addPortalMessage(message, type='success')
 
-    def detachExercice(self, item_object):
+    def detachExercice(self, item_id, ordre):
+        """supprime l'exercice de l'activité, puis met à jour les relatedItems"""
+        LOG.info("----- detachExerciceFromWIMS -----")
+
+        document_properties = self.getDocumentsProperties()
+        item_props = document_properties[item_id]
+
+        # Supprime l'exercice de la feuille côté WIMS
+        auteur = self.getCreateur()
+        idClasse = self.getClasse()
+        idFeuille = self.getIdFeuille()
+        idExo = int(ordre) + 1
+        dico = {"authMember": auteur,
+                "qclass": idClasse,
+                "qsheet": idFeuille,
+                "qexo": idExo,
+                "jalon_URL": self.absolute_url()}
+        resp = self.wims("retirerExoFeuille", dico)
+        # resp = {"status":"OK"}
+        if resp["status"] != "OK":
+            message = _(u"Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché",
+                        mapping={'item_title': item_props["titreElement"]})
+            self.plone_utils.addPortalMessage(message, type='failure')
+        else:
+
+            # Puisque la suppression est effective coté WIMS, on le détache côté Jalon :
+
+            del document_properties[item_id]
+            self.setDocumentsProperties(document_properties)
+
+            exos_list = list(self.getListeExercices())
+            exos_list.remove(item_id)
+            self.setListeExercices(tuple(exos_list))
+
+            # Puis on met à jour les related Items
+            if item_id.split("-")[0] != "recover":
+                item_object = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), item_props["createurElement"]), "Wims"), item_id)
+                self.removeRelatedExercice(item_object)
+
+            message = _(u"L'exercice '${item_title}' a bien été détaché de cette activité.",
+                        mapping={'item_title': item_props["titreElement"]})
+            self.plone_utils.addPortalMessage(message, type='success')
+
+    def removeRelatedExercice(self, item_object):
         """Retire l'exercice item_object des related_items de l'activité, et inversement."""
-        LOG.info("----- detachExercice -----")
+        LOG.info("----- removeRelatedExercice -----")
 
         item_relatedItems = item_object.getRelatedItems()
-        item_relatedItems.remove(self)
-        item_object.setRelatedItems(item_relatedItems)
-        item_object.reindexObject()
+        if self in item_relatedItems:
+            item_relatedItems.remove(self)
+            item_object.setRelatedItems(item_relatedItems)
+            item_object.reindexObject()
 
         activity_relatedItems = self.getRelatedItems()
-        activity_relatedItems.remove(item_object)
-        self.setRelatedItems(activity_relatedItems)
-
-        self.reindexObject()
+        if item_object in activity_relatedItems:
+            activity_relatedItems.remove(item_object)
+            self.setRelatedItems(activity_relatedItems)
+            self.reindexObject()
 
     def getDisplayProfile(self, profile_id=None):
         """get Display Profile."""
@@ -1492,8 +1536,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
                         mapping={'item_title': param["title"]})
             self.plone_utils.addPortalMessage(message, type='success')
 
+    """
+        # Remplacé par removeExercice()
     def retirerElement(self, idElement, menu, ordre=None):
-        u"""détache un élément de l'activité."""
+        # détache un élément de l'activité.
         LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
         liste_elements = self.getDocumentsProperties()
@@ -1534,6 +1580,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             relatedItems.remove(self)
             objet.setRelatedItems(relatedItems)
             objet.reindexObject()
+    """
 
     def retirerTousElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""

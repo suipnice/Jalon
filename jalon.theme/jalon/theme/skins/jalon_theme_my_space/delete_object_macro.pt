@@ -11,7 +11,7 @@
 
 <metal:macro define-macro="is_object_attached">
     <div class="panel radius callout">
-        La ressource "<tal:replace replace="context/Title" /> est attachée à :
+        La ressource "<tal:replace replace="context/Title" />" est attachée à :
         <ul>
             <li tal:repeat="cours context/getRelatedItems">
                 <tal:block tal:content="cours/Title" />

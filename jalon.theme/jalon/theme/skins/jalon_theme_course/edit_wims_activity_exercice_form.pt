@@ -17,11 +17,11 @@
 
 <tal:define define="qexo request/qexo;
                     tab request/tab | nothing;
-                    idElement request/idElement;
+                    item_id request/item_id;
                     sur request/sur | string:1;
                     demandeur user/getId;
-                    element python:context.getElementView(idElement);
-                    titreElement element/titreElement | idElement;">
+                    element python:context.getElementView(item_id);
+                    titreElement element/titreElement | item_id;">
 
     <h2 tal:condition="is_ajax">
         <tal:block i18n:translate="">Modifier l'exercice</tal:block>
@@ -56,10 +56,7 @@
             <input name="weight" id="weight" type="number" min="0" max="10" tal:attributes="value sur" style="line-height: 2em;"/>
         </div>
 
-        <input type="hidden" name="tab" tal:attributes="value tab" />
         <input type="hidden" name="qexo" tal:attributes="value qexo" />
-        <!--input type="hidden" name="authMember" tal:attributes="value user/getId" /-->
-        <input type="hidden" name="idElement" tal:attributes="value idElement" />
 
         <div class="formControls">
             <button type="submit" class="button small"

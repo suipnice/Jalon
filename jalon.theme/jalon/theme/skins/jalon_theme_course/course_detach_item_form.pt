@@ -8,7 +8,8 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="res_name python:context.getShortText(context.getCourseItemProperties(request['item_id'])['titreElement'], 80)">
+            tal:define="res_props python:context.getCourseItemProperties(request['item_id']);
+                        res_name python:context.getShortText(res_props['titreElement'], 80)">
 
     <h2>
         <tal:block i18n:translate="">Détacher l'élément de « Mon espace » : </tal:block>
@@ -23,6 +24,13 @@
 
     <form tal:attributes="action string:${context/absolute_url}/course_delete_item_script"
           method="POST">
+
+        <div tal:condition="python:res_props['typeElement'] == 'Exercice Wims'" class="panel warning radius">
+            <strong i18n:translate="">Attention :</strong>
+            <tal:block i18n:translate="">en détachant un exercice d'une activité, vous allez également supprimer toutes les notes obtenues par les étudiants à cette activité.</tal:block>
+            <input type="hidden" name="item_order" tal:attributes="value request/item_order"/>
+            <input type="hidden" name="tab" value="exercices"/>
+        </div>
 
         <input type="hidden" name="item_id" tal:attributes="value request/item_id"/>
 
