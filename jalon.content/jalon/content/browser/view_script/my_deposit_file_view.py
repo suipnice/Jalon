@@ -26,16 +26,16 @@ class MyDepositFileBoxView(BrowserView):
         #LOG.info("----- getMyDepositFileBoxView -----")
         context = self.context
 
-        deposit_comment = context.Description().replace("\n", "<br/>")
-        if not deposit_comment:
-            deposit_comment = "Aucun commentaire"
+        deposit_comment = "Aucun commentaire"
+        if context.Description():
+            deposit_comment = context.Description().replace("\n", "<br/>")
 
         deposit_correction_text = "Aucune correction"
-        if context.getCorrectionIndividuelle():
+        if context.getCorrectionDepot():
             deposit_correction_text = context.getCorrectionDepot().replace("\n", "<br/>")
 
         deposit_note = "Aucune note"
-        if context.getNotation():
+        if context.getNote():
             deposit_note = context.getNote()
 
         return {"deposit_title":           context.Title(),
