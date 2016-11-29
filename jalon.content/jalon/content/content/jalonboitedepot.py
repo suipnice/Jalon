@@ -352,13 +352,21 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                  "deposit_box_profile_value":   "pairs",
                  "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
 
+    def isExamen(self):
+        LOG.info("----- isExamen -----")
+        return True if self.getProfile() == "examen" else False
+
+    def isNotStandard(self):
+        LOG.info("----- isNotStandard -----")
+        return True if self.getProfile() != "standard" else False
+
     # #-----------------------# #
     #  Fonctions onglet Dépots  #
     # #-----------------------# #
 
-    def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id, is_evaluation_by_peers):
+    def addDepositFile(self, deposit_title, desposit_comment, deposit_file, user_id):
         LOG.info("----- addDepositFile -----")
-        if is_evaluation_by_peers:
+        if self.isNotStandard():
             content_filter = {"portal_type": "JalonFile", "Creator": user_id}
             depots = self.getFolderContents(contentFilter=content_filter)
             for depot_brain in depots:
@@ -397,6 +405,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         liste_etudiants_valides = []
         dico_name_etudiants = {}
         auth_member_id = auth_member.getId()
+        is_not_standard = self.isNotStandard()
 
         menus = []
         if is_personnel:
@@ -446,6 +455,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
             is_valide = {"value": False, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label warning", "text": "Invalide"}
             if depot.getActif:
+                LOG.info("getActif : %s" % depot.getActif)
                 is_valide = {"value": True, "test": "is_column_etat", "css_class": "valide", "span_css_class": "label success", "text": "Valide"}
                 valides = valides + 1
                 if not etudiant_id in liste_etudiants_valides:
@@ -473,17 +483,12 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             if etudiant_id == auth_member_id:
                 if depot.getObject().getSize() < 100:
                     is_corrupt = True
-                if not is_correction["value"] or not is_notation["value"]:
-                    if not is_valide["value"]:
-                        depot_action = {"action_title": "Valider ce dépôt",
+                if not is_not_standard:
+                    if not (is_correction["value"] or is_notation["value"]):
+                        depot_action = {"action_title": "Modifier l'état ce dépôt",
                                         "action_url":   "%s/edit_validate_deposit_form" % depot.getURL(),
-                                        "action_icon":  "fa-check-circle success",
-                                        "action_text":  "Valider"}
-                    else:
-                        depot_action = {"action_title": "Ignorer ce dépôt",
-                                        "action_url":   "%s/edit_validate_deposit_form" % depot.getURL(),
-                                        "action_icon":  "fa-times-circle warning",
-                                        "action_text":  "Ignorer"}
+                                        "action_icon":  "fa-pencil",
+                                        "action_text":  "Modifier"}
             if is_personnel and is_corriger_noter:
                 depot_action = {"action_title": is_corriger_noter["title"],
                                 "action_url":   "%s/%s/correct_and_evaluate_deposit_file_form" % (self.absolute_url(), depot_id),

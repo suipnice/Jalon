@@ -8,64 +8,54 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="is_activatable context/isActivatable;
-                        actif context/getActif">
+            tal:define="is_not_standard context/isNotStandard">
+    <h2>
+        <tal:block i18n:translate="">Modifier l'état du fichier déposé</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
 
-    <tal:condition condition="not:is_activatable">
-            <h2>
-                <tal:block i18n:translate="">Évaluation par les pairs</tal:block>
-                <a class="close-reveal-modal"></a>
-            </h2>
-            <div class="panel warning radius"
-                 i18n:translate="">
-                <strong>Attention :</strong> Vous ne pouvez valider ou ignorer un dépôt en évaluation par les pairs. Ajouter un nouveau dépôt invalidera automatiquement le précédent.
-            </div>
-    </tal:condition>
-    <tal:condition condition="is_activatable">
-        <tal:condition condition="actif">
-            <h2>
-                <tal:block i18n:translate="">Invalider ce dépot ?</tal:block>
-                <a class="close-reveal-modal"></a>
-            </h2>
-            <div class="panel warning radius"
-                 i18n:translate="">
-                Pour signaler ce dépôt comme « invalide » à votre enseignant (qui ne le prendra pas en compte) cliquez sur le bouton « Invalider ».
-            </div>
-            <form tal:attributes="action string:${context/absolute_url}/edit_validate_deposit_script"
-                  method="post">
-                <input type="hidden" name="actif" value=""/>
-                <div class="formControls">
-                    <button type="submit" class="button small warning"
-                            name="form.button.save">
-                        <i class="fa fa-times-circle"></i>
-                        <tal:block i18n:translate="">Ignorer</tal:block>
-                    </button>
-                </div>
-            </form>
-        </tal:condition>
+    <div class="panel warning radius"
+         tal:condition="is_not_standard"
+         i18n:translate="">
+        <strong>Attention :</strong> Dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez valider ou invalider un dépôt. Ajouter un nouveau dépôt invalidera automatiquement le précédent.
+    </div>
 
-        <tal:condition condition="not:actif">
-            <h2>
-                <tal:block i18n:translate="">Valider ce dépôt ?</tal:block>
-                <a class="close-reveal-modal"></a>
-            </h2>
-             <div class="panel callout radius"
-                 i18n:translate="">
-                Pour signaler ce dépôt comme « valide » à votre enseignant (qui le prendra en compte) cliquez sur le bouton « Valider ».
-             </div>
-             <form tal:attributes="action string:${context/absolute_url}/edit_validate_deposit_script"
-                   method="post">
-                <input type="hidden" name="actif" value="actif"/>
-                <div class="formControls">
-                    <button type="submit" class="button small"
-                            name="form.button.save">
-                        <i class="fa fa-check-circle"></i>
-                        <tal:block i18n:translate="">Valider</tal:block>
-                    </button>
-                </div>
-            </form>
-        </tal:condition>
-    </tal:condition>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_validate_deposit_script"
+          tal:condition="not:is_not_standard">
+
+        <fieldset class="panel bkgrnd radius"
+                  tal:define="actif context/getActif">
+            <legend>État du fichier déposé</legend>
+
+            <p i18n:translate="">
+                Sélectionner « Invalide » pour indiquer à votre enseignant que ce fichier n'est pas à évaluer.
+            </p>
+
+            <div class="formControls">
+                <input type="radio" name="actif"
+                       value="actif" id="actif_activer"
+                       tal:attributes="checked python:context.test(actif == 'actif', 'checked', '')"/>
+                <label for="actif_activer"
+                       class="success"
+                       i18n:translate="">Valide</label>
+                <input type="radio" name="actif"
+                       value="" id="actif_desactiver"
+                       tal:attributes="checked python:context.test(actif != 'actif', 'checked', '')"/>
+                <label for="actif_desactiver"
+                       class="warning"
+                       i18n:translate="">Invalide</label>
+            </div>
+        </fieldset>
+
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="Save">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+    </form>
 
 </metal:main>
 
