@@ -304,9 +304,6 @@
         <i class="fa fa-check-square-o" aria-hidden="true"></i>
         <tal:replace replace="evaluation_by_peers_dict/evaluate_button_name"/>
     </a>
-    <!--div class="panel callout radius">
-        Vous avez évalué tous les dépôts.
-    </div-->
     <h2 tal:condition="evaluation_by_peers_dict/corrected_evaluation_list">
         <i class="fa fa-check-square-o"></i>
         Dépôt(s) évalué(s)
@@ -363,52 +360,240 @@
     </tbody>
     </table>
 </metal:macro>
-<!--
-    Évaluation par les pairs Liste role Étudiant V1
-<metal:macro define-macro="peers_student_macro">
-    <div class="panel callout radius"
-         tal:content="evaluation_by_peers_dict/peers_correction_indication"/>
-    <div class="table-overflow_container"
-         tal:condition="evaluation_by_peers_dict/peers_evaluations">
-        <table summary="Liste des critères">
-        <thead>
-            <tr>
-                <th class="sort has-tip" data-tooltip data-sort="criteria"
-                    title="Cliquer pour trier selon l'étudiant"
-                    i18n:attributes="title">
-                    <span>
-                        <i class="fa fa-sort"></i>
-                        <i class="fa fa-sort-asc"></i>
-                        <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Critères</tal:block>
-                    </span>
-                </th>
-            <tal:repeat repeat="peer evaluation_by_peers_dict/peers_evaluations">
-                <th>
-                    Devoir n°<tal:replace tal:replace="repeat/peer/number"/>
-                </th>
-            </tal:repeat>
-            </tr>
-        </thead>
-        <tfoot></tfoot>
-        <tbody class="list"
-               tal:define="corrected_evaluations_dict evaluation_by_peers_dict/corrected_evaluations_dict">
-            <tr tal:repeat="index evaluation_by_peers_dict/criteria_order">
-                <tal:define define="crtieria_evaluations_dict python:corrected_evaluations_dict[index]">
-                <td class="criteria"
-                    tal:define="criteria python:criteria_dict[index]">
-                    <span class="hide" tal:content="criteria/title" />
-                    <tal:replace replace="criteria/title" />
-                </td>
-                <td tal:repeat="peer_dict evaluation_by_peers_dict/peers_evaluations">
-                    <tal:replace replace="python:crtieria_evaluations_dict[peer_dict['peer']]"
-                                 on-error="string:Non évalué"/>
-                </td>
-                </tal:define>
-            </tr>
-        </tbody>
-        </table>
-    </div>
-</metal:macro>
 
+<!--
+    Évaluation par compétences
 -->
+<metal:macro define-macro="skills-list">
+    <tal:define define="afficher_comp context/getAfficherCompetences;
+                        is_personnel my_view/is_personnel">
+    <tal:condition condition="python:is_personnel or afficher_comp">
+    <tal:condition condition="is_personnel">
+        <a class="dropdown right"
+           data-options="align:left" data-dropdown="drop-action-depots">
+            <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+        </a>
+        <ul class="f-dropdown" id="drop-action-depots"
+            data-dropdown-content="data-dropdown-content"
+            tal:define="modifier_comp python:context.getPermissionModifierCompetence(is_personnel, user.getId())">
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=ajout-competence"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-plus-circle fa-fw"></i>
+                    <tal:block i18n:translate="">Ajouter</tal:block>
+                </a>
+            </li>
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=modifier-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-edit fa-fw"></i>
+                    <tal:block i18n:translate="">Modifier</tal:block>
+                </a>
+            </li>
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                   <i class="fa fa-align-justify fa-fw"></i>
+                   <tal:block i18n:translate="">Description</tal:block>
+                </a>
+            </li>
+            <li>
+                <a tal:attributes="href string:${context/absolute_url}/cours_listing_competences">
+                    <i class="fa fa-file-excel-o fa-fw"></i>
+                    <tal:block i18n:translate="">Télécharger (format xls)</tal:block>
+                </a>
+            </li>
+            <li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=supprimer-competences"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-trash-o fa-fw"></i>
+                    <tal:block i18n:translate="">Supprimer</tal:block>
+                </a>
+            </li>
+            <tal:comment replace="nothing">
+            <!--li tal:condition="modifier_comp">
+                <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=permission-competence"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
+                    <i class="fa fa-unlock-alt fa-fw"></i>
+                    <tal:block i18n:translate="">Permissions</tal:block>
+                </a>
+            </li-->
+            </tal:comment>
+        </ul>
+    </tal:condition>
+        <h2 class="texte_icone icone_liste">
+            <i class="fa fa-tasks"></i>
+            <tal:block i18n:translate="">Compétences</tal:block>
+        <tal:condition condition="not:is_personnel">
+            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
+               title="Voir les descriptions des compétences"
+               class="button tiny radius right"
+               data-reveal-ajax="true" data-reveal-id="reveal-main"
+               i18n:attributes="title">
+               <tal:block i18n:translate="">Description des compétences</tal:block>
+            </a>
+        </tal:condition>
+        </h2>
+
+        <tal:define define="dicoCompetences python:dict(context.getCompetences())">
+            <div class="panel callout radius" tal:condition="not:dicoCompetences"
+                 i18n:translate="">
+                Aucune compétence n'a été définie.
+            </div>
+
+        <tal:condition condition="dicoCompetences">
+            <form id="js-list_competences" method="post"
+                  tal:define="listeEtudiants context/getOrdreEtudiants;"
+                  tal:attributes="action string:${context/absolute_url}/enregistrer_comp_script"
+                  tal:condition="is_personnel">
+                <div class="table-overflow_container">
+                    <table summary="Liste des compétences"
+                           tal:define="ordre context/getOrdreCompetences">
+                        <thead>
+                            <tr>
+                                <th class="sort has-tip" data-tooltip data-sort="etudiant"
+                                    title="Cliquer pour trier selon l'étudiant"
+                                    i18n:attributes="title">
+                                    <span>
+                                        <i class="fa fa-sort"></i>
+                                        <i class="fa fa-sort-asc"></i>
+                                        <i class="fa fa-sort-desc"></i>
+                                        <tal:block i18n:translate="">Nom de l'étudiant</tal:block>
+                                    </span>
+                                </th>
+                            <tal:repeat repeat="index ordre">
+                                <th tal:define="competence python:dicoCompetences[index]">
+                                    <tal:replace tal:replace="competence/titre">Titre de la compétence</tal:replace>
+                                </th>
+                            </tal:repeat>
+                            </tr>
+                        </thead>
+                        <tfoot></tfoot>
+                        <tbody class="list"
+                               tal:define="compEtudiants python:dict(context.getCompEtudiants())">
+                            <tr tal:condition="not:listeEtudiants">
+                                <td tal:attributes="colspan python:(len(ordre) + 1)">
+                                    <strong i18n:translate="">Aucun étudiant à évaluer</strong>
+                                </td>
+                            </tr>
+                        <tal:repeat repeat="etudiant listeEtudiants">
+                            <tr tal:define="compEtu python:compEtudiants[etudiant['id']]">
+                                <td class="etudiant">
+                                    <span class="hide" tal:content="etudiant/nom" />
+                                    <tal:replace replace="etudiant/nom" />
+                                    <input type="hidden" name="etudiants.id:records"
+                                           tal:attributes="value etudiant/id" />
+                                </td>
+                            <tal:repeat repeat="index ordre">
+                                <td tal:attributes="class string:competence-${index}"
+                                    tal:define="competence python:dicoCompetences[index]">
+                                    <span class="hide" tal:content="competence/evaluation" />
+                                <tal:condition condition="python:competence['evaluation'] == 'libre'">
+                                    <input type="text"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           value python:compEtu[index] if index in compEtu else 'À acquérir'" />
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'validation'">
+                                    <input type="checkbox"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           checked python:compEtu[index] if index in compEtu else ''"
+                                           value="checked" />
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'gradation'">
+                                    <select tal:attributes="name string:etudiants.${index}:records">
+                                        <option value="acquerir"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquerir' else ''">
+                                            À acquérir
+                                        </option>
+                                        <option value="encours"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'encours' else ''">
+                                            En cours d'acquisition
+                                        </option>
+                                        <option value="acquise"
+                                                tal:attributes="selected python:'selected' if index in compEtu and compEtu[index] == 'acquise' else ''">
+                                            Acquis
+                                        </option>
+                                    </select>
+                                </tal:condition>
+                                <tal:condition condition="python:competence['evaluation'] == 'note'">
+                                    <input type="number"
+                                           min="0" max="100" step="any" style="width:3em;"
+                                           tal:attributes="name string:etudiants.${index}:records;
+                                                           value python:compEtu[index] if index in compEtu else 'Non évalué';
+                                                           max competence/note_max | string:100"/>&nbsp;/&nbsp;<tal:replace replace="competence/note_max" />
+                                </tal:condition>
+                                </td>
+                            </tal:repeat>
+                            </tr>
+                        </tal:repeat>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="button small"
+                            tal:condition="listeEtudiants">
+                        <i class="fa fa-check-circle"></i>
+                        <tal:block i18n:translate="">Enregistrer les évaluations</tal:block>
+                    </button>
+                </div>
+
+            <tal:condition condition="listeEtudiants"
+                define="script string:setSortableList('js-list_competences',['etudiant'],'etudiant','desc')">
+                    <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:condition>
+
+            </form>
+
+        <tal:condition condition="not:is_personnel">
+            <div class="panel warning radius"
+                 tal:condition="not:afficher_comp"
+                 i18n:translate="">
+                Vous n'avez pas le droit d'accéder à la liste des compétences.
+            </div>
+        <tal:condition condition="afficher_comp">
+        <tal:define define="compEtu python:context.getAffComEtu(user.getId())">
+            <table class="listing" summary="Liste des compétences"
+                   tal:condition="python:dicoCompetences and compEtu"
+                   tal:define="ordre context/getOrdreCompetences;">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">
+                            Compétence
+                        </th>
+                        <th>
+                            Évaluation
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tal:repeat repeat="index ordre">
+                    <tr tal:define="competence python:dicoCompetences[index]">
+                        <td>
+                            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competence&amp;competence=${index};
+                               title string:Voir la description de la compétence '${competence/titre}'"
+                               data-reveal-ajax="true" data-reveal-id="reveal-main"
+                               tal:content="competence/titre"
+                               i18n:attributes="title"
+                               i18n:translate="" />
+                        </td>
+                        <td>
+                            <tal:replace replace="python:compEtu[index]" />
+                        </td>
+                    </tr>
+                    </tal:repeat>
+                </tbody>
+            </table>
+        </tal:define>
+        </tal:condition>
+        </tal:condition>
+        </tal:condition>
+        </tal:define>
+    </tal:condition>
+    <tal:condition condition="python:not is_personnel and not afficher_comp">
+        <div class="panel alert radius"
+             i18n:translate="">
+            <strong>Attention :</strong> l'affichage des compétences n'est pas permise aux étudiants sur cette boîte.
+        </div>
+    </tal:condition>
+    </tal:define>
+</metal:macro>

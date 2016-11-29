@@ -10,6 +10,12 @@
     </metal:macro>
 </metal:macro>
 
+<metal:macro define-macro="skills-list">
+    <metal:macro use-macro="context/deposit_box_macro/macros/skills-list">
+        Page d'affichage de la liste des exercices
+    </metal:macro>
+</metal:macro>
+
 <metal:macro define-macro="exercices-list">
     <metal:macro use-macro="context/wims_activity_macro/macros/liste-exercices">
         Page d'affichage de la liste des exercices
