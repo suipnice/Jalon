@@ -45,14 +45,19 @@ def sendMail(object, event):
         listeEtudiants = jalon_bdd.rechercherUtilisateurs(code, "Etudiant", True)
         for etudiant in listeEtudiants:
             if etudiant["EMAIL_ETU"] and not etudiant["EMAIL_ETU"] in send_to:
-                send_to.append(etudiant["EMAIL_ETU"])
+                if not etudiant["EMAIL_ETU"] in send_to:
+                    send_to.append(etudiant["EMAIL_ETU"])
     for invitation in cours.getInvitations():
-        send_to.append(invitation)
+        if not invitation in send_to:
+            send_to.append(invitation)
     for auteur in cours.getCoAuteursCours():
-        send_to.append(auteur["email"])
+        if not auteur["email"] in send_to:
+            send_to.append(auteur["email"])
     for lecteur in cours.getCoLecteursCours():
-        send_to.append(lecteur["email"])
-    send_to.append(cours.getAuteur()["email"])
+        if not lecteur["email"]:
+            send_to.append(lecteur["email"])
+    if not cours.getAuteur()["email"] in send_to:
+        send_to.append(cours.getAuteur()["email"])
     #object.plone_log(send_to)
 
     translation_service = getToolByName(object, 'translation_service')
@@ -65,7 +70,7 @@ def sendMail(object, event):
                                              default=msg_sbj,
                                              context=object)
     subject = "[%s]" % portal.Title() + subject
-    object.plone_log(subject)
+    #object.plone_log(subject)
 
     dummy = _(u"Message ajouté par: ")
     msg_from = u"Message ajouté par: "
@@ -77,7 +82,7 @@ def sendMail(object, event):
     if not send_from_fullname:
         send_from_fullname = authMember.getProperty("displayName")
     from_user += send_from_fullname.decode('utf-8')
-    object.plone_log(from_user)
+    #object.plone_log(from_user)
 
     dummy = _(u"Nouveau message ajouté dans le forum: ")
     msg_arg_1 = u"Nouveau message ajouté dans le forum: "
@@ -93,7 +98,7 @@ def sendMail(object, event):
                                                default=msg_arg_2,
                                                context=object)
     argument += cours.Title().decode('utf-8')
-    object.plone_log(argument)
+    #object.plone_log(argument)
 
     dummy = _(u"Le nouveau message est:")
     msg_txt = u"Le nouveau message est:"
@@ -101,9 +106,11 @@ def sendMail(object, event):
                                               msgid=msg_txt,
                                               default=msg_txt,
                                               context=object)
-    object.plone_log(new_mess)
+    #object.plone_log(new_mess)
 
     html_body = object.REQUEST.form['text'].decode('utf-8')
+    html_body = html_body.replace("\n", "<br/>")
+    #html_body = html_body.replace("\t", "<br/>")
     here_url = object.absolute_url()
 
     def fixURL(match):
@@ -125,41 +132,38 @@ def sendMail(object, event):
                                      'url': here_url,
                                      'url_text': here_url,
                                      })
-    object.plone_log(text)
+    #object.plone_log(text)
 
     text = text.encode("utf-8")
-
-    try:
-        data_to_plaintext = portal_transforms.convert("html_to_web_intelligent_plain_text", text)
-    except:
-        # Probably Plone 2.5.x
-        data_to_plaintext = portal_transforms.convert("html_to_text", text)
+    data_to_plaintext = portal_transforms.convert("html_to_web_intelligent_plain_text", text)
     plain_text = data_to_plaintext.getData()
 
-    msg = MIMEMultipart('alternative')
-    # Record the MIME types of both parts - text/plain and text/html.
-    part1 = MIMEText(plain_text, 'plain', _charset="utf-8")
-    part2 = MIMEText(text, 'html', _charset="utf-8")
-
-    # Attach parts into message container.
-    # According to RFC 2046, the last part of a multipart message, in this case
-    # the HTML message, is best and preferred.
-    msg.attach(part1)
-    msg.attach(part2)
-
-    mail_host = getToolByName(object, 'MailHost')
-    object.plone_log("Message subject: %s" % subject)
-    object.plone_log("Message text:\n%s" % text)
-    object.plone_log("Message sent to %s", ",".join(send_to))
     for to in send_to:
+        #msg = MIMEMultipart()
+        msg = MIMEMultipart('alternative')
+        # Record the MIME types of both parts - text/plain and text/html.
+        part1 = MIMEText(plain_text, 'plain', _charset="utf-8")
+        part2 = MIMEText(text, 'html', _charset="utf-8")
+
+        # Attach parts into message container.
+        # According to RFC 2046, the last part of a multipart message, in this case
+        # the HTML message, is best and preferred.
+        msg.attach(part1)
+        msg.attach(part2)
+
+        msg['to'] = to
+        msg['from'] = "no-reply@unice.fr"
+        msg['subject'] = subject
+        msg.add_header('reply-to', send_from)
+
+        mail_host = getToolByName(object, 'MailHost')
+        #object.plone_log("Message subject: %s" % subject)
+        #object.plone_log("Message text:\n%s" % text)
+        #object.plone_log("Message sent to %s", to)
+        #object.plone_log(msg.as_string().encode("utf-8"))
+
         try:
-            try:
-                mail_host.secureSend(msg, mto=to, mfrom=send_from,
-                                     subject=subject, charset="utf-8")
-            except TypeError:
-                # BBB: Plone 2.5 has problem sending MIMEMultipart... fallback to normal plain text email
-                mail_host.secureSend(plain_text, mto=to, mfrom=send_from,
-                                     subject=subject, charset="utf-8")
+            mail_host.send(msg)
         except Exception, inst:
             putils = getToolByName(object, 'plone_utils')
             putils.addPortalMessage(_(u'Not able to send notifications'))
