@@ -1615,6 +1615,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- deleteCourseMapItem -----")
         # LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
+        # anciennement "retirerElementPlan"
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())
@@ -1880,15 +1881,15 @@ class JalonCours(ATFolder):
 
                     # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
                     # retire l'activité des relatedItems pour ses exercices et ses documents.
-                    activite.retirerTousElements(force_WIMS=True)
+                    activite.removeAllElements(force_WIMS=True)
 
                     # Supprime l'activité (du plan du cours et du cours)
-                    self.retirerElementPlan(idElement, force_WIMS=True)
+                    self.deleteCourseMapItem(idElement, force_WIMS=True)
                     # Supprime l'activité des actus du cours
                     self.deleteCourseActuality(idElement)
 
-                    ### A utiliser dans un patch correctif :
-                    #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
+                    # ** A utiliser dans un patch correctif : **
+                    # (on refait ce que fait normalement deleteCourseMapItem, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
                     if idElement in self._elements_cours:
                         self.manage_delObjects(idElement)
                         del self._elements_cours[idElement]

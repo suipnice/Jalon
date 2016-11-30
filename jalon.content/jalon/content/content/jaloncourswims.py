@@ -230,6 +230,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """Initialize JalonCoursWims."""
         LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
+        self._infos_element = {}
 
     # #-------------------# #
     #  Fonctions générales  #
@@ -323,7 +324,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
-            # self.setDocumentsProperties(items_properties)
+            #setDocumentsProperties permet de s'assurer que les données sont stockées de manière persistante.
+            self.setDocumentsProperties(items_properties)
 
         if liste == "Exercices":
             listeExercices = list(self.getListeExercices())
@@ -426,13 +428,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """Return icon adaptated to activity type (Training or Exam)."""
         LOG.info("----- getIconClass -----")
         return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
-
-    def getDocumentsProperties(self, key=None):
-        """get Properties for one or all Documents."""
-        LOG.info("----- getDocumentsProperties -----")
-        if key:
-            return self._infos_element.get(key, None)
-        return self._infos_element
 
     """def getCourseItemProperties(self, key=None):
         # Get Course Item Properties (alias to getDocumentsProperties(key)).
@@ -1005,10 +1000,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
         exercices_list = []
         documents_dict = self.getDocumentsProperties()
         for document_id in self.getListeExercices():
-            document_properties = documents_dict[document_id]
+            if document_id in documents_dict:
+                exo_title = documents_dict[document_id]["titreElement"]
+            else:
+                exo_title = _(u"exercice sans titre ?")
 
             exo_dict = {"idElement":      document_id,
-                        "titreElement":   document_properties["titreElement"]
+                        "titreElement":   exo_title
                         }
 
             exercices_list.append(exo_dict)
@@ -1582,9 +1580,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
             objet.reindexObject()
     """
 
-    def retirerTousElements(self, force_WIMS=False):
+    def removeAllElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""
-        LOG.info("----- retirerTousElements -----")
+        # anciennement "retirerTousElements"
+        LOG.info("----- removeAllElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
@@ -1613,21 +1612,22 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # self.wims("retirerExosFeuille", dico)
 
         # Suppression des documents
-        liste_elements = self.getInfosElement()
-        for sujet in self.getListeSujets():
-            infosElement = liste_elements[sujet]
+        items_properties = self.getDocumentsProperties()
+        # liste_elements = self.getInfosElement()
+        for document in self.getListeSujets():
+            infosElement = items_properties[document]
             repertoire = infosElement["typeElement"]
             if repertoire in _dicoRep:
                 repertoire = _dicoRep[repertoire]
-            if "*-*" in sujet:
-                sujet = sujet.replace("*-*", ".")
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), sujet, None)
-            if objet:
-                relatedItems = objet.getRelatedItems()
+            if "*-*" in document:
+                document = document.replace("*-*", ".")
+            doc_object = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), document, None)
+            if doc_object:
+                relatedItems = doc_object.getRelatedItems()
                 if self in relatedItems:
                     relatedItems.remove(self)
-                    objet.setRelatedItems(relatedItems)
-                    objet.reindexObject()
+                    doc_object.setRelatedItems(relatedItems)
+                    doc_object.reindexObject()
 
     def getIdFeuilleWIMS(self, authMember, sheet_properties={}):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
@@ -1643,7 +1643,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             idclasse = self.setClasse()
             if idclasse:
                 if self.typeWims == "Examen":
-                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["title"]
+                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["Title"]
                 else:
                     sheet_title = sheet_properties["Title"]
                 # Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)
