@@ -41,7 +41,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     LOG.info("----- authUser -----")
     remote_addr = None
     url_connexion = context.wims("getAttribut", "url_connexion")
-    error_dict = {"status": "ERROR"}
+    # error_dict = {"status": "ERROR"}
     if request:
         # HTTP_X_REAL_IP n'existe que si la configuration de Nginx fournit bien ce
         # parametre à Zope.
@@ -97,22 +97,24 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
 
             # Sur une premiere erreur, on considere que l'utilisateur est inexistant.
             # on tente alors de le créer.
-            user = context.wims("creerUser", {"quser": quser, "qclass": qclass, "firstname": dico_ETU[
-                                "prenom"], "lastname": dico_ETU["nom"]})
+            user = context.wims("creerUser", {"quser": quser, "qclass": qclass,
+                                              "firstname": dico_ETU["prenom"],
+                                              "lastname":  dico_ETU["nom"]})
             if user["status"] == "ERROR":
                 # Si la creation de l'utilisateur plante, alors WIMS doit être indisponible.
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
             # dico = {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "data1": remote_addr}
             rep = context.wims("authUser", dico)
-            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon.content/jalon_utils.py/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
+            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
             # L'authentification du supervisor a planté.
             # => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
             # Cas possible : supervisor is in an exam session started on another IP
             context.plone_utils.addPortalMessage(message, type=mess_type)
+            context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser", "message": "impossible d'authentifier le supervisor", "requete": dico})
             LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
-            return error_dict
+            return None
     rep["url_connexion"] = url_connexion
     # LOG.info("**** authUser | rep = %s" % rep)
     return rep
