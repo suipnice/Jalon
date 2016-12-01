@@ -343,9 +343,13 @@ class JalonCours(ATFolder):
                 "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
     def checkCourseAuthorized(self, user, request):
-        # LOG.info("----- checkCourseAuthorized -----")
+        LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
-        if self.getLibre():
+        #LOG.info(self.getLibre())
+        #if self.getLibre():
+        #    return True
+
+        if self.getAcces() == "Public":
             return True
 
         if user.has_role(["Manager", "Owner"]):
@@ -703,7 +707,7 @@ class JalonCours(ATFolder):
 
             workflow_action = "submit"
             state = "pending"
-            if course_public_access == "Public":
+            if course_public_access == "w":
                 workflow_action = "publish"
                 state = "published"
                 court = self.getLienCourt()
@@ -757,7 +761,7 @@ class JalonCours(ATFolder):
 
     def isCoLecteurs(self, username):
         # LOG.info("----- isCoLecteurs -----")
-        return True if username in self.coLecteur else False
+        return True if username in self.coLecteurs else False
 
     #------------#
     # Course Map #
@@ -2525,6 +2529,10 @@ class JalonCours(ATFolder):
 
     def getDicoForums(self, all=None):
         # LOG.info("----- getDicoForums -----")
+        if self.getAcces() == "Public":
+            return {"nbForums":    0,
+                    "listeForums": []}
+
         listeForums = list(self.forum.objectValues())
         listeForums.sort(lambda x, y: cmp(y.modified(), x.modified()))
         if len(listeForums) > 5:
