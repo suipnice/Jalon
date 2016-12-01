@@ -1105,8 +1105,8 @@ class JalonFolder(ATFolder):
                     item.setInfosElement(dico)
 
     def dupliquerCours(self, idcours, creator, manager=False):
-        """Permet de dupliquer le cours Jalon 'idcours'."""
-        # #LOG.info("[dupliquerCours]")
+        """Duplique le cours Jalon 'idcours'."""
+        LOG.info("---- dupliquerCours ----")
         import time
         home = self
         home_id = self.getId()
@@ -1115,7 +1115,7 @@ class JalonFolder(ATFolder):
             home_id = home.getId()
 
         cours = getattr(self, idcours)
-        infos_element = copy.deepcopy(cours.getElementCours())
+        infos_element = copy.deepcopy(cours.getCourseItemProperties())
 
         try:
             idobj = home.invokeFactory(
@@ -1162,13 +1162,13 @@ class JalonFolder(ATFolder):
                  "Elements_glossaire":     cours.getGlossaire(),
                  "Elements_bibliographie": cours.getBibliographie(),
                  }
-        duplicata.setProperties(param)
-        duplicata.setElementsCours(infos_element)
+        duplicata.setCourseProperties(param)
+        duplicata.setCourseItemsProperties(infos_element)
         duplicata.invokeFactory(type_name='Folder', id="annonce")
         duplicata.invokeFactory(type_name='Ploneboard', id="forum")
         forum = getattr(duplicata, "forum")
         forum.setTitle("Liste des forums du cours")
-        duplicata.setPlanCours(copy.deepcopy(cours.getPlan()))
+        duplicata.plan = copy.deepcopy(cours.getPlan())
 
         dicoRep = {"Image":                    "Fichiers",
                    "File":                     "Fichiers",
@@ -1198,19 +1198,19 @@ class JalonFolder(ATFolder):
                 if boite:
                     duplicata.invokeFactory(type_name="JalonBoiteDepot", id=key)
                     duplicataObjet = getattr(duplicata, key)
-                    param = {"Title":            boite.Title(),
-                             "Description":      boite.Description(),
-                             "DateDepot":        boite.getDateDepot(),
-                             "DateRetard":       boite.getDateRetard(),
-                             "ListeSujets":      copy.deepcopy(boite.getListeSujets()),
-                             "ListeCorrections": copy.deepcopy(boite.getListeCorrections()),
-                             "InfosElement":     copy.deepcopy(boite.getInfosElement()),
-                             "DateAff":          boite.getDateAff(),
-                             "DateMasq":         boite.getDateMasq()}
+                    param = {"Title":               boite.Title(),
+                             "Description":         boite.Description(),
+                             "DateDepot":           boite.getDateDepot(),
+                             "DateRetard":          boite.getDateRetard(),
+                             "ListeSujets":         copy.deepcopy(boite.getListeSujets()),
+                             "ListeCorrections":    copy.deepcopy(boite.getListeCorrections()),
+                             "DocumentsProperties": copy.deepcopy(boite.getDocumentsProperties()),
+                             "DateAff":             boite.getDateAff(),
+                             "DateMasq":            boite.getDateMasq()}
                     duplicataObjet.setProperties(param)
 
                     # Met a jour les relatedItems des documents.
-                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    infos_elements_activite = duplicataObjet.getDocumentsProperties()
                     self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
@@ -1227,7 +1227,7 @@ class JalonFolder(ATFolder):
                     duplicataObjet.setJalonProperties(activite.getDicoProperties())
 
                     # Met a jour les relatedItems des documents et exercices.
-                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    infos_elements_activite = duplicataObjet.getDocumentsProperties()
                     self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
@@ -1269,7 +1269,7 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
-        # LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
+        LOG.info('---- associerCoursListeObjets ---- dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
             infos_objet = infos_elements[id_objet]
             repertoire = infos_objet["typeElement"].replace(" ", "")

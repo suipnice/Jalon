@@ -98,6 +98,10 @@ En entrée :
                     qexam context/getIdExam;
                     isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
 
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
+        Message de session
+    </metal:macro>
+
     <tal:condition condition="python:infosNotes['status']!='OK'" >
         <div class="panel warning radius"
              tal:define="error_type string:wims_bad_conf;

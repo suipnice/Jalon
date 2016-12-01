@@ -20,7 +20,7 @@
                     item_id request/item_id;
                     sur request/sur | string:1;
                     demandeur user/getId;
-                    element python:context.getElementView(item_id);
+                    element python:context.getDocumentsProperties(item_id);
                     titreElement element/titreElement | item_id;">
 
     <h2 tal:condition="is_ajax">

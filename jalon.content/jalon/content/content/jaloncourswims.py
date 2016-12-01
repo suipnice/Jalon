@@ -875,7 +875,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         LOG.info('----- getDicoProperties -----')
         dico = {"Title": self.Title(),
                 "Description": self.Description(),
-                "InfosElement": copy.deepcopy(self.getInfosElement()),
+                "DocumentsProperties": copy.deepcopy(self.getDocumentsProperties()),
                 "DateAff": self.getDateAff(),
                 "DateMasq": self.getDateMasq(),
                 "TypeWims": self.getTypeWims(),
@@ -1027,8 +1027,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
         for idElement in listeElement:
             infos = infos_element.get(idElement, None)
             if infos:
-                LOG.info("***** attribut = %s" % attribut)
-                LOG.info("***** infos = %s" % infos)
+                # LOG.info("***** attribut = %s" % attribut)
+                # LOG.info("***** infos = %s" % infos)
                 affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
                 if personnel or not affElement['val'] == 0:
                     new = {"idElement":       idElement,
@@ -1382,12 +1382,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         return retour
 
-    def getElementView(self, item_id):
-        """ Fournit les infos de l'exercice demandé (un exo WIMS)."""
-        LOG.info("----- getElementView -----")
-
-        return self.getDocumentsProperties()[item_id]
-
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         LOG.info("----- getNotesTableur -----")
@@ -1618,7 +1612,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         # Suppression des documents
         items_properties = self.getDocumentsProperties()
-        # liste_elements = self.getInfosElement()
         for document in self.getListeSujets():
             infosElement = items_properties[document]
             repertoire = infosElement["typeElement"]
@@ -1725,7 +1718,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.wims("modifierFeuille", proprietes)
 
                 proprietes["title"]     = self.Title()
-                LOG.info("proprietes['title']=%s" % proprietes["title"])
+                # LOG.info("proprietes['title']=%s" % proprietes["title"])
                 proprietes["duration"]  = self.duree
                 proprietes["attempts"]  = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
