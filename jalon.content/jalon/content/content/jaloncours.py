@@ -105,13 +105,13 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 accessor="getLienMooc",
                 default="",
                 searchable=False,
-                widget=StringWidget(label=_(u"Le lien court mooc d'un cours"),
-                                    description=_(u"Le lien court mooc n'existe que pour le cours en accès libre"),)),
+                widget=StringWidget(label=_(u"Le lien court MOOC d'un cours"),
+                                    description=_(u"Le lien court MOOC n'existe que pour le cours en accès libre"),)),
     LinesField("plan",
                required=False,
                accessor="getPlan",
                searchable=False,
-               widget=LinesWidget(label=_(u"Plan intéractif"),
+               widget=LinesWidget(label=_(u"Plan interactif"),
                                   description=_(u"Le plan intéractif."),
                                   visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("elements_glossaire",
@@ -379,7 +379,8 @@ class JalonCours(ATFolder):
         return last_login
 
     def getCourseItemProperties(self, key=None):
-        """Fournit les propriétés d'un element du cours."""
+        """Fournit les propriétés des (ou d'un) element(s) du cours."""
+        # Anciennement "getElementCours"
         # LOG.info("----- getCourseItemProperties -----")
         # LOG.info("***** item_id : %s" % key)
         if key:
@@ -387,7 +388,8 @@ class JalonCours(ATFolder):
         return self._elements_cours
 
     def setCourseItemsProperties(self, elements_cours):
-        """Définit les propriétés d'un element du cours."""
+        """Définit la liste des propriétés des elements du cours."""
+        # Anciennement "setElementCours"
         # LOG.info("----- setCourseItemsProperties -----")
         if type(self._elements_cours).__name__ != "PersistentMapping":
             self._elements_cours = PersistentDict(elements_cours)
@@ -417,6 +419,7 @@ class JalonCours(ATFolder):
             return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def setCourseProperties(self, dico):
+        """ Met à jour les propriétés du cours (anciennement "setProperties")."""
         # LOG.info("----- setCourseProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
@@ -1472,7 +1475,7 @@ class JalonCours(ATFolder):
                 display_item = ""
 
         items_properties = self.getCourseItemProperties()
-        if not item_id in items_properties:
+        if item_id not in items_properties:
             items_properties[item_id] = {"titreElement":    item_title,
                                          "typeElement":     item_type,
                                          "createurElement": item_creator,

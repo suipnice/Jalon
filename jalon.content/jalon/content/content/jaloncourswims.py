@@ -324,7 +324,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
-            #setDocumentsProperties permet de s'assurer que les données sont stockées de manière persistante.
+            # setDocumentsProperties permet de s'assurer que les données sont stockées de manière persistante.
             self.setDocumentsProperties(items_properties)
 
         if liste == "Exercices":
@@ -442,7 +442,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         return self.getListeSujets()
 
     def setDocumentsProperties(self, infos_element):
-        """Set Documents Properties."""
+        """Met a jour les propriétés des sous-éléments de l'activité, en s'assurant au passage que les données sont persistantes."""
         LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
@@ -838,6 +838,11 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 rep_wims = '{"status": "ERROR", "message": "[jaloncourswims] Tentative de creation de classe WIMS sans groupement.","auteur":"%s"}' % auteur
                 self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/setClasse"})
                 # self.reindexObject()
+
+                # TODO : message plus clair pour l'utilisateur
+                # Vérifier d'abord que authuser est bien le createur ?
+                message = _(u"Vous n'avez créé aucun exercice. Rendez-vous d'abord dans 'Mon espace > exercices WIMS'")
+                self.plone_utils.addPortalMessage(message, type='info')
                 return None
 
             classe = self.wims("creerClasse", {"authMember": auteur, "fullname": fullname, "auth_email": auth_email, "type": "1", "titre_classe": self.aq_parent.title_or_id(), "qclass": idgroupement})
