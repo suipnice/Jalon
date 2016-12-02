@@ -427,7 +427,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def getIconClass(self):
         """Return icon adaptated to activity type (Training or Exam)."""
         LOG.info("----- getIconClass -----")
-        return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
+        return "fa fa-gamepad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
 
     """def getCourseItemProperties(self, key=None):
         # Get Course Item Properties (alias to getDocumentsProperties(key)).

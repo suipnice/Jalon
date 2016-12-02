@@ -342,6 +342,11 @@ class JalonCours(ATFolder):
                 "icon":  "fa fa-search",
                 "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
+    def getIconClass(self):
+        """Return the course icon CSS class."""
+        LOG.info("----- getIconClass -----")
+        return "fa fa-book"
+
     def checkCourseAuthorized(self, user, request):
         LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
@@ -2772,9 +2777,9 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
 
-    #---------------------------#
-    # Forum à modifier si mieux #
-    #---------------------------#
+    # --------------------------- #
+    #  Forum à modifier si mieux  #
+    # --------------------------- #
     def getForumBreadcrumbs(self, item, page="basic"):
         item_title = item.Title()
         item_link = item.absolute_url()

@@ -89,6 +89,11 @@ class JalonExerciceWims(ATDocumentBase):
 
         return crumbs_list
 
+    def getIconClass(self):
+        """Return the Exercice icon CSS class."""
+        LOG.info("----- getIconClass -----")
+        return "fa fa-random"
+
     def getEditWimsExerciceMacroName(self):
         """Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
         LOG.info("----- getEditWimsExerciceMacroName -----")
@@ -945,7 +950,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def test(self, condition, valeurVrai, valeurFaux):
         """permet de tester une condition, puis de renvoyer une valeur en fonction."""
-        LOG.info("----- test -----")
+        LOG.info("----- test condition (%s) -----" % condition)
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
     def getUrlServeur(self):
