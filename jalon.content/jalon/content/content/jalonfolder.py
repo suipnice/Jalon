@@ -1224,10 +1224,11 @@ class JalonFolder(ATFolder):
                 if activite:
                     duplicata.invokeFactory(type_name="JalonCoursWims", id=key)
                     duplicataObjet = getattr(duplicata, key)
-                    duplicataObjet.setJalonProperties(activite.getDicoProperties())
+                    dico_Properties = activite.getDicoProperties()
+                    duplicataObjet.setJalonProperties(dico_Properties)
 
                     # Met a jour les relatedItems des documents et exercices.
-                    infos_elements_activite = duplicataObjet.getDocumentsProperties()
+                    infos_elements_activite = dico_Properties["DocumentsProperties"]
                     self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
@@ -1260,8 +1261,8 @@ class JalonFolder(ATFolder):
         # LOG.error('duplicata.getListeClasses : %s' % str(duplicata.getListeClasses()))
         return duplicata.getId()
 
-    def associerCoursListeObjets(self, idElement, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
-        u""" ajoute l'element "idElement" aux relatedItems de tous les objets de liste_objets.
+    def associerCoursListeObjets(self, conteneur_object, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
+        u""" ajoute l'element "conteneur_object" aux relatedItems de tous les objets de liste_objets.
 
         * infos_elements : les infos de l'objet ?
         * dico_espaces   : les objets précédement chargés, afin d'optimiser le traitement.
@@ -1269,8 +1270,9 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
-        LOG.info('---- associerCoursListeObjets ---- dico_espaces : %s' % dico_espaces)
+        LOG.info('---- associerCoursListeObjets ----')
         for id_objet in liste_objets:
+            LOG.info('### id_objet = %s ###' % id_objet)
             infos_objet = infos_elements[id_objet]
             repertoire = infos_objet["typeElement"].replace(" ", "")
             if repertoire in dicoRep:
@@ -1291,9 +1293,13 @@ class JalonFolder(ATFolder):
             objet = getattr(rep_createur, id_objet, None)
             if objet:
                 relatedItems = objet.getRelatedItems()
-                if self not in relatedItems:
-                    relatedItems.append(idElement)
+                if conteneur_object not in relatedItems:
+                    LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' % (conteneur_object.getId(), id_objet))
+                    # on ajoute  ##<JalonCoursWims at AutoEvaluation-bado-20161201175055577435>## aux relatedItems de ##classerparpropriete-bado-20140901113857## ----
+                    relatedItems.append(conteneur_object)
+                    LOG.info('---- puis on ecrase les anciens relatedItems ---')
                     objet.setRelatedItems(relatedItems)
+                    LOG.info("---- et enfon on réindexe l'objet ---")
                     objet.reindexObject()
 
     def isNouveau(self, idcours):
