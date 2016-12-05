@@ -1432,7 +1432,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         LOG.info("----- getRubriqueEspace -----")
         rubriques = []
         for rubrique in ["Fichiers", "Presentations sonorisees", "Ressources Externes", "Webconference"]:
-            rubriques.append({"rubrique": self.jalon_quote(rubrique), "titre": rubrique})
+            rubriques.append({"rubrique": jalon_utils.jalon_quote(rubrique), "titre": rubrique})
         return rubriques
 
     def getTagDefaut(self):

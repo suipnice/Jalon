@@ -715,7 +715,7 @@ class JalonCours(ATFolder):
 
             workflow_action = "submit"
             state = "pending"
-            if course_public_access == "w":
+            if course_public_access == "Public":
                 workflow_action = "publish"
                 state = "published"
                 court = self.getLienCourt()

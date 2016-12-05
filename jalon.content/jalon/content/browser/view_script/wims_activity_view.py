@@ -77,7 +77,7 @@ class WimsActivityView(CourseView):
             my_view["mode_etudiant"] = mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
-            my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"])),
+            my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"]))
             LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
             return my_view
 
