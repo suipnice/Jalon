@@ -138,6 +138,7 @@ class DepositBoxView(CourseView):
                                                 "text":      "Compétences",
                                                 "nb":        my_deposit_box.getNbCompetences()})
         if my_view["is_skills_tab"]:
+            my_view["skills_macro"] = "skills_teacher" if my_view["is_personnel"] else "skills_student"
             my_view["deposit_tab_options_link"] = ""
             my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getAfficherCompetences() else "fa-toggle-off",
                                                "text": "Affichage de l'onglet \"Compétences\" aux étudiants"}]
