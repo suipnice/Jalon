@@ -2,24 +2,23 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2013-11-15 14:13+0000\n"
-"PO-Revision-Date: 2014-10-15 12:05+0100\n"
-"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
-"Language-Team: Service TICE - Université Nice Sophia Antipolis <tice@unice."
-"fr>\n"
+"PO-Revision-Date: 2016-12-07 15:43+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: Service PI - Université Nice Sophia Antipolis <pi@unice.fr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Language-Code: fr\n"
 "Language-Name: Français\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: jalon.content\n"
-"X-Generator: Poedit 1.6.6\n"
-"Language: fr\n"
+"X-Generator: Poedit 1.8.11\n"
+"Language: en\n"
 
 #: ../skins/jalon_content/folder_delete.cpy:102
 msgid "${items} could not be deleted."
-msgstr ""
+msgstr "${items} could not be deleted."
 
 #: ../content/jalonfolder.py:908
 msgid "%s Quick Upload"
@@ -304,8 +303,7 @@ msgid "Complement propre a chaque dossier"
 msgstr ""
 
 #: ../browser/config/jalonconfiguration.py:372
-#: ../browser/templates/jalon_configuration.pt:39
-#: ../content/jalon_utils.py:486
+#: ../browser/templates/jalon_configuration.pt:39 ../content/jalon_utils.py:486
 msgid "Configuration de Jalon"
 msgstr ""
 
@@ -1355,6 +1353,11 @@ msgstr ""
 #: ../skins/jalon_content/macro_podcasts.pt:47
 msgid "label_save"
 msgstr "Enregistrer"
+
+#. Default: "Help"
+#: ../skins/jalon_content/macro_form.pt:33
+msgid "label_help"
+msgstr "Aide"
 
 #: ../content/jaloncours.py:1461
 msgid "le dépôt n'est plus permis"

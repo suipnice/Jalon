@@ -2,19 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2013-11-15 14:13+0000\n"
-"PO-Revision-Date: 2014-07-09 11:49+0100\n"
-"Last-Translator: Philippe Pomédio <philippe.pomedio@unice.fr>\n"
-"Language-Team: Service TICE - Université Nice Sophia Antipolis <tice@unice."
-"fr>\n"
+"PO-Revision-Date: 2016-12-07 15:41+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: Service PI - Université Nice Sophia Antipolis <pi@unice.fr>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Language-Code: en\n"
 "Language-Name: English\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: jalon.content\n"
-"X-Generator: Poedit 1.6.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "Language: en\n"
 
 #: ../skins/jalon_content/folder_delete.cpy:102
@@ -239,7 +238,7 @@ msgstr "Co-authors"
 
 #: ../content/jaloncours.py:51
 msgid "Co-lecteurs"
-msgstr "Co-lecteurs"
+msgstr "Co-readers"
 
 #: ../browser/config/jalonconfiguration.py:40
 msgid "Cocher pour activer ce champ générique"
@@ -310,14 +309,13 @@ msgid "Complement propre a chaque dossier"
 msgstr "Own complement has each folder"
 
 #: ../browser/config/jalonconfiguration.py:372
-#: ../browser/templates/jalon_configuration.pt:39
-#: ../content/jalon_utils.py:486
+#: ../browser/templates/jalon_configuration.pt:39 ../content/jalon_utils.py:486
 msgid "Configuration de Jalon"
-msgstr "Configuration of milestone"
+msgstr "Jalon Configuration"
 
 #: ../browser/config/jalonconfig.py:389
 msgid "Configuration des contenus de Jalon"
-msgstr "Configuration of the content of milestone"
+msgstr "Jalon contents configuration"
 
 #: ../skins/jalon_configuration/gestion_ga.pt:12
 msgid "Configuration des statistiques via Google Analytics"
@@ -407,11 +405,11 @@ msgstr "Description:"
 
 #: ../content/jaloncourswims.py:45
 msgid "Description de l'identifiant Wims de l'examen"
-msgstr "Description of the identifier review Wims"
+msgstr "Description of the Wims exam ID"
 
 #: ../content/jaloncourswims.py:37
 msgid "Description de l'identifiant Wims de la feuille"
-msgstr "Description of the login sheet Wims"
+msgstr "Description of the WIMS sheet ID"
 
 #: ../content/jalonforum.py:23
 msgid "Description de la date d'affichage"
@@ -598,7 +596,7 @@ msgstr "Quick Upload images"
 
 #: ../browser/config/jalonimport_settings.py:566
 msgid "Import les contenus de Jalon V2 depuis un dossier du filesystem"
-msgstr "Import of milestone V2 content from a folder of the filesystem"
+msgstr "Import of Jalon V2 content from a folder of the filesystem"
 
 #: ../browser/config/jalonconfig.py:124
 msgid ""
@@ -627,19 +625,19 @@ msgstr ""
 
 #: ../browser/config/jalonconfig.py:388
 msgid "Jalon Content Config"
-msgstr "Content milestone Config"
+msgstr "Jalon Content Config"
 
 #: ../browser/config/jalonimport_settings.py:565
 msgid "Jalon Import settings"
-msgstr "Milestone Import settings"
+msgstr "Jalon Import settings"
 
 #: ../browser/config/jalonmaintenance.py:152
 msgid "Jalon maintenance settings"
-msgstr "Milestone maintenance settings"
+msgstr "Jalon maintenance settings"
 
 #: ../portlets/navigation.py:86
 msgid "Jalon navigation"
-msgstr "Milestone navigation"
+msgstr "Jalon navigation"
 
 #: ../content/jaloncours.py:35
 msgid ""
@@ -665,7 +663,7 @@ msgstr ""
 
 #: ../content/jalonconnect.py:37
 msgid "La date US"
-msgstr "The date US"
+msgstr "The US date"
 
 #: ../content/jaloncours.py:136
 msgid "La liste des éléments de la bibliographie."
@@ -867,7 +865,7 @@ msgstr "My students"
 
 #: ../browser/config/jalonmaintenance.py:153
 msgid "Mise en maintenance de Jalon"
-msgstr "Maintenance of milestone release"
+msgstr "Jalon Maintenance"
 
 #: ../browser/config/jalonmaintenance.py:26
 msgid "Mise en maintenance du site"
@@ -900,7 +898,7 @@ msgstr "Model CreateExo of Wims"
 
 #: ../browser/config/jalonconfig.py:68
 msgid "Modèle Wims"
-msgstr "Model Wims"
+msgstr "WIMS model"
 
 #: ../browser/scripts/section.py:28 ../content/jalon_utils.py:472
 msgid "Mon espace"
@@ -1017,7 +1015,7 @@ msgstr ""
 
 #: ../content/jalonressourceexterne.py:23
 msgid "Sous titre"
-msgstr "Under title"
+msgstr "Sub-title"
 
 #: ../browser/templates/cours_boite_view.pt:67
 msgid "Sujets"
@@ -1137,7 +1135,7 @@ msgstr "Volume"
 
 #: ../skins/jalon_content/valider_exercicewims.vpy:77
 msgid "Votre exercice WIMS a bien été modifié."
-msgstr "Your exercise WIMS has been amended."
+msgstr "Your WIMS exercise has been amended."
 
 #: ../skins/jalon_cours/cours_plan_validate.vpy:15
 msgid "Vous devez choisir un type d'élément"
@@ -1263,37 +1261,56 @@ msgstr "custom course students group"
 #. Default: "Personal tools"
 #: ../browser/templates/personal_bar.pt:4
 msgid "heading_personal_tools"
-msgstr "heading_personal_tools"
+msgstr "Personal tools"
 
 #. Default: "If selected, the navigation tree will only show the current folder and its children at all times."
 #: ../portlets/navigation.py:45
 msgid "help_current_folder_only"
-msgstr "help_current_folder_only"
+msgstr ""
+"If selected, the navigation tree will only \n"
+"show the current folder and its children at all times."
 
 #. Default: "Whether or not to show the top, or 'root', node in the navigation tree. This is affected by the 'Start level' setting."
 #: ../portlets/navigation.py:35
 msgid "help_include_top_node"
-msgstr "help_include_top_node"
+msgstr ""
+"Whether or not to show the top, or 'root', \n"
+"node in the navigation tree. This is affected by the \n"
+"'Start level' setting."
 
 #. Default: "You may search for and choose a folder to act as the root of the navigation tree. Leave blank to use the Plone site root."
 #: ../portlets/navigation.py:25
 msgid "help_navigation_root"
-msgstr "help_navigation_root"
+msgstr ""
+"You may search for and choose a folder to \n"
+"act as the root of the navigation tree. Leave blank \n"
+"to use the Plone site root."
 
 #. Default: "An integer value that specifies the number of folder levels below the site root that must be exceeded before the navigation tree will display. 0 means that the navigation tree should be displayed everywhere including pages in the root of the site. 1 means the tree only shows up inside folders located in the root and downwards, never showing at the top level."
 #: ../portlets/navigation.py:54
 msgid "help_navigation_start_level"
-msgstr "help_navigation_start_level"
+msgstr ""
+"An integer value that specifies the number \n"
+"of folder levels below the site root that must be \n"
+"exceeded before the navigation tree will display. 0 \n"
+"means that the navigation tree should be displayed \n"
+"everywhere including pages in the root of the site. 1 \n"
+"means the tree only shows up inside folders located \n"
+"in the root and downwards, never showing at the \n"
+"top level."
 
 #. Default: "The title of the navigation tree."
 #: ../portlets/navigation.py:18
 msgid "help_navigation_title"
-msgstr "help_navigation_title"
+msgstr "The title of the navigation tree."
 
 #. Default: "How many folders should be included before the navigation tree stops. 0 means no limit. 1 only includes the root folder."
 #: ../portlets/navigation.py:69
 msgid "help_navigation_tree_depth"
-msgstr "help_navigation_tree_depth"
+msgstr ""
+"How many folders should be included \n"
+"before the navigation tree stops. 0 means no limit. 1 \n"
+"only includes the root folder."
 
 #: ../browser/config/jalonconfiguration.py:96
 msgid "http://serveur.univ.fr/contacts"
@@ -1328,49 +1345,56 @@ msgstr ""
 #: ../skins/jalon_content/macro_form.pt:34
 #: ../skins/jalon_content/macro_podcasts.pt:48
 msgid "label_cancel"
-msgstr "label_cancel"
+msgstr "Cancel"
 
 #. Default: "Only show the contents of the current folder."
 #: ../portlets/navigation.py:43
 msgid "label_current_folder_only"
-msgstr "label_current_folder_only"
+msgstr ""
+"Only show the contents of the current \n"
+"folder."
 
 #. Default: "Fermer"
 #: ../browser/templates/ressource_view.pt:71
 msgid "label_fermer"
-msgstr "label_fermer"
+msgstr "Close"
 
 #. Default: "Include top node"
 #: ../portlets/navigation.py:34
 msgid "label_include_top_node"
-msgstr "label_include_top_node"
+msgstr "Include top node"
 
 #. Default: "Root node"
 #: ../portlets/navigation.py:24
 msgid "label_navigation_root_path"
-msgstr "label_navigation_root_path"
+msgstr "Root node"
 
 #. Default: "Start level"
 #: ../portlets/navigation.py:53
 msgid "label_navigation_startlevel"
-msgstr "label_navigation_startlevel"
+msgstr "Start level"
 
 #. Default: "Title"
 #: ../portlets/navigation.py:17
 msgid "label_navigation_title"
-msgstr "label_navigation_title"
+msgstr "Title"
 
 #. Default: "Navigation tree depth"
 #: ../portlets/navigation.py:67
 msgid "label_navigation_tree_depth"
-msgstr "label_navigation_tree_depth"
+msgstr "Navigation tree depth"
 
 #. Default: "Save"
 #: ../skins/jalon_configuration/gestion_ga.pt:66
 #: ../skins/jalon_content/macro_form.pt:33
 #: ../skins/jalon_content/macro_podcasts.pt:47
 msgid "label_save"
-msgstr "label_save"
+msgstr "Save"
+
+#. Default: "Help"
+#: ../skins/jalon_content/macro_form.pt:33
+msgid "label_help"
+msgstr "Help"
 
 #: ../content/jaloncours.py:1461
 msgid "le dépôt n'est plus permis"
@@ -1452,17 +1476,17 @@ msgstr ""
 #. Default: "ITunesU"
 #: ../browser/templates/jalon_podcast.pt:34
 msgid "ongletITunesU"
-msgstr ""
+msgstr "ITunesU"
 
 #. Default: "Utilisateurs"
 #: ../browser/templates/jalon_podcast.pt:28
 msgid "ongletListeUtilisateurs"
-msgstr ""
+msgstr "Users"
 
 #. Default: "Mon Espace"
 #: ../browser/templates/jalon_configuration.pt:55
 msgid "ongletMonEspace"
-msgstr ""
+msgstr "My Space"
 
 #. Default: "Statistique"
 #: ../browser/templates/jalon_configuration.pt:49
@@ -1472,7 +1496,7 @@ msgstr ""
 #. Default: "Twitter"
 #: ../browser/templates/jalon_configuration.pt:61
 msgid "ongletTweeter"
-msgstr ""
+msgstr "Tweeter"
 
 #. Default: "Variables"
 #: ../browser/templates/jalon_podcast.pt:22
@@ -1486,12 +1510,12 @@ msgstr ""
 #. Default: "Home"
 #: ../portlets/templates/navigation.pt:26
 msgid "tabs_home"
-msgstr "tabs_home"
+msgstr "Home"
 
 #. Default: "Chemin du répertoire à importer"
 #: ../browser/config/jalonimport_settings.py:31
 msgid "title_chemin_repertoire"
-msgstr "title_chemin_repertoire"
+msgstr "Chemin du répertoire à importer"
 
 #. Default: "Nom de domaine de l'instance d'upload des podcasts"
 #: ../skins/jalon_content/macro_podcasts.pt:28

@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
 
 <body>
 
@@ -13,7 +14,7 @@
     <div class="panel ArchetypesStringWidget">
         <a href="#reveal_instruction" class="button tiny radius" data-reveal-id="reveal_instruction">
             <i class="fa fa-question"></i>
-            Aide
+            <tal:block i18n:translate="label_help">Aide</tal:block>
         </a>
         <label for="instruction">Instruction globale</label>
         <div id="reveal_instruction"
@@ -38,7 +39,7 @@
                  tal:define="variable string:enonce${position}">
                 <a href="#reveal_question" class="button tiny radius right" data-reveal-id="reveal_question">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
                 <label tal:attributes="for variable">Question à poser</label>
                 <div class="formHelp texte_icone icone_information" i18n:translate="">Tapez simplement votre question. Balises html admises.</div>
@@ -54,7 +55,7 @@
                  tal:define="variable string:reponses${position}">
                 <a href="#reveal_reponse" class="button tiny radius right" data-reveal-id="reveal_reponse">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
                 <label tal:attributes="for variable">Les réponses à cette question</label>
                 <div class="formHelp texte_icone icone_information">Indiquer le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne. Le point-virgule est interdit.</div>
@@ -106,8 +107,8 @@
          class="reveal-modal large wims-edit_reveal"
          data-reveal="data-reveal"
          data-options="close_on_background_click: true;" >
-        <h2>Aide sur Les réponses aux questions <a class="close-reveal-modal"></a></h2>
-        <div>
+        <h2><tal:block i18n:translate="">Aide sur Les réponses aux questions</tal:block> <a class="close-reveal-modal"></a></h2>
+        <div i18n:translate="">
             Indiquer le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne.<br/>
             Vous pouvez définir plusieurs bonnes réponses. Indiquez alors sur la premiere ligne plusieurs numéros, séparés par des virgules.
         </div>
@@ -233,7 +234,7 @@ Mauvaise réponse n°2</pre>
                         <div class="panel" tal:define="columns QCM_parsed/columns | string:1">
                             <a href="#reveal_columns" class="button tiny radius right" data-reveal-id="reveal_columns">
                                 <i class="fa fa-question"></i>
-                                Aide
+                                <tal:block i18n:translate="label_help">Aide</tal:block>
                             </a>
                             <label for="columns">Mode d'affichage</label>
                             <div class="formHelp texte_icone icone_information">Permet de condenser par colonnes les questions d'une page, sur un écran suffisament large.</div>
@@ -280,7 +281,7 @@ Mauvaise réponse n°2</pre>
                         <div class="panel" tal:define="equalizer QCM_parsed/equalizer | string:no">
                             <a href="#reveal_equalizer" class="button tiny radius right" data-reveal-id="reveal_equalizer">
                                 <i class="fa fa-question"></i>
-                                Aide
+                                <tal:block i18n:translate="label_help">Aide</tal:block>
                             </a>
                             <input type="checkbox" name="equalizer" id="equalizer" value="1"
                                    tal:attributes="checked python:context.test(equalizer=='1', 'checked', '')"/>
