@@ -259,7 +259,9 @@ $$boucle_data_q$$
   \text{test_inst=\inst_audio\inst_image\inst_title  notsametext ? 1 : 0}
   \text{preliminaire=\test_inst=1 ? \rab_inst:&nbsp;}
   \text{QUEST=\test_inst=1 ? \QUEST[2..-1;]}
-  \text{QUEST=wims(replace internal " by $$quot; in \QUEST)}
+
+  # Attention : les guillemets doubles font planter l'exercice.
+  \text{QUEST=wims(replace internal " by ' in \QUEST)}
 
   \matrix{QUEST=\accolade issametext oui ? wims(embraced randitem \QUEST):\QUEST}
 
@@ -431,7 +433,8 @@ $$boucle_matrix_rep$$
 \if{\anstype=radio}{
  \text{REP=wims(replace internal , by &#44; in \REP)}
 }
-\text{REP=wims(replace internal " by $$quot; in \REP)}
+# Attention : les guillemets doubles font planter l'exercice.
+\text{REP=wims(replace internal " by ' in \REP)}
 
 \for{u = 1 to \N}{
   \text{H = \CNT[\step-1;\u]}

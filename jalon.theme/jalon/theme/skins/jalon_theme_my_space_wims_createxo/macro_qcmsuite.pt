@@ -41,7 +41,7 @@
                     Aide
                 </a>
                 <label tal:attributes="for variable">Question à poser</label>
-                <div class="formHelp texte_icone icone_information">Tapez simplement votre question. Balises html admises. Les sauts de lignes seront remplacés par la balise &lt;br/&gt;.</div>
+                <div class="formHelp texte_icone icone_information" i18n:translate="">Tapez simplement votre question. Balises html admises.</div>
                 <textarea tal:attributes="name variable;
                                           id variable"
                           rows="4" cols="60"
@@ -86,9 +86,16 @@
          class="reveal-modal large wims-edit_reveal"
          data-reveal="data-reveal"
          data-options="close_on_background_click: true;" >
-        <h2>Aide sur une question à poser <a class="close-reveal-modal"></a></h2>
-        <div>Tapez simplement votre question.<br/> Les points-virgules (;) sont interdits.</div>
-        <div class="panel warning">Notez que les sauts de lignes seront automatiquement remplacés par la balise &lt;br/&gt;.</div>
+        <h2><tal:block i18n:translate="">Aide sur une question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
+        <div i18n:translate="">Tapez simplement votre question.</div>
+        <div class="warning" i18n:translate="">
+            Notez que :
+            <ul>
+                <li>Les points-virgules (;) sont interdits.</li>
+                <li>les sauts de lignes seront automatiquement remplacés par la balise <code>&lt;br/&gt;</code>.</li>
+                <li>les guillemets doubles (<tt>"</tt>) seront automatiquement remplacés par des guillemets simples (<tt>'</tt>).</li>
+            </ul>
+        </div>
         <hr/>
         <metal:macro use-macro="context/macro_commune/macros/html_allowed"/>
         <hr/>
