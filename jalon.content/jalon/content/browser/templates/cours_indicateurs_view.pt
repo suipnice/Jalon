@@ -44,8 +44,7 @@
         <ul id="tab_button-group" class="button-group radius">
             <li tal:repeat="onglet page_view/onglets">
                 <a tal:attributes="class string:button small${onglet/css_class};
-                                   href onglet/href"
-                   i18n:translate="">
+                                   href onglet/href">
                     <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
                                                                                        i18n:translate=""/>
                 </a>

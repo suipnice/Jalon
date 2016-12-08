@@ -31,7 +31,7 @@
 
         <div id="js-alert_box" class="small-12 columns"
              tal:condition="not:param_wims">
-            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
+            <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="error_WIMS_unavailable">
                 Le serveur WIMS est actuellement injoignable. Veuillez réessayer ultérieurement.
             </div>
         </div>
@@ -65,7 +65,7 @@
                 </tal:block>
 
                 <div tal:condition="not:permalink" class="panel warning radius">
-                    <p i18n:translate="">
+                    <p i18n:translate="no_exo_WIMS_chosen">
                         Vous n'avez choisi aucun élément dans la banque d'exercices WIMS.
                     </p>
                     <a class="button small radius"
