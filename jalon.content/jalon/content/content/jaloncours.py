@@ -2650,7 +2650,7 @@ class JalonCours(ATFolder):
         if annonces and all_annonce:
             return {"listeAnnonces": annonces, "nbAnnonces": len(listeAnnonces)}
         elif annonces:
-            return {"listeAnnonces": [annonces[0]], "nbAnnonces": len(listeAnnonces)}
+            return {"last_announce": annonces[0], "nbAnnonces": len(listeAnnonces)}
         else:
             return {"listeAnnonces": [], "nbAnnonces": 0}
 
