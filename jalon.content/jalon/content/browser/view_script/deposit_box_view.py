@@ -59,7 +59,7 @@ class DepositBoxView(CourseView):
         my_view["mode_etudiant"] = "false" if (not mode_etudiant) and my_view["is_personnel"] else mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
-            my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["deposit_box_link"], my_deposit_box.jalon_quote(my_view["deposit_box_link"])),
+            my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["deposit_box_link"], my_deposit_box.jalon_quote(my_view["deposit_box_link"]))
             return my_view
 
         LOG.info("***** DateAff : %s" % my_deposit_box.getDateAff())

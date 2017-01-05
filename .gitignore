@@ -148,3 +148,7 @@ sftp-config.json
 ### PyCharm Project ###
 .idea/*
 *.orig
+
+
+### FUSE ###
+.fuse_hidden*

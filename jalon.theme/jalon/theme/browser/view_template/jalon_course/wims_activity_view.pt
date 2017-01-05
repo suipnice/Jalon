@@ -41,7 +41,7 @@
             <strong i18n:translate="">Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.</strong>
         </div>
         <a class="button expand"
-           tal:define="page_quote python:context.jalon_quote(page)"
+           tal:define="page_quote python:context.jalon_quote(context.absolute_url())"
            tal:attributes="href string:${portal_url}/acl_users/credentials_cookie_auth/require_login?came_from=${page_quote}">
             <i class="fa fa-key"></i>
             <tal:block i18n:translate="">Se connecter pour accéder à cette activité WIMS</tal:block>
