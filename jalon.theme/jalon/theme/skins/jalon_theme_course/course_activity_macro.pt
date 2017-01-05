@@ -12,7 +12,7 @@
 
 <metal:macro define-macro="skills-list">
     <metal:macro use-macro="context/deposit_box_macro/macros/skills-list">
-        Page d'affichage de la liste des exercices
+        Page d'affichage de la liste des compétences
     </metal:macro>
 </metal:macro>
 

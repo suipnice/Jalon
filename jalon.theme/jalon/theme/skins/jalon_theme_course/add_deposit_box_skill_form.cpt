@@ -1,0 +1,115 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;">
+
+    <h2>
+        <i class="fa fa-plus-circle no-pad"></i>
+        <tal:block i18n:translate="">Ajouter une compétence</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-addSkill" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id}">
+
+        <div tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title">Titre</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" id="title" name="title"
+                   maxlength="255" size="30"
+                   required="required" placeholder="Saisie obligatoire"
+                   i18n:attributes="placeholder"
+                   tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div tal:define="error errors/evaluation | nothing;
+                         selection request/evaluation | string:libre;
+                         arch_class string:field ArchetypesSelectionWidget;"
+             tal:attributes="class python:context.test(error, 'error field', 'field')">
+            <label for="title">Méthode d'évaluation</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <ul class="verticalRadioList">
+                <li>
+                    <input type="radio" name="evaluation" value="libre"
+                           required="required"
+                           tal:attributes="checked python:context.test(selection == 'libre', 'checked', '')" />
+                    Libre
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="validation"
+                           tal:attributes="checked python:context.test(selection == 'validation', 'checked', '')" />
+                    Validation
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="gradation"
+                           tal:attributes="checked python:context.test(selection == 'gradation', 'checked', '')" />
+                    Validation avec échelle d'acquisition
+                </li>
+                <li>
+                    <input type="radio" name="evaluation" value="note"
+                           tal:attributes="checked python:context.test(selection == 'note', 'checked', '')" />
+                    Notation numérique :
+                    <ul>
+                        <li tal:define="error errors/note_max | nothing;">
+                            notation sur&nbsp;
+                            <input type="number" name="note_max" min="0" max="100"
+                                   step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_max | nothing"/>,
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                        <li tal:define="error errors/note_partielle | nothing;">
+                            en cours d'acquisition à partir de&nbsp;
+                            <input type="number" name="note_partielle" min="0" max="100"
+                                   step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_partielle | nothing"/>,
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                        <li tal:define="error errors/note_acquise | nothing;">
+                            acquis à partir de&nbsp;
+                            <input type="number" name="note_acquise" min="0" max="100"
+                                step="any" style="width:3em;display:inline;"
+                                   tal:attributes="class python:context.test(error, 'error', '');
+                                                   value request/note_acquise | nothing"/>.
+                            <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="field">
+            <label for="description">Description</label>
+            <textarea name="description" rows="5"><tal:replace replace="request/description | nothing" /></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="tab" value="skills"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="form.button.save">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealFormNewPage('js-addSkill','reveal-main', 'description', true)"></script>
+
+</metal:main>
+
+</body>
+
+</html>

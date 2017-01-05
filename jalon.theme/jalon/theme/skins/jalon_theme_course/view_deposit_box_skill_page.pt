@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="dicoCompetences python:dict(context.getCompetences());
+                        ordre context/getOrdreCompetences">
+
+    <h2>
+        <i class="fa fa-align-justify no-pad"></i>
+        <tal:block i18n:translate="">Voir les compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <tal:repeat repeat="index ordre">
+    <tal:define define="competence python:dicoCompetences[index]">
+
+    <h3 tal:content="competence/titre" />
+
+    <div class="panel bkgrnd radius"
+         tal:condition="not:python:competence['description']">
+        Pas de description pour cette compétence.
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="python:competence['description']"
+         tal:content="structure python:competence['description'].replace('\n', '<br />')" />
+
+    </tal:define>
+    </tal:repeat>
+
+</metal:main>
+
+</body>
+
+</html>
