@@ -26,10 +26,12 @@ Une fois fait, `i18ndude` sera disponible depuis le dossier `buildout/bin`.
 [Plus d'infos...](http://docs.plone.org/develop/plone/i18n/internationalisation.html#installing-i18ndude)
 
 
-## Ajouter une langue (code "de" par ex pour l'allemand)
+## Ajouter une langue 
+*(exemple avec le code "de" pour l'allemand)*
+
 	cd CHEMIN_PLONE/zinstance/src/jalon.content/jalon/content/locales/
 	mkdir -p de/LC_MESSAGES
-	cp `fr/LC_MESSAGES/jalon.content.po` dans `de/LC_MESSAGES`
+	cp fr/LC_MESSAGES/jalon.content.po de/LC_MESSAGES/
 
 ## A chaque modification de texte dans les templates :
 
@@ -41,6 +43,14 @@ mettre à jour les fichiers de traduction :
 ...et en cas d'erreur(s), consulter le fichier "rebuild_i18n.log" pour plus de détals...
 
 ## Conventions de nommage des id de traduction
+
+Attention : un ID de traduction doit etre écrit en ASCII (pas UTF-8)
+
+* => aucun accent dans un `msgid`
+* => vous ne pouvez mettre un `i18n:translate=""` dans une .PT que si le texte affiché ne contient aucun accent.
+
+Quelques conventions de nommage des msgid :
+
 * **heading_**: for `<h>` elements
 * **description_**: Explanatory text directly below
 * **legend_**: Used in `<legend>` elements
