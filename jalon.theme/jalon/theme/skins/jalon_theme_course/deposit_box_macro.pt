@@ -417,11 +417,12 @@
             <i class="fa fa-tasks"></i>
             <tal:block i18n:translate="">Compétences</tal:block>
         <tal:condition condition="not:is_personnel">
-            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competences"
+            <a tal:attributes="href string:${context/absolute_url}/deposit_box_skills_view"
                title="Voir les descriptions des compétences"
                class="button tiny radius right"
                data-reveal-ajax="true" data-reveal-id="reveal-main"
                i18n:attributes="title">
+               <i class="fa fa-tasks"></i>
                <tal:block i18n:translate="">Description des compétences</tal:block>
             </a>
         </tal:condition>
@@ -561,7 +562,7 @@
                     <tal:repeat repeat="index ordre">
                     <tr tal:define="competence python:dicoCompetences[index]">
                         <td>
-                            <a tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_cours_boite&amp;formulaire=detail-competence&amp;competence=${index};
+                            <a tal:attributes="href string:${context/absolute_url}/deposit_box_skill_view?skill=${index};
                                title string:Voir la description de la compétence '${competence/titre}'"
                                data-reveal-ajax="true" data-reveal-id="reveal-main"
                                tal:content="competence/titre"
