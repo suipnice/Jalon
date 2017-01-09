@@ -435,7 +435,7 @@
         <tal:condition condition="dicoCompetences">
             <form id="js-list_competences" method="post"
                   tal:define="listeEtudiants context/getOrdreEtudiants;"
-                  tal:attributes="action string:${context/absolute_url}/enregistrer_comp_script"
+                  tal:attributes="action string:${context/absolute_url}/evaluate_deposit_box_skill_script"
                   tal:condition="is_personnel">
                 <div class="table-overflow_container">
                     <table summary="Liste des compétences"
