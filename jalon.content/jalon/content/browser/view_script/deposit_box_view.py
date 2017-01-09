@@ -11,11 +11,11 @@ LOG = getLogger('[DepositBoxView]')
 
 
 class DepositBoxView(CourseView):
-    """Class pour le first_page
-    """
+    """Deposit Box View Class."""
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        """Deposit Box View init."""
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request

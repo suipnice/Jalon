@@ -48,6 +48,8 @@ class WimsActivityView(CourseView):
         my_view["tab"] = tab
 
         my_wims_activity = self.context
+        portal = my_wims_activity.portal_url.getPortalObject()
+        portal_link = portal.absolute_url()
         nb_exos = my_wims_activity.getNbExercices()
         instruction_text = my_wims_activity.Description()
         if instruction_text:
@@ -77,7 +79,8 @@ class WimsActivityView(CourseView):
             my_view["mode_etudiant"] = mode_etudiant
 
         if is_ajax or my_view["is_anonymous"]:
-            my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"]))
+            my_view["came_from"] = "%s/acl_users/credentials_cookie_auth/require_login?came_from=%s" % (portal_link, my_wims_activity.jalon_quote(my_view["activity_link"]))
+            # my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"]))
             LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
             return my_view
 
@@ -115,7 +118,6 @@ class WimsActivityView(CourseView):
                                               "icon":      "fa-random",
                                               "text":      "Exercices",
                                               "nb":        my_wims_activity.getNbExercices()})
-        portal = my_wims_activity.portal_url.getPortalObject()
         activity_path = my_wims_activity.getPhysicalPath()
         activity_path = "/".join([activity_path[-3], activity_path[-2], activity_path[-1]])
 
@@ -126,7 +128,6 @@ class WimsActivityView(CourseView):
                 not my_wims_activity.getIdExam() and
                 my_wims_activity.getCreateur() == user_id):
 
-            portal_link = portal.absolute_url()
             my_view["exercices_add"] = self.getExerciceAdderMenuList(portal_link, activity_path)
             # my_view["exercices_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
 
@@ -151,6 +152,10 @@ class WimsActivityView(CourseView):
     def getWimsSession(self, user, isCoAuteur, isAnonymous):
         """Obtain a new or existing session from WIMS, and returns wims params."""
         if isAnonymous:
+            message = _(u"Désolé, seul un utilisateur connecté peux participer aux activités d'un cours.")
+            # message = _(u"Le coefficient de l'exercice '${item_title}' a bien été modifié.",
+            #            mapping={'item_title': param["title"]})
+            self.context.plone_utils.addPortalMessage(message, type='warning')
             return None
         elif isCoAuteur:
             user_id = 'supervisor'

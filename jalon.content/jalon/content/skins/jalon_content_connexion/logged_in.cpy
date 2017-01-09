@@ -12,10 +12,13 @@
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 
-REQUEST=context.REQUEST
+REQUEST = context.REQUEST
+# context = context
+# state = state
 
-membership_tool=getToolByName(context, 'portal_membership')
+membership_tool = getToolByName(context, 'portal_membership')
 if membership_tool.isAnonymousUser():
+
     REQUEST.RESPONSE.expireCookie('__ac', path='/')
     email_login = getToolByName(context, 'portal_properties').site_properties.getProperty('use_email_as_login')
     if email_login:
@@ -49,18 +52,18 @@ elif must_change_password:
 
 memberid = member.getId()
 if (not hasattr(context.Members, memberid)) and (not member.has_role(["Etudiant", "EtudiantJalon"])):
-   context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
-   home = getattr(context.Members, memberid)
-   home.addSubJalonFolder(memberid)
+    context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
+    home = getattr(context.Members, memberid)
+    home.addSubJalonFolder(memberid)
 
 if not hasattr(context.cours, memberid):
-   context.cours.invokeFactory(type_name='JalonFolder', id=memberid)
-   cours = getattr(context.cours, memberid)
-   cours.setTitle("Mes cours")
-   cours.setPortlets()
-   #context.portal_catalog.refreshCatalog(clear=True)
+    context.cours.invokeFactory(type_name='JalonFolder', id=memberid)
+    cours = getattr(context.cours, memberid)
+    cours.setTitle("Mes cours")
+    cours.setPortlets()
+    # context.portal_catalog.refreshCatalog(clear=True)
 
-#if REQUEST.form.has_key("action"):
+# if REQUEST.form.has_key("action"):
 #    if REQUEST.form["action"] == "mooc":
 #        cours = getattr(getattr(context.cours, REQUEST.form["auteur"]), REQUEST.form["idcours"])
 #        cours.inscrireMOOC(memberid)
@@ -75,7 +78,7 @@ if not infos_user:
         acl_users = getattr(context.acl_users, "ldap-plugin").acl_users
         for user in acl_users.findUser(search_param="supannAliasLogin", search_term=memberid, exact_match=True):
             if "supannAliasLogin" in user:
-                LIB_PR1_IND, LIB_NOM_PAT_IND= user["displayName"].decode("iso-8859-1").split(" ", 1)
+                LIB_PR1_IND, LIB_NOM_PAT_IND = user["displayName"].decode("iso-8859-1").split(" ", 1)
                 portal_jalon_bdd.creerUtilisateur({"SESAME_ETU"      : user["supannAliasLogin"],
                                                    "DATE_NAI_IND"    : "Non renseignée",
                                                    "LIB_NOM_PAT_IND" : LIB_NOM_PAT_IND,
@@ -112,7 +115,7 @@ if member.has_role("EtudiantJalon"):
 try:
     portal_jalon_bdd.addConnexionUtilisateur(memberid)
 except:
-    #infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
+    # infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     portal_jalon_bdd.creerUtilisateurMySQL({"SESAME_ETU":      memberid,
                                             "DATE_NAI_IND":    "",
                                             "LIB_NOM_PAT_IND": infos_user["LIB_NOM_PAT_IND"],
