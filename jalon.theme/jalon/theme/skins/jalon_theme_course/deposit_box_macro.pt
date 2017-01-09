@@ -386,7 +386,7 @@
             <li tal:condition="modifier_comp">
                 <a tal:attributes="href string:${context/absolute_url}/edit_deposit_box_skill_form"
                    data-reveal-ajax="true" data-reveal-id="reveal-main">
-                    <i class="fa fa-edit fa-fw"></i>
+                    <i class="fa fa-pencil fa-fw"></i>
                     <tal:block i18n:translate="">Modifier</tal:block>
                 </a>
             </li>

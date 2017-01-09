@@ -17,6 +17,10 @@ form = context.REQUEST.form
 
 obligatory_fields = ["title", "evaluation"]
 
+if "competences" in form:
+    state.set(status="success")
+    return state
+
 for validate_field in obligatory_fields:
     if not validate_field in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
