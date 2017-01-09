@@ -398,7 +398,8 @@
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/download_deposit_box_skill_listing">
+                <a tal:attributes="href string:${context/absolute_url}/download_deposit_box_skill_listing"
+                   data-reveal-ajax="true" data-reveal-id="reveal-main">
                     <i class="fa fa-file-excel-o fa-fw"></i>
                     <tal:block i18n:translate="">Télécharger (format xls)</tal:block>
                 </a>
