@@ -114,7 +114,7 @@
                                     tal:attributes="id string:drop-${repeat/access_key/index}">
                                     <li class="show-for-medium-up">
                                         <a data-reveal-id="reveal-etudiants" data-reveal-ajax="true"
-                                           tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=listing&amp;code=${access/access_code}&amp;type=${access/access_type}">
+                                           tal:attributes="href string:${context/absolute_url}/listing_students_page?code=${access/access_code}&amp;type=${access/access_type}">
                                             <i class="fa fa-align-justify fa-fw"></i>
                                             <tal:block i18n:translate="">Liste</tal:block>
                                         </a>
