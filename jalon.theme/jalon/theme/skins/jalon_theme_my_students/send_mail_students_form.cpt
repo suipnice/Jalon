@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-envelope-o"></i><tal:block i18n:translate="">Écrire aux étudiants</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form id="js-UESendMail" method="POST"
+          tal:define="auteur python:context.getInfosMembre(user.getId())"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg string:Votre courriel a été envoyé.">
+        <div class="field">
+            <label i18n:translate="">De :</label>
+            <tal:comment replace="nothing"><!--
+            <input type="text" name="de" tal:attributes="value auteur/email" readonly="readonly" />
+            --></tal:comment>
+            <p>
+                <tal:block replace="auteur/fullname"/> &lt;<tal:block replace="auteur/email"/>&gt;
+            </p>
+            <input type="hidden" name="de" tal:attributes="value auteur/email" />
+        </div>
+
+        <div class="field">
+
+            <label i18n:translate="">À :</label>
+            <table class="listing">
+                <thead>
+                    <tr>
+                        <th i18n:translate="">Type</th>
+                        <th i18n:translate="">Titre</th>
+                        <th i18n:translate="">Code</th>
+                        <th i18n:translate="">Nbre d'étudiants</th>
+                    </tr>
+                </thead>
+                <tbody tal:define="a request/SESSION/a | python:[]">
+                    <tr tal:define="acces python:context.getInfosApogee(request['code'], request['type'])">
+                        <td>
+                            <span tal:content="request/type" class="indicateur couleur4"/>
+                        </td>
+                        <td tal:content="python:'%s (%s)' % (acces[0], acces[1])"/>
+                        <tal:test condition="python:context.test(acces[-1] != 'groupe', 1, 0)">
+                            <td tal:content="python:acces[1]"/>
+                            <td tal:content="python:acces[2]"/>
+                        </tal:test>
+                        <tal:test condition="python:context.test(acces[-1] == 'groupe', 1, 0)">
+                            <td tal:content="python:acces[3]"/>
+                            <td tal:content="python:acces[2]"/>
+                        </tal:test>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div tal:define="error errors/objet | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="objet" i18n:translate="">Objet :</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error"/>
+            <input type="text" name="objet" id="objet"
+                   required="required"
+                   placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                   tal:attributes="value request/SESSION/objet | string:[Jalon] Informations"/>
+
+        </div>
+
+        <div tal:define="error errors/message | nothing;"
+            tal:attributes="class python:context.test(error, 'field error', 'field')">
+
+            <label for="message" i18n:translate="">Message :</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <textarea name="message" id="message" rows="10"
+                      required="required"
+                      placeholder="Saisie obligatoire" i18n:attributes="placeholder"><tal:block replace="request/SESSION/message | nothing" /></textarea>
+
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="code" tal:attributes="value request/code" />
+        <input type="hidden" name="type" tal:attributes="value request/type" />
+
+        <div class="formControls">
+            <input class="button small radius" type="submit" value="Envoyer le courriel"
+                   i18n:attributes="value" />
+        </div>
+
+    </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setUESendMail()"></script>
+
+</metal:main>
+
+</body>
+
+</html>
