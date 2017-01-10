@@ -887,8 +887,9 @@ class JalonFolder(ATFolder):
         feuil1.write(0, 0, "Nom", styleEnTete)
         feuil1.write(0, 1, "Prénom", styleEnTete)
         feuil1.write(0, 2, "Sésame", styleEnTete)
-        feuil1.write(0, 3, "Université", styleEnTete)
-        feuil1.write(0, 4, "Courriel", styleEnTete)
+        feuil1.write(0, 3, "Numéro", styleEnTete)
+        feuil1.write(0, 4, "Université", styleEnTete)
+        feuil1.write(0, 5, "Courriel", styleEnTete)
 
         i = 1
         for etudiant in listeEtudiants:
@@ -896,8 +897,9 @@ class JalonFolder(ATFolder):
             ligne1.write(0, etudiant["LIB_NOM_PAT_IND"])
             ligne1.write(1, etudiant["LIB_PR1_IND"])
             ligne1.write(2, etudiant["SESAME_ETU"])
-            ligne1.write(3, etudiant["UNIV_IND"])
-            ligne1.write(4, etudiant["EMAIL_ETU"])
+            ligne1.write(3, etudiant["COD_ETU"])
+            ligne1.write(4, etudiant["UNIV_IND"])
+            ligne1.write(5, etudiant["EMAIL_ETU"])
             i = i + 1
 
         listing.save(path)

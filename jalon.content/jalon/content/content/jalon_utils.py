@@ -185,13 +185,13 @@ def envoyerMail(form):
     my_message.set_charset('utf-8')
     my_message['Subject'] = Header("[%s] %s" % (portal.Title(), form["objet"]), charset="utf-8")
     my_message['To'] = form["a"]
-    my_message['From'] = portal.getProperty("email_from_address")
+    my_message['From'] = "Jalon <no-reply@unice.fr>"  # portal.getProperty("email_from_address")
     my_message['Reply-To'] = form["de"]
     my_message['Date'] = email.Utils.formatdate(localtime=True)
 
     portal.MailHost.send(my_message,
                          mto=form["a"],
-                         mfrom=portal.getProperty("email_from_address"),
+                         mfrom="Jalon <no-reply@unice.fr>",
                          subject="[%s] %s" % (portal.Title(), form["objet"]),
                          encode=None, immediate=False, charset='utf8', msg_type="text/html")
 

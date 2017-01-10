@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-file-excel-o no-pad"></i>
+        <tal:block i18n:translate="">Télécharger le listing des compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius"
+         i18n:translate="">
+        Cette opération peut prendre quelques minutes, merci de patienter.
+    </div>
+    <form tal:attributes="action string:${context/absolute_url}/download_deposit_box_skill_listing_script"
+          method="post">
+        <div class="formControls">
+            <button type="submit" class="button small"
+                    name="telecharger">
+                <i class="fa fa-list"></i>
+                <tal:block i18n:translate="">Télécharger</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

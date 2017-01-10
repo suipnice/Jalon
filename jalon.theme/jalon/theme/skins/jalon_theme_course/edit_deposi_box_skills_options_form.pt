@@ -1,0 +1,96 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-cogs"></i><tal:block i18n:translate="">Options des compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+    <style type="text/css">
+        .field .activer
+        {
+            color:green;
+        }
+
+        .field .desactiver
+        {
+            color:red;
+        }
+
+        .field .field-lg
+        {
+            font-size:1rem;
+        }
+    </style>
+    <form method="post"
+          tal:attributes="action string:${context/absolute_url}/edit_deposi_box_skills_options_script">
+    <div class="field"
+         tal:define="afficher_comp context/getAfficherCompetences">
+        <label>Afficher l'onglet "Compétences" aux étudiants</label>
+        <p i18n:translate="">
+        Une fois cette option activée, les étudiants auront la possibilité de consulter la liste des compétences et leurs évaluations.
+        </p>
+        <p class="text-center field-lg">
+            <input type="radio" name="AfficherCompetences"
+                   value="1" id="AfficherCompetences_activer"
+                   tal:attributes="checked python:context.test(afficher_comp, 'checked', '')"/>
+            <label for="AfficherCompetences_activer"
+                   class="activer"
+                   i18n:translate="">
+                <i class="fa fa-check"></i> Activé
+            </label>
+            <input type="radio" name="AfficherCompetences"
+                   value="0" id="AfficherCompetences_desactiver"
+                   tal:attributes="checked python:context.test(afficher_comp, '', 'checked')"/>
+            <label for="AfficherCompetences_desactiver"
+                   class="desactiver"
+                   i18n:translate="">
+                <i class="fa fa-times"></i> Désactivé
+            </label>
+        </p>
+    </div>
+    <div class="field"
+         tal:define="modifier_comp context/getModifierCompetences">
+        <label>Restreindre la gestion des compétences</label>
+        <p i18n:translate="">
+            Une fois cette option activée, seul le créateur de la boîte de dépôts aura les permissions de gestion des compétences. Un enseignant pourra seulement évaluer les étudiants et télécharger le listing des compétences.
+        </p>
+        <p class="text-center field-lg">
+            <input type="radio" name="ModifierCompetences"
+                   value="1" id="ModifierCompetences_activer"
+                   tal:attributes="checked python:context.test(modifier_comp, 'checked', '')"/>
+            <label for="ModifierCompetences_activer"
+                   class="activer"
+                   i18n:translate="">
+                <i class="fa fa-check"></i> Activé
+            </label>
+            <input type="radio" name="ModifierCompetences"
+                   value="0" id="ModifierCompetences_desactiver"
+                   tal:attributes="checked python:context.test(modifier_comp, '', 'checked')"/>
+            <label for="ModifierCompetences_desactiver"
+                   class="desactiver"
+                   i18n:translate="">
+                <i class="fa fa-times"></i> Désactivé
+            </label>
+        </p>
+    </div>
+    <div class="formControls">
+        <button type="submit" name="Save" class="button small">
+            <i class="fa fa-check-circle"></i>
+            <tal:block i18n:translate="">Enregistrer</tal:block>
+        </button>
+    </div>
+</form>
+
+</metal:main>
+
+</body>
+
+</html>

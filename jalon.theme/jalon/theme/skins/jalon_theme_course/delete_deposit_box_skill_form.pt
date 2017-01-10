@@ -1,0 +1,105 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-trash-o no-pad"></i>
+        <tal:block i18n:translate="">Supprimer les compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel alert radius"
+         i18n:translate="">
+        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+    </div>
+
+    <form tal:attributes="action string:${context/absolute_url}/delete_deposit_box_skill_script"
+          tal:define="dicoCompetences python:dict(context.getCompetences());
+                      ordre context/getOrdreCompetences;"
+          id="js-list_comp_supp"
+          method="post">
+
+        <table summary="Liste des compétences">
+
+            <thead>
+                <tr>
+                    <th class="checkall show-for-medium-up">
+                        <div class="switch tiny round"
+                             title="Action par lot : tout sélectionner / désélectionner"
+                             i18n:attributes="title">
+                            <input type="checkbox" id="switch-all" name="checkall" role="competence_id:list" />
+                            <label for="switch-all"></label>
+                        </div>
+                    </th>
+                    <th class="sort text-left" data-sort="title" title="Trier selon le titre"
+                        i18n:attributes="title">
+                        <span>
+                            <i class="fa fa-sort"></i>
+                            <i class="fa fa-sort-asc"></i>
+                            <i class="fa fa-sort-desc"></i>
+                            <tal:block i18n:translate="">Titre</tal:block>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+
+            <tfoot></tfoot>
+
+            <tbody class="list">
+            <tal:repeat repeat="item ordre">
+
+                <tr TAL:define="competence python:dicoCompetences[item]">
+                    <td class="show-for-medium-up">
+                        <div class="switch tiny round"
+                             title="Sélectionner / désélectionner"
+                             i18n:attributes="title">
+                            <input type="checkbox" name="competence_id:list"
+                                   tal:attributes="id string:switch-${repeat/item/index};
+                                                   value item;" />
+                            <label tal:attributes="for string:switch-${repeat/item/index}"></label>
+                        </div>
+                    </td>
+                    <td class="title"
+                        tal:content="competence/titre" />
+                </tr>
+
+            </tal:repeat>
+            </tbody>
+
+        </table>
+
+        <input type="hidden" name="form.submitted" value="1" />
+
+        <div class="formControls">
+            <button type="submit" class="button alert small"
+                    name="Supprimer">
+                <i class="fa fa-trash"></i>
+                <tal:block i18n:translate="">Supprimer</tal:block>
+            </button>
+        </div>
+
+    <tal:define define="script0 string:setBatchSelect('js-list_comp_supp');
+                        script1 string:setSortableList('js-list_comp_supp',['title'],'title','desc')">
+
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJSDirect(script0)" />
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJSDirect(script1)" />
+
+    </tal:define>
+
+    <script charset="UTF-8"
+            tal:define="buffer python:jsBuffer.getDirectBuffer()"
+            tal:content="structure buffer"></script>
+
+    </form>
+</metal:main>
+
+</body>
+
+</html>

@@ -2227,6 +2227,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- rechercherUtilisateur -----")
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
 
+    """
     def hasParticipants(self):
         # LOG.info("----- hasParticipants -----")
         formations = self.getAffichageFormations()
@@ -2242,6 +2243,27 @@ class JalonCours(ATFolder):
         if lecteurs:
             return True
         return False
+    """
+
+    def getFormationsOfferData(self):
+        LOG.info("----- getFormationsOfferData -----")
+        formations_offer = []
+        listeAcces = self.getListeAcces()
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        functions_dict = {"etape":  "getInfosEtape",
+                          "ue":     "getInfosELP2",
+                          "uel":    "getInfosELP2",
+                          "groupe": "getInfosGPE"}
+        for acces in listeAcces:
+            formation_type, formation_code = acces.split("*-*")
+            response = portal_jalon_bdd.__getattribute__(functions_dict[formation_type])(formation_code)
+            if response:
+                element = list(self.encodeUTF8(response))
+                element.append(formation_type)
+                formations_offer.append(element)
+        formations_offer.sort()
+        LOG.info(formations_offer)
+        return formations_offer
 
     def telechargerListingParticipants(self):
         # LOG.info("----- telechargerListingParticipants -----")
@@ -2265,13 +2287,14 @@ class JalonCours(ATFolder):
         # création du Workbook
         listing = Workbook(encoding="utf-8")
 
+        has_participants = False
         # ajout des étudiants de l'offre de formations
         bdd = getToolByName(self, "portal_jalon_bdd")
         dicoAffFormation = {"etape":  "Diplôme",
                             "ue":     "Unité d'enseignement",
                             "uel":    "Unité d'enseignement libre",
                             "groupe": "Groupe"}
-        formations = self.getAffichageFormations()
+        formations = self.getFormationsOfferData()
         for formation in formations:
             # création d'une feuille de formation
             feuille = listing.add_sheet("Formation%s" % formation[1])
@@ -2303,9 +2326,10 @@ class JalonCours(ATFolder):
 
             # ajustement de la largeur d'une colonne
             feuille.col(4).width = 8000
+            has_participants = True
 
         # Ajout des inscriptions nominatives
-        nomminatives = self.getInfosGroupe()
+        nomminatives = self.getNominativeRegistration()
         if nomminatives:
             # Création de la feuille des inscriptions nominatives
             feuille = listing.add_sheet("InscriptionsNominatives")
@@ -2335,9 +2359,10 @@ class JalonCours(ATFolder):
 
             # ajustement de la largeur d'une colonne
             feuille.col(4).width = 8000
+            has_participants = True
 
         # Ajout des invitations par courriel
-        invitations = self.getInfosInvitations()
+        invitations = self.getEmailRegistration()
         if invitations:
             # Création de la feuille des inscriptions par email
             feuille = listing.add_sheet("InvitationsCourriel")
@@ -2372,6 +2397,7 @@ class JalonCours(ATFolder):
             # ajustement de la largeur d'une colonne
             feuille.col(2).width = 8000
             feuille.col(4).width = 8000
+            has_participants = True
 
         # Ajout des lecteurs enseignants
         lecteurs = self.getCoLecteurs()
@@ -2404,13 +2430,16 @@ class JalonCours(ATFolder):
 
             # ajustement de la largeur d'une colonne
             feuille.col(4).width = 8000
+            has_participants = True
 
-        listing.save(path)
+        if has_participants:
+            listing.save(path)
 
-        fp = open(path, 'rb')
-        data = fp.read()
-        fp.close()
-        return {"length": str(os.stat(path)[6]), "data": data}
+            fp = open(path, 'rb')
+            data = fp.read()
+            fp.close()
+            return {"length": str(os.stat(path)[6]), "data": data}
+        return None
 
     #--------------------#
     # Course Life - News #
@@ -2630,7 +2659,7 @@ class JalonCours(ATFolder):
         if annonces and all_annonce:
             return {"listeAnnonces": annonces, "nbAnnonces": len(listeAnnonces)}
         elif annonces:
-            return {"listeAnnonces": [annonces[0]], "nbAnnonces": len(listeAnnonces)}
+            return {"last_announce": annonces[0], "nbAnnonces": len(listeAnnonces)}
         else:
             return {"listeAnnonces": [], "nbAnnonces": 0}
 

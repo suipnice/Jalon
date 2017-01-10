@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=validate_deposit_box_skill
+
+[actions]
+action.failure = traverse_to:string:edit_deposit_box_skill_form
+action.success = traverse_to:string:edit_deposit_box_skill_script

@@ -1,0 +1,87 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;">
+
+    <h2>
+        <i class="fa fa-edit no-pad"></i>
+        <tal:block i18n:translate="">Modifier les compétences</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <style type="text/css">
+        #modifier-competence .bold
+        {
+            font-weight:bold;
+        }
+    </style>
+    <form id="js-editSkill"
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:define="dicoCompetences python:dict(context.getCompetences());
+                      ordre context/getOrdreCompetences;"
+          method="post">
+    <tal:repeat repeat="index ordre">
+    <tal:define define="competence python:dicoCompetences[index]">
+        <h3 class="texte_icone icone_liste">
+            <i class="fa fa-tasks"></i>
+            Compétence
+        </h3>
+        <div class="panel bkgrnd radius">
+            <div id="archetypes-fieldname-title"
+                 class="field">
+                <label for="title"
+                       class="bold"
+                       i18n:translate="">Titre</label>
+                <input type="hidden" name="competences.id:records"
+                       tal:attributes="value index"/>
+                <input type="text" name="competences.titre:records" maxlength="255" size="30" id="title"
+
+                       tal:attributes="value request/title | competence/titre"/>
+            </div>
+            <div id="archetypes-fieldname-evaluation"
+                 class="field"
+                 tal:condition="python:context.test(competence['evaluation'] == 'note', 1, 0)">
+                    <label for="number"
+                       bold="bold"
+                       i18n:translate="">Méthode d'évaluation</label>
+                    <div>
+                        Notation numérique : Notation sur
+                        <input type="number" name="competences.note_max:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_max"/>,
+                        partiellement acquis à partir de
+                        <input type="number" name="competences.note_partielle:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_partielle"/>
+                        , acquis à partir de
+                        <input type="number" name="competences.note_acquise:records" min="0" max="100" step="any" style="width:3em;"
+                               tal:attributes="value competence/note_acquise"/>
+                    </div>
+            </div>
+            <div class="field">
+                <label for="description" class="bold"
+                       i18n:translate="">Description</label>
+                <textarea name="competences.description:records" rows="5"><tal:replace replace="request/description | competence/description"/></textarea>
+            </div>
+        </div>
+    </tal:define>
+    </tal:repeat>
+        <input type="hidden" name="form.submitted" value="1" />
+        <div class="formControls">
+            <button type="submit" name="Save" class="button small">
+                <i class="fa fa-pencil"></i>
+                <tal:block i18n:translate="">Modifier</tal:block>
+            </button>
+        </div>
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>
