@@ -1059,9 +1059,13 @@ class JalonCours(ATFolder):
         id_reunion = url.split("/")[-2]
         authMember = self.portal_membership.getAuthenticatedMember()
         idMember = authMember.getId()
-        fullname = authMember.getProperty("fullname", idMember)
+        #fullname = authMember.getProperty("fullname", idMember)
+        fullname = jalon_utils.getInfosMembre(idMember)["fullname"]
         if id_reunion != idMember:
-            return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
+            try:
+                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
+            except:
+                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, idMember)
         else:
             portal = self.portal_url.getPortalObject()
             home = getattr(getattr(getattr(portal, "Members"), idMember), "Webconference")
