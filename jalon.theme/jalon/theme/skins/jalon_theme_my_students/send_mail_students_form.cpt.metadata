@@ -1,0 +1,10 @@
+[default]
+title=Formulaire
+border=None
+
+[validators]
+validators=valider_send_mail_students
+
+[actions]
+action.failure = traverse_to:string:send_mail_students_form
+action.success = traverse_to:string:send_mail_students_script

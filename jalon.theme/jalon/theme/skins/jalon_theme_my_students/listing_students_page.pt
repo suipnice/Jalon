@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="mode_etudiant request/mode_etudiant | nothing;
+                        personnel python:context.isPersonnel(user, mode_etudiant);">
+
+    <h2>
+        <tal:block i18n:translate="">Liste des étudiants de</tal:block>
+        « <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]" /> »
+        (<tal:block replace="request/code" />)
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="row">
+        <div class="column">
+    <div>
+        <a class="button expand success radius"
+           tal:attributes="href string:${context/absolute_url}/listing_students_script?cod_etp=${request/code}"
+           tal:condition="personnel"
+           i18n:translate="">Télécharger cette liste d'étudiants au format XLS</a>
+    </div>
+
+    <table id="js-list-students" summary="Liste des étudiants">
+        <thead>
+            <tr>
+                <th class="sort" data-sort="id" title="Trier selon l'identifiant étudiant" i18n:attributes="title"
+                    tal:condition="personnel">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="label_numero_etudiant">ID</tal:block>
+                    </span>
+                </th>
+                <th class="sort text-left" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                    </span>
+                </th>
+                <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="label_email">Courriel</tal:block>
+                    </span>
+                </th>
+            </tr>
+        </thead>
+        <tbody class="list">
+    <tal:repeat repeat="etudiant python:context.getListeEtudiants(request['code'], request['type'])">
+            <tr>
+                <td class="id" tal:content="etudiant/COD_ETU"
+                    tal:condition="personnel" />
+                <td class="name">
+                    <tal:block content="etudiant/LIB_NOM_PAT_IND" />
+                    <tal:block tal:content="python:etudiant['LIB_PR1_IND'].capitalize()" />
+                </td>
+                <td class="email">
+        <tal:block condition="etudiant/EMAIL_ETU">
+                    <a tal:attributes="href string:mailto:${etudiant/EMAIL_ETU}" tal:content="etudiant/EMAIL_ETU" />
+        </tal:block>
+        <tal:block condition="not:etudiant/EMAIL_ETU">
+                    <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+        </tal:block>
+                </td>
+            </tr>
+    </tal:repeat>
+        </tbody>
+    </table>
+        </div>
+    </div>
+
+    <script charset="UTF-8"
+            tal:content="structure string:setSortableList('js-list-students',['id','name','email'],'name','asc')"
+            tal:condition="personnel">
+    </script>
+    <script charset="UTF-8"
+            tal:content="structure string:setSortableList('js-list-students',['name','email'],'name','asc')"
+            tal:condition="not:personnel">
+    </script>
+
+</metal:main>
+
+</body>
+
+</html>
