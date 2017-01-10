@@ -141,10 +141,11 @@ class WimsActivityView(CourseView):
             my_view["documents_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
 
         # my_view["is_resultats_tab"] = True if tab == "results" else False
-        my_view["wims_activity_tabs"].append({"href":      "%s?tab=results&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
-                                              "css_class": " selected" if tab == "results" else "",
-                                              "icon":      "fa-trophy",
-                                              "text":      "Résultats"})
+        if my_view["is_personnel"]:
+            my_view["wims_activity_tabs"].append({"href":      "%s?tab=results&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
+                                                  "css_class": " selected" if tab == "results" else "",
+                                                  "icon":      "fa-trophy",
+                                                  "text":      "Résultats"})
 
         LOG.info("----- getWimsActivityView (End) -----")
         return my_view

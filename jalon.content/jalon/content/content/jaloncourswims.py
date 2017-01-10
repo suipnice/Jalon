@@ -340,19 +340,57 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         self.plone_utils.addPortalMessage(message, type='success')
 
+    def checkRoles(self, user=None, action="edit", function=""):
+        u"""Permet de vérifier si l'utilisateur courant a le droit d'accéder à l'activité.
+
+        # Si le droit n'est pas accordé, un message est affiché à l'utilisateur.
+        # Si on suspecte une tentative de fraude, l'administrateur recoit un message.
+        # action indique si l'utilisateur tente d'y accéder en lecture ("view") ou écriture ("edit")
+
+        """
+        LOG.info("----- checkRoles -----")
+        if user is None:
+            membership_tool = self.portal_url.getPortalObject().portal_membership
+            user = membership_tool.getAuthenticatedMember()
+        user_roles = user.getRolesInContext(self)
+        if 'Owner' in user_roles or 'Manager' in user_roles:
+            return True
+        else:
+            if 'Anonymous' in user_roles:
+                # Normalement, le mecanisme de gestion des droits de Plone ne pemretrra de toute facon pas un anonyme d'accéder à un exercice.
+                # Mais ceci peux tout de même se produire dans le cas ou un exercice a été rendu public via son insertion dans un cours public justement.
+                message = _(u"Vous êtes déconnecté. Merci de vous connecter pour accéder à cette page.")
+                mess_type = "info"
+            else:
+                # TODO : Ici il faudrait vérifier qu'un etudiant malveillant ne puisse pas modifier une activité !
+                message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
+                mess_type = "alert"
+                self.aq_parent.wims("verifierRetourWims", {"rep": '{"status":"ERROR", "message":"checkRoles Failed"}',
+                                                           "fonction": "jaloncourswims.py/checkRoles in %s" % function,
+                                                           "message": "Suspicion de fraude de l'utilisateur %s" % user.getId()
+                                                           })
+
+        self.plone_utils.addPortalMessage(message, type=mess_type)
+        return False
+
     def detachExercice(self, item_id, ordre):
         """supprime l'exercice de l'activité, puis met à jour les relatedItems"""
-        LOG.info("----- detachExerciceFromWIMS -----")
+        LOG.info("----- detachExercice -----")
+
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="detachExercice"):
+            return None
 
         document_properties = self.getDocumentsProperties()
         item_props = document_properties[item_id]
 
         # Supprime l'exercice de la feuille côté WIMS
-        auteur = self.getCreateur()
         idClasse = self.getClasse()
         idFeuille = self.getIdFeuille()
         idExo = int(ordre) + 1
-        dico = {"authMember": auteur,
+        dico = {"authMember": authMember.getId(),
                 "qclass": idClasse,
                 "qsheet": idFeuille,
                 "qexo": idExo,
@@ -1389,43 +1427,44 @@ class JalonCoursWims(JalonActivity, ATDocument):
         if format not in separateurs:
             format = "csv"
         sep = separateurs[format]
-        portal = self.portal_url.getPortalObject()
-        membership_tool = getToolByName(portal, 'portal_membership')
-        if not membership_tool.isAnonymousUser():
-            demandeur = membership_tool.getAuthenticatedMember()
-            isProf = self.isPersonnel(demandeur)
-            if isProf:
-                actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
-                listeEtudiant = self.getNotes(demandeur, actif, isProf, detailed=True, request="[jaloncourswims.py]/getNotesTableur")
-                if self.idExam:
-                    entetes = ["NOM", "PRENOM", "NUMERO ETU", "SESAME", "NOMBRE d'ESSAIS", "Note (sur %s)" % self.getNoteMax()]
-                else:
-                    entetes = ["NOM", "PRENOM", "NUMERO ETU", "SESAME", "TAUX DE REUSSITE", "QUALITE (sur %s)" % self.getNoteMax()]
-                export = [sep.join(entetes)]
 
-                for etudiant in listeEtudiant["data_scores"]:
-                    num_etu = '"%s"' % etudiant["num_etu"]
-                    id_etu  = '"%s"' % etudiant["id"]
-                    if self.idExam:
-                        score = '"%s"' % etudiant["score"]
-                        # if sep == ",":
-                        #    score = score.replace(",", ".")
-                        if site_lang == "fr":
-                            score = score.replace(".", ",")
-                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, str(etudiant["attempts"]), score]
-                    else:
-                        note = '"%s %%"' % etudiant["user_percent"]
-                        qualite = '"%s"' % etudiant["user_quality"]
-                        if site_lang == "fr":
-                            note = note.replace(".", ",")
-                            qualite = qualite.replace(".", ",")
-                        # if sep == ",":
-                        #    qualite = qualite.replace(",", ".")
-                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
-                    export.append(sep.join(ligne))
-                return "\n".join(export)
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="getNotesTableur"):
+            return _("Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.")
+
+        actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
+        listeEtudiant = self.getNotes(authMember, actif, isProf, detailed=True, request="[jaloncourswims.py]/getNotesTableur")
+        if self.idExam:
+            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("NOMBRE d'ESSAIS"),
+                       _(u"NOTE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+        else:
+            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("TAUX DE REUSSITE"),
+                       _(u"QUALITE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+        export = [sep.join(entetes)]
+
+        for etudiant in listeEtudiant["data_scores"]:
+            num_etu = '"%s"' % etudiant["num_etu"]
+            id_etu  = '"%s"' % etudiant["id"]
+            if self.idExam:
+                score = '"%s"' % etudiant["score"]
+                # if sep == ",":
+                #    score = score.replace(",", ".")
+                if site_lang == "fr":
+                    score = score.replace(".", ",")
+                ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, str(etudiant["attempts"]), score]
             else:
-                return "Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord."
+                note = '"%s %%"' % etudiant["user_percent"]
+                qualite = '"%s"' % etudiant["user_quality"]
+                if site_lang == "fr":
+                    note = note.replace(".", ",")
+                    qualite = qualite.replace(".", ",")
+                # if sep == ",":
+                #    qualite = qualite.replace(",", ".")
+                ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
+            export.append(sep.join(ligne))
+        return "\n".join(export)
 
     def getRubriqueEspace(self, ajout=None):
         """get Rubrique Espace."""
@@ -1518,15 +1557,22 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
         LOG.info("----- modifierExoFeuille -----")
-        # param = form
-        portal = self.portal_url.getPortalObject()
+
         param = {}
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
         param["title"]  = form["titreElement"].decode("utf-8")
         param["weight"] = form["weight"]
-        param["authMember"]  = portal.portal_membership.getAuthenticatedMember().getId()
+
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="modifierExoFeuille"):
+            return None
+
+        param["authMember"]  = authMember.getId()
+
         resp = self.wims("modifierExoFeuille", param)
         if resp["status"] == "OK":
             message = _(u"Le coefficient de l'exercice '${item_title}' a bien été modifié.",

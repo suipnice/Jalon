@@ -649,9 +649,9 @@ En entrée :
              tal:condition="python: is_personnel and not data_scores and not affElement['val'] ">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel warning radius"
-             tal:condition="not:data_scores">
-            <tal:block i18n:translate="">Aucun résultat</tal:block>
+        <div class="panel warning radius" tal:condition="not:data_scores">
+            <tal:block tal:condition="is_personnel" i18n:translate="">Aucun résultat.</tal:block>
+            <tal:block tal:condition="not:is_personnel" i18n:translate="">Vos résultats personnels sont dans l'onglet "Exercices".</tal:block>
         </div>
 
         <tal:condition condition="data_scores">

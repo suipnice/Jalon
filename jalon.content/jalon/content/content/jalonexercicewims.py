@@ -828,7 +828,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
                 m = re.compile(pattern)
                 recherche = m.search(fichier)
-                LOG.info("[getExoWims] variable : %s // valeur : %s" % (key, recherche.group(1)))
+                # LOG.info("[getExoWims] variable : %s // valeur : %s" % (key, recherche.group(1)))
                 if recherche is not None:
                     variable = recherche.group(1)
                     # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
