@@ -365,9 +365,11 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 # TODO : Ici il faudrait vérifier qu'un etudiant malveillant ne puisse pas modifier une activité !
                 message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
                 mess_type = "alert"
-                self.aq_parent.wims("verifierRetourWims", {"rep": '{"status":"ERROR", "message":"checkRoles Failed"}',
+                self.aq_parent.wims("verifierRetourWims", {"rep": '{"status":"ERROR", "message":"checkRoles Failed", "activity_ID":"%s"}' % self.getId(),
                                                            "fonction": "jaloncourswims.py/checkRoles in %s" % function,
-                                                           "message": "Suspicion de fraude de l'utilisateur %s" % user.getId()
+                                                           "message": "Suspicion de fraude de l'utilisateur %s" % user.getId(),
+                                                           "requete": "%s" % self.absolute_url(),
+                                                           "jalon_request": ""
                                                            })
 
         self.plone_utils.addPortalMessage(message, type=mess_type)
