@@ -664,21 +664,24 @@ class JalonBDD(SimpleItem):
             return jalonsqlite.getIndByElp(session, COD_ELP)
 
     def getConnexionCouranteByELP(self, COD_ELP):
-        month = DateTime().month()
+        #month = DateTime().month()
         year = DateTime().year()
+        return self.displayConnexion(COD_ELP, year)
+
+    def displayConnexion(self, COD_ELP, year):
         listeInds = self.getIndByElp(COD_ELP)
         if not listeInds:
             return {"mois":  "Aucun inscrit dans cet élément pédagigique",
                     "annee": "Aucun inscrit dans cet élément pédagigique"}
         if self._use_mysql:
             session = self.getSessionMySQL()
-            coMois = jalon_mysql.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
+            #coMois = jalon_mysql.getConnexionELPByMonth(session, COD_ELP, month, year, listeInds)
             coAnnee = jalon_mysql.getConnexionELPByYear(session, COD_ELP, year, listeInds)
         else:
             if int(month) < 10:
                 month = "0%s" % month
             session = self.getSession()
-            coMois = jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, str(year), listeInds)
+            #coMois = jalonsqlite.getConnexionELPByMonth(session, COD_ELP, month, str(year), listeInds)
             coAnnee = jalonsqlite.getConnexionELPByYear(session, COD_ELP, str(year), listeInds)
 
         detailMois = ({"label": "Janvier",   "nb": 0},
@@ -698,7 +701,6 @@ class JalonBDD(SimpleItem):
             detailMois[month - 1]["nb"] = detailMois[month - 1]["nb"] + 1
 
         return {"etu":        len(listeInds),
-                "mois":       coMois,
                 "annee":      coAnnee.count(),
                 "detailMois": detailMois,
                 "graph":      self.genererGraphConnexionCourante(detailMois)}
