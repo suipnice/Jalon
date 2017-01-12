@@ -626,7 +626,7 @@ class JalonCours(ATFolder):
                               "course_creator_name": course_creator["fullname"]}
 
         if self.useJalonUtils("isLDAP", {}):
-            ldap_base = context.useJalonUtils("getBaseAnnuaire", {})
+            ldap_base = self.useJalonUtils("getBaseAnnuaire", {})
             course_author_dict["course_author_link"] = self.useJalonUtils("getFicheAnnuaire", {"valeur": course_author,
                                                                                                "base":   ldap_base})
             course_author_dict["course_creator_link"] = self.useJalonUtils("getFicheAnnuaire", {"valeur": course_creator,

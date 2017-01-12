@@ -11,4 +11,5 @@ from deposit_box_view import DepositBoxView
 from wims_activity_view import WimsActivityView
 from deposit_box_criteria_view import DepositBoxCriteriaView
 from deposit_box_evaluation_view import DepositBoxEvaluationView
+from course_statistics_view import CourseStatisticsView
 from my_students_view import MyStudentsView
