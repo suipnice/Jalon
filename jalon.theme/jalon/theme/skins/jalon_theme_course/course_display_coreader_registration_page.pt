@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-users no-pad"></i>
+        <tal:block i18n:translate="">Lecteurs du cours :</tal:block>
+    </h2>
+
+    <tal:define define="course_reader_list context/getCourseReader;
+                        is_personnel python:False">
+    <metal:macro use-macro="context/add_course_coreader_registration_form/macros/display_coreader_registration"/>
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>

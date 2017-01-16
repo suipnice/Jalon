@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-university no-pad"></i>
+        <tal:block i18n:translate="">Étudiants de l'offre de formation :</tal:block>
+    </h2>
+
+    <tal:define define="my_form context/displayCourseTrainingOffer">
+    <metal:macro use-macro="context/course_training_offer_macro/macros/course_display_training_offer"/>
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>

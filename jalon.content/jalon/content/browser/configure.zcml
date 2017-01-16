@@ -10,11 +10,6 @@
                   permission="zope2.View"
                   class=".scripts.first_page.FirstPage"/>
 
-    <browser:page name="cours_indicateurs_view"
-                  for="jalon.content.interfaces.jaloninterface.IJalonCours"
-                  class=".scripts.indicateurs_view.IndicateursView"
-                  permission="zope2.View"/>
-
     <browser:page name="jalon_forum_search"
                   for="Products.Ploneboard.interfaces.IPloneboard"
                   class=".view_script_4_5.search.SearchView"

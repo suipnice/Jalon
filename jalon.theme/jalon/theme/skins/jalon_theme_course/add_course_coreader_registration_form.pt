@@ -40,6 +40,7 @@
         </div>
     </form>
 
+    <metal:macro define-macro="display_coreader_registration">
     <div class="panel callout radius"
          tal:condition="not:course_reader_list">
          <i class="fa fa-info-circle no-pad"></i>
@@ -65,6 +66,7 @@
     </div>
 
     </tal:isLecteurs>
+    </metal:macro>
 
 
     <script charset="UTF-8"

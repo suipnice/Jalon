@@ -176,6 +176,12 @@
                   template="view_template/jalon_course/wims_activity_exercice_view.pt"
                   permission="zope2.View"/>
 
+  <browser:page name="course_statistics_view"
+                for="jalon.content.interfaces.jaloninterface.IJalonCours"
+                class="jalon.content.browser.view_script.course_statistics_view.CourseStatisticsView"
+                template="view_template/jalon_course/course_statistics_view.pt"
+                permission="zope2.View"/>
+
     <!-- Course Forum definition -->
     <browser:page name="jalon_ploneboard_view"
                   for="Products.Ploneboard.interfaces.IPloneboard"

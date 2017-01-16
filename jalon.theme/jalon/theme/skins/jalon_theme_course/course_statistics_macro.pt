@@ -1,0 +1,146 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Macro de l'onglet Généralité
+-->
+<metal:macro define-macro="indicateurs_generalite">
+
+    <h2>
+        <i class="fa fa-calendar"></i>Dates
+    </h2>
+    <div class="panel bkgrnd radius">
+        Créé le <tal:replace replace="structure onglet_view/created"/><br/>
+        Modifié le <tal:replace replace="structure onglet_view/modified"/>
+    </div>
+
+    <tal:define define="personnel python:False;
+                        mode_etudiant string:true">
+    <metal:macro use-macro="context/course_life_macro/macros/display_students">
+        Affichage des participants au cours
+    </metal:macro>
+    </tal:define>
+    <h2>
+        <i class="fa fa-sitemap"></i>Composition
+    </h2>
+    <div class="row"
+         tal:define="nb_element_by_type onglet_view/nb_element_by_type">
+        <div class="small-12 medium-3 columns">
+            <h3>
+                <i class="fa fa-list"></i>Éléments organisationels
+            </h3>
+            Titres : <tal:replace replace="nb_element_by_type/Titre"/><br/>
+            Textes libres : <tal:replace replace="nb_element_by_type/TexteLibre"/>
+        </div>
+        <div class="small-12 medium-3 columns">
+            <h3>
+                <i class="fa fa-files-o"></i>Supports pédagogiques
+            </h3>
+            Fichiers : <tal:replace replace="nb_element_by_type/Fichiers"/><br/>
+            Webconférences : <tal:replace replace="nb_element_by_type/Webconference"/><br/>
+            Ressources externes : <tal:replace replace="nb_element_by_type/Externes"/><br/>
+            Présentations sonorisées : <tal:replace replace="nb_element_by_type/Presentations"/><br/>
+            Vidéos : <tal:replace replace="nb_element_by_type/Video"/><br/>
+            VOD : <tal:replace replace="nb_element_by_type/VOD"/><br/>
+        </div>
+        <div class="small-12 medium-3 columns">
+            <h3>
+                <i class="fa fa-random"></i>Activités
+            </h3>
+            Boîtes de dépôts : <tal:replace replace="nb_element_by_type/BoiteDepot"/><br/>
+            Auto-évaluations WIMS : <tal:replace replace="nb_element_by_type/AutoEvaluation"/><br/>
+            Examens WIMS : <tal:replace replace="nb_element_by_type/Examen"/><br/>
+            Salles virtuelles : <tal:replace replace="nb_element_by_type/SalleVirtuelle"/>
+        </div>
+        <div class="small-12 medium-3 columns">
+            <h3>
+                <i class="fa fa-external-link"></i>Compléments
+            </h3>
+            Forums : <tal:replace replace="nb_element_by_type/Forums"/><br/>
+            Termes de Glossaire : <tal:replace replace="nb_element_by_type/TermeGlossaire"/><br/>
+            Éléments de Bibliographie : <tal:replace replace="nb_element_by_type/Bibliographie"/>
+        </div>
+    </div>
+
+</metal:macro>
+
+<!--
+        Macro de l'onglet Fréquentation
+-->
+<metal:macro define-macro="indicateurs_frequentation">
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>
+        Fréquentation étudiantes sur les 90 derniers jours
+    </h2>
+    <tal:replace replace="structure onglet_view/frequentation_graph"/>
+    <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
+    <h2>
+        <i class="fa fa-bar-chart"></i>
+        Fréquentation étudiantes de l'année universitaire <tal:replace replace="onglet_view/year"/> par mois
+    </h2>
+    <tal:replace replace="structure onglet_view/graph"/>
+    <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>
+
+</metal:macro>
+
+
+<!--
+        Macro de l'onglet Ressources
+-->
+<metal:macro define-macro="indicateurs_ressources">
+
+    <h2>
+        <i class="fa fa-check-square-o "></i>Sélectionner un type de Supports pédagogiques
+    </h2>
+    <nav class="small-12 columns"
+         tal:define="box_list onglet_view/box_list">
+        <a tal:repeat="box box_list"
+           tal:attributes="class box/css_class;
+                           href box/link_url">
+            <i tal:attributes="class string:fa ${box/icon}"></i><tal:replace replace="box/link_text"/>
+        </a>
+    </nav>
+    <metal:macro use-macro="python:context.course_statistics_details_macro.macros.get(onglet_view['second_macro'])">
+        Macro d'affichage des informations d'un onglet
+    </metal:macro>
+
+</metal:macro>
+
+
+<!--
+        Macro de l'onglet Activités
+-->
+<metal:macro define-macro="indicateurs_activites">
+
+    <h2>
+        <i class="fa fa-random"></i>Activités
+    </h2>
+    <nav class="small-12 columns"
+         tal:define="box_list onglet_view/box_list">
+        <a tal:repeat="box box_list"
+           tal:attributes="class box/css_class;
+                           href box/link_url">
+            <i tal:attributes="class string:fa ${box/icon}"></i><tal:replace replace="box/link_text"/>
+        </a>
+    </nav>
+    <metal:macro use-macro="python:context.course_statistics_details_macro.macros.get(onglet_view['second_macro'])">
+        Macro d'affichage des informations d'un onglet
+    </metal:macro>
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>

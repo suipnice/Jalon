@@ -22,6 +22,20 @@
     </ul>
 </metal:macro>
 
+<metal:macro define-macro="display_statistics">
+    <tal:condition condition="my_view/is_personnel">
+    <h2>
+        <i class="fa fa-bar-chart"></i><tal:block i18n:translate="">Statistiques</tal:block>
+    </h2>
+    <a class="button small radius expand"
+        tal:attributes="href string:${context/absolute_url}/course_statistics_view">
+        <i class="fa fa-bar-chart no-pad"></i>
+        <tal:replace i18n:translate="">Consulter les statistiques</tal:replace>
+    </a>
+    </tal:condition>
+
+</metal:macro>
+
 <metal:macro define-macro="display_students">
     <h2>
         <a class="right"

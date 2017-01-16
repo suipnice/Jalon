@@ -10,9 +10,32 @@
 
 <metal:main fill-slot="content">
 
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
-        Page d'affichage du fil d'ariane
-    </metal:macro>
+    <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire', 'Personnel'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/serial.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/themes/light.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.min.js"></script>
+        <link rel="stylesheet"
+              tal:attributes="href string:${navroot}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
+    </tal:isManager>
+
+    <div id="breadcrumb">
+        <div class="row">
+            <span>
+                <i class="fa fa-users no-pad"></i>
+                <a tal:attributes="href context/absolute_url">Mes etudiants</a>
+                <i class="fa fa-angle-double-right no-pad"></i>
+            </span>
+            <span>
+                <i class="fa fa-bar-chart no-pad"></i>
+                <a tal:attributes="href context/absolute_url">Statistiques</a>
+            </span>
+        </div>
+    </div>
 
     <main role="main" id="jalon_statistiques" class="row" aria-labelledby="page_title">
         <section id="js-list-etudiants" class="small-12 columns"
@@ -58,7 +81,7 @@
                 </li>
             </ul>
 
-            <metal:macro use-macro="python:context.macro_etudiants.macros[onglet]">
+            <metal:macro use-macro="python:context.my_students_statistics_macro.macros[onglet]">
                 Macro de l'onglet
             </metal:macro>
         </section>
