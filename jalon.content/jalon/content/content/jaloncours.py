@@ -1994,6 +1994,12 @@ class JalonCours(ATFolder):
         # LOG.info("***** training_offer_list : %s" % str(training_offer_list))
         return training_offer_list
 
+    def displayCourseTrainingOffer(self):
+        # LOG.info("----- displayCourseTrainingOffer -----")
+        return {"is_personnel":        False,
+                "training_offer_dict": self._training_offer_type,
+                "training_offer_list": self.getCourseTrainingOffer()}
+
     def searchTrainingOffer(self, training_offer_search_text, training_offer_search_type):
         # LOG.info("----- searchTrainingOffer -----")
         if not training_offer_search_text:

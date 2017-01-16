@@ -196,6 +196,7 @@ class CourseStatisticsView(BrowserView):
         LOG.info("----- getIndicateursFrequentationView -----")
         graph = ""
         requete = self.context.getConsultationByCoursByUniversityYearByDate(None, False, False).all()
+        LOG.info(requete)
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -274,6 +275,8 @@ class CourseStatisticsView(BrowserView):
             elements_cours = self.getElementsCoursByType()
             if box_dict[box] in elements_cours:
                 elements_consultation = self.context.getConsultationElementsByCours(elements_cours[box_dict[box]]["elements_list"], elements_cours[box_dict[box]]["elements_dict"])
+                LOG.info(len(elements_consultation))
+                LOG.info(elements_consultation)
             indicateurs_ressources_view = {"macro":                 "indicateurs_ressources",
                                            "box_list":              box_list,
                                            "second_macro":          "display_all_ressources",

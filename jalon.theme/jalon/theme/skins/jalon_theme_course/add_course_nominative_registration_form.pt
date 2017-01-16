@@ -41,6 +41,7 @@
             tal:content="structure string:setLDAPSearch()"></script>
     </form>
 
+    <metal:macro define-macro="display_nominative_registration">
     <div id="js-named-insc_list">
         <h3 class="texte_icone icone_users"
             i18n:translate="">Étudiant(s) de l'Université inscrit(s) nominativement</h3>
@@ -104,6 +105,7 @@
                 tal:content="structure string:setSortableList('js-named-insc_list',['name','code','email'],'name','asc')"></script>
         </table>
     </div>
+    </metal:macro>
 
 </metal:main>
 
