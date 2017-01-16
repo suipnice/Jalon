@@ -182,6 +182,10 @@
             <metal:macro use-macro="context/course_life_macro/macros/display_mod">
                 Mode Enseignant / Etudiant
             </metal:macro>
+
+            <metal:macro use-macro="context/course_life_macro/macros/display_statistics">
+                Statistics
+            </metal:macro>
             </tal:condition>
 
             <metal:macro use-macro="context/course_life_macro/macros/display_students">

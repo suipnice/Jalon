@@ -48,7 +48,7 @@
                       mode_etudiant my_view/mode_etudiant;
                       onglet_view my_view/onglet_view">
         <h1>
-            <i class="fa fa-line-chart no-pad"></i> Indicateurs
+            <i class="fa fa-bar-chart no-pad"></i> Statistiques
         </h1>
 
         <ul id="tab_button-group" class="button-group radius">
