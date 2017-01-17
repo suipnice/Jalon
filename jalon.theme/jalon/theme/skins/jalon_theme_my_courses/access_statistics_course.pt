@@ -1,0 +1,50 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="base_link context/absolute_url;
+                        course_id request/course_id;
+                        course_statistics python:context.getCourseStatistics(course_id)">
+
+    <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire', 'Personnel'])">
+        <script charset="UTF-8"
+                tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/serial.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/themes/light.js"></script>
+        <script charset="UTF-8"
+                tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.min.js"></script>
+        <link rel="stylesheet"
+              tal:attributes="href string:${base_link}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
+    </tal:isManager>
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>
+        <tal:block i18n:translate="">Satistiques du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h3>
+        <i class="fa fa-bar-chart"></i>
+        Fréquentation étudiantes sur les 90 derniers jours
+    </h3>
+    <tal:replace replace="structure course_statistics/course_graph"/>
+    <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
+
+    <a class="button expand"
+       tal:attributes="href course_statistics/course_link">
+       <i class="fa fa-bar-chart"></i>
+       Voir toutes les statistiques
+   </a>
+</metal:main>
+
+</body>
+
+</html>
