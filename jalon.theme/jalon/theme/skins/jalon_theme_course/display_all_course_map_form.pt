@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-eye"></i> / <i class="fa fa-eye-slash"></i>
+        Afficher ou masquer tous les éléments du plan du cours.
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/display_all_course_map_script">
+        <div class="panel warning radius">
+            <strong> Attention :</strong> Cette opération permettra en une seule fois d'afficher ou de masquer tous les éléments du plan à l'ensemble des participants du cours.
+        </div>
+        <div id="formControls" class="formControls">
+            <input type="radio"  
+                   name="display_or_hide" id="display" 
+                   value="display" checked="checked"/>
+            <label for="display" class="success"
+                   i18n:translate="">
+                <i class="fa fa-eye fa-fw"></i>Afficher
+            </label>
+
+            <input type="radio"  
+                   name="display_or_hide" id="hide" 
+                   value="hide"/>
+            <label for="hide" class="warning"
+                   i18n:translate="">
+                <i class="fa fa-eye-slash fa-fw"></i>Masquer
+            </label>
+        </div>
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+</metal:main>
+
+</body>
+
+</html>

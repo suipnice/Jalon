@@ -118,7 +118,10 @@ class CourseView(BrowserView):
 
         course_link = self.context.absolute_url()
         if is_personnel:
-            my_view["course_map_action_list"] = [{"action_link": "%s/download_wims_score_form" % course_link,
+            my_view["course_map_action_list"] = [{"action_link": "%s/display_all_course_map_form" % course_link,
+                                                  "action_icon": "fa fa-eye fa-fw",
+                                                  "action_name": "Tout afficher/masquer"},
+                                                 {"action_link": "%s/download_wims_score_form" % course_link,
                                                   "action_icon": "fa fa-download fa-fw",
                                                   "action_name": "Télécharger les notes WIMS"},
                                                  {"action_link": "%s/purge_course_form" % course_link,
