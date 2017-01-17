@@ -1238,6 +1238,23 @@ class JalonCours(ATFolder):
 
         return form_properties
 
+    def editAllCourseMapVisibility(self, display_or_hide):
+        """Edit All Course Map Visibility."""
+        # LOG.info("----- editAllCourseMapVisibility -----")
+        item_date = DateTime()
+        item_property_name = "affElement" if display_or_hide == "display" else "masquerElement"
+        for item_id in self.getCourseMapList():
+            self.editCourseItemVisibility(item_id, item_date, item_property_name)
+            item_id_start = item_id.split("-")[0]
+            if item_id_start in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+                context_object = getattr(self, item_id)
+                if item_property_name == "affElement":
+                    context_object.dateAff = item_date
+                    context_object.dateMasq = ""
+                else:
+                    context_object.dateMasq = item_date
+                context_object.reindexObject()
+
     def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
         """Edit Course Title Visibility."""
         # LOG.info("----- editCourseTitleVisibility -----")
