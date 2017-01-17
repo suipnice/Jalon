@@ -52,5 +52,14 @@
   "repository": {
     "type": "git",
     "url": "git://github.com:xdan/datetimepicker.git"
-  }
+  },
+  "_release": "2.5.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.5.4",
+    "commit": "d35c53dd594e1b15dd976e0774de968c55e8c382"
+  },
+  "_source": "https://github.com/xdan/datetimepicker.git",
+  "_target": "^2.4.6",
+  "_originalSource": "datetimepicker"
 }
