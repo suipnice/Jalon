@@ -1202,7 +1202,10 @@ class JalonCours(ATFolder):
             form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
             form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
             form_properties["item_property_name"] = "masquerElement"
-            form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
+            if item_properties["typeElement"] == "TexteLibre":
+                form_properties["form_title_text"] = "Masquer l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
+            else:
+                form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
             form_properties["item_parent_title"] = ""
 
@@ -1220,7 +1223,10 @@ class JalonCours(ATFolder):
             form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
             form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
             form_properties["item_property_name"] = "affElement"
-            form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
+            if item_properties["typeElement"] == "TexteLibre":
+                form_properties["form_title_text"] = "Afficher l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
+            else:
+                form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye no-pad"
 
             form_properties["text_title_lately"] = "… ou programmer son affichage."
