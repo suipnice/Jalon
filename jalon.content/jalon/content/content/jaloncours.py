@@ -634,7 +634,7 @@ class JalonCours(ATFolder):
                               "course_creator_name": course_creator["fullname"]}
 
         if self.useJalonUtils("isLDAP", {}):
-            ldap_base = context.useJalonUtils("getBaseAnnuaire", {})
+            ldap_base = self.useJalonUtils("getBaseAnnuaire", {})
             course_author_dict["course_author_link"] = self.useJalonUtils("getFicheAnnuaire", {"valeur": course_author,
                                                                                                "base":   ldap_base})
             course_author_dict["course_creator_link"] = self.useJalonUtils("getFicheAnnuaire", {"valeur": course_creator,
@@ -1067,9 +1067,13 @@ class JalonCours(ATFolder):
         id_reunion = url.split("/")[-2]
         authMember = self.portal_membership.getAuthenticatedMember()
         idMember = authMember.getId()
-        fullname = authMember.getProperty("fullname", idMember)
+        #fullname = authMember.getProperty("fullname", idMember)
+        fullname = jalon_utils.getInfosMembre(idMember)["fullname"]
         if id_reunion != idMember:
-            return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
+            try:
+                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
+            except:
+                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, idMember)
         else:
             portal = self.portal_url.getPortalObject()
             home = getattr(getattr(getattr(portal, "Members"), idMember), "Webconference")
@@ -1998,6 +2002,12 @@ class JalonCours(ATFolder):
             training_offer_list.append(training_offer)
         # LOG.info("***** training_offer_list : %s" % str(training_offer_list))
         return training_offer_list
+
+    def displayCourseTrainingOffer(self):
+        # LOG.info("----- displayCourseTrainingOffer -----")
+        return {"is_personnel":        False,
+                "training_offer_dict": self._training_offer_type,
+                "training_offer_list": self.getCourseTrainingOffer()}
 
     def searchTrainingOffer(self, training_offer_search_text, training_offer_search_type):
         # LOG.info("----- searchTrainingOffer -----")

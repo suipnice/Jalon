@@ -1,0 +1,460 @@
+<metal:macro define-macro="details-graph">
+    <tal:define define="minMaxYear python:context.jalonBDD('getMinMaxYearByELP', {'COD_ELP': request['COD_ELP']});
+                        anneeSelec request/anneeSelec | minMaxYear/max;
+                        nbConnexionCourante python:context.jalonBDD('displayConnexion', {'COD_ELP': request['COD_ELP'], 'year': int(anneeSelec)});">
+        Nombre d'étudiants : <span tal:content="nbConnexionCourante/etu"/><br/>
+        Nombre de connexion de l'année en  <tal:replace replace="anneeSelec"/> : <tal:replace replace="nbConnexionCourante/annee"/><br/>
+
+    <form tal:attributes="action string:${context/absolute_url}/statistique_page">
+        Sélectionner une année :
+        <select name="anneeSelec">
+            <option value="0">----</option>
+            <option tal:attributes="value minMaxYear/min;
+                                    selected python:context.test(int(anneeSelec) == minMaxYear['min'], 'selected', '')"
+                    tal:content="minMaxYear/min"/>
+            <tal:repeat repeat="boucle python:range(minMaxYear['ecart'])">
+                <option tal:define="index repeat/boucle/number;
+                                    value python:minMaxYear['min'] + index"
+                        tal:attributes="value value;
+                                        selected python:context.test(int(anneeSelec) == value, 'selected', '')"
+                        tal:content="value"/>
+            </tal:repeat>
+        </select>
+        <input type="hidden" name="onglet" value="details-graph"/>
+        <input type="hidden" name="COD_ELP"
+               tal:attributes="value request/COD_ELP"/>
+        <input type="hidden" name="TYP_ELP"
+               tal:attributes="value request/TYP_ELP"/>
+        <input type="submit" value="Afficher" class="button small"/>
+    </form>
+
+        <center>
+            <h3>Détail des connexions par mois pour l'année <tal:replace replace="anneeSelec"/> :</h3>
+            <tal:replace replace="structure nbConnexionCourante/graph"/>
+            <div id="chartdiv" style="width:80%; height:400px;"></div>
+        </center>
+    </tal:define>
+</metal:macro>
+
+<metal:macro define-macro="details-etudiants">
+    <section id="js-list-etudiants" class="small-12 columns"
+             tal:define="moisSelec request/moisSelec | string:0;
+                         anneeSelec request/anneeSelec | string:0;
+                         detailsConnexion python:context.jalonBDD('getConnexionByDateByELPByIND', {'COD_ELP': request['COD_ELP'], 'month' : int(moisSelec), 'year' : int(anneeSelec)});
+                         minMaxYear python:context.jalonBDD('getMinMaxYearByELP', {'COD_ELP': request['COD_ELP']})">
+    <form tal:attributes="action string:${context/absolute_url}/statistique_page">
+        Sélectionner un mois :
+        <select name="moisSelec">
+            <option value="0">-------</option>
+            <option value="01"
+                    tal:attributes="selected python:context.test('01' == moisSelec, 'selected', '')">
+                Janvier
+            </option>
+            <option value="02"
+                    tal:attributes="selected python:context.test('02' == moisSelec, 'selected', '')">
+                Février
+            </option>
+            <option value="03"
+                    tal:attributes="selected python:context.test('03' == moisSelec, 'selected', '')">
+                Mars
+            </option>
+            <option value="04"
+                    tal:attributes="selected python:context.test('04' == moisSelec, 'selected', '')">
+                Avril
+            </option>
+            <option value="05"
+                    tal:attributes="selected python:context.test('05' == moisSelec, 'selected', '')">
+                Mai
+            </option>
+            <option value="06"
+                    tal:attributes="selected python:context.test('06' == moisSelec, 'selected', '')">
+                Juin
+            </option>
+            <option value="07"
+                    tal:attributes="selected python:context.test('07' == moisSelec, 'selected', '')">
+                Juillet
+            </option>
+            <option value="08"
+                    tal:attributes="selected python:context.test('08' == moisSelec, 'selected', '')">
+                Août
+            </option>
+            <option value="09"
+                    tal:attributes="selected python:context.test('09' == moisSelec, 'selected', '')">
+                Septembre
+            </option>
+            <option value="10"
+                    tal:attributes="selected python:context.test('10' == moisSelec, 'selected', '')">
+                Octobre
+            </option>
+            <option value="11"
+                    tal:attributes="selected python:context.test('11' == moisSelec, 'selected', '')">
+                Novembre
+            </option>
+            <option value="12"
+                    tal:attributes="selected python:context.test('12' == moisSelec, 'selected', '')">
+                Décembre
+            </option>
+        </select>
+        <select name="anneeSelec">
+            <option value="0">----</option>
+            <option tal:attributes="value minMaxYear/min;
+                                    selected python:context.test(int(anneeSelec) == minMaxYear['min'], 'selected', '')"
+                    tal:content="minMaxYear/min"/>
+            <tal:repeat repeat="boucle python:range(minMaxYear['ecart'])">
+                <option tal:define="index repeat/boucle/number;
+                                    value python:minMaxYear['min'] + index"
+                        tal:attributes="value value;
+                                        selected python:context.test(int(anneeSelec) == value, 'selected', '')"
+                        tal:content="value"/>
+            </tal:repeat>
+        </select>
+        <input type="hidden" name="onglet" value="details-etudiants"/>
+        <input type="hidden" name="COD_ELP"
+               tal:attributes="value request/COD_ELP"/>
+        <input type="hidden" name="TYP_ELP"
+               tal:attributes="value request/TYP_ELP"/>
+        <input type="submit" value="Afficher" class="button small"/>
+    </form>
+
+    <table summary="Détails des connexions par étudiant par mois">
+        <thead>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nom"
+                title="Trier selon le nom" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Nom</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="prenom"
+                title="Trier selon le prénom" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Prénom</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="univ"
+                title="Trier selon l'université" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Univ.</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_prec"
+                title="Trier selon les connexions du mois précédent" i18n:attributes="title"h>
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Mois précédent</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
+                title="Trier selon les connexions du mois courant" i18n:attributes="title"
+                tal:condition="python:context.test(moisSelec == '0', 1, 0)">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Mois courant</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
+                title="Trier selon les connexions du mois sélectionné" i18n:attributes="title"
+                tal:condition="python:context.test(moisSelec == '0', 0, 1)">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Mois sélectionné</tal:block>
+                </span>
+            </th>
+            <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="annee"
+                title="Trier selon les connexions de l'année" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block i18n:translate="">Année</tal:block>
+                    <tal:replace replace="python:context.test(anneeSelec == '0', 'en cours', anneeSelec)"/>
+                </span>
+            </th>
+        </thead>
+        <tfoot></tfoot>
+        <tbody class="list"
+               tal:define="detailsMois detailsConnexion/mois;
+                           detailsMoisPrec detailsConnexion/moisPrec;
+                           detailsAnnee detailsConnexion/annee">
+            <tal:repeat repeat="ind detailsConnexion/etu">
+            <tr tal:define="moisCourant python:detailsMois[ind['SESAME_ETU']] if ind['SESAME_ETU'] in detailsMois else '0';
+                            moisPrec python:detailsMoisPrec[ind['SESAME_ETU']] if ind['SESAME_ETU'] in detailsMoisPrec else '0'"
+                >
+                <td class="nom" tal:content="ind/LIB_NOM_PAT_IND"/>
+                <td class="prenom" tal:content="ind/LIB_PR1_IND"/>
+                <td class="univ" tal:content="ind/UNIV_IND"/>
+                <td class="con_prec" tal:content="moisPrec"/>
+                <td class="con_sel">
+                    <i tal:attributes="class python:context.test(int(moisCourant) > int(moisPrec), 'fa fa-arrow-up', 'fa fa-arrow-down')"/>
+                    <tal:replace replace="moisCourant"/>
+                </td>
+                <td class="annee" tal:content="python:detailsAnnee[ind['SESAME_ETU']] if ind['SESAME_ETU'] in detailsAnnee else '0'"/>
+            </tr>
+            </tal:repeat>
+        </tbody>
+    </table>
+    <tal:block define="script string:setSortableList('js-list-etudiants',['nom','prenom', 'univ', 'con_prec','con_sel','annee'],'nom','asc')">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+    </section>
+</metal:macro>
+
+
+<metal:macro define-macro="details-etudiant">
+    <tal:define define="SESAME_ETU request/SESAME_ETU | nothing;">
+    <form tal:attributes="action string:${context/absolute_url}/statistique_page">
+        Afficher l'étudiant :
+        <select name="SESAME_ETU"
+                tal:define="listeInds python:context.jalonBDD('getIndAndNameByElp', {'COD_ELP': request['COD_ELP']})">
+            <tal:repeat repeat="ind listeInds">
+                <option tal:attributes="value ind/SESAME_ETU;
+                                        selected python:context.test(SESAME_ETU == ind['SESAME_ETU'], 'selected', '')"
+                        tal:content="string:${ind/LIB_NOM_PAT_IND} ${ind/LIB_PR1_IND} - ${ind/UNIV_IND}"/>
+            </tal:repeat>
+        </select>
+        <input type="hidden" name="onglet" value="details-etudiant"/>
+        <input type="hidden" name="COD_ELP"
+               tal:attributes="value request/COD_ELP"/>
+        <input type="hidden" name="TYP_ELP"
+               tal:attributes="value request/TYP_ELP"/>
+        <input type="submit" value="Afficher" class="button small"/>
+    </form>
+    <tal:condition condition="SESAME_ETU">
+        <tal:define define="detailsConnexion python:context.jalonBDD('getConnexionByIND', {'SESAME_ETU': SESAME_ETU})">
+            <br/>
+            <h3>Récapitulatif</h3>
+            Nombre de connexion total : <span tal:replace="detailsConnexion/total"/><br/>
+            Première connexion le <span tal:replace="detailsConnexion/first"/><br/>
+            Dernière connexion le <span tal:replace="detailsConnexion/last"/><br/><br/>
+            <h3>Tableau des connexions de l'étudiant</h3>
+            <div style="width:80%;margin-left:auto;margin-right:auto;">
+                <table summary="Liste des connexions par mois">
+                    <thead>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="date"
+                            title="Trier selon la date" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Date</tal:block>
+                            </span>
+                        </th>
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="connexion"
+                            title="Trier selon le nombre de connexions" i18n:attributes="title">
+                            <span>
+                                <i class="fa fa-sort"></i>
+                                <i class="fa fa-sort-asc"></i>
+                                <i class="fa fa-sort-desc"></i>
+                                <tal:block i18n:translate="">Nombre de connexion</tal:block>
+                            </span>
+                        </th>
+                    </thead>
+                    <tfoot></tfoot>
+                    <tbody class="list">
+                        <tal:repeat repeat="detail detailsConnexion/detail">
+                        <tr>
+                            <td class="date">
+                                <span class="hide" tal:content="detail/tri" />
+                                <tal:replace replace="detail/label"/>
+                            </td>
+                            <td class="connexion" tal:content="detail/nb"/>
+                        </tr>
+                        </tal:repeat>
+                    </tbody>
+                </table>
+
+            <tal:block define="script1 string:setSortableList('js-list-etudiants',['date','connexion'],'date','desc');">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+            </tal:block>
+
+            </div>
+            <h3>Graphique des connexions de l'étudiant :</h3>
+            <tal:replace replace="structure detailsConnexion/graph"/>
+            <div id="chartdiv" style="width:80%; height:400px; margin-left:auto; margin-right:auto;"/>
+        </tal:define>
+    </tal:condition>
+    </tal:define>
+</metal:macro>
+
+
+<metal:macro define-macro="cons-tous-cours">
+    <tal:define define="SESAME_ETU request/SESAME_ETU | string:tous;
+                        moisSelec request/moisSelec | string:0;
+                        anneeSelec request/anneeSelec | string:0;
+                        minMaxYear python:context.jalonBDD('getMinMaxYearByELP', {'COD_ELP': request['COD_ELP']});
+                        detailsConsultation python:context.jalonBDD('getConsultationCoursByDate', {'COD_ELP': request['COD_ELP'], 'TYP_ELP': request['TYP_ELP'], 'SESAME_ETU': SESAME_ETU, 'month' : int(moisSelec), 'year' : int(anneeSelec)})">
+        <form tal:attributes="action string:${context/absolute_url}/statistique_page">
+            Afficher l'étudiant :
+            <select name="SESAME_ETU"
+                    tal:define="listeInds python:context.jalonBDD('getIndAndNameByElp', {'COD_ELP': request['COD_ELP']})">
+                <option value="tous"
+                        tal:attributes="selected python:context.test(SESAME_ETU == 'tous', 'selected', '')">
+                    Tous les étudiants
+                </option>
+                <tal:repeat repeat="ind listeInds">
+                    <option tal:attributes="value ind/SESAME_ETU;
+                                            selected python:context.test(SESAME_ETU == ind['SESAME_ETU'], 'selected', '')"
+                            tal:content="string:${ind/LIB_NOM_PAT_IND} ${ind/LIB_PR1_IND} - ${ind/UNIV_IND}"/>
+                </tal:repeat>
+            </select>
+            Pour le mois :
+            <select name="moisSelec">
+                <option value="0">-------</option>
+                <option value="01"
+                        tal:attributes="selected python:context.test('01' == moisSelec, 'selected', '')">
+                    Janvier
+                </option>
+                <option value="02"
+                        tal:attributes="selected python:context.test('02' == moisSelec, 'selected', '')">
+                    Février
+                </option>
+                <option value="03"
+                        tal:attributes="selected python:context.test('03' == moisSelec, 'selected', '')">
+                    Mars
+                </option>
+                <option value="04"
+                        tal:attributes="selected python:context.test('04' == moisSelec, 'selected', '')">
+                    Avril
+                </option>
+                <option value="05"
+                        tal:attributes="selected python:context.test('05' == moisSelec, 'selected', '')">
+                    Mai
+                </option>
+                <option value="06"
+                        tal:attributes="selected python:context.test('06' == moisSelec, 'selected', '')">
+                    Juin
+                </option>
+                <option value="07"
+                        tal:attributes="selected python:context.test('07' == moisSelec, 'selected', '')">
+                    Juillet
+                </option>
+                <option value="08"
+                        tal:attributes="selected python:context.test('08' == moisSelec, 'selected', '')">
+                    Août
+                </option>
+                <option value="09"
+                        tal:attributes="selected python:context.test('09' == moisSelec, 'selected', '')">
+                    Septembre
+                </option>
+                <option value="10"
+                        tal:attributes="selected python:context.test('10' == moisSelec, 'selected', '')">
+                    Octobre
+                </option>
+                <option value="11"
+                        tal:attributes="selected python:context.test('11' == moisSelec, 'selected', '')">
+                    Novembre
+                </option>
+                <option value="12"
+                        tal:attributes="selected python:context.test('12' == moisSelec, 'selected', '')">
+                    Décembre
+                </option>
+            </select>
+            <select name="anneeSelec">
+                <option value="0">----</option>
+                <option tal:attributes="value minMaxYear/min;
+                                        selected python:context.test(int(anneeSelec) == minMaxYear['min'], 'selected', '')"
+                        tal:content="minMaxYear/min"/>
+                <tal:repeat repeat="boucle python:range(minMaxYear['ecart'])">
+                    <option tal:define="index repeat/boucle/number;
+                                        value python:minMaxYear['min'] + index"
+                            tal:attributes="value value;
+                                            selected python:context.test(int(anneeSelec) == value, 'selected', '')"
+                            tal:content="value"/>
+                </tal:repeat>
+            </select>
+            <input type="hidden" name="onglet" value="cons-tous-cours"/>
+            <input type="hidden" name="COD_ELP"
+                   tal:attributes="value request/COD_ELP"/>
+            <input type="hidden" name="TYP_ELP"
+                   tal:attributes="value request/TYP_ELP"/>
+            <input type="submit" value="Afficher" class="button small"/>
+        </form>
+        <br/>
+        <table summary="Consultations des cours pour le mois sélectionné">
+            <thead>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="titre"
+                            title="Trier selon le titre du cours" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Titre du cours</tal:block>
+                    </span>
+                </th>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_prec"
+                            title="Trier selon les consultations du mois précédent" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Mois précédent</tal:block>
+                    </span>
+                </th>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
+                            title="Trier selon les consultations du mois courant" i18n:attributes="title"
+                    tal:condition="python:context.test(moisSelec == '0', 1, 0)">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Mois courant</tal:block>
+                    </span>
+                </th>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
+                            title="Trier selon les consultations du mois sélectionné" i18n:attributes="title"
+                    tal:condition="python:context.test(moisSelec == '0', 0, 1)">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Mois sélectionné</tal:block>
+                    </span>
+                </th>
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="annee"
+                            title="Trier selon les consultations sur l'année" i18n:attributes="title">
+                    <span>
+                        <i class="fa fa-sort"></i>
+                        <i class="fa fa-sort-asc"></i>
+                        <i class="fa fa-sort-desc"></i>
+                        <tal:block i18n:translate="">Année</tal:block>
+                        <tal:replace replace="python:context.test(anneeSelec == '0', 'en cours', anneeSelec)"/>
+                    </span>
+                </th>
+            </thead>
+            <tfoot></tfoot>
+            <tbody class="list">
+                <tal:repeat repeat="cours detailsConsultation">
+                <tr>
+                    <td class="titre" tal:content="cours/Title"/>
+                    <td class="con_prec" tal:content="cours/NbPrec"/>
+                    <td class="con_sel">
+                        <span tal:attributes="class python:context.test(int(cours['NbCour']) > int(cours['NbPrec']), 'texte_icone icone_fleche_haut', 'texte_icone icone_fleche_bas')"
+                              tal:content="cours/NbCour">
+                        </span>
+                    </td>
+                    <td class="annee" tal:content="cours/NbAnnee"/>
+                </tr>
+                </tal:repeat>
+            </tbody>
+        </table>
+
+        <tal:block define="script1 string:setSortableList('js-list-etudiants',['titre','con_prec','con_sel','annee'],'titre','asc');">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+        </tal:block>
+
+    </tal:define>
+</metal:macro>

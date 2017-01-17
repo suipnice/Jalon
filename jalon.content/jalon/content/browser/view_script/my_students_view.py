@@ -31,11 +31,13 @@ class MyStudentsView(BrowserView):
     def getMyStudentsView(self, user):
         user_roles = user.getRoles()
         user_roles.remove("Authenticated")
-        user_roles.remove("Member")
+        try:
+            user_roles.remove("Member")
+        except:
+            pass
         user_role = user_roles[0]
 
-        if user_role == "Personnel":
-            access_dict = self.getAccessDict(user.getId())
+        access_dict = self.getAccessDict(user.getId()) if user_role == "Personnel" else {}
 
         my_students_macro_dict = {"Etudiant":      "my_class_mates",
                                   "EtudiantJalon": "my_class_mates",

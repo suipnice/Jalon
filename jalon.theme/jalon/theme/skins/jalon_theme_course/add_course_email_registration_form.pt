@@ -123,6 +123,7 @@
             tal:content="structure string:setMailRegistrationForm()"></script>
     </tal:isPersonnel>
 
+    <metal:macro define-macro="display_email_registration">
     <div class="panel callout radius"
          tal:condition="not:email_registration_list">
          <i class="fa fa-info-circle no-pad"></i>
@@ -168,6 +169,7 @@
                 tal:content="structure string:setSortableList('js-courriel-insc_list',['name','email'],'name','asc')"></script>
 
     </div>
+    </metal:macro>
 
 </metal:main>
 

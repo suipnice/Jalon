@@ -1,0 +1,135 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:content-core fill-slot="content-core">
+
+
+<!--
+        Tableau qui affiche les consultations de toutes les ressources en Supports Pdégogiques
+-->
+<metal:macro define-macro="display_all_ressources">
+
+    <h2>
+        <i class="fa fa-table"></i>
+        Fréquentation sur l'année universitaire courante
+    </h2>
+    <table summary="Consultations du cours pour le mois courant">
+        <thead>
+            <th tal:repeat="th onglet_view/thead_th_list"
+                class="sort has-tip" data-tooltip 
+                tal:attributes="data-sort th/data-sort;
+                                title string:Trier selon ${th/th_title}" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block tal:replace="th/th_text"
+                               i18n:translate=""/>
+                </span>
+            </th>
+            <th>
+                Détails
+            </th>
+        </thead>
+        <tfoot></tfoot>
+        <tbody class="list">
+            <tal:repeat repeat="elements_consultation onglet_view/elements_consultation">
+            <tr>
+                <td class="title" tal:content="elements_consultation/element_titre"/>
+                <td class="nb_cons_month_before">
+                    <tal:replace replace="elements_consultation/nb_freq_month_before"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_month_before"/> <i class="fa fa-table" title="consultation(s)"></i>
+                </td>
+                <td class="nb_cons_month">
+                    <i tal:attributes="class elements_consultation/icon"></i>
+                    <tal:replace replace="elements_consultation/nb_freq_month"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_month"/> <i class="fa fa-table" title="consultation(s)"></i>
+                </td>
+                <td class="nb_cons_year">
+                    <tal:replace replace="elements_consultation/nb_freq_year"/> <i class="fa fa-user" title="étudiant(s)"></i>
+                    <tal:replace replace="elements_consultation/nb_cons_year"/> <i class="fa fa-table" title="consultation(s)"></i>
+                </td>
+                <td>
+                    <a class="button small" tal:attributes="href string:${onglet_view/box_url}&amp;element_id=${elements_consultation/element_id}">
+                        <i class="fa fa-arrow-right no-pad"></i>
+                    </a>
+                </td>
+            </tr>
+            </tal:repeat>
+        </tbody>
+    </table>
+
+    <tal:block define="script1 string:setSortableList('js-list-indicateurs',['title','nb_cons_month_before', 'nb_cons_month', 'nb_cons_year'],'title','asc');">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+    </tal:block>
+
+</metal:macro>
+
+<!--
+        Détails d'une ressource
+-->
+<metal:macro define-macro="display_ressource">
+    <h2>
+        <a class="button small right"
+           tal:attributes="href onglet_view/box_url">
+            <i class="fa fa-arrow-left"></i>
+            Retour à la liste
+        </a>
+        <i class="fa fa-table"></i>
+        Consultations sur l'année universitaire courante par public : <tal:replace replace="onglet_view/element_title"/>
+    </h2>
+    <table summary="Consultations du cours pour le mois courant">
+        <thead>
+            <th tal:repeat="th onglet_view/thead_th_list"
+                class="sort has-tip" data-tooltip 
+                tal:attributes="data-sort th/data-sort;
+                                title string:Trier selon ${th/th_title}" i18n:attributes="title">
+                <span>
+                    <i class="fa fa-sort"></i>
+                    <i class="fa fa-sort-asc"></i>
+                    <i class="fa fa-sort-desc"></i>
+                    <tal:block tal:replace="th/th_text"
+                               i18n:translate=""/>
+                </span>
+            </th>
+        </thead>
+        <tfoot></tfoot>
+        <tbody class="list">
+            <tal:repeat repeat="elements_consultation onglet_view/elements_consultation">
+            <tr>
+                <td class="public" tal:content="elements_consultation/public"/>
+                <td class="nb_cons_month_before" tal:content="elements_consultation/nb_cons_month_before"/>
+                <td class="nb_cons_month">
+                    <i tal:attributes="class elements_consultation/icon"></i>
+                    <span tal:content="elements_consultation/nb_cons_month"/>
+                </td>
+                <td class="nb_cons_year" tal:content="elements_consultation/nb_cons_year"/>
+            </tr>
+            </tal:repeat>
+        </tbody>
+    </table>
+
+    <h2>
+        <i class="fa fa-bar-chart"></i>
+        Graphique des consultations de l'année universitaire en cours : <tal:replace replace="onglet_view/element_title"/>
+    </h2>
+    <tal:replace replace="structure onglet_view/graph"/>
+    <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>
+    <tal:block define="script1 string:setSortableList('js-list-indicateurs',['public','nb_cons_month_before', 'nb_cons_month', 'nb_cons_year'],'public','asc');">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+    </tal:block>
+
+</metal:macro>
+
+</metal:content-core>
+
+</body>
+
+</html>
