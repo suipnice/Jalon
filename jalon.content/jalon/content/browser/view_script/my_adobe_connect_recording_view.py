@@ -162,7 +162,6 @@ class MyAdobeConnectRecordingView(MySpaceView):
         return {"adobe_connect_reunion_id":   adobe_connect_reunion["id"],
                 "adobe_connect_reunion_link": adobe_connect_reunion["url"]}
 
-    # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyAdobeConnectRecordingList(self, folder, adobe_connect_reunion_id, selected_tags_list, portal_connect):
         #LOG.info("----- getMyAdobeConnectRecordingList -----")
         if (not selected_tags_list) or selected_tags_list == ["last"]:
