@@ -78,7 +78,6 @@ class MyExternalResourcesView(MySpaceView):
                 "folder_path":      "/".join(folder.getPhysicalPath()),
                 "folder_link":      folder.absolute_url()}
 
-    # def getContents(self, subject, typeR, authMember, repertoire, categorie=None):
     def getMyExternalResourcesList(self, folder, selected_tags_list):
         content_filter = {"portal_type": ["JalonRessourceExterne"]}
         return self.getItemsList(folder, selected_tags_list, content_filter)

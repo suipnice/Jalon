@@ -108,7 +108,7 @@ class MyWimsExercicesView(MySpaceView):
                 return {"status": "OK", "member_wims_class": folder.complement}
         else:
             # print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-            # print "[jalonfolder.py/getContents] Creation du groupement impossible"
+            # print "[my_wims_exercices.py/createWimsClass] Creation du groupement impossible"
             # print " Reponse WIMS : %s" % groupement
             # print "*****                                                 *****"
             return {"status": "ERROR", "message": "wims_bad_conf"}
@@ -129,7 +129,7 @@ class MyWimsExercicesView(MySpaceView):
                 return {"status": "ERROR", "message": "wims_bad_conf"}
         # except:
         #   mail_body = "*****    WIMS indisponible ou Mauvais parametrage de La connexion WIMS  *****\n"
-        #   mail_body += "[jalonfolder.py/getContents] getExercicesWims\n"
+        #   mail_body += "[my_wims_exercices.py/updateJalonExercicesWims] getExercicesWims\n"
         # mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
         #   mail_body += " authMember : %s \n" % authMember
         #   mail_body += " qclass : %s_1 \n" % self.getComplement()
