@@ -247,12 +247,12 @@ class CourseView(BrowserView):
                  "menu_adder_data-dropdown": "add-activity",
                  "menu_adder_icon":          "fa fa-random",
                  "menu_adder_name":          "Activité",
-                 "menu_adder_items":         item_adder_list["activity"]},
-                {"menu_adder_class":         "button small course-direct dropdown",
-                 "menu_adder_data-dropdown": "add-direct",
-                 "menu_adder_icon":          "fa fa-cloud-upload",
-                 "menu_adder_name":          "Ajout rapide",
-                 "menu_adder_items":         item_adder_list["add"]}]
+                 "menu_adder_items":         item_adder_list["activity"]}]
+        #        {"menu_adder_class":         "button small course-direct dropdown",
+        #         "menu_adder_data-dropdown": "add-direct",
+        #         "menu_adder_icon":          "fa fa-cloud-upload",
+        #         "menu_adder_name":          "Ajout rapide",
+        #         "menu_adder_items":         item_adder_list["add"]}]
 
     def getCourseItemAdderMenuList(self, course_link, course_path, portal):
         """Fournit la liste des liens permettant d'ajouter des elements dans un cours Jalon."""
