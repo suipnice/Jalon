@@ -7,7 +7,7 @@
 		"uuidString": "6444BC3E-856A-4004-9C72-3BD8513A7FEF"
 		}
 	],
-"creatorBuild": "25479",
+"creatorBuild": "25504",
 "files": {
 	"\/.bowerrc": {
 		"ft": 8192,
@@ -108,7 +108,7 @@
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
-		"oAP": "\/bower_components\/datetimepicker\/jquery.datetimepicker.css",
+		"oAP": "\/bower_components\/datetimepicker\/jquery.datetimepicker.scss",
 		"oF": 1,
 		"oS": 3,
 		"uL": 1
@@ -1747,7 +1747,7 @@
 		"tS": 0
 		},
 	"\/config.rb": {
-		"ft": 131072,
+		"ft": 8192,
 		"oA": 0,
 		"oAP": "\/config.rb",
 		"oF": 0
@@ -2793,6 +2793,10 @@
 			"active": 0,
 			"optionString": ""
 			},
+		"no-await-in-loop": {
+			"active": 0,
+			"optionString": ""
+			},
 		"no-bitwise": {
 			"active": 0,
 			"optionString": "{'allow': ['~'], 'int32Hint': true}"
@@ -3332,6 +3336,10 @@
 		"prefer-const": {
 			"active": 0,
 			"optionString": "{'destructuring': 'any', 'ignoreReadBeforeAssign': false}"
+			},
+		"prefer-destructuring": {
+			"active": 0,
+			"optionString": "{'array': true, 'object': true}, {'enforceForRenamedProperties': false}"
 			},
 		"prefer-numeric-literals": {
 			"active": 0,
