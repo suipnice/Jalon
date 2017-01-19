@@ -112,7 +112,6 @@ class MyPodVideosView(MySpaceView):
                              "Videothumbnail":       video["thumbnail"]}
                     object_video.setProperties(param)
 
-            """
             for video_id in videos_del:
                 object_id = "Externe-%s-%s" % (member_id, video_id)
                 video_object = getattr(folder, object_id)
@@ -125,7 +124,6 @@ class MyPodVideosView(MySpaceView):
                     else:
                         brain_object.retirerElement(object_id, "sujets")
                 folder.manage_delObjects(object_id)
-            """
 
         elif jalon_videos_id:
             # Supprimer toutes les vidéos

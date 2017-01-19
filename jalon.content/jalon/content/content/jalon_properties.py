@@ -348,20 +348,6 @@ class JalonProperties(SimpleItem):
         menu_left = []
         is_personnel = user_role in ["Personnel", "Secretaire", "Manager"]
 
-        menu_my_space = None
-        if is_personnel:
-            menu_my_space = {"id":        "mon_espace",
-                             "class":     "has-dropdown not-click",
-                             "icon":      "fa fa-home",
-                             "title":     _(u"Mon espace"),
-                             "link":      "mon_espace",
-                             "sub_menu":  []}
-
-            for sub_menu in self.getGridMonEspaceNew():
-                if sub_menu["activated"]:
-                    menu_my_space["sub_menu"].append(sub_menu)
-            menu_left.append(menu_my_space)
-
         sub_menu_mes_cours = []
         sub_menu_mes_cours_class = ""
         if user_role in ["Etudiant", "EtudiantJalon"]:
@@ -383,6 +369,20 @@ class JalonProperties(SimpleItem):
                           "title":    _(u"Mes cours"),
                           "link":     "mes_cours",
                           "sub_menu": sub_menu_mes_cours})
+
+        menu_my_space = None
+        if is_personnel:
+            menu_my_space = {"id":        "mon_espace",
+                             "class":     "has-dropdown not-click",
+                             "icon":      "fa fa-home",
+                             "title":     _(u"Mes ressources"),
+                             "link":      "mon_espace",
+                             "sub_menu":  []}
+
+            for sub_menu in self.getGridMonEspaceNew():
+                if sub_menu["activated"]:
+                    menu_my_space["sub_menu"].append(sub_menu)
+            menu_left.append(menu_my_space)
 
         if is_personnel:
             menu_left.append({"id":       "mes_etudiants",
