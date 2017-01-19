@@ -95,7 +95,7 @@ class CourseAddView(MySpaceView):
         nb_items = len(folder.objectIds())
 
         course_path_list = course_path.split("/")
-        LOG.info("***** course_path : %s" % course_path)
+        # LOG.info("***** course_path : %s" % course_path)
         course_object = getattr(getattr(portal.cours, course_path_list[0]), course_path_list[1])
 
         is_course = True

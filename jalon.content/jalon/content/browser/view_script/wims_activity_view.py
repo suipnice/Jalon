@@ -127,7 +127,7 @@ class WimsActivityView(CourseView):
                 not my_view['wims_activity_visibility']['val'] and
                 not my_wims_activity.getIdExam() and
                 my_wims_activity.getCreateur() == user_id):
-
+            my_view["id_groupement"] = my_wims_activity.getGroupement()
             my_view["exercices_add"] = self.getExerciceAdderMenuList(portal_link, activity_path)
             # my_view["exercices_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
 

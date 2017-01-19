@@ -875,14 +875,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             idgroupement = self.getGroupement(auteur)
             if not idgroupement:
                 # Cas ou l'utilisateur a tenté de créer une autoevaluation ou un examen sans etre passé une fois par les exercices WIMS
-                rep_wims = '{"status": "ERROR", "message": "[jaloncourswims] Tentative de creation de classe WIMS sans groupement.","auteur":"%s"}' % auteur
-                self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/setClasse"})
-                # self.reindexObject()
-
-                # TODO : message plus clair pour l'utilisateur
-                # Vérifier d'abord que authuser est bien le createur ?
-                message = _(u"Vous n'avez créé aucun exercice. Rendez-vous d'abord dans 'Mon espace > exercices WIMS'")
-                self.plone_utils.addPortalMessage(message, type='info')
+                LOG.info('#### Creation de classe WIMS sans Groupement ####')
                 return None
 
             classe = self.wims("creerClasse", {"authMember": auteur, "fullname": fullname, "auth_email": auth_email, "type": "1", "titre_classe": self.aq_parent.title_or_id(), "qclass": idgroupement})
@@ -891,7 +884,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 idclasse = str(classe["class_id"])
                 self.wims("callJob", {"job": "sharecontent", "qclass": "%s_1" % idgroupement, "data1": idclasse, "code": auteur})
             else:
+                self.wims("verifierRetourWims", {"rep": classe,
+                                                 "fonction": "jaloncourswims.py/setClasse",
+                                                 "message": "job = creerClasse"
+                                                 })
+                LOG.info('#### CREATION DE CLASSE WIMS IMPOSSIBLE ####')
                 return None
+            idClasse = classe["class_id"]
             self.aq_parent.setListeClasses([dicoClasses])
 
         return idClasse
@@ -1118,11 +1117,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # On donne des infos de Jalon pour debugger plus facilement en cas d'erreur.
         param["jalon_request"] = request
 
-        # Si l'obtention/creation de classe plante, la connexion a WIMS est surement rompue.
         if not param["qclass"]:
-            message = _(u"Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)")
-            self.plone_utils.addPortalMessage(message, type='error')
-            return {"status": "ERROR", "message": message}
+            if self.getGroupement():
+                # Si l'obtention/creation de classe plante, la connexion a WIMS est surement rompue.
+                rep_wims = '{"status": "ERROR", "message": "Impossible de créer la classe WIMS.", "quser":"%s"}' % quser
+                self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes"})
+                message = _(u"Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)")
+                self.plone_utils.addPortalMessage(message, type='error')
+                return {"status": "ERROR", "message": message}
+            else:
+                # Si l'utilisateur n'as pas de groupement, il doit d'abord passer par "Mon espace" pour ajouter des exercices.
+                return {"status": "OK", "user_cnt": 0}
 
         # Puis un getIdFeuilleWIMS() pour créer eventuellement la feuille si ce n'etait deja fait.
         param["qsheet"] = self.getIdFeuilleWIMS(quser)

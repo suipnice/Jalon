@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""View scripts associated to my_wims_exercices_view.pt template."""
 
 from zope.component import getMultiAdapter
 from my_space_view import MySpaceView
@@ -10,16 +11,17 @@ LOG = getLogger('[MyWimsExercicesView]')
 
 
 class MyWimsExercicesView(MySpaceView):
-    """ Class View du fichier my_wims_exercices_view.pt
-    """
+    """Class View du fichier my_wims_exercices_view.pt."""
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        """Initialize th view class."""
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
 
     def getBreadcrumbs(self):
+        """Fournit le fil d'ariane de la vue."""
         return [{"title": _(u"Mon espace"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
@@ -28,7 +30,8 @@ class MyWimsExercicesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyWimsExercicesView(self, user):
-        #LOG.info("----- getMyWimsExercicesView -----")
+        """Fournit la vue "Mes Exercices"."""
+        # LOG.info("----- getMyWimsExercicesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
@@ -70,9 +73,9 @@ class MyWimsExercicesView(MySpaceView):
                 "wims_exercice_model_list": wims_exercice_model_list}
 
     def getMyWimsExercicesList(self, folder, selected_tags_list, user_id, portal_wims):
-        """ Fournit la liste des exercices WIMS de user_id."""
-        #LOG.info("----- getMyWimsExercicesList -----")
-        ##LOG.info("selected_tags_list = ##%s##" % selected_tags_list)
+        """Fournit la liste des exercices WIMS de user_id."""
+        # LOG.info("----- getMyWimsExercicesList -----")
+        # LOG.info("selected_tags_list = ##%s##" % selected_tags_list)
         member_wims_class = folder.getComplement()
         if not member_wims_class:
             self.createWimsClass(folder, user_id, portal_wims)
@@ -83,8 +86,8 @@ class MyWimsExercicesView(MySpaceView):
         return self.getItemsList(folder, selected_tags_list, content_filter)
 
     def createWimsClass(self, folder, user_id, portal_wims):
-        u""" Crée le groupement de classes WIMS pour un nouvel utilisateur si il n'existe pas déjà."""
-        #LOG.info("----- createWimsClass -----")
+        u"""Crée le groupement de classes WIMS pour un nouvel utilisateur si il n'existe pas déjà."""
+        # LOG.info("----- createWimsClass -----")
         # 1er  cas : Aucune classe n'existe pour cet utilisateur
         member_properties = self.context.getInfosMembre(user_id)
         member_email = member_properties["email"]
@@ -114,8 +117,8 @@ class MyWimsExercicesView(MySpaceView):
             return {"status": "ERROR", "message": "wims_bad_conf"}
 
     def updateJalonExercicesWims(self, folder, user_id, member_wims_class, portal_wims):
-        u""" Met a jour la liste des exos de l'utilisateur user_id."""
-        #LOG.info("----- updateJalonExercicesWims -----")
+        u"""Met a jour la liste des exos de l'utilisateur user_id."""
+        # LOG.info("----- updateJalonExercicesWims -----")
         # L'utilisateur courant dispose bien d'une classe. on liste ses exercices.
         # print "Classe %s" % self.getComplement()
         exercices = portal_wims.getExercicesWims({"authMember": user_id,
@@ -145,8 +148,8 @@ class MyWimsExercicesView(MySpaceView):
         # Ici il faudrait pouvoir ne lister que les exos qui ne sont pas des groupes
         jalon_wims_exercices = folder.objectIds()
         jalon_wims_exercices = [elem for elem in jalon_wims_exercices if not(elem.startswith("groupe-") or elem.startswith("externe-"))]
-        #jalon_wims_exercices = [elem for elem in jalon_wims_exercices if elem.startswith("groupe-")]
-        #return {"erreur": "wims_unavailable"}
+        # jalon_wims_exercices = [elem for elem in jalon_wims_exercices if elem.startswith("groupe-")]
+        # return {"erreur": "wims_unavailable"}
 
         if "exocount" in exercices:
             if exercices["exocount"] == 0:
@@ -154,7 +157,7 @@ class MyWimsExercicesView(MySpaceView):
             else:
                 wims_exercices = exercices["exotitlelist"]
             if len(jalon_wims_exercices) < len(wims_exercices):
-                ## Il y a plus d'exos sur WIMS (%s) que sur Jalon (%s) " % (len(wims_exercices), len(jalon_wims_exercices)))
+                # Il y a plus d'exos sur WIMS (%s) que sur Jalon (%s) " % (len(wims_exercices), len(jalon_wims_exercices)))
                 model_list = portal_wims.getWimsProperty("modele_wims")
                 # On recupere les exos de wims pour les créer sur jalon
                 for wims_exercice in wims_exercices:
@@ -166,15 +169,15 @@ class MyWimsExercicesView(MySpaceView):
                         model = wims_exercice["id"].split("-")[0]
                         if model not in model_list:
                             model = "exercicelibre"
-                        ##LOG.info("CREATION de l'exercice %s sur Jalon " % wims_exercice["id"])
+                        # LOG.info("CREATION de l'exercice %s sur Jalon " % wims_exercice["id"])
                         object_id = folder.invokeFactory(type_name='JalonExerciceWims', id=wims_exercice["id"])
                         object_created = getattr(folder, object_id)
                         object_created.setProperties({"Title":  wims_exercice["title"],
                                                       "Modele": model})
         else:
-            #*****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
+            # *****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
             # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
-            # print "*****    Mauvais parametrage de votre connexion WIMS  *****"
-            # print "[jalonfolder.py] getExercicesWims : %s" % exercices
-            # print "*****                                                *****"
+            LOG.info("*****    Mauvais parametrage de votre connexion WIMS  *****")
+            LOG.info("[jalonfolder.py] getExercicesWims : %s" % exercices)
+            LOG.info("*****                                                *****")
             return {"erreur": "wims_unavailable"}

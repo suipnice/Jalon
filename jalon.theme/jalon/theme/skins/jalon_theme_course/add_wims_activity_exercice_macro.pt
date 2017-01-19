@@ -3,7 +3,7 @@
         <div class="panel callout radius">
             <i class="fa fa-info-circle no-pad"></i>
             <strong i18n:translate="">Il n'y a aucun Exercice WIMS dans votre espace.</strong><br />
-            <tal:block i18n:translate="">Rendez-vous dans votre espace pour en ajouter.</tal:block>
+            <tal:block i18n:translate="">Rendez-vous dans "Mes exercices" pour en ajouter.</tal:block>
         </div>
         <p class="text-center"><a class="button radius"
                tal:attributes="href my_view/folder_link"

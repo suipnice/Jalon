@@ -200,9 +200,9 @@
                 </li>
             </ul>
             <tal:condition condition="my_view/is_personnel_or_wims_activity_visible">
-            <metal:macro use-macro="python:context.course_activity_macro.macros.get('%s-list' % my_view['tab'])">
-                Page d'affichage de la liste des exos, documents ou resultats
-            </metal:macro>
+                <metal:macro use-macro="python:context.course_activity_macro.macros.get('%s-list' % my_view['tab'])">
+                    Page d'affichage de la liste des exos, documents ou resultats
+                </metal:macro>
             </tal:condition>
         </section>
 
