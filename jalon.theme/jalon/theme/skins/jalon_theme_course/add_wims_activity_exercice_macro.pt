@@ -114,3 +114,7 @@
     </tal:listing>
 
 </metal:macro>
+
+<metal:macro define-macro="add_new_resource">
+    Nouvelle ressource
+</metal:macro>
