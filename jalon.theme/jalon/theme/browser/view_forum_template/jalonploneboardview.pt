@@ -51,7 +51,7 @@
         </nav>
 
 
-        <section class="medium-8 small-12 columns">
+        <section class="medium-9 small-12 columns">
 
             <h2>
                 <i class="fa fa-comments no-pad"></i>
@@ -183,7 +183,7 @@
         </section>
 
 
-        <section class="medium-4 small-12 columns">
+        <section class="medium-3 small-12 columns">
 
     <tal:comment replace="nothing"><!--
             <h2>
