@@ -30,7 +30,7 @@
         }
     </style>
     <form method="post"
-          tal:attributes="action string:${context/absolute_url}/edit_deposi_box_skills_options_script">
+          tal:attributes="action string:${context/absolute_url}/edit_deposit_box_skills_options_script">
     <div class="field"
          tal:define="afficher_comp context/getAfficherCompetences">
         <label>Afficher l'onglet "Compétences" aux étudiants</label>
