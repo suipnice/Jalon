@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <tal:comment replace="nothing">!-- Grille d'accès à mon espace --</tal:comment>
+    <tal:comment replace="nothing">!-- Grille d'accès à Mes ressources --</tal:comment>
     <nav class="small-12 columns">
         <tal:repeat repeat="block infos_mon_espace/grid">
         <a tal:condition="block/activated"

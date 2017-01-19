@@ -621,7 +621,7 @@
     </form>
 </metal:macro>
 
-<!-- Gestion des accès aux parties de "Mon Espace" à Jalon -->
+<!-- Gestion des accès aux parties de "Mes ressources" à Jalon -->
 <metal:macro define-macro="gestion_mon_espace">
     <h2 i18n:translate="">
         Configuration de la connexion à Jalon

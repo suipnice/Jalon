@@ -12,7 +12,7 @@
 
     <h2>
         <i class="fa fa-plus-circle no-pad"></i>
-        <tal:block i18n:translate="">Ajouter une ressource externe au cours et dans "Mon espace > Ressources externes"</tal:block>
+        <tal:block i18n:translate="">Ajouter une ressource externe au cours et dans "Mes ressources > Ressources externes"</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 

@@ -19,7 +19,7 @@ class MyGlossaryTermsView(MySpaceView):
         self.request = request
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
+        return [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes termes de glossaire"),

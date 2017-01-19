@@ -422,7 +422,7 @@ class JalonProperties(SimpleItem):
                                             "link":  "portal_jalon_properties/gestion_connexion"},
                                            {"id":    "gestion_mon_espace",
                                             "icon":  "fa fa-home",
-                                            "title": _(u"Gestion \"Mon Espace\""),
+                                            "title": _(u"Gestion \"Mes ressources\""),
                                             "link":  "portal_jalon_properties/gestion_mon_espace"},
                                            {"id":    "gestion_mes_cours",
                                             "icon":  "fa fa-university",
@@ -1309,7 +1309,7 @@ class JalonProperties(SimpleItem):
         return [{"title": _(u"Configuration de Jalon"),
                  "icon":  "fa fa-cogs",
                  "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
-                {"title": _(u"Gestion \"Mon Espace\""),
+                {"title": _(u"Gestion \"Mes ressources\""),
                  "icon":  "fa fa-home",
                  "link":  "%s/portal_jalon_properties/gestion_mon_espace" % self.absolute_url()}]
 

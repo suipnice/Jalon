@@ -26,7 +26,7 @@ class MySpaceView(BrowserView):
         return portal_state.anonymous()
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
+        return [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-home",
                  "link":  self.context.absolute_url()}]
 

@@ -236,7 +236,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
     # #-------------------# #
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        """Ajoute un element de mon espace et met a jour les related items de l'activité et de l'élément."""
+        """Ajoute un element de Mes ressources et met a jour les related items de l'activité et de l'élément."""
         item = super(JalonCoursWims, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
         if folder_object.getId() == "Wims":
             liste = "Exercices"
@@ -1697,7 +1697,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         self.reindexObject()
 
     def importerHotPotatoes(self, member_auth, import_file):
-        """Importe un ensemble d'exercice hotpotatoes, les place dans mon espace et dans l'autoevaluation/examen."""
+        """Importe un ensemble d'exercice hotpotatoes, les place dans Mes ressources et dans l'autoevaluation/examen."""
         LOG.info("----- importerHotPotatoes -----")
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, member_auth), "Wims")

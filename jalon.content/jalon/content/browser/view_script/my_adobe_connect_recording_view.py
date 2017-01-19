@@ -26,7 +26,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
                             "mes_webconferences":           "Webconference"}
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
+        return [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-home",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes présentations sonorisées"),

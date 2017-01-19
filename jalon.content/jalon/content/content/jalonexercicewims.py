@@ -73,7 +73,7 @@ class JalonExerciceWims(ATDocumentBase):
         """Fournit le fil d'ariane de l'exercice courant."""
         LOG.info("----- getBreadcrumbs -----")
         portal_url = self.portal_url.getPortalObject().absolute_url()
-        crumbs_list = [{"title" : _(u"Mon espace"),
+        crumbs_list = [{"title" : _(u"Mes ressources"),
                         "icon"  : "fa fa-home",
                         "link" : "%s/mon_espace" % portal_url},
                        {"title": _(u"Mes exercices WIMS"),
@@ -543,7 +543,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         else:
             dico = {"job": "delexo", "code": author, "qclass": qclass, "qexo": qexo}
             rep_wims = self.aq_parent.wims("callJob", dico)
-            retour = self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/delExoWims", "message": "suppression d'un exo de mon espace", "requete": dico})
+            retour = self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/delExoWims", "message": "suppression d'un exo de Mes ressources", "requete": dico})
         return retour
 
     def lister_modules_wims(self, authMember, module_path="/"):

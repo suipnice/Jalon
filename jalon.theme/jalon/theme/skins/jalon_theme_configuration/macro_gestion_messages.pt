@@ -48,7 +48,7 @@
                         Message à destination de tous les utilisateurs
                     </label>
                     <span class="discreet" i18n:translate="message_general_help">
-                        Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants, de la page "Mon Espace" pour les enseignants.
+                        Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants, de la page "Mes ressources" pour les enseignants.
                     </span>
                     <textarea id="message_general" name="message_general" rows="5"><tal:replace replace="bie/message_general | nothing" /></textarea>
                 </div>
@@ -110,7 +110,7 @@
                         Message à destination des enseignants
                     </label>
                     <span class="discreet" i18n:translate="message_enseignant_help">
-                        Ce contenu HTML sera affiché en bas de la page « Mon espace » des enseignants.
+                        Ce contenu HTML sera affiché en bas de la page « Mes ressources » des enseignants.
                     </span>
                     <textarea id="message_enseignant" name="message_enseignant" rows="5"><tal:replace replace="bie/message_enseignant | nothing" /></textarea>
                 </div>

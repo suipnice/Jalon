@@ -59,7 +59,7 @@ class JalonActivity(SimpleItem):
             self.setDocumentsProperties(self._infos_element)
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        """Met a jour les related Items de l'activité et de l'element de mon espace qu'on lui ajoute."""
+        """Met a jour les related Items de l'activité et de l'element de Mes ressources qu'on lui ajoute."""
         LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
 

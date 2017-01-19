@@ -56,31 +56,31 @@ msgid "Actions"
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:83
-msgid "Activer la section Catalogue BU dans mon espace."
+msgid "Activer la section Catalogue BU dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:59
-msgid "Activer la section Exercices Wims dans mon espace."
+msgid "Activer la section Exercices Wims dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:22
-msgid "Activer la section Fichiers dans mon espace."
+msgid "Activer la section Fichiers dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:92
-msgid "Activer la section Glossaire dans mon espace."
+msgid "Activer la section Glossaire dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:34
-msgid "Activer la section Présentation sonorisée dans mon espace."
+msgid "Activer la section Présentation sonorisée dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:77
-msgid "Activer la section Ressources externes dans mon espace."
+msgid "Activer la section Ressources externes dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:44
-msgid "Activer la section Webconférence dans mon espace."
+msgid "Activer la section Webconférence dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfiguration.py:71
@@ -246,40 +246,40 @@ msgid "Cocher pour activer ce champ générique"
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:84
-msgid "Cocher pour activer la section Catalogue BU dans mon espace."
+msgid "Cocher pour activer la section Catalogue BU dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:60
 msgid ""
-"Cocher pour activer la section Exercices Wims dans mon espace, seulement "
+"Cocher pour activer la section Exercices Wims dans Mes ressources, seulement "
 "possible si le produit jalon.wims est installé."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:23
-msgid "Cocher pour activer la section Fichiers dans mon espace."
+msgid "Cocher pour activer la section Fichiers dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:93
-msgid "Cocher pour activer la section Glossaire dans mon espace."
+msgid "Cocher pour activer la section Glossaire dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:35
 msgid ""
-"Cocher pour activer la section Présentation sonorisée dans mon espace, "
+"Cocher pour activer la section Présentation sonorisée dans Mes ressources, "
 "seulement possible si le produit jalon.connect est installé."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:78
-msgid "Cocher pour activer la section Ressources externes dans mon espace."
+msgid "Cocher pour activer la section Ressources externes dans Mes ressources."
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:121
-msgid "Cocher pour activer les notes de mise à jour depuis la page mon espace"
+msgid "Cocher pour activer les notes de mise à jour depuis la page Mes ressources"
 msgstr ""
 
 #: ../browser/config/jalonconfig.py:45
 msgid ""
-"Cocher pour activer section la Webconference dans mon espace, seulement "
+"Cocher pour activer section la Webconference dans Mes ressources, seulement "
 "possible si le produit jalon.connect est installé."
 msgstr ""
 

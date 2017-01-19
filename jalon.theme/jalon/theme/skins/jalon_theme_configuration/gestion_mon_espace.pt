@@ -82,7 +82,7 @@ div.panel label{
                 <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_mon_espace;
                                    class python:context.test(gestion == 'gestion_mon_espace', 'button small', 'button small secondary')"
                    i18n:translate="ongletMonEspace">
-                    Accès Mon Espace
+                    Accès Mes ressources
                 </a>
             </li>
             <li>

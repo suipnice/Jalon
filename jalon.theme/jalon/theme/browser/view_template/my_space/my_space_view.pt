@@ -19,7 +19,7 @@
         <div class="small-12 columns">
             <h2>
                 <i class="fa fa-home fa-fw no-pad"></i>
-                <tal:block i18n:translate="">Mon espace</tal:block>
+                <tal:block i18n:translate="">Mes ressources</tal:block>
             </h2>
         </div>
 
@@ -36,7 +36,7 @@
         </div>
 
         <metal:macro use-macro="context/macro_mon_espace_grid/macros/mon_espace_grid">
-            Grille des bulles "Mon espace"
+            Grille des bulles "Mes ressources"
         </metal:macro>
 
         <div class="small-12 columns">

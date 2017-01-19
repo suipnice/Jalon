@@ -10,7 +10,7 @@
             visible="True" >
     <permission>Manage portal</permission>
 </configlet>
-<configlet title="Jalon Mon espace Configuration" 
+<configlet title="Jalon Mes ressources Configuration" 
             action_id="JalonConfig" 
             appId="jalon.content"
             category="Products"

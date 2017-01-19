@@ -46,7 +46,7 @@
         <div class="field ArchetypesStringWidget"
              tal:condition="my_form/item_title_in_my_space"
              tal:on-error="nothing">
-            <label for="title" i18n:translate="">Titre dans mon espace</label>
+            <label for="title" i18n:translate="">Titre dans Mes ressources</label>
             <input type="text" maxlength="255" size="30" disabled="disabled"
                    tal:attributes="value my_form/item_title_in_my_space"/>
         </div>
