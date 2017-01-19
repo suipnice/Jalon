@@ -382,6 +382,17 @@ class JalonCours(ATFolder):
             last_login = DateTime(last_login)
         return last_login
 
+    def getBreadcrumbs(self):
+        """Breadcrumbs de base d'un cours"""
+        # LOG.info("----- getBreadcrumbs -----")
+        portal = self.portal_url.getPortalObject()
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/mes_cours" % portal.absolute_url()},
+                {"title": self.Title(),
+                 "icon":  "fa fa-book",
+                 "link":  self.absolute_url()}]
+
     def getCourseItemProperties(self, key=None):
         """Fournit les propriétés d'un element du cours."""
         # LOG.info("----- getCourseItemProperties -----")
