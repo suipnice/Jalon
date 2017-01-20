@@ -16,7 +16,6 @@
     </h2>
 
     <div class="panel alert radius">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Cette opération va retirer l'accès au cours pour les formations désélectionnées.</tal:block>
     </div>
 

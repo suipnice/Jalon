@@ -98,8 +98,7 @@
             </div>
 
             <div class="panel warning radius">
-                <i class="fa fa-exclamation-triangle no-pad"></i>
-                <strong><tal:block i18n:translate="">Très important :</tal:block></strong><br /><br />
+                <strong><tal:block i18n:translate="">Très important :</tal:block></strong><br />
                 Utilisez la syntaxe suivante pour inscrire vos étudiants via le champ ci-dessus :
                 <pre>Prénom Nom &lt;compte@domaine.tld&gt;</pre>
                 Vous pouvez en inscrire plusieurs simultanément en les séparant par une virgule :

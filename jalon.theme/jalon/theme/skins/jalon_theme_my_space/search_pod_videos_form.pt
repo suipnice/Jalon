@@ -205,8 +205,8 @@
 
                 <div class="panel warning radius text-left"
                      tal:condition="not:is_owner">
-                    <i class="fa fa-exclamation-triangle no-pad"></i>
-                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
+                    <strong i18n:translate="">Attention :</strong>
+                    <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
                 </div>
 
                 <tal:condition condition="python:page-1 > 0">

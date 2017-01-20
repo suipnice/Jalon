@@ -23,7 +23,6 @@
 
 <metal:macro define-macro="isnt_object_attached">
     <div class="panel alert radius">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <strong i18n:translate="">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>

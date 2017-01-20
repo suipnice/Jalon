@@ -251,7 +251,6 @@
                 </div>
                 <div class="panel warning radius"
                      tal:condition="criteria_avg/criteria_error">
-                     <i class="fa fa-exclamation-triangle alert"></i>
                      <tal:replace replace="criteria_avg/criteria_text"/>
                 </div>
                 <h2 tal:condition="evaluation_list">

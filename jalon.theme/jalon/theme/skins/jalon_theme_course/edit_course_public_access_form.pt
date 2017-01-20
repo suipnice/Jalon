@@ -26,7 +26,6 @@
         </div>
 
         <div class="panel warning radius">
-            <i class="fa fa-exclamation-triangle no-pad"></i>
             <tal:block i18n:translate="">L'accès public ne permet pas d'accéder aux activités pédagogiques : ces dernières ne sont accessibles qu'après authentification.</tal:block>
         </div>
 

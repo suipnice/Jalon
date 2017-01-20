@@ -21,7 +21,6 @@
 
     <div class="panel alert radius"
          tal:condition="not:personnel">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
     </div>
 
@@ -32,7 +31,6 @@
          tal:condition="not:course_data/wims_classe_list"
          tal:define="admin_link here/portal_jalon_properties/getLienContact;
                      site_title admin_link/portal_title;">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à télécharger. N'hésitez-pas à </tal:block>
         <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS"
            i18n:translate="">
