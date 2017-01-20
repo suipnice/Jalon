@@ -93,7 +93,6 @@
         </dl>
 
         <div class="panel warning radius formHelp" i18n:translate="" tal:condition="python:len(listeExports)>1">
-            <i class="fa fa-exclamation-triangle no-pad"></i>
             <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez, seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
         </div>
 

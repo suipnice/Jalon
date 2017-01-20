@@ -2,7 +2,6 @@
 
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <strong i18n:translate="">Il n'y a aucune ressource de type Vidéo POD dans votre espace.</strong><br />
             <tal:block i18n:translate="">Rendez-vous dans votre espace de vidéos POD pour en ajouter.</tal:block>
         </div>
@@ -17,7 +16,7 @@
     <tal:listing condition="my_view/course_add_list">
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items"/>
-        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block i18n:translate="">sur</tal:block>
         <tal:block replace="my_view/nb_items"/>
     </div>
 

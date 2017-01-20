@@ -14,7 +14,6 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">Un co-auteur du cours dispose des droits de modifications sur la totalité de cours.</tal:block>
     </div>
     <form id="js-coAuthorMod" method="POST"
@@ -44,7 +43,6 @@
 
     <div class="panel callout radius"
          tal:condition="not:coAuteurs">
-         <i class="fa fa-info-circle no-pad"></i>
          <tal:block i18n:translate="">Ce cours n'a aucun co-auteur.</tal:block>
     </div>
 

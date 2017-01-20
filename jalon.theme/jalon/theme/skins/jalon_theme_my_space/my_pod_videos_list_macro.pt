@@ -14,7 +14,6 @@
 
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
-        <i class="fa fa-info-circle no-pad"></i>
         <strong i18n:translate="">Il n'y a aucune vidéo à la demande dans votre espace.</strong><br/>
         <tal:block i18n:translate="">Pour en ajouter, cliquez sur la bouton « Rechercher une vidéo et l'ajouter à votre espace VOD » ci-dessus.</tal:block>
     </div>
@@ -22,7 +21,7 @@
     <tal:listing condition="my_view/my_items_list">
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items"/>
-        <tal:block i18n:translate="">sur</tal:block> 
+        <tal:block i18n:translate="">sur</tal:block>
         <tal:block replace="my_view/nb_items"/>
     </div>
 

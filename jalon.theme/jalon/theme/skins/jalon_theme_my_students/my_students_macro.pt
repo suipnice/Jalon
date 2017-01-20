@@ -14,7 +14,6 @@
             <div id="js-update_target">
                 <div class="panel callout radius"
                      tal:condition="not:my_view/access_dict">
-                    <i class="fa fa-info-circle no-pad"></i>
                     <strong i18n:translate="">Aucun étudiant n'a accès à vos cours pour l'instant.</strong><br/>
                     <tal:block i18n:translate="">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
                 </div>
@@ -79,7 +78,7 @@
                                 </span>
                             </td>
                             <td class="rank show-for-medium-up">
-                                <span class="label tiny bkgrnd" 
+                                <span class="label tiny bkgrnd"
                                       tal:content="access/access_type"/>
                             </td>
                             <td class="code show-for-medium-up"

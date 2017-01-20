@@ -26,7 +26,6 @@
 
     <tal:condition condition="course_data/is_course_owner">
     <div class="panel alert radius">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <strong i18n:translate="">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
@@ -58,7 +57,7 @@
     <script charset="UTF-8"
             tal:content="structure string:setItemSuppressor()">
     </script>
-    </tal:condition> 
+    </tal:condition>
 
     </metal:main>
 </body>

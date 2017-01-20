@@ -16,8 +16,8 @@
         <li tal:repeat="menu dico_depots/menus">
             <a tal:attributes="href menu/href"
                data-reveal-id="reveal-main" data-reveal-ajax="true">
-                <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i><tal:block replace="menu/text"
-                                                                                      i18n:translate=""/>
+                <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i>
+                <tal:block replace="menu/text" i18n:translate=""/>
             </a>
         </li>
     </ul>
@@ -39,14 +39,14 @@
     </tal:on-error>
     </tal:condition>
     <h2>
-        <i class="fa fa-download"></i><tal:block replace="dico_depots/table_title"
-                                                 i18n:translate=""/>
+        <i class="fa fa-download"></i>
+        <tal:block replace="dico_depots/table_title" i18n:translate=""/>
     </h2>
 
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
-        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+        <strong>Attention :</strong>
+        <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
     </div>
 
     <div tal:define="infos_depots dico_depots/infos_depots"
@@ -191,12 +191,12 @@
     </tal:on-error>
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <i class="fa fa-info-circle"></i><strong>Attention :</strong>
-        <span tal:content="structure my_view/is_authorized_deposit_text"/>
+        <strong>Attention :</strong>
+        <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
     </div>
 
     <tal:condition condition="not:criteria_dict">
-    <div class="panel callout radius" 
+    <div class="panel callout radius"
          i18n:translate="">
         La grille d'évaluation ne contient aucun critère.
     </div>

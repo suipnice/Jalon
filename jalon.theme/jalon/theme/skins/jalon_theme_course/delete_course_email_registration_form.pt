@@ -29,7 +29,6 @@
 
     <tal:condition condition="email_registration_list">
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">Désélectionnez les étudiant(e)s que vous souhaitez désinscrire, puis cliquez sur « Supprimer ».</tal:block>
         </div>
 

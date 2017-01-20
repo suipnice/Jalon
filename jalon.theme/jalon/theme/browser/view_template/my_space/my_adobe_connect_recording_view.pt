@@ -20,7 +20,7 @@
     </tal:define>
 
     <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
-    <div id="reveal-main" class="reveal-modal medium" 
+    <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_no_deletion">
@@ -42,7 +42,6 @@
                 </a>
                 <p class="panel callout radius"
                    tal:condition="item_adder/item_adder_p">
-                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
                     <strong tal:content="item_adder/item_adder_p"/>
                 </p>
@@ -81,7 +80,6 @@
             </h2>
             <div class="panel callout radius"
                  i18n:translate="">
-                <i class="fa fa-info-circle no-pad"></i>
                 <tal:block i18n:translate="">Veuillez cliquer sur le bouton ci-dessous pour prendre en compte vos nouveaux enregistrements.</tal:block>
             </div>
             <div class="text-center">

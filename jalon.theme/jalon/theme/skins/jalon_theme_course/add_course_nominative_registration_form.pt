@@ -24,7 +24,6 @@
             i18n:translate="">Inscrire un(e) étudiant(e) depuis l'annuaire de l'université</h3>
 
         <div class="panel callout radius">
-             <i class="fa fa-info-circle no-pad"></i>
              <tal:block i18n:translate="">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
         </div>
 
@@ -49,7 +48,6 @@
         <div class="panel callout radius"
              tal:condition="not:nominative_registration_list"
              i18n:translate="">
-             <i class="fa fa-info-circle no-pad"></i>
              <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) inscrit(e) nominativement</tal:block>
         </div>
 

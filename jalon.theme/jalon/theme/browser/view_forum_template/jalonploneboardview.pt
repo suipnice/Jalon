@@ -60,7 +60,7 @@
 
     <tal:condition condition="not:keyedforums">
             <div class="panel callout radius">
-                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
+                <tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
             </div>
     </tal:condition>
 
@@ -203,7 +203,7 @@
     <tal:isNotForums condition="not:keyedforums">
 
             <div class="panel callout radius">
-                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Vous pouvez ajouter un forum à ce cours en utilisant le bouton « Créer un forum dans ce cours » ci-dessus.</tal:block>
+                <tal:block i18n:translate="">Vous pouvez ajouter un forum à ce cours en utilisant le bouton « Créer un forum dans ce cours » ci-dessus.</tal:block>
             </div>
 
     </tal:isNotForums condition="not:keyedforums">
