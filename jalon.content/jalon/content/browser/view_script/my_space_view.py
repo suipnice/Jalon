@@ -27,7 +27,7 @@ class MySpaceView(BrowserView):
 
     def getBreadcrumbs(self):
         return [{"title": _(u"Mes ressources"),
-                 "icon":  "fa fa-home",
+                 "icon":  "fa fa-folder-open",
                  "link":  self.context.absolute_url()}]
 
     def getTags(self, folder, selected_tags_list):

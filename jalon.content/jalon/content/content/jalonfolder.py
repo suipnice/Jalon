@@ -139,7 +139,7 @@ class JalonFolder(ATFolder):
 
     def getSearchPodVideosBreadcrumbs(self):
         return [{"title": _(u"Mes ressources"),
-                 "icon":  "fa fa-home",
+                 "icon":  "fa fa-folder-open",
                  "link":  self.aq_parent.absolute_url()},
                 {"title": _(u"Mes vidéos POD"),
                  "icon":  "fa fa-youtube-play",

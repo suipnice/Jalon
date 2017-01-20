@@ -21,7 +21,7 @@ class MyWimsExercicesView(MySpaceView):
 
     def getBreadcrumbs(self):
         return [{"title": _(u"Mes ressources"),
-                 "icon":  "fa fa-home",
+                 "icon":  "fa fa-folder-open",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes exercices WIMS"),
                  "icon":  "fa fa-random",

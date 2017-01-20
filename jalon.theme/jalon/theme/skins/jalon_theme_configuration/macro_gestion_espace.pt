@@ -15,7 +15,7 @@
 -->
 <metal:macro define-macro="gestion_mon_espace">
     <h2>
-        <i class="fa fa-home"></i><tal:block i18n:translate="">Configuration des outils actifs dans "Mes ressources"</tal:block>
+        <i class="fa fa-folder-open"></i><tal:block i18n:translate="">Configuration des outils actifs dans "Mes ressources"</tal:block>
     </h2>
     <form method="post" class="text-center"
           tal:attributes="action string:${context/absolute_url}/saveConfigMonEspace"

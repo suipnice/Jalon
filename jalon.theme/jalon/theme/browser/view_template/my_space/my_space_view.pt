@@ -18,7 +18,7 @@
 
         <div class="small-12 columns">
             <h2>
-                <i class="fa fa-home fa-fw no-pad"></i>
+                <i class="fa fa-folder-open fa-fw no-pad"></i>
                 <tal:block i18n:translate="">Mes ressources</tal:block>
             </h2>
         </div>

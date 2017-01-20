@@ -24,7 +24,7 @@
             </a>
             <a class="button expand res-connect"
                tal:attributes="href string:${context/absolute_url}/gestion_mon_espace">
-                <i class="fa fa-home"></i><tal:block i18n:translate="">Gestion "Mes ressources"</tal:block>
+                <i class="fa fa-folder-open"></i><tal:block i18n:translate="">Gestion "Mes ressources"</tal:block>
             </a>
             <a class="button expand res-glossaire"
                tal:attributes="href string:${context/absolute_url}/gestion_mes_cours">

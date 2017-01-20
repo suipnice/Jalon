@@ -13,94 +13,107 @@
                         my_view python:view.getCourseAddView(user, course_path)">
 
     <h2>
-        <tal:block i18n:translate="">Attacher un élément de « Mes ressources »</tal:block>
+        <i class="fa fa-plus-circle"></i>
+        <tal:block i18n:translate="">Ajouter des éléments au cours</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <div class="row">
+        <ul class="tabs" data-tab role="tablist">
+            <li role="presentation"
+                class="tab-title active">
+                <a role="tab" tabindex="0" aria-selected="true"
+                   id="resources_list";
+                   href="#resources_list";
+                   aria-controls="#resources_list">
+                    <i class="fa fa-folder-open"></i>
+                    <tal:block i18n:translate="">Depuis mes ressources</tal:block>
+                </a>
+            </li>
+            <li role="presentation"
+                class="tab-title">
+                <a role="tab" tabindex="1" aria-selected="false"
+                   id="resources_new";
+                   href="#resources_new";
+                   aria-controls="#resources_new">
+                    <i class="fa fa-plus-circle"></i>
+                    <tal:block i18n:translate="">Nouvelle ressource</tal:block>
+                </a>
+            </li>
+        </ul>
 
-    <ul class="tabs" data-tab role="tablist">
-        <li role="presentation"
-            class="tab-title active">
-            <a role="tab" tabindex="0" aria-selected="true"
-               id="resources_list";
-               href="#resources_list";
-               aria-controls="#resources_list">Depuis mes ressources
-        </li>
-        <li role="presentation"
-            class="tab-title">
-            <a role="tab" tabindex="1" aria-selected="false"
-               id="resources_new";
-               href="#resources_new";
-               aria-controls="#resources_new">Nouvelle ressource
-        </li>
-    </ul>
+        <div class="tabs-content peer_evaluate">
+            <section role="tabpanel" aria-hidden="false"
+                     id="resources_list"
+                     class="content active">
+                <h2>
+                    <i class="fa fa-plus-circle"></i>
+                    <tal:block i18n:translate="">Attacher un élément de « Mes ressources »</tal:block>
+                </h2>
 
-    <div class="tabs-content">
-        <section role="tabpanel" aria-hidden="false"
-                 id="resources_list"
-                 class="content active">
-            <h3 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h3>
+                <h3 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h3>
 
-            <ul id="js-tag_filter"
-                tal:define="tags_list my_view/tags_list">
-                <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list" />
-            </ul>
+                <ul id="js-tag_filter"
+                    tal:define="tags_list my_view/tags_list">
+                    <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list" />
+                </ul>
 
-            <div id="js-list-ressource">
-                <h3 id="js-popup-update_title">
-                    <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
-                </h3>
+                <div id="js-list-ressource">
+                    <h3 id="js-popup-update_title">
+                        <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+                    </h3>
 
-                <form id="js-attachmentCreator" method="POST"
-                      tal:attributes="action string:${my_view/course_link}/add_course_my_space_items_script">
-                    <div id="js-popup-update_target"
-                         tal:attributes="data-href string:${context/absolute_url}/course_add_view_ajax?course_path=${course_path}">
-                        <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_course_items']" />
-                    </div>
-
-                    <tal:items condition="not:my_view/is_no_items">
-                        <tal:condition condition="my_view/is_course">
-                        <tal:replace replace="structure my_view/course_map_form"/>
-                        </tal:condition>
-
-                        <div class="field"
-                             tal:condition="my_view/is_display_hide">
-                            <h3><i class="fa fa-eye"></i><tal:block i18n:translate="">Disponibilité</tal:block></h3>
-                            <tal:define define="attacher_afficher request/attacher_afficher | string:0;">
-                            <input type="radio" name="display_item" id="attacher_afficher"
-                                   value="1"
-                                   tal:attributes="checked python:context.test(int(attacher_afficher), 'checked', '')" />
-                            <label for="attacher_afficher" i18n:translate="">Afficher immédiatement</label>
-                            <input type="radio" name="display_item" id="attacher_masquer"
-                                   value="0"
-                                   tal:attributes="checked python:context.test(int(attacher_afficher), '', 'checked')" />
-                            <label for="attacher_masquer" i18n:translate="">Masquer</label>
-                            </tal:define>
+                    <form id="js-attachmentCreator" method="POST"
+                          tal:attributes="action string:${my_view/course_link}/add_course_my_space_items_script">
+                        <div id="js-popup-update_target"
+                             tal:attributes="data-href string:${context/absolute_url}/course_add_view_ajax?course_path=${course_path}">
+                            <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_course_items']" />
                         </div>
 
-                        <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
-                        <input type="hidden" name="folder_id" tal:attributes="value my_view/folder_id"/>
+                        <tal:items condition="not:my_view/is_no_items">
+                            <tal:condition condition="my_view/is_course">
+                            <tal:replace replace="structure my_view/course_map_form"/>
+                            </tal:condition>
 
-                        <div class="formControls">
-                            <button type="submit" name="attacher"
-                                    class="button small radius" disabled="disabled">
-                                <i class="fa fa-chain"></i>
-                                <tal:block i18n:translate="">Attacher</tal:block>
-                            </button>
-                        </div>
-                    </tal:items>
-                </form>
+                            <div class="field"
+                                 tal:condition="my_view/is_display_hide">
+                                <h3><i class="fa fa-eye"></i><tal:block i18n:translate="">Disponibilité</tal:block></h3>
+                                <tal:define define="attacher_afficher request/attacher_afficher | string:0;">
+                                <input type="radio" name="display_item" id="attacher_afficher"
+                                       value="1"
+                                       tal:attributes="checked python:context.test(int(attacher_afficher), 'checked', '')" />
+                                <label for="attacher_afficher" i18n:translate="">Afficher immédiatement</label>
+                                <input type="radio" name="display_item" id="attacher_masquer"
+                                       value="0"
+                                       tal:attributes="checked python:context.test(int(attacher_afficher), '', 'checked')" />
+                                <label for="attacher_masquer" i18n:translate="">Masquer</label>
+                                </tal:define>
+                            </div>
 
-                <script charset="UTF-8"
-                        tal:content="my_view/course_add_js"></script>
-            </div>
-        </section>
+                            <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
+                            <input type="hidden" name="folder_id" tal:attributes="value my_view/folder_id"/>
 
-        <section role="tabpanel" aria-hidden="true"
-                 id="resources_new"
-                 class="content">
-            <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_new_resource']" />
-        </section>
+                            <div class="formControls">
+                                <button type="submit" name="attacher"
+                                        class="button small radius" disabled="disabled">
+                                    <i class="fa fa-chain"></i>
+                                    <tal:block i18n:translate="">Attacher</tal:block>
+                                </button>
+                            </div>
+                        </tal:items>
+                    </form>
+
+                    <script charset="UTF-8"
+                            tal:content="my_view/course_add_js"></script>
+                </div>
+            </section>
+
+            <section role="tabpanel" aria-hidden="true"
+                     id="resources_new"
+                     class="content">
+                <metal:macro use-macro="python:getattr(context, my_view['macro_file']).macros['add_new_resource']" />
+            </section>
+        </div>
     </div>
 </metal:main>
 

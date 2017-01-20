@@ -117,6 +117,11 @@
 
     <tal:define define="errors options/state/getErrors | nothing;">
 
+    <h2>
+        <i class="fa fa-plus-circle"></i>
+        <tal:block i18n:translate="">Ajouter un fichier au cours et dans "Mes ressources > Fichiers"</tal:block>
+    </h2>
+
     <form id="js-directExtFileCreator" method="POST" enctype="multipart/form-data"
           tal:attributes="action string:${my_view/course_link}/add_course_file_script;
                           data-success_msg string:Le fichier a été créé et ajouté au cours.">

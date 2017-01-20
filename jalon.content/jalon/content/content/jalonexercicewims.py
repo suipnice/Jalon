@@ -74,7 +74,7 @@ class JalonExerciceWims(ATDocumentBase):
         LOG.info("----- getBreadcrumbs -----")
         portal_url = self.portal_url.getPortalObject().absolute_url()
         crumbs_list = [{"title" : _(u"Mes ressources"),
-                        "icon"  : "fa fa-home",
+                        "icon"  : "fa fa-folder-open",
                         "link" : "%s/mon_espace" % portal_url},
                        {"title": _(u"Mes exercices WIMS"),
                         "icon" : "fa fa-random",

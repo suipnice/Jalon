@@ -374,7 +374,7 @@ class JalonProperties(SimpleItem):
         if is_personnel:
             menu_my_space = {"id":        "mon_espace",
                              "class":     "has-dropdown not-click",
-                             "icon":      "fa fa-home",
+                             "icon":      "fa fa-folder-open",
                              "title":     _(u"Mes ressources"),
                              "link":      "mon_espace",
                              "sub_menu":  []}
@@ -421,7 +421,7 @@ class JalonProperties(SimpleItem):
                                             "title": _(u"Connexion à Jalon"),
                                             "link":  "portal_jalon_properties/gestion_connexion"},
                                            {"id":    "gestion_mon_espace",
-                                            "icon":  "fa fa-home",
+                                            "icon":  "fa fa-folder-open",
                                             "title": _(u"Gestion \"Mes ressources\""),
                                             "link":  "portal_jalon_properties/gestion_mon_espace"},
                                            {"id":    "gestion_mes_cours",
@@ -1310,7 +1310,7 @@ class JalonProperties(SimpleItem):
                  "icon":  "fa fa-cogs",
                  "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
                 {"title": _(u"Gestion \"Mes ressources\""),
-                 "icon":  "fa fa-home",
+                 "icon":  "fa fa-folder-open",
                  "link":  "%s/portal_jalon_properties/gestion_mon_espace" % self.absolute_url()}]
 
     def getBreadcrumbsMesCours(self):
