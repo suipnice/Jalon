@@ -1,4 +1,4 @@
-## Controller Python Script "edit_deposi_box_skills_options_script"
+## Controller Python Script "edit_deposit_box_skills_options_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=

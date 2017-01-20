@@ -38,7 +38,7 @@
         </tal:condition>
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <section id="course_plan" class="medium-8 small-12 columns">
+        <section id="course_plan" class="medium-9 small-12 columns">
             <metal:macro use-macro="here/course_informations_macro/macros/course_informations">
                 Block au dessus du plan
             </metal:macro>
@@ -176,7 +176,7 @@
             </div>
         </section>
 
-        <aside id="course_life" class="medium-4 small-12 columns">
+        <aside id="course_life" class="medium-3 small-12 columns">
 
             <tal:condition condition="my_view/is_course_author">
             <metal:macro use-macro="context/course_life_macro/macros/display_mod">

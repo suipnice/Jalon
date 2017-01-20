@@ -34,7 +34,7 @@
             </metal:macro>
         </div>
 
-        <section class="medium-8 small-12 columns">
+        <section class="medium-9 small-12 columns">
 
             <h2>
                 <i class="fa fa-comment-o"></i>
@@ -157,7 +157,7 @@
 
     </section>
 
-    <section class="medium-4 small-12 columns">
+    <section class="medium-3 small-12 columns">
 
         <tal:define define="search_url context/aq_parent/absolute_url">
             <metal:search metal:use-macro="here/macro_forum/macros/forum-rechercher" />

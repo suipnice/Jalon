@@ -92,7 +92,7 @@
 
         <tal:condition condition="not:my_view/is_anonymous">
 
-        <section id="boite" class="medium-8 small-12 columns">
+        <section id="boite" class="medium-9 small-12 columns">
 
             <tal:condition condition="my_view/is_personnel">
             <a class="right" data-options="align:bottom" data-dropdown="boite-options">
@@ -136,7 +136,7 @@
             </tal:condition>
         </section>
 
-        <aside class="medium-4 small-12 columns">
+        <aside class="medium-3 small-12 columns">
             <tal:condition condition="my_view/is_display_mod">
             <metal:macro use-macro="context/course_life_macro/macros/display_mod">
                 Mode Enseignant / Etudiant
