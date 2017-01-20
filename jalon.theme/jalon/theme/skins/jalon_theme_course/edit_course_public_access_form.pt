@@ -19,7 +19,6 @@
     <form tal:attributes="action string:${context/absolute_url}/edit_course_public_access_script" method="POST">
 
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">L'accès libre (public, anonyme…) permet la consultation du cours sans authentification pour toute personne possédant son adresse (URL).</tal:block>
             <tal:comment replace="nothing"><!--
             <tal:block i18n:translate="">Il s'agit d'un pré-requis pour une publication du cours sur iTunesU.</tal:block>

@@ -17,7 +17,7 @@
 
     <div class="panel warning radius"
          tal:condition="context/isNotStandard">
-        <strong><i class="fa fa-info-circle fa-fw"></i>Attention :</strong> Dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.
+        <strong>Attention :</strong> dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.
     </div>
 
     <form method="post"

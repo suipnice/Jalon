@@ -32,7 +32,6 @@
         <fieldset class="row">
 
             <div class="panel callout radius">
-                 <i class="fa fa-info-circle no-pad"></i>
                  <tal:block i18n:translate="">Pour constituer la liste des personnes à inscrire, renseignez les champs ci-dessous et cliquez sur « Ajouter ».</tal:block>
             </div>
 
@@ -72,7 +71,6 @@
         </table>
 
         <div class="panel callout radius hide">
-             <i class="fa fa-info-circle no-pad"></i>
              <tal:block i18n:translate="">Vous pouvez retirer des élément de la liste en cliquant sur</tal:block>
              « <i class="fa fa-minus-circle no-pad warning"></i> ».
         </div>
@@ -126,7 +124,6 @@
     <metal:macro define-macro="display_email_registration">
     <div class="panel callout radius"
          tal:condition="not:email_registration_list">
-         <i class="fa fa-info-circle no-pad"></i>
          <tal:block i18n:translate="">Aucun(e) étudiant(e) extérieur(e) n'a pour l'instant été inscrit(e) par courriel à ce cours.</tal:block>
     </div>
 

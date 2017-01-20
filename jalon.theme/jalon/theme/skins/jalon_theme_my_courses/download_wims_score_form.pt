@@ -44,7 +44,6 @@
     <tal:condition condition="course_data/wims_classe_list">
 
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">Cette fonction vous permet de télécharger toutes les notes <u>des examens</u>, ainsi que <u>des autoévaluations affichées</u> dans le cours.</tal:block>
     </div>
 

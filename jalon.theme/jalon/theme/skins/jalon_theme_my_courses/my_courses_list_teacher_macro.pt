@@ -14,7 +14,6 @@
 
     <div class="panel callout radius"
          tal:condition="not:my_courses_dict/is_courses_list">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:replace replace="my_courses_dict/message"/>
     </div>
 

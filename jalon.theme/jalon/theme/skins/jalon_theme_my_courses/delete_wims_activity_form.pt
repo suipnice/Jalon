@@ -52,7 +52,6 @@
 
     <tal:condition condition="course_data/can_delete">
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">
             Pour des raisons techniques il est impossible de supprimer <strong>de manière individuelle</strong> une activité WIMS (entrainement ou examen). Cette fonction permet toutefois de supprimer <strong>toutes</strong> les activités WIMS de ce cours.
         </tal:block>
