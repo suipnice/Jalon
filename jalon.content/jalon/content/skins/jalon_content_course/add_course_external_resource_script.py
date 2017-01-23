@@ -16,7 +16,6 @@ if form["title"] in ["", " ", None] or form["lien"] in ["", " ", None]:
     else:
         redirection = "%s/create_and_add_course_external_resource_form" % context.absolute_url()
 else:
-    redirection = context.absolute_url()
     user_id = form["user_id"]
     portal = context.portal_url.getPortalObject()
     portal_workflow = portal.portal_workflow
@@ -48,6 +47,10 @@ else:
 
         context.addMySpaceItem(folder_object, external_id, external_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
 
+    if context.getId().startswith("Cours-"):
+        redirection = context.absolute_url()
+    else:
+        redirection = "%s?tab=documents" % context.absolute_url()
     #context.REQUEST.RESPONSE.redirect(context.absolute_url())
     #return "%s/display_course_map_page" % context.absolute_url()
 

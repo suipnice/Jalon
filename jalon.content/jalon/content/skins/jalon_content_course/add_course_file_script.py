@@ -13,7 +13,6 @@ form = context.REQUEST.form
 if not "file_file" in form or form["file_file"].filename in ["", " ", None]:
     redirection = "%s/create_and_add_course_file_form" % context.absolute_url()
 else:
-    redirection = context.absolute_url()
     user_id = form["user_id"]
     portal = context.portal_url.getPortalObject()
     portal_workflow = portal.portal_workflow
@@ -43,5 +42,9 @@ else:
 
     context.addMySpaceItem(folder_object, file_name, file_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
 
+    if context.getId().startswith("Cours-"):
+        redirection = context.absolute_url()
+    else:
+        redirection = "%s?tab=documents" % context.absolute_url()
 context.REQUEST.RESPONSE.redirect(redirection)
 #return "%s/display_course_map_page" % context.absolute_url()
