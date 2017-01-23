@@ -1138,6 +1138,14 @@ class JalonFolder(ATFolder):
     def getFooter(self):
         return jalon_utils.getFooter()
 
+    def getBreadcrumbs(self):
+        # Permet d'obtenir un fil d'ariane minimaliste.
+        # (utile pour certaines pages communes comme les 404 par exemple)
+        portal = self.portal_url.getPortalObject()
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/mes_cours" % portal.absolute_url()}]
+
     # ------------------------------ #
     #   Utilitaire GoogleAnalytics   #
     # ------------------------------ #

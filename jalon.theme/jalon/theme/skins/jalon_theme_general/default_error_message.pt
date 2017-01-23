@@ -30,21 +30,32 @@
 
             <tal:redirect define="redirection_view context/@@plone_redirector_view">
 
-                <tal:redirect define="redirect_success redirection_view/attempt_redirect" replace="nothing">
-                    If the attempt succeeds, we won't see any more of this template
-                </tal:redirect>
+                <tal:define define="breadcrumbs python:context.etudiants.getBreadcrumbs()">
+                    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+                        Page d'affichage du fil d'ariane
+                    </metal:macro>
+                </tal:define>
 
-                <h1 class="documentFirstHeading"
-                    i18n:translate="heading_site_there_seems_to_be_an_error">
-                    This page does not seem to exist&hellip;
-                </h1>
+                <section class="row">
 
-                <div id="content-core">
-                    <p i18n:translate="description_site_error">
-                        We apologize for the inconvenience, but the page you were trying to access is not at this address.
-                        You can use the links below to help you find what you are looking for.
-                    </p>
-                </div>
+                    <div class="small-12 columns">
+                        <tal:redirect define="redirect_success redirection_view/attempt_redirect" replace="nothing">
+                            If the attempt succeeds, we won't see any more of this template
+                        </tal:redirect>
+
+                        <h1 class="documentFirstHeading">
+                            <i class="fa fa-meh-o" aria-hidden="true"></i>
+                            <tal:block i18n:translate="heading_site_there_seems_to_be_an_error">This page does not seem to exist&hellip;</tal:block>
+                        </h1>
+
+                        <div id="content-core">
+                            <p i18n:translate="description_site_error">
+                                We apologize for the inconvenience, but the page you were trying to access is not at this address.
+                                You can use the links below to help you find what you are looking for.
+                            </p>
+                        </div>
+                    </div>
+                </section>
             </tal:redirect>
 
         </metal:notfound>
