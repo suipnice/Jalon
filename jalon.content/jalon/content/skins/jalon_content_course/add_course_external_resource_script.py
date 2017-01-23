@@ -11,7 +11,10 @@
 form = context.REQUEST.form
 
 if form["title"] in ["", " ", None] or form["lien"] in ["", " ", None]:
-    redirection = "%s/create_and_add_course_external_resource_form" % context.absolute_url()
+    if "biblio" in form:
+        redirection = "%s/create_and_add_course_external_resource_form?biblio=true" % context.absolute_url()
+    else:
+        redirection = "%s/create_and_add_course_external_resource_form" % context.absolute_url()
 else:
     redirection = context.absolute_url()
     user_id = form["user_id"]
@@ -36,11 +39,14 @@ else:
 
     external_object.setProperties(properties)
 
-    display_item = DateTime() if "display_item" in form and form["display_item"] == "1" else ""
-    display_in_plan = True if "display_in_plan" in form and form["display_in_plan"] == "1" else False
-    map_items_position = form["map_position"] if form.has_key("map_position") else None
+    if "biblio" in form:
+        context.addMySpaceItemBibliography(folder_object, external_id, external_type, user_id)
+    else:
+        display_item = DateTime() if "display_item" in form and form["display_item"] == "1" else ""
+        display_in_plan = True if "display_in_plan" in form and form["display_in_plan"] == "1" else False
+        map_items_position = form["map_position"] if form.has_key("map_position") else None
 
-    context.addMySpaceItem(folder_object, external_id, external_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
+        context.addMySpaceItem(folder_object, external_id, external_type, user_id, display_item, map_items_position, display_in_plan, portal_workflow)
 
     #context.REQUEST.RESPONSE.redirect(context.absolute_url())
     #return "%s/display_course_map_page" % context.absolute_url()

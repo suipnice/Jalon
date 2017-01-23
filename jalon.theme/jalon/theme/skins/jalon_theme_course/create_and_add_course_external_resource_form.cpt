@@ -80,6 +80,8 @@
         <input type="hidden" name="form.submitted" value="1" />
         <input type="hidden" name="user_id" tal:attributes="value user/getId" />
         <input type="hidden" name="validate_key" value="create_external_resource" />
+        <input type="hidden" name="biblio" value="true" 
+               tal:condition="request/biblio | nothing"/>
 
         <div class="formControls">
             <button type="submit" class="button small create radius">
