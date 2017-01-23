@@ -18,6 +18,7 @@
             * en cas de modification, on ne connait que item_id
 -->
     <h2>
+        <i class="fa fa-plus-circle"></i>
         <tal:replace replace="my_form/form_title_text"/>
         <tal:replace replace="my_form/form_title_type"/>
         <a class="close-reveal-modal"></a>
