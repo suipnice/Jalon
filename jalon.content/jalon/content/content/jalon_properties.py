@@ -384,12 +384,18 @@ class JalonProperties(SimpleItem):
                     menu_my_space["sub_menu"].append(sub_menu)
             menu_left.append(menu_my_space)
 
-        if is_personnel:
             menu_left.append({"id":       "mes_etudiants",
                               "class":    "",
                               "icon":     "fa fa-users",
                               "title":    _(u"Mes étudiants"),
                               "link":     "mes_etudiants",
+                              "sub_menu": []})
+
+            menu_left.append({"id":       "tools",
+                              "class":    "",
+                              "icon":     "fa fa-wrench",
+                              "title":    _(u"Outils"),
+                              "link":     "tools_page",
                               "sub_menu": []})
 
         if user_role == "Manager":
