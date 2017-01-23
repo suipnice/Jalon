@@ -97,7 +97,7 @@
     <div class="tabs-content">
         <div class="content active" id="no_selec" role="tabpanel">
             <div class="panel callout radius">
-                <i class="fa fa-info-circle"></i><tal:block i18n:translate="">Sélectionnez un des onglets ci-dessus pour afficher les informations correspondantes.</tal:block>
+                <tal:block i18n:translate="">Sélectionnez un des onglets ci-dessus pour afficher les informations correspondantes.</tal:block>
             </div>
         </div>
         <div class="content" id="course_life-historique" role="tabpanel">
@@ -106,7 +106,6 @@
             </h3>
             <div class="panel callout radius"
                  tal:condition="not:my_view/course_news/nbActu">
-                <i class="fa fa-info-circle"></i>
                 <tal:block i18n:translate="">L'historique concernant ce cours est vide.</tal:block>
             </div>
             <div class="course_life-actus panel radius"
@@ -167,7 +166,6 @@
 
             <div class="panel callout radius"
                  tal:condition="not:my_view/course_announce/nbAnnonces">
-                <i class="fa fa-info-circle"></i>
                 <tal:block i18n:translate="">Il n'y a aucune annonce concernant ce cours.</tal:block>
             </div>
 
@@ -242,7 +240,6 @@
             </tal:condition>
             <div class="panel callout radius"
                  tal:condition="not:my_view/course_forums/listeForums">
-                <i class="fa fa-info-circle"></i>
                 <tal:block i18n:translate="">Il n'y a aucun forum dans ce cours.</tal:block>
             </div>
             <div class="panel radius"

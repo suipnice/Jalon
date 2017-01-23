@@ -2,7 +2,6 @@
 
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <strong i18n:translate="">Il n'y a aucune ressource de type « Termes de glossaire » dans votre espace.</strong><br />
             <tal:block i18n:translate="">Rendez-vous dans votre espace de termes de glossaire pour en ajouter.</tal:block>
         </div>

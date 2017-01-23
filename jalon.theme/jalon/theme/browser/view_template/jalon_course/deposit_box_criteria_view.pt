@@ -45,18 +45,18 @@
         </div>
         <div class="panel radius warning"
              tal:condition="not:my_view/is_authorized_deposit">
-            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
+            <strong>Attention :</strong> dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
         </div>
 
         <tal:condition condition="my_view/is_authorized_deposit">
 
         <div class="panel radius warning"
              tal:condition="not:my_view/is_depot_actif">
-            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> la date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
+            <strong>Attention :</strong> la date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
         </div>
         <div class="panel radius warning"
              tal:condition="not:my_view/is_correction_actif">
-            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.
+            <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.
         </div>
 
         </tal:condition>
@@ -64,7 +64,7 @@
 
         <div class="panel radius warning"
              tal:condition="not:my_view/is_grid_access">
-            <i class="fa fa-info-circle fa-fw"></i><strong>Attention :</strong> vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !
+            <strong>Attention :</strong> vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !
         </div>
 
         <tal:condition condition="my_view/is_grid_access">

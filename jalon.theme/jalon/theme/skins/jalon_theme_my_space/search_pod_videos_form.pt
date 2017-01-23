@@ -92,7 +92,6 @@
 
             <div class="panel callout radius"
                 tal:condition="not:videos/liste_videos">
-                <i class="fa fa-info-circle no-pad"></i>
                 <tal:block i18n:translate="">La recherche n'a donné aucun résultat.</tal:block>
             </div>
 
@@ -112,13 +111,11 @@
 
                 <div class="panel callout radius"
                      tal:condition="not:is_owner">
-                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Ajoutez directement un contenu en cliquant sur son bouton « Ajouter », ou sélectionnez-en plusieurs et ajoutez les en cliquant sur « Ajouter les contenus sélectionnés ».</tal:block>
                 </div>
 
                 <div class="panel callout radius"
                      tal:condition="is_owner">
-                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Vos contenus Pod sont listés ici à titre informatif, ils sont présents par défaut dans votre espace.</tal:block>
                 </div>
 
@@ -203,14 +200,13 @@
                  tal:condition="python:context.test(nb_pages > 1, 1, 0)">
 
                 <div class="panel callout radius text-left">
-                    <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="">Pour vous rendre directement sur une page, entrez son n° ci-dessous et validez en appuyant sur « Entrée ».</tal:block>
                 </div>
 
                 <div class="panel warning radius text-left"
                      tal:condition="not:is_owner">
-                    <i class="fa fa-exclamation-triangle no-pad"></i>
-                    <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
+                    <strong i18n:translate="">Attention :</strong>
+                    <tal:block i18n:translate="">les sélections ne valent que sur une même page de résultats, elles ne sont pas conservées lors des changements de page.</tal:block>
                 </div>
 
                 <tal:condition condition="python:page-1 > 0">

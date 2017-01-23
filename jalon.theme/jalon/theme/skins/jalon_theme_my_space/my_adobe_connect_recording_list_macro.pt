@@ -14,7 +14,6 @@
 
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
-        <i class="fa fa-info-circle no-pad"></i>
         <strong tal:content="my_view/no_items_strong" i18n:translate=""/><br/>
         <tal:replace replace="my_view/no_items_button" i18n:translate=""/>
     </div>
