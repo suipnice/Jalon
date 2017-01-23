@@ -74,7 +74,7 @@ class MyStudentsView(BrowserView):
                 if not access_code in course_access_dict:
                     access_response_request = portal_jalon_bdd.getELPData(access_code)
                     if not access_response_request:
-                        access_data = [not_access_dict[access_type].replace("*-*", access_code), access_code, "0"]
+                        access_data = [not_access_dict[access_type].replace("*-*", access_code), access_type, access_code, access_code, "0"]
                     else:
                         access_data = list(access_response_request)
                     course_access_dict[access_code] = {"access_title":       access_data[0],
