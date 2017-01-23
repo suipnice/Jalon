@@ -1,0 +1,75 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="errors options/state/getErrors | nothing;">
+
+    <tal:define define="breadcrumbs context/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <main class="row" role="main" aria-labelledby="page_title">
+
+    <h2>
+        <i class="fa fa-plus-circle no-pad"></i>
+        <tal:block i18n:translate="">Ajouter un terme de glossaire au cours et dans "Mes ressources > Termes de glossaire"</tal:block>
+    </h2>
+
+    <form id="js-glossaryCreator" method="post"
+          tal:attributes="action string:${context/absolute_url}/${template/id};
+                          data-success_msg_pre string:Le terme de glossaire;
+                          data-success_msg_post string:a été crée."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="title"
+             tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" i18n:translate="">Titre</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input type="text" maxlength="255" size="30" id="title" name="title" placeholder="Saisie obligatoire" 
+                   required="required"
+                   tal:attributes="value request/title | nothing"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="description"
+             tal:define="error errors/description | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="description" i18n:translate="">Définition</label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="description" name="description" required="required" placeholder="Saisie obligatoire" cols="40" rows="5"></textarea>
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1" />
+        <input type="hidden" name="user_id" tal:attributes="value user/getId" />
+        <input type="hidden" name="validate_key" value="create_glossary_term" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:comment replace="nothing">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-glossaryCreator','reveal-main')"></script>
+    </tal:comment>
+
+    </main>
+
+</metal:main>
+
+</body>
+
+</html>

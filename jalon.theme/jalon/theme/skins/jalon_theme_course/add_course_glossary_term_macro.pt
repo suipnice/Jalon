@@ -104,5 +104,47 @@
 </metal:macro>
 
 <metal:macro define-macro="add_new_resource">
-    Nouvelle ressource
+    <tal:define define="errors options/state/getErrors | nothing;">
+    <h2>
+        <i class="fa fa-plus-circle no-pad"></i>
+        <tal:block i18n:translate="">Ajouter un terme de glossaire au cours et dans "Mes ressources > Termes de glossaire"</tal:block>
+    </h2>
+
+    <form id="js-glossaryCreator" method="post"
+          tal:attributes="action string:${my_view/course_link}/add_course_glossary_term_script;
+                          data-success_msg_pre string:Le terme de glossaire;
+                          data-success_msg_post string:a été crée."
+          i18n:attributes="data-success_msg_pre; data-success_msg_post">
+
+        <div id="title" class="field">
+            <label for="title" i18n:translate="">Titre</label>
+              <input type="text" maxlength="255" size="30"
+                     id="title" name="title"
+                     required="required"
+                     placeholder="Saisie obligatoire" i18n:attributes="placeholder"
+                     tal:attributes="value request/title | nothing" />
+        </div>
+
+        <div id="description" class="field">
+            <label for="description" i18n:translate="">Définition</label>
+            <textarea id="description" name="description" required="required" placeholder="Saisie obligatoire" cols="40" rows="5"></textarea>
+        </div>
+
+        <input type="hidden" name="user_id" tal:attributes="value user/getId"/>
+        <input type="hidden" name="folder_id" tal:attributes="value my_view/folder_id"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:comment replace="nothing">
+    <script charset="UTF-8"
+            tal:content="structure string:setRevealForm('js-glossaryCreator','reveal-main')"></script>
+    </tal:comment>
+    </tal:define>
 </metal:macro>
