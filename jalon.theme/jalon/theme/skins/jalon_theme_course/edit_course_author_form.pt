@@ -49,7 +49,6 @@
 
         <input type="hidden" name="auteurs" value="auteur" />
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">L'auteur actuel sera remplacé.</tal:block>
         </div>
         <div class="formControls">

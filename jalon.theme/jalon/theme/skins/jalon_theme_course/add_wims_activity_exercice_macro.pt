@@ -1,7 +1,6 @@
 <metal:macro define-macro="add_course_items">
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <strong i18n:translate="">Il n'y a aucun Exercice WIMS dans votre espace.</strong><br />
             <tal:block i18n:translate="">Rendez-vous dans "Mes exercices" pour en ajouter.</tal:block>
         </div>

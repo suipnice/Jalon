@@ -19,7 +19,7 @@
 
     <div class="panel warning radius"
          tal:condition="not:is_date_depot">
-        <strong><i class="fa fa-info-circle"></i> Attention :</strong> Vous ne pouvez choisir une date limite d'évaluation. Vous devez d'abord choisir une date limite de dépôts.
+        <strong>Attention :</strong> Vous ne pouvez choisir une date limite d'évaluation. Vous devez d'abord choisir une date limite de dépôts.
     </div>
 
     <form id="js-modBoxDate" method="post"
@@ -48,7 +48,7 @@
         </div>
 
         <input type="hidden" name="form.submitted" value="1"/>
-        <input type="hidden" name="tab" 
+        <input type="hidden" name="tab"
                tal:attributes="value tab"/>
         <input type="hidden" name="validate_key" value="correction_date"/>
 

@@ -27,7 +27,6 @@
         <tal:condition condition="coAuteurs">
 
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">Désélectionnez les co-auteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
         </div>
 

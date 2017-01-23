@@ -21,7 +21,6 @@
 
     <div class="panel alert radius"
          tal:condition="not:personnel">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Seuls les enseignants ont accès à cette fonction.</tal:block>
     </div>
 
@@ -30,7 +29,6 @@
          tal:condition="not:course_data/wims_classe_list"
          tal:define="admin_link here/portal_jalon_properties/getLienContact;
                      site_title admin_link/portal_title;">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Ce cours ne contient actuellement aucune activité WIMS : il n'y a donc rien à supprimer. N'hésitez-pas à </tal:block>
         <a tal:attributes="href string:${admin_link/contact_link}?subject=[${site_title}] Suppression d'activité WIMS"
            i18n:translate="">
@@ -43,8 +41,7 @@
 
     <div class="panel alert radius"
          tal:condition="not:course_data/can_delete">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
-        Vous n'êtes pas l'auteur de ce cours et vous ne pouvez pas supprimer les activités WIMS réalisées par les co-auteurs. Contactez l'auteur de ce cours
+        Vous n'êtes pas l'auteur de ce cours, en conséquence vous n'êtes pas habilité à supprimer les activités WIMS réalisées par les co-auteurs. Contactez l'auteur de ce cours
         <a tal:attributes="href course_data/course_author_record_user_link" target="_blank"
            tal:content="course_data/course_author_fullname" />)
         pour lui demander de le faire.
@@ -52,7 +49,6 @@
 
     <tal:condition condition="course_data/can_delete">
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">
             Pour des raisons techniques il est impossible de supprimer <strong>de manière individuelle</strong> une activité WIMS (entrainement ou examen). Cette fonction permet toutefois de supprimer <strong>toutes</strong> les activités WIMS de ce cours.
         </tal:block>
@@ -98,9 +94,7 @@
         </div>
 
         <div class="panel alert radius">
-            <strong i18n:translate="">
-                <i class="fa fa-exclamation-triangle no-pad alert"></i> Attention :
-            </strong>
+            <strong i18n:translate="">Attention :</strong>
             <tal:block i18n:translate="">
                 la suppression est définitive. Si vous ne souhaitez retirer que les notes, annulez et cliquez plutôt sur "Purger".
             </tal:block><br />

@@ -29,7 +29,6 @@
     </div>
 
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">Cette opération peut prendre quelques minutes, merci de patienter.</tal:block>
     </div>
 

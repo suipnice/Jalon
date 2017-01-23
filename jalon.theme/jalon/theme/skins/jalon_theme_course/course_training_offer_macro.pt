@@ -1,6 +1,5 @@
 <metal:macro define-macro="course_search_training_offer">
     <div class="panel callout radius">
-        <i class="fa fa-info-circle no-pad"></i>
         <tal:block i18n:translate="">En utilisant l'offre de formation vous donnez directement accès à ce cours à tous les étudiants d'un diplôme, d'une UE ou d'un groupe.</tal:block>
     </div>
 
@@ -21,12 +20,12 @@
            </select>
 
            <label for="termeRecherche" i18n:translate="">Mot clé ou code :</label>
-           <input type="text" name="termeRecherche" class="blurrable" id="termeRecherche" 
+           <input type="text" name="termeRecherche" class="blurrable" id="termeRecherche"
                   size="30" maxlength="255"
                   tal:attributes="value training_offer_search_text"/>
 
-           <input class="button expand tiny radius" type="submit" 
-                  name="form.button.save" value="Rechercher" 
+           <input class="button expand tiny radius" type="submit"
+                  name="form.button.save" value="Rechercher"
                   i18n:attributes="value label_rechercher" />
         </div>
 
@@ -53,7 +52,6 @@
         <tal:condition condition="search_results">
 
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">Sélectionnez les éléments de l'offre de formation que vous souhaitez inscrire au cours, puis cliquez sur « Enregistrer ».</tal:block>
         </div>
 
@@ -131,7 +129,6 @@
 
     <div class="panel callout radius"
          tal:condition="not:my_form/training_offer_list">
-         <i class="fa fa-info-circle no-pad"></i>
          <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucune formation.</tal:block>
     </div>
 

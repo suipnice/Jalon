@@ -16,7 +16,6 @@
     </h2>
 
     <div class="panel alert radius">
-        <i class="fa fa-exclamation-triangle no-pad"></i>
         <tal:block i18n:translate="">Cette opération va retirer l'accès au cours pour les formations désélectionnées.</tal:block>
     </div>
 
@@ -36,7 +35,6 @@
         <tal:condition condition="training_offer_list">
 
         <div class="panel callout radius">
-            <i class="fa fa-info-circle no-pad"></i>
             <tal:block i18n:translate="">Désélectionnez les formations ne devant plus avoir accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
         </div>
 
