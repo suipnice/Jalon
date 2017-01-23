@@ -980,11 +980,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         items = self.getRelatedItems()
         for item in items:
             if item.Type() == "AutoEvaluation-Examen":
-                dico = item.getInfosElement()
+                # dico = item.getInfosElement()
+                dico = item.getDocumentsProperties()
                 if dico:
                     if self.getId() in dico:
                         dico[self.getId()]["titreElement"] = self.Title()
-                    item.infos_element = dico
+                    item.setDocumentsProperties(dico)
                     item.reindexObject()
 
     def parser_permalien(self, permalien):
