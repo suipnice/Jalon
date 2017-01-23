@@ -2,11 +2,14 @@
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
             <strong i18n:translate="">Il n'y a aucun Exercice WIMS dans votre espace.</strong><br />
-            <tal:block i18n:translate="">Rendez-vous dans votre espace pour en ajouter.</tal:block>
+            <tal:block i18n:translate="">Pour créer un Exercice WIMS rendez-vous dans "Mes ressources > Exercices WIMS".</tal:block>
         </div>
-        <p class="text-center"><a class="button radius"
-               tal:attributes="href my_view/folder_link"
-               tal:content="context/Title"/></p>
+        <div class="text-center">
+            <a class="button radius"
+               tal:attributes="href my_view/folder_link">
+                <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+            </a>
+        </div>
     </tal:no_items>
 
     <tal:listing condition="my_view/course_add_list">
@@ -115,5 +118,13 @@
 </metal:macro>
 
 <metal:macro define-macro="add_new_resource">
-    Nouvelle ressource
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Pour créer un Exercice WIMS rendez-vous dans "Mes ressources > Exercices WIMS".</tal:block>
+    </div>
+    <div class="text-center">
+        <a class="button radius"
+           tal:attributes="href my_view/folder_link">
+           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+        </a>
+    </div>
 </metal:macro>
