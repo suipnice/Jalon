@@ -142,7 +142,8 @@
             tal:attributes="class python:context.test(error, 'field error', 'field')">
             <label for="file" i18n:translate="">Fichier</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
-            <input id="file_file" name="file_file" type="file" size="30" />
+            <input id="file_file" name="file_file" type="file" size="30"
+                   required="required"/>
         </div>
 
         <tal:condition condition="my_view/is_course">
