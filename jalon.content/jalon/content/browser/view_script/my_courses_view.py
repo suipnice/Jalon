@@ -46,7 +46,11 @@ class MyCoursesView(BrowserView):
         is_manager = user.has_role("Manager")
         is_student = user.has_role("Etudiant") or user.has_role("EtudiantJalon")
 
-        is_message_cache = self.context.getJalonProperty('annoncer_vider_cache')
+        macro_messages = "Etudiant"
+        if is_manager:
+            macro_messages = "Manager"
+        if user.has_role("Personnel"):
+            macro_messages = "Personnel"
 
         tabs_list = []
         actions_list = []
@@ -95,7 +99,7 @@ class MyCoursesView(BrowserView):
 
             courses_dict = self.getTeacherCoursesList(user, tab, folder)
 
-        return {"is_message_cache": is_message_cache,
+        return {"macro_messages":   macro_messages,
                 "my_courses_macro": my_courses_macro,
                 "tab":              tab,
                 "is_manager":       is_manager,

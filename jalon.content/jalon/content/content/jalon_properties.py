@@ -573,12 +573,12 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_aide"            : self._activer_aide,
-                    "lien_aide"               : self._lien_aide,
-                    "activer_aide_plan"       : self._activer_aide_plan,
-                    "lien_aide_plan"          : self._lien_aide_plan,
-                    "activer_guide_anti_spam" : self._activer_guide_anti_spam,
-                    "message_guide_anti_spam" : self._message_guide_anti_spam}
+            return {"activer_aide":            self._activer_aide,
+                    "lien_aide":               self._lien_aide,
+                    "activer_aide_plan":       self._activer_aide_plan,
+                    "lien_aide_plan":          self._lien_aide_plan,
+                    "activer_guide_anti_spam": self._activer_guide_anti_spam,
+                    "message_guide_anti_spam": self._message_guide_anti_spam}
 
     def setPropertiesDidacticiels(self, form):
         for key in form.keys():
@@ -594,12 +594,12 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_message_general":    self._activer_message_general,
-                    "message_general":            self._message_general,
-                    "activer_bie":                self._activer_bie,
-                    "bie_message":                self._bie_message,
-                    "activer_message_enseignant": self._activer_message_enseignant,
-                    "message_enseignant":         self._message_enseignant}
+            return {"is_message_general": self._activer_message_general,
+                    "message_general":    self._message_general,
+                    "is_message_student": self._activer_bie,
+                    "message_student":    self._bie_message,
+                    "is_message_teacher": self._activer_message_enseignant,
+                    "message_teacher":    self._message_enseignant}
 
     def setPropertiesMessages(self, form, request):
         #LOG.info("----- setPropertiesMessages -----")
@@ -608,7 +608,37 @@ class JalonProperties(SimpleItem):
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
-        self.generatePageMonEspace(request)
+        self.generateMessages(request)
+
+    def generateMessages(self, request):
+        #LOG.info("----- generateMessages -----")
+        messages_properties = self.getPropertiesMessages()
+        for key in messages_properties:
+            request.set(key, messages_properties[key])
+
+        #properties_messages = self.getPropertiesMaintenance()
+        #for key in properties_messages:
+        #    request.set(key, properties_messages[key])
+
+        request.set("site", self.aq_parent.Title())
+        request.set("maintenance", self.getPropertiesMaintenance())
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Manager").pt_edit("\n".join(messages_template), "text/html", "utf-8")
+
+        request.set("is_message_student", False)
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Personnel").pt_edit("\n".join(messages_template), "text/html", "utf-8")
+
+        request.set("is_message_teacher", False)
+        request.set("is_message_student", messages_properties["is_message_student"])
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Etudiant").pt_edit("\n".join(messages_template), "text/html", "utf-8")
 
     #-----------------------------#
     # Fonctions du bloc Courriels #

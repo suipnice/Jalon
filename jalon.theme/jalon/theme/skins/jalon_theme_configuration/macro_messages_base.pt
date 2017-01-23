@@ -1,0 +1,32 @@
+<tal:comment replace="nothing">!-- Bloc annonce prévision maintenance --</tal:comment>
+<tal:define define="maintenance request/maintenance">
+<div class="small-12 columns"
+     tal:condition="maintenance/annoncer_maintenance">
+    <metal:macro use-macro="context/connexion/macros/annoncer-maintenance-jalon"></metal:macro>
+</div>
+
+<tal:comment replace="nothing">!-- Bloc annonce vider cache navigateur --</tal:comment>
+<div class="small-12 columns"
+     tal:condition="maintenance/annoncer_vider_cache">
+    <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
+</div>
+</tal:define>
+
+<tal:comment replace="nothing">!-- Bloc message général, enseignant, etudiant --</tal:comment>
+<div class="small-12 columns"
+         tal:condition="python:request['is_message_general'] or request['is_message_teacher'] or request['message_student']">
+    <div class="panel warning radius"
+         tal:condition="request/is_message_general">
+        <span tal:content="structure request/message_general"/>
+    </div>
+
+    <div class="panel warning radius"
+         tal:condition="request/is_message_teacher">
+        <span tal:content="structure request/message_teacher"/>
+    </div>
+
+    <div class="panel warning radius"
+         tal:condition="request/is_message_student">
+        <span tal:content="structure request/message_student"/>
+    </div>
+</div>
