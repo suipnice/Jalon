@@ -34,7 +34,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyAdobeConnectRecordingView(self, user):
-        #LOG.info("----- getMyAdobeConnectRecordingView -----")
+        LOG.info("----- getMyAdobeConnectRecordingView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         portal_connect = portal.portal_connect
@@ -43,6 +43,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
         context_id = self.context.getId()
         folder_id = self.folder_dict[context_id]
         folder = getattr(getattr(portal.Members, user_id), folder_id)
+        LOG.info(folder)
         adobe_connect_session = self.getSessionConnect(user, folder, portal_connect)
         adobe_connect_reunion = self.getAdobeConnectReunion(user, folder, portal_connect)
 
@@ -92,9 +93,10 @@ class MyAdobeConnectRecordingView(MySpaceView):
                 "folder_link":           folder.absolute_url()}
 
     def getSessionConnect(self, user, folder, portal_connect):
-        #LOG.info("----- getSessionConnect -----")
+        LOG.info("----- getSessionConnect -----")
         user_id = user.getId()
         user_connect_password = folder.getComplement()
+        LOG.info(user_connect_password)
         portal_connect.connexion()
         if not user_connect_password:
             #LOG.info("***** not user_connect_password")
