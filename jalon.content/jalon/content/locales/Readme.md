@@ -26,7 +26,7 @@ Une fois fait, `i18ndude` sera disponible depuis le dossier `buildout/bin`.
 [Plus d'infos...](http://docs.plone.org/develop/plone/i18n/internationalisation.html#installing-i18ndude)
 
 
-## Ajouter une langue 
+## Ajouter une langue
 *(exemple avec le code "de" pour l'allemand)*
 
 	cd CHEMIN_PLONE/zinstance/src/jalon.content/jalon/content/locales/

@@ -49,8 +49,8 @@
             <h1 tal:content="infos_connexion/site"/>
             <h2>
                 <tal:block i18n:translate="">Ergonomie</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
-                <tal:block i18n:translate="">Simplicité</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
-                <tal:block i18n:translate="">Intégration</tal:block>
+                <tal:block i18n:translate="Simplicity">Simplicité</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
+                <tal:block i18n:translate="Integration">Intégration</tal:block>
             </h2>
 
         <tal:block condition="not:maintenance/activer_maintenance">
@@ -66,7 +66,7 @@
             <div class="alert-box alert radius">
                 <tal:block i18n:translate="">Pour fonctionner</tal:block>,
                 <tal:replace replace="infos_connexion/site"/>
-                <tal:block i18n:translate="">nécessite que JavaScript soit activé dans votre logiciel de navigation.</tal:block>
+                <tal:block i18n:translate="needs_js_activated">nécessite que JavaScript soit activé dans votre logiciel de navigation.</tal:block>
             </div>
         </div>
     </noscript>
