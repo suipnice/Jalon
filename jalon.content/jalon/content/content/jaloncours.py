@@ -350,11 +350,12 @@ class JalonCours(ATFolder):
     def checkCourseAuthorized(self, user, request):
         LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
-        #LOG.info(self.getLibre())
-        #if self.getLibre():
+        # LOG.info(self.getLibre())
+        # if self.getLibre():
         #    return True
 
         if self.getAcces() == "Public":
+            # LOG.info("----- Course Authorized := Public ACCESS -----")
             return True
 
         if user.has_role(["Manager", "Owner"]):

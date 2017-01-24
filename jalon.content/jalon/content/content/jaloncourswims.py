@@ -1126,7 +1126,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.plone_utils.addPortalMessage(message, type='error')
                 return {"status": "ERROR", "message": message}
             else:
-                # Si l'utilisateur n'as pas de groupement, il doit d'abord passer par "Mon espace" pour ajouter des exercices.
+                # Si l'utilisateur n'as pas de groupement, il devra d'abord passer par "Mon espace" pour ajouter des exercices.
                 return {"status": "OK", "user_cnt": 0}
 
         # Puis un getIdFeuilleWIMS() pour créer eventuellement la feuille si ce n'etait deja fait.
@@ -1225,9 +1225,11 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 # Pour l'auteur et le co-auteur, cas d'une autoevaluation active
                 if not detailed:
                     # dans le menu "exercices, on ne demande que les notes globales de la feuille
+                    # nb : il est possible que getsheetstats ne donne pas d'infos globales d'une feuille
+                    # quand il existe une feuille n-1 qui n'a jamais été activée.
                     dico = {"job": "getsheetstats", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}
                     rep_wims = self.wims("callJob", dico)
-
+                    # LOG.info("retour de getsheetstats : %s" % rep_wims)
                     if no_user_message in rep_wims:
                         rep = json.loads(rep_wims)
                     else:
