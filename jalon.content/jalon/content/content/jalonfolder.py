@@ -558,7 +558,7 @@ class JalonFolder(ATFolder):
 
     def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
-        LOG.info("----- dupliquerCours -----")
+        # LOG.info("----- dupliquerCours -----")
         import time
         home = self
         home_id = self.getId()
@@ -653,21 +653,40 @@ class JalonFolder(ATFolder):
                 if boite:
                     duplicata.invokeFactory(type_name="JalonBoiteDepot", id=key)
                     duplicataObjet = getattr(duplicata, key)
-                    param = {"Title":            boite.Title(),
-                             "Description":      boite.Description(),
-                             "DateDepot":        boite.getDateDepot(),
-                             "DateRetard":       boite.getDateRetard(),
-                             "ListeSujets":      copy.deepcopy(boite.getDocumentsList()),
-                             "ListeCorrections": copy.deepcopy(boite.getListeCorrections()),
-                             "DateAff":          boite.getDateAff(),
-                             "DateMasq":         boite.getDateMasq()}
+                    param = {"Title":                   boite.Title(),
+                             "Description":             boite.Description(),
+                             "DateDepot":               boite.getDateDepot(),
+                             "DateRetard":              boite.getDateRetard(),
+                             "ListeSujets":             copy.deepcopy(boite.getDocumentsList()),
+                             "ListeCorrections":        copy.deepcopy(boite.getListeCorrections()),
+                             "DateAff":                 boite.getDateAff(),
+                             "DateMasq":                boite.getDateMasq(),
+                             "Profile":                 boite.getProfile(),
+                             "CorrectionIndividuelle":  boite.getCorrectionIndividuelle(),
+                             "NotificationCorrection":  boite.getNotificationCorrection(),
+                             "Notation":                boite.getNotation(),
+                             "NotificationNotation":    boite.getNotificationNotation(),
+                             "AccesDepots":             boite.getAccesDepots(),
+                             "AccesCompetences":        boite.getAccesCompetences(),
+                             "AfficherCompetences":     boite.getAfficherCompetences(),
+                             "ModifierCompetences":     boite.getModifierCompetences(),
+                             "DateCorrection":          boite.getDateCorrection(),
+                             "NombreCorrection":        boite.getNombreCorrection(),
+                             "Penalite":                boite.getPenalite(),
+                             "AdjustementPoints":       boite.getAdjustementPoints(),
+                             "AccesGrille":             boite.getAccesGrille(),
+                             "AccesEvaluation":         boite.getAccesEvaluation(),
+                             "AutoriserAutoEvaluation": boite.getAutoriserAutoEvaluation(),
+                             "AffectationEvaluation":   boite.getAffectationEvaluation()}
                     duplicataObjet.setProperties(param)
                     duplicataObjet.setDocumentsProperties(copy.deepcopy(boite.getDocumentsProperties()))
+                    duplicataObjet.setCriteriaDict(copy.deepcopy(boite.getCriteriaDict()))
+                    duplicataObjet.setCompetences(copy.deepcopy(boite.getCompetences()))
 
                     # Met a jour les relatedItems des documents.
                     infos_elements_activite = duplicataObjet.getDocumentsProperties()
-                    LOG.info("infos_elements_activite : %s" % infos_elements_activite)
-                    LOG.info("liste sujets : %s" % duplicataObjet.getDocumentsList())
+                    # LOG.info("infos_elements_activite : %s" % infos_elements_activite)
+                    # LOG.info("liste sujets : %s" % duplicataObjet.getDocumentsList())
                     self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getDocumentsList(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
@@ -710,7 +729,7 @@ class JalonFolder(ATFolder):
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
                 repertoire = infos_element[key]["typeElement"].replace(" ", "")
-                LOG.info("typeElement : %s" % repertoire)
+                # LOG.info("typeElement : %s" % repertoire)
                 if repertoire in dicoRep and (cours.isInCourseMap(key) or key in cours.getGlossaire() or key in cours.getBibliographie()):
                     self.associerCoursListeObjets(
                         duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
@@ -730,13 +749,13 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
-        LOG.info("----- associerCoursListeObjets -----")
+        # LOG.info("----- associerCoursListeObjets -----")
         # LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
-            LOG.info("object_id : %s" % id_objet)
+            # LOG.info("object_id : %s" % id_objet)
             infos_objet = infos_elements[id_objet]
             repertoire = infos_objet["typeElement"].replace(" ", "")
-            LOG.info("typeElement : %s" % repertoire)
+            # LOG.info("typeElement : %s" % repertoire)
             if repertoire in dicoRep:
                 repertoire = dicoRep[repertoire]
             if "*-*" in id_objet:
@@ -754,7 +773,7 @@ class JalonFolder(ATFolder):
 
             objet = getattr(rep_createur, id_objet, None)
             if objet:
-                LOG.info("object found")
+                # LOG.info("object found")
                 relatedItems = objet.getRelatedItems()
                 if self not in relatedItems:
                     relatedItems.append(idElement)
