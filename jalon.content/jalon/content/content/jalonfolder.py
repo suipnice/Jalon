@@ -558,7 +558,7 @@ class JalonFolder(ATFolder):
 
     def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
-        # LOG.info("[dupliquerCours]")
+        # LOG.info("----- dupliquerCours -----")
         import time
         home = self
         home_id = self.getId()
@@ -567,7 +567,7 @@ class JalonFolder(ATFolder):
             home_id = home.getId()
 
         cours = getattr(self, idcours)
-        infos_element = copy.deepcopy(cours.getElementCours())
+        infos_element = copy.deepcopy(cours.getCourseItemProperties())
 
         try:
             idobj = home.invokeFactory(
@@ -614,13 +614,13 @@ class JalonFolder(ATFolder):
                  "Elements_glossaire":     cours.getGlossaire(),
                  "Elements_bibliographie": cours.getBibliographie(),
                  }
-        duplicata.setProperties(param)
-        duplicata.setElementsCours(infos_element)
+        duplicata.setCourseProperties(param)
+        duplicata.setCourseItemsProperties(infos_element)
         duplicata.invokeFactory(type_name='Folder', id="annonce")
         duplicata.invokeFactory(type_name='Ploneboard', id="forum")
         forum = getattr(duplicata, "forum")
         forum.setTitle("Liste des forums du cours")
-        duplicata.setPlanCours(copy.deepcopy(cours.getPlan()))
+        duplicata.setCourseMap(copy.deepcopy(cours.getPlan()))
 
         dicoRep = {"Image":                    "Fichiers",
                    "File":                     "Fichiers",
@@ -631,8 +631,11 @@ class JalonFolder(ATFolder):
                    "CatalogueBU":              "Externes",
                    "TermeGlossaire":           "Glossaire",
                    "Presentationssonorisees":  "Sonorisation",
+                   "Sonorisation":             "Sonorisation",
+                   "Webconference":            "Webconference",
                    "ExerciceWims":             "Wims",
-                   "ExercicesWims":            "Wims"}
+                   "ExercicesWims":            "Wims",
+                   "Video":                    "Video"}
 
         portal_members = getattr(self.portal_url.getPortalObject(), "Members")
 
@@ -650,23 +653,46 @@ class JalonFolder(ATFolder):
                 if boite:
                     duplicata.invokeFactory(type_name="JalonBoiteDepot", id=key)
                     duplicataObjet = getattr(duplicata, key)
-                    param = {"Title":            boite.Title(),
-                             "Description":      boite.Description(),
-                             "DateDepot":        boite.getDateDepot(),
-                             "DateRetard":       boite.getDateRetard(),
-                             "ListeSujets":      copy.deepcopy(boite.getListeSujets()),
-                             "ListeCorrections": copy.deepcopy(boite.getListeCorrections()),
-                             "InfosElement":     copy.deepcopy(boite.getInfosElement()),
-                             "DateAff":          boite.getDateAff(),
-                             "DateMasq":         boite.getDateMasq()}
+                    param = {"Title":                   boite.Title(),
+                             "Description":             boite.Description(),
+                             "DateDepot":               boite.getDateDepot(),
+                             "DateRetard":              boite.getDateRetard(),
+                             "ListeSujets":             copy.deepcopy(boite.getDocumentsList()),
+                             "ListeCorrections":        copy.deepcopy(boite.getListeCorrections()),
+                             "DateAff":                 boite.getDateAff(),
+                             "DateMasq":                boite.getDateMasq(),
+                             "Profile":                 boite.getProfile(),
+                             "CorrectionIndividuelle":  boite.getCorrectionIndividuelle(),
+                             "NotificationCorrection":  boite.getNotificationCorrection(),
+                             "Notation":                boite.getNotation(),
+                             "NotificationNotation":    boite.getNotificationNotation(),
+                             "AccesDepots":             boite.getAccesDepots(),
+                             "AccesCompetences":        boite.getAccesCompetences(),
+                             "AfficherCompetences":     boite.getAfficherCompetences(),
+                             "ModifierCompetences":     boite.getModifierCompetences(),
+                             "DateCorrection":          boite.getDateCorrection(),
+                             "NombreCorrection":        boite.getNombreCorrection(),
+                             "Penalite":                boite.getPenalite(),
+                             "AdjustementPoints":       boite.getAdjustementPoints(),
+                             "AccesGrille":             boite.getAccesGrille(),
+                             "AccesEvaluation":         boite.getAccesEvaluation(),
+                             "AutoriserAutoEvaluation": boite.getAutoriserAutoEvaluation(),
+                             "AffectationEvaluation":   boite.getAffectationEvaluation()}
                     duplicataObjet.setProperties(param)
+                    duplicataObjet.setDocumentsProperties(copy.deepcopy(boite.getDocumentsProperties()))
+                    duplicataObjet.setCriteriaDict(copy.deepcopy(boite.getCriteriaDict()))
+                    duplicataObjet.setCompetences(copy.deepcopy(boite.getCompetences()))
 
                     # Met a jour les relatedItems des documents.
-                    infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
+                    infos_elements_activite = duplicataObjet.getDocumentsProperties()
+                    # LOG.info("infos_elements_activite : %s" % infos_elements_activite)
+                    # LOG.info("liste sujets : %s" % duplicataObjet.getDocumentsList())
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getDocumentsList(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
-
+                    relatedItems = boite.getRelatedItems()
+                    duplicataObjet.setRelatedItems(relatedItems)
+                    duplicataObjet.reindexObject()
                 else:
                     duplicataObjet = "Invalide"
 
@@ -691,10 +717,10 @@ class JalonFolder(ATFolder):
                     # On retire l'objet d'infos_element, afin qu'il ne soit pas listé dans le
                     # cours dupliqué.
                     del new_infos_element[key]
-                    duplicata.setElementsCours(new_infos_element)
+                    duplicata.setCourseItemsProperties(new_infos_element)
                     # On retire également l'objet des infos_element du cours d'origine, afin
                     # de corriger le bug.
-                    cours.setElementsCours(new_infos_element)
+                    cours.setCourseItemsProperties(new_infos_element)
                     rep = '{"status": "ERROR", "message": "duplicata Objet Invalide"}'
                     self.wims("verifierRetourWims", {"rep": rep,
                                                      "fonction": "jalonfolder.py/dupliquerCours",
@@ -702,7 +728,9 @@ class JalonFolder(ATFolder):
 
             # L'objet n'a pas été dupliqué (tout sauf les activités)
             if not duplicataObjet:
-                if infos_element[key]["typeElement"] in dicoRep and cours.isInPlan(key):
+                repertoire = infos_element[key]["typeElement"].replace(" ", "")
+                # LOG.info("typeElement : %s" % repertoire)
+                if repertoire in dicoRep and (cours.isInCourseMap(key) or key in cours.getGlossaire() or key in cours.getBibliographie()):
                     self.associerCoursListeObjets(
                         duplicata, [key], infos_element, dico_espaces, dicoRep, portal_members)
 
@@ -721,16 +749,19 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
+        # LOG.info("----- associerCoursListeObjets -----")
         # LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
         for id_objet in liste_objets:
+            # LOG.info("object_id : %s" % id_objet)
             infos_objet = infos_elements[id_objet]
             repertoire = infos_objet["typeElement"].replace(" ", "")
+            # LOG.info("typeElement : %s" % repertoire)
             if repertoire in dicoRep:
                 repertoire = dicoRep[repertoire]
             if "*-*" in id_objet:
                 id_objet = id_objet.replace("*-*", ".")
             # On en profite pour remplir "dico_espaces", qui nous permettra d'éviter de trop nombreux appels à "getattr",
-            # afin d'optimiser la tache pour des cours avec beacoup d'objets.
+            # afin d'optimiser la tache pour des cours avec beaucoup d'objets.
             createur = infos_objet["createurElement"]
             if createur not in dico_espaces:
                 dico_espaces[createur] = {"espace": getattr(portal_members, createur)}
@@ -742,6 +773,7 @@ class JalonFolder(ATFolder):
 
             objet = getattr(rep_createur, id_objet, None)
             if objet:
+                # LOG.info("object found")
                 relatedItems = objet.getRelatedItems()
                 if self not in relatedItems:
                     relatedItems.append(idElement)

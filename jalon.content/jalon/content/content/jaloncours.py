@@ -1500,6 +1500,10 @@ class JalonCours(ATFolder):
         if not item_data:
             self.addItemProperty(item_id, item_type, item_object.Title(), user_id, "", None)
 
+    def setCourseMap(self, plan):
+        # LOG.info("----- setCourseMap -----")
+        self.plan = tuple(plan)
+
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
         # LOG.info("----- setCourseMapPosition -----")
         if len(course_title_list) > 1:
