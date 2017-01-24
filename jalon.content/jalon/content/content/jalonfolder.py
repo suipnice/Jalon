@@ -657,19 +657,23 @@ class JalonFolder(ATFolder):
                              "Description":      boite.Description(),
                              "DateDepot":        boite.getDateDepot(),
                              "DateRetard":       boite.getDateRetard(),
-                             "ListeSujets":      copy.deepcopy(boite.getListeSujets()),
+                             "ListeSujets":      copy.deepcopy(boite.getDocumentsList()),
                              "ListeCorrections": copy.deepcopy(boite.getListeCorrections()),
-                             "InfosElement":     copy.deepcopy(boite.getInfosElement()),
                              "DateAff":          boite.getDateAff(),
                              "DateMasq":         boite.getDateMasq()}
                     duplicataObjet.setProperties(param)
+                    duplicataObjet.setDocumentsProperties(copy.deepcopy(boite.getDocumentsProperties()))
 
                     # Met a jour les relatedItems des documents.
-                    infos_elements_activite = duplicataObjet.getInfosElement()
-                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
+                    infos_elements_activite = duplicataObjet.getDocumentsProperties()
+                    LOG.info("infos_elements_activite : %s" % infos_elements_activite)
+                    LOG.info("liste sujets : %s" % duplicataObjet.getDocumentsList())
+                    self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getDocumentsList(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
-
+                    relatedItems = boite.getRelatedItems()
+                    duplicataObjet.setRelatedItems(relatedItems)
+                    duplicataObjet.reindexObject()
                 else:
                     duplicataObjet = "Invalide"
 
