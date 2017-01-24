@@ -13,6 +13,11 @@
         <tal:block i18n:translate="">Modifier la consultation de la grille d'évaluation de la boite de dépôt</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+
+    <div class="panel warning radius">
+        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+    </div>
+
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/edit_peers_grid_access_script">
 

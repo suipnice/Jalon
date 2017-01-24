@@ -141,6 +141,10 @@
     Évaluation par les pairs
 -->
 <metal:macro define-macro="peers-list">
+    <div class="panel warning radius">
+        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+    </div>
+
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
                         criteria_dict evaluation_by_peers_dict/criteria_dict">
     <a class="button expand radius"
@@ -212,6 +216,9 @@
     Évaluation par les pairs Liste role Personnel
 -->
 <metal:macro define-macro="peers_teacher_macro">
+    <div class="panel warning radius">
+        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+    </div>
     <form id="js-list_competences" method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
           tal:condition="my_view/is_personnel">
@@ -299,6 +306,9 @@
     Évaluation par les pairs Liste role Étudiant V1
 -->
 <metal:macro define-macro="peers_student_macro">
+    <div class="panel warning radius">
+        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+    </div>
     <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius"
        tal:condition="evaluation_by_peers_dict/evaluate_button">
         <i class="fa fa-check-square-o" aria-hidden="true"></i>
