@@ -180,8 +180,15 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  required=False,
                  accessor="getActiverEmailForum",
                  searchable=False,
+                 default=True,
                  widget=StringWidget(label=_(u"Envoie de courriels"),
                                      description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),)),
+    BooleanField("add_forum_permission",
+                 required=False,
+                 accessor="getAddForumPermission",
+                 searchable=False,
+                 widget=StringWidget(label=_(u"Permission d'ajout de forum par les étudiants"),
+                                     description=_(u"EPermission d'ajout de forum par les étudiants."),)),
     StringField("dateDerniereModif",
                 required=False,
                 accessor="getDateDerniereModif",
@@ -544,6 +551,15 @@ class JalonCours(ATFolder):
         forum_object.reindexObject()
 
         return forum_id
+
+    def isAddForumPermission(self, is_personnel):
+        #LOG.info("----- isAddForumPermission -----")
+        add_forum_permission = self.getAddForumPermission()
+        LOG.info(add_forum_permission)
+        if not add_forum_permission:
+            return True if is_personnel else False
+        else:
+            return True
 
     def getDataCourseFormAction(self, user_id, course_id):
         # LOG.info("----- getDataCourseFormAction -----")

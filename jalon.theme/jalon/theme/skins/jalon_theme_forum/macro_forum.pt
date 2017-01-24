@@ -515,6 +515,56 @@
     </form>
 
 </metal:macro>
+
+<!--
+        Permission des forums
+-->
+<metal:macro define-macro="manage-forum-permission">
+
+    <h2>
+        <i class="fa fa-lock"></i>
+        <tal:block i18n:translate="">Gestion des permissions des forums</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="manage_forum_permission"
+          tal:attributes="action string:${context/absolute_url}/edit_course_property_script">
+
+        <h3>
+            <i class="fa fa-plus-circle"></i>
+            <tal:block i18n:translate="">Autoriser les étudiants à créer des forums</tal:block>
+        </h3>
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Une fois cette option désactivée, les étudiants n'auront plus le droit de créer un forum, ils pourront créer et répondre aux conversations dans les forums.</tal:block>
+        </div>
+
+        <div class="formControls">
+
+            <input type="radio" id="add_forum_permission-true" name="add_forum_permission" value="True"
+                   tal:attributes="checked python:context.test(context.getAddForumPermission(), 'checked', '')" />
+            <label for="add_forum_permission-true" class="success" i18n:translate="">Activer</label>
+
+            <input type="radio" id="add_forum_permission-false" name="add_forum_permission" value="False"
+                   tal:attributes="checked python:context.test(context.getAddForumPermission(), '', 'checked')" />
+            <label for="add_forum_permission-false" class="warning" i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="course_property" value="add_forum_permission" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:macro>
+
 </metal:content-core>
+
 </body>
+
 </html>
