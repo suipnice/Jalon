@@ -74,7 +74,7 @@ class CourseAddView(MySpaceView):
 
     def getCourseAddView(self, user, course_path):
         """Fournit les infos d'ajout d'un element dans le cours."""
-        LOG.info("----- getCourseAddView -----")
+        # LOG.info("----- getCourseAddView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

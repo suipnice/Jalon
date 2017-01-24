@@ -13,21 +13,21 @@ class MyPodVideosView(MySpaceView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
-                 "icon":  "fa fa-home",
+        return [{"title": _(u"Mes ressources"),
+                 "icon":  "fa fa-folder-open",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes vidéos POD"),
                  "icon":  "fa fa-youtube-play",
                  "link":  self.context.absolute_url()}]
 
     def getMyPodVideosView(self, user):
-        #LOG.info("----- getMyPodVideosView -----")
+        # LOG.info("----- getMyPodVideosView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
@@ -65,7 +65,7 @@ class MyPodVideosView(MySpaceView):
         return self.getItemsList(folder, selected_tags_list, content_filter)
 
     def updateJalonVideos(self, folder, portal, member_id):
-        LOG.info("----- updateJalonVideos -----")
+        # LOG.info("----- updateJalonVideos -----")
         jalon_videos_id = set([object_id.split("-")[-1] for object_id in folder.objectIds()])
 
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
@@ -89,9 +89,9 @@ class MyPodVideosView(MySpaceView):
             videos_ids = set(videos_ids)
             videos_del = jalon_videos_id.difference(videos_ids)
 
-            LOG.info(jalon_videos_id)
-            LOG.info(videos_ids)
-            LOG.info(videos_del)
+            # LOG.info(jalon_videos_id)
+            # LOG.info(videos_ids)
+            # LOG.info(videos_del)
 
             videos_add = videos_ids.difference(jalon_videos_id)
             for video_id in videos_add:
@@ -112,7 +112,6 @@ class MyPodVideosView(MySpaceView):
                              "Videothumbnail":       video["thumbnail"]}
                     object_video.setProperties(param)
 
-            """
             for video_id in videos_del:
                 object_id = "Externe-%s-%s" % (member_id, video_id)
                 video_object = getattr(folder, object_id)
@@ -125,7 +124,6 @@ class MyPodVideosView(MySpaceView):
                     else:
                         brain_object.retirerElement(object_id, "sujets")
                 folder.manage_delObjects(object_id)
-            """
 
         elif jalon_videos_id:
             # Supprimer toutes les vidéos

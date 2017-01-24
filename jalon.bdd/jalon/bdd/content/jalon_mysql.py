@@ -48,11 +48,11 @@ def addIndividu(session, param):
 
 
 def addConnexionIND(session, SESAME_ETU, DATE_CONN):
-    #LOG.info("addConnexionIND")
+    # LOG.info("addConnexionIND")
     try:
         session.add(tables.ConnexionINDMySQL(SESAME_ETU=SESAME_ETU, DATE_CONN=DATE_CONN))
     except:
-        #LOG.info("Not addConnexionIND")
+        # LOG.info("Not addConnexionIND")
         pass
     session.commit()
 
@@ -134,35 +134,35 @@ def getConsultationCoursByYear(session, year='%', listeIdCours=[], SESAME_ETU=No
 
 
 def getConsultationByCoursByMonth(session, ID_COURS, month, year='%'):
-    #LOG.info("----- getConsultationByCoursByMonth -----")
+    # LOG.info("----- getConsultationByCoursByMonth -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByCoursByYear(session, ID_COURS, year='%'):
-    #LOG.info("----- getConsultationByCoursByYear -----")
+    # LOG.info("----- getConsultationByCoursByYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByCoursByUniversityYear(session, ID_COURS, year='%'):
-    #LOG.info("----- getConsultationByCoursByUniversityYear -----")
+    # LOG.info("----- getConsultationByCoursByUniversityYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByCoursByYearForGraph(session, ID_COURS, year='%'):
-    #LOG.info("----- getConsultationByCoursByYearForGraph -----")
+    # LOG.info("----- getConsultationByCoursByYearForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", func.YEAR(COC.DATE_CONS) == year)).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year):
-    #LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
+    # LOG.info("----- getConsultationByCoursByUniversityYearForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(func.disctinct(COC.SESAME_ETU)), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     #nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
@@ -170,7 +170,7 @@ def getConsultationByCoursByUniversityYearForGraph(session, ID_COURS, year):
 
 
 def getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS):
-    #LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
+    # LOG.info("----- getConsultationByCoursByUniversityYearByDate -----")
     COC = aliased(tables.ConsultationCoursMySQL)
 
     filter_date = func.MONTH(COC.DATE_CONS)
@@ -189,7 +189,7 @@ def getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YE
 
 
 def getFrequentationByCoursByUniversityYearByDateForGraph(session, ID_COURS, PUBLIC_CONS, DATE_CONS_YEAR):
-    #LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
+    # LOG.info("----- getFrequentationByCoursByUniversityYearByDateForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.date(COC.DATE_CONS), func.count(func.distinct(COC.SESAME_ETU))).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(func.date(COC.DATE_CONS))
     #nbConsultations = session.query(func.date(COC.DATE_CONS), func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.TYPE_CONS == "Cours", COC.PUBLIC_CONS == PUBLIC_CONS, COC.DATE_CONS.between("%s/09/01" % str(DATE_CONS_YEAR - 1), "%s/08/31" % str(DATE_CONS_YEAR)))).group_by(func.date(COC.DATE_CONS))
@@ -197,56 +197,56 @@ def getFrequentationByCoursByUniversityYearByDateForGraph(session, ID_COURS, PUB
 
 
 def getConsultationByElementsByCoursByMonth(session, ID_COURS, month, year='%', elements_list=[]):
-    #LOG.info("----- getConsultationByElementsByCoursByMonth -----")
+    # LOG.info("----- getConsultationByElementsByCoursByMonth -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.ID_CONS, func.count(COC.DATE_CONS), func.count(func.distinct(COC.SESAME_ETU))).filter(and_(COC.ID_COURS == ID_COURS, COC.PUBLIC_CONS.in_(["Etudiant", "Lecteur"]), COC.ID_CONS.in_(elements_list), func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_CONS)
     return nbConsultations
 
 
 def getConsultationByElementsByCoursByYear(session, ID_COURS, year, elements_list=[]):
-    #LOG.info("----- getConsultationByElementsByCoursByYear -----")
+    # LOG.info("----- getConsultationByElementsByCoursByYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.ID_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS.in_(elements_list), func.YEAR(COC.DATE_CONS) == year)).group_by(COC.ID_CONS)
     return nbConsultations
 
 
 def getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list=[]):
-    #LOG.info("----- getConsultationByElementsByCoursByUniversityYear -----")
+    # LOG.info("----- getConsultationByElementsByCoursByUniversityYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.ID_CONS, func.count(COC.DATE_CONS), func.count(func.distinct(COC.SESAME_ETU))).filter(and_(COC.ID_COURS == ID_COURS, COC.PUBLIC_CONS.in_(["Etudiant", "Lecteur"]), COC.ID_CONS.in_(elements_list), COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(COC.ID_CONS)
     return nbConsultations
 
 
 def getConsultationByElementByCoursByMonth(session, ID_COURS, ID_CONS, month, year='%'):
-    #LOG.info("----- getConsultationByElementsByCoursByMonth -----")
+    # LOG.info("----- getConsultationByElementsByCoursByMonth -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, func.MONTH(COC.DATE_CONS) == month, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByElementByCoursByYear(session, ID_COURS, ID_CONS, year='%'):
-    #LOG.info("----- getConsultationByElementsByCoursByYear -----")
+    # LOG.info("----- getConsultationByElementsByCoursByYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, func.YEAR(COC.DATE_CONS) == year)).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByElementByCoursByUniversityYear(session, ID_COURS, ID_CONS, year):
-    #LOG.info("----- getConsultationByElementByCoursByUniversityYear -----")
+    # LOG.info("----- getConsultationByElementByCoursByUniversityYear -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(COC.PUBLIC_CONS, func.count(COC.DATE_CONS)).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByElementByCoursByYearForGraph(session, ID_COURS, ID_CONS, year='%'):
-    #LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
+    # LOG.info("----- getConsultationByElementByCoursByYearForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, func.YEAR(COC.DATE_CONS) == year)).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     return nbConsultations
 
 
 def getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, ID_CONS, year='%'):
-    #LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
+    # LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
     COC = aliased(tables.ConsultationCoursMySQL)
     nbConsultations = session.query(func.MONTH(COC.DATE_CONS), func.count(COC.DATE_CONS), COC.PUBLIC_CONS).filter(and_(COC.ID_COURS == ID_COURS, COC.ID_CONS == ID_CONS, COC.DATE_CONS.between("%s/09/01" % str(year - 1), "%s/08/31" % str(year)))).group_by(func.MONTH(COC.DATE_CONS), COC.PUBLIC_CONS)
     return nbConsultations
@@ -413,7 +413,7 @@ def getCountEvaluationsNotes(session, DEPOSIT_BOX):
 def getCountVerifEvaluationsNotes(session, DEPOSIT_BOX):
     PEA = aliased(tables.PeersEvaluationAverageMySQL)
     verif_evaluations_notes = session.query(func.count(PEA.DEPOSIT_STU)).filter(PEA.DEPOSIT_BOX == DEPOSIT_BOX, PEA.IS_VERIFICATION == True)
-    LOG.info("***** getCountVerifEvaluationsNotes : %s" % verif_evaluations_notes)
+    # LOG.info("***** getCountVerifEvaluationsNotes : %s" % verif_evaluations_notes)
     #return convertirResultatBDD(peers_average)
     return verif_evaluations_notes
 

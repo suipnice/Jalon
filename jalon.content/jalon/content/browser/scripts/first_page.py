@@ -34,31 +34,5 @@ class FirstPage(BrowserView):
                 "activer_creationcompte":   portal_jalon_properties.getJalonProperty("activer_creationcompte"),
                 }
 
-    def getMonEspace(self):
-        portal_state = getMultiAdapter((self.context, self.request),
-                                       name=u'plone_portal_state')
-        portal = portal_state.portal()
-        portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
-        authMember = portal.portal_membership.getAuthenticatedMember()
-        fullname = authMember.getProperty("fullname", authMember.getId())
-        if not fullname:
-            fullname = authMember.getProperty("displayName", authMember.getId())
-        podcast = False
-        variablesPodcast = portal_jalon_properties.getVariablesPodcast()
-        if variablesPodcast["activerPodcasts"] and portal.absolute_url().startswith(variablesPodcast["uploadPodcasts"]) and authMember.getId() in portal_jalon_properties.getUsersPodcast("tiny"):
-            podcast = True
-        return {"site"                 : portal.Title(),
-                "activer"              : portal_jalon_properties.getPropertiesMonEspace(),
-                "grid"                 : portal_jalon_properties.getGridMonEspace(),
-                "podcast"              : podcast,
-                "fullname"             : fullname,
-                "maintenance"          : portal_jalon_properties.getPropertiesMaintenance(),
-                "vidercache"           : portal_jalon_properties.getJalonProperty("annoncer_vider_cache"),
-                "messages"             : portal_jalon_properties.getPropertiesMessages(),
-                "url_news_maintenance" : portal_jalon_properties.getJalonProperty("url_news_maintenance"),
-                "isCreer"              : authMember.has_role("Manager"),
-                "lien_bug"             : portal_jalon_properties.getJalonProperty("lien_assitance"),
-                "etablissement"        : portal_jalon_properties.getJalonProperty("etablissement")}
-
     def test(self, condition, valeurVrai, valeurFaux):
         return jalon_utils.test(condition, valeurVrai, valeurFaux)

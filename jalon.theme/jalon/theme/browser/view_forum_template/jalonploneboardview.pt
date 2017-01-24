@@ -14,7 +14,8 @@
                    mtool context/@@plone_tools/membership;
                    mode_etudiant request/mode_etudiant | string:false;
                    personnel python:context.aq_parent.isPersonnel(user, mode_etudiant);
-                   anonymous python:user.has_role('Anonymous');">
+                   anonymous python:user.has_role('Anonymous');
+                   add_forum_perm python:context.aq_parent.isAddForumPermission(personnel)">
 
     <tal:define define="breadcrumbs python:context.getForumBreadcrumbs(context)">
     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
@@ -43,7 +44,7 @@
         <nav id="item-adder" class="small-12 columns">
             <a class="button expand create"
                data-reveal-id="reveal-main" data-reveal-ajax="true"
-               tal:condition="not:anonymous"
+               tal:condition="add_forum_perm"
                tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-forum">
                 <i class="fa fa-plus-circle"></i>
                 <tal:block i18n:translate="">Créer un forum dans ce cours</tal:block>

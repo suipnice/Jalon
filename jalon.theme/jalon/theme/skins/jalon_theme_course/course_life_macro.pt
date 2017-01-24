@@ -236,6 +236,12 @@
                             <i class="fa fa-envelope-o fa-fw"></i><tal:block i18n:translate="">Notification</tal:block>
                         </a>
                     </li>
+                    <li>
+                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                           tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=manage-forum-permission">
+                            <i class="fa fa-lock fa-fw"></i><tal:block i18n:translate="">Permission</tal:block>
+                        </a>
+                    </li>
                 </ul>
             </tal:condition>
             <div class="panel callout radius"

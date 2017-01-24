@@ -38,7 +38,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     # session_keep permet de définir si on réutilise une eventuelle session wims existante ou pas.
 
     """
-    LOG.info("----- authUser -----")
+    # LOG.info("----- authUser -----")
     remote_addr = None
     url_connexion = context.wims("getAttribut", "url_connexion")
     # error_dict = {"status": "ERROR"}

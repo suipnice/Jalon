@@ -25,7 +25,8 @@ validate_dict = {"edit_course_title":        ["title"],
                  "edit_course_announce":     ["title", "description"],
                  "add_course_forum":         ["title", "description"],
                  "create_file":              ["file_file"],
-                 "create_external_resource": ["title", "lien"]}
+                 "create_external_resource": ["title", "lien"],
+                 "create_glossary_term":     ["title", "description"]}
 
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:

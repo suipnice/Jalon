@@ -265,7 +265,7 @@ def getUeEtape(session, COD_ETP, COD_VRS_VET=None, TYP_ELP_SELECT=None):
     if not listeIDUE:
         return []
     taille = len(listeIDUE)
-    #LOG.info("taille : %s" % taille)
+    # LOG.info("taille : %s" % taille)
     if taille > 500:
         listeIDUE2 = []
         deb = 0

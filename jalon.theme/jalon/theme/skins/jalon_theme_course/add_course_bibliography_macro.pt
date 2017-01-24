@@ -114,3 +114,67 @@
     </tal:listing>
 
 </metal:macro>
+
+<metal:macro define-macro="add_new_resource">
+<tal:define define="errors options/state/getErrors | nothing;">
+    <h2>
+        <i class="fa fa-plus-circle no-pad"></i>
+        <tal:block i18n:translate="">Ajouter une ressource externe à la bibliographie du cours et dans "Mes ressources > Ressources externes"</tal:block>
+    </h2>
+
+    <form id="js-directExtResCreator" method="POST"
+          tal:attributes="action string:${my_view/course_link}/add_course_external_resource_script;
+                          data-success_msg string:La ressource externe a été créée et ajouté au cours.">
+
+        <div id="title"
+             tal:define="error errors/title | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="title" class="formQuestion" i18n:translate="label_title">
+                Titre
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <input id="title" name="title" type="text" maxlength="255" size="30" placeholder="Saisie obligatoire"
+                   tal:attributes="value request/title | nothing"
+                   required="required"
+                   i18n:attributes="placeholder" />
+        </div>
+
+        <div id="archetypes-fieldname-description" class="field">
+            <label for="description" class="formQuestion" i18n:translate="label_description">
+                Description
+            </label>
+            <textarea id="description" cols="40" name="description" rows="5"></textarea>
+            <input type="hidden" value="text/plain" name="description_text_format" />
+        </div>
+
+        <div id="archetypes-fieldname-lien"
+             tal:define="error errors/lien | nothing;"
+             tal:attributes="class python:context.test(error, 'field error', 'field')">
+            <label for="lien" class="formQuestion" i18n:translate="label_lecteur_exportable">
+                URL ou Lecteur exportable
+            </label>
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+            <textarea id="lien" cols="40" name="lien" rows="5" placeholder="Saisie obligatoire"
+                      required="required"
+                      i18n:attributes="placeholder"><tal:replace replace="requet/lien | nothing" /></textarea>
+        </div>
+
+        <input type="hidden" name="user_id" tal:attributes="value user/getId" />
+        <input type="hidden" name="folder_id" tal:attributes="value my_view/folder_id"/>
+        <input type="hidden" name="biblio" value="true"/>
+
+        <div class="formControls">
+            <button type="submit" class="button small create radius">
+                <i class="fa fa-plus-circle"></i>
+                <tal:block i18n:translate="">Ajouter</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+    <tal:comment replace="nothing">
+        <script charset="UTF-8"
+            tal:content="structure string:setRevealFormPlanRefresh('js-directExtResCreator','reveal-main')" />
+    </tal:comment>
+    </tal:define>
+</metal:macro>

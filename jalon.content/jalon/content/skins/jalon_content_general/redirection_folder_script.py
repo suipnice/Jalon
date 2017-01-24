@@ -13,10 +13,9 @@ came_from = REQUEST.get("came_from", None)
 if came_from:
     return True
 else:
-    portal_link = context.absolute_url()
-    redirection = "%s/mon_espace" % portal_link
-    if user.has_role(["Etudiant", "EtudiantJalon"]):
-        redirection = "%s/mes_cours" % portal_link
-
-    context.REQUEST.RESPONSE.redirect(redirection)
-    #return REQUEST
+    context.REQUEST.RESPONSE.redirect("%s/mes_cours" % context.absolute_url())
+    #portal_link = context.absolute_url()
+    #redirection = "%s/mon_espace" % portal_link
+    #if user.has_role(["Etudiant", "EtudiantJalon"]):
+    #    redirection = "%s/mes_cours" % portal_link
+    #context.REQUEST.RESPONSE.redirect(redirection)

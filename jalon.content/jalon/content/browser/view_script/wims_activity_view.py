@@ -14,13 +14,13 @@ class WimsActivityView(CourseView):
 
     """def __init__(self, context, request):
         # initialize WimsActivityView.
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         CourseView.__init__(self, context, request)
     """
 
     def getBreadcrumbs(self):
         """Get current page breadcrumbs."""
-        LOG.info("----- getBreadcrumbs -----")
+        # LOG.info("----- getBreadcrumbs -----")
         portal = self.context.portal_url.getPortalObject()
         parent = self.context.aq_parent
         self_link = self.context.absolute_url()
@@ -39,7 +39,7 @@ class WimsActivityView(CourseView):
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""
-        LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
+        # LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
         user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
@@ -147,7 +147,7 @@ class WimsActivityView(CourseView):
                                                   "icon":      "fa-trophy",
                                                   "text":      "Résultats"})
 
-        LOG.info("----- getWimsActivityView (End) -----")
+        # LOG.info("----- getWimsActivityView (End) -----")
         return my_view
 
     def getWimsSession(self, user, isCoAuteur, isAnonymous):
@@ -169,7 +169,7 @@ class WimsActivityView(CourseView):
         # portal_link = portal.absolute_url()
         # portal_link = self.portal_url
         item_adder_list = [{"item_link":  "%s/mon_espace/mes_exercices_wims/course_add_view?course_path=%s" % (portal_link, activity_path),
-                                "item_title": "Attacher un exercice WIMS de mon espace",
+                                "item_title": "Attacher un exercice WIMS de Mes ressources",
                                 "item_icon":  "fa fa-fw fa-random",
                                 "item_name":  "Exercice WIMS"},
                            {"item_link":  "%s/mon_espace/mes_exercices_wims/wims_activity_import_view?type=hotpot&activity_path=%s" % (portal_link, activity_path),

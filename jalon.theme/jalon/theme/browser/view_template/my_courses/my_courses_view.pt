@@ -29,15 +29,9 @@
 
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <div class="small-12 columns"
-             tal:condition="my_courses_view/is_message_cache">
-
-            <metal:macro use-macro="context/connexion/macros/vider-cache"></metal:macro>
-
-            <tal:block define="script string:alterAlertBox()">
-                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-            </tal:block>
-        </div>
+        <metal:macro use-macro="python:getattr(here.messages_folder, my_courses_view['macro_messages']).macros.get('messages_folder_macro')">
+            Message de rôle utilisateur
+        </metal:macro>
 
         <section class="show-for-medium-up medium-12 columns"
                  tal:condition="not:my_courses_view/is_student">

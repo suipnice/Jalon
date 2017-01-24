@@ -31,7 +31,7 @@ LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
 #LOG.debug('debug message')
-#LOG.info('info message')
+# LOG.info('info message')
 #LOG.warn('warn message')
 #LOG.error('error message')
 #LOG.critical('critical message')
@@ -138,8 +138,8 @@ class JalonFolder(ATFolder):
         return "is_object_attached" if len(object_context.getRelatedItems()) else "isnt_object_attached"
 
     def getSearchPodVideosBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
-                 "icon":  "fa fa-home",
+        return [{"title": _(u"Mes ressources"),
+                 "icon":  "fa fa-folder-open",
                  "link":  self.aq_parent.absolute_url()},
                 {"title": _(u"Mes vidéos POD"),
                  "icon":  "fa fa-youtube-play",

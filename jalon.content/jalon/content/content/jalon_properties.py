@@ -344,23 +344,9 @@ class JalonProperties(SimpleItem):
             return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
     def getTopBarMenuLeft(self, user_role):
-        #LOG.info("----- getTopBar -----")
+        # LOG.info("----- getTopBar -----")
         menu_left = []
         is_personnel = user_role in ["Personnel", "Secretaire", "Manager"]
-
-        menu_my_space = None
-        if is_personnel:
-            menu_my_space = {"id":        "mon_espace",
-                             "class":     "has-dropdown not-click",
-                             "icon":      "fa fa-home",
-                             "title":     _(u"Mon espace"),
-                             "link":      "mon_espace",
-                             "sub_menu":  []}
-
-            for sub_menu in self.getGridMonEspaceNew():
-                if sub_menu["activated"]:
-                    menu_my_space["sub_menu"].append(sub_menu)
-            menu_left.append(menu_my_space)
 
         sub_menu_mes_cours = []
         sub_menu_mes_cours_class = ""
@@ -384,12 +370,32 @@ class JalonProperties(SimpleItem):
                           "link":     "mes_cours",
                           "sub_menu": sub_menu_mes_cours})
 
+        menu_my_space = None
         if is_personnel:
+            menu_my_space = {"id":        "mon_espace",
+                             "class":     "has-dropdown not-click",
+                             "icon":      "fa fa-folder-open",
+                             "title":     _(u"Mes ressources"),
+                             "link":      "mon_espace",
+                             "sub_menu":  []}
+
+            for sub_menu in self.getGridMonEspaceNew():
+                if sub_menu["activated"]:
+                    menu_my_space["sub_menu"].append(sub_menu)
+            menu_left.append(menu_my_space)
+
             menu_left.append({"id":       "mes_etudiants",
                               "class":    "",
                               "icon":     "fa fa-users",
                               "title":    _(u"Mes étudiants"),
                               "link":     "mes_etudiants",
+                              "sub_menu": []})
+
+            menu_left.append({"id":       "tools",
+                              "class":    "",
+                              "icon":     "fa fa-wrench",
+                              "title":    _(u"Outils"),
+                              "link":     "tools_page",
                               "sub_menu": []})
 
         if user_role == "Manager":
@@ -421,8 +427,8 @@ class JalonProperties(SimpleItem):
                                             "title": _(u"Connexion à Jalon"),
                                             "link":  "portal_jalon_properties/gestion_connexion"},
                                            {"id":    "gestion_mon_espace",
-                                            "icon":  "fa fa-home",
-                                            "title": _(u"Gestion \"Mon Espace\""),
+                                            "icon":  "fa fa-folder-open",
+                                            "title": _(u"Gestion \"Mes ressources\""),
                                             "link":  "portal_jalon_properties/gestion_mon_espace"},
                                            {"id":    "gestion_mes_cours",
                                             "icon":  "fa fa-university",
@@ -468,7 +474,7 @@ class JalonProperties(SimpleItem):
         return menu_left
 
     def getMonEspace(self):
-        #LOG.info("----- getMonEspace -----")
+        # LOG.info("----- getMonEspace -----")
         return {"site":        self.aq_parent.Title(),
                 "grid":        self.getGridMonEspaceNew(),
                 "maintenance": self.getPropertiesMaintenance(),
@@ -476,7 +482,7 @@ class JalonProperties(SimpleItem):
                 "messages":    self.getPropertiesMessages()}
 
     def generatePageMonEspace(self, request):
-        #LOG.info("----- generatePageMonEspace -----")
+        # LOG.info("----- generatePageMonEspace -----")
         macro_mon_espace_grid_generate = ["<metal:macro define-macro=\"mon_espace_grid\">"]
         macro_mon_espace_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")())
         macro_mon_espace_grid_generate.append("</metal:macro>")
@@ -573,12 +579,12 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_aide"            : self._activer_aide,
-                    "lien_aide"               : self._lien_aide,
-                    "activer_aide_plan"       : self._activer_aide_plan,
-                    "lien_aide_plan"          : self._lien_aide_plan,
-                    "activer_guide_anti_spam" : self._activer_guide_anti_spam,
-                    "message_guide_anti_spam" : self._message_guide_anti_spam}
+            return {"activer_aide":            self._activer_aide,
+                    "lien_aide":               self._lien_aide,
+                    "activer_aide_plan":       self._activer_aide_plan,
+                    "lien_aide_plan":          self._lien_aide_plan,
+                    "activer_guide_anti_spam": self._activer_guide_anti_spam,
+                    "message_guide_anti_spam": self._message_guide_anti_spam}
 
     def setPropertiesDidacticiels(self, form):
         for key in form.keys():
@@ -594,21 +600,51 @@ class JalonProperties(SimpleItem):
         if key:
             return getattr(self, "_%s" % key)
         else:
-            return {"activer_message_general":    self._activer_message_general,
-                    "message_general":            self._message_general,
-                    "activer_bie":                self._activer_bie,
-                    "bie_message":                self._bie_message,
-                    "activer_message_enseignant": self._activer_message_enseignant,
-                    "message_enseignant":         self._message_enseignant}
+            return {"is_message_general": self._activer_message_general,
+                    "message_general":    self._message_general,
+                    "is_message_student": self._activer_bie,
+                    "message_student":    self._bie_message,
+                    "is_message_teacher": self._activer_message_enseignant,
+                    "message_teacher":    self._message_enseignant}
 
     def setPropertiesMessages(self, form, request):
-        #LOG.info("----- setPropertiesMessages -----")
+        # LOG.info("----- setPropertiesMessages -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
                 val = int(val)
             setattr(self, "_%s" % key, val)
-        self.generatePageMonEspace(request)
+        self.generateMessages(request)
+
+    def generateMessages(self, request):
+        # LOG.info("----- generateMessages -----")
+        messages_properties = self.getPropertiesMessages()
+        for key in messages_properties:
+            request.set(key, messages_properties[key])
+
+        #properties_messages = self.getPropertiesMaintenance()
+        #for key in properties_messages:
+        #    request.set(key, properties_messages[key])
+
+        request.set("site", self.aq_parent.Title())
+        request.set("maintenance", self.getPropertiesMaintenance())
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Manager").pt_edit("\n".join(messages_template), "text/html", "utf-8")
+
+        request.set("is_message_student", False)
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Personnel").pt_edit("\n".join(messages_template), "text/html", "utf-8")
+
+        request.set("is_message_teacher", False)
+        request.set("is_message_student", messages_properties["is_message_student"])
+        messages_template = ["<metal:macro define-macro=\"messages_folder_macro\">"]
+        messages_template.append(self.restrictedTraverse("messages_folder/macro_messages_base")(REQUEST=request))
+        messages_template.append("</metal:macro>metal:macro>")
+        self.restrictedTraverse("messages_folder/Etudiant").pt_edit("\n".join(messages_template), "text/html", "utf-8")
 
     #-----------------------------#
     # Fonctions du bloc Courriels #
@@ -991,7 +1027,7 @@ class JalonProperties(SimpleItem):
                 "url_news_maintenance":       self._url_news_maintenance}
 
     def setPropertiesMaintenance(self, form, request):
-        #LOG.info("----- setPropertiesMaintenance -----")
+        # LOG.info("----- setPropertiesMaintenance -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_") or key.startswith("annoncer_"):
@@ -1073,8 +1109,8 @@ class JalonProperties(SimpleItem):
         return portal_jalon_wowza.getStreamingAvailable(pod)
 
     def modifyStreaming(self, params):
-        #LOG.info("----- modifyStreaming -----")
-        #LOG.info(params)
+        # LOG.info("----- modifyStreaming -----")
+        # LOG.info(params)
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         if "datetime-expiration_date" in params:
@@ -1309,8 +1345,8 @@ class JalonProperties(SimpleItem):
         return [{"title": _(u"Configuration de Jalon"),
                  "icon":  "fa fa-cogs",
                  "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
-                {"title": _(u"Gestion \"Mon Espace\""),
-                 "icon":  "fa fa-home",
+                {"title": _(u"Gestion \"Mes ressources\""),
+                 "icon":  "fa fa-folder-open",
                  "link":  "%s/portal_jalon_properties/gestion_mon_espace" % self.absolute_url()}]
 
     def getBreadcrumbsMesCours(self):

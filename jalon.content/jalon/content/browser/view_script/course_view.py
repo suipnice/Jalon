@@ -63,7 +63,7 @@ class CourseView(BrowserView):
                                 "action_name": "Voir"}]
 
     def __init__(self, context, request):
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -240,19 +240,19 @@ class CourseView(BrowserView):
                                                "item_name": "Texte libre"}]},
                 {"menu_adder_class":         "button small course-space_el dropdown",
                  "menu_adder_data-dropdown": "add-space_el",
-                 "menu_adder_icon":          "fa fa-home",
-                 "menu_adder_name":          "De mon espace",
+                 "menu_adder_icon":          "fa fa-folder-open",
+                 "menu_adder_name":          "Ressource pédagogique",
                  "menu_adder_items":         item_adder_list["my_space"]},
                 {"menu_adder_class":         "button small course-activity dropdown",
                  "menu_adder_data-dropdown": "add-activity",
                  "menu_adder_icon":          "fa fa-random",
                  "menu_adder_name":          "Activité",
-                 "menu_adder_items":         item_adder_list["activity"]},
-                {"menu_adder_class":         "button small course-direct dropdown",
-                 "menu_adder_data-dropdown": "add-direct",
-                 "menu_adder_icon":          "fa fa-cloud-upload",
-                 "menu_adder_name":          "Ajout rapide",
-                 "menu_adder_items":         item_adder_list["add"]}]
+                 "menu_adder_items":         item_adder_list["activity"]}]
+        #        {"menu_adder_class":         "button small course-direct dropdown",
+        #         "menu_adder_data-dropdown": "add-direct",
+        #         "menu_adder_icon":          "fa fa-cloud-upload",
+        #         "menu_adder_name":          "Ajout rapide",
+        #         "menu_adder_items":         item_adder_list["add"]}]
 
     def getCourseItemAdderMenuList(self, course_link, course_path, portal):
         """Fournit la liste des liens permettant d'ajouter des elements dans un cours Jalon."""

@@ -38,7 +38,7 @@
   <property name="etablissement" type="string">Universite</property>
  </object>
  <object name="jalonconfig_properties" meta_type="Plone Property Sheet">
-  <property name="title">Jalon Mon espace Configuration</property>
+  <property name="title">Jalon Mes ressources Configuration</property>
   <property name="activer_fichiers" type="boolean">True</property>
   <property name="fichiers" type="lines">
    <element value="Images:image/bmp,image/x-bmp,image/x-MS-bmp,image/gif,image/jpeg,image/pjpeg,image/png,image/tiff"/>

@@ -17,6 +17,10 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <div class="panel warning radius">
+        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+    </div>
+
     <div class="panel warning radius"
          tal:condition="not:is_date_depot">
         <strong>Attention :</strong> Vous ne pouvez choisir une date limite d'évaluation. Vous devez d'abord choisir une date limite de dépôts.

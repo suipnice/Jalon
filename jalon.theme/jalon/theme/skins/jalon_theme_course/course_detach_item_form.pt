@@ -12,7 +12,7 @@
                         res_name python:context.getShortText(res_props['titreElement'], 80)">
 
     <h2>
-        <tal:block i18n:translate="">Détacher l'élément de « Mon espace » : </tal:block>
+        <tal:block i18n:translate="">Détacher l'élément de « Mes ressources » : </tal:block>
         « <tal:content content="res_name" /> »
         <a class="close-reveal-modal"></a>
     </h2>

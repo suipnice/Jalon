@@ -35,7 +35,7 @@ from logging import getLogger
 LOG = getLogger('[JalonBDD]')
 """
 # Log examples :
-#LOG.info('info message')
+# LOG.info('info message')
 """
 
 
@@ -1078,7 +1078,7 @@ class JalonBDD(SimpleItem):
             consultationCours = jalon_mysql.getConsultationByCoursByUniversityYear(session, ID_COURS, year)
             # LOG.info("Consultation Année Courant")
             for ligne in consultationCours.all():
-                #LOG.info(ligne)
+                # LOG.info(ligne)
                 try:
                     consultation_dict[ligne[0]]["nb_cons_year"] = ligne[1]
                     if not consultation_dict[ligne[0]] in consultations_list:

@@ -28,6 +28,10 @@
             </tal:condition>
         </h1>
 
+        <div class="panel warning radius">
+            <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        </div>
+
         <ul class="tabs" data-tab role="tablist">
             <tal:repeat repeat="index my_view/criteria_order">
             <li class="tab-title" role="presentation">

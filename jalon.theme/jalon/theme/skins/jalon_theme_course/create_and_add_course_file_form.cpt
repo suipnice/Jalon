@@ -10,10 +10,16 @@
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing;">
 
+    <tal:define define="breadcrumbs context/getBreadcrumbs">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <main class="row" role="main" aria-labelledby="page_title">
     <h2>
         <i class="fa fa-plus-circle no-pad"></i>
-        <tal:block i18n:translate="">Ajouter un fichier au cours et dans "Mon espace > Fichiers"</tal:block>
-        <a class="close-reveal-modal"></a>
+        <tal:block i18n:translate="">Ajouter un fichier au cours et dans "Mes ressources > Fichiers"</tal:block>
     </h2>
 
     <form id="js-directExtFileCreator" method="POST" enctype="multipart/form-data"
@@ -76,6 +82,7 @@
             tal:content="structure string:setRevealFormPlanRefresh('js-directExtFileCreator','reveal-main')"></script>
     </tal:comment>
 
+    </main>
 </metal:main>
 
 </body>

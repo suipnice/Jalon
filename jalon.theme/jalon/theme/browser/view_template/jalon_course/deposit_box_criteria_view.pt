@@ -33,6 +33,10 @@
             <i class="fa fa-th falfw"></i>Grille d'évaluation
         </h1>
 
+        <div class="panel warning radius">
+            <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        </div>
+
         <tal:condition condition="my_view/is_personnel">
 
         <div id="item-adder"

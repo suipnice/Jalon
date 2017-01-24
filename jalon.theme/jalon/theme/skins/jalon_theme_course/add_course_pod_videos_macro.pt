@@ -2,7 +2,7 @@
 
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
-            <strong i18n:translate="">Il n'y a aucune ressource de type Vidéo POD dans votre espace.</strong><br />
+            <strong i18n:translate="">Il n'y a aucune ressource de type Vidéo POD dans vos ressources.</strong><br />
             <tal:block i18n:translate="">Rendez-vous dans votre espace de vidéos POD pour en ajouter.</tal:block>
         </div>
         <div class="text-center">
@@ -98,4 +98,16 @@
             tal:content="structure buffer"></script>
     </tal:listing>
 
+</metal:macro>
+
+<metal:macro define-macro="add_new_resource">
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title" i18n:translate=""/>" pour ajouter une nouvelle ressource.</tal:block>
+    </div>
+    <div class="text-center">
+        <a class="button radius"
+           tal:attributes="href my_view/folder_link">
+           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+        </a>
+    </div>
 </metal:macro>

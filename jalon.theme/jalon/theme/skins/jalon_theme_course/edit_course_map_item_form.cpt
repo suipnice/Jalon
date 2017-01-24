@@ -18,6 +18,7 @@
             * en cas de modification, on ne connait que item_id
 -->
     <h2>
+        <i class="fa fa-plus-circle"></i>
         <tal:replace replace="my_form/form_title_text"/>
         <tal:replace replace="my_form/form_title_type"/>
         <a class="close-reveal-modal"></a>
@@ -46,7 +47,7 @@
         <div class="field ArchetypesStringWidget"
              tal:condition="my_form/item_title_in_my_space"
              tal:on-error="nothing">
-            <label for="title" i18n:translate="">Titre dans mon espace</label>
+            <label for="title" i18n:translate="">Titre dans Mes ressources</label>
             <input type="text" maxlength="255" size="30" disabled="disabled"
                    tal:attributes="value my_form/item_title_in_my_space"/>
         </div>

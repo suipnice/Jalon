@@ -22,18 +22,18 @@ form = context.REQUEST.form
 index = 1
 error_index = []
 criteria_order = form["criteria_order"].replace("[", "").replace("]", "").replace("'", "").split(",")
-LOG.info("***** criteria_order : %s" % criteria_order)
+# LOG.info("***** criteria_order : %s" % criteria_order)
 
 for tmp in criteria_order:
     if not form.has_key("teacher"):
         criteria_comment = "criteria%i-comment" % index
-        LOG.info("***** criteria_comment : %s" % criteria_comment)
+        # LOG.info("***** criteria_comment : %s" % criteria_comment)
         criteria_comment_code = "criteria%i-comment-code" % index
-        LOG.info("***** criteria_comment_code : %s" % form[criteria_comment_code])
+        # LOG.info("***** criteria_comment_code : %s" % form[criteria_comment_code])
         criteria_comment_min = "criteria%i-comment-min" % index
-        LOG.info("***** criteria_comment_min : %s" % form[criteria_comment_min])
+        # LOG.info("***** criteria_comment_min : %s" % form[criteria_comment_min])
         criteria_comment_max = "criteria%i-comment-max" % index
-        LOG.info("***** criteria_comment_max : %s" % form[criteria_comment_max])
+        # LOG.info("***** criteria_comment_max : %s" % form[criteria_comment_max])
         #if criteria_comment_code == "2":
         #    if not form[criteria_comment]:
         #        state.setError(criteria_comment, _(u"Champ obligatoire"), "%s_required" % criteria_comment)

@@ -1,0 +1,287 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:core fill-slot="content">
+
+    <tal:define define="breadcrumbs python:[{'title': 'Outils',
+                                             'icon':  'fa fa-wrench',
+                                             'link':  '%s/tools_page' % context.absolute_url()}]">
+    <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
+        Page d'affichage du fil d'ariane
+    </metal:macro>
+    </tal:define>
+
+    <main id="mon_espace" role="main" class="row" aria-labelledby="page_title">
+
+        <div class="small-12 columns">
+            <h2>
+                <i class="fa fa-wrench fa-fw no-pad"></i>
+                <tal:block i18n:translate="">Outils</tal:block>
+            </h2>
+        </div>
+        <nav class="small-12 columns">
+            <a href="#" class="button expand res-autre show-for-medium-up"
+               data-reveal-id="intracursusModal">
+                <i class="fa fa-pencil-square-o"></i><tal:block i18n:translate="">Intracursus</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="intracursusModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Accéder à Intracursus
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        Intracursus est un site permettant de gérer les absences et les notes de vos étudiants à travers différentes séances (TD, TP, etc).
+                    </div>
+                    <div class="panel warning radius text-justify"
+                         i18n:translate="">
+                        <strong>Attention :</strong> Une fois connecté à Intracursus, si vous n'avez pas de formations associées, vous devez demander au responsable de votre formation de contacter <a href="mailto:intracursus@unice.fr">intracursus@unice.fr</a> afin de configurer l'accès à votre formation dans Intracursus.
+                    </div>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://intracursus.unice.fr">
+                            <i class="fa fa-pencil-square-o"></i>
+                            <tal:block i18n:translate="">Accéder à Intracursus</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="button expand res-autre show-for-medium-up"
+               data-reveal-id="unspodModal">
+                <i class="fa fa-youtube-play"></i><tal:block i18n:translate="">UNS.Pod</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="unspodModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Accéder à UNS.Pod
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        UNS.Pod est un outil d'encodage et de diffusion vidéo mis à la disposition des enseignants pour diffuser des vidéos à destination de leurs étudiants ou de la communauté universitaire. UNS.Pod est la déclinaison niçoise du projet POD créé par Nicolas Can de l'université de Lille1. L'université de Nice participe au développement et à l'amélioration du projet POD.
+                    </div>
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        Pour diffuser une vidéo sur Jalon, nous vous recommandons de la déposer sur UNS.Pod. Une fois la vidéo encodée, copiez le code HTML de l'onglet "Intégrer / Partager" puis sur Jalon créer une "Ressource externe" de type "Lecteur exportable" et collez le code HTML de la vidéo dans le champ de formulaire "Lecteur exportable".
+                        <div class="text-center">
+                            <img src="http://jalon.unice.fr/Members/admin/Fichiers/uns-pod.png/image_preview" alt="Intégrer / Partager sur UNS.Pod"/>
+                        </div>
+                    </div>
+                    <div class="panel warning radius text-justify"
+                         i18n:translate="">
+                        <strong>Attention :</strong> Un connecteur entre Jalon et UNS.Pod est actuellement en test. Une prochaine mise à jour vous permettra de rechercher une vidéo dans UNS.Pod et de l'ajouter à Jalon directement depuis Jalon prochainement.
+                    </div>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://unspod.unice.fr">
+                            <i class="fa fa-youtube-play"></i>
+                            <tal:block i18n:translate="">Accéder à UNS.Pod</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="button expand res-autre show-for-medium-up"
+               data-reveal-id="medialibModal">
+                <i class="fa fa-television"></i><tal:block i18n:translate="">Médiathèque Numérique</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="medialibModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Accéder à la Médiathèque Numérique
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        La bibliothèque de Carlone propose aux étudiants et aux enseignants  de lettres, langues, sciences humaines et arts d'accéder à la Médiathèque Numérique, un nouveau service de Vidéo à la demande, (vod) . Vous pouvez désormais visionner des films (fictions ou documentaires) répondant à vos besoins pédagogiques les plus divers.
+                        <strong>Responsable pédagogique :</strong> <a href="mailto:serge.mialn@unice.fr">Serge Milan</a>
+                    </div>
+                    <div class="panel warning radius text-justify"
+                         i18n:translate="">
+                        <strong>Attention : </strong> vous et vos étudiants devez posséder un compte spécifique pour accéder à la Médiathèque Numérique. Pour demander un compte sur la Médiathèque Numérique contacter : <a href="mailto:Iris.vidal@unice.fr">Iris Vidal</a> ou <a href="mailto:hadjopou@unice.fr">Catherine Hadjopoulou</a>
+                    </div>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://www.bucarlone-vod-unice.medialib.tv/">
+                            <i class="fa fa-television"></i>
+                            <tal:block i18n:translate="">Accéder à la Médiathèque Numérique </tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="button expand res-autre show-for-medium-up"
+               data-reveal-id="untModal">
+                <i class="fa fa-cubes"></i><tal:block i18n:translate="">Universités Numériques Thématiques</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="untModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Accéder aux Universités Numériques Thématiques
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        Les Universités numériques thématiques (UNT) mutualisent, à l’échelle nationale, des contenus pédagogiques :
+                        <ul>
+                            <li>
+                                produits par des enseignants des établissements d’enseignement supérieur français ;
+                            </li>
+                            <li>de toute nature (documents, cours, exercices, exemples, etc.) ;</li>
+                            <li>dans tout domaine disciplinaire ;</li>
+                            <li>pour toute forme d’enseignement (présentiel ou non).</li>
+                        </ul>
+                        <div>
+                            Ces ressources pédagogiques numériques s’adressent autant aux enseignants qu’aux étudiants. Elles s’inscrivent dans les parcours de formation et sont validées par les communautés scientifiques des UNT.
+                        </div>
+                        <div>
+                            Il existe sept UNT. Elles couvrent les domaines suivants : sciences de la santé et du sport ; sciences de l’ingénieur et technologie ; économie gestion ; environnement et développement durable ; sciences humaines et sociales, langues et cultures ; sciences juridiques et politiques ; sciences fondamentales.
+                        </div>
+                        <div>La mission des UNT s’inscrit ainsi dans la dynamique de l’accès ouvert au savoir.</div>
+                    </div>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://univ-numerique.fr">
+                            <i class="fa fa-cubes"></i>
+                            <tal:block i18n:translate="">Accéder aux UNT</tal:block>
+                        </a>
+                        <a class="button small radius" target="_blank"
+                           href="http://unt.unice.fr">
+                            <i class="fa fa-cubes"></i>
+                            <tal:block i18n:translate="">Accéder aux projets UNS des UNT</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="button expand res-autre show-for-medium-up"
+               data-reveal-id="creativeModal">
+                <i class="fa fa-creative-commons"></i><tal:block i18n:translate="">Creative Commons</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="creativeModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Accéder aux Creative Commons
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        Creative Commons (CC) est une organisation à but non lucratif dont le but est de proposer une solution alternative légale aux personnes souhaitant libérer leurs œuvres des droits de propriété intellectuelle standards de leur pays, jugés trop restrictifs1. L’organisation a créé plusieurs licences, connues sous le nom de licences Creative Commons. Ces licences, selon leur choix, restreignent seulement quelques droits (ou aucun) des travaux, le droit d'auteur (ou « copyright » dans les pays du Commonwealth et aux États-Unis) étant plus restrictif.
+                    </div>
+                    <div class="panel callout radius text-justify"
+                         i18n:translate="">
+                        <div>
+                            Six possibilités combinées autour de quatre pôles définissent les différents usages :
+                        </div>
+                        <ul>
+                            <li>
+                                <a class="image" href="//commons.wikimedia.org/wiki/File:Cc-by_new.svg">
+                                    <img width="20" height="20" data-file-height="80" data-file-width="80"
+                                         srcset="//upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Cc-by_new.svg/30px-Cc-by_new.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Cc-by_new.svg/40px-Cc-by_new.svg.png 2x"
+                                         src="//upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Cc-by_new.svg/20px-Cc-by_new.svg.png"
+                                         alt="Cc-by new.svg"/>
+                                </a>
+                                <i><span lang="en" xml:lang="en" class="lang-en">Attribution</span></i> : signature de l’auteur initial (ce choix est obligatoire en droit français) (sigle : <b>BY</b>)
+                            </li>
+                            <li>
+                                <a class="image" href="//commons.wikimedia.org/wiki/File:Cc-nc.svg">
+                                    <img width="20" height="20" data-file-height="64" data-file-width="64"
+                                         srcset="//upload.wikimedia.org/wikipedia/commons/thumb/d/db/Cc-nc.svg/30px-Cc-nc.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/d/db/Cc-nc.svg/40px-Cc-nc.svg.png 2x"
+                                         src="//upload.wikimedia.org/wikipedia/commons/thumb/d/db/Cc-nc.svg/20px-Cc-nc.svg.png"
+                                         alt="Cc-nc.svg"/>
+                                </a>
+                                <i><span lang="en" xml:lang="en" class="lang-en">Non Commercial</span></i> : interdiction de tirer un profit commercial de l’œuvre sans autorisation de l'auteur (sigle : <b>NC</b>)
+                            </li>
+                            <li>
+                                <a class="image" href="//commons.wikimedia.org/wiki/File:Cc-nd.svg">
+                                    <img width="20" height="20" data-file-height="64" data-file-width="64"
+                                         srcset="//upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cc-nd.svg/30px-Cc-nd.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cc-nd.svg/40px-Cc-nd.svg.png 2x"
+                                         src="//upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Cc-nd.svg/20px-Cc-nd.svg.png"
+                                         alt="Cc-nd.svg"/>
+                                </a>
+                                <i><span lang="en" xml:lang="en" class="lang-en">No derivative works</span></i> : impossibilité d’intégrer tout ou partie dans une œuvre composite ; l'échantillonnage (<i>sampling</i>), par exemple, devenant impossible (sigle : <b>ND</b>)
+                            </li>
+                            <li>
+                                <a class="image" href="//commons.wikimedia.org/wiki/File:Cc-sa.svg">
+                                    <img width="20" height="20" data-file-height="64" data-file-width="64"
+                                         srcset="//upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cc-sa.svg/30px-Cc-sa.svg.png 1.5x, //upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cc-sa.svg/40px-Cc-sa.svg.png 2x"
+                                         src="//upload.wikimedia.org/wikipedia/commons/thumb/2/29/Cc-sa.svg/20px-Cc-sa.svg.png"
+                                         alt="Cc-sa.svg"/>
+                                </a>
+                                <i><span lang="en" xml:lang="en" class="lang-en">Share alike</span></i> : partage de l’œuvre, avec obligation de rediffuser selon la même licence ou une licence similaire (version ultérieure ou localisée) (sigle : <b>SA</b>)
+                            </li>
+                        </ul>
+                    <div>
+                        Exemple de combinaison : <i><strong lang="en" xml:lang="en" class="lang-en">Creative Commons BY-NC-SA</strong></i>.
+                    </div>
+                    </div>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://creativecommons.org/">
+                            <i class="fa fa-creative-commons"></i>
+                            <tal:block i18n:translate="">Accéder aux Creative Commons</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a class="button expand res-bug" href="#"
+               data-reveal-id="bugModal">
+                <i class="fa fa-bug"></i><tal:block i18n:translate="">Signaler un bug</tal:block>
+            </a>
+            <div class="reveal-modal" data-reveal
+                 id="bugModal">
+                <h2>
+                    <tal:block i18n:translate="">
+                        Signaler un bug
+                    </tal:block>
+                    <a class="close-reveal-modal"></a>
+                </h2>
+                <div class="row">
+                    Pour signaler une bug merci d'utiliser l'assistance en ligne de l'UNS en déposant votre ticket dans la catégorie : "Outils dédiés à la pédagogie" sous catégorie "Jalon". Afin de faciliter la recherche et la correction du bug merci d'indiquer dans votre ticket :
+                    <ul>
+                        <li>La démarche que vous avez suivi qui a généré le bug.</li>
+                        <li>L'URL de la page sur laquelle le bug se produit.</li>
+                        <li>Joindre une capture d'écran de la page en question.</li>
+                    </ul>
+                    <div class="text-center">
+                        <a class="button small radius" target="_blank"
+                           href="http://glpi.unice.fr/front/helpdesk.public.php?create_ticket=1">
+                            <i class="fa fa-bug"></i>
+                            <tal:block i18n:translate="">Accéder à l'assistance en ligne de l'UNS</tal:block>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </main>
+
+</metal:core>
+
+</body>
+
+</html>

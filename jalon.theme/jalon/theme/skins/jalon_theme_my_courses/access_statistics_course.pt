@@ -12,6 +12,12 @@
                         course_id request/course_id;
                         course_statistics python:context.getCourseStatistics(course_id)">
 
+    <h2>
+        <i class="fa fa-bar-chart"></i>
+        <tal:block i18n:translate="">Satistiques du cours</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
     <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire', 'Personnel'])">
         <script charset="UTF-8"
                 tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
@@ -24,12 +30,6 @@
         <link rel="stylesheet"
               tal:attributes="href string:${base_link}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
     </tal:isManager>
-
-    <h2>
-        <i class="fa fa-bar-chart"></i>
-        <tal:block i18n:translate="">Satistiques du cours</tal:block>
-        <a class="close-reveal-modal"></a>
-    </h2>
 
     <h3>
         <i class="fa fa-bar-chart"></i>

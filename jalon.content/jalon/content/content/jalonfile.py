@@ -63,7 +63,7 @@ class JalonFile(ATDocumentBase):
         return jalon_utils.getInfosMembre(self.Creator())["fullname"]
 
     def isNotStandard(self):
-        LOG.info("----- isNotStandard -----")
+        # LOG.info("----- isNotStandard -----")
         return self.aq_parent.isNotStandard()
 
     def getCorrectionDepot(self):

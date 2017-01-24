@@ -1291,15 +1291,17 @@ code {
         ul.button-group {
 
             & > li {
-                width: 25%;         // Dropdown buttons group…
 
                 & .button {
-                    width: 100%;    // Dropdown buttons group…
 
                     &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
                     &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
                     &.course-activity { @include button-style( $course_activity-color, false, false, scale-color( $course_activity-color, $lightness: $button-function-factor), $course_activity-color ); }
                     &.course-direct { @include button-style( $course_direct-color, false, false, scale-color( $course_direct-color, $lightness: $button-function-factor), $course_direct-color ); }
+                }
+
+                li {
+                    width: 100%;    // F5 button-group even-n dropdown fix…
                 }
             }
 

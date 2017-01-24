@@ -25,7 +25,7 @@ class JalonActivity(SimpleItem):
     # Fonctions onglet Documents #
     # -------------------------- #
     def isChecked(self, idElement, formulaire, listeElement=None):
-        LOG.info("----- isChecked -----")
+        # LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
                 return 1
@@ -37,7 +37,7 @@ class JalonActivity(SimpleItem):
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         u"""Modifie l'etat de la ressource quand on modifie sa visibilité."""
-        LOG.info("----- editCourseItemVisibility -----")
+        # LOG.info("----- editCourseItemVisibility -----")
         is_deposit_box = True if item_id == self.getId() else False
 
         if is_deposit_box:
@@ -59,8 +59,8 @@ class JalonActivity(SimpleItem):
             self.setDocumentsProperties(self._infos_element)
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        """Met a jour les related Items de l'activité et de l'element de mon espace qu'on lui ajoute."""
-        LOG.info("----- addMySpaceItem -----")
+        """Met a jour les related Items de l'activité et de l'element de Mes ressources qu'on lui ajoute."""
+        # LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
 
         item_object = getattr(folder_object, item_id)
@@ -91,7 +91,7 @@ class JalonActivity(SimpleItem):
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
         """Ajoute un element à la liste des sujets d'une activité."""
-        LOG.info("----- addItemProperty -----")
+        # LOG.info("----- addItemProperty -----")
 
         items_properties = self.getDocumentsProperties()
         if item_id not in items_properties:
@@ -113,7 +113,7 @@ class JalonActivity(SimpleItem):
 
     def displayDocumentsList(self, is_personnel, portal):
         """Fournit la liste des documents à afficher."""
-        LOG.info("----- displayDocumentsList -----")
+        # LOG.info("----- displayDocumentsList -----")
         course_parent = self.aq_parent
 
         documents_list = []
@@ -139,12 +139,12 @@ class JalonActivity(SimpleItem):
         return documents_list
 
     def getCourseItemProperties(self, key=None):
-        LOG.info("----- getCourseItemProperties -----")
+        # LOG.info("----- getCourseItemProperties -----")
         return self.getDocumentsProperties(key)
 
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
         """Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
-        LOG.info("----- getItemActions -----")
+        # LOG.info("----- getItemActions -----")
         item_actions = course_parent._item_actions[:]
 
         if is_display_item_bool:
@@ -163,7 +163,7 @@ class JalonActivity(SimpleItem):
 
     def getDisplayItemForm(self, item_id):
         """Fournit les infos du formulaire d'affichage/masquage de l'activité."""
-        LOG.info("----- getDisplayItemForm -----")
+        # LOG.info("----- getDisplayItemForm -----")
         if self.getId() == item_id:
             # Pour l'affichage de l'activité elle-même, on fait appel à la fonction getDisplayItemForm() du cours.
             form_properties = self.aq_parent.getDisplayItemForm(item_id)
@@ -182,7 +182,7 @@ class JalonActivity(SimpleItem):
         return self._infos_element
 
     def detachDocument(self, item_id):
-        LOG.info("----- detachDocument -----")
+        # LOG.info("----- detachDocument -----")
         document_properties = self.getDocumentsProperties()
         document_dict = document_properties[item_id]
         del document_properties[item_id]

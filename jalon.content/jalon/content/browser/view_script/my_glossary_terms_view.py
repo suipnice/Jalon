@@ -13,21 +13,21 @@ class MyGlossaryTermsView(MySpaceView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mon espace"),
-                 "icon":  "fa fa-home",
+        return [{"title": _(u"Mes ressources"),
+                 "icon":  "fa fa-folder-open",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes termes de glossaire"),
                  "icon":  "fa fa-font",
                  "link":  self.context.absolute_url()}]
 
     def getMyGlossaryTermsView(self, user):
-        #LOG.info("----- getMyGlossaryTermsView -----")
+        # LOG.info("----- getMyGlossaryTermsView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

@@ -45,7 +45,7 @@
 
         <!--div class="panel radius callout">
             <label for="titreElement">Titre de l'exercice dans cette activité</label>
-            <div class="formHelp texte_icone icone_information">Le titre de l'exercice dans "Mon espace" ne sera pas modifié.</div-->
+            <div class="formHelp texte_icone icone_information">Le titre de l'exercice dans "Mes ressources" ne sera pas modifié.</div-->
             <input type="hidden" name="titreElement" id="titreElement"
                    tal:attributes="value titreElement" />
         <!--/div-->

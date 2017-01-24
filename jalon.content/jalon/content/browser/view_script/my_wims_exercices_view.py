@@ -22,8 +22,8 @@ class MyWimsExercicesView(MySpaceView):
 
     def getBreadcrumbs(self):
         """Fournit le fil d'ariane de la vue."""
-        return [{"title": _(u"Mon espace"),
-                 "icon":  "fa fa-home",
+        return [{"title": _(u"Mes ressources"),
+                 "icon":  "fa fa-folder-open",
                  "link":  self.context.aq_parent.absolute_url()},
                 {"title": _(u"Mes exercices WIMS"),
                  "icon":  "fa fa-random",

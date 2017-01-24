@@ -180,8 +180,15 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  required=False,
                  accessor="getActiverEmailForum",
                  searchable=False,
+                 default=True,
                  widget=StringWidget(label=_(u"Envoie de courriels"),
                                      description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),)),
+    BooleanField("add_forum_permission",
+                 required=False,
+                 accessor="getAddForumPermission",
+                 searchable=False,
+                 widget=StringWidget(label=_(u"Permission d'ajout de forum par les étudiants"),
+                                     description=_(u"EPermission d'ajout de forum par les étudiants."),)),
     StringField("dateDerniereModif",
                 required=False,
                 accessor="getDateDerniereModif",
@@ -348,7 +355,7 @@ class JalonCours(ATFolder):
         return "fa fa-book"
 
     def checkCourseAuthorized(self, user, request):
-        LOG.info("----- checkCourseAuthorized -----")
+        # LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
         # LOG.info(self.getLibre())
         # if self.getLibre():
@@ -388,6 +395,17 @@ class JalonCours(ATFolder):
             last_login = DateTime(last_login)
         return last_login
 
+    def getBreadcrumbs(self):
+        """Breadcrumbs de base d'un cours"""
+        # LOG.info("----- getBreadcrumbs -----")
+        portal = self.portal_url.getPortalObject()
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/mes_cours" % portal.absolute_url()},
+                {"title": self.Title(),
+                 "icon":  "fa fa-book",
+                 "link":  self.absolute_url()}]
+
     def getCourseItemProperties(self, key=None):
         """Fournit les propriétés des (ou d'un) element(s) du cours."""
         # Anciennement "getElementCours"
@@ -407,7 +425,7 @@ class JalonCours(ATFolder):
             self._elements_cours = elements_cours
 
     # def getKeyElementCours(self):
-    #    LOG.info("----- getKeyElementCours -----")
+    #    # LOG.info("----- getKeyElementCours -----")
     #    return self._elements_cours.keys()
 
     """def getDisplayOrHiddenDate(self, idElement, attribut):
@@ -542,6 +560,15 @@ class JalonCours(ATFolder):
         forum_object.reindexObject()
 
         return forum_id
+
+    def isAddForumPermission(self, is_personnel):
+        # LOG.info("----- isAddForumPermission -----")
+        add_forum_permission = self.getAddForumPermission()
+        # LOG.info(add_forum_permission)
+        if not add_forum_permission:
+            return True if is_personnel else False
+        else:
+            return True
 
     def getDataCourseFormAction(self, user_id, course_id):
         # LOG.info("----- getDataCourseFormAction -----")
@@ -2273,7 +2300,7 @@ class JalonCours(ATFolder):
     """
 
     def getFormationsOfferData(self):
-        LOG.info("----- getFormationsOfferData -----")
+        # LOG.info("----- getFormationsOfferData -----")
         formations_offer = []
         listeAcces = self.getListeAcces()
         portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
@@ -2289,7 +2316,7 @@ class JalonCours(ATFolder):
                 element.append(formation_type)
                 formations_offer.append(element)
         formations_offer.sort()
-        LOG.info(formations_offer)
+        # LOG.info(formations_offer)
         return formations_offer
 
     def telechargerListingParticipants(self):
