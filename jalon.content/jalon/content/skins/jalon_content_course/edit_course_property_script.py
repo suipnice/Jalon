@@ -12,6 +12,7 @@ form = context.REQUEST.form
 
 course_property = form["course_property"]
 context.setCourseProperties({course_property.capitalize(): form[course_property]})
+context.setCourseProperties({"DateDerniereModif" : DateTime()})
 
 if course_property in ["acces", "description", "activer_email_forum", "add_forum_permission"]:
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
