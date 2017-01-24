@@ -12,7 +12,7 @@ class MyDepositFileBoxView(BrowserView):
     """Class pour la vue du Cours."""
 
     def __init__(self, context, request):
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -23,7 +23,7 @@ class MyDepositFileBoxView(BrowserView):
         return portal_state.anonymous()
 
     def getMyDepositFileBoxView(self):
-        #LOG.info("----- getMyDepositFileBoxView -----")
+        # LOG.info("----- getMyDepositFileBoxView -----")
         context = self.context
 
         deposit_comment = "Aucun commentaire"

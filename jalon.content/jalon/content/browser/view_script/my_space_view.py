@@ -15,7 +15,7 @@ class MySpaceView(BrowserView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -73,7 +73,7 @@ class MySpaceView(BrowserView):
                 "is_selected_tags": is_selected_tags}
 
     def getItemsList(self, folder, selected_tags_list, content_filter):
-        #LOG.info("----- getItemsList -----")
+        # LOG.info("----- getItemsList -----")
         if selected_tags_list and selected_tags_list != ["last"]:
             last = False
             subjects = []

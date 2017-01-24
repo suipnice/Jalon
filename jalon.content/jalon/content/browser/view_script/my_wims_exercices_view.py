@@ -14,7 +14,7 @@ class MyWimsExercicesView(MySpaceView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -28,7 +28,7 @@ class MyWimsExercicesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyWimsExercicesView(self, user):
-        #LOG.info("----- getMyWimsExercicesView -----")
+        # LOG.info("----- getMyWimsExercicesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
@@ -71,8 +71,8 @@ class MyWimsExercicesView(MySpaceView):
 
     def getMyWimsExercicesList(self, folder, selected_tags_list, user_id, portal_wims):
         """ Fournit la liste des exercices WIMS de user_id."""
-        #LOG.info("----- getMyWimsExercicesList -----")
-        ##LOG.info("selected_tags_list = ##%s##" % selected_tags_list)
+        # LOG.info("----- getMyWimsExercicesList -----")
+        ## LOG.info("selected_tags_list = ##%s##" % selected_tags_list)
         member_wims_class = folder.getComplement()
         if not member_wims_class:
             self.createWimsClass(folder, user_id, portal_wims)
@@ -84,7 +84,7 @@ class MyWimsExercicesView(MySpaceView):
 
     def createWimsClass(self, folder, user_id, portal_wims):
         u""" Crée le groupement de classes WIMS pour un nouvel utilisateur si il n'existe pas déjà."""
-        #LOG.info("----- createWimsClass -----")
+        # LOG.info("----- createWimsClass -----")
         # 1er  cas : Aucune classe n'existe pour cet utilisateur
         member_properties = self.context.getInfosMembre(user_id)
         member_email = member_properties["email"]
@@ -115,7 +115,7 @@ class MyWimsExercicesView(MySpaceView):
 
     def updateJalonExercicesWims(self, folder, user_id, member_wims_class, portal_wims):
         u""" Met a jour la liste des exos de l'utilisateur user_id."""
-        #LOG.info("----- updateJalonExercicesWims -----")
+        # LOG.info("----- updateJalonExercicesWims -----")
         # L'utilisateur courant dispose bien d'une classe. on liste ses exercices.
         # print "Classe %s" % self.getComplement()
         exercices = portal_wims.getExercicesWims({"authMember": user_id,
@@ -166,7 +166,7 @@ class MyWimsExercicesView(MySpaceView):
                         model = wims_exercice["id"].split("-")[0]
                         if model not in model_list:
                             model = "exercicelibre"
-                        ##LOG.info("CREATION de l'exercice %s sur Jalon " % wims_exercice["id"])
+                        ## LOG.info("CREATION de l'exercice %s sur Jalon " % wims_exercice["id"])
                         object_id = folder.invokeFactory(type_name='JalonExerciceWims', id=wims_exercice["id"])
                         object_created = getattr(folder, object_id)
                         object_created.setProperties({"Title":  wims_exercice["title"],

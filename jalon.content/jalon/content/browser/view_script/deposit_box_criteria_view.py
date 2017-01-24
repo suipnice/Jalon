@@ -14,7 +14,7 @@ class DepositBoxCriteriaView(BrowserView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -42,7 +42,7 @@ class DepositBoxCriteriaView(BrowserView):
                  "link":  "%s/deposit_box_criteria_view" % deposit_box_link}]
 
     def getCriteriaView(self, user, mode_etudiant):
-        LOG.info("----- getCriteriaView (Start) -----")
+        # LOG.info("----- getCriteriaView (Start) -----")
         deposit_box = self.context
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
@@ -73,6 +73,6 @@ class DepositBoxCriteriaView(BrowserView):
             date_correction = DateTime(deposit_box.getDateCorrection()).strftime("%Y/%m/%d %H:%M")
             if now >= date_correction:
                 my_view["is_correction_actif"] = False
-        LOG.info("----- getCriteriaView (End) -----")
+        # LOG.info("----- getCriteriaView (End) -----")
 
         return my_view

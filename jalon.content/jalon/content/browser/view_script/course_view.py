@@ -63,7 +63,7 @@ class CourseView(BrowserView):
                                 "action_name": "Voir"}]
 
     def __init__(self, context, request):
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request

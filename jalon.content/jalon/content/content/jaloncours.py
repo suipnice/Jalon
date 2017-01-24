@@ -350,9 +350,9 @@ class JalonCours(ATFolder):
                 "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
     def checkCourseAuthorized(self, user, request):
-        LOG.info("----- checkCourseAuthorized -----")
+        # LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
-        #LOG.info(self.getLibre())
+        # LOG.info(self.getLibre())
         #if self.getLibre():
         #    return True
 
@@ -417,7 +417,7 @@ class JalonCours(ATFolder):
             self._elements_cours = elements_cours
 
     # def getKeyElementCours(self):
-    #    LOG.info("----- getKeyElementCours -----")
+    #    # LOG.info("----- getKeyElementCours -----")
     #    return self._elements_cours.keys()
 
     """def getDisplayOrHiddenDate(self, idElement, attribut):
@@ -553,9 +553,9 @@ class JalonCours(ATFolder):
         return forum_id
 
     def isAddForumPermission(self, is_personnel):
-        #LOG.info("----- isAddForumPermission -----")
+        # LOG.info("----- isAddForumPermission -----")
         add_forum_permission = self.getAddForumPermission()
-        LOG.info(add_forum_permission)
+        # LOG.info(add_forum_permission)
         if not add_forum_permission:
             return True if is_personnel else False
         else:
@@ -2290,7 +2290,7 @@ class JalonCours(ATFolder):
     """
 
     def getFormationsOfferData(self):
-        LOG.info("----- getFormationsOfferData -----")
+        # LOG.info("----- getFormationsOfferData -----")
         formations_offer = []
         listeAcces = self.getListeAcces()
         portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
@@ -2306,7 +2306,7 @@ class JalonCours(ATFolder):
                 element.append(formation_type)
                 formations_offer.append(element)
         formations_offer.sort()
-        LOG.info(formations_offer)
+        # LOG.info(formations_offer)
         return formations_offer
 
     def telechargerListingParticipants(self):

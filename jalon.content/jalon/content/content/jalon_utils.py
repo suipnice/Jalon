@@ -38,7 +38,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     # session_keep permet de définir si on réutilise une eventuelle session wims existante ou pas.
 
     """
-    LOG.info("----- authUser -----")
+    # LOG.info("----- authUser -----")
     remote_addr = None
     url_connexion = context.wims("getAttribut", "url_connexion")
     error_dict = {"status": "ERROR"}
@@ -111,7 +111,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             # => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
             # Cas possible : supervisor is in an exam session started on another IP
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
+            # LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
             return error_dict
     rep["url_connexion"] = url_connexion
     # LOG.info("**** authUser | rep = %s" % rep)

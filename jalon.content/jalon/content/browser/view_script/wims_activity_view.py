@@ -14,13 +14,13 @@ class WimsActivityView(CourseView):
 
     """def __init__(self, context, request):
         # initialize WimsActivityView.
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         CourseView.__init__(self, context, request)
     """
 
     def getBreadcrumbs(self):
         """Get current page breadcrumbs."""
-        LOG.info("----- getBreadcrumbs -----")
+        # LOG.info("----- getBreadcrumbs -----")
         portal = self.context.portal_url.getPortalObject()
         parent = self.context.aq_parent
         self_link = self.context.absolute_url()
@@ -39,7 +39,7 @@ class WimsActivityView(CourseView):
 
     def getWimsActivityView(self, user, mode_etudiant, tab, is_ajax):
         """Get Wims Activity View."""
-        LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
+        # LOG.info("----- getWimsActivityView (Start) tab='%s' -----" % tab)
         user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
@@ -78,7 +78,7 @@ class WimsActivityView(CourseView):
 
         if is_ajax or my_view["is_anonymous"]:
             my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"]))
-            LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
+            # LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
             return my_view
 
         # my_view["wims_activity_instruction"] = {"href":  "%s/edit_wims_activity_instruction_form?tab=%s" % (my_view["activity_link"], tab),
@@ -145,7 +145,7 @@ class WimsActivityView(CourseView):
                                               "icon":      "fa-trophy",
                                               "text":      "Résultats"})
 
-        LOG.info("----- getWimsActivityView (End) -----")
+        # LOG.info("----- getWimsActivityView (End) -----")
         return my_view
 
     def getWimsSession(self, user, isCoAuteur, isAnonymous):

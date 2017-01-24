@@ -13,7 +13,7 @@ class MyExternalResourcesView(MySpaceView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -27,7 +27,7 @@ class MyExternalResourcesView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyExternalResourcesView(self, user):
-        #LOG.info("----- getMyExternalResourcesView -----")
+        # LOG.info("----- getMyExternalResourcesView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 

@@ -16,7 +16,7 @@ LOG = getLogger('jalonExportsWims')
 """
 # Log examples :
 LOG.debug('debug message')
-LOG.info('info message')
+# LOG.info('info message')
 LOG.warn('warn message')
 LOG.error('error message')
 LOG.critical('critical message')
@@ -76,7 +76,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
     # Un document RTF peut être importé à partir d'Examview® (7.0 - 8.0) (galerie de style: par défaut).
     """
     modele = context.getModele()
-    #LOG.info("[getExoXML] modele = %s" % modele)
+    # LOG.info("[getExoXML] modele = %s" % modele)
     portal = context.portal_url.getPortalObject()
     membership_tool = portal.portal_membership
 
@@ -205,7 +205,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
     ### Modele "QCM Simple" vers OLX:
-    #LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
+    # LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
     enonce = jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
     #enonce = jalon_utils.convertHTMLToXHTML(enonce)
     enonce = '<div class="enonce">%s</div>' % enonce
@@ -789,9 +789,9 @@ def __qcmsuite_to_qti_121(exoXML, parsed_exo):
             else:
                 nb_rep = nb_rep + 1
                 rep_id = "rep_%s" % nb_rep
-                #LOG.info("[__qcmsuite_to_qti_121] bonnes_reps = %s" % bonnes_reps)
+                # LOG.info("[__qcmsuite_to_qti_121] bonnes_reps = %s" % bonnes_reps)
                 if str(num_ligne) in bonnes_reps:
-                    #LOG.info("[__qcmsuite_to_qti_121] correct == %s" % num_ligne)
+                    # LOG.info("[__qcmsuite_to_qti_121] correct == %s" % num_ligne)
                     type_rep = "Correct"
                     value = "1"  # On donne "+1" par bonne réponse.
                 else:

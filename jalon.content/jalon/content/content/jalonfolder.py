@@ -31,7 +31,7 @@ LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
 #LOG.debug('debug message')
-#LOG.info('info message')
+# LOG.info('info message')
 #LOG.warn('warn message')
 #LOG.error('error message')
 #LOG.critical('critical message')
@@ -558,7 +558,7 @@ class JalonFolder(ATFolder):
 
     def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""
-        # #LOG.info("[dupliquerCours]")
+        # LOG.info("[dupliquerCours]")
         import time
         home = self
         home_id = self.getId()

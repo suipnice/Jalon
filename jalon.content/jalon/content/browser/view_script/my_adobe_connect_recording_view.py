@@ -18,7 +18,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         MySpaceView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -34,7 +34,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
                  "link":  self.context.absolute_url()}]
 
     def getMyAdobeConnectRecordingView(self, user):
-        LOG.info("----- getMyAdobeConnectRecordingView -----")
+        # LOG.info("----- getMyAdobeConnectRecordingView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
         portal_connect = portal.portal_connect
@@ -43,7 +43,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
         context_id = self.context.getId()
         folder_id = self.folder_dict[context_id]
         folder = getattr(getattr(portal.Members, user_id), folder_id)
-        LOG.info(folder)
+        # LOG.info(folder)
         adobe_connect_session = self.getSessionConnect(user, folder, portal_connect)
         adobe_connect_reunion = self.getAdobeConnectReunion(user, folder, portal_connect)
 
@@ -93,13 +93,13 @@ class MyAdobeConnectRecordingView(MySpaceView):
                 "folder_link":           folder.absolute_url()}
 
     def getSessionConnect(self, user, folder, portal_connect):
-        LOG.info("----- getSessionConnect -----")
+        # LOG.info("----- getSessionConnect -----")
         user_id = user.getId()
         user_connect_password = folder.getComplement()
-        LOG.info(user_connect_password)
+        # LOG.info(user_connect_password)
         portal_connect.connexion()
         if not user_connect_password:
-            #LOG.info("***** not user_connect_password")
+            # LOG.info("***** not user_connect_password")
             self.addAdobeConnectPassword(folder.aq_parent)
             user_email = user.getProperty("email")
             user_fullname = user.getProperty("fullname")
@@ -112,7 +112,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
                                       "fullname": user_fullname,
                                       "email":    user_email})
         else:
-            #LOG.info("***** user_connect_password ok")
+            # LOG.info("***** user_connect_password ok")
             portal_connect.majPasswordUser({"userid":   user_id,
                                             "password": user_connect_password})
         return portal_connect.genererSessionUser({"userid":   user_id,
@@ -125,7 +125,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
             getattr(folder_parent, self.folder_dict[folder_key]).setComplement(user_connect_password)
 
     def getAdobeConnectReunion(self, user, folder, portal_connect):
-        #LOG.info("----- getAdobeConnectReunion -----")
+        # LOG.info("----- getAdobeConnectReunion -----")
         user_id = user.getId()
         user_connect_password = folder.getComplement()
 
@@ -165,7 +165,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
                 "adobe_connect_reunion_link": adobe_connect_reunion["url"]}
 
     def getMyAdobeConnectRecordingList(self, folder, adobe_connect_reunion_id, selected_tags_list, portal_connect):
-        #LOG.info("----- getMyAdobeConnectRecordingList -----")
+        # LOG.info("----- getMyAdobeConnectRecordingList -----")
         if (not selected_tags_list) or selected_tags_list == ["last"]:
             reindex = False
             jalon_recording_list = folder.objectIds()

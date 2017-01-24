@@ -29,7 +29,7 @@ LOG = getLogger('[jaloncourswims]')
 """
 # Log examples :
 LOG.debug('debug message')
-LOG.info('info message')
+# LOG.info('info message')
 LOG.warn('warn message')
 LOG.error('error message')
 LOG.critical('critical message')
@@ -228,7 +228,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def __init__(self, *args, **kwargs):
         """Initialize JalonCoursWims."""
-        LOG.info('__init__')
+        # LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
 
     # #-------------------# #
@@ -311,7 +311,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element, liste):
         """Ajoute un element aux liste des items d'une activité."""
-        LOG.info("----- addItemProperty (liste = %s) -----" % liste)
+        # LOG.info("----- addItemProperty (liste = %s) -----" % liste)
 
         items_properties = self.getDocumentsProperties()
         if item_id not in items_properties:
@@ -340,7 +340,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def detachExercice(self, item_object):
         """Retire l'exercice item_object des related_items de l'activité, et inversement."""
-        LOG.info("----- detachExercice -----")
+        # LOG.info("----- detachExercice -----")
 
         item_relatedItems = item_object.getRelatedItems()
         item_relatedItems.remove(self)
@@ -355,13 +355,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getDisplayProfile(self, profile_id=None):
         """get Display Profile."""
-        LOG.info("----- getDisplayProfile -----")
+        # LOG.info("----- getDisplayProfile -----")
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
     def getCrumbs(self, sub_page=""):
         """Get crumbs for some jaloncourswims subpages."""
-        LOG.info("----- getCrumbs -----")
+        # LOG.info("----- getCrumbs -----")
         portal = self.portal_url.getPortalObject()
         parent = self.aq_parent
         self_link = self.absolute_url()
@@ -380,31 +380,31 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getIconClass(self):
         """Return icon adaptated to activity type (Training or Exam)."""
-        LOG.info("----- getIconClass -----")
+        # LOG.info("----- getIconClass -----")
         return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
 
     def getDocumentsProperties(self, key=None):
         """get Properties for one or all Documents."""
-        LOG.info("----- getDocumentsProperties -----")
+        # LOG.info("----- getDocumentsProperties -----")
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element
 
     """def getCourseItemProperties(self, key=None):
         # Get Course Item Properties (alias to getDocumentsProperties(key)).
-        LOG.info("----- getCourseItemProperties -----")
+        # LOG.info("----- getCourseItemProperties -----")
         return self.getDocumentsProperties(key)
     """
 
     def getDocumentsList(self):
         """Fournit la liste de tous les document enseignants (requis par jalon_activity)."""
-        LOG.info("----- getDocumentsList -----")
+        # LOG.info("----- getDocumentsList -----")
         # return self._infos_element.keys()
         return self.getListeSujets()
 
     def setDocumentsProperties(self, infos_element):
         """Set Documents Properties."""
-        LOG.info("----- setDocumentsProperties -----")
+        # LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -412,7 +412,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         u"""Modifie la visibilité de l'activité ("item_property_name" fournit l'info afficher / masquer)."""
-        LOG.info("----- editCourseItemVisibility -----")
+        # LOG.info("----- editCourseItemVisibility -----")
 
         portal = self.portal_url.getPortalObject()
         dico = {"authMember": portal.portal_membership.getAuthenticatedMember().getId()}
@@ -688,7 +688,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def authUser(self, quser=None, qclass=None, request=None, session_keep=False):
         """appelle la fonction authUser de jalon_utils (authentifie un user WIMS)."""
-        LOG.info("----- authUser -----")
+        # LOG.info("----- authUser -----")
         return jalon_utils.authUser(self, quser, qclass, request, session_keep)
 
     def autoriser_Affichage(self):
@@ -697,7 +697,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         utile pour empecher l'affichage des activités vides par exemple
 
         """
-        LOG.info("----- autoriser_Affichage -----")
+        # LOG.info("----- autoriser_Affichage -----")
         listeExos = self.getListeExercices()
         if not listeExos:
             return {"val": False, "reason": "listeExos"}
@@ -732,7 +732,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # TODO
 
         """
-        LOG.info('----- getAllNotes -----')
+        # LOG.info('----- getAllNotes -----')
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
         # Cas des Autoevaluations activées:
@@ -743,7 +743,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getClasse(self):
         u"""retourne l'identifiant de la classe du cours associée à l'auteur de cette activite."""
-        LOG.info('----- getClasse -----')
+        # LOG.info('----- getClasse -----')
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
         idClasse = None
@@ -764,7 +764,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Exemple : AutoEvaluation-bado-20140910153227291052
 
         """
-        LOG.info('----- getCreateur -----')
+        # LOG.info('----- getCreateur -----')
         identifiant = self.getId().split("-")
         # LOG.info('*** len(identifiant)= %s ***' % len(identifiant))
         if len(identifiant) > 1:
@@ -774,7 +774,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def setClasse(self):
         u"""crée une classe associée au cours dans le groupe de classes de l'auteur de cette activite."""
-        LOG.info('----- setClasse -----')
+        # LOG.info('----- setClasse -----')
 
         auteur = self.getCreateur()
         listeClasses = list(self.aq_parent.getListeClasses())
@@ -814,7 +814,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getDisplayLang(self):
         """retourne la langue de l'exercice, dans un format affichable, ainsi qu'un code d'icone de drapeau."""
-        LOG.info('----- getDisplayLang -----')
+        # LOG.info('----- getDisplayLang -----')
         icone = code_langue = self.getWims_lang()
         if icone == "en":
             icone = "gb"
@@ -828,7 +828,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # utile pour les duplicatas par exemple.
 
         """
-        LOG.info('----- getDicoProperties -----')
+        # LOG.info('----- getDicoProperties -----')
         dico = {"Title": self.Title(),
                 "Description": self.Description(),
                 "InfosElement": copy.deepcopy(self.getInfosElement()),
@@ -850,7 +850,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getGroupement(self, auteur=None):
         u"""Renvoit le groupement de classe associé a l'auteur en parametre."""
-        LOG.info("----- getGroupement -----")
+        # LOG.info("----- getGroupement -----")
         if auteur is None:
             auteur = self.getCreateur()
         idgroupement = getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), auteur), "Wims").getComplement()
@@ -858,7 +858,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def updateExercicesList(self, infos_elements):
         """ Met à jour la liste des exercices coté Jalon en fonction des exercices côté WIMS."""
-        LOG.info("----- updateExercicesList -----")
+        # LOG.info("----- updateExercicesList -----")
 
         listeExercices = list(self.getListeExercices())
         # infos_elements = self.getDocumentsProperties()
@@ -918,7 +918,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def cleanActivity(self):
         """ Supprime tout élément indésirable de l'activité (issu de mauvaises manipulations)."""
-        LOG.info("----- cleanActivity -----")
+        # LOG.info("----- cleanActivity -----")
 
         listeSujets = list(self.getListeSujets())
         listeExercices = list(self.getListeExercices())
@@ -956,7 +956,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def displayExercicesList(self):
         """Fournit une liste de couples (ID/titre) des exercices de l'activite."""
-        LOG.info("----- displayExercicesList -----")
+        # LOG.info("----- displayExercicesList -----")
 
         exercices_list = []
         documents_dict = self.getDocumentsProperties()
@@ -972,7 +972,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getInfosListeAttribut(self, attribut, personnel=False):
         u"""renvoit la liste des elements d'une activité WIMS."""
-        LOG.info("----- getInfosListeAttribut -----")
+        # LOG.info("----- getInfosListeAttribut -----")
         retour = []
         listeElement = self.getListeAttribut(attribut)
         infos_element = self.getDocumentsProperties()
@@ -980,8 +980,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
         for idElement in listeElement:
             infos = infos_element.get(idElement, None)
             if infos:
-                LOG.info("***** attribut = %s" % attribut)
-                LOG.info("***** infos = %s" % infos)
+                # LOG.info("***** attribut = %s" % attribut)
+                # LOG.info("***** infos = %s" % infos)
                 affElement = self.isAfficherElement(infos['affElement'], infos['masquerElement'])
                 if personnel or not affElement['val'] == 0:
                     new = {"idElement":       idElement,
@@ -1000,18 +1000,18 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getNbSujets(self):
         """Obtient le nombre de sujets à afficher."""
-        LOG.info("----- getNbSujets -----")
+        # LOG.info("----- getNbSujets -----")
         return len(self.getInfosListeAttribut("sujets", True))
 
     def getNbExercices(self):
         """Obtient le nombre d'exercices."""
-        LOG.info("----- getNbExercices -----")
+        # LOG.info("----- getNbExercices -----")
         # return len(self.getInfosListeAttribut("exercices", True))
         return len(self.getListeExercices())
 
     def getListeAttribut(self, attribut):
         """get Liste Attribut."""
-        LOG.info("----- getListeAttribut -----")
+        # LOG.info("----- getListeAttribut -----")
         return self.__getattribute__("liste%s" % attribut.capitalize())
 
     def getNotes(self, quser, actif, isProf, detailed=False, site_lang="", request=None):
@@ -1022,7 +1022,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             - ou les notes de l'activité (dans ce cas, detailed permet d'obtenir les notes par etudiants)
 
         """
-        LOG.info("----- getNotes -----")
+        # LOG.info("----- getNotes -----")
         no_user_message = "There is no user in this class"
         param = {"quser": quser}
         # On fait un setClasse() pour créer eventuellement la classe si ce n'etait deja fait.
@@ -1105,7 +1105,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                     # DEBUG
                     retour["sheet_summaries"] = rep["sheet_summaries"]
                     if len(rep["sheet_summaries"]) > 1:
-                        LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
+                        # LOG.info("[getNotes] | rep[sheet_summaries] = %s " % rep["sheet_summaries"])
                         retour["pourcentage"] = rep["sheet_summaries"][0]
                         retour["qualite"] = (rep["sheet_summaries"][1] * float(self.getNoteMax())) / 10
                     else:
@@ -1143,7 +1143,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                                                "fonction": "jaloncourswims.py/getNotes",
                                                                "message": 'stats globales de la feuille demandees par un auteur/coauteur',
                                                                "requete": dico})
-                    LOG.info('Retour WIMS = %s' % rep)
+                    # LOG.info('Retour WIMS = %s' % rep)
                     listeNotes = []
                     if rep["status"] == "OK":
                         for indice, poids in enumerate(rep["weights"]):
@@ -1337,13 +1337,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getElementView(self, item_id):
         """ Fournit les infos de l'exercice demandé (un exo WIMS)."""
-        LOG.info("----- getElementView -----")
+        # LOG.info("----- getElementView -----")
 
         return self.getDocumentsProperties()[item_id]
 
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
-        LOG.info("----- getNotesTableur -----")
+        # LOG.info("----- getNotesTableur -----")
         separateurs = {"tsv": "\t", "csv": ";"}
         if format not in separateurs:
             format = "csv"
@@ -1388,7 +1388,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getRubriqueEspace(self, ajout=None):
         """get Rubrique Espace."""
-        LOG.info("----- getRubriqueEspace -----")
+        # LOG.info("----- getRubriqueEspace -----")
         rubriques = []
         for rubrique in ["Fichiers", "Presentations sonorisees", "Ressources Externes", "Webconference"]:
             rubriques.append({"rubrique": jalon_utils.jalon_quote(rubrique), "titre": rubrique})
@@ -1396,7 +1396,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getTagDefaut(self):
         """getTagDefaut."""
-        LOG.info("----- getTagDefaut -----")
+        # LOG.info("----- getTagDefaut -----")
         return jalon_utils.getTagDefaut(self)
 
     def getUserLog(self, quser, authUser, isProf, option="score"):
@@ -1406,7 +1406,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # On ne fournit les informations de log qu'a un enseignant du cours, ou l'etudiant lui-même
 
         """
-        LOG.info("----- getUserLog -----")
+        # LOG.info("----- getUserLog -----")
         param = {}
         if (isProf or quser == authUser):
             param["job"]    = "getlog"
@@ -1441,7 +1441,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Cela correspond par défaut a la langue du site, sinon à la langue choisie par l'enseignant
 
         """
-        LOG.info("----- getWimsLang -----")
+        # LOG.info("----- getWimsLang -----")
         if site_lang != '' and self.getWims_lang() == '':
             return jalon_utils.convertLangToWIMS(site_lang)
         else:
@@ -1449,24 +1449,24 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def isActif(self):
         u"""Permet de savoir si l'activité courante est active (affichée ou masquée)."""
-        LOG.info("----- isActif -----")
+        # LOG.info("----- isActif -----")
         return self.isAfficherElement(self.dateAff, self.dateMasq)["val"] == 1
 
     def isAfficherElement(self, affElement, masquerElement):
         """isAfficherElement aLias to jalon_utils."""
-        LOG.info("----- isAfficherElement ? -----")
+        # LOG.info("----- isAfficherElement ? -----")
         return jalon_utils.isAfficherElement(affElement, masquerElement)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
         """get Parent Plan Element."""
-        LOG.info("----- getParentPlanElement -----")
+        # LOG.info("----- getParentPlanElement -----")
         if idElement == self.getId():
             return self.aq_parent.getParentPlanElement(idElement, idParent, listeElement)
         return {"idElement": "racine", "affElement": "", "masquerElement": ""}
 
     def isChecked(self, idElement, formulaire, listeElement=None):
         """isChecked."""
-        LOG.info("----- isChecked -----")
+        # LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
                 return 1
@@ -1476,7 +1476,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
-        LOG.info("----- modifierExoFeuille -----")
+        # LOG.info("----- modifierExoFeuille -----")
         # param = form
         portal = self.portal_url.getPortalObject()
         param = {}
@@ -1494,7 +1494,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def retirerElement(self, idElement, menu, ordre=None):
         u"""détache un élément de l'activité."""
-        LOG.info("----- retirerElement -----")
+        # LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
         liste_elements = self.getDocumentsProperties()
 
@@ -1537,7 +1537,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def retirerTousElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""
-        LOG.info("----- retirerTousElements -----")
+        # LOG.info("----- retirerTousElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
@@ -1584,7 +1584,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getIdFeuilleWIMS(self, authMember, sheet_properties={}):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
-        LOG.info("----- getIdFeuilleWIMS -----")
+        # LOG.info("----- getIdFeuilleWIMS -----")
         idFeuille = self.getIdFeuille()
         # Cas ou la feuille n'existe pas côté WIMS
         if not idFeuille:
@@ -1615,7 +1615,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Utilisé notemment lors de la duplication de cours
 
         """
-        LOG.info("----- setJalonProperties -----")
+        # LOG.info("----- setJalonProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
 
@@ -1627,7 +1627,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
     """
     def setAttributActivite(self, form):
         # modifie les attribut de l'objet jaloncourswims.
-        LOG.info("----- setAttributActivite -----")
+        # LOG.info("----- setAttributActivite -----")
         for key in form.keys():
             method_name = "set%s%s" % (key[0].upper(), key[1:])
             try:
@@ -1649,7 +1649,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         #   si ce parametre n'est pas obligatoire. (cas de dico ici)
 
         """
-        LOG.info("----- setProperties -----")
+        # LOG.info("----- setProperties -----")
         auteur = self.getCreateur()
 
         # On met à jour les propriétés côté Jalon
@@ -1673,7 +1673,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.wims("modifierFeuille", proprietes)
 
                 proprietes["title"]     = self.Title()
-                LOG.info("proprietes['title']=%s" % proprietes["title"])
+                # LOG.info("proprietes['title']=%s" % proprietes["title"])
                 proprietes["duration"]  = self.duree
                 proprietes["attempts"]  = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
@@ -1698,7 +1698,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def importerHotPotatoes(self, member_auth, import_file):
         """Importe un ensemble d'exercice hotpotatoes, les place dans Mes ressources et dans l'autoevaluation/examen."""
-        LOG.info("----- importerHotPotatoes -----")
+        # LOG.info("----- importerHotPotatoes -----")
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, member_auth), "Wims")
         # import_name = import_file.filename[:-4]
@@ -1715,17 +1715,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def getShortText(self, text, limit=75):
         """getShortText."""
-        LOG.info("----- getShortText -----")
+        # LOG.info("----- getShortText -----")
         return jalon_utils.getShortText(text, limit)
 
     def supprimerMarquageHTML(self, chaine):
         """Suppression marquage HTML."""
-        LOG.info("----- supprimerMarquageHTML -----")
+        # LOG.info("----- supprimerMarquageHTML -----")
         return jalon_utils.supprimerMarquageHTML(chaine)
 
     def wims(self, methode, param):
         """permet d'appeler la methode definie en parametre depuis le connecteur wims, en lui envoyant le dico "param"."""
-        LOG.info("----- wims(%s) -----" % methode)
+        # LOG.info("----- wims(%s) -----" % methode)
         return self.portal_wims.__getattribute__(methode)(param)
 
     """
@@ -1737,7 +1737,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         #2 - mettre getInfosElement en commentaire
         #3 - appeler cette fonction depuis un script en ZMI
 
-        LOG.info("----- majActiviteWims -----")
+        # LOG.info("----- majActiviteWims -----")
         listeSujets = list(self.getListeSujets())
         listeExercices = list(self.getListeExercices())
         listeSujets.extend(listeExercices)

@@ -15,7 +15,7 @@ class DepositBoxView(CourseView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -39,7 +39,7 @@ class DepositBoxView(CourseView):
                  "link":  self.context.absolute_url()}]
 
     def getDepositBoxView(self, user, mode_etudiant, tab, is_ajax):
-        LOG.info("----- getDepositBoxView (Start) -----")
+        # LOG.info("----- getDepositBoxView (Start) -----")
         user_id = user.getId()
         my_view = {"is_anonymous": self.isAnonymous()}
 
@@ -62,11 +62,11 @@ class DepositBoxView(CourseView):
             my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["deposit_box_link"], my_deposit_box.jalon_quote(my_view["deposit_box_link"]))
             return my_view
 
-        LOG.info("***** DateAff : %s" % my_deposit_box.getDateAff())
+        # LOG.info("***** DateAff : %s" % my_deposit_box.getDateAff())
         my_view["deposit_box_visibility"] = my_deposit_box.isAfficherElement(my_deposit_box.getDateAff(), my_deposit_box.getDateMasq())
 
         my_view["deposit_box_edit"] = []
-        LOG.info("***** deposit_box_visibility : %s" % my_view["deposit_box_visibility"])
+        # LOG.info("***** deposit_box_visibility : %s" % my_view["deposit_box_visibility"])
         if my_view["deposit_box_visibility"]["val"]:
             my_view["deposit_box_edit"].append({"href": "%s/edit_course_item_visibility_form?item_id=%s&amp;tab=%s" % (my_view["deposit_box_link"], my_view["deposit_box_id"], tab),
                                                 "icon": "fa-eye-slash",
@@ -221,9 +221,9 @@ class DepositBoxView(CourseView):
                                               "text":  "Modifier"}
 
         my_view["is_personnel_or_deposit_box_visible"] = True if my_view["is_personnel"] or my_view["deposit_box_visibility"]['val'] != 0 else False
-        LOG.info("***** is_personnel : %s" % my_view["is_personnel"])
-        LOG.info("***** affElement : %s" % my_view["deposit_box_visibility"]['val'])
+        # LOG.info("***** is_personnel : %s" % my_view["is_personnel"])
+        # LOG.info("***** affElement : %s" % my_view["deposit_box_visibility"]['val'])
         my_view["is_student_and_deposit_box_hidden"] = True if (not my_view["is_personnel"]) and my_view["deposit_box_visibility"]['val'] == 0 else False
         my_view["is_display_mod"] = my_deposit_box.isAuteurs(user.getId())
-        LOG.info("----- getDepositBoxView (End) -----")
+        # LOG.info("----- getDepositBoxView (End) -----")
         return my_view

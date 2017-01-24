@@ -11,14 +11,14 @@ from logging import getLogger
 LOG = getLogger('[CourseStatisticsView]')
 """
 # Log examples :
-LOG.info('info message')
+# LOG.info('info message')
 """
 
 
 class CourseStatisticsView(BrowserView):
 
     def __init__(self, context, request):
-        LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -39,7 +39,7 @@ class CourseStatisticsView(BrowserView):
         return self.request
 
     def getPageView(self, user, mode_etudiant):
-        LOG.info("----- getPageView -----")
+        # LOG.info("----- getPageView -----")
         is_personnel = self.context.isPersonnel(user, mode_etudiant)
         mode_etudiant = "false" if (not mode_etudiant) and is_personnel else mode_etudiant
 
@@ -74,7 +74,7 @@ class CourseStatisticsView(BrowserView):
         return my_view
 
     def getOngletView(self, onglet, is_personnel):
-        LOG.info("----- getOngletView -----")
+        # LOG.info("----- getOngletView -----")
         if onglet == "1":
             return self.getIndicateursGeneralitesView(is_personnel)
         if onglet == "2":
@@ -85,7 +85,7 @@ class CourseStatisticsView(BrowserView):
             return self.getIndicateursActitivesView()
 
     def getElementsCoursByType(self):
-        LOG.info("----- getElementsCoursByType -----")
+        # LOG.info("----- getElementsCoursByType -----")
         element_by_type_dict = {"Titre":          {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "TexteLibre":     {"elements_count": 0, "elements_list": [], "elements_dict": {}},
                                 "Fichiers":       {"elements_count": 0, "elements_list": [], "elements_dict": {}},
@@ -117,7 +117,7 @@ class CourseStatisticsView(BrowserView):
         return element_by_type_dict
 
     def getIndicateursGeneralitesView(self, is_personnel):
-        LOG.info("----- getIndicateursGeneralitesView -----")
+        # LOG.info("----- getIndicateursGeneralitesView -----")
         course_training_offer_list = self.context.getCourseTrainingOffer()
         course_training_offer_students = 0
         for course_training_offer in course_training_offer_list:
@@ -193,10 +193,10 @@ class CourseStatisticsView(BrowserView):
                 "course_actions":      course_actions}
 
     def getIndicateursFrequentationView(self):
-        LOG.info("----- getIndicateursFrequentationView -----")
+        # LOG.info("----- getIndicateursFrequentationView -----")
         graph = ""
         requete = self.context.getConsultationByCoursByUniversityYearByDate(None, False, False).all()
-        LOG.info(requete)
+        # LOG.info(requete)
         if requete:
             requete_dict = {}
             for ligne in requete:
@@ -212,11 +212,11 @@ class CourseStatisticsView(BrowserView):
 
         frequentation_graph = ""
         requete2 = self.context.getConsultationByCoursByUniversityYearByDate(None, True, "Etudiant").all()
-        LOG.info(requete2)
+        # LOG.info(requete2)
         if requete2:
             requete_dict = dict(requete2)
             frequentation_graph = self.context.genererFrequentationGraph(requete_dict)
-            LOG.info(frequentation_graph)
+            # LOG.info(frequentation_graph)
 
         return {"macro":               "indicateurs_frequentation",
                 "year":                "%s/%s" % (DateTime().year() - 1, DateTime().year()),
@@ -224,7 +224,7 @@ class CourseStatisticsView(BrowserView):
                 "frequentation_graph": frequentation_graph}
 
     def getIndicateursRessourcesView(self):
-        LOG.info("----- getIndicateursRessourcesView -----")
+        # LOG.info("----- getIndicateursRessourcesView -----")
         box = self.request.get("box", "1")
         box_dict = {"1": "Fichiers",
                     "2": "Presentations sonorisees",
@@ -275,8 +275,8 @@ class CourseStatisticsView(BrowserView):
             elements_cours = self.getElementsCoursByType()
             if box_dict[box] in elements_cours:
                 elements_consultation = self.context.getConsultationElementsByCours(elements_cours[box_dict[box]]["elements_list"], elements_cours[box_dict[box]]["elements_dict"])
-                LOG.info(len(elements_consultation))
-                LOG.info(elements_consultation)
+                # LOG.info(len(elements_consultation))
+                # LOG.info(elements_consultation)
             indicateurs_ressources_view = {"macro":                 "indicateurs_ressources",
                                            "box_list":              box_list,
                                            "second_macro":          "display_all_ressources",
@@ -289,7 +289,7 @@ class CourseStatisticsView(BrowserView):
                                      "th_text":   "Public"})
             graph = ""
             requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
-            LOG.info(requete)
+            # LOG.info(requete)
             if requete:
                 requete_dict = {}
                 for ligne in requete:
@@ -313,7 +313,7 @@ class CourseStatisticsView(BrowserView):
         return indicateurs_ressources_view
 
     def getIndicateursActitivesView(self):
-        LOG.info("----- getIndicateursActitivesView -----")
+        # LOG.info("----- getIndicateursActitivesView -----")
         box = self.request.get("box", "1")
         box_dict = {"1": "BoiteDepot",
                     "2": "AutoEvaluation",
@@ -366,7 +366,7 @@ class CourseStatisticsView(BrowserView):
                                      "th_text":   "Public"})
             graph = ""
             requete = self.context.getConsultationByElementByCoursByUniversityYearForGraph(element_id).all()
-            LOG.info(requete)
+            # LOG.info(requete)
             if requete:
                 requete_dict = {}
                 for ligne in requete:

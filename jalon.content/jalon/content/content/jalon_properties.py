@@ -344,7 +344,7 @@ class JalonProperties(SimpleItem):
             return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
 
     def getTopBarMenuLeft(self, user_role):
-        #LOG.info("----- getTopBar -----")
+        # LOG.info("----- getTopBar -----")
         menu_left = []
         is_personnel = user_role in ["Personnel", "Secretaire", "Manager"]
 
@@ -474,7 +474,7 @@ class JalonProperties(SimpleItem):
         return menu_left
 
     def getMonEspace(self):
-        #LOG.info("----- getMonEspace -----")
+        # LOG.info("----- getMonEspace -----")
         return {"site":        self.aq_parent.Title(),
                 "grid":        self.getGridMonEspaceNew(),
                 "maintenance": self.getPropertiesMaintenance(),
@@ -482,7 +482,7 @@ class JalonProperties(SimpleItem):
                 "messages":    self.getPropertiesMessages()}
 
     def generatePageMonEspace(self, request):
-        #LOG.info("----- generatePageMonEspace -----")
+        # LOG.info("----- generatePageMonEspace -----")
         macro_mon_espace_grid_generate = ["<metal:macro define-macro=\"mon_espace_grid\">"]
         macro_mon_espace_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")())
         macro_mon_espace_grid_generate.append("</metal:macro>")
@@ -608,7 +608,7 @@ class JalonProperties(SimpleItem):
                     "message_teacher":    self._message_enseignant}
 
     def setPropertiesMessages(self, form, request):
-        #LOG.info("----- setPropertiesMessages -----")
+        # LOG.info("----- setPropertiesMessages -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_"):
@@ -617,7 +617,7 @@ class JalonProperties(SimpleItem):
         self.generateMessages(request)
 
     def generateMessages(self, request):
-        #LOG.info("----- generateMessages -----")
+        # LOG.info("----- generateMessages -----")
         messages_properties = self.getPropertiesMessages()
         for key in messages_properties:
             request.set(key, messages_properties[key])
@@ -1027,7 +1027,7 @@ class JalonProperties(SimpleItem):
                 "url_news_maintenance":       self._url_news_maintenance}
 
     def setPropertiesMaintenance(self, form, request):
-        #LOG.info("----- setPropertiesMaintenance -----")
+        # LOG.info("----- setPropertiesMaintenance -----")
         for key in form.keys():
             val = form[key]
             if key.startswith("activer_") or key.startswith("annoncer_"):
@@ -1109,8 +1109,8 @@ class JalonProperties(SimpleItem):
         return portal_jalon_wowza.getStreamingAvailable(pod)
 
     def modifyStreaming(self, params):
-        #LOG.info("----- modifyStreaming -----")
-        #LOG.info(params)
+        # LOG.info("----- modifyStreaming -----")
+        # LOG.info(params)
         portal = self.portal_url.getPortalObject()
         portal_jalon_wowza = getattr(portal, "portal_jalon_wowza", None)
         if "datetime-expiration_date" in params:

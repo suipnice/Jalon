@@ -15,7 +15,7 @@ class MyCoursesView(BrowserView):
     """
 
     def __init__(self, context, request):
-        #LOG.info("----- Init -----")
+        # LOG.info("----- Init -----")
         BrowserView.__init__(self, context, request)
         self.context = context
         self.request = request
@@ -31,14 +31,14 @@ class MyCoursesView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getUserFolder(self, user_id):
-        #LOG.info("----- getUserFolder -----")
+        # LOG.info("----- getUserFolder -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
         return getattr(portal.cours, user_id)
 
     def getMyCoursesView(self, user, tab=None):
-        #LOG.info("----- getMyCoursesView -----")
+        # LOG.info("----- getMyCoursesView -----")
 
         folder = jalon_utils.getCourseUserFolder(self.context, user.getId())
         context_link = self.context.absolute_url()
@@ -109,7 +109,7 @@ class MyCoursesView(BrowserView):
                 "courses_dict":     courses_dict}
 
     def getTeacherCoursesList(self, member, tab, folder):
-        #LOG.info("----- getTeacherCoursesList -----")
+        # LOG.info("----- getTeacherCoursesList -----")
         """ Renvoi la liste des cours pour authMember."""
         courses_list = []
         courses_ids_list = []
@@ -210,7 +210,7 @@ class MyCoursesView(BrowserView):
                 "courses_list":    list(courses_list_filter)}
 
     def getStudentCoursesList(self, member, tab, folder, is_tab_password):
-        #LOG.info("----- getStudentCoursesList -----")
+        # LOG.info("----- getStudentCoursesList -----")
         diploma_list = []
         authors_dict = {}
         portal = self.context.portal_url.getPortalObject()
@@ -237,7 +237,7 @@ class MyCoursesView(BrowserView):
                     course_authorized_list.append(course_data["course_id"])
                 diploma_list.append({"diploma_course_list": courses_list})
                 self.request.SESSION.set("course_authorized_list", course_authorized_list)
-                #LOG.info(course_authorized_list)
+                # LOG.info(course_authorized_list)
                 return {"is_diploma_list": True,
                         "diploma_list":    diploma_list}
 
@@ -295,7 +295,7 @@ class MyCoursesView(BrowserView):
             diploma_list.append({"diploma_course_list": course_list})
 
         self.request.SESSION.set("course_authorized_list", course_authorized_list)
-        #LOG.info(course_authorized_list)
+        # LOG.info(course_authorized_list)
         if diploma_list:
             return {"is_diploma_list": True,
                     "diploma_list":    diploma_list}
@@ -304,7 +304,7 @@ class MyCoursesView(BrowserView):
                     "message":         "Vous n'êtes inscrit(e) à aucun diplôme."}
 
     def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list, is_tab_password=False):
-        #LOG.info("----- getCourseData -----")
+        # LOG.info("----- getCourseData -----")
         course_data = {"course_id":                course_brain.getId,
                        "course_title":             course_brain.Title,
                        "course_short_title":       jalon_utils.getShortText(course_brain.Title),
