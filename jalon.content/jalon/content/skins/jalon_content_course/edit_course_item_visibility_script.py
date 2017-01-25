@@ -8,10 +8,18 @@
 ##title=
 ##
 
+from Products.CMFPlone import PloneMessageFactory as _
+
 # context = context
 context_object = context
 form = context.REQUEST.form
 redirection = context.absolute_url()
+
+# Interdit la modification de la visibilité aux utilisateurs anonymes.
+membership_tool = context.portal_url.getPortalObject().portal_membership
+if membership_tool.isAnonymousUser():
+    context.plone_utils.addPortalMessage(_(u'Veuillez vous connecter.'), type='error')
+    return context.REQUEST.RESPONSE.redirect(redirection)
 
 is_activity = False
 object_type = form["item_id"].split("-", 1)[0]

@@ -105,13 +105,13 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 accessor="getLienMooc",
                 default="",
                 searchable=False,
-                widget=StringWidget(label=_(u"Le lien court mooc d'un cours"),
-                                    description=_(u"Le lien court mooc n'existe que pour le cours en accès libre"),)),
+                widget=StringWidget(label=_(u"Le lien court MOOC d'un cours"),
+                                    description=_(u"Le lien court MOOC n'existe que pour le cours en accès libre"),)),
     LinesField("plan",
                required=False,
                accessor="getPlan",
                searchable=False,
-               widget=LinesWidget(label=_(u"Plan intéractif"),
+               widget=LinesWidget(label=_(u"Plan interactif"),
                                   description=_(u"Le plan intéractif."),
                                   visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("elements_glossaire",
@@ -349,14 +349,20 @@ class JalonCours(ATFolder):
                 "icon":  "fa fa-search",
                 "link":  "%s/check_course_password_form" % self.absolute_url()}]
 
+    def getIconClass(self):
+        """Return the course icon CSS class."""
+        # LOG.info("----- getIconClass -----")
+        return "fa fa-book"
+
     def checkCourseAuthorized(self, user, request):
         # LOG.info("----- checkCourseAuthorized -----")
         # LOG.info("***** SESSION : %s" % request.SESSION.get("course_authorized_list", []))
         # LOG.info(self.getLibre())
-        #if self.getLibre():
+        # if self.getLibre():
         #    return True
 
         if self.getAcces() == "Public":
+            # LOG.info("----- Course Authorized := Public ACCESS -----")
             return True
 
         if user.has_role(["Manager", "Owner"]):
@@ -401,7 +407,8 @@ class JalonCours(ATFolder):
                  "link":  self.absolute_url()}]
 
     def getCourseItemProperties(self, key=None):
-        """Fournit les propriétés d'un element du cours."""
+        """Fournit les propriétés des (ou d'un) element(s) du cours."""
+        # Anciennement "getElementCours"
         # LOG.info("----- getCourseItemProperties -----")
         # LOG.info("***** item_id : %s" % key)
         if key:
@@ -409,7 +416,8 @@ class JalonCours(ATFolder):
         return self._elements_cours
 
     def setCourseItemsProperties(self, elements_cours):
-        """Définit les propriétés d'un element du cours."""
+        """Définit la liste des propriétés des elements du cours."""
+        # Anciennement "setElementCours"
         # LOG.info("----- setCourseItemsProperties -----")
         if type(self._elements_cours).__name__ != "PersistentMapping":
             self._elements_cours = PersistentDict(elements_cours)
@@ -439,6 +447,7 @@ class JalonCours(ATFolder):
             return DateTime().strftime("%Y/%m/%d %H:%M")
 
     def setCourseProperties(self, dico):
+        """ Met à jour les propriétés du cours (anciennement "setProperties")."""
         # LOG.info("----- setCourseProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
@@ -1527,7 +1536,7 @@ class JalonCours(ATFolder):
                 display_item = ""
 
         items_properties = self.getCourseItemProperties()
-        if not item_id in items_properties:
+        if item_id not in items_properties:
             items_properties[item_id] = {"titreElement":    item_title,
                                          "typeElement":     item_type,
                                          "createurElement": item_creator,
@@ -1670,6 +1679,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- deleteCourseMapItem -----")
         # LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
+        # anciennement "retirerElementPlan"
         start = False
         if listeElement is None:
             listeElement = list(self.getPlan())
@@ -1947,15 +1957,15 @@ class JalonCours(ATFolder):
 
                     # On parcourt ensuite les exo des activitées retirées, pour que chaque exercice n'y fasse plus référence dans ses "relatedITEMS"
                     # retire l'activité des relatedItems pour ses exercices et ses documents.
-                    activite.retirerTousElements(force_WIMS=True)
+                    activite.removeAllElements(force_WIMS=True)
 
                     # Supprime l'activité (du plan du cours et du cours)
-                    self.retirerElementPlan(idElement, force_WIMS=True)
+                    self.deleteCourseMapItem(idElement, force_WIMS=True)
                     # Supprime l'activité des actus du cours
                     self.deleteCourseActuality(idElement)
 
-                    ### A utiliser dans un patch correctif :
-                    #(on refait ce que fait normalement retirerElementPlan, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
+                    # ** A utiliser dans un patch correctif : **
+                    # (on refait ce que fait normalement deleteCourseMapItem, dans le cas ou l'element n'est plus dans le plan mais toujours dans _elements_cours) :
                     if idElement in self._elements_cours:
                         self.manage_delObjects(idElement)
                         del self._elements_cours[idElement]
@@ -2866,9 +2876,9 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         return portal.portal_jalon_bdd.genererFrequentationGraph(months_dict)
 
-    #---------------------------#
-    # Forum à modifier si mieux #
-    #---------------------------#
+    # --------------------------- #
+    #  Forum à modifier si mieux  #
+    # --------------------------- #
     def getForumBreadcrumbs(self, item, page="basic"):
         item_title = item.Title()
         item_link = item.absolute_url()

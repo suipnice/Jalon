@@ -31,7 +31,7 @@
 
         <div class="panel radius"
              tal:condition="not:context/Description"
-             i18n:translate="">
+             i18n:translate="description_not_filled">
              Description non renseignée…
         </div>
         <div class="panel radius"
@@ -40,7 +40,7 @@
 
         <a class="button expand success" target="_blank"
            tal:attributes="href context/getURLLien">
-            <i class="fa fa-eye"></i><tal:block i18n:translate="">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
+            <i class="fa fa-eye"></i><tal:block i18n:translate="open_in_new_window">Ouvrir la ressource dans une nouvelle fenêtre…</tal:block>
         </a>
 
    </tal:block>

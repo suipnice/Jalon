@@ -207,12 +207,6 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         deposit_box_profil = profile_id or self.getProfile() or "standard"
         return self._profile_title[deposit_box_profil]
 
-    def getDocumentsProperties(self, key=None):
-        # LOG.info("----- getDocumentsProperties -----")
-        if key:
-            return self._infos_element.get(key, None)
-        return self._infos_element
-
     def getDocumentsList(self):
         # LOG.info("----- getDocumentsList -----")
         return self._infos_element.keys()
@@ -334,6 +328,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     pass
                 objet.reindexObject()
     """
+    def getIconClass(self):
+        """Return the Activity icon CSS class."""
+        # LOG.info("----- getIconClass -----")
+        return "fa fa-inbox"
 
     def getDepositBoxProfile(self):
         # LOG.info("----- getDepositBoxProfile -----")

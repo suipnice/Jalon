@@ -11,13 +11,16 @@
 
 <metal:macro define-macro="is_object_attached">
     <div class="panel radius callout">
-        La ressource "<tal:replace replace="context/Title" /> est attachée à :
+        La ressource "<tal:replace replace="context/Title" />" est attachée à :
         <ul>
-            <li tal:repeat="cours context/getRelatedItems">
-                <tal:block tal:content="cours/Title" />
+            <li tal:repeat="item context/getRelatedItems">
+                <a tal:attributes="href item/getURL|item/absolute_url">
+                    <i tal:attributes="class item/getIconClass | nothing"></i>
+                    <tal:block tal:content="item/Title" />
+                </a>
             </li>
         </ul>
-        vous ne pouvez pas la supprimer.
+        ... vous ne pouvez donc pas la supprimer.
     </div>
 </metal:macro>
 

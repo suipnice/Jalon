@@ -98,6 +98,10 @@ En entrée :
                     qexam context/getIdExam;
                     isExam python:context.test(context.getTypeWims() == 'Examen', 1, 0)">
 
+    <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
+        Message de session
+    </metal:macro>
+
     <tal:condition condition="python:infosNotes['status']!='OK'" >
         <div class="panel warning radius"
              tal:define="error_type string:wims_bad_conf;
@@ -308,7 +312,7 @@ En entrée :
                         <ul tal:attributes="id string:activite-options-${repeat/element/index}"
                             class="f-dropdown" data-dropdown-content="">
                             <li>
-                                <a tal:attributes="href string:${context/absolute_url}/edit_wims_activity_exercice_form?qexo=${index}&amp;idElement=${element/idElement}&amp;sur=${sur}&amp;tab=${tab}"
+                                <a tal:attributes="href string:${context/absolute_url}/edit_wims_activity_exercice_form?qexo=${index}&amp;item_id=${element/idElement}&amp;sur=${sur}"
                                    title="Modifier l'exercice"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">
@@ -318,7 +322,7 @@ En entrée :
                             </li>
                             <li>
                                 <a tal:define="typeElement string:ExerciceWims"
-                                   tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_form&amp;formulaire=detacher-cours&amp;idElement=${element/idElement}&amp;repertoire=${typeElement}&amp;indexElement=${repeat/element/index}"
+                                   tal:attributes="href string:${context/absolute_url}/course_detach_item_form?item_id=${element/idElement}&amp;item_order=${repeat/element/index}&amp;tab=${tab}"
                                    title="Détacher l'exercice"
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">
@@ -645,9 +649,9 @@ En entrée :
              tal:condition="python: is_personnel and not data_scores and not affElement['val'] ">
             <tal:block i18n:translate="">Affichez l'autoévaluation pour accéder aux résultats.</tal:block>
         </div>
-        <div class="panel warning radius"
-             tal:condition="not:data_scores">
-            <tal:block i18n:translate="">Aucun résultat</tal:block>
+        <div class="panel warning radius" tal:condition="not:data_scores">
+            <tal:block tal:condition="is_personnel" i18n:translate="">Aucun résultat.</tal:block>
+            <tal:block tal:condition="not:is_personnel" i18n:translate="">Vos résultats personnels sont dans l'onglet "Exercices".</tal:block>
         </div>
 
         <tal:condition condition="data_scores">

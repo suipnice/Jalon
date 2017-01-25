@@ -8,6 +8,7 @@
 ##title=Ajoute un élément ou un sous-element au cours
 ##
 
+# context = context
 request = context.REQUEST
 form = request.form
 

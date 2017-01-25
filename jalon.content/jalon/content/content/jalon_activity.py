@@ -174,6 +174,13 @@ class JalonActivity(SimpleItem):
 
         return form_properties
 
+    def getDocumentsProperties(self, key=None):
+        """get Properties for one or all Documents."""
+        # LOG.info("----- getDocumentsProperties (%s) -----" % self.getId())
+        if key:
+            return self._infos_element.get(key, None)
+        return self._infos_element
+
     def detachDocument(self, item_id):
         # LOG.info("----- detachDocument -----")
         document_properties = self.getDocumentsProperties()

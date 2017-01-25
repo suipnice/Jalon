@@ -132,7 +132,7 @@
         <div class="panel" tal:define="accolade QCM_parsed/accolade | string:1">
             <a href="#reveal_accolade" class="button tiny radius right" data-reveal-id="reveal_accolade">
                 <i class="fa fa-question"></i>
-                Aide
+                <tal:block i18n:translate="label_help">Aide</tal:block>
             </a>
             <label for="accolade">Accolades aléatoires</label>
             <div class="formHelp texte_icone icone_information">Les mots placés dans une paire d'accolades seront tirés au hasard.</div>
@@ -178,11 +178,13 @@
                 <div class="panel">
                     <h3><i class="fa fa-times alert"></i><tal:block i18n:translate="">Mode "accolades aléatoires" désactivé :</tal:block></h3>
                     <div i18n:translate="">En désactivant ce mode, les accolades ne sont plus utilisées pour afficher du texte aléatoire.</div>
-                    Vous pourrez alors :
-                    <ul>
-                        <li>Afficher des accolades</li>
-                        <li>Utiliser du code LaTeX avec des accolades, sans souci.</li>
-                    </ul>
+                    <div i18n:translate="">
+                        Vous pourrez alors :
+                        <ul>
+                            <li>Afficher des accolades</li>
+                            <li>Utiliser du code LaTeX avec des accolades, sans souci.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

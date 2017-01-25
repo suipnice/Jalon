@@ -29,7 +29,7 @@ LOG = getLogger('[jaloncourswims]')
 """
 # Log examples :
 LOG.debug('debug message')
-# LOG.info('info message')
+LOG.info('info message')
 LOG.warn('warn message')
 LOG.error('error message')
 LOG.critical('critical message')
@@ -230,6 +230,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """Initialize JalonCoursWims."""
         # LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
+        self._infos_element = {}
 
     # #-------------------# #
     #  Fonctions générales  #
@@ -298,7 +299,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
                 # L'exercice n'est pas ajouté.
                 # LOG.info("\n####### jaloncourswims/addMySpaceItem -- Attention : '%s'\n" % rep_wims['message'])
-                self.detachExercice(item_object)
+                self.removeRelatedExercice(item_object)
                 # message = _(u"Une erreur est survenue. Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp.")
                 # message = "%s<br/><strong>%s:</strong>%s" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
                 # self.plone_utils.addPortalMessage(message, type='error')
@@ -323,7 +324,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
-            # self.setDocumentsProperties(items_properties)
+            # setDocumentsProperties permet de s'assurer que les données sont stockées de manière persistante.
+            self.setDocumentsProperties(items_properties)
 
         if liste == "Exercices":
             listeExercices = list(self.getListeExercices())
@@ -338,20 +340,104 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         self.plone_utils.addPortalMessage(message, type='success')
 
-    def detachExercice(self, item_object):
-        """Retire l'exercice item_object des related_items de l'activité, et inversement."""
+    def checkRoles(self, user=None, action="edit", function=""):
+        u"""Permet de vérifier si l'utilisateur courant a le droit d'accéder à l'activité.
+
+        # Si le droit n'est pas accordé, un message est affiché à l'utilisateur.
+        # Si on suspecte une tentative de fraude, l'administrateur recoit un message.
+        # action indique si l'utilisateur tente d'y accéder en lecture ("view") ou écriture ("edit")
+
+        """
+        # LOG.info("----- checkRoles -----")
+        if user is None:
+            membership_tool = self.portal_url.getPortalObject().portal_membership
+            user = membership_tool.getAuthenticatedMember()
+        user_roles = user.getRolesInContext(self)
+        if 'Owner' in user_roles or 'Manager' in user_roles:
+            return True
+        else:
+            if 'Anonymous' in user_roles:
+                # Normalement, le mecanisme de gestion des droits de Plone ne pemretrra de toute facon pas un anonyme d'accéder à un exercice.
+                # Mais ceci peux tout de même se produire dans le cas ou un exercice a été rendu public via son insertion dans un cours public justement.
+                message = _(u"Vous êtes déconnecté. Merci de vous connecter pour accéder à cette page.")
+                mess_type = "info"
+            else:
+                # TODO : Ici il faudrait vérifier qu'un etudiant malveillant ne puisse pas modifier une activité !
+                message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
+                mess_type = "alert"
+                self.aq_parent.wims("verifierRetourWims", {"rep": '{"status":"ERROR", "message":"checkRoles Failed", "activity_ID":"%s"}' % self.getId(),
+                                                           "fonction": "jaloncourswims.py/checkRoles in %s" % function,
+                                                           "message": "Suspicion de fraude de l'utilisateur %s" % user.getId(),
+                                                           "requete": "%s" % self.absolute_url(),
+                                                           "jalon_request": ""
+                                                           })
+
+        self.plone_utils.addPortalMessage(message, type=mess_type)
+        return False
+
+    def detachExercice(self, item_id, ordre):
+        """supprime l'exercice de l'activité, puis met à jour les relatedItems"""
         # LOG.info("----- detachExercice -----")
 
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="detachExercice"):
+            return None
+
+        document_properties = self.getDocumentsProperties()
+        item_props = document_properties[item_id]
+
+        # Supprime l'exercice de la feuille côté WIMS
+        idClasse = self.getClasse()
+        idFeuille = self.getIdFeuille()
+        idExo = int(ordre) + 1
+        dico = {"authMember": authMember.getId(),
+                "qclass": idClasse,
+                "qsheet": idFeuille,
+                "qexo": idExo,
+                "jalon_URL": self.absolute_url()}
+        resp = self.wims("retirerExoFeuille", dico)
+        # resp = {"status":"OK"}
+        if resp["status"] != "OK":
+            message = _(u"Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché",
+                        mapping={'item_title': item_props["titreElement"]})
+            self.plone_utils.addPortalMessage(message, type='failure')
+        else:
+
+            # Puisque la suppression est effective coté WIMS, on le détache côté Jalon :
+
+            del document_properties[item_id]
+            self.setDocumentsProperties(document_properties)
+
+            exos_list = list(self.getListeExercices())
+            exos_list.remove(item_id)
+            self.setListeExercices(tuple(exos_list))
+
+            # Puis on met à jour les related Items
+            if item_id.split("-")[0] != "recover":
+                item_object = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), item_props["createurElement"]), "Wims"), item_id)
+                self.removeRelatedExercice(item_object)
+
+            message = _(u"L'exercice '${item_title}' a bien été détaché de cette activité.",
+                        mapping={'item_title': item_props["titreElement"]})
+            self.plone_utils.addPortalMessage(message, type='success')
+
+    def removeRelatedExercice(self, item_object):
+        """Retire l'exercice item_object des related_items de l'activité, et inversement."""
+        # LOG.info("----- removeRelatedExercice -----")
+
         item_relatedItems = item_object.getRelatedItems()
-        item_relatedItems.remove(self)
-        item_object.setRelatedItems(item_relatedItems)
-        item_object.reindexObject()
+        if self in item_relatedItems:
+            item_relatedItems.remove(self)
+            item_object.setRelatedItems(item_relatedItems)
+            item_object.reindexObject()
 
         activity_relatedItems = self.getRelatedItems()
-        activity_relatedItems.remove(item_object)
-        self.setRelatedItems(activity_relatedItems)
-
-        self.reindexObject()
+        if item_object in activity_relatedItems:
+            activity_relatedItems.remove(item_object)
+            self.setRelatedItems(activity_relatedItems)
+            self.reindexObject()
 
     def getDisplayProfile(self, profile_id=None):
         """get Display Profile."""
@@ -383,13 +469,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info("----- getIconClass -----")
         return "fa fa-gamepad no-pad" if self.getId().startswith("AutoEvaluation-") else "fa fa-graduation-cap"
 
-    def getDocumentsProperties(self, key=None):
-        """get Properties for one or all Documents."""
-        # LOG.info("----- getDocumentsProperties -----")
-        if key:
-            return self._infos_element.get(key, None)
-        return self._infos_element
-
     """def getCourseItemProperties(self, key=None):
         # Get Course Item Properties (alias to getDocumentsProperties(key)).
         # LOG.info("----- getCourseItemProperties -----")
@@ -403,7 +482,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         return self.getListeSujets()
 
     def setDocumentsProperties(self, infos_element):
-        """Set Documents Properties."""
+        """Met a jour les propriétés des sous-éléments de l'activité, en s'assurant au passage que les données sont persistantes."""
         # LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
@@ -796,9 +875,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             idgroupement = self.getGroupement(auteur)
             if not idgroupement:
                 # Cas ou l'utilisateur a tenté de créer une autoevaluation ou un examen sans etre passé une fois par les exercices WIMS
-                rep_wims = '{"status": "ERROR", "message": "[jaloncourswims] Tentative de creation de classe WIMS sans groupement.","auteur":"%s"}' % auteur
-                self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/setClasse"})
-                # self.reindexObject()
+                LOG.info('#### Creation de classe WIMS sans Groupement ####')
                 return None
 
             classe = self.wims("creerClasse", {"authMember": auteur, "fullname": fullname, "auth_email": auth_email, "type": "1", "titre_classe": self.aq_parent.title_or_id(), "qclass": idgroupement})
@@ -807,7 +884,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 idclasse = str(classe["class_id"])
                 self.wims("callJob", {"job": "sharecontent", "qclass": "%s_1" % idgroupement, "data1": idclasse, "code": auteur})
             else:
+                self.wims("verifierRetourWims", {"rep": classe,
+                                                 "fonction": "jaloncourswims.py/setClasse",
+                                                 "message": "job = creerClasse"
+                                                 })
+                LOG.info('#### CREATION DE CLASSE WIMS IMPOSSIBLE ####')
                 return None
+            idClasse = classe["class_id"]
             self.aq_parent.setListeClasses([dicoClasses])
 
         return idClasse
@@ -831,7 +914,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info('----- getDicoProperties -----')
         dico = {"Title": self.Title(),
                 "Description": self.Description(),
-                "InfosElement": copy.deepcopy(self.getInfosElement()),
+                "DocumentsProperties": copy.deepcopy(self.getDocumentsProperties()),
                 "DateAff": self.getDateAff(),
                 "DateMasq": self.getDateMasq(),
                 "TypeWims": self.getTypeWims(),
@@ -961,10 +1044,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
         exercices_list = []
         documents_dict = self.getDocumentsProperties()
         for document_id in self.getListeExercices():
-            document_properties = documents_dict[document_id]
+            if document_id in documents_dict:
+                exo_title = documents_dict[document_id]["titreElement"]
+            else:
+                exo_title = _(u"exercice sans titre ?")
 
             exo_dict = {"idElement":      document_id,
-                        "titreElement":   document_properties["titreElement"]
+                        "titreElement":   exo_title
                         }
 
             exercices_list.append(exo_dict)
@@ -1031,11 +1117,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # On donne des infos de Jalon pour debugger plus facilement en cas d'erreur.
         param["jalon_request"] = request
 
-        # Si l'obtention/creation de classe plante, la connexion a WIMS est surement rompue.
         if not param["qclass"]:
-            message = _(u"Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)")
-            self.plone_utils.addPortalMessage(message, type='error')
-            return {"status": "ERROR", "message": message}
+            if self.getGroupement():
+                # Si l'obtention/creation de classe plante, la connexion a WIMS est surement rompue.
+                rep_wims = '{"status": "ERROR", "message": "Impossible de créer la classe WIMS.", "quser":"%s"}' % quser
+                self.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jaloncourswims.py/getNotes"})
+                message = _(u"Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)")
+                self.plone_utils.addPortalMessage(message, type='error')
+                return {"status": "ERROR", "message": message}
+            else:
+                # Si l'utilisateur n'as pas de groupement, il devra d'abord passer par "Mon espace" pour ajouter des exercices.
+                return {"status": "OK", "user_cnt": 0}
 
         # Puis un getIdFeuilleWIMS() pour créer eventuellement la feuille si ce n'etait deja fait.
         param["qsheet"] = self.getIdFeuilleWIMS(quser)
@@ -1133,9 +1225,11 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 # Pour l'auteur et le co-auteur, cas d'une autoevaluation active
                 if not detailed:
                     # dans le menu "exercices, on ne demande que les notes globales de la feuille
+                    # nb : il est possible que getsheetstats ne donne pas d'infos globales d'une feuille
+                    # quand il existe une feuille n-1 qui n'a jamais été activée.
                     dico = {"job": "getsheetstats", "code": quser, "qclass": param["qclass"], "qsheet": param["qsheet"]}
                     rep_wims = self.wims("callJob", dico)
-
+                    # LOG.info("retour de getsheetstats : %s" % rep_wims)
                     if no_user_message in rep_wims:
                         rep = json.loads(rep_wims)
                     else:
@@ -1335,12 +1429,6 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         return retour
 
-    def getElementView(self, item_id):
-        """ Fournit les infos de l'exercice demandé (un exo WIMS)."""
-        # LOG.info("----- getElementView -----")
-
-        return self.getDocumentsProperties()[item_id]
-
     def getNotesTableur(self, format="csv", site_lang="fr"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         # LOG.info("----- getNotesTableur -----")
@@ -1348,43 +1436,44 @@ class JalonCoursWims(JalonActivity, ATDocument):
         if format not in separateurs:
             format = "csv"
         sep = separateurs[format]
-        portal = self.portal_url.getPortalObject()
-        membership_tool = getToolByName(portal, 'portal_membership')
-        if not membership_tool.isAnonymousUser():
-            demandeur = membership_tool.getAuthenticatedMember()
-            isProf = self.isPersonnel(demandeur)
-            if isProf:
-                actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
-                listeEtudiant = self.getNotes(demandeur, actif, isProf, detailed=True, request="[jaloncourswims.py]/getNotesTableur")
-                if self.idExam:
-                    entetes = ["NOM", "PRENOM", "NUMERO ETU", "SESAME", "NOMBRE d'ESSAIS", "Note (sur %s)" % self.getNoteMax()]
-                else:
-                    entetes = ["NOM", "PRENOM", "NUMERO ETU", "SESAME", "TAUX DE REUSSITE", "QUALITE (sur %s)" % self.getNoteMax()]
-                export = [sep.join(entetes)]
 
-                for etudiant in listeEtudiant["data_scores"]:
-                    num_etu = '"%s"' % etudiant["num_etu"]
-                    id_etu  = '"%s"' % etudiant["id"]
-                    if self.idExam:
-                        score = '"%s"' % etudiant["score"]
-                        # if sep == ",":
-                        #    score = score.replace(",", ".")
-                        if site_lang == "fr":
-                            score = score.replace(".", ",")
-                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, str(etudiant["attempts"]), score]
-                    else:
-                        note = '"%s %%"' % etudiant["user_percent"]
-                        qualite = '"%s"' % etudiant["user_quality"]
-                        if site_lang == "fr":
-                            note = note.replace(".", ",")
-                            qualite = qualite.replace(".", ",")
-                        # if sep == ",":
-                        #    qualite = qualite.replace(",", ".")
-                        ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
-                    export.append(sep.join(ligne))
-                return "\n".join(export)
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="getNotesTableur"):
+            return _("Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.")
+
+        actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
+        listeEtudiant = self.getNotes(authMember, actif, isProf, detailed=True, request="[jaloncourswims.py]/getNotesTableur")
+        if self.idExam:
+            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("NOMBRE d'ESSAIS"),
+                       _(u"NOTE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+        else:
+            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("TAUX DE REUSSITE"),
+                       _(u"QUALITE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+        export = [sep.join(entetes)]
+
+        for etudiant in listeEtudiant["data_scores"]:
+            num_etu = '"%s"' % etudiant["num_etu"]
+            id_etu  = '"%s"' % etudiant["id"]
+            if self.idExam:
+                score = '"%s"' % etudiant["score"]
+                # if sep == ",":
+                #    score = score.replace(",", ".")
+                if site_lang == "fr":
+                    score = score.replace(".", ",")
+                ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, str(etudiant["attempts"]), score]
             else:
-                return "Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord."
+                note = '"%s %%"' % etudiant["user_percent"]
+                qualite = '"%s"' % etudiant["user_quality"]
+                if site_lang == "fr":
+                    note = note.replace(".", ",")
+                    qualite = qualite.replace(".", ",")
+                # if sep == ",":
+                #    qualite = qualite.replace(",", ".")
+                ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
+            export.append(sep.join(ligne))
+        return "\n".join(export)
 
     def getRubriqueEspace(self, ajout=None):
         """get Rubrique Espace."""
@@ -1477,23 +1566,32 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
         # LOG.info("----- modifierExoFeuille -----")
-        # param = form
-        portal = self.portal_url.getPortalObject()
+
         param = {}
         param["qexo"]   = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
         param["title"]  = form["titreElement"].decode("utf-8")
         param["weight"] = form["weight"]
-        param["authMember"]  = portal.portal_membership.getAuthenticatedMember().getId()
+
+        # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
+        membership_tool = self.portal_url.getPortalObject().portal_membership
+        authMember = membership_tool.getAuthenticatedMember()
+        if not self.checkRoles(user=authMember, function="modifierExoFeuille"):
+            return None
+
+        param["authMember"]  = authMember.getId()
+
         resp = self.wims("modifierExoFeuille", param)
         if resp["status"] == "OK":
             message = _(u"Le coefficient de l'exercice '${item_title}' a bien été modifié.",
                         mapping={'item_title': param["title"]})
             self.plone_utils.addPortalMessage(message, type='success')
 
+    """
+        # Remplacé par removeExercice()
     def retirerElement(self, idElement, menu, ordre=None):
-        u"""détache un élément de l'activité."""
+        # détache un élément de l'activité.
         # LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
         liste_elements = self.getDocumentsProperties()
@@ -1534,10 +1632,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
             relatedItems.remove(self)
             objet.setRelatedItems(relatedItems)
             objet.reindexObject()
+    """
 
-    def retirerTousElements(self, force_WIMS=False):
+    def removeAllElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""
-        # LOG.info("----- retirerTousElements -----")
+        # anciennement "retirerTousElements"
+        # LOG.info("----- removeAllElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
@@ -1566,21 +1666,21 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # self.wims("retirerExosFeuille", dico)
 
         # Suppression des documents
-        liste_elements = self.getInfosElement()
-        for sujet in self.getListeSujets():
-            infosElement = liste_elements[sujet]
+        items_properties = self.getDocumentsProperties()
+        for document in self.getListeSujets():
+            infosElement = items_properties[document]
             repertoire = infosElement["typeElement"]
             if repertoire in _dicoRep:
                 repertoire = _dicoRep[repertoire]
-            if "*-*" in sujet:
-                sujet = sujet.replace("*-*", ".")
-            objet = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), sujet, None)
-            if objet:
-                relatedItems = objet.getRelatedItems()
+            if "*-*" in document:
+                document = document.replace("*-*", ".")
+            doc_object = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), infosElement["createurElement"]), repertoire), document, None)
+            if doc_object:
+                relatedItems = doc_object.getRelatedItems()
                 if self in relatedItems:
                     relatedItems.remove(self)
-                    objet.setRelatedItems(relatedItems)
-                    objet.reindexObject()
+                    doc_object.setRelatedItems(relatedItems)
+                    doc_object.reindexObject()
 
     def getIdFeuilleWIMS(self, authMember, sheet_properties={}):
         u"""Obtention (et eventuellement Création) d'un identifiant Wims pour la feuille."""
@@ -1596,7 +1696,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             idclasse = self.setClasse()
             if idclasse:
                 if self.typeWims == "Examen":
-                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["title"]
+                    sheet_title = "Feuille dediée à l'examen '%s'" % sheet_properties["Title"]
                 else:
                     sheet_title = sheet_properties["Title"]
                 # Quelque soit le type d'activité, on cree une feuille d'entrainement sur Wims (Elle servira également à mettre les exercices d'un examen)

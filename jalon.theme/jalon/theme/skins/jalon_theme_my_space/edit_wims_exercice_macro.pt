@@ -161,12 +161,12 @@
                 <button type="submit" class="button small"
                         name="form.button.save">
                     <i class="fa fa-check-circle"></i>
-                    <tal:block i18n:translate="">Enregistrer</tal:block>
+                    <tal:block i18n:translate="label_save">Enregistrer</tal:block>
                 </button>
                 <a class="button small secondary"
                    tal:attributes="href string:${context/absolute_url}/${template/id}">
                     <i class="fa fa-close"></i>
-                    <tal:block i18n:translate="">Annuler</tal:block>
+                    <tal:block i18n:translate="label_cancel">Annuler</tal:block>
                 </a>
             </div>
         </div>

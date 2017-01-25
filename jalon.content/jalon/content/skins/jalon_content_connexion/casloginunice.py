@@ -9,6 +9,8 @@
 ##
 from Products.PythonScripts.standard import url_quote
 
+# container = container
+# context = context
 request = container.REQUEST
 
 portal = context.portal_url.getPortalObject()
@@ -23,4 +25,4 @@ if plugin.casServerUrlPrefix:
         url += '&renew=true'
     if plugin.gateway:
         url += '&gateway=true'
-    request.RESPONSE.redirect( url, lock=1 )
+    request.RESPONSE.redirect(url, lock=1)

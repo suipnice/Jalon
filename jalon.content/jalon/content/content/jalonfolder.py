@@ -702,10 +702,11 @@ class JalonFolder(ATFolder):
                 if activite:
                     duplicata.invokeFactory(type_name="JalonCoursWims", id=key)
                     duplicataObjet = getattr(duplicata, key)
-                    duplicataObjet.setJalonProperties(activite.getDicoProperties())
+                    dico_Properties = activite.getDicoProperties()
+                    duplicataObjet.setJalonProperties(dico_Properties)
 
                     # Met a jour les relatedItems des documents et exercices.
-                    infos_elements_activite = duplicataObjet.getInfosElement()
+                    infos_elements_activite = dico_Properties["DocumentsProperties"]
                     self.associerCoursListeObjets(duplicataObjet, duplicataObjet.getListeSujets(),
                                                   infos_elements_activite, dico_espaces,
                                                   dicoRep, portal_members)
@@ -740,8 +741,8 @@ class JalonFolder(ATFolder):
         # LOG.error('duplicata.getListeClasses : %s' % str(duplicata.getListeClasses()))
         return duplicata.getId()
 
-    def associerCoursListeObjets(self, idElement, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
-        u""" ajoute l'element "idElement" aux relatedItems de tous les objets de liste_objets.
+    def associerCoursListeObjets(self, conteneur_object, liste_objets, infos_elements, dico_espaces, dicoRep, portal_members):
+        u"""ajoute l'element "conteneur_object" aux relatedItems de tous les objets de liste_objets.
 
         * infos_elements : les infos de l'objet ?
         * dico_espaces   : les objets précédement chargés, afin d'optimiser le traitement.
@@ -775,9 +776,13 @@ class JalonFolder(ATFolder):
             if objet:
                 # LOG.info("object found")
                 relatedItems = objet.getRelatedItems()
-                if self not in relatedItems:
-                    relatedItems.append(idElement)
+                if conteneur_object not in relatedItems:
+                    LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' % (conteneur_object.getId(), id_objet))
+                    # on ajoute  ##<JalonCoursWims at AutoEvaluation-bado-20161201175055577435>## aux relatedItems de ##classerparpropriete-bado-20140901113857## ----
+                    relatedItems.append(conteneur_object)
+                    LOG.info('---- puis on ecrase les anciens relatedItems ---')
                     objet.setRelatedItems(relatedItems)
+                    LOG.info("---- et enfon on réindexe l'objet ---")
                     objet.reindexObject()
 
     def isNouveau(self, idcours):
@@ -873,14 +878,14 @@ class JalonFolder(ATFolder):
             self.connect("supprimerEnregistrement", {"idEnregistrement": idConnect})
 
     def isSameServer(self, url1, url2):
-        """ renvoit true si url1 pointe sur le meme serveur qu'url2. """
+        """renvoit true si url1 pointe sur le meme serveur qu'url2. """
         return jalon_utils.isSameServer(url1, url2)
 
     # ---------------------- #
     #    Utilitaires Wims    #
     # ---------------------- #
     def wims(self, methode, param):
-        """ Lien vers la fonction WIMS du connecteur. """
+        """Lien vers la fonction WIMS du connecteur. """
         # LOG.info("----- wims -----")
         return self.portal_wims.__getattribute__(methode)(param)
 
@@ -987,7 +992,7 @@ class JalonFolder(ATFolder):
         return {"status": "OK", "message": "import reussi", "nbExos": nbExos, "user_source": user_source, "user_dest": authMember}
 
     def delClassesWims(self, listClasses, request=None):
-        """ Supprime l'ensemble des classes WIMS de "listClasses"."""
+        """Supprime l'ensemble des classes WIMS de "listClasses"."""
         deleted_classes = []
         for classe in listClasses:
             dico = {"job": "delclass", "code":
@@ -1004,14 +1009,14 @@ class JalonFolder(ATFolder):
         return deleted_classes
 
     def delExoWims(self, paths):
-        u""" Suppression (coté wims) de la liste des exercices donnés en "paths"."""
+        u"""Suppression (coté wims) de la liste des exercices donnés en "paths"."""
         for path in paths:
             exo_id = path.split("/")[-1]
             exo = getattr(self, exo_id)
             exo.delExoWims()
 
     def getModelesWims(self):
-        u""" Fournit le dico complet des modèles d'exercices WIMS (groupe compris)."""
+        u"""Fournit le dico complet des modèles d'exercices WIMS (groupe compris)."""
         modele_wims = self.wims("getWimsProperty", "modele_wims")
         modele_wims["groupe"] = "Groupe d'exercices"
         return modele_wims
@@ -1163,6 +1168,14 @@ class JalonFolder(ATFolder):
 
     def getFooter(self):
         return jalon_utils.getFooter()
+
+    def getBreadcrumbs(self):
+        # Permet d'obtenir un fil d'ariane minimaliste.
+        # (utile pour certaines pages communes comme les 404 par exemple)
+        portal = self.portal_url.getPortalObject()
+        return [{"title": _(u"Mes cours"),
+                 "icon":  "fa fa-university",
+                 "link":  "%s/mes_cours" % portal.absolute_url()}]
 
     # ------------------------------ #
     #   Utilitaire GoogleAnalytics   #

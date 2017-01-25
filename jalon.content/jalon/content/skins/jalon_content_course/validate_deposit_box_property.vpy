@@ -12,7 +12,10 @@
 
 from Products.CMFPlone import PloneMessageFactory as _
 
-#context.plone_log("[valider_form]")
+# context = context
+# state = state
+# context.plone_log("[valider_form]")
+
 error = False
 form = context.REQUEST.form
 validate_key = form["validate_key"]
@@ -24,7 +27,7 @@ validate_dict = {"edit_deposit_box":  ["title"],
                  "correction_date":   ["datetime-dateCorrection"]}
 
 for validate_field in validate_dict[validate_key]:
-    if not validate_field in form or form[validate_field] in ["", " ", None]:
+    if validate_field not in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
@@ -33,7 +36,7 @@ if validate_key == "correction_number":
     failed = False
     try:
         nombreCorrection = int(form["nombreCorrection"])
-        failed = True if nombreCorrection < 1 or nombreCorrection > 5 else False 
+        failed = True if nombreCorrection < 1 or nombreCorrection > 5 else False
     except:
         failed = True
     if failed:
@@ -45,7 +48,7 @@ if validate_key == "penality":
     failed = False
     try:
         adjustementPoints = int(form["adjustementPoints"])
-        failed = True if adjustementPoints < 1 or adjustementPoints > 5 else False 
+        failed = True if adjustementPoints < 1 or adjustementPoints > 5 else False
     except:
         failed = True
     if failed:

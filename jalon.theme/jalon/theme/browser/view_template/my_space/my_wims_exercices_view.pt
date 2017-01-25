@@ -59,7 +59,7 @@
         <section id="js-list-ressource" class="small-12 columns">
 
             <h2 id="js-update_title">
-                <i class="fa fa fa-random"></i><tal:replace replace="context/Title" i18n:translate=""/>
+                <i class="fa fa-random"></i><tal:replace replace="context/Title" i18n:translate=""/>
             </h2>
             <div id="js-update_target"
                  tal:attributes="data-href string:${context/absolute_url}">

@@ -89,6 +89,11 @@ class JalonExerciceWims(ATDocumentBase):
 
         return crumbs_list
 
+    def getIconClass(self):
+        """Return the Exercice icon CSS class."""
+        # LOG.info("----- getIconClass -----")
+        return "fa fa-random"
+
     def getEditWimsExerciceMacroName(self):
         """Renvoie le nom de la macro qui permet d'editer l'exercice, en fonction du modele."""
         # LOG.info("----- getEditWimsExerciceMacroName -----")
@@ -945,7 +950,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def test(self, condition, valeurVrai, valeurFaux):
         """permet de tester une condition, puis de renvoyer une valeur en fonction."""
-        # LOG.info("----- test -----")
+        # LOG.info("----- test condition (%s) -----" % condition)
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
     def getUrlServeur(self):
@@ -975,11 +980,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         items = self.getRelatedItems()
         for item in items:
             if item.Type() == "AutoEvaluation-Examen":
-                dico = item.getInfosElement()
+                # dico = item.getInfosElement()
+                dico = item.getDocumentsProperties()
                 if dico:
                     if self.getId() in dico:
                         dico[self.getId()]["titreElement"] = self.Title()
-                    item.infos_element = dico
+                    item.setDocumentsProperties(dico)
                     item.reindexObject()
 
     def parser_permalien(self, permalien):
@@ -1048,6 +1054,36 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             relatedItems.remove(item_a_retirer)
             self.setRelatedItems(relatedItems)
             self.reindexObject()
+
+    def updateRelatedItems(self):
+        """Update the exercice related items (checks if each related item still exists, and if they are really still connected."""
+        # LOG.info("----- updateRelatedItems -----")
+        relatedItems = self.getRelatedItems()
+        self_id = self.getId()
+        deleted = []
+        for item in relatedItems:
+            # LOG.info("item_type = %s" % item.portal_type)
+            if item.portal_type == "JalonCoursWims":
+                # Cas de l'activité WIMS
+                if self_id not in item.getListeExercices():
+                    # LOG.info("L'exercice n'est plus dans l'activité reliée ! On le retire.")
+                    deleted.append(item)
+                    if self in item.getRelatedItems():
+                        item.removeRelatedExercice(self)
+                    else:
+                        relatedItems.remove(item)
+            elif item.portal_type == "JalonExerciceWims":
+                # Cas du groupement d'exercice
+                if self_id not in item.getListeIdsExos():
+                    # LOG.info("L'exercice n'est plus dans le groupe relié ! On le retire.")
+                    deleted.append(item)
+                    if self in item.getRelatedItems():
+                        item.removeRelatedItem(self)
+                    relatedItems.remove(item)
+        self.setRelatedItems(relatedItems)
+        self.reindexObject()
+        # Renvoit la liste des corrections effectuées
+        return deleted
 
     def checkRoles(self, user, context, action="view"):
         u"""Permet de vérifier si l'utilisateur courant a le droit d'accéder à un exercice.
