@@ -20,7 +20,7 @@ class FirstPage(BrowserView):
         return portal_state.anonymous()
 
     def getConnexion(self):
-        LOG.info("----- getConnexion -----")
+        # LOG.info("----- getConnexion -----")
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         portal = portal_state.portal()

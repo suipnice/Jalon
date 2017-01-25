@@ -195,11 +195,13 @@ def envoyerMail(form):
 
 
 def envoyerMailErreur(form):
+    # LOG.info("----- envoyerMailErreur -----")
     u"""envoie un email de signalement d'erreur à l'administrateur."""
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
     if mail_properties["activer_erreur"]:
+        # LOG.info("Mail Erreur actif")
         if "de" not in form:
             if mail_properties["activer_email_erreur"]:
                 form["de"] = mail_properties["adresse_email_erreur"]
@@ -211,6 +213,8 @@ def envoyerMailErreur(form):
             else:
                 form["a"] = portal.getProperty("email_from_address")
 
+        # LOG.info("De : %s" % form["de"])
+        # LOG.info("A  : %s" % form["a"])
         if "entry" in form:
             # error_log = portal.error_log
             # entries = error_log.getLogEntries()
