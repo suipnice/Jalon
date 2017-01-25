@@ -330,7 +330,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     """
     def getIconClass(self):
         """Return the Activity icon CSS class."""
-        LOG.info("----- getIconClass -----")
+        # LOG.info("----- getIconClass -----")
         return "fa fa-inbox"
 
     def getDepositBoxProfile(self):

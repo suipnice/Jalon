@@ -351,7 +351,7 @@ class JalonCours(ATFolder):
 
     def getIconClass(self):
         """Return the course icon CSS class."""
-        LOG.info("----- getIconClass -----")
+        # LOG.info("----- getIconClass -----")
         return "fa fa-book"
 
     def checkCourseAuthorized(self, user, request):

@@ -348,7 +348,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # action indique si l'utilisateur tente d'y accéder en lecture ("view") ou écriture ("edit")
 
         """
-        LOG.info("----- checkRoles -----")
+        # LOG.info("----- checkRoles -----")
         if user is None:
             membership_tool = self.portal_url.getPortalObject().portal_membership
             user = membership_tool.getAuthenticatedMember()
@@ -377,7 +377,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def detachExercice(self, item_id, ordre):
         """supprime l'exercice de l'activité, puis met à jour les relatedItems"""
-        LOG.info("----- detachExercice -----")
+        # LOG.info("----- detachExercice -----")
 
         # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
         membership_tool = self.portal_url.getPortalObject().portal_membership
@@ -425,7 +425,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def removeRelatedExercice(self, item_object):
         """Retire l'exercice item_object des related_items de l'activité, et inversement."""
-        LOG.info("----- removeRelatedExercice -----")
+        # LOG.info("----- removeRelatedExercice -----")
 
         item_relatedItems = item_object.getRelatedItems()
         if self in item_relatedItems:
@@ -483,7 +483,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def setDocumentsProperties(self, infos_element):
         """Met a jour les propriétés des sous-éléments de l'activité, en s'assurant au passage que les données sont persistantes."""
-        LOG.info("----- setDocumentsProperties -----")
+        # LOG.info("----- setDocumentsProperties -----")
         if type(self._infos_element).__name__ != "PersistentMapping":
             self._infos_element = PersistentDict(infos_element)
         else:
@@ -1565,7 +1565,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def modifierExoFeuille(self, form):
         """modifie un exo de l'activite."""
-        LOG.info("----- modifierExoFeuille -----")
+        # LOG.info("----- modifierExoFeuille -----")
 
         param = {}
         param["qexo"]   = int(form["qexo"]) + 1
@@ -1592,7 +1592,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # Remplacé par removeExercice()
     def retirerElement(self, idElement, menu, ordre=None):
         # détache un élément de l'activité.
-        LOG.info("----- retirerElement -----")
+        # LOG.info("----- retirerElement -----")
         # On recupere la liste des elements :
         liste_elements = self.getDocumentsProperties()
 
@@ -1637,7 +1637,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
     def removeAllElements(self, force_WIMS=False):
         """Retire tous les elements de l'activite (exercices et documents)."""
         # anciennement "retirerTousElements"
-        LOG.info("----- removeAllElements -----")
+        # LOG.info("----- removeAllElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
         # * force=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée

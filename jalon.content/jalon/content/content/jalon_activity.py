@@ -176,7 +176,7 @@ class JalonActivity(SimpleItem):
 
     def getDocumentsProperties(self, key=None):
         """get Properties for one or all Documents."""
-        LOG.info("----- getDocumentsProperties (%s) -----" % self.getId())
+        # LOG.info("----- getDocumentsProperties (%s) -----" % self.getId())
         if key:
             return self._infos_element.get(key, None)
         return self._infos_element

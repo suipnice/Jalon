@@ -81,7 +81,7 @@ class WimsActivityView(CourseView):
         if is_ajax or my_view["is_anonymous"]:
             my_view["came_from"] = "%s/acl_users/credentials_cookie_auth/require_login?came_from=%s" % (portal_link, my_wims_activity.jalon_quote(my_view["activity_link"]))
             # my_view["came_from"] = "%s/login_form?came_from=%s" % (my_view["activity_link"], my_wims_activity.jalon_quote(my_view["activity_link"]))
-            LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
+            # LOG.info("----- getWimsActivityView (Early Ended : ajax or anonymous) -----")
             return my_view
 
         # my_view["wims_activity_instruction"] = {"href":  "%s/edit_wims_activity_instruction_form?tab=%s" % (my_view["activity_link"], tab),

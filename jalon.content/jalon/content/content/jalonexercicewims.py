@@ -91,7 +91,7 @@ class JalonExerciceWims(ATDocumentBase):
 
     def getIconClass(self):
         """Return the Exercice icon CSS class."""
-        LOG.info("----- getIconClass -----")
+        # LOG.info("----- getIconClass -----")
         return "fa fa-random"
 
     def getEditWimsExerciceMacroName(self):
@@ -950,7 +950,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def test(self, condition, valeurVrai, valeurFaux):
         """permet de tester une condition, puis de renvoyer une valeur en fonction."""
-        LOG.info("----- test condition (%s) -----" % condition)
+        # LOG.info("----- test condition (%s) -----" % condition)
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
     def getUrlServeur(self):
@@ -1057,16 +1057,16 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def updateRelatedItems(self):
         """Update the exercice related items (checks if each related item still exists, and if they are really still connected."""
-        LOG.info("----- updateRelatedItems -----")
+        # LOG.info("----- updateRelatedItems -----")
         relatedItems = self.getRelatedItems()
         self_id = self.getId()
         deleted = []
         for item in relatedItems:
-            LOG.info("item_type = %s" % item.portal_type)
+            # LOG.info("item_type = %s" % item.portal_type)
             if item.portal_type == "JalonCoursWims":
                 # Cas de l'activité WIMS
                 if self_id not in item.getListeExercices():
-                    LOG.info("L'exercice n'est plus dans l'activité reliée ! On le retire.")
+                    # LOG.info("L'exercice n'est plus dans l'activité reliée ! On le retire.")
                     deleted.append(item)
                     if self in item.getRelatedItems():
                         item.removeRelatedExercice(self)
@@ -1075,7 +1075,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             elif item.portal_type == "JalonExerciceWims":
                 # Cas du groupement d'exercice
                 if self_id not in item.getListeIdsExos():
-                    LOG.info("L'exercice n'est plus dans le groupe relié ! On le retire.")
+                    # LOG.info("L'exercice n'est plus dans le groupe relié ! On le retire.")
                     deleted.append(item)
                     if self in item.getRelatedItems():
                         item.removeRelatedItem(self)
