@@ -19,7 +19,7 @@
     </h2>
 
     <div class="panel radius">
-        <tal:block i18n:translate="">Ceci supprimera tous les travaux réalisés par les étudiants dans les activités de ce cours (en laissant ces dernières intactes et attachées au cours). Ceci permet de réinitialiser le cours lors d'un changement d'année scolaire, par exemple.</tal:block>
+        <tal:block i18n:translate="">Ceci supprimera tous les travaux réalisés par les étudiants dans les activités de ce cours, boîtes de dépôts, auto-évaluation et examen WIMS, en laissant ces dernières intactes et attachées au cours. Ceci permet de réinitialiser le cours lors d'un changement d'année scolaire, par exemple.</tal:block>
     </div>
 
     <div class="panel alert radius">

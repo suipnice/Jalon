@@ -1778,6 +1778,18 @@ class JalonCours(ATFolder):
         return jalon_utils.get_id_from_filename(filename, context)
 
     #---------------------------------#
+    # Course Activity (Boite dépôts)  #
+    #---------------------------------#
+    def purgerDepots(self):
+        # LOG.info("----- purgerDepots -----")
+        for boite in self.objectValues("JalonBoiteDepot"):
+            boite.purgerDepots()
+            boite.setPeersDict({})
+            boite.setCompEtudiants({})
+            boite.reindexObject()
+        self.setCourseProperties({"DateDerniereModif": DateTime()})
+
+    #---------------------------------#
     # Course Activity (WIMS Activity) #
     #---------------------------------#
     def setListeClasses(self, valeur):
