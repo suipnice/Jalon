@@ -6,6 +6,9 @@ from Products.CMFCore.utils import getToolByName
 
 from jalon.content.content import jalon_utils
 
+from logging import getLogger
+LOG = getLogger('[FirstPage]')
+
 
 class FirstPage(BrowserView):
     """Class pour le first_page
@@ -17,6 +20,7 @@ class FirstPage(BrowserView):
         return portal_state.anonymous()
 
     def getConnexion(self):
+        LOG.info("----- getConnexion -----")
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         portal = portal_state.portal()
