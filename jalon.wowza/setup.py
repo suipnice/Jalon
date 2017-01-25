@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.0'
+version = '3.0'
 
 setup(name='jalon.wowza',
       version=version,

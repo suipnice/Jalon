@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.2.8'
+version = '3.0'
 
 setup(name='jalon.theme',
       version=version,
