@@ -9,9 +9,9 @@
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors;
-                        item_type request/item_type | nothing;
+                        add_type request/add_type | nothing;
                         item_id request/item_id | nothing;
-                        my_form python:context.getCourseMapItemForm(item_type=item_type, item_id=item_id)">
+                        my_form python:context.getCourseMapItemForm(item_type=add_type, item_id=item_id)">
 <!--
         Création/Modification d'un element du cours Jalon
             * en cas de creation, on ne connait que item_type
@@ -69,6 +69,8 @@
         <input type="hidden" name="form.submitted" value="1"/>
         <input type="hidden" name="validate_key"
                tal:attributes="value my_form/validate_key"/>
+        <input type="hidden" name="add_type"
+               tal:attributes="value add_type"/>
         <input type="hidden" name="item_type"
                tal:attributes="value my_form/item_type"/>
         <input type="hidden" name="typeElement"

@@ -6,6 +6,6 @@ border=None
 validators=validate_course_property
 
 [actions]
-action.failure=traverse_to:string:add_course_map_item_form
+action.failure=traverse_to:string:edit_course_map_item_form
 action.success_create_course_map_item=traverse_to:string:edit_course_map_item_script
 action.success_edit_course_map_item=traverse_to:string:edit_course_map_item_script
