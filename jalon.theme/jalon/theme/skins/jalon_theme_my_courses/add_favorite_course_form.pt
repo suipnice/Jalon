@@ -16,7 +16,7 @@
     <form method="POST"
           tal:attributes="action string:${context/absolute_url}/modify_favorite_course_script">
         <div class="panel callout radius">
-            Vous pouvez ajouter n'importe quel cours à vos favoris. Ajouter un cours archivé en favori le retira des archives.
+            Vous pouvez ajouter n'importe quel cours à vos favoris. Ajouter un cours archivé en favori le retirera des archives.
         </div>
         <input type="hidden" name="user_id"
                tal:attributes="value user/getId"/>
