@@ -184,13 +184,13 @@ function setSortablePlan( ) {
         //setAlertBox( 'warning', "Small media detected" );
         /*
             Une fois la position depliee / repliee memorisee cote srv,
-            l'appel à app/setPlanChapterDisclosure( ) devra être supprime
+            l'appel à app/setPlanChapterFolding( ) devra être supprime
             et remplace par app/setLegendBarButtonsActivation( ).
         */
-        setPlanChapterDisclosure( true );
+        setPlanChapterFolding( true );
         //setLegendBarButtonsActivation( );
         setPlanBehaviors( true );
-        setStaffPlanChapterDiscloseCommand( );
+        setStaffPlanChapterFoldCommand( );
 
     } else {
 
@@ -271,7 +271,7 @@ function setSortablePlan( ) {
 
         setPlanBehaviors( true );
         //setLegendBarButtonsActivation( ); // Decommenter quand etat des chapitres memorise cote srv
-        setStaffPlanChapterDiscloseCommand( );
+        setStaffPlanChapterFoldCommand( );
 
     }
 }
@@ -295,7 +295,7 @@ function expandPlanChapters( ) {
     Memorisation du pliage / repliage de tous les chapitres du plan de cours
 */
 
-function setStaffPlanChapterDisclosure( disclosureState ) {
+function setStaffPlanChapterFolding( disclosureState ) {
 
     if ( !isRefreshing ) {
 
@@ -321,7 +321,7 @@ function setStaffPlanChapterDisclosure( disclosureState ) {
                 success: function( data ) {
                     //console.log( data );
                     $title.html( MSG_LOADING_OK );
-                    setPlanChapterDisclosure( disclosureState );
+                    setPlanChapterFolding( disclosureState );
                     //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
                     $plan.fadeTo( 200, 1, function( ) {
                         $title.html( titleOrgHtml );
@@ -347,11 +347,11 @@ function setStaffPlanChapterDisclosure( disclosureState ) {
     Commande et memorisation du pliage / repliage d'un chapitre du plan de cours
 */
 
-function setStaffPlanChapterDiscloseCommand( ) {
+function setStaffPlanChapterFoldCommand( ) {
 
     var $plan = Foundation.utils.S( '#course_plan-plan' );
 
-    $plan.on( 'click', '.js-disclose', function( ) {
+    $plan.on( 'click', '.js-fold', function( ) {
 
         if ( !isRefreshing ) {
 
@@ -378,7 +378,7 @@ function setStaffPlanChapterDiscloseCommand( ) {
                     success: function( data ) {
                         //console.log( data );
                         $title.html( MSG_LOADING_OK );
-                        setPlanChapterDisclose( $target );
+                        setPlanChapterFold( $target );
                         //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
                         $plan.fadeTo( 200, 1, function( ) {
                             $title.html( titleOrgHtml );

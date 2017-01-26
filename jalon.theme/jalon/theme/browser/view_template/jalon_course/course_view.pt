@@ -192,15 +192,15 @@
     <tal:comments replace="nothing">
     <!--
             Une fois la position dépliée / repliée mémorisée cote srv,
-            l'appel à app/setPlanChapterDisclosure( ) devra être supprimé
+            l'appel à app/setPlanChapterFolding( ) devra être supprimé
             et remplacé par app/setLegendBarButtonsActivation( ).
     -->
     </tal:comments>
 
     <tal:block tal:condition="not:my_view/is_personnel"
-               define="script1 string:setPlanChapterDisclosure(true);
+               define="script1 string:setPlanChapterFolding(true);
                        script2 string:setPlanBehaviors();
-                       script3 string:setPlanChapterDiscloseCommand();
+                       script3 string:setPlanChapterFoldCommand();
                        script4 string:readSwitcher()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />

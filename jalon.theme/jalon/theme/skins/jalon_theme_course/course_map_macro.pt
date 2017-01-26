@@ -76,7 +76,7 @@
                    tal:condition="element/is_item_jalonner"></i>
 
                 <span tal:attributes="class element/item_span_css">
-                    <i title="Cliquer pour replier/déplier le contenu." class="fa no-pad js-disclose"
+                    <i title="Cliquer pour replier/déplier le contenu." class="fa no-pad js-fold"
                        tal:condition="element/is_item_title"></i>
                     <a tal:attributes="href element/item_link | nothing;
                                        class string:typeElementTitre"
