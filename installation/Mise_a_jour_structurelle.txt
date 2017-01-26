@@ -16,5 +16,7 @@ Pour la mise à jour de structure de Jalon, voici les étapes à suivre après l
     - Déposer le fichier zzz_add_new_structure.zexp dans VOTRE_INSTANCE_PLONE/var/instance/import
     - Connectez vous à la ZMI, dans jalon, cliquez sur importer en bas de pas, sélectionnez "zzz_add_new_structure" dans la liste puis validé
     - Toujours en ZMI, dans jalon, cliquez sur zzz_add_new_structure puis sur l'onglet "Test"
+    - Mettre à jour le catalog Cours, Boite de dépôts et Activité WIMS
+    - Ajouter la permission access_content_information sur le répertoire cours aux roles Personnel et Secretaire
 
 Félicitation votre Jalon est à jour

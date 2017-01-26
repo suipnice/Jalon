@@ -615,10 +615,14 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             return self.dateRetard.strftime("%Y/%m/%d %H:%M")
 
     def getDateCorrection(self):
-        if not self.dateCorrection:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
-        else:
+        try:
             return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
+        except:
+            return DateTime().strftime("%Y/%m/%d %H:%M")
+        #if not self.dateCorrection:
+        #    return DateTime().strftime("%Y/%m/%d %H:%M")
+        #else:
+        #    return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
 
     def isFinishEvaluation(self):
         now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
@@ -1120,7 +1124,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
 
     def getAccesGrille(self, is_personnel=False):
         # LOG.info("----- getAccesGrille -----")
-        return True if is_personnel else self.accesGrille
+        try:
+            return True if is_personnel else self.accesGrille
+        except:
+            return True if is_personnel else False
 
     def getEvaluationByPeers(self, user, is_personnel):
         # LOG.info("----- getEvaluationByPeers -----")
