@@ -48,18 +48,18 @@
 	"\/bower_components\/datetimepicker\/jquery.datetimepicker.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/datetimepicker\/jquery.datetimepicker.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 0,
 		"tS": 0
 		},
 	"\/bower_components\/datetimepicker\/jquery.datetimepicker.min.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/datetimepicker\/jquery.datetimepicker.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 0,
 		"tS": 0
 		},
@@ -675,216 +675,216 @@
 	"\/bower_components\/foundation\/js\/foundation.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation.min.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.abide.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.abide.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.accordion.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.accordion.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.alert.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.alert.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.clearing.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.clearing.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.dropdown.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.dropdown.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.equalizer.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.equalizer.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.interchange.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.interchange.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.joyride.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.joyride.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.magellan.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.magellan.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.offcanvas.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.offcanvas.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.orbit.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.orbit.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.reveal.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.reveal.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.slider.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.slider.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.tab.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.tab.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.tooltip.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.tooltip.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/foundation\/foundation.topbar.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/foundation\/foundation.topbar.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/vendor\/fastclick.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/vendor\/fastclick.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/vendor\/jquery.cookie.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/vendor\/jquery.cookie.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/vendor\/jquery.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/vendor\/jquery.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/vendor\/modernizr.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/vendor\/modernizr.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/foundation\/js\/vendor\/placeholder.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/foundation\/js\/vendor\/placeholder.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1503,18 +1503,18 @@
 	"\/bower_components\/jquery-mousewheel\/jquery.mousewheel.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/jquery-mousewheel\/jquery.mousewheel.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/jquery-mousewheel\/jquery.mousewheel.min.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/jquery-mousewheel\/jquery.mousewheel.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1569,27 +1569,27 @@
 	"\/bower_components\/list.js\/dist\/list.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/dist\/list.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/dist\/list.min.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/dist\/list.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/Gruntfile.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/Gruntfile.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1614,9 +1614,9 @@
 	"\/bower_components\/list.js\/index.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/index.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1649,68 +1649,68 @@
 	"\/bower_components\/list.js\/src\/add-async.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/add-async.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/filter.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/filter.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/item.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/item.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/parse.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/parse.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/search.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/search.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/sort.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/sort.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/bower_components\/list.js\/src\/templater.js": {
 		"ft": 64,
 		"mi": 0,
-		"oA": 1,
+		"oA": 2,
 		"oAP": "\/bower_components\/list.js\/src\/templater.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
 	"\/config.rb": {
-		"ft": 131072,
+		"ft": 8192,
 		"oA": 0,
 		"oAP": "\/config.rb",
 		"oF": 0
@@ -1726,7 +1726,7 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/app.min.js",
-		"oF": 0,
+		"oF": 7,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1735,7 +1735,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/connexion.min.js",
-		"oF": 5,
+		"oF": 4,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1744,7 +1744,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/quickupload.min.js",
-		"oF": 5,
+		"oF": 4,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1753,7 +1753,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/fileuploader.min.js",
-		"oF": 5,
+		"oF": 4,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1762,7 +1762,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/helpers.min.js",
-		"oF": 5,
+		"oF": 4,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1771,7 +1771,7 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/man_sec-app.min.js",
-		"oF": 4,
+		"oF": 5,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1780,7 +1780,7 @@
 		"mi": 0,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/post.min.js",
-		"oF": 0,
+		"oF": 1,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1789,7 +1789,7 @@
 		"mi": 0,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/pre.min.js",
-		"oF": 4,
+		"oF": 5,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1798,7 +1798,7 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/staff-app.min.js",
-		"oF": 4,
+		"oF": 5,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1807,7 +1807,7 @@
 		"mi": 1,
 		"oA": 0,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/staff-post.min.js",
-		"oF": 4,
+		"oF": 5,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1816,7 +1816,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/batch.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1825,7 +1825,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/crs.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1834,7 +1834,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/forum.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1843,7 +1843,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/core.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1852,7 +1852,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/mouse.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1861,7 +1861,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/jquery.ui.nestedSortable.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1870,7 +1870,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/jquery.ui.touch-punch.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1879,7 +1879,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/sortable.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1888,7 +1888,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/widget.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1897,7 +1897,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/list.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1906,7 +1906,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/rsc.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1915,7 +1915,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/std.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1924,7 +1924,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/tag.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1933,7 +1933,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/jquery.tokeninput.min.js",
-		"oF": 3,
+		"oF": 2,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1942,7 +1942,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/tool.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1951,7 +1951,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/vanilladualselect.min.js",
-		"oF": 3,
+		"oF": 2,
 		"sC": 1,
 		"tS": 0
 		},
@@ -1960,7 +1960,7 @@
 		"mi": 0,
 		"oA": 1,
 		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/wims.min.js",
-		"oF": 1,
+		"oF": 0,
 		"sC": 1,
 		"tS": 0
 		},
@@ -3850,9 +3850,9 @@
 		"autoOutputPathStyle": 0
 		},
 	"languageDefaultsJS": {
-		"autoOutputAction": 0,
+		"autoOutputAction": 1,
 		"autoOutputPathFilenamePattern": "*.min.js",
-		"autoOutputPathRelativePath": "jalon.theme\/jalon\/theme\/browser\/scripts",
+		"autoOutputPathRelativePath": "\/..\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/",
 		"autoOutputPathReplace1": "",
 		"autoOutputPathReplace2": "",
 		"autoOutputPathStyle": 1,
