@@ -76,10 +76,7 @@
                 <ol id="course_plan-plan" class="sortable ui-sortable">
                     <li>
                         <div class="panel radius">
-                            <h4>
-                                <i class="fa fa-info-circle"></i>
-                                <tal:block i18n:translate="">Aucune ressource n'est accessible dans ce cours.</tal:block>
-                            </h4>
+                            <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
                         </div>
                     </li>
                 </ol>
