@@ -4,8 +4,6 @@ from zope.component import getMultiAdapter
 
 from jalon.content import contentMessageFactory as _
 
-import urllib
-
 from logging import getLogger
 LOG = getLogger('[MySpaceView]')
 
@@ -34,11 +32,12 @@ class MySpaceView(BrowserView):
         tags_dict = {"last": "Les 20 derniers"}
         tags_list = []
         tags = list(folder.Subject())
+        tags_name_dict = folder.getSubjectsDict()
         tags.sort()
         for tag in tags:
             tags_dict[tag] = tag
-            tags_list.append({"tag_id":    urllib.quote(tag),
-                              "tag_title": tag,
+            tags_list.append({"tag_id":    tag,
+                              "tag_title": tags_name_dict[tag],
                               "tag_css":   "filter-button selected" if tag in selected_tags_list else "filter-button unselected"})
 
         tags_list.insert(0, {"tag_id":    "last",
@@ -62,7 +61,7 @@ class MySpaceView(BrowserView):
             pass
         if len(selected_tags_list) == 1:
             is_one_tag = True
-            one_tag = {"tag_id": urllib.quote(selected_tags_list[-1]),
+            one_tag = {"tag_id": selected_tags_list[-1],
                        "tag_title": tags_dict[selected_tags_list[-1]]}
 
         is_selected_tags = "remove_tags_objects" if selected_tags_list != ["last"] and len(selected_tags_list) >= 1 else "isnt_selected_tags"
@@ -81,7 +80,7 @@ class MySpaceView(BrowserView):
                 selected_tags_list.remove("last")
                 last = True
             for tag in selected_tags_list:
-                subjects.append(urllib.quote(tag))
+                subjects.append(tag)
             if len(subjects) > 1:
                 content_filter['Subject'] = {'query': subjects, 'operator': 'and'}
             else:

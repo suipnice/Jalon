@@ -10,6 +10,8 @@ from Products.CMFCore.utils import getToolByName
 
 from plone.portlets.interfaces import IPortletManager, ILocalPortletAssignmentManager
 
+from persistent.dict import PersistentDict
+
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonFolder
@@ -91,6 +93,8 @@ class JalonFolder(ATFolder):
                             "Webconference": "mon_espace/mes_webconferences",
                             "Video":         "mon_espace/mes_videos_pod"}
 
+    _subjects_dict = {}
+
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
         self.uploader_id = self._uploader_id()
@@ -118,6 +122,22 @@ class JalonFolder(ATFolder):
         # LOG.info("----- getMySubSpaceFolder -----")
         portal = self.portal_url.getPortalObject()
         return getattr(getattr(portal.Members, user_id), folder_id)
+
+    def getSubjectsDict(self, key=None):
+        """Fournit le dictionnaire des étiquettes du dossier."""
+        # LOG.info("----- getSubjectsDict -----")
+        # LOG.info("***** item_id : %s" % key)
+        if key:
+            return self._subjects_dict.get(key, None)
+        return self._subjects_dict
+
+    def setSubjectsDict(self, subjects_dict):
+        """Définit le dictionnaire des étiquettes du dossier."""
+        # LOG.info("----- setSubjectsDict -----")
+        if type(self._subjects_dict).__name__ != "PersistentMapping":
+            self._subjects_dict = PersistentDict(subjects_dict)
+        else:
+            self._subjects_dict = subjects_dict
 
     def getItemSize(self, item_size):
         """ Convert "Human friendly" file size into original size, in bytes."""
@@ -457,6 +477,7 @@ class JalonFolder(ATFolder):
         return subjects
 
     def getTag(self):
+        LOG.info("----- getTag -----")
         retour = []
         mots = list(self.Subject())
         mots.sort()
@@ -469,8 +490,9 @@ class JalonFolder(ATFolder):
                 except:
                     retour.append({"tag": urllib.quote(mot), "titre": mot})
         else:
+            tags_dict = self.getSubjectsDict()
             for mot in mots:
-                retour.append({"tag": urllib.quote(mot), "titre": mot})
+                retour.append({"tag": mot, "titre": tags_dict[mot]})
         return retour
 
     def addTagFolder(self, tag):
@@ -486,9 +508,13 @@ class JalonFolder(ATFolder):
                        "mes_webconferences":           "Webconference",
                        "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
-        if not tag in folder.Subject():
+        folder_subjects = self.getSubjectsDict()
+        if not tag in folder_subjects.values():
+            new_id = str(len(folder_subjects.keys()) + 1)
+            folder_subjects[new_id] = tag
+            folder.setSubjectsDict(folder_subjects)
             tags = list(folder.Subject())
-            tags.append(tag)
+            tags.append(new_id)
             folder.setSubject(tuple(tags))
             folder.reindexObject()
 
