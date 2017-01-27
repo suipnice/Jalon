@@ -47,8 +47,6 @@ function setTagFilter( inPopup ) {
             var updateUrl = $updateTarget.data( 'href' );
             Foundation.utils.S( '#js-tag_filter > li > a.selected' ).each( function( index ) {
                 subjects.push( $( this ).attr( 'id' ) );
-                //subjects.push( encodeURIComponent( $( this ).attr( 'id' ) ) );
-                //subjects.push( decodeURIComponent( $( this ).attr( 'id' ) ) );
             } );
 
             // Requete Ajax + effets + maj bouton
@@ -171,7 +169,8 @@ function setResTagger( ) {
         var param = "form.submitted=1&formulaire=etiqueter";
 
         $form.find( 'a.selected' ).each( function( index ) {
-            param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
+            //param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
+            param += '&listeTag:list=' + $( this ).attr( 'id' );
         } );
 
         $.post( $form.attr( 'action' ), param ).done( function( data ) {
@@ -256,7 +255,8 @@ function setActionBatch( ) {
         var param = "lots=lots";
 
         $tagForm.find( 'a.selected' ).each( function( index ) {
-            param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
+            //param += '&listeTag:list=' + encodeURIComponent( $( this ).attr( 'id' ) );
+            param += '&listeTag:list=' + $( this ).attr( 'id' );
         } );
 
         Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
