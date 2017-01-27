@@ -70,6 +70,7 @@
 
     <tal:block condition="not:is_one_tag">
         <div class="panel callout radius"
+             tal:condition="not:is_no_items"
              i18n:translate="">
             Il n'y a aucune ressource avec cette association d'étiquettes.
         </div>
