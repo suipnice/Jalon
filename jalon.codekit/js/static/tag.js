@@ -94,6 +94,7 @@ function createTag( ) {
 
         var $form = $( this );
         var $reveal = Foundation.utils.S( '#reveal-create_tag' );
+        var id = $form.find( 'input[name="tag_id"]' ).val( );
         var title = $form.find( 'input[name="title"]' ).val( );
 
         $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
@@ -102,7 +103,7 @@ function createTag( ) {
                 $reveal.html( data );
                 revealInit( $reveal );
             } else {
-                Foundation.utils.S( '#js-tag_filter' ).append( ' <li><a id="' + encodeURIComponent( title ) + '" class="filter-button unselected"><i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title + '</a>' );
+                Foundation.utils.S( '#js-tag_filter' ).append( ' <li><a id="' + id + '" class="filter-button unselected"><i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title + '</a>' );
                 Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
                 $reveal.foundation( 'reveal', 'close' );
                 setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + title + ' » ' + $form.data( 'success_msg_post' ) );
