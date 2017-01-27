@@ -461,6 +461,17 @@ class JalonFolder(ATFolder):
         else:
             self._subjects_dict = subjects_dict
 
+    def getDisplaySubjects(self):
+        """Affichage des étiquettes sur le formulaire étiquettage."""
+        LOG.info("----- getDisplaySubjects -----")
+        folder_subjects = self.getSubjectsDict()
+        if folder_subjects:
+            subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]} for key in folder_subjects.keys()]
+            subjects_list.sort(lambda x, y: cmp(x["tag_id"], y["tag_id"]))
+            LOG.info("subjects_list : %s" % subjects_list)
+            return subjects_list
+        return []
+
     def getSelectedTags(self):
         # LOG.info("----- getSelectedTags -----")
         # Init
