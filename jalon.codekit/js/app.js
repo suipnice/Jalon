@@ -23,7 +23,7 @@
     Comportements des elements de plan de cours
 */
 
-function setPlanChapterDisclosure( disclosureState ) {
+function setPlanChapterFolding( disclosureState ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
         $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
@@ -59,17 +59,17 @@ function setPlanBehaviors( isNotStudent ) {
             if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
 
                 if ( isStaff ) {
-                    setStaffPlanChapterDisclosure( true );
+                    setStaffPlanChapterFolding( true );
                 } else {
-                    setPlanChapterDisclosure( true );
+                    setPlanChapterFolding( true );
                 }
 
             } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
 
                 if ( isStaff ) {
-                    setStaffPlanChapterDisclosure( false );
+                    setStaffPlanChapterFolding( false );
                 } else {
-                    setPlanChapterDisclosure( false );
+                    setPlanChapterFolding( false );
                 }
             }
 
@@ -123,7 +123,7 @@ function setLegendBarButtonsActivation( ) {
     Pliage / repliage des chapitres du plan de cours
 */
 
-function setPlanChapterDisclose( $target ) {
+function setPlanChapterFold( $target ) {
 
     $target.closest( 'li' ).toggleClass( 'collapsed expanded' );
     setLegendBarButtonsActivation( );
@@ -192,11 +192,11 @@ function setConditionalFormat( column_nbr, value_max, selector ) {
     Commande du pliage / repliage des chapitres du plan de cours
 */
 
-function setPlanChapterDiscloseCommand( ) {
+function setPlanChapterFoldCommand( ) {
 
-    Foundation.utils.S( '#course_plan-plan' ).on( 'click', '.js-disclose', function( ) {
+    Foundation.utils.S( '#course_plan-plan' ).on( 'click', '.js-fold', function( ) {
 
-        setPlanChapterDisclose( $( this ) );
+        setPlanChapterFold( $( this ) );
     } );
 }
 

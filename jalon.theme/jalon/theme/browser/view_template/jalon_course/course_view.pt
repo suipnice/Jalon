@@ -76,10 +76,7 @@
                 <ol id="course_plan-plan" class="sortable ui-sortable">
                     <li>
                         <div class="panel radius">
-                            <h4>
-                                <i class="fa fa-info-circle"></i>
-                                <tal:block i18n:translate="">Aucune ressource n'est accessible dans ce cours.</tal:block>
-                            </h4>
+                            <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
                         </div>
                     </li>
                 </ol>
@@ -113,14 +110,6 @@
                     Affichage de la barre d'ajout
                 </metal:macro>
                 </tal:condition>
-
-                <div class="panel radius show-for-medium-up"
-                     tal:condition="my_view/is_personnel">
-                    <i class="fa fa-info-circle no-pad"></i>
-                    <tal:block i18n:translate="aide_plan">
-                        Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
-                    </tal:block>
-                </div>
 
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
@@ -203,15 +192,15 @@
     <tal:comments replace="nothing">
     <!--
             Une fois la position dépliée / repliée mémorisée cote srv,
-            l'appel à app/setPlanChapterDisclosure( ) devra être supprimé
+            l'appel à app/setPlanChapterFolding( ) devra être supprimé
             et remplacé par app/setLegendBarButtonsActivation( ).
     -->
     </tal:comments>
 
     <tal:block tal:condition="not:my_view/is_personnel"
-               define="script1 string:setPlanChapterDisclosure(true);
+               define="script1 string:setPlanChapterFolding(true);
                        script2 string:setPlanBehaviors();
-                       script3 string:setPlanChapterDiscloseCommand();
+                       script3 string:setPlanChapterFoldCommand();
                        script4 string:readSwitcher()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
