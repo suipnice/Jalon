@@ -442,7 +442,7 @@ class JalonFolder(ATFolder):
         LOG.info("self._subjects_dict : %s" % self._subjects_dict)
         if key:
             return self._subjects_dict.get(key, None)
-        return self._subjects_dict
+        return copy.deepcopy(self._subjects_dict)
 
     def setSubjectsDict(self, subjects_dict):
         """Définit le dictionnaire des étiquettes du dossier."""
@@ -496,7 +496,30 @@ class JalonFolder(ATFolder):
                 retour.append({"tag": mot, "titre": tags_dict[mot]})
         return retour
 
-    def addTagFolder(self, tag):
+    def getNewTagId(self):
+        LOG.info("----- getNewTagId -----")
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
+        folder = getattr(home, folder_dict[self.getId()])
+
+        folder_subjects = folder.getSubjectsDict()
+        tag_id_list = folder_subjects.keys()
+        if len(tag_id_list) > 0:
+            tag_id_list.sort()
+            return int(tag_id_list[-1]) + 1
+        else:
+            return "1"
+
+    def addTagFolder(self, tag_id, tag_title):
         LOG.info("----- addTagFolder -----")
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
@@ -511,13 +534,12 @@ class JalonFolder(ATFolder):
                        "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
         folder_subjects = folder.getSubjectsDict()
-        if not tag in folder_subjects.values():
-            new_id = str(len(folder_subjects.keys()) + 1)
-            folder_subjects[new_id] = tag
+        if not tag_title in folder_subjects.values():
+            folder_subjects[tag_id] = tag_title
             LOG.info("folder_subjects : %s" % folder_subjects)
             folder.setSubjectsDict(folder_subjects)
             tags = list(folder.Subject())
-            tags.append(new_id)
+            tags.append(tag_id)
             folder.setSubject(tuple(tags))
             folder.reindexObject()
 
