@@ -153,7 +153,16 @@ class JalonFolder(ATFolder):
     # ---------------------- #
 
     def getCourseUserFolder(self, user_id):
+        # LOG.info("----- getCourseUserFolder -----")
         return jalon_utils.getCourseUserFolder(self, user_id)
+
+    def isFavorite(self, user_id, course_id):
+        # LOG.info("----- isFavorite -----")
+        course_user_folder = self.getCourseUserFolder(user_id)
+        course = getattr(course_user_folder, course_id)
+        favorites = list(course.Subject())
+        # LOG.info("favorites : %s" % favorites)
+        return True if user_id in favorites else False
 
     def modifyFavoriteCourse(self, user_id, course_id):
         # LOG.info("----- modifyFavorite -----")

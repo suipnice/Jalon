@@ -7,14 +7,30 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="isFavorite python:context.isFavorite(user.getId(), request['course_id'])">
 
     <h2>
+        <i class="fa fa-star"></i>
         <tal:block i18n:translate="">Ajouter aux favoris</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+    <tal:condition condition="isFavorite">
+    <div class="panel warning radius"
+         i18n:translate="">
+        <strong>Attention :</strong> Ce cours est déjà un cours favori.
+    </div>
+    <div class="text-center">
+        <a class="button small warning radius"
+           tal:attributes="href string:${context/absolute_url}?tab=1">
+            <i class="fa fa-star"></i>
+            <tal:block i18n:translate="">Consulter mes cours favoris</tal:block>
+        </a>
+    </div>
+    </tal:condition>
     <form method="POST"
-          tal:attributes="action string:${context/absolute_url}/modify_favorite_course_script">
+          tal:attributes="action string:${context/absolute_url}/modify_favorite_course_script"
+          tal:condition="not:isFavorite">
         <div class="panel callout radius">
             Vous pouvez ajouter n'importe quel cours à vos favoris. Ajouter un cours archivé en favori le retirera des archives.
         </div>
