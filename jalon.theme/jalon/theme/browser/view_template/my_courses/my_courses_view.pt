@@ -59,19 +59,19 @@
             <span class="title-legend show-for-medium-up">
                 <i class="fa fa-bell-o no-pad"></i> = <tal:block i18n:translate="">Nouveauté(s) depuis votre dernière connexion</tal:block>
             </span>
-            <ul id="mescours_button-group" class="button-group radius even-5"
-                tal:condition="not:my_courses_view/is_student">
-                <li tal:repeat="tab my_courses_view/tabs_list">
-                    <a tal:attributes="class tab/css_class;
-                                       href tab/tab_link"
-                       i18n:translate="">
-                        <i tal:attributes="class tab/tab_icon"></i>
-                        <tal:block replace="tab/tab_name"
-                                   i18n:translate=""/>
-                    </a>
-                </li>
-            </ul>
             <div id="js-update_target">
+                <ul id="mescours_button-group" class="button-group radius even-5"
+                    tal:condition="not:my_courses_view/is_student">
+                    <li tal:repeat="tab my_courses_view/tabs_list">
+                        <a tal:attributes="class tab/css_class;
+                                           href tab/tab_link"
+                           i18n:translate="">
+                            <i tal:attributes="class tab/tab_icon"></i>
+                            <tal:block replace="tab/tab_name"
+                                       i18n:translate=""/>
+                        </a>
+                    </li>
+                </ul>
                 <metal:macro use-macro="python:getattr(context, my_courses_view['my_courses_macro']).macros.get('my_courses_list')">
                     Macro d'affichage de la liste des cours
                 </metal:macro>
@@ -83,6 +83,18 @@
     </tal:condition>
 
     <tal:condition condition="is_ajax">
+        <ul id="mescours_button-group" class="button-group radius even-5"
+            tal:condition="not:my_courses_view/is_student">
+            <li tal:repeat="tab my_courses_view/tabs_list">
+                <a tal:attributes="class tab/css_class;
+                                   href tab/tab_link"
+                   i18n:translate="">
+                    <i tal:attributes="class tab/tab_icon"></i>
+                    <tal:block replace="tab/tab_name"
+                               i18n:translate=""/>
+                </a>
+            </li>
+        </ul>
         <metal:macro use-macro="python:getattr(context, my_courses_view['my_courses_macro']).macros.get('my_courses_list')">
             Macro d'affichage de la liste des cours
         </metal:macro>
