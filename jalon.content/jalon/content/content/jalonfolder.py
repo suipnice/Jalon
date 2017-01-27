@@ -446,9 +446,9 @@ class JalonFolder(ATFolder):
     # --------------------------------- #
     def getSubjectsDict(self, key=None):
         """Fournit le dictionnaire des étiquettes du dossier."""
-        LOG.info("----- getSubjectsDict -----")
+        # LOG.info.info("----- getSubjectsDict -----")
         # LOG.info("***** item_id : %s" % key)
-        LOG.info("self._subjects_dict : %s" % self._subjects_dict)
+        # LOG.info.info("self._subjects_dict : %s" % self._subjects_dict)
         if key:
             return self._subjects_dict.get(key, None)
         return copy.deepcopy(self._subjects_dict)
@@ -487,7 +487,7 @@ class JalonFolder(ATFolder):
         return subjects
 
     def getTag(self):
-        LOG.info("----- getTag -----")
+        # LOG.info.info("----- getTag -----")
         retour = []
         mots = list(self.Subject())
         mots.sort()
@@ -529,7 +529,7 @@ class JalonFolder(ATFolder):
             return "1"
 
     def addTagFolder(self, tag_id, tag_title):
-        LOG.info("----- addTagFolder -----")
+        # LOG.info("----- addTagFolder -----")
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
@@ -545,7 +545,7 @@ class JalonFolder(ATFolder):
         folder_subjects = folder.getSubjectsDict()
         if not tag_title in folder_subjects.values():
             folder_subjects[tag_id] = tag_title
-            LOG.info("folder_subjects : %s" % folder_subjects)
+            # LOG.info.info("folder_subjects : %s" % folder_subjects)
             folder.setSubjectsDict(folder_subjects)
             tags = list(folder.Subject())
             tags.append(tag_id)

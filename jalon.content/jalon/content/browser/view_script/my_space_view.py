@@ -29,13 +29,13 @@ class MySpaceView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getTags(self, folder, selected_tags_list):
-        LOG.info("----- getTags -----")
+        # LOG.info.info("----- getTags -----")
         #tags_dict = {"last": "Les 20 derniers"}
         tags_list = []
         tags = list(folder.Subject())
-        LOG.info(tags)
+        # LOG.info.info(tags)
         tags_dict = folder.getSubjectsDict()
-        LOG.info(tags_dict)
+        # LOG.info.info(tags_dict)
         #tags.sort()
         for tag in tags:
             #tags_dict[tag] = tag
