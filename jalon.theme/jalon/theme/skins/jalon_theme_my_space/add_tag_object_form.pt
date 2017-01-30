@@ -16,7 +16,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <form id="js-resTagger" method="POST"
-          tal:define="tags context/aq_parent/Subject"
+          tal:define="tags context/aq_parent/getDisplaySubjects"
           tal:attributes="action string:${context/absolute_url}/add_tag_object_script;
                           data-res_name resName;
                           data-success_msg_pre string:L'étiquetage de la ressource;
@@ -28,12 +28,11 @@
         </div>
         <ul>
             <li tal:repeat="tag tags">
-                <a tal:define="quotedTag python:context.jalon_quote(tag)"
-                   tal:attributes="id quotedTag;
-                                   class python:context.test(quotedTag in object_tags, 'filter-button selected', 'filter-button unselected')">
+                <a tal:attributes="id tag/tag_id;
+                                   class python:context.test(tag['tag_id'] in object_tags, 'filter-button selected', 'filter-button unselected')">
                    <i class="fa fa-circle no-pad"></i>
                    <i class="fa fa-circle-thin no-pad"></i>
-                   <tal:block tal:content="tag" />
+                   <tal:block tal:content="tag/tag_title" />
                 </a>
             </li>
         </ul>

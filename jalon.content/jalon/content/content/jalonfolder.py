@@ -10,6 +10,8 @@ from Products.CMFCore.utils import getToolByName
 
 from plone.portlets.interfaces import IPortletManager, ILocalPortletAssignmentManager
 
+from persistent.dict import PersistentDict
+
 from jalon.content import contentMessageFactory as _
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonFolder
@@ -90,6 +92,8 @@ class JalonFolder(ATFolder):
                             "Glossaire":     "mon_espace/mes_termes_glossaire",
                             "Webconference": "mon_espace/mes_webconferences",
                             "Video":         "mon_espace/mes_videos_pod"}
+
+    _subjects_dict = {}
 
     def __init__(self, *args, **kwargs):
         super(JalonFolder, self).__init__(*args, **kwargs)
@@ -440,6 +444,34 @@ class JalonFolder(ATFolder):
     # --------------------------------- #
     #  NEW TAG                          #
     # --------------------------------- #
+    def getSubjectsDict(self, key=None):
+        """Fournit le dictionnaire des étiquettes du dossier."""
+        # LOG.info.info("----- getSubjectsDict -----")
+        # LOG.info("***** item_id : %s" % key)
+        # LOG.info.info("self._subjects_dict : %s" % self._subjects_dict)
+        if key:
+            return self._subjects_dict.get(key, None)
+        return copy.deepcopy(self._subjects_dict)
+
+    def setSubjectsDict(self, subjects_dict):
+        """Définit le dictionnaire des étiquettes du dossier."""
+        # LOG.info("----- setSubjectsDict -----")
+        if type(self._subjects_dict).__name__ != "PersistentMapping":
+            self._subjects_dict = PersistentDict(subjects_dict)
+        else:
+            self._subjects_dict = subjects_dict
+
+    def getDisplaySubjects(self):
+        """Affichage des étiquettes sur le formulaire étiquettage."""
+        LOG.info("----- getDisplaySubjects -----")
+        folder_subjects = self.getSubjectsDict()
+        if folder_subjects:
+            subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]} for key in folder_subjects.keys()]
+            subjects_list.sort(lambda x, y: cmp(x["tag_id"], y["tag_id"]))
+            LOG.info("subjects_list : %s" % subjects_list)
+            return subjects_list
+        return []
+
     def getSelectedTags(self):
         # LOG.info("----- getSelectedTags -----")
         # Init
@@ -466,6 +498,7 @@ class JalonFolder(ATFolder):
         return subjects
 
     def getTag(self):
+        # LOG.info.info("----- getTag -----")
         retour = []
         mots = list(self.Subject())
         mots.sort()
@@ -478,11 +511,13 @@ class JalonFolder(ATFolder):
                 except:
                     retour.append({"tag": urllib.quote(mot), "titre": mot})
         else:
+            tags_dict = self.getSubjectsDict()
             for mot in mots:
-                retour.append({"tag": urllib.quote(mot), "titre": mot})
+                retour.append({"tag": mot, "titre": tags_dict[mot]})
         return retour
 
-    def addTagFolder(self, tag):
+    def getNewTagId(self):
+        LOG.info("----- getNewTagId -----")
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
@@ -495,9 +530,36 @@ class JalonFolder(ATFolder):
                        "mes_webconferences":           "Webconference",
                        "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
-        if not tag in folder.Subject():
+
+        folder_subjects = folder.getSubjectsDict()
+        tag_id_list = folder_subjects.keys()
+        if len(tag_id_list) > 0:
+            tag_id_list.sort()
+            return int(tag_id_list[-1]) + 1
+        else:
+            return "1"
+
+    def addTagFolder(self, tag_id, tag_title):
+        # LOG.info("----- addTagFolder -----")
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
+        folder = getattr(home, folder_dict[self.getId()])
+        folder_subjects = folder.getSubjectsDict()
+        if not tag_title in folder_subjects.values():
+            folder_subjects[tag_id] = tag_title
+            # LOG.info.info("folder_subjects : %s" % folder_subjects)
+            folder.setSubjectsDict(folder_subjects)
             tags = list(folder.Subject())
-            tags.append(tag)
+            tags.append(tag_id)
             folder.setSubject(tuple(tags))
             folder.reindexObject()
 
@@ -520,6 +582,9 @@ class JalonFolder(ATFolder):
         if tag in tags:
             tags.remove(tag)
             folder.setSubject(tuple(tags))
+            folder_subjects = folder.getSubjectsDict()
+            del folder_subjects[tag]
+            folder.setSubjectsDict(folder_subjects)
             folder.reindexObject()
 
             # Mise à jour des sélections enregistrées en session
