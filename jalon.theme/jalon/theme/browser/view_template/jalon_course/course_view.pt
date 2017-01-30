@@ -44,8 +44,8 @@
             </metal:macro>
 
             <div class="row">
-                <span class="right" tal:condition="my_view/is_personnel">
-                    <a class="dropdown"
+                <tal:condition condition="my_view/is_personnel">
+                    <a class="dropdown right"
                        data-options="align:bottom" data-dropdown="course-options">
                         <i class="fa fa-cog fa-lg"></i>
                     </a>
@@ -59,7 +59,7 @@
                             </a>
                         </li>
                     </ul>
-                </span>
+                </tal:condition>
                 <h2 id="js-update_title">
                     <i class="fa fa-sitemap no-pad"></i>
                     <tal:block i18n:translate="">Plan du cours</tal:block>
