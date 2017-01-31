@@ -1,3 +1,23 @@
+
+<!--
+        Bloc de gestion des étiquettes
+-->
+<metal:macro define-macro="tags_section">
+    <section class="small-12 columns">
+        <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
+        <ul id="js-tag_filter"
+            tal:define="tags_list my_view/tags_list">
+            <metal:macro use-macro="context/my_space_tags_macro/macros/add_tag">
+                Bouton de création des étiquettes
+            </metal:macro>
+            <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list">
+                Affichage de la liste des étiquettes
+            </metal:macro>
+        </ul>
+    </section>
+</metal:macro>
+
+
 <!--
         Affichage des étiquettes
 -->
