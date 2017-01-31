@@ -122,10 +122,10 @@ function delTag( ) {
 
         event.preventDefault( );
 
-        var $form = $( this );
-        var $updateTarget = Foundation.utils.S( '#js-update_target' );
-        var $title = Foundation.utils.S( '#js-update_title' );
-        var titleOrgHtml = $title.html( );
+        var $form = $( this ),
+            $updateTarget = Foundation.utils.S( '#js-update_target' ),
+            $title = Foundation.utils.S( '#js-update_title' ),
+            titleOrgHtml = $title.html( );
 
         $title.html( MSG_LOADING );
 
@@ -133,11 +133,7 @@ function delTag( ) {
 
             $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
-                // Suppression du bouton de l'etiquette en JS pur car jQuery et Foundation
-                // ne tolerent pas le caractere « % » dans les ID...
-                var eLi = document.getElementById( document.getElementsByName( 'tag_id' )[0].value ).parentNode;
-                eLi.parentNode.removeChild( eLi );
-
+                $( '#' + $form.children( 'input[name=tag_id]' ).val( ) ).remove( );
                 $updateTarget.empty( ).html( data );
 
                 $updateTarget.fadeTo( 200, 1, function( ) {
