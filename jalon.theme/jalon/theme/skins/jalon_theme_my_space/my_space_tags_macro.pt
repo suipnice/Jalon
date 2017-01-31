@@ -7,6 +7,12 @@
         <div id="reveal-create_tag" class="reveal-modal small"
              data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
         <a data-reveal-id="reveal-create_tag" data-reveal-ajax="true"
+           tal:attributes="href string:${context/absolute_url}/edit_tag_form"
+           title="Editer une étiquette" i18n:attributes="title-edit_tag"
+            class="right">
+            <i class="fa fa-pencil fa-lg"></i>
+        </a>
+        <a data-reveal-id="reveal-create_tag" data-reveal-ajax="true"
            tal:attributes="href string:${context/absolute_url}/create_tag_form"
            title="Créer une étiquette" i18n:attributes="title-add_tag"
            class="right">
