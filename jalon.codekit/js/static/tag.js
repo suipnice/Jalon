@@ -91,7 +91,7 @@ function createTag( ) {
         event.preventDefault( );
 
         var $form = $( this );
-        var $reveal = Foundation.utils.S( '#reveal-create_tag' );
+        var $reveal = Foundation.utils.S( '#reveal-tags' );
         var id = $form.find( 'input[name="tag_id"]' ).val( );
         var title = $form.find( 'input[name="title"]' ).val( );
 
