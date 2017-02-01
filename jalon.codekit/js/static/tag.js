@@ -168,8 +168,7 @@ function editTag( ) {
 
             } else {
 
-                Foundation.utils.S( '#' + tagId )
-                    .html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
+                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
                 $reveal.foundation( 'reveal', 'close' );
                 setAlertBox( 'success',
                              $form.data( 'success_msg_pre' )
