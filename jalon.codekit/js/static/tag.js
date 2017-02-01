@@ -91,7 +91,7 @@ function createTag( ) {
         event.preventDefault( );
 
         var $form = $( this );
-        var $reveal = Foundation.utils.S( '#reveal-create_tag' );
+        var $reveal = Foundation.utils.S( '#reveal-tags' );
         var id = $form.find( 'input[name="tag_id"]' ).val( );
         var title = $form.find( 'input[name="title"]' ).val( );
 
@@ -105,6 +105,76 @@ function createTag( ) {
                 Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
                 $reveal.foundation( 'reveal', 'close' );
                 setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + title + ' » ' + $form.data( 'success_msg_post' ) );
+            }
+        } );
+
+    } );
+}
+
+
+/*
+    Edition d'une etiquette
+*/
+
+function editTag( ) {
+
+    var $form = Foundation.utils.S( '#js-editTag' ),
+        $tagId = $form.find( 'input[name="tag_id"]' ),
+        $tagTitle = $form.find( 'input[name="title"]' ),
+        tagTitle = "",
+        //$submitButton = $form.find( 'button[type="submit"]' );
+        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' );
+
+
+    $form.on( 'change', 'select[name="tag_list"]', function( ) {
+
+        var tagId = $( this ).find( 'option:selected' ).val( ),
+            emptyText = $form.data( 'empty_text' );
+
+        tagTitle = $( this ).find( 'option:selected' ).text( ).trim( );
+
+        if ( tagId === "0" ) {
+
+            $tagId.val( "0" );
+            $tagTitle.val( emptyText ).attr( 'readonly', "readonly" );
+            $submitButton.attr( 'disabled', "disabled" );
+
+        } else {
+
+            $tagId.val( tagId );
+            $tagTitle.val( tagTitle ).removeAttr( 'readonly' );
+            $submitButton.removeAttr( 'disabled' );
+        }
+
+    } );
+
+
+    $form.submit( function( event ) {
+
+        event.preventDefault( );
+
+        var $reveal = Foundation.utils.S( '#reveal-tags' ),
+            tagId = $form.find( 'input[name="tag_id"]' ).val( ),
+            title = $form.find( 'input[name="title"]' ).val( ).trim( );
+
+        $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+
+            var html = $.parseHTML( data );
+
+            if ( $( html ).find( '.error' ).length ) {
+
+                $reveal.html( data );
+                revealInit( $reveal );
+
+            } else {
+
+                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
+                $reveal.foundation( 'reveal', 'close' );
+                setAlertBox( 'success',
+                             $form.data( 'success_msg_pre' )
+                             + ' « ' + tagTitle + ' » '
+                             + $form.data( 'success_msg_post' )
+                             + ' « ' + title + ' ».' );
             }
         } );
 
@@ -133,14 +203,18 @@ function delTag( ) {
 
             $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
-                $( '#' + $form.children( 'input[name=tag_id]' ).val( ) ).remove( );
+                $( '#' + $form.children( 'input[name=tag_id]' ).val( ) )
+                    .parent( 'li' ).remove( );
+
                 $updateTarget.empty( ).html( data );
 
                 $updateTarget.fadeTo( 200, 1, function( ) {
 
                     $title.html( titleOrgHtml );
-                    setAlertBox( 'success', $form.data( 'success_msg_pre' )
-                            + ' « ' + $form.data( 'tag_name' ) + ' » ' + $form.data( 'success_msg_post' ) );
+                    setAlertBox( 'success',
+                                 $form.data( 'success_msg_pre' )
+                                 + ' « ' + $form.data( 'tag_name' )
+                                 + ' » ' + $form.data( 'success_msg_post' ) );
                 } );
             } );
         } );
@@ -172,7 +246,10 @@ function setResTagger( ) {
         $.post( $form.attr( 'action' ), param ).done( function( data ) {
             $( '#js-update_target' ).empty( ).html( data );
             $form.parent( '.reveal-modal' ).foundation( 'reveal', 'close' );
-            setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + $form.data( 'res_name' ) + ' » ' + $form.data( 'success_msg_post' ) );
+            setAlertBox( 'success',
+                         $form.data( 'success_msg_pre' )
+                         + ' « ' + $form.data( 'res_name' )
+                         + ' » ' + $form.data( 'success_msg_post' ) );
         } );
 
     } );
@@ -202,9 +279,12 @@ function setActionBatch( ) {
     $tagForm.on( 'click', 'a.filter-button', function( ) {
 
         if ( $tagForm.find( 'a.filter-button.selected' ).length ) {
+
             //$tagFormSubmit.removeAttr( 'disabled' );
             $tagFormSubmit.prop( 'disabled', false );
+
         } else {
+
             //$tagFormSubmit.attr( 'disabled', "disabled" );
             $tagFormSubmit.prop( 'disabled', true );
         }

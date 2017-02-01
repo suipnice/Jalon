@@ -20,7 +20,7 @@
     </tal:define>
 
     <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
-    <div id="reveal-main" class="reveal-modal medium" 
+    <div id="reveal-main" class="reveal-modal medium"
          data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
     <metal:macro use-macro="context/macro_reveal_messages/macros/reveal_no_deletion">
@@ -49,18 +49,9 @@
             </nav>
         </section>
 
-        <section class="small-12 columns">
-            <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
-            <ul id="js-tag_filter"
-                tal:define="tags_list my_view/tags_list">
-                <metal:macro use-macro="context/my_space_tags_macro/macros/add_tag">
-                    Bouton de création des étiquettes
-                </metal:macro>
-                <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list">
-                    Affichage de la liste des étiquettes
-                </metal:macro>
-            </ul>
-        </section>
+        <metal:macro use-macro="context/my_space_tags_macro/macros/tags_section">
+            Gestion des étiquettes
+        </metal:macro>
 
         <section id="js-list-ressource" class="small-12 columns">
 
