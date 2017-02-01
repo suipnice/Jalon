@@ -118,25 +118,65 @@ function createTag( ) {
 
 function editTag( ) {
 
-    Foundation.utils.S( '#js-editTag' ).submit( function( event ) {
+    var $form = $( '#js-editTag' ),
+        $tagId = $form.find( 'input[name="tag_id"]' ),
+        $tagTitle = $form.find( 'input[name="title"]' ),
+        tagTitle = "",
+        //$submitButton = $form.find( 'button[type="submit"]' );
+        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' );
+
+
+    $form.on( 'change', 'select[name="tag_list"]', function( ) {
+
+        var tagId = $( this ).find( 'option:selected' ).val( ),
+            emptyText = $form.data( 'empty_text' );
+
+        tagTitle = $( this ).find( 'option:selected' ).text( ).trim( );
+
+        //console.log( tagId + " / " + tagTitle );
+
+        if ( tagId === "0" ) {
+
+            $tagId.val( "0" );
+            $tagTitle.val( emptyText ).attr( 'readonly', "readonly" );
+            $submitButton.attr( 'disabled', "disabled" );
+
+        } else {
+
+            $tagId.val( tagId );
+            $tagTitle.val( tagTitle ).removeAttr( 'readonly' );
+            $submitButton.removeAttr( 'disabled' );
+        }
+
+    } );
+
+
+    $form.submit( function( event ) {
 
         event.preventDefault( );
 
-        var $form = $( this );
-        var $reveal = Foundation.utils.S( '#reveal-tags' );
-        var id = $form.find( 'input[name="tag_id"]' ).val( );
-        var title = $form.find( 'input[name="title"]' ).val( );
+        var $reveal = $( '#reveal-tags' ),
+            tagId = $form.find( 'input[name="tag_id"]' ).val( ),
+            title = $form.find( 'input[name="title"]' ).val( ).trim( );
 
         $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+
             var html = $.parseHTML( data );
+
             if ( $( html ).find( '.error' ).length ) {
+
                 $reveal.html( data );
                 revealInit( $reveal );
+
             } else {
-                //Foundation.utils.S( '#js-tag_filter' ).append( ' <li><a id="' + id + '" class="filter-button unselected"><i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title + '</a>' );
-                Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
+
+                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
                 $reveal.foundation( 'reveal', 'close' );
-                setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + title + ' » ' + $form.data( 'success_msg_post' ) );
+                setAlertBox( 'success',
+                             $form.data( 'success_msg_pre' )
+                             + ' « ' + tagTitle + ' » '
+                             + $form.data( 'success_msg_post' )
+                             + ' « ' + title + ' ».' );
             }
         } );
 
