@@ -204,7 +204,9 @@ function delTag( ) {
 
             $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
-                $( '#' + $form.children( 'input[name=tag_id]' ).val( ) ).remove( );
+                $( '#' + $form.children( 'input[name=tag_id]' ).val( ) )
+                    .parent( 'li' ).remove( );
+
                 $updateTarget.empty( ).html( data );
 
                 $updateTarget.fadeTo( 200, 1, function( ) {
