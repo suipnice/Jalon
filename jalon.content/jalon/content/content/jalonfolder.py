@@ -222,11 +222,14 @@ class JalonFolder(ATFolder):
     def getListeCours(self, authMember):
         portal = self.portal_url.getPortalObject()
         portal_catalog = getToolByName(portal, "portal_catalog")
-        listeCours = list(portal_catalog.searchResults(portal_type="JalonCours", Creator=authMember))
-        listeCoursAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=authMember))
+        listeCours = list(portal_catalog.searchResults(
+            portal_type="JalonCours", Creator=authMember))
+        listeCoursAuteur = list(portal_catalog.searchResults(
+            portal_type="JalonCours", getAuteurPrincipal=authMember))
         if listeCoursAuteur:
             listeCours.extend(listeCoursAuteur)
-        listeCoursCoAuteur = list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=authMember))
+        listeCoursCoAuteur = list(portal_catalog.searchResults(
+            portal_type="JalonCours", getCoAuteurs=authMember))
         if listeCoursCoAuteur:
             listeCours.extend(listeCoursCoAuteur)
 
@@ -239,19 +242,22 @@ class JalonFolder(ATFolder):
                     if type == "etape":
                         retour = bdd.getInfosEtape(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce diplôme." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     if type in ["ue", "uel"]:
                         retour = bdd.getInfosELP2(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour cette UE / UEL." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     if type == "groupe":
                         retour = bdd.getInfosGPE(code)
                         if not retour:
-                            elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                            elem = ["Le code %s n'est plus valide pour ce groupe." %
+                                code, code, "0"]
                         else:
                             elem = list(retour)
                     nbSeances = 0
@@ -268,11 +274,13 @@ class JalonFolder(ATFolder):
     def getCourseStatistics(self, course_id):
         # LOG.info("----- getCourseStatistics -----")
         portal = self.portal_url.getPortalObject()
-        course_brain = portal.portal_catalog.searchResults(portal_type="JalonCours", id=course_id)[0]
+        course_brain = portal.portal_catalog.searchResults(
+            portal_type="JalonCours", id=course_id)[0]
 
         course_object = course_brain.getObject()
         frequentation_graph = ""
-        requete = course_object.getConsultationByCoursByUniversityYearByDate(None, True, "Etudiant").all()
+        requete = course_object.getConsultationByCoursByUniversityYearByDate(
+            None, True, "Etudiant").all()
         if requete:
             requete_dict = dict(requete)
             frequentation_graph = course_object.genererFrequentationGraph(requete_dict)
@@ -484,7 +492,8 @@ class JalonFolder(ATFolder):
             folder_subjects = self.getSubjectsDict()
 
         if folder_subjects:
-            subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]} for key in folder_subjects.keys()]
+            subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]}
+                for key in folder_subjects.keys()]
             subjects_list.sort(lambda x, y: cmp(x["tag_id"], y["tag_id"]))
             LOG.info("subjects_list : %s" % subjects_list)
             return subjects_list
@@ -579,6 +588,27 @@ class JalonFolder(ATFolder):
             tags = list(folder.Subject())
             tags.append(tag_id)
             folder.setSubject(tuple(tags))
+            folder.reindexObject()
+
+    def editTagFolder(self, tag_id, tag_title):
+        # LOG.info("----- addTagFolder -----")
+        portal = self.portal_url.getPortalObject()
+        member_id = portal.portal_membership.getAuthenticatedMember().getId()
+        home = getattr(portal.Members, member_id)
+
+        folder_dict = {"mes_fichiers":                 "Fichiers",
+                       "mes_presentations_sonorisees": "Sonorisation",
+                       "mes_exercices_wims":           "Wims",
+                       "mes_ressources_externes":      "Externes",
+                       "mes_termes_glossaire":         "Glossaire",
+                       "mes_webconferences":           "Webconference",
+                       "mes_videos_pod":               "Video"}
+        folder = getattr(home, folder_dict[self.getId()])
+        folder_subjects = folder.getSubjectsDict()
+        if tag_id in folder_subjects.keys():
+            folder_subjects[tag_id] = tag_title
+            # LOG.info.info("folder_subjects : %s" % folder_subjects)
+            folder.setSubjectsDict(folder_subjects)
             folder.reindexObject()
 
     def deleteTagFolder(self, tag):
@@ -681,7 +711,8 @@ class JalonFolder(ATFolder):
             new_listeClasses.append({})
             for auteur in dico:
                 classe_id = dico[auteur]
-                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember().getId(), "qclass": classe_id}
+                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember(
+                    ).getId(), "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
                 rep_wims = self.wims("verifierRetourWims",
                                      {"rep": rep_wims,
@@ -771,7 +802,8 @@ class JalonFolder(ATFolder):
                              "AutoriserAutoEvaluation": boite.getAutoriserAutoEvaluation(),
                              "AffectationEvaluation":   boite.getAffectationEvaluation()}
                     duplicataObjet.setProperties(param)
-                    duplicataObjet.setDocumentsProperties(copy.deepcopy(boite.getDocumentsProperties()))
+                    duplicataObjet.setDocumentsProperties(
+                        copy.deepcopy(boite.getDocumentsProperties()))
                     duplicataObjet.setCriteriaDict(copy.deepcopy(boite.getCriteriaDict()))
                     duplicataObjet.setCompetences(copy.deepcopy(boite.getCompetences()))
 
@@ -869,8 +901,11 @@ class JalonFolder(ATFolder):
                 # LOG.info("object found")
                 relatedItems = objet.getRelatedItems()
                 if conteneur_object not in relatedItems:
-                    LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' % (conteneur_object.getId(), id_objet))
-                    # on ajoute  ##<JalonCoursWims at AutoEvaluation-bado-20161201175055577435>## aux relatedItems de ##classerparpropriete-bado-20140901113857## ----
+                    LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' %
+                             (conteneur_object.getId(), id_objet))
+                    # on ajoute  ##<JalonCoursWims at
+                    # AutoEvaluation-bado-20161201175055577435>## aux relatedItems de
+                    # ##classerparpropriete-bado-20140901113857## ----
                     relatedItems.append(conteneur_object)
                     LOG.info('---- puis on ecrase les anciens relatedItems ---')
                     objet.setRelatedItems(relatedItems)

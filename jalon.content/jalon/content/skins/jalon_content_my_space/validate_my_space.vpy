@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-##Script (Python) "validate_my_space"
-##bind container=container
-##bind context=context
-##bind namespace=
-##bind script=script
-##bind state=state
-##bind subpath=traverse_subpath
-##parameters=
-##title=Validation des formulaires
+# Script (Python) "validate_my_space"
+# bind container=container
+# bind context=context
+# bind namespace=
+# bind script=script
+# bind state=state
+# bind subpath=traverse_subpath
+# parameters=
+# title=Validation des formulaires
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
@@ -23,6 +23,7 @@ if "is_bu" in form:
 validate_key = form["validate_key"]
 
 validate_dict = {"create_tag":               ["title"],
+                 "edit_tag":                 ["title"],
                  "create_wims_exercice":     ["title"],
                  "create_external_resource": ["title", "urlbiblio"],
                  "create_glossary_term":     ["title", "description"],
