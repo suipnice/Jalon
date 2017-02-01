@@ -118,7 +118,7 @@ function createTag( ) {
 
 function editTag( ) {
 
-    var $form = $( '#js-editTag' ),
+    var $form = Foundation.utils.S( '#js-editTag' ),
         $tagId = $form.find( 'input[name="tag_id"]' ),
         $tagTitle = $form.find( 'input[name="title"]' ),
         tagTitle = "",
@@ -132,8 +132,6 @@ function editTag( ) {
             emptyText = $form.data( 'empty_text' );
 
         tagTitle = $( this ).find( 'option:selected' ).text( ).trim( );
-
-        //console.log( tagId + " / " + tagTitle );
 
         if ( tagId === "0" ) {
 
@@ -155,7 +153,7 @@ function editTag( ) {
 
         event.preventDefault( );
 
-        var $reveal = $( '#reveal-tags' ),
+        var $reveal = Foundation.utils.S( '#reveal-tags' ),
             tagId = $form.find( 'input[name="tag_id"]' ).val( ),
             title = $form.find( 'input[name="title"]' ).val( ).trim( );
 
@@ -170,7 +168,8 @@ function editTag( ) {
 
             } else {
 
-                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
+                Foundation.utils.S( '#' + tagId )
+                    .html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
                 $reveal.foundation( 'reveal', 'close' );
                 setAlertBox( 'success',
                              $form.data( 'success_msg_pre' )
@@ -211,8 +210,10 @@ function delTag( ) {
                 $updateTarget.fadeTo( 200, 1, function( ) {
 
                     $title.html( titleOrgHtml );
-                    setAlertBox( 'success', $form.data( 'success_msg_pre' )
-                            + ' « ' + $form.data( 'tag_name' ) + ' » ' + $form.data( 'success_msg_post' ) );
+                    setAlertBox( 'success',
+                                 $form.data( 'success_msg_pre' )
+                                 + ' « ' + $form.data( 'tag_name' )
+                                 + ' » ' + $form.data( 'success_msg_post' ) );
                 } );
             } );
         } );
@@ -244,7 +245,10 @@ function setResTagger( ) {
         $.post( $form.attr( 'action' ), param ).done( function( data ) {
             $( '#js-update_target' ).empty( ).html( data );
             $form.parent( '.reveal-modal' ).foundation( 'reveal', 'close' );
-            setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + $form.data( 'res_name' ) + ' » ' + $form.data( 'success_msg_post' ) );
+            setAlertBox( 'success',
+                         $form.data( 'success_msg_pre' )
+                         + ' « ' + $form.data( 'res_name' )
+                         + ' » ' + $form.data( 'success_msg_post' ) );
         } );
 
     } );
@@ -274,9 +278,12 @@ function setActionBatch( ) {
     $tagForm.on( 'click', 'a.filter-button', function( ) {
 
         if ( $tagForm.find( 'a.filter-button.selected' ).length ) {
+
             //$tagFormSubmit.removeAttr( 'disabled' );
             $tagFormSubmit.prop( 'disabled', false );
+
         } else {
+
             //$tagFormSubmit.attr( 'disabled', "disabled" );
             $tagFormSubmit.prop( 'disabled', true );
         }
