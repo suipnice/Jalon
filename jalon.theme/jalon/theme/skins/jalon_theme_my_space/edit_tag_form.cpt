@@ -31,9 +31,7 @@
                       tags context/getDisplaySubjects"
           i18n:attributes="data-empty_text; data-error_msg_duplicate; data-success_msg_pre; data-success_msg_post">
 
-        <div id="archetypes-fieldname-id"
-             tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+        <div>
             <select name="tag_list">
                 <option value="0" i18n:translate="">Sélectionnez une étiquette dans la liste…</option>
                 <option tal:repeat="tag tags" tal:attributes="value tag/tag_id">
