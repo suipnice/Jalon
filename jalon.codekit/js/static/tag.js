@@ -123,8 +123,11 @@ function createTag( ) {
             $reveal = Foundation.utils.S( '#reveal-tags' ),
             $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
             $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
+            $tagTitle = $tagTitleContainer.find( '> input[name="title"]' ),
             id = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( ).replace( /\s+/g, " " );
+            title = $tagTitle.val( ).trim( ).replace( /\s+/g, " " );
+
+        $tagTitle.val( title );
 
         if ( ! _checkDuplicateTag( title ) ) {
 
@@ -205,7 +208,7 @@ function editTag( ) {
             $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
             $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
             tagId = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( ).trim( ).replace( /\s+/g, " " ),
+            title = $tagTitleContainer.find( 'input[name="title"]' ).val( ).trim( ).replace( /\s+/g, " " ),
             errorMessage = "";
 
         if ( title === tagTitle ) {
