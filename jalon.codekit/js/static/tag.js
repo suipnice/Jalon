@@ -87,7 +87,7 @@ function setTagFilter( inPopup ) {
 
 function _checkDuplicateTag( tag, excludeId ) {
 
-    var tag2Check = removeDiacritics( tag.trim( ).replace( /\s/g, " " ) ).toLowerCase( ),
+    var tag2Check = removeDiacritics( tag.trim( ).replace( /\s+/g, " " ) ).toLowerCase( ),
         suppCriteria = "",
         isDupe = false;
 
@@ -99,7 +99,7 @@ function _checkDuplicateTag( tag, excludeId ) {
 
     $( '#js-tag_filter > li > a:not(#last)' + suppCriteria ).each( function( index ) {
 
-        existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s/g, " " ) ).toLowerCase( );
+        existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s+/g, " " ) ).toLowerCase( );
         console.log( index + " : " + existingTag );
 
         if ( existingTag === tag2Check ) {
@@ -127,7 +127,7 @@ function createTag( ) {
             $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
             $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
             id = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( );
+            title = $form.find( 'input[name="title"]' ).val( ).replace( /\s+/g, " " );
 
         if ( ! _checkDuplicateTag( title ) ) {
 
@@ -209,7 +209,7 @@ function editTag( ) {
             $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
             $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
             tagId = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( ).trim( ),
+            title = $form.find( 'input[name="title"]' ).val( ).trim( ).replace( /\s+/g, " " ),
             errorMessage = "";
 
         if ( title === tagTitle ) {
