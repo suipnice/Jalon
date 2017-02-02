@@ -80,6 +80,34 @@ function setTagFilter( inPopup ) {
 
 */
 
+
+/*
+    Recherche de doublon
+*/
+
+function _checkDuplicateTag( tag ) {
+
+    var tag2Check = removeDiacritics( tag.trim( ).replace( /\s/g, " " ) ).toLowerCase( ),
+        existingTag = "",
+        isDupe = false;
+
+    console.log( "tag = " + tag );
+
+    Foundation.utils.S( '#js-tag_filter > li > a:not(#last)' ).each(function( index ) {
+
+        existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s/g, " " ) ).toLowerCase( );
+        console.log( index + " : " + existingTag );
+
+        if ( existingTag === tag2Check ) {
+            isDupe = true;
+            return false;
+        }
+    } );
+
+    return isDupe;
+}
+
+
 /*
     Creation d'une etiquette
 */
