@@ -35,8 +35,10 @@ if form["item_property_name"] == "affElement" and form.has_key("item_parent_titl
     context_object.editCourseParentTitleVisibility(form["item_parent_title_id"], item_date)
 
 if form.has_key("is_item_title"):
+    # Affichage/masquage d'un titre et son contenu
     context_object.editCourseTitleVisibility(form["item_id"], item_date, form["item_property_name"])
 else:
+    # Affichage/masquage d'un element
     context_object.editCourseItemVisibility(form["item_id"], item_date, form["item_property_name"], is_update_from_title)
 
 # Cas ou on affiche un document d'une activité

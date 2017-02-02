@@ -1291,8 +1291,8 @@ class JalonCours(ATFolder):
             context_object.editCourseItemVisibility(item_id, item_date, item_property_name)
 
     def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
-        """Edit Course Title Visibility."""
-        # LOG.info("----- editCourseTitleVisibility -----")
+        """Edit the Visibility of a Course Title and all its contents ."""
+        # LOG.info("----- editCourseTitleVisibility (item_id = %s)-----" % item_id)
         actuality_code = "chapdispo" if item_property_name == "affElement" else ""
 
         if actuality_code:
@@ -1303,24 +1303,27 @@ class JalonCours(ATFolder):
 
         for item in items_list:
             if item["idElement"] == item_id or item_id == "all":
-                # On commence par afficher le chapitre lui-même
+                # on commence par modifier le chapitre lui-même
                 self.editCourseItemVisibility(item["idElement"], item_date, item_property_name, True)
                 if "listeElement" in item:
+                    # puis on modifie ses sous-elements
                     for sub_item in item["listeElement"]:
-                        # Puis on affiche tous les elements du chapitre
-                        self.editCourseItemVisibility(sub_item["idElement"], item_date, item_property_name, True)
+                        item_type_from_id = sub_item["idElement"].split("-")[0]
+                        if item_type_from_id in ["BoiteDepot", "AutoEvaluation", "Examen"]:
+                            context_object = getattr(self, sub_item["idElement"])
+                        else:
+                            context_object = self
+                        context_object.editCourseItemVisibility(sub_item["idElement"], item_date, item_property_name, True)
                         if "listeElement" in sub_item:
                             # Si un des éléments est un sous-chapitre, on affiche son contenu recursivement.
                             self.editCourseTitleVisibility("all", item_date, item_property_name, sub_item["listeElement"])
                 # Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
                 if item["idElement"] == item_id:
                     break
-            elif "listeElement" in item:
-                self.editCourseItemVisibility(item_id, item_date, item_property_name, item["listeElement"])
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         u"""Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
-        # LOG.info("----- editCourseItemVisibility -----")
+        # LOG.info("----- editCourseItemVisibility (item_id = %s)-----" % item_id)
         item_properties = self.getCourseItemProperties(item_id)
 
         # if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen"]:
@@ -1355,7 +1358,7 @@ class JalonCours(ATFolder):
 
     def editCourseParentTitleVisibility(self, item_parent_id, item_date):
         """Edit Course Parent Title Visibility."""
-        # LOG.info("----- editCourseParentTitleVisibility -----")
+        # LOG.info("----- editCourseParentTitleVisibility (item_parent_id = %s) -----" % item_parent_id)
         item_properties = self.getCourseItemProperties(item_parent_id)
 
         item_properties["affElement"] = item_date

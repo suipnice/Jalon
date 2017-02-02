@@ -490,7 +490,7 @@ class Wims(SimpleItem):
 
     def modifierFeuille(self, param):
         """Modifie les parametres d'une feuille."""
-        LOG.info("---- modifierFeuille | param = %s----" % param)
+        # LOG.info("---- modifierFeuille | param = %s----" % param)
 
         donnees_feuille = self.formaterDonnees(param)
 
@@ -499,7 +499,7 @@ class Wims(SimpleItem):
         rep = self.callJob(requete)
         rep = self.verifierRetourWims(
             {"rep": rep, "fonction": "jalon.wims/utility.py/modifierFeuille", "requete": requete})
-        LOG.info("---- modifierFeuille | REP_WIMS = %s----" % rep)
+        # LOG.info("---- modifierFeuille | REP_WIMS = %s----" % rep)
         return rep
 
     def modifierExamen(self, param):
