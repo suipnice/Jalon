@@ -29,7 +29,8 @@
                           data-success_msg_post string:a été modifiée en"
           tal:define="error errors/title | nothing;
                       tags context/getDisplaySubjects"
-          i18n:attributes="data-empty_text; data-error_msg_duplicate; data-success_msg_pre; data-success_msg_post">
+          i18n:attributes="data-empty_text; data-error_msg_duplicate;
+                           data-success_msg_pre; data-success_msg_post">
 
         <div>
             <select name="tag_list">
