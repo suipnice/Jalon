@@ -20,18 +20,19 @@
     Avec :
           tal:attributes="action string:${context/absolute_url}/${template/id}"
     --></tal:comment>
-    <form id="js-editTag" method="post"
+    <form id="js-editTag" class="no_reveal_action" method="post"
           tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-empty_text string:… puis éditez-la et enregistrez vos modifications.;
+                          data-error_msg_duplicate string:Une étiquette similaire existe déjà.;
+                          data-error_msg_identical string:L'étiquette n'a pas été modifiée.;
                           data-success_msg_pre string:L'étiquette;
                           data-success_msg_post string:a été modifiée en"
           tal:define="error errors/title | nothing;
                       tags context/getDisplaySubjects"
-          i18n:attributes="data-empty_text; data-success_msg_pre; data-success_msg_post">
+          i18n:attributes="data-empty_text; data-error_msg_duplicate;
+                           data-success_msg_pre; data-success_msg_post">
 
-        <div id="archetypes-fieldname-id"
-             tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
+        <div>
             <select name="tag_list">
                 <option value="0" i18n:translate="">Sélectionnez une étiquette dans la liste…</option>
                 <option tal:repeat="tag tags" tal:attributes="value tag/tag_id">
@@ -42,12 +43,12 @@
 
         <div id="archetypes-fieldname-title"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <div class="fieldErrorBox" tal:condition="error" i18n:translate="" />
             <input type="text" name="title"
                    maxlength="20" required="required" readonly="readonly"
                    value="… puis éditez-la et enregistrez vos modifications."
                    placeholder="Saisie obligatoire (20 caractères maximum)"
                    i18n:attributes="placeholder; value" />
+            <div class="fieldErrorBox" tal:condition="error" i18n:translate="" />
         </div>
 
         <input type="hidden" name="form.submitted" value="1" />

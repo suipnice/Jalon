@@ -80,6 +80,35 @@ function setTagFilter( inPopup ) {
 
 */
 
+
+/*
+    Recherche de doublon
+*/
+
+function _checkDuplicateTag( tag, excludeId ) {
+
+    var tag2Check = removeDiacritics( tag.trim( ).replace( /\s+/g, " " ) ).toLowerCase( ),
+        suppCriteria = "",
+        isDupe = false;
+
+    if ( typeof excludeId !== "undefined" ) {
+        suppCriteria = ":not(#" + excludeId + ")";
+    }
+
+    $( '#js-tag_filter > li > a:not(#last)' + suppCriteria ).each( function( index ) {
+
+        existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s+/g, " " ) ).toLowerCase( );
+
+        if ( existingTag === tag2Check ) {
+            isDupe = true;
+            return false;
+        }
+    } );
+
+    return isDupe;
+}
+
+
 /*
     Creation d'une etiquette
 */
@@ -90,23 +119,46 @@ function createTag( ) {
 
         event.preventDefault( );
 
-        var $form = $( this );
-        var $reveal = Foundation.utils.S( '#reveal-tags' );
-        var id = $form.find( 'input[name="tag_id"]' ).val( );
-        var title = $form.find( 'input[name="title"]' ).val( );
+        var $form = $( this ),
+            $reveal = Foundation.utils.S( '#reveal-tags' ),
+            $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
+            $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
+            $tagTitle = $tagTitleContainer.find( '> input[name="title"]' ),
+            id = $form.find( 'input[name="tag_id"]' ).val( ),
+            title = $tagTitle.val( ).trim( ).replace( /\s+/g, " " );
 
-        $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
-            var html = $.parseHTML( data );
-            if ( $( html ).find( '.error' ).length ) {
-                $reveal.html( data );
-                revealInit( $reveal );
-            } else {
-                Foundation.utils.S( '#js-tag_filter' ).append( ' <li><a id="' + id + '" class="filter-button unselected"><i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title + '</a>' );
-                Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
-                $reveal.foundation( 'reveal', 'close' );
-                setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + title + ' » ' + $form.data( 'success_msg_post' ) );
+        $tagTitle.val( title );
+
+        if ( ! _checkDuplicateTag( title ) ) {
+
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.remove( );
             }
-        } );
+
+            revealFormOnSubmitBehavior( $form );
+
+            $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+                var html = $.parseHTML( data );
+                if ( $( html ).find( '.error' ).length ) {
+                    $reveal.html( data );
+                    revealInit( $reveal );
+                } else {
+                    Foundation.utils.S( '#js-tag_filter' ).append( ' <li><a id="' + id + '" class="filter-button unselected"><i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title + '</a>' );
+                    Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
+                    $reveal.foundation( 'reveal', 'close' );
+                    setAlertBox( 'success', $form.data( 'success_msg_pre' ) + ' « ' + title + ' » ' + $form.data( 'success_msg_post' ) );
+                }
+            } );
+
+        } else {
+
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.text( $form.data( 'error_msg_duplicate' ) );
+            } else {
+                $tagTitleContainer.append( '<div class="fieldErrorBox">'
+                    + $form.data( 'error_msg_duplicate' ) + '</div>' );
+            }
+        }
 
     } );
 }
@@ -121,9 +173,8 @@ function editTag( ) {
     var $form = Foundation.utils.S( '#js-editTag' ),
         $tagId = $form.find( 'input[name="tag_id"]' ),
         $tagTitle = $form.find( 'input[name="title"]' ),
-        tagTitle = "",
-        //$submitButton = $form.find( 'button[type="submit"]' );
-        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' );
+        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' ),
+        tagTitle = "";
 
 
     $form.on( 'change', 'select[name="tag_list"]', function( ) {
@@ -154,29 +205,56 @@ function editTag( ) {
         event.preventDefault( );
 
         var $reveal = Foundation.utils.S( '#reveal-tags' ),
+            $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
+            $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
             tagId = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( ).trim( );
+            title = $tagTitleContainer.find( 'input[name="title"]' ).val( ).trim( ).replace( /\s+/g, " " ),
+            errorMessage = "";
 
-        $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+        if ( title === tagTitle ) {
+            errorMessage = $form.data( 'error_msg_identical' );
+        } else if ( _checkDuplicateTag( title, tagId ) ) {
+            errorMessage = $form.data( 'error_msg_duplicate' );
+        }
 
-            var html = $.parseHTML( data );
+        if ( errorMessage === "" ) {
 
-            if ( $( html ).find( '.error' ).length ) {
-
-                $reveal.html( data );
-                revealInit( $reveal );
-
-            } else {
-
-                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
-                $reveal.foundation( 'reveal', 'close' );
-                setAlertBox( 'success',
-                             $form.data( 'success_msg_pre' )
-                             + ' « ' + tagTitle + ' » '
-                             + $form.data( 'success_msg_post' )
-                             + ' « ' + title + ' ».' );
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.remove( );
             }
-        } );
+
+            revealFormOnSubmitBehavior( $form );
+
+            $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+
+                var html = $.parseHTML( data );
+
+                if ( $( html ).find( '.error' ).length ) {
+
+                    $reveal.html( data );
+                    revealInit( $reveal );
+
+                } else {
+
+                    $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
+                    $reveal.foundation( 'reveal', 'close' );
+                    setAlertBox( 'success',
+                                 $form.data( 'success_msg_pre' )
+                                 + ' « ' + tagTitle + ' » '
+                                 + $form.data( 'success_msg_post' )
+                                 + ' « ' + title + ' ».' );
+                }
+            } );
+
+        } else {
+
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.text( errorMessage );
+            } else {
+                $tagTitleContainer.append( '<div class="fieldErrorBox">'
+                    + errorMessage + '</div>' );
+            }
+        }
 
     } );
 }
