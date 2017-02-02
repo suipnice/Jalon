@@ -30,10 +30,10 @@
 
         <div id="archetypes-fieldname-title"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <input type="text" name="title" maxlength="20"
                    required="required"
                    placeholder="Saisie obligatoire (20 caractères maximum)" i18n:attributes="placeholder" />
+            <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
         </div>
 
         <input type="hidden" name="form.submitted" value="1" />

@@ -155,7 +155,7 @@ function createTag( ) {
             if ( $tagTitleErrorBox.length ) {
                 $tagTitleErrorBox.text( $form.data( 'error_msg_duplicate' ) );
             } else {
-                $tagTitleContainer.prepend( '<div class="fieldErrorBox">'
+                $tagTitleContainer.append( '<div class="fieldErrorBox">'
                     + $form.data( 'error_msg_duplicate' ) + '</div>' );
             }
         }
@@ -252,7 +252,7 @@ function editTag( ) {
             if ( $tagTitleErrorBox.length ) {
                 $tagTitleErrorBox.text( errorMessage );
             } else {
-                $tagTitleContainer.prepend( '<div class="fieldErrorBox">'
+                $tagTitleContainer.append( '<div class="fieldErrorBox">'
                     + errorMessage + '</div>' );
             }
         }

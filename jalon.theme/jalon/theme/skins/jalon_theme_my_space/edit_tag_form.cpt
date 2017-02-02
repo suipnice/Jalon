@@ -42,12 +42,12 @@
 
         <div id="archetypes-fieldname-title"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <div class="fieldErrorBox" tal:condition="error" i18n:translate="" />
             <input type="text" name="title"
                    maxlength="20" required="required" readonly="readonly"
                    value="… puis éditez-la et enregistrez vos modifications."
                    placeholder="Saisie obligatoire (20 caractères maximum)"
                    i18n:attributes="placeholder; value" />
+            <div class="fieldErrorBox" tal:condition="error" i18n:translate="" />
         </div>
 
         <input type="hidden" name="form.submitted" value="1" />
