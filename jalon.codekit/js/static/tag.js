@@ -85,15 +85,19 @@ function setTagFilter( inPopup ) {
     Recherche de doublon
 */
 
-function _checkDuplicateTag( tag ) {
+function _checkDuplicateTag( tag, excludeId ) {
 
     var tag2Check = removeDiacritics( tag.trim( ).replace( /\s/g, " " ) ).toLowerCase( ),
-        existingTag = "",
+        suppCriteria = "",
         isDupe = false;
 
-    console.log( "tag = " + tag );
+    if ( typeof excludeId !== "undefined" ) {
+        suppCriteria = ":not(#" + excludeId + ")";
+    }
 
-    Foundation.utils.S( '#js-tag_filter > li > a:not(#last)' ).each(function( index ) {
+    console.log( "tag = " + tag + " / excludedId = " + excludeId );
+
+    $( '#js-tag_filter > li > a:not(#last)' + suppCriteria ).each( function( index ) {
 
         existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s/g, " " ) ).toLowerCase( );
         console.log( index + " : " + existingTag );
@@ -202,29 +206,56 @@ function editTag( ) {
         event.preventDefault( );
 
         var $reveal = Foundation.utils.S( '#reveal-tags' ),
+            $tagTitleContainer = $reveal.find( '#archetypes-fieldname-title' ),
+            $tagTitleErrorBox = $tagTitleContainer.find( '> .fieldErrorBox' ),
             tagId = $form.find( 'input[name="tag_id"]' ).val( ),
-            title = $form.find( 'input[name="title"]' ).val( ).trim( );
+            title = $form.find( 'input[name="title"]' ).val( ).trim( ),
+            errorMessage = "";
 
-        $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+        if ( title === tagTitle ) {
+            errorMessage = $form.data( 'error_msg_identical' );
+        } else if ( _checkDuplicateTag( title, tagId ) ) {
+            errorMessage = $form.data( 'error_msg_duplicate' );
+        }
 
-            var html = $.parseHTML( data );
+        if ( errorMessage === "" ) {
 
-            if ( $( html ).find( '.error' ).length ) {
-
-                $reveal.html( data );
-                revealInit( $reveal );
-
-            } else {
-
-                $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
-                $reveal.foundation( 'reveal', 'close' );
-                setAlertBox( 'success',
-                             $form.data( 'success_msg_pre' )
-                             + ' « ' + tagTitle + ' » '
-                             + $form.data( 'success_msg_post' )
-                             + ' « ' + title + ' ».' );
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.remove( );
             }
-        } );
+
+            revealFormOnSubmitBehavior( $form );
+
+            $.post( $form.attr( 'action' ), $form.serialize( ), null, 'html' ).done( function( data ) {
+
+                var html = $.parseHTML( data );
+
+                if ( $( html ).find( '.error' ).length ) {
+
+                    $reveal.html( data );
+                    revealInit( $reveal );
+
+                } else {
+
+                    $( '#' + tagId ).html( '<i class="fa fa-circle no-pad"></i><i class="fa fa-circle-thin no-pad"></i> ' + title );
+                    $reveal.foundation( 'reveal', 'close' );
+                    setAlertBox( 'success',
+                                 $form.data( 'success_msg_pre' )
+                                 + ' « ' + tagTitle + ' » '
+                                 + $form.data( 'success_msg_post' )
+                                 + ' « ' + title + ' ».' );
+                }
+            } );
+
+        } else {
+
+            if ( $tagTitleErrorBox.length ) {
+                $tagTitleErrorBox.text( errorMessage );
+            } else {
+                $tagTitleContainer.prepend( '<div class="fieldErrorBox">'
+                    + errorMessage + '</div>' );
+            }
+        }
 
     } );
 }
