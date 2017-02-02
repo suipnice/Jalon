@@ -111,7 +111,7 @@ div.panel label{
       tal:define="gestion request/gestion | string:gestion_bdd">
     <section class="small-12 columns">
         <!--
-            Gestion des utilsateurs de Jalon
+            Gestion des utilisateurs de Jalon
         -->
         <metal:macro define-macro="gestion_utilisateurs">
             <tal:define define="isBDD context/isBDD;
