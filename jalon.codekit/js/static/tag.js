@@ -95,12 +95,9 @@ function _checkDuplicateTag( tag, excludeId ) {
         suppCriteria = ":not(#" + excludeId + ")";
     }
 
-    console.log( "tag = " + tag + " / excludedId = " + excludeId );
-
     $( '#js-tag_filter > li > a:not(#last)' + suppCriteria ).each( function( index ) {
 
         existingTag = removeDiacritics( $( this ).text( ).trim( ).replace( /\s+/g, " " ) ).toLowerCase( );
-        console.log( index + " : " + existingTag );
 
         if ( existingTag === tag2Check ) {
             isDupe = true;
@@ -173,9 +170,8 @@ function editTag( ) {
     var $form = Foundation.utils.S( '#js-editTag' ),
         $tagId = $form.find( 'input[name="tag_id"]' ),
         $tagTitle = $form.find( 'input[name="title"]' ),
-        tagTitle = "",
-        //$submitButton = $form.find( 'button[type="submit"]' );
-        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' );
+        $submitButton = $form.find( 'button[name="form.button.edit_tag"]' ),
+        tagTitle = "";
 
 
     $form.on( 'change', 'select[name="tag_list"]', function( ) {
