@@ -87,7 +87,7 @@
                 <ul class="button-group radius even-3 legend_bar">
                     <li>
                         <a class="button tiny disabled" href="#">
-                            <i class="fa fa-arrow-circle-down"></i>Tout déplier
+                            <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
                         </a>
                     </li>
                     <li>
@@ -100,7 +100,7 @@
                     </li>
                     <li>
                         <a class="button tiny" href="#">
-                            <i class="fa fa-arrow-circle-right"></i>Tout replier
+                            <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Tout replier</tal:block>
                         </a>
                     </li>
                 </ul>
@@ -132,7 +132,7 @@
                 <ul class="button-group expand radius even-3 legend_bar">
                     <li>
                         <a class="button tiny disabled" href="#">
-                            <i class="fa fa-arrow-circle-down"></i>Tout déplier
+                            <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
                         </a>
                     </li>
                     <li>
@@ -145,7 +145,7 @@
                     </li>
                     <li>
                         <a class="button tiny" href="#">
-                            <i class="fa fa-arrow-circle-right"></i>Tout replier
+                            <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Tout replier</tal:block>
                         </a>
                     </li>
                 </ul>
