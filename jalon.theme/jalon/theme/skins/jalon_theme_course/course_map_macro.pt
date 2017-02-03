@@ -84,11 +84,12 @@
                        data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:omit-tag="element/is_item_title_or_text">
                         <tal:replace replace="structure element/item_title"/>
-                        <div class="pod_thumb"
-                             tal:condition="element/item_video">
+                        <tal:condition condition="element/item_video">
+                        <div class="pod_element panel radius">
                             <img tal:attributes="src element/item_image"/>
-                            <!-- pour accéder à l'auteur element/item_auteur, la description element/item_description -->
+                            <p tal:content="python:here.getShortText(element['item_description'], 360)"/>
                         </div>
+                        </tal:condition>
                     </a>
                 </span>
             </div>
