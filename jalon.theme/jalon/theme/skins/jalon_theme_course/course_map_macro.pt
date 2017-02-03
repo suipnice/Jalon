@@ -82,9 +82,14 @@
                                        class string:typeElementTitre"
                        title="Voir cet élément du plan"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"
-                       tal:content="structure element/item_title"
-                       tal:omit-tag="element/is_item_title_or_text"
-                       i18n:attributes="title"/>
+                       tal:omit-tag="element/is_item_title_or_text">
+                        <tal:replace replace="structure element/item_title"/>
+                        <div class="pod_thumb"
+                             tal:condition="element/item_video">
+                            <img tal:attributes="src element/item_image"/>
+                            <!-- pour accéder à l'auteur element/item_auteur, la description element/item_description -->
+                        </div>
+                    </a>
                 </span>
             </div>
             <tal:condition condition="element/is_item_title">

@@ -880,7 +880,7 @@ class JalonCours(ATFolder):
         return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
-        # LOG.info("----- getCourseMapItems -----")
+        LOG.info("----- getCourseMapItems -----")
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
@@ -893,11 +893,20 @@ class JalonCours(ATFolder):
         for course_map_item in course_map_items_list:
             # index = index + 1
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
+            LOG.info(item_properties)
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
                     "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", ""),
-                    "item_link":    ""}
+                    "item_link":    "",
+                    "item_video":   False}
+
+            if "complementElement" in item_properties:
+                if "image" in item_properties["complementElement"]:
+                    item["item_video"] = True
+                    item["item_image"] = item_properties["complementElement"]["image"]
+                    item["item_auteur"] = item_properties["complementElement"]["auteur"]
+                    item["item_description"] = item_properties["complementElement"]["description"]
 
             is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
             item["is_display_item_bool"] = True if is_display_item["val"] else False
@@ -1445,9 +1454,10 @@ class JalonCours(ATFolder):
 
         complement_element = None
         if item_type in ["Video", "VOD"]:
-            complement_element = {"value":  display_in_plan,
-                                  "auteur": item_object.getVideoauteurname(),
-                                  "image":  item_object.getVideothumbnail()}
+            complement_element = {"value":       display_in_plan,
+                                  "auteur":      item_object.getVideoauteurname(),
+                                  "image":       item_object.getVideothumbnail(),
+                                  "description": item_object.Description()}
 
         self.addItemInCourseMap(item_id_no_dot, map_position)
         self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
