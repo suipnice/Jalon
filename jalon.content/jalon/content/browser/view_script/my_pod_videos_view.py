@@ -65,8 +65,8 @@ class MyPodVideosView(MySpaceView):
         return self.getItemsList(folder, selected_tags_list, content_filter)
 
     def updateJalonVideos(self, folder, portal, member_id):
-        # LOG.info("----- updateJalonVideos -----")
-        jalon_videos_id = set([object_id.split("-")[-1] for object_id in folder.objectIds()])
+        LOG.info("----- updateJalonVideos -----")
+        jalon_videos_id = set([int(object_id.split("-")[-1]) for object_id in folder.objectIds()])
 
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         response_elasticsearch = portal_elasticsearch.searchElasticsearch("mes_videos", "", 1)
@@ -76,7 +76,7 @@ class MyPodVideosView(MySpaceView):
             dico_videos_pod = {}
             videos_ids = []
             for video in response_elasticsearch["liste_videos"]:
-                videos_ids.append(str(video["id"]))
+                videos_ids.append(video["id"])
                 dico_videos_pod[video["id"]] = video
 
             if nb_pages > 1:
@@ -89,11 +89,13 @@ class MyPodVideosView(MySpaceView):
             videos_ids = set(videos_ids)
             videos_del = jalon_videos_id.difference(videos_ids)
 
-            # LOG.info(jalon_videos_id)
-            # LOG.info(videos_ids)
-            # LOG.info(videos_del)
+            LOG.info(jalon_videos_id)
+            LOG.info(videos_ids)
+            LOG.info(videos_del)
 
             videos_add = videos_ids.difference(jalon_videos_id)
+            LOG.info(videos_add)
+            LOG.info(dico_videos_pod)
             for video_id in videos_add:
                 video = dico_videos_pod[video_id]
                 object_id = "Externe-%s-%s" % (member_id, video_id)
