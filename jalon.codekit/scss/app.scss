@@ -1536,13 +1536,19 @@ code {
     div.pod_element {
         overflow-y: hidden;
         margin: .25rem 5rem 0 0;
-        height: 5.7rem;
 
         & > img {
-            float: left;
-            height: 4.8rem;
+            height: auto;
             vertical-align: text-top;
             margin: 0 1rem 0 0;
+
+            &.show-for-small-only { width: 100%; }
+
+            &.show-for-medium-only,
+            &.show-for-large-up { float: left; }
+
+            &.show-for-medium-only { width: 11rem; }
+            &.show-for-large-up { width: 16rem; }
         }
 
         & > p {
