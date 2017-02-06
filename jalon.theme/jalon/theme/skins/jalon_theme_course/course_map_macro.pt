@@ -78,17 +78,33 @@
                 <span tal:attributes="class element/item_span_css">
                     <i title="Cliquer pour replier/déplier le contenu." class="fa no-pad js-fold"
                        tal:condition="element/is_item_title"></i>
-                    <a tal:attributes="href element/item_link | nothing;
-                                       class string:typeElementTitre"
+                    <a class="typeElementTitre"
                        title="Voir cet élément du plan"
                        data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href element/item_link | nothing"
                        tal:omit-tag="element/is_item_title_or_text">
                         <tal:replace replace="structure element/item_title"/>
-                        <div class="pod_thumb"
-                             tal:condition="element/item_video">
-                            <img tal:attributes="src element/item_image"/>
-                            <!-- pour accéder à l'auteur element/item_auteur, la description element/item_description -->
+                        <tal:condition condition="element/item_video">
+                        <div class="pod_element panel radius">
+                            <img class="show-for-small-only"
+                                 tal:attributes="src element/item_image"/>
+                            <img class="show-for-medium-only"
+                                 tal:attributes="src element/item_image"/>
+                            <img class="show-for-large-up"
+                                 tal:attributes="src element/item_image"/>
+                            <tal:condition condition="element/item_description">
+                            <p class="show-for-medium-only"
+                               tal:content="python:here.getShortText(element['item_description'], 260)"/>
+                            <p class="show-for-large-up"
+                               tal:content="python:here.getShortText(element['item_description'], 520)"/>
+                            </tal:condition>
+                            <tal:condition condition="not:element/item_description">
+                            <p class="show-for-medium-up" i18n:translate="">
+                                <em>Ce contenu UNSpod n'a pas de description.</em>
+                            </p>
+                            </tal:condition>
                         </div>
+                        </tal:condition>
                     </a>
                 </span>
             </div>

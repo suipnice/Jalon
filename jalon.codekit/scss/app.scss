@@ -1533,12 +1533,27 @@ code {
 
     }
 
-    img.pod_thumb {
-        display: block;
-        max-width: 90%;
-        max-height: 7rem;
-        margin: rem-calc( 6 8 4 );
-        border: 1px solid #d8d8d8;
+    div.pod_element {
+        overflow-y: hidden;
+        margin: .25rem 5rem 0 0;
+
+        & > img {
+            height: auto;
+            vertical-align: text-top;
+            margin: 0 1rem 0 0;
+
+            &.show-for-small-only { width: 100%; }
+
+            &.show-for-medium-only,
+            &.show-for-large-up { float: left; }
+
+            &.show-for-medium-only { width: 11rem; }
+            &.show-for-large-up { width: 16rem; }
+        }
+
+        & > p {
+            line-height: 1rem;
+        }
     }
 }
 

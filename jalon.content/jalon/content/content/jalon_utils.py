@@ -106,13 +106,15 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                 return None
             # dico = {"qclass": qclass, "quser": quser, "code": quser, "option": "lightpopup", "data1": remote_addr}
             rep = context.wims("authUser", dico)
-            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser", "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
+            rep = context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser",
+                               "message": "impossible d'authentifier l'utilisateur %s. (Sur 2e essai)" % quser, "requete": dico})
         else:
             # L'authentification du supervisor a planté.
             # => WIMS doit être indisponible. (Ou WIMS a refusé la connexion.)
             # Cas possible : supervisor is in an exam session started on another IP
             context.plone_utils.addPortalMessage(message, type=mess_type)
-            context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser", "message": "impossible d'authentifier le supervisor", "requete": dico})
+            context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser",
+                         "message": "impossible d'authentifier le supervisor", "requete": dico})
             LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
             return None
     rep["url_connexion"] = url_connexion
@@ -553,7 +555,7 @@ def rechercherUserLDAPEduPerson(username, attribut, ldap="ldap-plugin", match=Fa
     return retour
 
 
-def getShortText(text, limit=75, suffix='…'):
+def getShortText(text, limit=75, suffix=u'…'):
     u"""
         Troncature de texte.
 
@@ -573,13 +575,13 @@ def getShortText(text, limit=75, suffix='…'):
         text (str):             le texte tronqué
 
     """
-    text = re.sub(r'\s+', r' ', text.strip())
+    text = re.sub(r'\s+', r' ', text.decode('utf8').strip())
     if len(text) > limit:
         text = text[:limit + 1]
-        if text.find(' ') > -1:
-            text = ' '.join(text.split(' ')[:-1])
+        if text.find(u' ') > -1:
+            text = u' '.join(text.split(u' ')[:-1])
             limit = len(text)
-        return text[0:limit].rstrip('?!:;.,-" “”«» ') + suffix
+        return text[0:limit].rstrip(u'?!:;.,-" “”«» ') + suffix
     else:
         return text
 
