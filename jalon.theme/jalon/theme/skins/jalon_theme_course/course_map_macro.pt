@@ -36,7 +36,7 @@
         <li class="legend element"
             tal:condition="my_view/is_personnel">
             <i class="fa fa-info-circle fa-fw"></i>
-            Faites glisser des éléments existants du plan sur le titre, ou ajoutez de nouveaux éléments.
+            <tal:block i18n:translate="">Faites glisser des éléments existants du plan sur le titre, ou ajoutez de nouveaux éléments.</tal:block>
         </li>
     <tal:repeat repeat="element course_map/course_map_items_list">
         <li tal:attributes="id element/item_css_id;
