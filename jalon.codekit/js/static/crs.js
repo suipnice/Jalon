@@ -247,11 +247,10 @@ function setSortablePlan( ) {
                                 classe: ui.item[ 0 ].className,
                                 idAttente: ui.item[ 0 ].id
                             },
-                            success: function( data ) {
-                                //console.log( data );
-                            },
+                            /*success: function( data ) {
+                                console.log( data );
+                            },*/
                             error: function( data, textStatus, errorThrown ) {
-                                //console.log( data );
                                 console.log( errorThrown );
                                 console.log( textStatus );
                             },
@@ -319,21 +318,18 @@ function setStaffPlanChapterFolding( disclosureState ) {
                     open: disclosureState,
                 },
                 success: function( data ) {
-                    //console.log( data );
                     $title.html( MSG_LOADING_OK );
                     setPlanChapterFolding( disclosureState );
-                    //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
                     $plan.fadeTo( 200, 1, function( ) {
                         $title.html( titleOrgHtml );
                     } );
                 },
                 error: function( data, textStatus, errorThrown ) {
-                    //console.log( data );
                     console.log( errorThrown );
                     console.log( textStatus );
                 },
                 complete: function( ) {
-                    // Deverouillage
+                    // Deverrouillage
                     isRefreshing = false;
                 }
             } );
@@ -376,21 +372,18 @@ function setStaffPlanChapterFoldCommand( ) {
                         open: $parentListItem.hasClass( 'collapsed' ),
                     },
                     success: function( data ) {
-                        //console.log( data );
                         $title.html( MSG_LOADING_OK );
                         setPlanChapterFold( $target );
-                        //$plan.delay( 600 ).fadeTo( 200, 1, function( ) {
                         $plan.fadeTo( 200, 1, function( ) {
                             $title.html( titleOrgHtml );
                         } );
                     },
                     error: function( data, textStatus, errorThrown ) {
-                        //console.log( data );
                         console.log( errorThrown );
                         console.log( textStatus );
                     },
                     complete: function( ) {
-                        // Deverouillage
+                        // Deverrouillage
                         isRefreshing = false;
                     }
                 } );
