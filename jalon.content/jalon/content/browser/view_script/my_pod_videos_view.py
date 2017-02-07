@@ -66,13 +66,19 @@ class MyPodVideosView(MySpaceView):
 
     def updateJalonVideos(self, folder, portal, member_id):
         LOG.info("----- updateJalonVideos -----")
-        jalon_videos_id = set([int(object_id.split("-")[-1]) for object_id in folder.objectIds()])
+        my_videos_ids = []
+        for video in folder.objectIds():
+            if member_id in video:
+                my_videos_ids.append(video)
+        jalon_videos_id = set([int(object_id.split("-")[-1]) for object_id in my_videos_ids])
 
         portal_elasticsearch = getattr(portal, "portal_jalon_elasticsearch", None)
         response_elasticsearch = portal_elasticsearch.searchElasticsearch("mes_videos", "", 1)
 
         nb_pages = response_elasticsearch["nb_pages"]
-        if nb_pages:
+        if not nb_pages:
+            videos_del = jalon_videos_id
+        else:
             dico_videos_pod = {}
             videos_ids = []
             for video in response_elasticsearch["liste_videos"]:
@@ -89,9 +95,9 @@ class MyPodVideosView(MySpaceView):
             videos_ids = set(videos_ids)
             videos_del = jalon_videos_id.difference(videos_ids)
 
-            LOG.info(jalon_videos_id)
-            LOG.info(videos_ids)
-            LOG.info(videos_del)
+            LOG.info("jalon_videos_id : %s" % jalon_videos_id)
+            LOG.info("videos_ids : %s" % videos_ids)
+            LOG.info("videos_del : %s" % videos_del)
 
             videos_add = videos_ids.difference(jalon_videos_id)
             LOG.info(videos_add)
@@ -114,19 +120,15 @@ class MyPodVideosView(MySpaceView):
                              "Videothumbnail":       video["thumbnail"]}
                     object_video.setProperties(param)
 
-            for video_id in videos_del:
-                object_id = "Externe-%s-%s" % (member_id, video_id)
-                video_object = getattr(folder, object_id)
-                relatedItems = [related_item.getId() for related_item in video_object.getRelatedItems()]
-                brains = folder.portal_catalog(path={"query": relatedItems, "depth": 0})
-                for brain in brains:
-                    brain_object = brain.getObject()
-                    if brain_object.portal_type == "JalonCours":
-                        brain_object.deleteCourseMapItem(object_id, None)
-                    else:
-                        brain_object.retirerElement(object_id, "sujets")
-                folder.manage_delObjects(object_id)
-
-        elif jalon_videos_id:
-            # Supprimer toutes les vidéos
-            pass
+        for video_id in videos_del:
+            object_id = "Externe-%s-%s" % (member_id, video_id)
+            video_object = getattr(folder, object_id)
+            relatedItems = [related_item.getId() for related_item in video_object.getRelatedItems()]
+            brains = folder.portal_catalog(path={"query": relatedItems, "depth": 0})
+            for brain in brains:
+                brain_object = brain.getObject()
+                if brain_object.portal_type == "JalonCours":
+                    brain_object.deleteCourseMapItem(object_id, None)
+                else:
+                    brain_object.retirerElement(object_id, "sujets")
+            folder.manage_delObjects(object_id)
