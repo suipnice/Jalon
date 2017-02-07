@@ -574,7 +574,6 @@ button.dropdown.small:after { right: .5rem; }
 
 #js-list-ressource.ressource-wims .f-dropdown,
 #js-list-ressource.ressource-webconf .f-dropdown,
-#item-adder .f-dropdown { max-width: 170px; }
 
 .reveal-modal .f-dropdown.drop-left,
 #js-list-ressource #drop-batch.f-dropdown { max-width: 160px; }
@@ -1297,7 +1296,6 @@ code {
                     &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
                     &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
                     &.course-activity { @include button-style( $course_activity-color, false, false, scale-color( $course_activity-color, $lightness: $button-function-factor), $course_activity-color ); }
-                    &.course-direct { @include button-style( $course_direct-color, false, false, scale-color( $course_direct-color, $lightness: $button-function-factor), $course_direct-color ); }
                 }
 
                 li {
