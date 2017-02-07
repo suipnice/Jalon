@@ -54,7 +54,7 @@ function setPlanBehaviors( isNotStudent ) {
 
         var isStaff = ( typeof isNotStudent === "undefined" ) ? false : true;
 
-        if ( ! $( this).hasClass( '.disabled' ) ) {
+        if ( ! $( this).hasClass( 'disabled' ) ) {
 
             if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
 
