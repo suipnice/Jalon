@@ -85,7 +85,8 @@
                     </li>
                 </ul>
                 <p>
-                    <strong>Auteur :</strong> <tal:replace replace="item/getVideoauteurname"/>
+                    <strong><tal:block i18n:translate="">Propriétaire :</tal:block></strong>
+                    <tal:replace replace="item/getVideoauteurname"/>
                 </p>
                 <a title="Voir la vidéo"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"

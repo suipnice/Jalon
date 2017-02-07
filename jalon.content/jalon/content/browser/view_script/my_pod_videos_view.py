@@ -22,7 +22,7 @@ class MyPodVideosView(MySpaceView):
         return [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-folder-open",
                  "link":  self.context.aq_parent.absolute_url()},
-                {"title": _(u"Mes vidéos POD"),
+                {"title": _(u"Mes contenus UNSPod"),
                  "icon":  "fa fa-youtube-play",
                  "link":  self.context.absolute_url()}]
 

@@ -18,7 +18,8 @@
     </h2>
 
     <div tal:condition="python:external_resource_type == 'Video'">
-        <strong>Auteur :</strong> <tal:block replace="context/getVideoauteurname"/>
+        <strong><tal:block i18n:translate="">Propriétaire :</tal:block></strong>
+        <tal:block replace="context/getVideoauteurname"/>
     </div>
 
     <div class="panel radius"

@@ -691,16 +691,16 @@ msgid "Mes termes de glossaire"
 msgstr ""
 
 #: ../browser/view_script/my_pod_videos_view.py:25
-#: ../content/jalonfolder.py:144
-msgid "Mes vidéos POD"
-msgstr "My POD videos"
+#: ../content/jalonfolder.py:148
+msgid "Mes contenus UNSPod"
+msgstr "My UNSPod contents"
 
 #: ../content/jalon_properties.py:390
 msgid "Mes étudiants"
 msgstr "My students"
 
 #: ../event/notify.py:75
-msgid "Message ajouté par: "
+msgid "Message ajouté par : "
 msgstr ""
 
 #: ../browser/templates/exercicewims_view_CORS.pt:71
@@ -885,7 +885,7 @@ msgid "Quelques consignes que devront suivre vos &eacute;tudiants pour travaille
 msgstr ""
 
 #: ../content/jalonfolder.py:147
-msgid "Rechercher une vidéo sur POD"
+msgid "Rechercher un contenu sur UNSPod"
 msgstr ""
 
 #: ../content/jalonboitedepot.py:117

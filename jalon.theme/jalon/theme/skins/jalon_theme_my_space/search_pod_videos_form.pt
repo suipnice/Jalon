@@ -144,7 +144,8 @@
                                 tal:content="python:context.getShortText(video['title'], 20)"/>
 
                             <p>
-                                <strong>Auteur :</strong> <tal:replace replace="video/owner_full_name"/>
+                                <strong><tal:block i18n:translate="">Propriétaire :</tal:block></strong>
+                                <tal:replace replace="video/owner_full_name"/>
                             </p>
 
                             <a title="Voir la vidéo"

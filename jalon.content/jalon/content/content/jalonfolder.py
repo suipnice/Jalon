@@ -145,10 +145,10 @@ class JalonFolder(ATFolder):
         return [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-folder-open",
                  "link":  self.aq_parent.absolute_url()},
-                {"title": _(u"Mes vidéos POD"),
+                {"title": _(u"Mes contenus UNSPod"),
                  "icon":  "fa fa-youtube-play",
                  "link":  self.absolute_url()},
-                {"title": _(u"Rechercher une vidéo sur POD"),
+                {"title": _(u"Rechercher un contenu sur UNSPod"),
                  "icon":  "fa fa-search",
                  "link":  "%s/search_pod_videos_form" % self.absolute_url()}]
 

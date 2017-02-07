@@ -72,8 +72,8 @@ def sendMail(object, event):
     subject = "[%s]" % portal.Title() + subject
     #object.plone_log(subject)
 
-    dummy = _(u"Message ajouté par: ")
-    msg_from = u"Message ajouté par: "
+    dummy = _(u"Message ajouté par : ")
+    msg_from = u"Message ajouté par : "
     from_user = translation_service.utranslate(domain='jalon.content',
                                                msgid=msg_from,
                                                default=msg_from,
