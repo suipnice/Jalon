@@ -14,8 +14,8 @@
 
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
-        <strong i18n:translate="">Il n'y a aucune vidéo à la demande dans votre espace.</strong><br/>
-        <tal:block i18n:translate="">Pour en ajouter, cliquez sur la bouton « Rechercher une vidéo et l'ajouter à votre espace VOD » ci-dessus.</tal:block>
+        <strong i18n:translate="">Il n'y a aucun contenu UNSPod dans votre espace.</strong><br/>
+        <tal:block i18n:translate="">Pour en ajouter, cliquez sur le bouton « Rechercher et ajouter du contenu UNSPod » ci-dessus.</tal:block>
     </div>
 
     <tal:listing condition="my_view/my_items_list">
