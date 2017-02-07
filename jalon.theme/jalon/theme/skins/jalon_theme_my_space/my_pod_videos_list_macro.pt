@@ -71,7 +71,7 @@
                     </li>
                     <li tal:condition="is_owner">
                         <a target="_blank"
-                           tal:attributes="href string:${context/absolute_url}/${item/getId}/cas_pod_login/delete">
+                           tal:attributes="href string:${item/getURL}/cas_pod_login/delete">
                             <i class="fa fa-trash-o fa-fw no-pad"></i>
                             <tal:block i18n:translate="">Supprimer</tal:block>
                         </a>

@@ -19,12 +19,12 @@ else:
 
 pod_videos_folder = context.getMySubSpaceFolder(user_id, "Video")
 for video_id in video_id_list:
-    object_id = "Externe-%s-%s" % (user_id, video_id)
+    video_properties = context.searchElasticsearch(type_search="video", term_search=video_id)
+    object_id = "Externe-%s-%s" % (video_properties["owner"], video_id)
     object_video = getattr(pod_videos_folder, object_id, None)
     if not object_video:
         pod_videos_folder.invokeFactory(type_name='JalonRessourceExterne', id=object_id)
         object_video = getattr(pod_videos_folder, object_id)
-        video_properties = context.searchElasticsearch(type_search="video", term_search=video_id)
         param = {"Title":                video_properties["title"],
                  "TypeRessourceExterne": "Video",
                  "Videourl":             video_properties["full_url"],
