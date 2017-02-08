@@ -1496,9 +1496,17 @@ code {
 }
 
 #course_plan-plan {
+    margin-bottom: 0;
 
-    &.sortable li > div:first-child {
-        cursor: move;
+    &.sortable {
+
+        & > li:last-child {
+            margin-bottom: 1rem;
+        }
+
+        li > div:first-child {
+            cursor: move;
+        }
     }
 
     li {

@@ -66,25 +66,9 @@
                 </h2>
             </div>
 
-            <div class="row panel callout radius"
-                 tal:condition="not:my_view/has_course_map">
-                <tal:condition condition="my_view/is_personnel">
-                <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
-                    Affichage de la barre d'ajout
-                </metal:macro>
-                </tal:condition>
-                <ol id="course_plan-plan" class="sortable ui-sortable">
-                    <li>
-                        <div class="panel radius">
-                            <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
-                        </div>
-                    </li>
-                </ol>
-            </div>
-            <div class="row panel callout radius"
-                 tal:condition="my_view/has_course_map">
+            <div class="row panel callout radius">
 
-                <ul class="button-group radius even-3 legend_bar">
+                <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
                     <li>
                         <a class="button tiny disabled" href="#">
                             <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
@@ -111,25 +95,37 @@
                 </metal:macro>
                 </tal:condition>
 
+                <tal:condition condition="not:my_view/has_course_map">
+                <ol id="course_plan-plan" class="sortable ui-sortable">
+                    <li>
+                        <div class="panel radius">
+                            <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
+                        </div>
+                    </li>
+                </ol>
+                </tal:condition>
+
+                <tal:condition condition="my_view/has_course_map">
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
-                    <ol tal:attributes="id course_map/ol_css_id;
-                                        class course_map/ol_css_class">
+                <ol tal:attributes="id course_map/ol_css_id;
+                                    class course_map/ol_css_class">
                     <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
                         Affichage du plan du cours
                     </metal:macro>
-                    </ol>
+                </ol>
                 </tal:define>
+                </tal:condition>
 
-                <div class="panel radius show-for-medium-up"
-                      tal:condition="my_view/is_personnel">
+                <div tal:attributes="class python:context.test(my_view['has_course_map'], 'panel radius show-for-medium-up course_help', 'panel radius course_help hide')"
+                     tal:condition="my_view/is_personnel">
                     <i class="fa fa-info-circle no-pad"></i>
                     <tal:block i18n:translate="aide_plan">
                         Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité.
                     </tal:block>
                 </div>
 
-                <ul class="button-group expand radius even-3 legend_bar">
+                <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
                     <li>
                         <a class="button tiny disabled" href="#">
                             <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
