@@ -54,8 +54,9 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
 
         event.preventDefault( );
 
-        var $form = $( this );
-        var $reveal = Foundation.utils.S( '#' + revealID );
+        var $form = $( this ),
+            $planContainer = Foundation.utils.S( '#course_plan-plan' ),
+            $reveal = Foundation.utils.S( '#' + revealID );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
@@ -63,7 +64,14 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
 
                 // Refresh course
                 $.get( data ).done( function( coursePlanMarkup ) {
-                    $( '#course_plan-plan' ).html( coursePlanMarkup );
+                    $planContainer.html( coursePlanMarkup );
+                    if ( $planContainer.children( 'li' ).length > 1 ) {
+                        Foundation.utils.S( '#course_plan .legend_bar' ).removeClass( 'hide' );
+                        Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'hide' ).addClass( 'show-for-medium-up' );
+                    } else {
+                        Foundation.utils.S( '#course_plan .legend_bar' ).addClass( 'hide' );
+                        Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'show-for-medium-up' ).addClass( 'hide' );
+                    }
                     $reveal.foundation( 'reveal', 'close' );
                     //$( document ).foundation( 'dropdown', 'reflow' );
                     setAlertBox( 'success', $form.data( 'success_msg' ) );

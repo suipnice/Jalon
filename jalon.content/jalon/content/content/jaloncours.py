@@ -1584,13 +1584,19 @@ class JalonCours(ATFolder):
 
         item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, item_creator), self._type_folder_my_space_dict[folder_id]), item_id)
         item_relatedItems = item_object.getRelatedItems()
-        item_relatedItems.remove(self)
-        item_object.setRelatedItems(item_relatedItems)
-        item_object.reindexObject()
+        try:
+            item_relatedItems.remove(self)
+            item_object.setRelatedItems(item_relatedItems)
+            item_object.reindexObject()
+        except:
+            pass
 
-        course_relatedItems = self.getRelatedItems()
-        course_relatedItems.remove(item_object)
-        self.setRelatedItems(course_relatedItems)
+        try:
+            course_relatedItems = self.getRelatedItems()
+            course_relatedItems.remove(item_object)
+            self.setRelatedItems(course_relatedItems)
+        except:
+            pass
 
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
