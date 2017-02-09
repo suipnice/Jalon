@@ -1,7 +1,7 @@
 <metal:macro define-macro="footer">
 
         <footer class="row" role="contentinfo"
-                tal:define="footer python:context.etudiants.getFooter()">
+                tal:define="footer python:context.mes_etudiants.getFooter()">
 
             <div class="small-12 columns">
                 <a class="scroll-top left" title="Revenir en haut de la page"><i class="fa fa-arrow-circle-o-up fa-fw no-pad"></i></a>

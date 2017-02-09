@@ -25,6 +25,7 @@ class JalonActivity(SimpleItem):
     # Fonctions onglet Documents #
     # -------------------------- #
     def isChecked(self, idElement, formulaire, listeElement=None):
+        """check if idElement is checked."""
         # LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
