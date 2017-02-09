@@ -65,7 +65,7 @@ class MyPodVideosView(MySpaceView):
         return self.getItemsList(folder, selected_tags_list, content_filter)
 
     def updateJalonVideos(self, folder, portal, member_id):
-        LOG.info("----- updateJalonVideos -----")
+        # LOG.info("----- updateJalonVideos -----")
         my_videos_ids = []
         for video in folder.objectIds():
             if member_id in video:
@@ -95,13 +95,13 @@ class MyPodVideosView(MySpaceView):
             videos_ids = set(videos_ids)
             videos_del = jalon_videos_id.difference(videos_ids)
 
-            LOG.info("jalon_videos_id : %s" % jalon_videos_id)
-            LOG.info("videos_ids : %s" % videos_ids)
-            LOG.info("videos_del : %s" % videos_del)
+            # LOG.info("jalon_videos_id : %s" % jalon_videos_id)
+            # LOG.info("videos_ids : %s" % videos_ids)
+            # LOG.info("videos_del : %s" % videos_del)
 
             videos_add = videos_ids.difference(jalon_videos_id)
-            LOG.info(videos_add)
-            LOG.info(dico_videos_pod)
+            # LOG.info(videos_add)
+            # LOG.info(dico_videos_pod)
             for video_id in videos_add:
                 video = dico_videos_pod[video_id]
                 object_id = "Externe-%s-%s" % (member_id, video_id)
@@ -121,12 +121,16 @@ class MyPodVideosView(MySpaceView):
                     object_video.setProperties(param)
 
         for video_id in videos_del:
+            # LOG.info("Del Video : %s" % video_id)
             object_id = "Externe-%s-%s" % (member_id, video_id)
             video_object = getattr(folder, object_id)
-            relatedItems = [related_item.getId() for related_item in video_object.getRelatedItems()]
+            relatedItems = ["/".join(related_item.getPhysicalPath()) for related_item in video_object.getRelatedItems()]
+            # LOG.info("relatedItems : %s" % str(relatedItems))
             brains = folder.portal_catalog(path={"query": relatedItems, "depth": 0})
             for brain in brains:
                 brain_object = brain.getObject()
+                # LOG.info("brain_object : %s" % brain_object.getId())
+                # LOG.info("brain_object : %s" % brain_object.portal_type)
                 if brain_object.portal_type == "JalonCours":
                     brain_object.deleteCourseMapItem(object_id, None)
                 else:
