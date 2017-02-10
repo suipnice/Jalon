@@ -101,7 +101,7 @@ class CourseAddView(MySpaceView):
         is_course = True
         course_map_form = ""
         wims_exercice_model_list = ""
-        if course_path_list[-1].startswith("Cours-"):
+        if course_path_list[-1].startswith("Cours-") or course_path_list[-1].startswith("Cours."):
             if self.context.getId() == "mes_termes_glossaire":
                 is_course = False
                 course_map = course_object.getGlossaire()
