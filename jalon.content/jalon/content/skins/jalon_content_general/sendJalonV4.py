@@ -7,9 +7,11 @@
 ##title=
 ##
 
+# context = context
+
 portal = context.portal_url.getPortalObject()
 serveur = portal.getProperty("title")
-portal.etudiants.envoyerMailErreur({"objet"   : "%s : Erreur [%s]" % (serveur, userid)
-                                   ,"entry"   : entry})
+portal.mes_etudiants.envoyerMailErreur({"objet"   : "%s : Erreur [%s]" % (serveur, userid),
+                                        "entry"   : entry})
 
 return "envoie"

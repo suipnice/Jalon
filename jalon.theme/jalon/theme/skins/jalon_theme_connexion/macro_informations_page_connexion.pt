@@ -88,7 +88,7 @@
     </div>
 
     <div class="large-5 medium-5 small-12 columns" data-equalizer-watch="data-equalizer-watch"
-         tal:define="footerData python:context.etudiants.getFooter()">
+         tal:define="footerData python:context.mes_etudiants.getFooter()">
         <h3 i18n:translate="">Faites connaissance avec Jalon</h3>
         <p i18n:translate="">Pourquoi déployer et maintenir une plateforme remplie de dizaines de fonctions et modules sans lien pédagogique ? Jalon est le seul environnement pédagogique utilisable sans réelle formation. Jalon part des usages pédagogiques et intègre des outils plébiscités par les pédagogues et élèves.</p>
         <p><strong i18n:translate="">Nous avons inventé le concept d'ergonomie pédagogique : savoir utiliser une fonction de Jalon, c'est savoir utiliser tout Jalon.</strong></p>
