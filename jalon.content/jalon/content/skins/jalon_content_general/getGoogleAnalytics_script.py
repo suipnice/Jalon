@@ -10,6 +10,9 @@
 
 from Products.CMFCore.utils import getToolByName
 
+# context = context
+# authMember = authMember
+
 portal_jalon_properties = getToolByName(context, "portal_jalon_properties")
 ga_properties = portal_jalon_properties.getPropertiesGA()
 if not ga_properties["activer_ga"]:
@@ -53,14 +56,14 @@ except:
 variable.append("_gaq.push(['_setCustomVar',")
 variable.append("           1,")
 variable.append("           'User Type',")
-#Si roles[0] ne fonctionne pas, c'est certainement que le ldap n'est pas bien configuré dans acl_users
+# Si roles[0] ne fonctionne pas, c'est certainement que le ldap n'est pas bien configuré dans acl_users
 variable.append("           '%s'," % roles[0])
 variable.append("           1")
 variable.append("           ]);")
 variable.append("_gaq.push(['_setCustomVar',")
 variable.append("           2,")
 variable.append("           'User Id',")
-variable.append("           '%s'," % portal.etudiants.gaEncodeTexte(ga_properties["ga_cryptage"], authMember.getId()))
+variable.append("           '%s'," % portal.mes_etudiants.gaEncodeTexte(ga_properties["ga_cryptage"], authMember.getId()))
 variable.append("           1")
 variable.append("           ]);")
 

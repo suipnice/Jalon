@@ -30,7 +30,7 @@
 
             <tal:redirect define="redirection_view context/@@plone_redirector_view">
 
-                <tal:define define="breadcrumbs python:context.etudiants.getBreadcrumbs()">
+                <tal:define define="breadcrumbs python:context.mes_etudiants.getBreadcrumbs()">
                     <metal:macro use-macro="context/breadcrumbs_macro/macros/breadcrumbs">
                         Page d'affichage du fil d'ariane
                     </metal:macro>
