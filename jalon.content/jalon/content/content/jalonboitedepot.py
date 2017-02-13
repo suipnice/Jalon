@@ -1191,7 +1191,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             evaluation_number = self.getNombreCorrection()
             evaluation_by_peers_dict["evaluate_button"] = False
             evaluation_by_peers_dict["corrected_evaluation_list"] = []
-            evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôts à évaluer"
+            evaluation_by_peers_dict["peers_correction_indication"] = "Vous n'avez aucun dépôt à évaluer."
 
             evaluations_note_dict = {}
             evaluation_by_peers_dict["peers_evaluations"] = self.getPeersDict(user_id)
