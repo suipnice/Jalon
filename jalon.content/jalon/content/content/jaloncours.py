@@ -94,6 +94,12 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  searchable=False,
                  default=False,
                  widget=BooleanWidget(label=_(u"Inscriptions libres"))),
+    BooleanField("course_map_display",
+                 required=True,
+                 accessor="getCourseMapDisplay",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"Affichage du plan en mode page"))),
     LinesField("inscriptionsLibres",
                required=False,
                accessor="getInscriptionsLibres",
@@ -825,9 +831,9 @@ class JalonCours(ATFolder):
 
         return ""
 
-    def getDisplayCourseMapAttributes(self, user):
+    def getDisplayCourseMapAttributes(self, user, mode_etudiant=False):
         # LOG.info("----- getDisplayCourseMapAttributes -----")
-        return {"is_personnel":         self.isPersonnel(user),
+        return {"is_personnel":         self.isPersonnel(user, mode_etudiant),
                 "user_last_login_time": user.getProperty('login_time', ""),
                 "course_news":          self.getActualitesCours(),
                 "item_jalonner":        self.getCourseMapItemJalonner(),
@@ -879,8 +885,16 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseMap -----")
         return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
+    def getCourseMapTitle(self, course_map_id, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal):
+        LOG.info("----- getCourseMapTitle -----")
+        for item in list(self.getPlan()):
+            if item["idElement"] == course_map_id:
+                item_properties = item
+                return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
+        LOG.info(course_map_items_list)
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
