@@ -31,23 +31,19 @@
 
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <section class="show-for-medium-up medium-12 columns">
-
-            <div id="item-adder"
-                 tal:define="item_adder my_view/item_adder">
-                <a id="connect" class="button expand create" target="_blank"
-                   tal:attributes="href item_adder/item_adder_link">
-                   <i class="fa fa-play-circle-o"></i>
-                   <tal:replace replace="item_adder/item_adder_name" i18n:translate=""/>
-                </a>
-                <p class="panel callout radius"
-                   tal:condition="item_adder/item_adder_p">
-                    <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
-                    <strong tal:content="item_adder/item_adder_p"/>
-                </p>
-            </div>
-
-        </section>
+        <nav class="show-for-medium-up medium-12 columns"
+             tal:define="item_adder my_view/item_adder">
+            <a id="connect" class="button expand create" target="_blank"
+               tal:attributes="href item_adder/item_adder_link">
+               <i class="fa fa-play-circle-o"></i>
+               <tal:replace replace="item_adder/item_adder_name" i18n:translate=""/>
+            </a>
+            <p class="panel callout radius"
+               tal:condition="item_adder/item_adder_p">
+                <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
+                <strong tal:content="item_adder/item_adder_p"/>
+            </p>
+        </nav>
 
         <metal:macro use-macro="context/my_space_tags_macro/macros/tags_section">
             Gestion des étiquettes

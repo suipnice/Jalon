@@ -33,24 +33,22 @@
             Message de rôle utilisateur
         </metal:macro>
 
-        <section class="show-for-medium-up medium-12 columns"
-                 tal:condition="not:my_courses_view/is_student">
-            <nav id="item-adder">
-                <ul class="button-group expand radius even-2"
+        <nav class="show-for-medium-up medium-12 columns"
+             tal:condition="not:my_courses_view/is_student">
+            <ul class="button-group expand radius even-2"
+                tal:omit-tag="not:my_courses_view/is_manager">
+                <li tal:repeat="action my_courses_view/actions_list"
                     tal:omit-tag="not:my_courses_view/is_manager">
-                    <li tal:repeat="action my_courses_view/actions_list"
-                        tal:omit-tag="not:my_courses_view/is_manager">
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="class action/css_class;
-                                           href action/action_link">
-                           <i tal:attributes="class action/action_icon"></i>
-                           <tal:block tal:replace="action/action_name"
-                                      i18n:translate=""/>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </section>
+                    <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="class action/css_class;
+                                       href action/action_link">
+                       <i tal:attributes="class action/action_icon"></i>
+                       <tal:block tal:replace="action/action_name"
+                                  i18n:translate=""/>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
         <section id="js-list-cours" class="small-12 columns">
             <h2 id="js-update_title">

@@ -31,15 +31,13 @@
 
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <section class="show-for-medium-up medium-12 columns">
-            <div id="item-adder">
-                <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
-                   tal:attributes="href string:${context/absolute_url}/create_glossary_term_form">
-                   <i class="fa fa-plus-circle"></i>
-                   <tal:block i18n:translate="">Créer un terme de glossaire</tal:block>
-                </a>
-            </div>
-        </section>
+        <nav class="show-for-medium-up medium-12 columns">
+            <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${context/absolute_url}/create_glossary_term_form">
+               <i class="fa fa-plus-circle"></i>
+               <tal:block i18n:translate="">Créer un terme de glossaire</tal:block>
+            </a>
+        </nav>
 
         <metal:macro use-macro="context/my_space_tags_macro/macros/tags_section">
             Gestion des étiquettes

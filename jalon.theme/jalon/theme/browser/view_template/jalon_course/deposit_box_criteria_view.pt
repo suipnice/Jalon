@@ -39,14 +39,13 @@
 
         <tal:condition condition="my_view/is_personnel">
 
-        <div id="item-adder"
-             tal:condition="my_view/is_depot_actif">
+        <nav tal:condition="my_view/is_depot_actif">
             <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
                tal:attributes="href string:${context/absolute_url}/add_deposit_box_criteria_form">
                <i class="fa fa-plus-circle"></i>
                <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
             </a>
-        </div>
+        </nav>
         <div class="panel radius warning"
              tal:condition="not:my_view/is_authorized_deposit">
             <strong>Attention :</strong> dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
