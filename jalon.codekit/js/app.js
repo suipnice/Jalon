@@ -323,8 +323,16 @@ $( document ).ready( function ( ) {
     // Init. reveal
     $( document ).on( 'opened.fndtn.reveal', '[data-reveal]:not(#reveal-connect)', function( ) { revealInit( $( this ) ); } );
 
+    // Affichage contextuel des boutons de retour en haut de page
+    Foundation.utils.S( window ).scroll( function ( ) {
+        if ( Foundation.utils.S( '#breadcrumb' ).isOnScreen( ) ) {
+            Foundation.utils.S( '.scroll-top' ).fadeOut( 'fast' );
+        } else {
+            Foundation.utils.S( '.scroll-top' ).fadeIn( 'slow' );
+        }
+    } );
+
     // Retour en haut de page
-    Foundation.utils.S( window ).scroll( function ( ) { scrollerDisplay( ); } );
     Foundation.utils.S( 'body > footer' ).on( 'click', '.scroll-top', function( event ) {
         event.preventDefault( );
         event.stopPropagation( );
