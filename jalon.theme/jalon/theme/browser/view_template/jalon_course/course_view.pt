@@ -97,13 +97,44 @@
                 </tal:condition>
 
                 <tal:condition condition="not:my_view/has_course_map">
-                <ol id="course_plan-plan" class="sortable ui-sortable">
+                <ol id="course_plan-plan" class="sortable ui-sortable"
+                    tal:condition="not:course_map_id">
                     <li>
                         <div class="panel radius">
                             <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
                         </div>
                     </li>
                 </ol>
+                <tal:condition condition="course_map_id">
+                <form method="post"
+                      tal:attributes="action context/absolute_url"
+                      tal:condition="my_view/is_course_map_display">
+                    <select name="course_map_id"
+                            tal:define="course_map_title_list context/getCourseMapFirstTitle">
+                        <option value="all">Voir le plan</option>
+                        <tal:repeat repeat="course_map_title course_map_title_list">
+                        <option tal:attributes="value course_map_title/title_id;
+                                                selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')"
+                                tal:content="course_map_title/title_text"/>
+                        </tal:repeat>
+                    </select>
+                    <input type="hidden" name="mode_etudiant"
+                           tal:attributes="value my_view/mode_etudiant"/>
+                    <div class="formControls">
+                        <button type="submit" class="button small">
+                            <i class="fa fa-arrow-right"></i>
+                            <tal:block i18n:translate="">Aller</tal:block>
+                        </button>
+                    </div>
+                </form>
+                <ol id="course_plan-plan" class="sortable ui-sortable">
+                    <li>
+                        <div class="panel radius">
+                            <strong i18n:translate="">Le contenu de ce titre n'est plus disponible.</strong>
+                        </div>
+                    </li>
+                </ol>
+                </tal:condition>
                 </tal:condition>
 
                 <tal:condition condition="my_view/has_course_map">
