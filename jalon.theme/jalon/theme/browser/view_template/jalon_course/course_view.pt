@@ -10,7 +10,8 @@
 
 <metal:main fill-slot="content"
             tal:define="mode_etudiant_request request/mode_etudiant | nothing;
-                        my_view python:view.getCourseView(user, mode_etudiant_request);
+                        course_map_id request/course_map_id | nothing;
+                        my_view python:view.getCourseView(user, mode_etudiant_request, course_map_id);
                         mode_etudiant my_view/mode_etudiant">
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>

@@ -20,7 +20,7 @@
           tal:attributes="action string:${context/absolute_url}/edit_course_property_script">
 
         <div class="panel callout radius">
-            <tal:block i18n:translate="">Une fois cette option désactivée, le plan du cours sera affiché en mode page. Une page par "Titre" à la racine du plan du cours</tal:block>
+            <tal:block i18n:translate="">Une fois cette option désactivée, le plan du cours sera affiché en mode page. Une page par "Titre" à la racine du plan du cours. L'affichage par page n'est visible seulement en "Affichage Étudiant".</tal:block>
         </div>
 
         <div class="formControls"

@@ -892,6 +892,10 @@ class JalonCours(ATFolder):
                 item_properties = item
                 return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
+        return {"ol_css_id":              course_plan-plan,
+                "ol_css_class":           "",
+                "course_map_items_list":  []}
+
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
         LOG.info(course_map_items_list)
