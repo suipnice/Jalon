@@ -31,26 +31,24 @@
 
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <section class="show-for-medium-up medium-12 columns">
-            <div id="item-adder">
-                <ul class="button-group even-2 radius">
-                    <li>
-                        <a class="button create"
-                           tal:attributes="href string:${context/absolute_url}/search_pod_videos_form">
-                           <i class="fa fa-plus-circle no-pad"></i>
-                           <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button" target="_blank"
-                           tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
-                           <i class="fa fa-share-square-o no-pad"></i>
-                           <tal:block i18n:translate="">Déposer un fichier audio ou vidéo sur UNSPod</tal:block>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </section>
+        <nav class="show-for-medium-up medium-12 columns">
+            <ul class="button-group even-2 radius">
+                <li>
+                    <a class="button create"
+                       tal:attributes="href string:${context/absolute_url}/search_pod_videos_form">
+                       <i class="fa fa-plus-circle no-pad"></i>
+                       <tal:block i18n:translate="">Rechercher et ajouter du contenu UNSPod</tal:block>
+                    </a>
+                </li>
+                <li>
+                    <a class="button" target="_blank"
+                       tal:attributes="href string:${context/absolute_url}/cas_pod_login/add">
+                       <i class="fa fa-share-square-o no-pad"></i>
+                       <tal:block i18n:translate="">Déposer un fichier audio ou vidéo sur UNSPod</tal:block>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
         <metal:macro use-macro="context/my_space_tags_macro/macros/tags_section">
             Gestion des étiquettes

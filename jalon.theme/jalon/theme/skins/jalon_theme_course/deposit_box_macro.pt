@@ -57,7 +57,7 @@
     <div class="panel callout radius"
          tal:condition="not:liste_depots"
          i18n:translate="">
-        Aucun dépôt
+        Aucun dépôt n'a été effectué pour l'instant.
     </div>
 
     <table id="js-listeDepots"
