@@ -143,7 +143,9 @@ class CourseView(BrowserView):
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
         my_view["item_jalonner"] = self.context.getCourseMapItemJalonner()
 
+        my_view["is_course_map_display"] = False
         if not is_personnel and self.context.getCourseMapDisplay():
+            my_view["is_course_map_display"] = True
             if not course_map_id:
                 course_map_list = self.context.getCourseMapList()
                 for map_item_id in course_map_list:

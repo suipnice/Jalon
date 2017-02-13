@@ -109,6 +109,26 @@
                 <tal:condition condition="my_view/has_course_map">
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
+                <form method="post"
+                      tal:attributes="action context/absolute_url"
+                      tal:condition="my_view/is_course_map_display">
+                    <select name="course_map_id"
+                            tal:define="course_map_title_list context/getCourseMapFirstTitle">
+                        <tal:repeat repeat="course_map_title course_map_title_list">
+                        <option tal:attributes="value course_map_title/title_id;
+                                                selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')"
+                                tal:content="course_map_title/title_text"/>
+                        </tal:repeat>
+                    </select>
+                    <input type="hidden" name="mode_etudiant"
+                           tal:attributes="value my_view/mode_etudiant"/>
+                    <div class="formControls">
+                        <button type="submit" class="button small">
+                            <i class="fa fa-arrow-right"></i>
+                            <tal:block i18n:translate="">Aller</tal:block>
+                        </button>
+                    </div>
+                </form>
                 <ol tal:attributes="id course_map/ol_css_id;
                                     class course_map/ol_css_class">
                     <metal:macro use-macro="context/course_map_macro/macros/display_course_map">

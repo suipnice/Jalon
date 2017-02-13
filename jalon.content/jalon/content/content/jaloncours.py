@@ -892,9 +892,22 @@ class JalonCours(ATFolder):
                 item_properties = item
                 return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
-        return {"ol_css_id":              course_plan-plan,
+        return {"ol_css_id":              "course_plan-plan",
                 "ol_css_class":           "",
                 "course_map_items_list":  []}
+
+    def getCourseMapFirstTitle(self):
+        LOG.info("----- getCourseMapFirstTitle -----")
+        course_map_title = []
+        item_properties_dict = self.getCourseItemProperties()
+        for item in list(self.getPlan()):
+            if item["idElement"].startswith("Titre"):
+                item_properties = item_properties_dict[item["idElement"]]
+                is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+                if is_display_item["val"]:
+                    course_map_title.append({"title_id":   item["idElement"],
+                                             "title_text": item_properties["titreElement"]})
+        return course_map_title
 
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
