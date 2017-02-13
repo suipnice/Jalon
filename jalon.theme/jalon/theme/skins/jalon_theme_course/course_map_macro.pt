@@ -105,9 +105,19 @@
                             </tal:condition>
                         </div>
                         </tal:condition>
+                        <tal:condition condition="not:my_view/is_sub_course_map">
+                            <p tal:condition="element/is_item_title">
+                                <a tal:attributes="href string:${context/absolute_url}?course_map_id=${element/item_id}&amp;mode_etudiant=true"
+                                   title="Voir le contenu de ce titre"
+                                   i18n:translate="">
+                                    Voir le contenu de ce titre.
+                                </a>
+                            </p>
+                        </tal:condition>
                     </a>
                 </span>
             </div>
+            <tal:condition condition="my_view/is_sub_course_map">
             <tal:condition condition="element/is_item_title">
             <tal:define define="course_map python:context.getCourseMapItems(element['course_map_sub_items_list'], user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal']);">
             <ol>
@@ -116,6 +126,7 @@
             </metal:macro>
             </ol>
             </tal:define>
+            </tal:condition>
             </tal:condition>
         </li>
     </tal:repeat>

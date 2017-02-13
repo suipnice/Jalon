@@ -837,6 +837,7 @@ class JalonCours(ATFolder):
                 "user_last_login_time": user.getProperty('login_time', ""),
                 "course_news":          self.getActualitesCours(),
                 "item_jalonner":        self.getCourseMapItemJalonner(),
+                "is_sub_course_map":    True,
                 "portal":               self.portal_url.getPortalObject()}
 
     def getCourseMapItemForm(self, item_type, item_id):

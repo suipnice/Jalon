@@ -93,7 +93,8 @@ class CourseView(BrowserView):
                    "mode_etudiant":                mode_etudiant,
                    "is_personnel":                 is_personnel,
                    "is_public":                    "success" if self.context.getAcces() == "Public" else "disabled",
-                   "is_course_author":             self.context.isAuteurs(user.getId())}
+                   "is_course_author":             self.context.isAuteurs(user.getId()),
+                   "is_sub_course_map":            True}
 
         course_author = self.context.getAuteur()
         my_view["course_author_name"] = course_author["fullname"]
@@ -146,15 +147,18 @@ class CourseView(BrowserView):
         my_view["is_course_map_display"] = False
         if not is_personnel and self.context.getCourseMapDisplay():
             my_view["is_course_map_display"] = True
-            if not course_map_id:
-                course_map_list = self.context.getCourseMapList()
-                for map_item_id in course_map_list:
-                    item_properties = self.context.getCourseItemProperties(map_item_id)
-                    is_display_item = self.context.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
-                    if is_display_item["val"]:
-                        course_map_id = map_item_id
-                        break
-            my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+            if not course_map_id or course_map_id == "all":
+                #course_map_list = self.context.getCourseMapList()
+                #for map_item_id in course_map_list:
+                #    item_properties = self.context.getCourseItemProperties(map_item_id)
+                #    is_display_item = self.context.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+                #    if is_display_item["val"]:
+                #        course_map_id = map_item_id
+                #        break
+                my_view["is_sub_course_map"] = False
+                my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+            else:
+                my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
         else:
             my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
 

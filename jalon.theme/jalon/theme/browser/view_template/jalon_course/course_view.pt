@@ -114,6 +114,7 @@
                       tal:condition="my_view/is_course_map_display">
                     <select name="course_map_id"
                             tal:define="course_map_title_list context/getCourseMapFirstTitle">
+                        <option value="all">Voir le plan</option>
                         <tal:repeat repeat="course_map_title course_map_title_list">
                         <option tal:attributes="value course_map_title/title_id;
                                                 selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')"
