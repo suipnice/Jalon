@@ -1301,7 +1301,7 @@ class JalonCours(ATFolder):
 
     def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
         """Edit the Visibility of a Course Title and all its contents ."""
-        # LOG.info("----- editCourseTitleVisibility (item_id = %s)-----" % item_id)
+        LOG.info("----- editCourseTitleVisibility (item_id = %s)-----" % item_id)
         actuality_code = "chapdispo" if item_property_name == "affElement" else ""
 
         if actuality_code:
@@ -1329,6 +1329,8 @@ class JalonCours(ATFolder):
                 # Lorsqu'on a trouvé le chapitre qu'on cherchait, plus besoin de continuer à parcourir le plan.
                 if item["idElement"] == item_id:
                     break
+            elif "listeElement" in item:
+                self.editCourseTitleVisibility(item_id, item_date, item_property_name, item["listeElement"])
 
     def editCourseItemVisibility(self, item_id, item_date, item_property_name, is_update_from_title=False):
         u"""Modifie l'etat de la ressource quand on modifie sa visibilité ("attribut" fournit l'info afficher / masquer)."""
