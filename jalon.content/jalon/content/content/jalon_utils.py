@@ -581,9 +581,9 @@ def getShortText(text, limit=75, suffix=u'…'):
         if text.find(u' ') > -1:
             text = u' '.join(text.split(u' ')[:-1])
             limit = len(text)
-        return text[0:limit].rstrip(u'?!:;.,-" “”«» ') + suffix
+        return "".join([text[0:limit].rstrip(u'?!:;.,-" “”«» '), suffix]).encode("utf-8")
     else:
-        return text
+        return text.encode("utf-8")
 
 
 def getPlainShortText(html, limit=75):
