@@ -1,33 +1,62 @@
+<metal:macro define-macro="course_map_legend_bar">
+
+    <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
+        <li>
+            <a class="button tiny disabled" href="#">
+                <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
+            </a>
+        </li>
+        <li>
+            <a class="button tiny"
+               data-reveal-id="reveal-main" data-reveal-ajax="true"
+               tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
+                <i class="fa fa-info-circle"></i>
+                <tal:block i18n:translate="legende">Afficher la légende</tal:block>
+            </a>
+        </li>
+        <li>
+            <a class="button tiny" href="#">
+                <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Tout replier</tal:block>
+            </a>
+        </li>
+    </ul>
+
+</metal:macro>
+
+
 <metal:macro define-macro="course_map_item_adder">
 
-<div class="panel bkgrnd radius show-for-medium-up">
-    <h3 class="show-for-medium-up">
-        <i class="fa fa-plus-circle"></i>
-        <tal:block i18n:translate="">Ajouter des éléments</tal:block>
-    </h3>
-    <nav id="item-adder">
-        <ul class="button-group even-3 radius">
-            <li tal:repeat="item_adder my_view/course_map_item_adder">
-                <a tal:attributes="class item_adder/menu_adder_class;
-                                   data-dropdown item_adder/menu_adder_data-dropdown"
-                                   data-options="align:bottom">
-                    <i tal:attributes="class item_adder/menu_adder_icon"></i>
-                    <tal:replace replace="item_adder/menu_adder_name" i18n:translate=""/>
-                </a>
-                <ul tal:attributes="id item_adder/menu_adder_data-dropdown"
-                    class="f-dropdown" data-dropdown-content>
-                    <li tal:repeat="menu_adder_item item_adder/menu_adder_items">
-                        <a tal:attributes="href menu_adder_item/item_link"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true">
-                            <i tal:attributes="class menu_adder_item/item_icon"></i>
-                            <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-</div>
+    <div class="panel bkgrnd radius show-for-medium-up">
+        <h3 class="show-for-medium-up">
+            <i class="fa fa-plus-circle"></i>
+            <tal:block i18n:translate="">Ajouter des éléments</tal:block>
+        </h3>
+        <nav id="has_sticky_content">
+            <ul class="button-group even-3 radius course-item_adder">
+                <li tal:repeat="item_adder my_view/course_map_item_adder">
+                    <a tal:attributes="class item_adder/menu_adder_class;
+                                       data-dropdown item_adder/menu_adder_data-dropdown"
+                                       data-options="align:bottom">
+                        <i tal:attributes="class item_adder/menu_adder_icon"></i>
+                        <tal:replace replace="item_adder/menu_adder_name" i18n:translate=""/>
+                    </a>
+                    <ul tal:attributes="id item_adder/menu_adder_data-dropdown"
+                        class="f-dropdown" data-dropdown-content>
+                        <li tal:repeat="menu_adder_item item_adder/menu_adder_items">
+                            <a tal:attributes="href menu_adder_item/item_link"
+                               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                                <i tal:attributes="class menu_adder_item/item_icon"></i>
+                                <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <tal:block define="script string:setStickyItem()">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
+    </div>
 
 </metal:macro>
 
