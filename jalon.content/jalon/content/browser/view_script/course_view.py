@@ -241,7 +241,7 @@ class CourseView(BrowserView):
                 {"menu_adder_class":         "button small course-space_el dropdown",
                  "menu_adder_data-dropdown": "add-space_el",
                  "menu_adder_icon":          "fa fa-folder-open",
-                 "menu_adder_name":          "Ressource pédagogique",
+                 "menu_adder_name":          "Ressource",
                  "menu_adder_items":         item_adder_list["my_space"]},
                 {"menu_adder_class":         "button small course-activity dropdown",
                  "menu_adder_data-dropdown": "add-activity",
