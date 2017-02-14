@@ -74,26 +74,9 @@
                 </metal:macro>
                 </tal:condition>
 
-                <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
-                    <li>
-                        <a class="button tiny disabled" href="#">
-                            <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button tiny"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
-                            <i class="fa fa-info-circle"></i>
-                            <tal:block i18n:translate="legende">Afficher la légende</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button tiny" href="#">
-                            <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Tout replier</tal:block>
-                        </a>
-                    </li>
-                </ul>
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_legend_bar">
+                    Affichage de la barre de légende
+                </metal:macro>
 
                 <tal:condition condition="not:my_view/has_course_map">
                 <ol id="course_plan-plan" class="sortable ui-sortable">
@@ -125,26 +108,9 @@
                     </tal:block>
                 </div>
 
-                <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
-                    <li>
-                        <a class="button tiny disabled" href="#">
-                            <i class="fa fa-arrow-circle-down"></i><tal:block i18n:translate="">Tout déplier</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button tiny"
-                           data-reveal-id="reveal-main" data-reveal-ajax="true"
-                           tal:attributes="href string:${context/absolute_url}/display_map_legend_page?mode_etudiant=${mode_etudiant}">
-                            <i class="fa fa-info-circle"></i>
-                            <tal:block i18n:translate="legende">Afficher la légende</tal:block>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="button tiny" href="#">
-                            <i class="fa fa-arrow-circle-right"></i><tal:block i18n:translate="">Tout replier</tal:block>
-                        </a>
-                    </li>
-                </ul>
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_legend_bar">
+                    Affichage de la barre de légende
+                </metal:macro>
 
             </div>
 
