@@ -5,8 +5,8 @@
         <i class="fa fa-plus-circle"></i>
         <tal:block i18n:translate="">Ajouter des éléments</tal:block>
     </h3>
-    <nav id="item-adder">
-        <ul class="button-group even-3 radius">
+    <nav id="has_sticky_content">
+        <ul class="button-group even-3 radius course-item_adder">
             <li tal:repeat="item_adder my_view/course_map_item_adder">
                 <a tal:attributes="class item_adder/menu_adder_class;
                                    data-dropdown item_adder/menu_adder_data-dropdown"
@@ -27,6 +27,9 @@
             </li>
         </ul>
     </nav>
+    <tal:block define="script string:setStickyItem()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
 </div>
 
 </metal:macro>
