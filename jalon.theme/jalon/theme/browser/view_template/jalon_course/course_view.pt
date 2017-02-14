@@ -68,6 +68,12 @@
 
             <div class="row panel callout radius">
 
+                <tal:condition condition="my_view/is_personnel">
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
+                    Affichage de la barre d'ajout
+                </metal:macro>
+                </tal:condition>
+
                 <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
                     <li>
                         <a class="button tiny disabled" href="#">
@@ -88,12 +94,6 @@
                         </a>
                     </li>
                 </ul>
-
-                <tal:condition condition="my_view/is_personnel">
-                <metal:macro use-macro="context/course_map_macro/macros/course_map_item_adder">
-                    Affichage de la barre d'ajout
-                </metal:macro>
-                </tal:condition>
 
                 <tal:condition condition="not:my_view/has_course_map">
                 <ol id="course_plan-plan" class="sortable ui-sortable">
