@@ -574,7 +574,6 @@ button.dropdown.small:after { right: .5rem; }
 
 #js-list-ressource.ressource-wims .f-dropdown,
 #js-list-ressource.ressource-webconf .f-dropdown,
-
 .reveal-modal .f-dropdown.drop-left,
 #js-list-ressource #drop-batch.f-dropdown { max-width: 160px; }
 
@@ -1274,6 +1273,37 @@ code {
 */
 
 
+#sticky_container {
+    background-color: transparent;
+    position: fixed;
+    width: 100%;
+    left: 0;
+    top: 0;
+
+    & > div > nav {
+        padding-right: 0 !important;
+    }
+}
+
+ul.course-item_adder {
+
+    & > li {
+
+        & .button {
+
+            &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
+            &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
+            &.course-activity { @include button-style( $course_activity-color, false, false, scale-color( $course_activity-color, $lightness: $button-function-factor), $course_activity-color ); }
+        }
+
+        .f-dropdown > li {
+            width: 100%;    // F5 button-group even-n dropdown fix…
+        }
+    }
+
+    .button { margin: 0; }
+}
+
 #course_plan,
 #course_life {
 
@@ -1284,28 +1314,6 @@ code {
 }
 
 #course_plan {
-
-    #item-adder {
-
-        ul.button-group {
-
-            & > li {
-
-                & .button {
-
-                    &.course-title { @include button-style( $course_title-color, false, false, scale-color( $course_title-color, $lightness: $button-function-factor), $course_title-color ); }
-                    &.course-space_el { @include button-style( $course_space_el-color, false, false, scale-color( $course_space_el-color, $lightness: $button-function-factor), $course_space_el-color ); }
-                    &.course-activity { @include button-style( $course_activity-color, false, false, scale-color( $course_activity-color, $lightness: $button-function-factor), $course_activity-color ); }
-                }
-
-                li {
-                    width: 100%;    // F5 button-group even-n dropdown fix…
-                }
-            }
-
-            .button { margin: 0; }
-        }
-    }
 
     & > .row {
 
@@ -1623,6 +1631,7 @@ code {
 */
 
 #course_life {
+    z-index: 1;
 
     .sup,
     .tabs span {
