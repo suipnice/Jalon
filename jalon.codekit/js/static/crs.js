@@ -157,7 +157,7 @@ function setStickyItem( ) {
             if ( isSticky ) {
 
                 $stickyContainer.fadeOut( 'fast', function( ) {
-                    $stickyContainer.find( '> ul' ).detach( ).appendTo( $item );
+                    $stickyContainer.children( ).detach( ).appendTo( $item );
                 } );
                 isSticky = false;
             }
@@ -166,7 +166,7 @@ function setStickyItem( ) {
 
             if ( ! isSticky ) {
 
-                $item.find( '> ul' ).detach( ).appendTo( $stickyContainer );
+                $item.children( ).detach( ).appendTo( $stickyContainer );
                 $stickyContainer.fadeIn( 'fast' );
                 isSticky = true;
             }
