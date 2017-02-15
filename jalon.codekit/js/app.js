@@ -178,6 +178,18 @@ function setPlanChapterFold( $target ) {
 }
 
 
+/*
+    Initialisation de tous les chapitres du plan a l'etat deplie
+*/
+
+function expandPlanChapters( ) {
+
+    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
+        //.removeClass( 'collapsed' )
+        .addClass( 'expanded' );
+}
+
+
 
 /*
     Formatage conditionnel : permet de colorer sur une echelle de 4+2 teintes une colonne d'un tableau

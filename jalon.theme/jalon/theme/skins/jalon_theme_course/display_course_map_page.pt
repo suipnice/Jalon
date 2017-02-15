@@ -23,7 +23,7 @@
             Seuls les enseignants font des appels AJAX depuis le plan.
 
             Une fois la position dépliée / repliée mémorisée cote srv,
-            cet appel à crs/expandPlanChapters( ) devra être supprimé.
+            cet appel à app/expandPlanChapters( ) devra être supprimé.
     -->
     </tal:comments>
     <script charset="UTF-8"

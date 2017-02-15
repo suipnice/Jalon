@@ -326,19 +326,6 @@ function setSortablePlan( ) {
 
 
 /*
-    Initialisation de tous les chapitres du plan a l'etat deplie
-*/
-
-function expandPlanChapters( ) {
-
-    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
-        //.removeClass( 'collapsed' )
-        .addClass( 'expanded' );
-}
-
-
-
-/*
     Memorisation du pliage / repliage de tous les chapitres du plan de cours
 */
 
