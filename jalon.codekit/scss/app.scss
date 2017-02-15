@@ -1400,6 +1400,10 @@ ul.course-item_adder {
                 margin-bottom: rem-calc( 2 );
             }
 
+            &:last-of-type:not(:first-child) {
+                margin-bottom: 1rem;
+            }
+
             &.expanded > ol { display: block; }
             &.collapsed > ol { display: none; }
 
@@ -1506,15 +1510,8 @@ ul.course-item_adder {
 #course_plan-plan {
     margin-bottom: 0;
 
-    &.sortable {
-
-        & > li:last-child {
-            margin-bottom: 1rem;
-        }
-
-        li > div:first-child {
-            cursor: move;
-        }
+    &.sortable li > div:first-child {
+        cursor: move;
     }
 
     li {
