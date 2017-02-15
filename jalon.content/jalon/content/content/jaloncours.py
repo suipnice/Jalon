@@ -900,8 +900,9 @@ class JalonCours(ATFolder):
         LOG.info("----- getCourseMapTitle -----")
         for item in list(self.getPlan()):
             if item["idElement"] == course_map_id:
-                item_properties = item
-                return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+                #item_properties = item
+                #return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+                return self.getCourseMapItems(item["listeElement"], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
         return {"ol_css_id":              "course_plan-plan",
                 "ol_css_class":           "",

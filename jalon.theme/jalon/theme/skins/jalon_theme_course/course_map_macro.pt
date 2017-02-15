@@ -2,6 +2,8 @@
 
     <form id="course-chapter_form" method="post"
           tal:attributes="action context/absolute_url">
+        <label for="course_title"
+               i18n:translate="">Afficher</label>
         <select name="course_title"
                 tal:define="course_map_title_list context/getCourseMapFirstTitle">
             <option value="all" i18n:translate="">Cours complet</option>
