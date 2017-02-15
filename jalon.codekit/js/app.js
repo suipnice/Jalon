@@ -1,16 +1,13 @@
-/*
-
-        Jalon v4.5 (static)
-
-*/
-
-
 /***************************************************************************************************
 
-    Communs
+        Jalon v4.5 : fonctionnalités communes
 
 */
 
+
+/*
+    Inclusions CodeKit specifiques
+*/
 
 //@codekit-prepend "static/list.js";    // Tri des tableaux
 //@codekit-prepend "static/tool.js";    // Utilitaires
@@ -18,9 +15,15 @@
 
 
 
+/***************************************************************************************************
+
+        Cours
+
+*/
+
 
 /*
-    Comportements des elements de plan de cours
+    Comportements des elements de plan
 */
 
 function setPlanChapterSelection( ) {
@@ -187,6 +190,53 @@ function expandPlanChapters( ) {
     Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
         //.removeClass( 'collapsed' )
         .addClass( 'expanded' );
+}
+
+
+/*
+    Barres de navigation "collantes"
+*/
+
+function setStickyItem( ) {
+
+    function _stickyItem( $item, $stickyContainer ) {
+
+        if ( $item.isOnScreen( ) ) {
+
+            if ( isSticky ) {
+
+                $stickyContainer.fadeOut( 'fast', function( ) {
+                    $stickyContainer.children( ).detach( ).appendTo( $item );
+                } );
+                isSticky = false;
+            }
+
+        } else {
+
+            if ( ! isSticky ) {
+
+                $item.children( ).detach( ).appendTo( $stickyContainer );
+                $stickyContainer.fadeIn( 'fast' );
+                isSticky = true;
+            }
+        }
+    }
+
+    var isSticky = false,
+        $item = Foundation.utils.S( '#has_sticky_content' ),
+        $stickyContainer = Foundation.utils.S( '#sticky_container' ).find( 'nav' );
+
+    $stickyContainer.fadeOut( 'fast' );
+    $item.parent( ).css( 'min-height', function( ) {
+        return $( this ).outerHeight( );
+    } );
+
+    _stickyItem( $item, $stickyContainer );
+
+    $( window ).on( 'scroll', function( ) {
+
+        _stickyItem( $item, $stickyContainer );
+    } );
 }
 
 

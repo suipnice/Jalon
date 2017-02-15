@@ -1,24 +1,31 @@
 <metal:macro define-macro="course_map_chapter_form">
 
-    <form id="course-chapter_form" method="post"
-          tal:attributes="action context/absolute_url">
-        <label for="course_title"
-               i18n:translate="">Afficher</label>
-        <select name="course_title"
-                tal:define="course_map_title_list context/getCourseMapFirstTitle">
-            <option value="all" i18n:translate="">Cours complet</option>
-            <tal:repeat repeat="course_map_title course_map_title_list">
-            <option tal:attributes="value course_map_title/title_id;
-                                    selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')"
-                    tal:content="course_map_title/title_text"/>
-            </tal:repeat>
-        </select>
-        <input type="hidden" name="mode_etudiant"
-               tal:attributes="value my_view/mode_etudiant"/>
-    </form>
-    <tal:block define="script string:setPlanChapterSelection()">
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-    </tal:block>
+    <div class="panel bkgrnd radius">
+        <nav id="has_sticky_content">
+            <form id="course-chapter_form" method="post"
+                  tal:attributes="action context/absolute_url">
+                <select name="course_title"
+                        tal:define="course_map_title_list context/getCourseMapFirstTitle">
+                    <option value="all">
+                        <tal:block i18n:translate="">Cours « </tal:block><tal:block tal:content="here/Title" /> »
+                    </option>
+                    <tal:repeat repeat="course_map_title course_map_title_list">
+                    <option tal:attributes="value course_map_title/title_id;
+                                            selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')">
+                        <tal:block i18n:translate="">Titre « </tal:block><tal:block tal:content="course_map_title/title_text" /> »
+                    </option>
+                    </tal:repeat>
+                </select>
+                <input type="hidden" name="mode_etudiant"
+                       tal:attributes="value my_view/mode_etudiant"/>
+            </form>
+        </nav>
+        <tal:block define="script1 string:setPlanChapterSelection();
+                           script2 string:setStickyItem()">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
+        </tal:block>
+    </div>
 
 </metal:macro>
 
