@@ -291,6 +291,17 @@ form {
             margin-bottom: 0;
         }
     }
+
+}
+
+#course-chapter_form select {
+    margin-bottom: 0;
+    font-weight: bold;
+    font-style: italic;
+
+    & > option {
+        font-weight: normal;
+    }
 }
 
 #wims-edit form {

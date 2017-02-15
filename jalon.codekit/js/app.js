@@ -23,6 +23,52 @@
     Comportements des elements de plan de cours
 */
 
+function setPlanChapterSelection( ) {
+
+    var $form = Foundation.utils.S( '#course-chapter_form' ),
+        $plan = Foundation.utils.S( '#course_plan-plan' );
+
+    $form.on( 'change', 'select[name="course_title"]', function( ) {
+
+        if ( !isRefreshing ) {
+
+            // Verrouilage
+            isRefreshing = true;
+
+            // Init
+            var $title = Foundation.utils.S( '#js-update_title' ),
+                titleOrgHtml = $title.html( );
+
+            // Traitement
+            $title.html( MSG_LOADING );
+            $plan.fadeTo( 200, 0.33, function( ) {
+
+                $.ajax( {
+                    type: 'POST',
+                    url: ABSOLUTE_URL + "/display_course_map_title_page",
+                    data: $form.serialize( ),
+                    success: function( data ) {
+                        $title.html( MSG_LOADING_OK );
+                        $plan.empty( ).html( data ).fadeTo( 200, 1, function( ) {
+                            $title.html( titleOrgHtml );
+                        } );
+                    },
+                    error: function( data, textStatus, errorThrown ) {
+                        console.log( errorThrown );
+                        console.log( textStatus );
+                    },
+                    complete: function( ) {
+                        // Deverrouillage
+                        isRefreshing = false;
+                    }
+                } );
+            } );
+        }
+    } );
+
+}
+
+
 function setPlanChapterFolding( disclosureState ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
@@ -42,6 +88,7 @@ function setPlanChapterFolding( disclosureState ) {
         $legendBardDown.removeClass( 'disabled' );
         $target.removeClass( 'expanded' ).addClass( 'collapsed' );
     }
+
 }
 
 

@@ -1,3 +1,26 @@
+<metal:macro define-macro="course_map_chapter_form">
+
+    <form id="course-chapter_form" method="post"
+          tal:attributes="action context/absolute_url">
+        <select name="course_title"
+                tal:define="course_map_title_list context/getCourseMapFirstTitle">
+            <option value="all" i18n:translate="">Cours complet</option>
+            <tal:repeat repeat="course_map_title course_map_title_list">
+            <option tal:attributes="value course_map_title/title_id;
+                                    selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')"
+                    tal:content="course_map_title/title_text"/>
+            </tal:repeat>
+        </select>
+        <input type="hidden" name="mode_etudiant"
+               tal:attributes="value my_view/mode_etudiant"/>
+    </form>
+    <tal:block define="script string:setPlanChapterSelection()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:block>
+
+</metal:macro>
+
+
 <metal:macro define-macro="course_map_legend_bar">
 
     <ul tal:attributes="class python:context.test(my_view['has_course_map'], 'button-group radius even-3 legend_bar', 'button-group radius even-3 legend_bar hide')">
