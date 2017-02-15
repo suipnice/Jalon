@@ -122,9 +122,6 @@ class CourseView(BrowserView):
             my_view["course_map_action_list"] = [{"action_link": "%s/display_all_course_map_form" % course_link,
                                                   "action_icon": "fa fa-eye fa-fw",
                                                   "action_name": "Tout afficher/masquer"},
-                                                 {"action_link": "%s/edit_course_map_display_form" % course_link,
-                                                  "action_icon": "fa fa-file-o fa-fw",
-                                                  "action_name": "Afficher en mode page"},
                                                  {"action_link": "%s/download_wims_score_form" % course_link,
                                                   "action_icon": "fa fa-download fa-fw",
                                                   "action_name": "Télécharger les notes WIMS"},
@@ -134,6 +131,11 @@ class CourseView(BrowserView):
                                                  {"action_link": "%s/delete_wims_activity_form" % course_link,
                                                   "action_icon": "fa fa-trash-o  fa-fw",
                                                   "action_name": "Supprimer les activités WIMS"}]
+
+            # Désactivation de l'option en mode page
+            #                                     {"action_link": "%s/edit_course_map_display_form" % course_link,
+            #                                      "action_icon": "fa fa-file-o fa-fw",
+            #                                      "action_name": "Afficher en mode page"},
 
             course_path = self.context.getPhysicalPath()
             my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
@@ -145,11 +147,14 @@ class CourseView(BrowserView):
         my_view["item_jalonner"] = self.context.getCourseMapItemJalonner()
 
         my_view["is_course_map_display"] = False
-        if not is_personnel and self.context.getCourseMapDisplay():
+        if not is_personnel:
+            # Désactivation de l'option en mode page
+            #and self.context.getCourseMapDisplay():
             my_view["is_course_map_display"] = True
             if not course_map_id or course_map_id == "all":
-                #my_view["is_sub_course_map"] = False
                 my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+                if len(self.context.getCourseMapList()) > 50:
+                    my_view["is_sub_course_map"] = False
             else:
                 my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
         else:

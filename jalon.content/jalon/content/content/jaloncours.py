@@ -889,7 +889,8 @@ class JalonCours(ATFolder):
     def getCourseMapAjax(self, course_map_id, user_id, my_view):
         LOG.info("----- getCourseMapAjax -----")
         if not course_map_id or course_map_id == "all":
-            #my_view["is_sub_course_map"] = False
+            if len(self.getCourseMapList()) > 50:
+                my_view["is_sub_course_map"] = False
             my_view["course_map"] = self.getCourseMap(user_id, my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal'])
         else:
             my_view["course_map"] = self.getCourseMapTitle(course_map_id, user_id, my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal'])
