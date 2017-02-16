@@ -1437,7 +1437,7 @@ class JalonCours(ATFolder):
                           "nb":             0,
                           "dateDepot":      None,
                           "acces":          ["auteurs", "etudiants"]}
-        if not actuality_dict in actualities_list:
+        if actuality_dict not in actualities_list:
             self.setActuCours(actuality_dict)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
