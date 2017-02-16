@@ -11,7 +11,7 @@
         <div id="js-update_target">
             <div class="panel callout radius"
                  tal:condition="not:my_view/access_dict">
-                <strong i18n:translate="">Aucun étudiant n'a accès à vos cours pour l'instant.</strong><br/>
+                <strong i18n:translate="">Aucun étudiant n'a accès à vos cours via une inscription à l'offre de formation pour l'instant.</strong><br/>
                 <tal:block i18n:translate="">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
             </div>
 
