@@ -10,4 +10,4 @@
 form = context.REQUEST.form
 context.modifyStreaming(form)
 
-context.REQUEST.RESPONSE.redirect("%s/gestion_mon_espace?gestion=gestion_wowza&onglet=wowza_extraits" % context.absolute_url())
+context.REQUEST.RESPONSE.redirect("%s/gestion_mes_ressources?gestion=gestion_wowza&onglet=wowza_extraits" % context.absolute_url())

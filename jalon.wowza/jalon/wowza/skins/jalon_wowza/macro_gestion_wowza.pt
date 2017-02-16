@@ -163,7 +163,7 @@
         </h2>
 
         <form id="js-podFilterSelector" method="POST"
-              tal:attributes="action string:${context/absolute_url}/gestion_mon_espace;
+              tal:attributes="action string:${context/absolute_url}/gestion_mes_ressources;
                               data-term_search_label1 string:Filtrer par mot-clé ou auteur;
                               data-term_search_label2 string:Filtrer par mot-clé;
                               data-term_search_placeholder1 string:Entrez un mot-clé ou un nom d'auteur…;

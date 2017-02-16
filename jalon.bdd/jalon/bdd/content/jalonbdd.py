@@ -1720,10 +1720,10 @@ class JalonBDD(SimpleItem):
         jalon_utils.envoyerMail(form)
 
     def traductions_fil(self, key):
-        textes = {"bdd":          _(u"Offre de formation"),
-                  "configsite":   _(u"Configuration du site"),
-                  "mon_espace":   _(u"Mon Espace"),
-                  "gestion_util": _(u"Gestion des Utilisateurs")}
+        textes = {"bdd":            _(u"Offre de formation"),
+                  "configsite":     _(u"Configuration du site"),
+                  "mes_ressources": _(u"Mes ressources"),
+                  "gestion_util":   _(u"Gestion des Utilisateurs")}
         if key in textes:
             return textes[key]
         else:
