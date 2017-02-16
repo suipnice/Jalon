@@ -403,7 +403,7 @@ class JalonCours(ATFolder):
         return last_login
 
     def getBreadcrumbs(self):
-        """Breadcrumbs de base d'un cours."""
+        """Return the initial breadcrumbs of a course."""
         # LOG.info("----- getBreadcrumbs -----")
         portal = self.portal_url.getPortalObject()
         return [{"title": _(u"Mes cours"),
@@ -713,7 +713,7 @@ class JalonCours(ATFolder):
         usernames = form["username"].split(",")
         if usernames != ['']:
             for username in usernames:
-                if not username in coAuteurs:
+                if username not in coAuteurs:
                     coAuteurs.append(username)
                     self.manage_setLocalRoles(username, ["Owner"])
                     infosMembre = self.useJalonUtils("getInfosMembre", {"username": username})
@@ -924,7 +924,7 @@ class JalonCours(ATFolder):
 
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
-        LOG.info(course_map_items_list)
+        # LOG.info(course_map_items_list)
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:
@@ -937,7 +937,7 @@ class JalonCours(ATFolder):
         for course_map_item in course_map_items_list:
             # index = index + 1
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
-            LOG.info(item_properties)
+            # LOG.info(item_properties)
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
@@ -1981,8 +1981,8 @@ class JalonCours(ATFolder):
                             id_etu = listETU[index - nb_entetes]
                             if id_etu in dico_ETU:
                                 individu = dico_ETU[id_etu]
-                                #user["first_name"] = individu["prenom"]
-                                #user["last_name"]  = individu["nom"]
+                                # user["first_name"] = individu["prenom"]
+                                # user["last_name"]  = individu["nom"]
                                 num_etu = "%s" % individu["num_etu"]
                             else:
                                 num_etu = "Non disp."
@@ -2059,18 +2059,20 @@ class JalonCours(ATFolder):
         # Renvoit le nombre d'activités supprimées.
         return len(liste_activitesWIMS)
 
+    """
     #def autoriserAffichageSousObjet(self, idElement, typeElement=None):
     #    à remplacer par
     #    getattr(self, item_id).autoriser_Affichage()
 
-    #pour montrer les nouveaux éléments dans le cours
+    # pour montrer les nouveaux éléments dans le cours
     #def isNouveau(self, idElement, listeActualites=None):
     #    à remplacer par
     #    True if item["is_display_item_bool"] and cmp(item_properties["affElement"], user_last_login_time) > 0 else False
+    """
 
-    #---------------------------------#
-    # Course Activity (Adobe Connect) #
-    #---------------------------------#
+    # --------------------------------- #
+    #  Course Activity (Adobe Connect)  #
+    # --------------------------------- #
     def connect(self, methode, param):
         # LOG.info("----- connect -----")
         return self.portal_connect.__getattribute__(methode)(param)
@@ -2434,7 +2436,7 @@ class JalonCours(ATFolder):
             # création d'une feuille de formation
             feuille = listing.add_sheet("Formation%s" % formation[1])
 
-            #Première Ligne : Titre de la formation ; Type ; Code
+            # Première Ligne : Titre de la formation ; Type ; Code
             feuille.write(0, 0, "Liste des participants du cours :")
             feuille.write(0, 1, self.Title())
             feuille.write(1, 0, dicoAffFormation[formation[-1]])
@@ -2576,9 +2578,9 @@ class JalonCours(ATFolder):
             return {"length": str(os.stat(path)[6]), "data": data}
         return None
 
-    #--------------------#
-    # Course Life - News #
-    #--------------------#
+    # -------------------- #
+    #  Course Life - News  #
+    # -------------------- #
     def getActualitesCours(self, toutes=None):
         # LOG.info("----- getActualitesCours -----")
         actualites = []
@@ -2672,7 +2674,7 @@ class JalonCours(ATFolder):
         self.actualites = tuple(actuality_new)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    #Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
+    # Pour passer l'information dans le portal_catalog et l'utiliser dans la liste de cours
     def getDateDerniereActu(self):
         # LOG.info("----- getDateDerniereActu -----")
         try:
@@ -2692,9 +2694,9 @@ class JalonCours(ATFolder):
                 retour = actualite[paramDate]
         self.dateDerniereActu = retour
 
-    #---------------------#
-    # Course Life - Forum #
-    #---------------------#
+    # --------------------- #
+    #  Course Life - Forum  #
+    # --------------------- #
     def toPloneboardTime(self, context, request, time_=None):
         # LOG.info("----- toPloneboardTime -----")
         """Return time formatted for Ploneboard."""
@@ -2715,9 +2717,9 @@ class JalonCours(ATFolder):
             return {"nbForums":    len(listeForums),
                     "listeForums": listeForums}
 
-    #------------------------#
-    # Course Life - Announce #
-    #------------------------#
+    # ------------------------ #
+    #  Course Life - Announce  #
+    # ------------------------ #
     def getAnnonces(self, authMember, mode_etudiant, all_annonce=False):
         # LOG.info("----- getAnnonces -----")
         annonces = []
@@ -2741,7 +2743,7 @@ class JalonCours(ATFolder):
             idMember = authMember.getId()
         except:
             idMember = authMember
-        if idMember and not "@" in idMember:
+        if idMember and "@" not in idMember:
             if portal_jalon_bdd.getTypeBDD() == "apogee":
                 COD_ETU = member.getProperty("supannEtuId", member.getProperty("supannAliasLogin"))
             if portal_jalon_bdd.getTypeBDD() == "sqlite":
@@ -2756,7 +2758,7 @@ class JalonCours(ATFolder):
             suite = 1
             publics = annonce.getPublics()
             if not publics:
-                #pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
+                # pas besoin de la ligne suivante, si tout est decoche c'est une annonce juste pour l'auteur lui meme
                 suite = 0
             if suite and ("colecteurs*-*colecteurs" in publics) and (idMember in self.getCoLecteurs()):
                 annonces.append(annonce)
@@ -2835,9 +2837,9 @@ class JalonCours(ATFolder):
         announce_ids = announce_folder.objectIds()
         announce_folder.manage_delObjects(announce_ids)
 
-    #--------------------------------#
-    # Course Glossary & Bibliography #
-    #--------------------------------#
+    # -------------------------------- #
+    #  Course Glossary & Bibliography  #
+    # -------------------------------- #
     def getGloBib(self, glo_bib):
         # LOG.info("----- getGloBib -----")
         dicoLettres = {}
@@ -2863,9 +2865,9 @@ class JalonCours(ATFolder):
                     dicoLettres[lettre].append(info_element)
         return dicoLettres
 
-    #-------------------#
-    # Course indicators #
-    #-------------------#
+    # ------------------- #
+    #  Course indicators  #
+    # ------------------- #
     def insererConsultation(self, user, type_cons, id_cons):
         # LOG.info("----- insererConsultation -----")
         public_cons = "Anonymous"
@@ -3005,8 +3007,8 @@ class JalonCours(ATFolder):
                                                         "icone": "fa fa-comments-o",
                                                         "link":  item_link}]}}
         basic_breadcrumbs = [{"title": _(u"Mes cours"),
-                             "icon":  "fa fa-university",
-                             "link":  "%s/mes_cours" % self.portal_url.absolute_url()},
+                              "icon":  "fa fa-university",
+                              "link":  "%s/mes_cours" % self.portal_url.absolute_url()},
                              {"title": self.Title(),
                               "icon":  "fa fa-book",
                               "link":  self.absolute_url()}]
@@ -3022,6 +3024,7 @@ class JalonCours(ATFolder):
         forum_object.setDescription(descriptionElement)
         forum_object.setMaxAttachments(0)
         forum_object.reindexObject()
+
 
 # enregistrement dans la registery Archetype
 registerATCT(JalonCours, PROJECTNAME)
