@@ -145,6 +145,54 @@ function setFavoriteState( ) {
 
 
 /*
+    Barres d'ajout d'elements "collante"
+*/
+
+function setStickyItem( ) {
+
+    function _stickyItem( $item, $stickyContainer ) {
+
+        if ( $item.isOnScreen( ) ) {
+
+            if ( isSticky ) {
+
+                $stickyContainer.fadeOut( 'fast', function( ) {
+                    $stickyContainer.children( ).detach( ).appendTo( $item );
+                } );
+                isSticky = false;
+            }
+
+        } else {
+
+            if ( ! isSticky ) {
+
+                $item.children( ).detach( ).appendTo( $stickyContainer );
+                $stickyContainer.fadeIn( 'fast' );
+                isSticky = true;
+            }
+        }
+    }
+
+    var isSticky = false,
+        $item = Foundation.utils.S( '#has_sticky_content' ),
+        $stickyContainer = Foundation.utils.S( '#sticky_container' ).find( 'nav' );
+
+    $stickyContainer.fadeOut( 'fast' );
+    $item.parent( ).css( 'min-height', function( ) {
+        return $( this ).outerHeight( );
+    } );
+
+    _stickyItem( $item, $stickyContainer );
+
+    $( window ).on( 'scroll', function( ) {
+
+        _stickyItem( $item, $stickyContainer );
+    } );
+}
+
+
+
+/*
     Attachement d'un element de "Mon espace" hors Biblio. / Glossaire
 */
 
@@ -273,6 +321,19 @@ function setSortablePlan( ) {
         setStaffPlanChapterFoldCommand( );
 
     }
+}
+
+
+
+/*
+    Initialisation de tous les chapitres du plan a l'etat deplie
+*/
+
+function expandPlanChapters( ) {
+
+    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
+        //.removeClass( 'collapsed' )
+        .addClass( 'expanded' );
 }
 
 
