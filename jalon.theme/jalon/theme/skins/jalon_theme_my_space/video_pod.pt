@@ -1,0 +1,47 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+     xml:lang="en"
+     lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content">
+
+    <tal:define define="pod request/pod;
+                        video python:context.searchElasticsearch('video', pod);">
+    <h2>
+        <tal:replace replace="video/title" />
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <h4>
+        <strong>Auteur :</strong> <tal:block replace="video/owner_full_name"/>
+    </h4>
+
+    <div class="panel radius"
+         tal:condition="not:video/text"
+         i18n:translate="">
+         Description non renseignée…
+    </div>
+
+    <div class="panel callout radius"
+         tal:condition="video/text"
+         tal:content="structure video/text" />
+
+    <div class="flex-video"
+         tal:content="structure video/iframe" />
+
+    <script charset="UTF-8"
+            tal:content="structure string:removePlayerOnClose()" />
+
+    </tal:define>
+
+</metal:main>
+
+</body>
+
+</html>
