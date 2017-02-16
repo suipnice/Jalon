@@ -16,12 +16,12 @@
         <tal:replace replace="context/Title"/>
         <a class="close-reveal-modal"></a>
     </h2>
-
+    <tal:comment replace="nothing"><!--
     <div tal:condition="python:external_resource_type == 'Video'">
         <strong><tal:block i18n:translate="">Propriétaire :</tal:block></strong>
         <tal:block replace="context/getVideoauteurname"/>
     </div>
-
+    --></tal:comment>
     <div class="panel radius"
          tal:condition="not:context/Description"
          i18n:translate="">
