@@ -13,13 +13,13 @@
 <!--
         Accès aux composantes de "Mes ressources"
 -->
-<metal:macro define-macro="gestion_mon_espace">
+<metal:macro define-macro="gestion_mes_ressources">
     <h2>
         <i class="fa fa-folder-open"></i><tal:block i18n:translate="">Configuration des outils actifs dans "Mes ressources"</tal:block>
     </h2>
     <form method="post" class="text-center"
           tal:attributes="action string:${context/absolute_url}/saveConfigMonEspace"
-          tal:define="mon_espace context/getPropertiesMonEspace">
+          tal:define="mes_ressources context/getPropertiesMonEspace">
         <div class="row">
             <div class="columns">
                 <div class="panel callout radius">
@@ -27,14 +27,14 @@
                         Activer le dépôt de Fichier
                     </label>
                     <input type="radio" name="activer_fichiers" id="activer_fichiers" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_fichiers'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_fichiers'], 'checked', '')" />
                     <label for="activer_fichiers"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_fichiers" id="desactiver_fichiers" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_fichiers'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_fichiers'], 'checked', '')" />
                     <label for="desactiver_fichiers"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -57,14 +57,14 @@
                 </tal:condition>
                 <tal:condition condition="isConnect/module">
                     <input type="radio" name="activer_presentations_sonorisees" id="activer_presentations_sonorisees" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_presentations_sonorisees'], 'checked', '')" />
                     <label for="activer_presentations_sonorisees"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_presentations_sonorisees" id="desactiver_presentations_sonorisees" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_presentations_sonorisees'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_presentations_sonorisees'], 'checked', '')" />
                     <label for="desactiver_presentations_sonorisees"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -88,14 +88,14 @@
                 </tal:condition>
                 <tal:condition condition="isWims/module">
                     <input type="radio" name="activer_exercices_wims" id="activer_exercices_wims" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_exercices_wims'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_exercices_wims'], 'checked', '')" />
                     <label for="activer_exercices_wims"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_exercices_wims" id="desactiver_exercices_wims" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_exercices_wims'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_exercices_wims'], 'checked', '')" />
                     <label for="desactiver_exercices_wims"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -114,14 +114,14 @@
                     </label>
                     <p class="text-center field-lg">
                         <input type="radio" name="activer_liens" id="activer_liens" value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_liens'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(mes_ressources['activer_liens'], 'checked', '')" />
                         <label for="activer_liens"
                                class="activer">
                             <i class="fa fa-check"></i>
                             <tal:block i18n:translate="">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_liens" id="desactiver_liens" value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_liens'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(not mes_ressources['activer_liens'], 'checked', '')" />
                         <label for="desactiver_liens"
                                class="desactiver">
                             <i class="fa fa-times"></i>
@@ -138,14 +138,14 @@
                     </label>
                     <p class="text-center field-lg">
                         <input type="radio" name="activer_liens_catalogue_bu" id="activer_liens_catalogue_bu" value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(mes_ressources['activer_liens_catalogue_bu'], 'checked', '')" />
                         <label for="activer_liens_catalogue_bu"
                                class="activer">
                             <i class="fa fa-check"></i>
                             <tal:block i18n:translate="">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_liens_catalogue_bu" id="desactiver_liens_catalogue_bu" value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_liens_catalogue_bu'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(not mes_ressources['activer_liens_catalogue_bu'], 'checked', '')" />
                         <label for="desactiver_liens_catalogue_bu"
                                class="desactiver">
                             <i class="fa fa-times"></i>
@@ -170,14 +170,14 @@
                     </label>
                     <p class="text-center field-lg">
                         <input type="radio" name="activer_tags_catalogue_bu" id="activer_tags_catalogue_bu" value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(mes_ressources['activer_tags_catalogue_bu'], 'checked', '')" />
                         <label for="activer_tags_catalogue_bu"
                                class="activer">
                             <i class="fa fa-check"></i>
                             <tal:block i18n:translate="">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_tags_catalogue_bu" id="desactiver_tags_catalogue_bu" value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_tags_catalogue_bu'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(not mes_ressources['activer_tags_catalogue_bu'], 'checked', '')" />
                         <label for="desactiver_tags_catalogue_bu"
                                class="desactiver">
                             <i class="fa fa-times"></i>
@@ -196,14 +196,14 @@
                         Activer la création de Termes de glossaire
                     </label>
                     <input type="radio" name="activer_termes_glossaire" id="activer_termes_glossaire" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_termes_glossaire'], 'checked', '')" />
                     <label for="activer_termes_glossaire"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_termes_glossaire" id="desactiver_termes_glossaire" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_termes_glossaire'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_termes_glossaire'], 'checked', '')" />
                     <label for="desactiver_termes_glossaire"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -226,14 +226,14 @@
                 </tal:condition>
                 <tal:condition condition="isConnect/module">
                     <input type="radio" name="activer_webconferences" id="activer_webconferences" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_webconferences'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_webconferences'], 'checked', '')" />
                     <label for="activer_webconferences"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_webconferences" id="desactiver_webconferences" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_webconferences'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_webconferences'], 'checked', '')" />
                     <label for="desactiver_webconferences"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -254,7 +254,7 @@
                     <p class="text-center field-lg">
                         <input type="radio" name="activer_lille1pod" id="activer_lille1pod"
                                value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_lille1pod'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(mes_ressources['activer_lille1pod'], 'checked', '')" />
                         <label for="activer_lille1pod"
                                class="activer">
                             <i class="fa fa-check"></i>
@@ -262,7 +262,7 @@
                         </label>
                         <input type="radio" name="activer_lille1pod" id="desactiver_lille1pod"
                                value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_lille1pod'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(not mes_ressources['activer_lille1pod'], 'checked', '')" />
                         <label for="desactiver_lille1pod"
                                class="desactiver">
                             <i class="fa fa-times"></i>
@@ -289,7 +289,7 @@
                     <p class="text-center field-lg">
                         <input type="radio" name="activer_vod" id="activer_vod"
                                value="1"
-                               tal:attributes="checked python:context.test(mon_espace['activer_vod'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(mes_ressources['activer_vod'], 'checked', '')" />
                         <label for="activer_vod"
                                class="activer">
                             <i class="fa fa-check"></i>
@@ -297,7 +297,7 @@
                         </label>
                         <input type="radio" name="activer_vod" id="desactiver_vod"
                                value="0"
-                               tal:attributes="checked python:context.test(not mon_espace['activer_vod'], 'checked', '')" />
+                               tal:attributes="checked python:context.test(not mes_ressources['activer_vod'], 'checked', '')" />
                         <label for="desactiver_vod"
                                class="desactiver">
                             <i class="fa fa-times"></i>
@@ -320,14 +320,14 @@
                         Activer la liaison à un serveur Intracursus
                     </label>
                     <input type="radio" name="activer_lien_intracursus" id="activer_lien_intracursus" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_lien_intracursus'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_lien_intracursus'], 'checked', '')" />
                     <label for="activer_lien_intracursus"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_lien_intracursus" id="desactiver_lien_intracursus" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_lien_intracursus'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_lien_intracursus'], 'checked', '')" />
                     <label for="desactiver_lien_intracursus"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -342,7 +342,7 @@
                     </label>
                     <input type="text" name="lien_intracursus"
                            maxlength="255" size="30"
-                           tal:attributes="value mon_espace/lien_intracursus | nothing" />
+                           tal:attributes="value mes_ressources/lien_intracursus | nothing" />
                 </div>
             </div>
         </div>
@@ -353,14 +353,14 @@
                         Activer la bulle "Signaler un bug"
                     </label>
                     <input type="radio" name="activer_lien_assistance" id="activer_lien_assistance" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_lien_assistance'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_lien_assistance'], 'checked', '')" />
                     <label for="activer_lien_assistance"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_lien_assistance" id="desactiver_lien_assistance" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_lien_assistance'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_lien_assistance'], 'checked', '')" />
                     <label for="desactiver_lien_assistance"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -379,14 +379,14 @@
                         Activer l'utilisation d'un serveur de Vidéo Externe (Serveur Plone)
                     </label>
                     <input type="radio" name="activer_video" id="activer_video" value="1"
-                           tal:attributes="checked python:context.test(mon_espace['activer_video'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(mes_ressources['activer_video'], 'checked', '')" />
                     <label for="activer_video"
                            class="activer">
                         <i class="fa fa-check"></i>
                         <tal:block i18n:translate="">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_video" id="desactiver_video" value="0"
-                           tal:attributes="checked python:context.test(not mon_espace['activer_video'], 'checked', '')" />
+                           tal:attributes="checked python:context.test(not mes_ressources['activer_video'], 'checked', '')" />
                     <label for="desactiver_video"
                            class="desactiver">
                         <i class="fa fa-times"></i>
@@ -401,7 +401,7 @@
                     </label>
                     <input type="text" name="url_video"
                            maxlength="255" size="30"
-                           tal:attributes="value mon_espace/url_video | nothing" />
+                           tal:attributes="value mes_ressources/url_video | nothing" />
                 </div>
             </div>
         </div>
@@ -760,7 +760,7 @@
     <section class="small-12 columns">
         <ul class="button-group radius even-2">
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wowza&amp;onglet=wowza_config;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_wowza&amp;onglet=wowza_config;
                                    class python:context.test(onglet == 'wowza_config', 'button small', 'button small secondary')"
                    i18n:translate="ongletConfiguration">
                     <i class="fa fa-cog"></i>
@@ -768,7 +768,7 @@
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wowza&amp;onglet=wowza_extraits;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_wowza&amp;onglet=wowza_extraits;
                                    class python:context.test(onglet == 'wowza_extraits', 'button small', 'button small secondary')"
                    i18n:translate="ongletExtraits">
                     <i class="fa fa-list"></i>

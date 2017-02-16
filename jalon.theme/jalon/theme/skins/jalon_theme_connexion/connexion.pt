@@ -15,7 +15,7 @@
         <!-- Bloc annonce maintenance -->
             <div class="alert-box alert radius" i18n:translate="">
                 <h3 i18n:translate="">Maintenance en cours</h3>
-                <strong tal:content="infos_connexion/site | infos_mon_espace/site | request/site" />
+                <strong tal:content="infos_connexion/site | infos_mes_ressources/site | request/site" />
                 <tal:block i18n:translate="">est fermé</tal:block>
                 <tal:block i18n:translate="">pour maintenance du</tal:block>
                 <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
@@ -29,7 +29,7 @@
         <!-- Bloc annonce prévision maintenance -->
             <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
                 <h3 i18n:translate="">Maintenance planifiée</h3>
-                <strong tal:content="infos_connexion/site | infos_mon_espace/site | request/site" />
+                <strong tal:content="infos_connexion/site | infos_mes_ressources/site | request/site" />
                 <tal:block i18n:translate="">sera indisponible</tal:block>
                 <tal:block i18n:translate="">pour maintenance du</tal:block>
                 <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
@@ -49,7 +49,7 @@
                    i18n:attributes="title">
                    vider le cache de votre navigateur</a>.
             <tal:comment replace="nothing"><!--
-                <a tal:attributes="href infos_mon_espace/url_news_maintenance" i18n:translate="">Consulter la note de mise à jour.</a>
+                <a tal:attributes="href infos_mes_ressources/url_news_maintenance" i18n:translate="">Consulter la note de mise à jour.</a>
             --></tal:comment>
                 <a class="close"></a>
             </div>

@@ -75,46 +75,46 @@ div.panel label{
     </tal:define>
 
 <main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
-      tal:define="gestion request/gestion | string:gestion_mon_espace">
+      tal:define="gestion request/gestion | string:gestion_mes_ressources">
     <section class="small-12 columns">
         <ul class="button-group radius even-6">
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_mon_espace;
-                                   class python:context.test(gestion == 'gestion_mon_espace', 'button small', 'button small secondary')"
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_mes_ressources;
+                                   class python:context.test(gestion == 'gestion_mes_ressources', 'button small', 'button small secondary')"
                    i18n:translate="ongletMonEspace">
                     Accès Mes ressources
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_adobe_connect;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_adobe_connect;
                                    class python:context.test(gestion == 'gestion_adobe_connect', 'button small', 'button small secondary')"
                    i18n:translate="ongletConnect">
                     Adobe Connect
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wims;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_wims;
                                    class python:context.test(gestion == 'gestion_wims', 'button small', 'button small secondary')"
                    i18n:translate="ongletWims">
                     Wims
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_primo;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_primo;
                                    class python:context.test(gestion == 'gestion_primo', 'button small', 'button small secondary')"
                    i18n:translate="ongletPrimo">
                     ExLibris Primo
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_elasticsearch;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_elasticsearch;
                                    class python:context.test(gestion == 'gestion_elasticsearch', 'button small', 'button small secondary')"
                    i18n:translate="ongletPod">
                     Pod
                 </a>
             </li>
             <li>
-                <a tal:attributes="href string:${context/absolute_url}/gestion_mon_espace?gestion=gestion_wowza;
+                <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_wowza;
                                    class python:context.test(gestion == 'gestion_wowza', 'button small', 'button small secondary')"
                    i18n:translate="ongletWowza">
                     Wowza

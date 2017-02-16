@@ -26,7 +26,7 @@
                                layer=".interfaces.IThemeSpecific"/>
 
     <!-- MySpace View Definition -->
-    <browser:page name="mon_espace_view"
+    <browser:page name="mes_ressources_view"
                   for="jalon.content.interfaces.jaloninterface.IJalonFolder"
                   class="jalon.content.browser.view_script.my_space_view.MySpaceView"
                   template="view_template/my_space/my_space_view.pt"

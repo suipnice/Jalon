@@ -54,7 +54,7 @@ div.panel label{
     </metal:macro>
     </tal:define>
 
-    <main id="mon_espace" role="main" aria-labelledby="page_title"
+    <main id="mes_ressources" role="main" aria-labelledby="page_title"
           class="row">
         <h2>
             <i class="fa fa-life-ring"></i><tal:block i18n:translate="">Configuration des didactiels</tal:block>

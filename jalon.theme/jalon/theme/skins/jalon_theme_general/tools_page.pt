@@ -18,7 +18,7 @@
     </metal:macro>
     </tal:define>
 
-    <main id="mon_espace" role="main" class="row" aria-labelledby="page_title">
+    <main id="mes_ressources" role="main" class="row" aria-labelledby="page_title">
 
         <div class="small-12 columns">
             <h2>

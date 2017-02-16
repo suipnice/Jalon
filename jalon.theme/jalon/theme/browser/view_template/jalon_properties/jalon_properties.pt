@@ -16,14 +16,14 @@
     </metal:macro>
     </tal:define>
 
-    <main id="mon_espace" class="row" role="main" aria-labelledby="page_title">
+    <main id="mes_ressources" class="row" role="main" aria-labelledby="page_title">
         <nav class="small-12 columns">
             <a class="button expand res-glossaire"
                tal:attributes="href string:${context/absolute_url}/gestion_connexion">
                 <i class="fa fa-key"></i><tal:block i18n:translate="">Connexion à Jalon</tal:block>
             </a>
             <a class="button expand res-connect"
-               tal:attributes="href string:${context/absolute_url}/gestion_mon_espace">
+               tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources">
                 <i class="fa fa-folder-open"></i><tal:block i18n:translate="">Gestion "Mes ressources"</tal:block>
             </a>
             <a class="button expand res-glossaire"
