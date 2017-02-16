@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+
+<metal:main fill-slot="content">
+
+    <h2>
+        <tal:block i18n:translate="">Afficher en mode page</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form method="POST" name="course_map_display"
+          tal:attributes="action string:${context/absolute_url}/edit_course_property_script">
+
+        <div class="panel callout radius">
+            <tal:block i18n:translate="">Une fois cette option désactivée, le plan du cours sera affiché en mode page. Une page par "Titre" à la racine du plan du cours. L'affichage par page n'est visible seulement en "Affichage Étudiant".</tal:block>
+        </div>
+
+        <div class="formControls"
+             tal:define="course_map_display context/getCourseMapDisplay">
+
+            <input type="radio" id="course_map_display-true" name="course_map_display" value="True"
+                   tal:attributes="checked python:context.test(course_map_display, 'checked', '')" />
+            <label for="course_map_display-true" class="success" i18n:translate="">Activer</label>
+
+            <input type="radio" id="course_map_display-false" name="course_map_display" value="False"
+                   tal:attributes="checked python:context.test(course_map_display, '', 'checked')" />
+            <label for="course_map_display-false" class="warning" i18n:translate="">Désactiver</label>
+
+        </div>
+
+        <input type="hidden" name="course_property" value="course_map_display" />
+
+        <div class="formControls">
+            <button type="submit" class="button small radius">
+                <i class="fa fa-check-circle"></i>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
+            </button>
+        </div>
+
+    </form>
+
+</metal:main>
+
+</body>
+
+</html>

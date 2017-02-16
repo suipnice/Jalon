@@ -82,7 +82,7 @@ class CourseView(BrowserView):
                  "icon":  "fa fa-book",
                  "link":  self.context.absolute_url()}]
 
-    def getCourseView(self, user, mode_etudiant):
+    def getCourseView(self, user, mode_etudiant, course_map_id=None):
         # LOG.info("----- getCourseView (Start) -----")
         portal = self.context.portal_url.getPortalObject()
 
@@ -93,7 +93,8 @@ class CourseView(BrowserView):
                    "mode_etudiant":                mode_etudiant,
                    "is_personnel":                 is_personnel,
                    "is_public":                    "success" if self.context.getAcces() == "Public" else "disabled",
-                   "is_course_author":             self.context.isAuteurs(user.getId())}
+                   "is_course_author":             self.context.isAuteurs(user.getId()),
+                   "is_sub_course_map":            True}
 
         course_author = self.context.getAuteur()
         my_view["course_author_name"] = course_author["fullname"]
@@ -131,6 +132,11 @@ class CourseView(BrowserView):
                                                   "action_icon": "fa fa-trash-o  fa-fw",
                                                   "action_name": "Supprimer les activités WIMS"}]
 
+            # Désactivation de l'option en mode page
+            #                                     {"action_link": "%s/edit_course_map_display_form" % course_link,
+            #                                      "action_icon": "fa fa-file-o fa-fw",
+            #                                      "action_name": "Afficher en mode page"},
+
             course_path = self.context.getPhysicalPath()
             my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
             my_view["course_add_glossary_link"] = "%s/mon_espace/mes_termes_glossaire/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
@@ -139,7 +145,20 @@ class CourseView(BrowserView):
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
         my_view["item_jalonner"] = self.context.getCourseMapItemJalonner()
-        my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+
+        my_view["is_course_map_display"] = False
+        if not is_personnel:
+            # Désactivation de l'option en mode page
+            #and self.context.getCourseMapDisplay():
+            my_view["is_course_map_display"] = True
+            if not course_map_id or course_map_id == "all":
+                my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+                if len(self.context.getCourseMapList()) > 50:
+                    my_view["is_sub_course_map"] = False
+            else:
+                my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+        else:
+            my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
 
         my_view["has_course_map"] = True if my_view["course_map"]["course_map_items_list"] else False
 

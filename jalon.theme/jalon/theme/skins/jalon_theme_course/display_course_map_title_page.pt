@@ -9,10 +9,12 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="my_view python:context.getDisplayCourseMapAttributes(user);
+            tal:define="mode_etudiant request/mode_etudiant | string:false;
+                        my_view_attributes python:context.getDisplayCourseMapAttributes(user, mode_etudiant);
                         course_link context/absolute_url;
-                        course_map python:context.getCourseMap(user.getId(), my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal']);
-                        expand_titre python:True">
+                        course_title request/course_title | string:all;
+                        my_view python:context.getCourseMapAjax(course_title, user.getId(), my_view_attributes);
+                        course_map my_view/course_map;">
 
     <metal:macro use-macro="context/course_map_macro/macros/display_course_map">
         Affichage du plan du cours
@@ -28,6 +30,8 @@
     </tal:comments>
     <script charset="UTF-8"
             tal:content="structure string:expandPlanChapters()"></script>
+    <script charset="UTF-8"
+            tal:content="structure string:setLegendBarButtonsActivation()"></script>
 
 </metal:main>
 

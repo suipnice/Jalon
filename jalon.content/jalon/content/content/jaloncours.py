@@ -94,6 +94,12 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  searchable=False,
                  default=False,
                  widget=BooleanWidget(label=_(u"Inscriptions libres"))),
+    BooleanField("course_map_display",
+                 required=True,
+                 accessor="getCourseMapDisplay",
+                 searchable=False,
+                 default=False,
+                 widget=BooleanWidget(label=_(u"Affichage du plan en mode page"))),
     LinesField("inscriptionsLibres",
                required=False,
                accessor="getInscriptionsLibres",
@@ -825,12 +831,13 @@ class JalonCours(ATFolder):
 
         return ""
 
-    def getDisplayCourseMapAttributes(self, user):
+    def getDisplayCourseMapAttributes(self, user, mode_etudiant=False):
         # LOG.info("----- getDisplayCourseMapAttributes -----")
-        return {"is_personnel":         self.isPersonnel(user),
+        return {"is_personnel":         self.isPersonnel(user, mode_etudiant),
                 "user_last_login_time": user.getProperty('login_time', ""),
                 "course_news":          self.getActualitesCours(),
                 "item_jalonner":        self.getCourseMapItemJalonner(),
+                "is_sub_course_map":    True,
                 "portal":               self.portal_url.getPortalObject()}
 
     def getCourseMapItemForm(self, item_type, item_id):
@@ -879,8 +886,44 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseMap -----")
         return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
+    def getCourseMapAjax(self, course_map_id, user_id, my_view):
+        LOG.info("----- getCourseMapAjax -----")
+        if not course_map_id or course_map_id == "all":
+            if len(self.getCourseMapList()) > 50:
+                my_view["is_sub_course_map"] = False
+            my_view["course_map"] = self.getCourseMap(user_id, my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal'])
+        else:
+            my_view["course_map"] = self.getCourseMapTitle(course_map_id, user_id, my_view['user_last_login_time'], my_view['is_personnel'], my_view['course_news']['listeActu'], my_view['item_jalonner'], my_view['portal'])
+        return my_view
+
+    def getCourseMapTitle(self, course_map_id, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal):
+        LOG.info("----- getCourseMapTitle -----")
+        for item in list(self.getPlan()):
+            if item["idElement"] == course_map_id:
+                #item_properties = item
+                #return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+                return self.getCourseMapItems(item["listeElement"], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+
+        return {"ol_css_id":              "course_plan-plan",
+                "ol_css_class":           "",
+                "course_map_items_list":  []}
+
+    def getCourseMapFirstTitle(self):
+        LOG.info("----- getCourseMapFirstTitle -----")
+        course_map_title = []
+        item_properties_dict = self.getCourseItemProperties()
+        for item in list(self.getPlan()):
+            if item["idElement"].startswith("Titre"):
+                item_properties = item_properties_dict[item["idElement"]]
+                is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+                if is_display_item["val"]:
+                    course_map_title.append({"title_id":   item["idElement"],
+                                             "title_text": item_properties["titreElement"]})
+        return course_map_title
+
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
         LOG.info("----- getCourseMapItems -----")
+        LOG.info(course_map_items_list)
         ol_css_id = ""
         ol_css_class = ""
         if is_map_top_level:

@@ -10,7 +10,8 @@
 
 <metal:main fill-slot="content"
             tal:define="mode_etudiant_request request/mode_etudiant | nothing;
-                        my_view python:view.getCourseView(user, mode_etudiant_request);
+                        course_map_id request/course_map_id | nothing;
+                        my_view python:view.getCourseView(user, mode_etudiant_request, course_map_id);
                         mode_etudiant my_view/mode_etudiant">
 
     <tal:define define="no_return python:context.checkCourseAuthorized(user, request)"/>
@@ -79,18 +80,38 @@
                 </metal:macro>
 
                 <tal:condition condition="not:my_view/has_course_map">
-                <ol id="course_plan-plan" class="sortable ui-sortable">
+                <ol id="course_plan-plan" class="sortable ui-sortable"
+                    tal:condition="not:course_map_id">
                     <li>
                         <div class="panel radius">
                             <strong i18n:translate="">Aucune ressource n'est accessible dans ce cours.</strong>
                         </div>
                     </li>
                 </ol>
+                <tal:condition condition="course_map_id">
+                <tal:condition condition="my_view/is_course_map_display">
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_chapter_form">
+                    Affichage du formulaire de choix de titre
+                </metal:macro>
+                </tal:condition>
+                <ol id="course_plan-plan" class="sortable ui-sortable">
+                    <li>
+                        <div class="panel radius">
+                            <strong i18n:translate="">Le contenu de ce titre n'est plus disponible.</strong>
+                        </div>
+                    </li>
+                </ol>
+                </tal:condition>
                 </tal:condition>
 
                 <tal:condition condition="my_view/has_course_map">
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
+                <tal:condition condition="my_view/is_course_map_display">
+                <metal:macro use-macro="context/course_map_macro/macros/course_map_chapter_form">
+                    Affichage du formulaire de choix de titre
+                </metal:macro>
+                </tal:condition>
                 <ol tal:attributes="id course_map/ol_css_id;
                                     class course_map/ol_css_class">
                     <metal:macro use-macro="context/course_map_macro/macros/display_course_map">

@@ -91,12 +91,12 @@
                 tal:define="tmp python:jsTranslate.addJsTranslate([('CLOSE_REVEAL_TITLE','Cliquez pour fermer.'),('MSG_LOADING_TEXT','Actualisation en cours…'),('MSG_LOADING_OK_TEXT','Actualisation réussie !'),('MSG_TAP2CLOSE_TEXT','Toucher pour fermer'),('MSG_FORM_VALIDATION_ERROR','Votre saisie est erronée.'),('MSG_FORUM_NO_EMPTY_CONVERSATION','Ce forum ne contient aucune conversation sans réponse.')])"
                 tal:content="jsTranslate/getJsTranslate"></script>
         <script charset="UTF-8"
+                tal:content="structure string:var ABSOLUTE_URL = '${context/absolute_url}'"></script>
+        <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/app.min.js"></script>
     <tal:isNotStudent condition="python:user.has_role(['Personnel', 'Manager', 'Secretaire'])">
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-post.min.js"></script>
-        <script charset="UTF-8"
-                tal:content="structure string:var ABSOLUTE_URL = '${context/absolute_url}'"></script>
         <script charset="UTF-8"
                 tal:attributes="src string:${navroot}/++resource++jalon.theme.javascript/staff-app.min.js"></script>
     </tal:isNotStudent>
