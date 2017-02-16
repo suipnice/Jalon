@@ -12,7 +12,6 @@
   <cmf:registerDirectory name="jalon_theme_my_courses"/>
   <cmf:registerDirectory name="jalon_theme_course"/>
   <cmf:registerDirectory name="jalon_theme_my_students"/>
-  <cmf:registerDirectory name="jalon_theme_dynamic_script"/>
   <cmf:registerDirectory name="jalon_theme_configuration"/>
   <cmf:registerDirectory name="jalon_theme_forum"/>
 
