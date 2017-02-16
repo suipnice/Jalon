@@ -662,21 +662,21 @@ class JalonFolder(ATFolder):
         items = fichier.getRelatedItems()
         for item in items:
             if item.portal_type in ["JalonCours"]:
-                element_cours = copy.deepcopy(item.getElementCours())
+                element_cours = copy.deepcopy(item.getCourseItemProperties())
                 idFichier = fichier.getId()
                 if "." in idFichier:
                     idFichier = idFichier.replace(".", "*-*")
                 if idFichier in element_cours:
                     element_cours[idFichier]["titreElement"] = fichier.Title()
-                    item.setElementsCours(element_cours)
+                    item.setCourseItemsProperties(element_cours)
             if item.portal_type in ["JalonBoiteDepot", "JalonCoursWims"]:
-                dico = copy.deepcopy(item.getInfosElement())
+                dico = copy.deepcopy(item.getDocumentsProperties())
                 idFichier = fichier.getId()
                 if "." in idFichier:
                     idFichier = idFichier.replace(".", "*-*")
                 if idFichier in dico:
                     dico[idFichier]["titreElement"] = fichier.Title()
-                    item.setInfosElement(dico)
+                    item.setDocumentsProperties(dico)
 
     def dupliquerCours(self, idcours, creator, manager=False):
         """Permet de dupliquer le cours Jalon 'idcours'."""

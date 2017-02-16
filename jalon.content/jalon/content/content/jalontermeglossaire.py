@@ -43,9 +43,9 @@ class JalonTermeGlossaire(ATDocumentBase):
         for item in items:
             if item.portal_type in ["JalonCours"]:
                 #modification du titre dans le cours
-                element_cours = copy.deepcopy(item.getElementCours())
+                element_cours = copy.deepcopy(item.getCourseItemProperties())
                 if self.getId() in element_cours:
                     element_cours[self.getId()]["titreElement"] = self.Title()
-                    item.setElementsCours(element_cours)
+                    item.setCourseItemsProperties(element_cours)
 
 registerATCT(JalonTermeGlossaire, PROJECTNAME)

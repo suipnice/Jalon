@@ -215,17 +215,17 @@ class JalonRessourceExterne(ATDocumentBase):
         for item in items:
             if item.portal_type in ["JalonCours"]:
                 #modification du titre dans le cours
-                element_cours = copy.deepcopy(item.getElementCours())
+                element_cours = copy.deepcopy(item.getCourseItemProperties())
                 if self.getId() in element_cours:
                     element_cours[self.getId()]["titreElement"] = self.Title()
-                    item.setElementsCours(element_cours)
+                    item.setCourseItemsProperties(element_cours)
             if item.portal_type in ["JalonBoiteDepot", "JalonCoursWims"]:
                 #modification du titre dans les boite de depots
-                dico = copy.deepcopy(item.getInfosElement())
+                dico = copy.deepcopy(item.getDocumentsProperties())
                 if self.getId() in dico:
                     dico[self.getId()]["titreElement"] = self.Title()
                     #item.setInfos_element(dico)
-                    item.setInfosElement(dico)
+                    item.setDocumentsProperties(dico)
 
     def editFromBUCatalogBU(self, recordid):
         portal_primo = getToolByName(self, "portal_primo")
