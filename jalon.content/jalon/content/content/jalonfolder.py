@@ -85,13 +85,13 @@ class JalonFolder(ATFolder):
     meta_type = 'JalonFolder'
     schema = JalonFolderSchema
 
-    folder_my_space_dict = {"Fichiers":      "mon_espace/mes_fichiers",
-                            "Sonorisation":  "mon_espace/mes_presentations_sonorisees",
-                            "Wims":          "mon_espace/mes_exercices_wims",
-                            "Externes":      "mon_espace/mes_ressources_externes",
-                            "Glossaire":     "mon_espace/mes_termes_glossaire",
-                            "Webconference": "mon_espace/mes_webconferences",
-                            "Video":         "mon_espace/mes_videos_pod"}
+    folder_my_space_dict = {"Fichiers":      "mes_ressources/mes_fichiers",
+                            "Sonorisation":  "mes_ressources/mes_presentations_sonorisees",
+                            "Wims":          "mes_ressources/mes_exercices_wims",
+                            "Externes":      "mes_ressources/mes_ressources_externes",
+                            "Glossaire":     "mes_ressources/mes_termes_glossaire",
+                            "Webconference": "mes_ressources/mes_webconferences",
+                            "Video":         "mes_ressources/mes_videos_pod"}
 
     _subjects_dict = {}
 

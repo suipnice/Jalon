@@ -18,4 +18,4 @@ for property_form_id in form.keys():
 
 context.setProperties(properties_dict)
 
-context.REQUEST.RESPONSE.redirect("%s/mon_espace/mes_ressources_externes" % context.portal_url.getPortalObject().absolute_url())
+context.REQUEST.RESPONSE.redirect("%s/mes_ressources/mes_ressources_externes" % context.portal_url.getPortalObject().absolute_url())

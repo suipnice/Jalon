@@ -23,4 +23,4 @@ context.reindexObject()
 
 context.aq_parent.majFichier(context)
 
-context.REQUEST.RESPONSE.redirect("%s/mon_espace/mes_fichiers" % context.portal_url.getPortalObject().absolute_url())
+context.REQUEST.RESPONSE.redirect("%s/mes_ressources/mes_fichiers" % context.portal_url.getPortalObject().absolute_url())

@@ -168,11 +168,11 @@ class WimsActivityView(CourseView):
         """Fournit la liste des liens permettant d'ajouter des exercices à une activité WIMS."""
         # portal_link = portal.absolute_url()
         # portal_link = self.portal_url
-        item_adder_list = [{"item_link":  "%s/mon_espace/mes_exercices_wims/course_add_view?course_path=%s" % (portal_link, activity_path),
+        item_adder_list = [{"item_link":  "%s/mes_ressources/mes_exercices_wims/course_add_view?course_path=%s" % (portal_link, activity_path),
                                 "item_title": "Attacher un exercice WIMS de Mes ressources",
                                 "item_icon":  "fa fa-fw fa-random",
                                 "item_name":  "Exercice WIMS"},
-                           {"item_link":  "%s/mon_espace/mes_exercices_wims/wims_activity_import_view?type=hotpot&activity_path=%s" % (portal_link, activity_path),
+                           {"item_link":  "%s/mes_ressources/mes_exercices_wims/wims_activity_import_view?type=hotpot&activity_path=%s" % (portal_link, activity_path),
                                 "item_title": "Importer des exercices",
                                 "item_icon":  "fa fa-fw fa-level-down",
                                 "item_name":  "HotPotatoes"}]

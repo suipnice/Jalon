@@ -75,10 +75,10 @@ class JalonExerciceWims(ATDocumentBase):
         portal_url = self.portal_url.getPortalObject().absolute_url()
         crumbs_list = [{"title" : _(u"Mes ressources"),
                         "icon"  : "fa fa-folder-open",
-                        "link" : "%s/mon_espace" % portal_url},
+                        "link" : "%s/mes_ressources" % portal_url},
                        {"title": _(u"Mes exercices WIMS"),
                         "icon" : "fa fa-random",
-                        "link" : "%s/mon_espace/mes_exercices_wims" % portal_url},
+                        "link" : "%s/mes_ressources/mes_exercices_wims" % portal_url},
                        {"title": self.Title(),
                         "icon" : "fa fa-random",
                         "link" : "%s/view" % self.absolute_url()}]

@@ -139,8 +139,8 @@ class CourseView(BrowserView):
 
             course_path = self.context.getPhysicalPath()
             my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
-            my_view["course_add_glossary_link"] = "%s/mon_espace/mes_termes_glossaire/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
-            my_view["course_add_bibliography_link"] = "%s/mon_espace/course_bibliography/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
+            my_view["course_add_glossary_link"] = "%s/mes_ressources/mes_termes_glossaire/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
+            my_view["course_add_bibliography_link"] = "%s/mes_ressources/course_bibliography/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
 
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
@@ -283,27 +283,27 @@ class CourseView(BrowserView):
                            "add":      []}
         # Menu Mon Espace
         if my_space["activer_fichiers"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_fichiers/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_fichiers/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-files-o fa-fw",
                                                 "item_name": "Fichiers"})
         if my_space["activer_presentations_sonorisees"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_presentations_sonorisees/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_presentations_sonorisees/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-microphone fa-fw",
                                                 "item_name": "Présentations sonorisées"})
         if my_space["activer_liens"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_ressources_externes/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_ressources_externes/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-external-link fa-fw",
                                                 "item_name": "Ressources externes"})
         if my_space["activer_webconferences"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_webconferences/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_webconferences/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-headphones fa-fw",
                                                 "item_name": "Webconférence"})
         if my_space["activer_lille1pod"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_videos_pod/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_videos_pod/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-youtube-play fa-fw",
                                                 "item_name": "Vidéos"})
         if my_space["activer_vod"]:
-            item_adder_list["my_space"].append({"item_link": "%s/mon_espace/mes_vods/course_add_view?course_path=%s" % (portal_link, course_path),
+            item_adder_list["my_space"].append({"item_link": "%s/mes_ressources/mes_vods/course_add_view?course_path=%s" % (portal_link, course_path),
                                                 "item_icon": "fa fa-video-camera fa-fw",
                                                 "item_name": "VOD"})
         # Menu Activités

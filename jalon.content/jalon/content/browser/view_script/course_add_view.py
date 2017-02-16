@@ -138,7 +138,7 @@ class CourseAddView(MySpaceView):
                 "course_map_form":      course_map_form,
                 "is_display_hide":      course_add_dict["is_display_hide"],
                 "folder_id":            course_add_dict["folder_id"],
-                "folder_link":          "%s/mon_espace/%s" % (portal.absolute_url(), self.context.getId()),
+                "folder_link":          "%s/mes_ressources/%s" % (portal.absolute_url(), self.context.getId()),
                 "course_link":          course_object.absolute_url(),
                 "course_add_js":        course_add_js,
                 "wims_exercice_model_list": wims_exercice_model_list}

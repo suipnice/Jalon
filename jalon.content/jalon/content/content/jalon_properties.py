@@ -372,11 +372,11 @@ class JalonProperties(SimpleItem):
 
         menu_my_space = None
         if is_personnel:
-            menu_my_space = {"id":        "mon_espace",
+            menu_my_space = {"id":        "mes_ressources",
                              "class":     "has-dropdown not-click",
                              "icon":      "fa fa-folder-open",
                              "title":     _(u"Mes ressources"),
-                             "link":      "mon_espace",
+                             "link":      "mes_ressources",
                              "sub_menu":  []}
 
             for sub_menu in self.getGridMonEspaceNew():
@@ -426,10 +426,10 @@ class JalonProperties(SimpleItem):
                                             "icon":  "fa fa-key",
                                             "title": _(u"Connexion à Jalon"),
                                             "link":  "portal_jalon_properties/gestion_connexion"},
-                                           {"id":    "gestion_mon_espace",
+                                           {"id":    "gestion_mes_ressources",
                                             "icon":  "fa fa-folder-open",
                                             "title": _(u"Gestion \"Mes ressources\""),
-                                            "link":  "portal_jalon_properties/gestion_mon_espace"},
+                                            "link":  "portal_jalon_properties/gestion_mes_ressources"},
                                            {"id":    "gestion_mes_cours",
                                             "icon":  "fa fa-university",
                                             "title": _(u"Gestion des cours"),
@@ -483,10 +483,10 @@ class JalonProperties(SimpleItem):
 
     def generatePageMonEspace(self, request):
         # LOG.info("----- generatePageMonEspace -----")
-        macro_mon_espace_grid_generate = ["<metal:macro define-macro=\"mon_espace_grid\">"]
-        macro_mon_espace_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mon_espace_grid_base")())
-        macro_mon_espace_grid_generate.append("</metal:macro>")
-        self.restrictedTraverse("mon_espace/macro_mon_espace_grid").pt_edit("\n".join(macro_mon_espace_grid_generate), "text/html", "utf-8")
+        macro_mes_ressources_grid_generate = ["<metal:macro define-macro=\"mes_ressources_grid\">"]
+        macro_mes_ressources_grid_generate.append(self.restrictedTraverse("portal_jalon_properties/macro_mes_ressources_grid_base")())
+        macro_mes_ressources_grid_generate.append("</metal:macro>")
+        self.restrictedTraverse("mes_ressources/macro_mes_ressources_grid").pt_edit("\n".join(macro_mes_ressources_grid_generate), "text/html", "utf-8")
 
         top_bar_base = self.restrictedTraverse("portal_jalon_properties/top_bar_base").PrincipiaSearchSource()
 
@@ -741,42 +741,42 @@ class JalonProperties(SimpleItem):
         return [{"css":       "fichiers",
                  "title":     "Fichiers",
                  "activated": self._activer_fichiers,
-                 "link":      "mon_espace/mes_fichiers",
+                 "link":      "mes_ressources/mes_fichiers",
                  "icon":      "fa fa-files-o"},
                 {"css":       "connect",
                  "title":     "Présentations sonorisées",
                  "activated": self._activer_presentations_sonorisees,
-                 "link":      "mon_espace/mes_presentations_sonorisees",
+                 "link":      "mes_ressources/mes_presentations_sonorisees",
                  "icon":      "fa fa-microphone"},
                 {"css":       "wims",
                  "title":     "Exercices Wims",
                  "activated": self._activer_exercices_wims,
-                 "link":      "mon_espace/mes_exercices_wims",
+                 "link":      "mes_ressources/mes_exercices_wims",
                  "icon":      "fa fa-random"},
                 {"css":       "liens",
                  "title":     "Ressources externes",
                  "activated": self._activer_liens,
-                 "link":      "mon_espace/mes_ressources_externes",
+                 "link":      "mes_ressources/mes_ressources_externes",
                  "icon":      "fa fa-external-link"},
                 {"css":       "glossaire",
                  "title":     "Termes de glossaire",
                  "activated": self._activer_termes_glossaire,
-                 "link":      "mon_espace/mes_termes_glossaire",
+                 "link":      "mes_ressources/mes_termes_glossaire",
                  "icon":      "fa fa-font"},
                 {"css":       "connect",
                  "title":     "Webconférences",
                  "activated": self._activer_webconferences,
-                 "link":      "mon_espace/mes_webconferences",
+                 "link":      "mes_ressources/mes_webconferences",
                  "icon":      "fa fa-headphones"},
                 {"css":       "video",
                  "title":     "Vidéos",
                  "activated": self._activer_lille1pod,
-                 "link":      "mon_espace/mes_videos_pod",
+                 "link":      "mes_ressources/mes_videos_pod",
                  "icon":      "fa fa-youtube-play"},
                 {"css":       "vod",
                  "title":     "VOD",
                  "activated": self._activer_vod,
-                 "link":      "mon_espace/mes_vods",
+                 "link":      "mes_ressources/mes_vods",
                  "icon":      "fa fa-video-camera"}]
 
     def setPropertiesMonEspace(self, form, request):
@@ -1347,7 +1347,7 @@ class JalonProperties(SimpleItem):
                  "link":  "%s/portal_jalon_properties/@@jalon_properties" % self.absolute_url()},
                 {"title": _(u"Gestion \"Mes ressources\""),
                  "icon":  "fa fa-folder-open",
-                 "link":  "%s/portal_jalon_properties/gestion_mon_espace" % self.absolute_url()}]
+                 "link":  "%s/portal_jalon_properties/gestion_mes_ressources" % self.absolute_url()}]
 
     def getBreadcrumbsMesCours(self):
         return [{"title": _(u"Configuration de Jalon"),

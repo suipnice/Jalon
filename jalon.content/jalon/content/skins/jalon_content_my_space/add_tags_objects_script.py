@@ -26,4 +26,4 @@ for path in context.REQUEST.form["paths"]:
 if context.REQUEST.HTTP_X_REQUESTED_WITH != 'XMLHttpRequest':
     context.REQUEST.RESPONSE.redirect(context.absolute_url())
 else:
-    return context.restrictedTraverse("mon_espace/%s" % context.getId())()
+    return context.restrictedTraverse("mes_ressources/%s" % context.getId())()

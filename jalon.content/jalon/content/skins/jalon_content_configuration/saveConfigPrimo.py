@@ -9,7 +9,7 @@
 ##
 
 form = context.REQUEST.form
-redirection = "%s/gestion_mon_espace?gestion=%s" % (context.absolute_url(), form["gestion"])
+redirection = "%s/gestion_mes_ressources?gestion=%s" % (context.absolute_url(), form["gestion"])
 del form["form.button.save"]
 del form["gestion"]
 context.setPropertiesPrimo(form)
