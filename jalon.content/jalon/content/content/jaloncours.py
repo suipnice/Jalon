@@ -394,6 +394,7 @@ class JalonCours(ATFolder):
         return True
 
     def getLastLogin(self):
+        """Get last login time."""
         # LOG.info("----- getLastLogin -----")
         member = self.portal_membership.getAuthenticatedMember()
         last_login = member.getProperty('last_login_time', None)
@@ -402,7 +403,7 @@ class JalonCours(ATFolder):
         return last_login
 
     def getBreadcrumbs(self):
-        """Breadcrumbs de base d'un cours"""
+        """Breadcrumbs de base d'un cours."""
         # LOG.info("----- getBreadcrumbs -----")
         portal = self.portal_url.getPortalObject()
         return [{"title": _(u"Mes cours"),
@@ -550,9 +551,9 @@ class JalonCours(ATFolder):
         # LOG.info("----- getFicheAnnuaire -----")
         return jalon_utils.getFicheAnnuaire(valeur, base)
 
-    #--------------------------#
-    # Course action My Courses #
-    #--------------------------#
+    # -------------------------- #
+    #  Course action My Courses  #
+    # -------------------------- #
     def addCourseForum(self, forum_title, forum_description, user_id):
         # LOG.info("----- addCourseForum -----")
 
@@ -609,9 +610,9 @@ class JalonCours(ATFolder):
         self.setArchive(tuple(archives))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    #----------------#
-    # Course Heading #
-    #----------------#
+    # ---------------- #
+    #  Course Heading  #
+    # ---------------- #
     def getShortDescription(self):
         # LOG.info("----- getShortDescription -----")
         description = self.Description()
@@ -684,7 +685,7 @@ class JalonCours(ATFolder):
         message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
         self.auteurPrincipal = form["username"]
         infosMembre = self.useJalonUtils("getInfosMembre", {"username": form["username"]})
-        #self.tagBU(ancienPrincipal)
+        # self.tagBU(ancienPrincipal)
         self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                     "objet":   "Vous avez été ajouté à un cours",
                                                     "message": message}})
@@ -805,9 +806,9 @@ class JalonCours(ATFolder):
         # LOG.info("----- isCoLecteurs -----")
         return True if username in self.coLecteurs else False
 
-    #------------#
-    # Course Map #
-    #------------#
+    # ------------ #
+    #  Course Map  #
+    # ------------ #
     def getProprietesVideo(self, id_video):
         # LOG.info("----- getProprietesVideo -----")
         infos_element = self.getCourseItemProperties(id_video)
@@ -900,8 +901,8 @@ class JalonCours(ATFolder):
         LOG.info("----- getCourseMapTitle -----")
         for item in list(self.getPlan()):
             if item["idElement"] == course_map_id:
-                #item_properties = item
-                #return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
+                # item_properties = item
+                # return self.getCourseMapItems([item_properties], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
                 return self.getCourseMapItems(item["listeElement"], user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
         return {"ol_css_id":              "course_plan-plan",
@@ -1147,7 +1148,7 @@ class JalonCours(ATFolder):
         id_reunion = url.split("/")[-2]
         authMember = self.portal_membership.getAuthenticatedMember()
         idMember = authMember.getId()
-        #fullname = authMember.getProperty("fullname", idMember)
+        # fullname = authMember.getProperty("fullname", idMember)
         fullname = jalon_utils.getInfosMembre(idMember)["fullname"]
         if id_reunion != idMember:
             try:
@@ -1230,7 +1231,7 @@ class JalonCours(ATFolder):
         item_properties = self.getCourseItemProperties(item_id)
         user_id = self.portal_membership.getAuthenticatedMember().getId()
         if "marque" in item_properties:
-            if not user_id in item_properties["marque"]:
+            if user_id not in item_properties["marque"]:
                 item_properties["marque"].append(user_id)
             else:
                 item_properties["marque"].remove(user_id)
@@ -1841,9 +1842,9 @@ class JalonCours(ATFolder):
     def get_id_from_filename(self, filename, context):
         return jalon_utils.get_id_from_filename(filename, context)
 
-    #---------------------------------#
-    # Course Activity (Boite dépôts)  #
-    #---------------------------------#
+    # --------------------------------- #
+    #  Course Activity (Boite dépôts)   #
+    # --------------------------------- #
     def purgerDepots(self):
         # LOG.info("----- purgerDepots -----")
         for boite in self.objectValues("JalonBoiteDepot"):
@@ -1853,9 +1854,9 @@ class JalonCours(ATFolder):
             boite.reindexObject()
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
-    #---------------------------------#
-    # Course Activity (WIMS Activity) #
-    #---------------------------------#
+    # --------------------------------- #
+    #  Course Activity (WIMS Activity)  #
+    # --------------------------------- #
     def setListeClasses(self, valeur):
         # LOG.info("----- setListeClasses -----")
         self.listeclasses = tuple(valeur)
@@ -1866,12 +1867,12 @@ class JalonCours(ATFolder):
 
     def getDataCourseWimsActivity(self, user_id, course_id):
         # LOG.info("----- getDataCourseWimsActivity -----")
-        wims_classe_list = self.getListeClasses()
-        can_delete = True if user_id in wims_classe_list[0] or self.isAuteur(user_id) else False
+        wims_classes_list = self.getListeClasses()
+        can_delete = True if wims_classes_list and (user_id in wims_classes_list[0] or self.isAuteur(user_id)) else False
 
         course_author_data = self.getAuteur()
 
-        #à finir ne tiens pas compte de si pas d'annuaire LDAP
+        # [TODO] à finir : ne tient pas compte de si pas d'annuaire LDAP
         record_user_book_base = self.useJalonUtils("getBaseAnnuaire", {})
         course_author_record_user_link = self.useJalonUtils("getFicheAnnuaire", {"valeur": course_author_data,
                                                                                  "base":   record_user_book_base})
@@ -1881,7 +1882,7 @@ class JalonCours(ATFolder):
 
         return {"course_name":                     self.getShortText(self.Title(), 80),
                 "is_course_owner":                 self.isCourseOwner(user_id),
-                "wims_classe_list":                wims_classe_list,
+                "wims_classe_list":                wims_classes_list,
                 "can_delete":                      can_delete,
                 "course_author_fullname":          course_author_data["fullname"],
                 "course_author_record_user_link":  course_author_record_user_link,
@@ -1907,7 +1908,7 @@ class JalonCours(ATFolder):
 
     def getScoresWims(self, auteur, authMember, request=None, file_format="csv"):
         u"""Liste (pour téléchargement) les notes de tous les examens WIMS créées par 'auteur' dans le cours."""
-        #self.plone_log("[jaloncours/getScoresWims]")
+        # LOG.info("[----- getScoresWims -----")
         dicoClasses = list(self.getListeClasses())[0]
 
         separators = {"csv": ",",
@@ -1931,8 +1932,8 @@ class JalonCours(ATFolder):
                         liste_activitesWIMS.append("sheet%s" % activite.getIdFeuille())
         retour = {}
         if len(liste_activitesWIMS) > 0:
-            # LOG.info("----- [jaloncours/getScoresWims] listeClasses :'%s'" % listeClasses)
-            #for user in dicoClasses:
+            # LOG.info("----- [getScoresWims] listeClasses :'%s'" % listeClasses)
+            # for user in dicoClasses:
             #    if auteur == "All" or user == auteur:
             columns = "login,name,%s" % (",".join(liste_activitesWIMS))
             if auteur in dicoClasses:
@@ -1941,7 +1942,7 @@ class JalonCours(ATFolder):
                         "job": "getcsv",
                         "format": file_format,
                         "option": columns}
-                # LOG.info("----- [jaloncours/getScoresWims] callJob dico :'%s'" % dico)
+                # LOG.info("----- [getScoresWims] callJob dico :'%s'" % dico)
                 rep_wims = self.wims("callJob", dico)
 
                 try:
