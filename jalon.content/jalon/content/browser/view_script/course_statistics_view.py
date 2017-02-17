@@ -82,7 +82,7 @@ class CourseStatisticsView(BrowserView):
         if onglet == "3":
             return self.getIndicateursRessourcesView()
         if onglet == "4":
-            return self.getIndicateursActitivesView()
+            return self.getIndicateursActivitiesView()
 
     def getElementsCoursByType(self):
         # LOG.info("----- getElementsCoursByType -----")
@@ -312,8 +312,9 @@ class CourseStatisticsView(BrowserView):
                                            "box_url":               "%s/course_statistics_view?onglet=3&box=%s" % (self.context.absolute_url(), box)}
         return indicateurs_ressources_view
 
-    def getIndicateursActitivesView(self):
-        # LOG.info("----- getIndicateursActitivesView -----")
+    def getIndicateursActivitiesView(self):
+        """Fournit les indicateurs des Activites."""
+        # LOG.info("----- getIndicateursActivitiesView -----")
         box = self.request.get("box", "1")
         box_dict = {"1": "BoiteDepot",
                     "2": "AutoEvaluation",
