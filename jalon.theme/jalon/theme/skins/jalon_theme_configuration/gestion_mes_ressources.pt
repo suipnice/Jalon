@@ -77,6 +77,9 @@ div.panel label{
 <main id="jalon_configuration" class="row" role="main" aria-labelledby="page_title"
       tal:define="gestion request/gestion | string:gestion_mes_ressources">
     <section class="small-12 columns">
+        <h2>
+            <i class="fa fa-folder-open"></i><tal:block i18n:translate="">Gestion de "Mes ressources"</tal:block>
+        </h2>
         <ul class="button-group radius even-6">
             <li>
                 <a tal:attributes="href string:${context/absolute_url}/gestion_mes_ressources?gestion=gestion_mes_ressources;
@@ -122,9 +125,11 @@ div.panel label{
             </li>
         </ul>
     </section>
-    <metal:macro use-macro="python:context.macro_gestion_espace.macros[gestion]">
-        Macro de gestion
-    </metal:macro>
+    <section class="small-12 columns">
+        <metal:macro use-macro="python:context.macro_gestion_espace.macros[gestion]">
+            Macro de gestion
+        </metal:macro>
+    </section>
 </main>
 
 </metal:core>
