@@ -560,7 +560,7 @@
         <tal:condition condition="afficher_comp">
         <tal:define define="compEtu python:context.getAffComEtu(user.getId())">
         <tal:condition condition="python:not compEtu">
-            <div class="panel warning radius"
+            <div class="panel callout radius"
                  i18n:translate="">
                 Vous devez effectuer un dépôt pour être évalué(e).
             </div>
