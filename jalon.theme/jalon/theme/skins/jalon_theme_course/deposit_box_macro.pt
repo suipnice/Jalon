@@ -67,20 +67,24 @@
 
         <thead tal:define="head_table infos_tableau/head_table">
             <tr>
-                <th tal:repeat="tr head_table"
+                <tal:repeat repeat="tr head_table">
+                <th tal:condition="tr/data-sort"
                     tal:attributes="class tr/css_class;
                                     title tr/attr_title;
                                     data-sort tr/data-sort"
                     data-tooltip>
-                    <span tal:condition="tr/data-sort">
+                    <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block content="tr/column_title" i18n:translate=""/>
+                        <tal:block content="tr/column_title" i18n:translate="" />
                     </span>
-                    <tal:block replace="structure tr/column_title"
-                               condition="not:tr/data-sort"/>
                 </th>
+                <th tal:condition="not:tr/data-sort"
+                    tal:attributes="class tr/css_class">
+                    <tal:block replace="structure tr/column_title" />
+                </th>
+                </tal:repeat>
             </tr>
         </thead>
         <tbody class="list">
