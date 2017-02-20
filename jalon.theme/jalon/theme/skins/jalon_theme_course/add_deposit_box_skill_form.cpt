@@ -21,7 +21,7 @@
 
         <div tal:define="error errors/title | nothing;"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <label for="title">Titre</label>
+            <label for="title" i18n:translate="">Titre</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <input type="text" id="title" name="title"
                    maxlength="255" size="30"
@@ -34,52 +34,58 @@
                          selection request/evaluation | string:libre;
                          arch_class string:field ArchetypesSelectionWidget;"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <label for="title">Méthode d'évaluation</label>
+            <label i18n:translate="">Méthode d'évaluation</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <ul class="verticalRadioList">
                 <li>
-                    <input type="radio" name="evaluation" value="libre"
+                    <input type="radio" id="eval_rb1" name="evaluation" value="libre"
                            required="required"
                            tal:attributes="checked python:context.test(selection == 'libre', 'checked', '')" />
-                    Libre
+                    <label for="eval_rb1" i18n:translate="">Libre</label>
                 </li>
                 <li>
-                    <input type="radio" name="evaluation" value="validation"
+                    <input type="radio" id="eval_rb2" name="evaluation" value="validation"
                            tal:attributes="checked python:context.test(selection == 'validation', 'checked', '')" />
-                    Validation
+                    <label for="eval_rb2" i18n:translate="">Validation</label>
                 </li>
                 <li>
-                    <input type="radio" name="evaluation" value="gradation"
+                    <input type="radio" id="eval_rb3" name="evaluation" value="gradation"
                            tal:attributes="checked python:context.test(selection == 'gradation', 'checked', '')" />
-                    Validation avec échelle d'acquisition
+                    <label for="eval_rb3" i18n:translate="">Validation avec échelle d'acquisition</label>
                 </li>
                 <li>
-                    <input type="radio" name="evaluation" value="note"
+                    <input type="radio" id="eval_rb4" name="evaluation" value="note"
                            tal:attributes="checked python:context.test(selection == 'note', 'checked', '')" />
-                    Notation numérique :
+                    <label for="eval_rb4" i18n:translate="">Notation numérique :</label>
                     <ul>
                         <li tal:define="error errors/note_max | nothing;">
-                            notation sur&nbsp;
-                            <input type="number" name="note_max" min="0" max="100"
-                                   step="any" style="width:3em;display:inline;"
-                                   tal:attributes="class python:context.test(error, 'error', '');
-                                                   value request/note_max | nothing"/>,
+                            <label for="eval_rb4inp1">
+                                <tal:block i18n:translate="">notation sur</tal:block>
+                                <input type="number" id="eval_rb4inp1" name="note_max" min="0" max="100"
+                                       step="any" style="width:3em;display:inline;"
+                                       tal:attributes="class python:context.test(error, 'error', '');
+                                                       value request/note_max | nothing"/>,
+                            </label>
                             <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
                         </li>
                         <li tal:define="error errors/note_partielle | nothing;">
-                            en cours d'acquisition à partir de&nbsp;
-                            <input type="number" name="note_partielle" min="0" max="100"
-                                   step="any" style="width:3em;display:inline;"
-                                   tal:attributes="class python:context.test(error, 'error', '');
-                                                   value request/note_partielle | nothing"/>,
+                            <label for="eval_rb4inp2">
+                                <tal:block i18n:translate="">en cours d'acquisition à partir de</tal:block>
+                                <input type="number" id="eval_rb4inp2" name="note_partielle" min="0" max="100"
+                                       step="any" style="width:3em;display:inline;"
+                                       tal:attributes="class python:context.test(error, 'error', '');
+                                                       value request/note_partielle | nothing"/>,
+                            </label>
                             <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
                         </li>
                         <li tal:define="error errors/note_acquise | nothing;">
-                            acquis à partir de&nbsp;
-                            <input type="number" name="note_acquise" min="0" max="100"
-                                step="any" style="width:3em;display:inline;"
-                                   tal:attributes="class python:context.test(error, 'error', '');
-                                                   value request/note_acquise | nothing"/>.
+                            <label for="eval_rb4inp3">
+                                <tal:block i18n:translate="">acquis à partir de</tal:block>
+                                <input type="number" id="eval_rb4inp3" name="note_acquise" min="0" max="100"
+                                    step="any" style="width:3em;display:inline;"
+                                       tal:attributes="class python:context.test(error, 'error', '');
+                                                       value request/note_acquise | nothing"/>.
+                            </label>
                             <span class="fieldErrorBox" tal:condition="error" tal:content="error" />
                         </li>
                     </ul>
