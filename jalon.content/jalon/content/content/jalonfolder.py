@@ -581,7 +581,7 @@ class JalonFolder(ATFolder):
                        "mes_videos_pod":               "Video"}
         folder = getattr(home, folder_dict[self.getId()])
         folder_subjects = folder.getSubjectsDict()
-        if not tag_title in folder_subjects.values():
+        if tag_title not in folder_subjects.values():
             folder_subjects[tag_id] = tag_title
             # LOG.info.info("folder_subjects : %s" % folder_subjects)
             folder.setSubjectsDict(folder_subjects)
@@ -1148,9 +1148,9 @@ class JalonFolder(ATFolder):
         modele_wims["groupe"] = "Groupe d'exercices"
         return modele_wims
 
-    #----------------------#
+    # -------------------- #
     #   Utilitaire Primo   #
-    #----------------------#
+    # -------------------- #
     def searchBUCatalog(self, term_search, type_search="liste"):
         portal_primo = getToolByName(self, "portal_primo")
         if type_search == "liste":

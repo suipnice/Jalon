@@ -172,9 +172,9 @@ class WimsActivityView(CourseView):
                                 "item_title": "Attacher un exercice WIMS de Mes ressources",
                                 "item_icon":  "fa fa-fw fa-random",
                                 "item_name":  "Exercice WIMS"},
-                           {"item_link":  "%s/mes_ressources/mes_exercices_wims/wims_activity_import_view?type=hotpot&activity_path=%s" % (portal_link, activity_path),
+                           {"item_link":  "%s/cours/%s/import_wims_activity_form?type=hotpot" % (portal_link, activity_path),
                                 "item_title": "Importer des exercices",
                                 "item_icon":  "fa fa-fw fa-level-down",
-                                "item_name":  "HotPotatoes"}]
+                                "item_name":  "Import HotPotatoes"}]
 
         return item_adder_list

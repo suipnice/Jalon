@@ -233,8 +233,13 @@ class Wims(SimpleItem):
         """Creation d'un exercice WIMS."""
         # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
         # dans la classe, mais seulement dans un bac à sable pour compilation.
-
+        # LOG.info("---- creerExercice ----")
         # data = self.getAttribut(param["modele"])
+        result_dict = {"fonction": "jalon.wims/utility.py/creerExercice"}
+
+        if param["qclass"] == "":
+            result_dict["rep"] = '{"status":"ERROR"],"message":"Acune classe spécifiée pour ajouter un exercice"}'
+            return self.verifierRetourWims(result_dict)
 
         if "sandbox" in param:
             job = "testexo"
@@ -242,7 +247,7 @@ class Wims(SimpleItem):
         else:
             job = "addexo"
 
-        LOG.info("[creerExercice] param[source]=\n%s" % param["source"])
+        # LOG.info("[creerExercice] param[source]=\n%s" % param["source"])
         dico = {"job": job,
                 "code": param["authMember"],
                 "data1": param["source"],
@@ -251,9 +256,10 @@ class Wims(SimpleItem):
         if "option" in param:
             dico["option"] = param["option"]
         # try:
-        result = self.verifierRetourWims({"rep": self.callJob(dico),
-                                          "fonction": "jalon.wims/utility.py/creerExercice",
-                                          "requete": dico})
+        result_dict["rep"] = self.callJob(dico)
+        result_dict["requete"] = dico
+        result = self.verifierRetourWims(result_dict)
+
         # if job == "testexo":
         #    del param["data_q"]
 
@@ -560,7 +566,7 @@ class Wims(SimpleItem):
 
         return retour
 
-    def importerHotPotatoes(self, folder, member_auth, import_file):
+    def importHotPotatoes(self, folder, member_auth, import_file):
         u"""import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
         h = HTMLParser.HTMLParser()
         tree = ET.parse(import_file)

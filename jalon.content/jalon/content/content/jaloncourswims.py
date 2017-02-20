@@ -238,6 +238,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
         """Ajoute un element de Mes ressources et met a jour les related items de l'activité et de l'élément."""
+        # LOG.info("----- addMySpaceItem -----")
         item = super(JalonCoursWims, self).addMySpaceItem(folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow)
         if folder_object.getId() == "Wims":
             liste = "Exercices"
@@ -1796,21 +1797,25 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         self.reindexObject()
 
-    def importerHotPotatoes(self, member_auth, import_file):
+    def importHotPotatoes(self, user_id, import_file):
         """Importe un ensemble d'exercice hotpotatoes, les place dans Mes ressources et dans l'autoevaluation/examen."""
-        # LOG.info("----- importerHotPotatoes -----")
+        # LOG.info("----- importHotPotatoes -----")
         portal = self.portal_url.getPortalObject()
-        home = getattr(getattr(portal.Members, member_auth), "Wims")
-        # import_name = import_file.filename[:-4]
-        questions_list = portal.portal_wims.importerHotPotatoes(home, member_auth, import_file)
+        wims_folder = getattr(getattr(portal.Members, user_id), "Wims")
+        questions_list = portal.portal_wims.importHotPotatoes(wims_folder, user_id, import_file)
+        # LOG.info("questions_list = %s" % questions_list)
         index = 1
+        portal_workflow = getToolByName(portal, "portal_workflow")
         for question_dict in questions_list:
-            # ici il faudrait verifier le retour de question_dict pour savoir si tout s'est bien passé.
-            self.ajouterElement(idElement=question_dict["id_jalon"],
-                                typeElement="Exercice Wims",
-                                titreElement=question_dict["title"],
-                                createurElement=member_auth,
-                                affElement="")
+            # [TODO] ici il faudrait verifier le retour de question_dict pour savoir si tout s'est bien passé.
+            self.addMySpaceItem(folder_object=wims_folder,
+                                item_id=question_dict["id_jalon"],
+                                item_type="Exercice Wims",
+                                user_id=user_id,
+                                display_item="",
+                                map_position=None,
+                                display_in_plan=False,
+                                portal_workflow=portal_workflow)
             index = index + 1
 
     def getShortText(self, text, limit=75):

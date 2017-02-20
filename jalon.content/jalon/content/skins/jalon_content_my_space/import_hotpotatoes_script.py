@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-## Controller Python Script "importer_hotpotatoes_script"
+## Controller Python Script "import_hotpotatoes_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -8,11 +8,11 @@
 ##parameters=
 ##title=
 ##
-#context = context
+context = context
 
 REQUEST = context.REQUEST
 form = context.REQUEST.form
 
-context.importerHotPotatoes(form["member_auth"], form["file"])
+context.importHotPotatoes(form["member_auth"], form["file"])
 
 REQUEST.RESPONSE.redirect(context.absolute_url())

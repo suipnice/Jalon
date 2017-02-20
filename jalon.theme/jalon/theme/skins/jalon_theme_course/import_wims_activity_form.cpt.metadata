@@ -1,0 +1,11 @@
+[default]
+title=Edition d'une activite WIMS
+border=None
+
+[validators]
+validators=validate_import_wims_activity
+
+[actions]
+action.failure = traverse_to:string:import_wims_activity_form
+action.success_import_exercices = traverse_to:string:import_hotpotatoes_script
+

@@ -318,11 +318,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         else:
             return None
 
-    def addExoWims(self, idobj=None, title=None, author=None, modele=None, form=None, sandbox=False):
+    def addExoWims(self, idobj=None, title=None, author_id=None, modele=None, form=None, sandbox=False):
         """Ajoute ou modifie un exercice wims."""
         # LOG.info("----- addExoWims -----")
         title = self.formaterTitreWIMS(title)
-        member = self.portal_membership.getMemberById(author)
+        member = self.portal_membership.getMemberById(author_id)
         auth_email = member.getProperty("email")
         if not auth_email:
             auth_email = str(member.getProperty("mail"))
@@ -342,13 +342,13 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         source = source.replace("$$quot;", '&quot;')
 
         # dico contiendra les parametres a envoyer a WIMS
-        dico = {"authMember": author, "qexo": idobj}
+        dico = {"authMember": author_id, "qexo": idobj}
         dico["qclass"] = "%s_1" % self.aq_parent.getComplement()
-
+        # LOG.info("[addExoWims] qclass=%s" % dico["qclass"])
         # Cas d'une creation
         if not form:
             if modele == "groupe":
-                return self.ajouterSerie(author)
+                return self.ajouterSerie(author_id)
             if modele == "exercicelibre":
                 param = {"author": fullname, "email": auth_email, "title": title}
                 for key in param.keys():
