@@ -88,7 +88,7 @@
             </tr>
         </thead>
         <tbody class="list">
-        <tal:block repeat="depot liste_depots">
+        <tal:repeat repeat="depot liste_depots">
             <tr>
                 <td class="name"
                     tal:condition="infos_tableau/is_column_etudiant"
@@ -123,7 +123,7 @@
                     </a>
                 </td>
             </tr>
-        </tal:block>
+        </tal:repeat>
         </tbody>
     </table>
 
