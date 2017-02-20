@@ -95,17 +95,6 @@ function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum )
     Initialisation des "reveal"
 */
 
-function revealFormOnSubmitBehavior( $form ) {
-
-    // Spinner
-    var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
-    $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
-
-    // Protection anti double-clic
-    $form.find( '[type="submit"]' ).prop( 'disabled', true );
-}
-
-
 function revealInit( $reveal ) {
 
     // Focus sur le 1er input
@@ -118,10 +107,32 @@ function revealInit( $reveal ) {
     // Ajout attr. "title" lien de fermeture
     $reveal.find( 'h2 > a.close-reveal-modal' ).attr( 'title', CLOSE_REVEAL_TITLE );
 
-    // Envoi du formulaire
-    $reveal.find( 'form:not(.no_reveal_action)' ).submit( function( event ) {
-        revealFormOnSubmitBehavior( $( this ) );
+    // Comportement lors de l'envoi (sauf form.no_reveal_action)
+    var $form = $reveal.find( 'form' ).not('.no_reveal_action');
+    $form.submit( function( event ) {
+
+        // Spinner
+        var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
+        $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
+
+        // Protection anti double-clic
+        $form.find( '[type="submit"]' ).prop( 'disabled', true );
     } );
+
+    /* Comportement si envoi de fichier
+    if ( $form.find( '[type="file"]' ).length ) {
+
+        $form.submit( function( event ) {
+
+            var $msgPanel = $( "<div>", {
+                'class': "panel callout radius",
+                'html': MSG_FORM_ON_SUBMIT,
+            } );
+
+            $form.append( $msgPanel );
+        } );
+    } //*/
+
 }
 
 
