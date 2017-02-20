@@ -76,20 +76,28 @@ function setPlanChapterFolding( disclosureState ) {
 
     var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
         $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
-        $legendBardDown = $legendBar.find( ' > li:first-child > a' ),
-        $legendBardUp = $legendBar.find( ' > li:last-child > a' );
+        $legendBarDown = $legendBar.find( ' > li:first-child > a' ),
+        $legendBarUp = $legendBar.find( ' > li:last-child > a' );
 
-    if ( disclosureState ) {
+    if ( $target.length ) {
 
-        $legendBardDown.addClass( 'disabled' );
-        $legendBardUp.removeClass( 'disabled' );
-        $target.removeClass( 'collapsed' ).addClass( 'expanded' );
+        if ( disclosureState ) {
+
+            $legendBarDown.addClass( 'disabled' );
+            $legendBarUp.removeClass( 'disabled' );
+            $target.removeClass( 'collapsed' ).addClass( 'expanded' );
+
+        } else {
+
+            $legendBarUp.addClass( 'disabled' );
+            $legendBarDown.removeClass( 'disabled' );
+            $target.removeClass( 'expanded' ).addClass( 'collapsed' );
+        }
 
     } else {
 
-        $legendBardUp.addClass( 'disabled' );
-        $legendBardDown.removeClass( 'disabled' );
-        $target.removeClass( 'expanded' ).addClass( 'collapsed' );
+        $legendBarUp.addClass( 'disabled' );
+        $legendBarDown.addClass( 'disabled' );
     }
 
 }
@@ -237,6 +245,7 @@ function setStickyItem( ) {
 
         _stickyItem( $item, $stickyContainer );
     } );
+
 }
 
 

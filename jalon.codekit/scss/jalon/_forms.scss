@@ -302,6 +302,16 @@ form {
     & > option {
         font-weight: normal;
     }
+
+    & > optgroup {
+        font-weight: normal;
+        font-style: normal;
+        padding-left: .8rem;
+
+        & > option {
+            font-style: italic;
+        }
+    }
 }
 
 #wims-edit form {
