@@ -67,24 +67,28 @@
 
         <thead tal:define="head_table infos_tableau/head_table">
             <tr>
-                <th tal:repeat="tr head_table"
+                <tal:repeat repeat="tr head_table">
+                <th tal:condition="tr/data-sort"
                     tal:attributes="class tr/css_class;
                                     title tr/attr_title;
                                     data-sort tr/data-sort"
                     data-tooltip>
-                    <span tal:condition="tr/data-sort">
+                    <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block content="tr/column_title" i18n:translate=""/>
+                        <tal:block content="tr/column_title" i18n:translate="" />
                     </span>
-                    <tal:block replace="structure tr/column_title"
-                               condition="not:tr/data-sort"/>
                 </th>
+                <th tal:condition="not:tr/data-sort"
+                    tal:attributes="class tr/css_class">
+                    <tal:block replace="structure tr/column_title" />
+                </th>
+                </tal:repeat>
             </tr>
         </thead>
         <tbody class="list">
-        <tal:block repeat="depot liste_depots">
+        <tal:repeat repeat="depot liste_depots">
             <tr>
                 <td class="name"
                     tal:condition="infos_tableau/is_column_etudiant"
@@ -119,7 +123,7 @@
                     </a>
                 </td>
             </tr>
-        </tal:block>
+        </tal:repeat>
         </tbody>
     </table>
 
@@ -217,9 +221,9 @@
 -->
 <metal:macro define-macro="peers_teacher_macro">
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
-    <form id="js-list_competences" method="post"
+    <form method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
           tal:condition="my_view/is_personnel">
         <div class="panel callout radius">
@@ -325,7 +329,7 @@
     <thead>
         <tr>
             <th class="sort has-tip" data-tooltip data-sort="depot"
-                title="Cliquer pour trier selon le dépôt"
+                title="Trier selon le dépôt"
                 i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
@@ -335,7 +339,7 @@
                 </span>
             </th>
             <th class="sort has-tip" data-tooltip data-sort="note"
-                title="Cliquer pour trier selon la note"
+                title="Trier selon la note"
                 i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
@@ -455,7 +459,7 @@
                         <thead>
                             <tr>
                                 <th class="sort has-tip" data-tooltip data-sort="etudiant"
-                                    title="Cliquer pour trier selon l'étudiant"
+                                    title="Trier selon l'étudiant"
                                     i18n:attributes="title">
                                     <span>
                                         <i class="fa fa-sort"></i>

@@ -109,7 +109,7 @@
                 </thead>
 
                 <tbody class="list">
-            <tal:repeat tal:repeat="forum forums">
+            <tal:repeat repeat="forum forums">
 
                     <tr tal:define="author forum/getLastCommentAuthor">
 

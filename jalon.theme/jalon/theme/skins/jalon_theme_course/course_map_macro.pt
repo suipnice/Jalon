@@ -1,16 +1,17 @@
 <metal:macro define-macro="course_map_chapter_form">
 
-    <div class="panel bkgrnd radius"
-         tal:define="course_map_title_list context/getCourseMapFirstTitle"
-         tal:condition="course_map_title_list">
+    <div class="panel bkgrnd radius">
         <nav id="has_sticky_content">
             <form id="course-chapter_form" method="post"
                   tal:attributes="action context/absolute_url">
-                <select name="course_title">
+                <select name="course_title"
+                        tal:define="course_map_title_list context/getCourseMapFirstTitle">
                     <option value="all">
-                        <tal:block i18n:translate="">Tout le cours</tal:block> « <tal:block tal:content="here/Title" /> »
+                        <tal:block i18n:translate="">Cours</tal:block> « <tal:block tal:content="here/Title" /> »
                     </option>
-                    <optgroup label="Afficher seulement les éléments du titre :" i18n:attributes="label">
+                    <optgroup tal:condition="course_map_title_list"
+                              label="contenant les titres :"
+                              i18n:attributes="label">
                         <tal:repeat repeat="course_map_title course_map_title_list">
                         <option tal:attributes="value course_map_title/title_id;
                                                 selected python:context.test(course_map_id == course_map_title['title_id'], 'selected', '')">
