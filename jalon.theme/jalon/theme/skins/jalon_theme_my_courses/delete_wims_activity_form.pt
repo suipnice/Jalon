@@ -125,13 +125,6 @@
             </button>
         </div>
 
-        <div class="panel callout radius hide">
-            <i class="fa fa-refresh fa-spin"></i>
-            <tal:block i18n:translate="">
-                Merci de patienter. Cette opération peut prendre quelques minutes...
-            </tal:block>
-        </div>
-
     </form>
 
     <script charset="UTF-8"

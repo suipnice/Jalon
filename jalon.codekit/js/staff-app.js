@@ -500,21 +500,15 @@ function enableSubmitButtonIfCheckboxTicked( formID ) {
 
 function displayMessageOnSubmit( formID ) {
 
-    var $form = Foundation.utils.S( '#' + formID );
-    var $formControls = $form.children( '.formControls' );
-    var $messagePanel = $form.children( '.panel.hide' );
-
-    $form.on( 'click', '[type=submit]', function( event ) {
-
-        event.preventDefault( );
-        event.stopPropagation( );
-
-        $formControls.fadeOut( "fast", function( ) {
-            $messagePanel.fadeIn( "fast", function( ) {
-                $form.submit( );
-            } );
+    var $form = Foundation.utils.S( '#' + formID ),
+        $msgPanel = $( "<div>", {
+            'class': "panel callout radius hide",
+            'html': MSG_FORM_ON_SUBMIT,
         } );
 
+    $form.append( $msgPanel ).on( 'click', '[type=submit]', function( event ) {
+
+        $msgPanel.fadeIn( 'fast' );
     } );
 
 }
