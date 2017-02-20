@@ -42,8 +42,7 @@
                     <a tal:attributes="class string:button small${onglet/css_class};
                                        href onglet/href"
                        i18n:translate="">
-                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
-                                                                                           i18n:translate=""/>
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text" i18n:translate=""/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>
                 </li>
@@ -62,7 +61,7 @@
                 <thead>
                     <tr>
                         <th class="sort has-tip" data-tooltip data-sort="etudiant"
-                            title="Cliquer pour trier selon l'étudiant"
+                            title="Trier selon l'étudiant"
                             i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
@@ -77,7 +76,7 @@
                         </th>
                     </tal:repeat>
                         <th class="sort has-tip" data-tooltip data-sort="note"
-                            title="Cliquer pour trier selon la note"
+                            title="Trier selon la note"
                             i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>

@@ -549,25 +549,25 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         is_colmun_etudiant = True if is_personnel or self.getAccesDepots() else False
         if is_colmun_etudiant:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Cliquer pour trier selon l'étudiant",
+                               "attr_title":   "Trier selon l'étudiant",
                                "data-sort":    "name",
                                "column_title": "Étudiant"})
         head_table.append({"css_class":    "sort text-left has-tip",
-                           "attr_title":   "Cliquer pour trier selon la date",
+                           "attr_title":   "Trier selon la date",
                            "data-sort":    "title",
                            "column_title": "Dépôt"})
         head_table.append({"css_class":    "sort text-left has-tip",
-                           "attr_title":   "Cliquer pour trier selon l'état",
+                           "attr_title":   "Trier selon l'état",
                            "data-sort":    "valide",
                            "column_title": "État"})
         if is_column_correction:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Cliquer pour trier selon la correction",
+                               "attr_title":   "Trier selon la correction",
                                "data-sort":    "correction",
                                "column_title": "Correction"})
         if is_column_notation:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Cliquer pour trier selon la note",
+                               "attr_title":   "Trier selon la note",
                                "data-sort":    "note",
                                "column_title": "Note"})
         #if is_personnel_and_is_actions:

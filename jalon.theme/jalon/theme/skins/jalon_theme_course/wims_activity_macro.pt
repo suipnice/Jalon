@@ -659,7 +659,7 @@ En entrée :
         <table id="js-list-results">
         <thead>
             <tr>
-                <th class="sort text-left has-tip" title="Cliquer pour trier selon l'étudiant"
+                <th class="sort text-left has-tip" title="Trier selon l'étudiant"
                     data-tooltip data-sort="title"
                     i18n:attributes="title">
                     <span>

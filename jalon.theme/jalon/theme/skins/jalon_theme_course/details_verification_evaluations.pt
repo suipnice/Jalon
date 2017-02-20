@@ -25,7 +25,7 @@
             <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
         </div>
 
-        <section id="evaluate_deposit_file" class="small-12 columns">     
+        <section id="evaluate_deposit_file" class="small-12 columns">
             <h2><i class="fa fa-list"></i>Évaluations à vérifier</h2>
             <div class="table-overflow_container"
                  tal:define="criteria_dict my_view/criteria_dict">
@@ -33,7 +33,7 @@
                 <thead>
                     <tr>
                         <th class="sort has-tip" data-tooltip data-sort="etudiant"
-                            title="Cliquer pour trier selon l'étudiant"
+                            title="Trier selon l'étudiant"
                             i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
@@ -48,7 +48,7 @@
                         </th>
                     </tal:repeat>
                         <th class="sort has-tip" data-tooltip data-sort="note"
-                            title="Cliquer pour trier selon la note"
+                            title="Trier selon la note"
                             i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
