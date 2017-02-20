@@ -559,6 +559,12 @@
             </div>
         <tal:condition condition="afficher_comp">
         <tal:define define="compEtu python:context.getAffComEtu(user.getId())">
+        <tal:condition condition="python:not compEtu">
+            <div class="panel warning radius"
+                 i18n:translate="">
+                Vous devez effectuer un dépôt pour être évalué(e).
+            </div>
+        </tal:condition>
             <table class="listing" summary="Liste des compétences"
                    tal:condition="python:dicoCompetences and compEtu"
                    tal:define="ordre context/getOrdreCompetences;">
