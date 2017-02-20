@@ -221,9 +221,9 @@
 -->
 <metal:macro define-macro="peers_teacher_macro">
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
-    <form id="js-list_competences" method="post"
+    <form method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
           tal:condition="my_view/is_personnel">
         <div class="panel callout radius">
