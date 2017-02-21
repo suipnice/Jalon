@@ -140,9 +140,8 @@ Temporary Items
 sftp-config.json
 
 
-### CodeKit ###
-.codekit-cache
-!bower_components/**
+### CodeKit3 ###
+/jalon.codekit/config.codekit3
 
 
 ### PyCharm Project ###
