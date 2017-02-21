@@ -161,8 +161,9 @@ function setAttachmentCreator( ) {
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( url ) {
             $.get( url ).done( function( data ) {
                 $( '#course_plan-plan' ).html( data );
+                setLegendBarButtonsActivation( );
                 Foundation.utils.S( '#reveal-main-large' ).foundation( 'reveal', 'close' );
-                $( document ).foundation( 'dropdown', 'reflow' );
+                //$( document ).foundation( 'dropdown', 'reflow' );
                 //$( document ).foundation( { dropdown: { align: 'left' } } );
                 setAlertBox( 'success', $form.data( 'success_msg' ) );
             } );

@@ -66,9 +66,20 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
                 $.get( data ).done( function( coursePlanMarkup ) {
                     $planContainer.html( coursePlanMarkup );
                     if ( $planContainer.children( 'li' ).length > 1 ) {
-                        Foundation.utils.S( '#course_plan .legend_bar' ).removeClass( 'hide' );
-                        Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'hide' ).addClass( 'show-for-medium-up' );
+
+                        var $legendBar = Foundation.utils.S( '#course_plan .legend_bar' );
+
+                        if ( $legendBar.hasClass( 'hide' ) ) {
+                            $legendBar.removeClass( 'hide' );
+                            Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'hide' ).addClass( 'show-for-medium-up' );
+
+                        } else {
+
+                            setLegendBarButtonsActivation( );
+                        }
+
                     } else {
+
                         Foundation.utils.S( '#course_plan .legend_bar' ).addClass( 'hide' );
                         Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'show-for-medium-up' ).addClass( 'hide' );
                     }
