@@ -495,27 +495,6 @@ function enableSubmitButtonIfCheckboxTicked( formID ) {
 
 
 /*
-    Affichage d'un message lors de la validation d'un formulaire
-*/
-
-function displayMessageOnSubmit( formID ) {
-
-    var $form = Foundation.utils.S( '#' + formID ),
-        $msgPanel = $( "<div>", {
-            'class': "panel callout radius hide",
-            'html': MSG_FORM_ON_SUBMIT,
-        } );
-
-    $form.append( $msgPanel ).on( 'click', '[type=submit]', function( event ) {
-
-        $msgPanel.fadeIn( 'fast' );
-    } );
-
-}
-
-
-
-/*
     Formulaires : pas de clics multiples
 */
 

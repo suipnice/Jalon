@@ -138,6 +138,41 @@ function revealInit( $reveal ) {
 
 
 /*
+    Affichage d'un message lors de la validation d'un formulaire
+
+        ATTENTION : le message ne s'affichera pas avec Safari.
+*/
+
+function displayMessageOnSubmit( formID ) {
+
+    var $form = Foundation.utils.S( '#' + formID ),
+        $msgPanel = $( "<div>", {
+            'class': "panel callout radius hide",
+            'html': MSG_FORM_ON_SUBMIT,
+        } );
+
+    $form.append( $msgPanel ).on ( 'submit', function( event ) {
+
+        /* Ne fonctionne pas si le formulaire contient un input[type=file].
+        event.preventDefault( );
+        event.stopPropagation( );
+
+        $msgPanel.fadeIn( 'fast', function( ) {
+
+            $msgPanel.removeClass( 'hide' );
+            $form.submit( );
+
+        } ); //*/
+
+        $msgPanel.fadeIn( 'fast' ).removeClass( 'hide' );
+
+    } );
+
+}
+
+
+
+/*
     Suppression contenu lecteur exportable à la fermeture de son conteneur (reveal)
 */
 
