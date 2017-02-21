@@ -1762,7 +1762,7 @@
 		"ft": 64,
 		"mi": 1,
 		"oA": 0,
-		"oAP": "\/Users\/ppomedio\/Jalon\/jalon.src\/jalon.theme\/jalon\/theme\/browser\/scripts\/app.min.js",
+		"oAP": "..\/jalon.theme\/jalon\/theme\/browser\/scripts\/app.min.js",
 		"oF": 7,
 		"sC": 1,
 		"tS": 0
