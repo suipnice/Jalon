@@ -20,7 +20,7 @@
         <strong>Attention :</strong> dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.
     </div>
 
-    <form method="post"
+    <form id="js-deposit_file_form" method="post"
           enctype="multipart/form-data"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
@@ -66,6 +66,9 @@
         </div>
 
     </form>
+
+    <script charset="UTF-8"
+            tal:content="structure string:displayMessageOnSubmit('js-deposit_file_form')"></script>
 
 </metal:main>
 
