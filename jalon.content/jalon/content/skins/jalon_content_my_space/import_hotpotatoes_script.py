@@ -8,7 +8,7 @@
 ##parameters=
 ##title=
 ##
-context = context
+# context = context
 
 REQUEST = context.REQUEST
 form = context.REQUEST.form

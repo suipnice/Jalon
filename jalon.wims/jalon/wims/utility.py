@@ -8,6 +8,7 @@ from zope.interface import classProvides
 from AccessControl import ClassSecurityInfo
 
 from jalon.wims.interfaces.utility import IWims, IWimsLayout, IWimsClasse
+from jalon.content import contentMessageFactory as _
 
 from OFS.SimpleItem import SimpleItem
 
@@ -568,12 +569,24 @@ class Wims(SimpleItem):
 
     def importHotPotatoes(self, folder, member_auth, import_file):
         u"""import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
+        # LOG.info("----- importHotPotatoes -----")
+
         h = HTMLParser.HTMLParser()
+
+        # On s'assure que le curseur de lecture est au début du fichier.
+        import_file.seek(0)
+
         tree = ET.parse(import_file)
         root = tree.getroot()
         # groupe_title = h.unescape(root.find('./data/title').text).encode("utf-8")
         questions = root.find('./data/questions')
         questions_list = []
+
+        if not questions:
+            message = _(u"Votre fichier n'est pas dans un format .jqz valide. Assurez-vous de sélectionner un fichier « .jqz », généré depuis HotPotatoes V6 ou plus.")
+            self.plone_utils.addPortalMessage(message, type='error')
+            return questions_list
+
         i = 1
         for question_record in questions:
             question_dict = {"good_rep": [],
@@ -622,7 +635,11 @@ class Wims(SimpleItem):
                     obj.setProperties({"Title": question_dict["title"],
                                        "Modele": "qcmsimple",
                                        })
-        # self.plone_log(questions_list)
+            if i > 63:
+                message = _(u"Attention : une activité WIMS ne peut contenir plus de 64 exercices. Certaines questions n'ont pas été importées.")
+                self.plone_utils.addPortalMessage(message, type='warning')
+                return questions_list
+
         return questions_list
 
     def verifierRetourWims(self, params):

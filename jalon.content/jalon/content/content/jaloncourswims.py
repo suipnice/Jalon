@@ -463,6 +463,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
                      "link":  self_link}]
         if sub_page == "edit":
             response.append({"title": _(u"Propriétés de l'activité"), "icon":  "fa fa-edit", "link": "%s/edit_wims_activity_form" % self_link})
+        if sub_page == "import":
+            response.append({"title": _(u"Importer des exercices"), "icon":  "fa fa-level-down", "link": "%s/import_wims_activity_form" % self_link})
         return response
 
     def getIconClass(self):
@@ -1796,6 +1798,15 @@ class JalonCoursWims(JalonActivity, ATDocument):
             self.getIdFeuilleWIMS(auteur, dico)
 
         self.reindexObject()
+
+    def isFileOfTypes(self, file_object, file_name, required_types):
+        """Return True if file_object type is in required_types list."""
+        # LOG.info("----- isFileOfType -----")
+        from collective.quickupload.browser.quick_upload import get_content_type
+        content_type = get_content_type(self, file_object, file_name)
+
+        # LOG.info("CONTENT TYPE = %s" % content_type)
+        return (content_type in required_types)
 
     def importHotPotatoes(self, user_id, import_file):
         """Importe un ensemble d'exercice hotpotatoes, les place dans Mes ressources et dans l'autoevaluation/examen."""
