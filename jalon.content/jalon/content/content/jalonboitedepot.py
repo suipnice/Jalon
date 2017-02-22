@@ -328,6 +328,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                     pass
                 objet.reindexObject()
     """
+
     def getIconClass(self):
         """Return the Activity icon CSS class."""
         # LOG.info("----- getIconClass -----")

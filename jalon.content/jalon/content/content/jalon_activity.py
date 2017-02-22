@@ -204,3 +204,28 @@ class JalonActivity(SimpleItem):
         self.setRelatedItems(activity_relatedItems)
 
         self.reindexObject()
+
+    def detachAllDocuments(self):
+        # LOG.info("----- detachAllDocuments -----")
+        document_properties = self.getDocumentsProperties()
+        #document_dict = document_properties[item_id]
+        #del document_properties[item_id]
+        #self.setDocumentsProperties(document_properties)
+
+        documents_list = list(self.getListeSujets())
+        #documents_list.remove(item_id)
+        #self.setListeSujets(tuple(documents_list))
+
+        for item_id in documents_list:
+            document_dict = document_properties[item_id]
+            item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, document_dict["createurElement"]), self.aq_parent._type_folder_my_space_dict[document_dict["typeElement"].replace(" ", "")]), item_id.replace("*-*", "."))
+            item_relatedItems = item_object.getRelatedItems()
+            item_relatedItems.remove(self)
+            item_object.setRelatedItems(item_relatedItems)
+            item_object.reindexObject()
+
+        #activity_relatedItems = self.getRelatedItems()
+        #activity_relatedItems.remove(item_object)
+        #self.setRelatedItems(activity_relatedItems)
+
+        self.reindexObject()

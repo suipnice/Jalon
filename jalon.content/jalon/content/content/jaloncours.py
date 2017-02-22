@@ -1776,7 +1776,7 @@ class JalonCours(ATFolder):
 
                     if infosElement["typeElement"] == "BoiteDepot":
                         boite = getattr(self, element["idElement"])
-                        boite.retirerTousElements()
+                        boite.detachAllDocuments()
 
                     if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
