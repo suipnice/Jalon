@@ -471,7 +471,7 @@ class JalonFolder(ATFolder):
 
     def getDisplaySubjects(self):
         """Affichage des étiquettes sur le formulaire étiquettage."""
-        LOG.info("----- getDisplaySubjects -----")
+        # LOG.info("----- getDisplaySubjects -----")
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
                        "mes_presentations_sonorisees": "Sonorisation",
@@ -495,7 +495,7 @@ class JalonFolder(ATFolder):
             subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]}
                 for key in folder_subjects.keys()]
             subjects_list.sort(lambda x, y: cmp(x["tag_id"], y["tag_id"]))
-            LOG.info("subjects_list : %s" % subjects_list)
+            # LOG.info("subjects_list : %s" % subjects_list)
             return subjects_list
         return []
 
@@ -909,7 +909,7 @@ class JalonFolder(ATFolder):
                     relatedItems.append(conteneur_object)
                     LOG.info('---- puis on ecrase les anciens relatedItems ---')
                     objet.setRelatedItems(relatedItems)
-                    LOG.info("---- et enfon on réindexe l'objet ---")
+                    LOG.info("---- et enfin on réindexe l'objet ---")
                     objet.reindexObject()
 
     def isNouveau(self, idcours):

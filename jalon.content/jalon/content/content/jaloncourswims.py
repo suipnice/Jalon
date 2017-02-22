@@ -1642,7 +1642,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # anciennement "retirerTousElements"
         # LOG.info("----- removeAllElements -----")
         # Concernant les exercices, on n'execute l'opération que si :
-        # * force=True (cas où on supprime l'intégralité des activités du cours)
+        # * force_WIMS=True (cas où on supprime l'intégralité des activités du cours)
         # * TODO : ou c'est une autoéval masquée
         # * TODO : ou c'est un exam non verrouillé
         if force_WIMS is True:
@@ -1658,15 +1658,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 exo = getattr(espace_WIMS, id_exo)
                 exo.removeRelatedItem(self)
 
-            # TODO : Suppression côté WIMS (seulement dans les cas autorisés)
-            # if ....:
-            # idClasse = self.getClasse()
-            # idFeuille = self.getIdFeuille()
+        # else:
+        # TODO : Suppression côté WIMS (seulement dans les cas autorisés)
+        # Pour le moment, cette fonction n'est appelée que par supprimerActivitesWims, mais si on veut
+        # if ....:
+        # idClasse = self.getClasse()
+        # idFeuille = self.getIdFeuille()
 
-            # Supprime les exercices de la feuille côté WIMS
-            # dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille}
-            # ICI il faut voir si coté WIMS on a un job qui permet de supprimer d'un coup tous les exos d'une feuille.
-            # self.wims("retirerExosFeuille", dico)
+        # Supprime les exercices de la feuille côté WIMS
+        # dico = {"authMember": auteur, "qclass": idClasse, "qsheet": idFeuille}
+        # ICI il faut voir si coté WIMS on a un job qui permet de supprimer d'un coup tous les exos d'une feuille.
+        # self.wims("retirerExosFeuille", dico)
 
         # Suppression des documents
         items_properties = self.getDocumentsProperties()

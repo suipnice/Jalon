@@ -109,8 +109,8 @@ class MyCoursesView(BrowserView):
                 "courses_dict":     courses_dict}
 
     def getTeacherCoursesList(self, member, tab, folder):
+        """Renvoi la liste des cours pour l'enseignant member."""
         # LOG.info("----- getTeacherCoursesList -----")
-        """ Renvoi la liste des cours pour authMember."""
         courses_list = []
         courses_ids_list = []
         courses_list_filter = []
@@ -197,18 +197,19 @@ class MyCoursesView(BrowserView):
                     "message": messages_dict[tab]}
         authors_dict = {}
         for course_brain in courses_list:
-            if not course_brain.getId in courses_ids_list:
-                #if not tab in ["1", "5"]:
+            if course_brain.getId not in courses_ids_list:
+                # if tab not in ["1", "5"]:
                 if not tab == "5":
-                    #if (not member_id in course_brain.Subject) and (not member_id in course_brain.getArchive):
-                    if not member_id in course_brain.getArchive:
+                    # if (member_id not in course_brain.Subject) and (member_id not in course_brain.getArchive):
+                    if member_id not in course_brain.getArchive:
                         courses_list_filter.append(
                             self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
                 else:
                     courses_list_filter.append(
                         self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
                 courses_ids_list.append(course_brain.getId)
-        return {"is_courses_list": True,
+        return {"is_courses_list": True if courses_list_filter else False,
+                "message": messages_dict[tab],
                 "courses_list":    list(courses_list_filter)}
 
     def getStudentCoursesList(self, member, tab, folder, is_tab_password):

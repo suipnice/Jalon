@@ -53,10 +53,8 @@
                     <ul>
                         <li>
                             <input type="radio" id="FLL_default" value="default" name="version"/>
-                            <label for="FLL_default">
-                                Format Flow Lesson (.fll) de Lesson Builder 2.0
-                                <span class="label secondary"><a href="http://help.turningtechnologies.com/flow/#Flow/LessonBuilder/LessonBuilder.htm" target="_blank">En savoir plus sur « Flow &amp; Lesson Builder 2.0 »</a></span>
-                            </label>
+                            <label for="FLL_default" i18n:translate="">Format Flow Lesson (.fll) de Lesson Builder 2.0</label>
+                            <span class="label secondary"><a href="http://help.turningtechnologies.com/flow/#Flow/LessonBuilder/LessonBuilder.htm" target="_blank">En savoir plus sur « Flow &amp; Lesson Builder 2.0 »</a></span>
                         </li>
                     </ul>
                 </div>
@@ -67,10 +65,8 @@
                     <ul>
                         <li>
                             <input type="radio" id="OLX_default" value="default" name="version"/>
-                            <label for="OLX_default">
-                                Format OLX (Open edX, version Cypress)
-                                <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">En savoir plus sur « Open edX (version Cypress) »</a></span>
-                            </label>
+                            <label for="OLX_default" i18n:translate="">Format OLX (Open edX, version Cypress)</label>
+                            <span class="label secondary"><a href="http://edx.readthedocs.org/projects/edx-installing-configuring-and-running/en/latest/cypress.html" target="_blank">En savoir plus sur « Open edX (version Cypress) »</a></span>
                         </li>
                     </ul>
                 </div>
@@ -82,10 +78,8 @@
                     <ul>
                         <li>
                             <input type="radio" id="OEF_default" value="latest" name="version" checked="checked"/>
-                            <label for="OEF_default">
-                                Format OEF
-                                <span class="label secondary"><a href="http://wims.unice.fr/wims/wims.cgi?lang=fr&amp;module=help/teacher/docexooef.fr" target="_blank">En savoir plus sur « OEF - Open Exercice Format »</a></span>
-                            </label>
+                            <label for="OEF_default" i18n:translate="">Format OEF</label>
+                            <span class="label secondary"><a href="http://wims.unice.fr/wims/wims.cgi?lang=fr&amp;module=help/teacher/docexooef.fr" target="_blank">En savoir plus sur « OEF - Open Exercice Format »</a></span>
                         </li>
                     </ul>
                 </div>
