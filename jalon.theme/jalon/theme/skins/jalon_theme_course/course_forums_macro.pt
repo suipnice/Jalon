@@ -55,7 +55,7 @@
     </script>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForum', 'reveal-main', 'description', true)">
+            tal:content="structure string:setRevealFormNewPage('js-createForum', 'description', true)">
     </script>
 
 </metal:macro>
@@ -188,7 +188,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-modForum', 'reveal-main', 'description', true)">
+            tal:content="structure string:setRevealFormNewPage('js-modForum', 'description', true)">
     </script>
 
 </metal:macro>
@@ -306,7 +306,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-createForumConvers','reveal-main', 'text', true)">
+            tal:content="structure string:setRevealFormNewPage('js-createForumConvers', 'text', true)">
     </script>
 
 </metal:macro>
@@ -392,7 +392,7 @@
 
     <script charset="UTF-8"
             tal:condition="not:is_head"
-            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'reveal-main', 'js-forum-message', true)">
+            tal:content="structure string:setRevealFormNewPage('js-modForumConvers', 'js-forum-message', true)">
     </script>
 
 </tal:define>
@@ -454,7 +454,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'reveal-main', 'text', true)">
+            tal:content="structure string:setRevealFormNewPage('js-answerForumConvers', 'text', true)">
     </script>
 
 </tal:define>

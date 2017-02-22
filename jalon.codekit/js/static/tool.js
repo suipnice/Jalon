@@ -53,15 +53,18 @@ function instantiateCKEditor( textareaID ) {
 */
 
 // Validation et chargement d'une nouvelle page
-function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum ) {
+function setRevealFormNewPage( formID, ckEditorInstanceName, isForum ) {
 
     if ( typeof ckEditorInstanceName !== 'undefined' ) {
+
         if ( typeof isForum !== 'undefined' && Boolean( isForum ) ) {
             ckEditorInstanceName = instantiateForumCKEditor( ckEditorInstanceName );
         } else {
             ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
         }
+
     } else {
+
         ckEditorInstanceName = false;
     }
 
@@ -73,15 +76,20 @@ function setRevealFormNewPage( formID, revealID, ckEditorInstanceName, isForum )
 
         event.preventDefault( );
 
-        var $form = $( this );
-        var $reveal = Foundation.utils.S( '#' + revealID );
+        var $form = $( this ),
+            $reveal = $form.parent( '.reveal-modal' );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
             var html = $.parseHTML( data );
+
             if ( $( html ).find( '.error' ).length ) {
+
                 $reveal.empty( ).html( data );
                 revealInit( $reveal );
+
             } else {
+
                 $reveal.foundation( 'reveal', 'close' );
                 document.location.href = data;
             }

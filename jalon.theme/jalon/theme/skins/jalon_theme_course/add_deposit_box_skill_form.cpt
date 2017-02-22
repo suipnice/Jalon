@@ -112,7 +112,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-addSkill','reveal-main', 'description', true)"></script>
+            tal:content="structure string:setRevealFormNewPage('js-addSkill', 'description', true)"></script>
 
 </metal:main>
 
