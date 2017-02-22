@@ -1656,7 +1656,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             for id_exo in liste_exos_id:
                 # on coupe sa relation avec l'activité à supprimer.
                 exo = getattr(espace_WIMS, id_exo)
-                exo.removeRelatedItem(self.getId())
+                exo.removeRelatedItem(self)
 
             # TODO : Suppression côté WIMS (seulement dans les cas autorisés)
             # if ....:

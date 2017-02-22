@@ -30,8 +30,8 @@ if course_object.isAuteurs(user_id):
             utilisateur = request["utilisateur"]
         else:
             utilisateur = "--aucun--"
-            message = u"Vous n'avez selectionné aucun utilisateur. Aucune activité supprimée."
-            context.plone_utils.addPortalMessage(_(message), "info")
+            message = _(u"Vous n'avez selectionné aucun utilisateur. Aucune activité supprimée.")
+            context.plone_utils.addPortalMessage(message, "info")
     # Si user_id est un co-auteur, il ne peux supprimer que ses propres activités
     else:
         utilisateur = user_id
@@ -39,11 +39,11 @@ if course_object.isAuteurs(user_id):
     # On supprime les activités WIMS
     resultat = course_object.supprimerActivitesWims(utilisateur=utilisateur, request=request)
     if resultat > 0:
-        message = u"<strong>%s</strong> activité(s) WIMS a(ont) bien été supprimée(s) du cours « <strong>%s</strong> »." % (resultat, course_object.getShortText(course_object.Title()).decode("utf-8"))
-        context.plone_utils.addPortalMessage(_(message), "info")
+        message = _(u"<strong>%s</strong> activité(s) WIMS a(ont) bien été supprimée(s) du cours « <strong>%s</strong> »." % (resultat, course_object.getShortText(course_object.Title()).decode("utf-8")))
+        context.plone_utils.addPortalMessage(message, "info")
 else:
     message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
-    context.plone_utils.addPortalMessage(_(message), "alert")
+    context.plone_utils.addPortalMessage(message, "alert")
     context.envoyerMailErreur({"objet":   "Unauthorized access to supprimer_WIMS",
                                "message": "<p>Suspicion de fraude de l'utilisateur <strong>%s</strong></p><div>%s</div>" % (user_id, request)})
 

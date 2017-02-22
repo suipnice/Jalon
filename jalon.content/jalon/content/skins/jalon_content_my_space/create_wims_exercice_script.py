@@ -47,7 +47,7 @@ if wims_exercice_model == "externe":
 
 # Cas classique : on ajoute l'exercice côté WIMS
 else:
-    rep = wims_exercice_object.addExoWims(idobj=object_id, title=form["title"], author=user_id, modele=wims_exercice_model)
+    rep = wims_exercice_object.addExoWims(idobj=object_id, title=form["title"], author_id=user_id, modele=wims_exercice_model)
     # print rep
     if not("status" in rep):
         # La creation a planté (Cause : modele inconnu ?)
