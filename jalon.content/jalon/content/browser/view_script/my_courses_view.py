@@ -127,18 +127,20 @@ class MyCoursesView(BrowserView):
                         {"action_link": "/duplicate_course_form?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-code-fork fa-fw",
                          "action_name": "Dupliquer"},
-                        {"action_link": "/purge_course_form?tab=%s&amp;course_id=" % tab,
-                         "action_icon": "fa fa-filter fa-fw",
-                         "action_name": "Purger les travaux étudiants"},
-                        {"action_link": "/delete_wims_activity_form?tab=%s&amp;course_id=" % tab,
-                         "action_icon": "fa fa-trash-o fa-fw",
-                         "action_name": "Supprimer les activités WIMS"},
                         {"action_link": "/add_archive_course_form?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-folder fa-fw",
                          "action_name": "Archiver ce cours"},
                         {"action_link": "/delete_course_form?tab=%s&amp;course_id=" % tab,
                          "action_icon": "fa fa-trash-o fa-fw",
                          "action_name": "Supprimer ce cours"}]
+        """
+                        {"action_link": "/purge_course_form?tab=%s&amp;course_id=" % tab,
+                         "action_icon": "fa fa-filter fa-fw",
+                         "action_name": "Purger les travaux étudiants"},
+                        {"action_link": "/delete_wims_activity_form?tab=%s&amp;course_id=" % tab,
+                         "action_icon": "fa fa-trash-o fa-fw",
+                         "action_name": "Supprimer les activités WIMS"},
+        """
 
         filtre = {"portal_type": "JalonCours"}
         if tab == "1":
