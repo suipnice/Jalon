@@ -43,11 +43,8 @@ class CourseView(BrowserView):
                                 "action_name": "Voir"}]
     # pr : password registraion
     _course_pr_actions_list = [{"action_link": "add_course_password_registration_form",
-                                "action_icon": "fa fa-plus-circle fa-fw no-pad",
-                                "action_name": "Ajouter"},
-                               {"action_link": "delete_course_password_registration_form",
-                                "action_icon": "fa fa-trash fa-fw no-pad alert",
-                                "action_name": "Supprimer"},
+                                "action_icon": "fa fa-pencil fa-fw no-pad",
+                                "action_name": "Modifier"},
                                {"action_link": "course_display_password_registration_page",
                                 "action_icon": "fa fa-eye fa-fw no-pad",
                                 "action_name": "Voir"}]
