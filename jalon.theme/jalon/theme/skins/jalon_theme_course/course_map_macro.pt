@@ -80,7 +80,7 @@
                         class="f-dropdown" data-dropdown-content>
                         <li tal:repeat="menu_adder_item item_adder/menu_adder_items">
                             <a tal:attributes="href menu_adder_item/item_link"
-                               data-reveal-id="reveal-main" data-reveal-ajax="true">
+                               data-reveal-id="reveal-main-large" data-reveal-ajax="true">
                                 <i tal:attributes="class menu_adder_item/item_icon"></i>
                                 <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
                             </a>
