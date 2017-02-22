@@ -162,7 +162,7 @@ function setAttachmentCreator( ) {
             $.get( url ).done( function( data ) {
                 $( '#course_plan-plan' ).html( data );
                 setLegendBarButtonsActivation( );
-                Foundation.utils.S( '#reveal-main-large' ).foundation( 'reveal', 'close' );
+                $form.parents( '.reveal-modal' ).foundation( 'reveal', 'close' );
                 //$( document ).foundation( 'dropdown', 'reflow' );
                 //$( document ).foundation( { dropdown: { align: 'left' } } );
                 setAlertBox( 'success', $form.data( 'success_msg' ) );

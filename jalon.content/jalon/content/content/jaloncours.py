@@ -315,11 +315,11 @@ class JalonCours(ATFolder):
     _course_map_item_dict = {"1": {"form_title_type":    "titre",
                                    "is_type_title":      True,
                                    "item_type":          "Titre",
-                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','reveal-main')"},
+                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem')"},
                              "2": {"form_title_type":    "texte libre",
                                    "is_type_title":      False,
                                    "item_type":          "TexteLibre",
-                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','reveal-main','titreElement')"}}
+                                   "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','titreElement')"}}
 
     _course_delete_item_form = {"Titre":          {"form_title":       "le titre",
                                                    "form_has_warning": False},
