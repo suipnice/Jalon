@@ -20,7 +20,7 @@
                 </a>
             </li>
         </ul>
-        ... vous ne pouvez donc pas la supprimer.
+        <tal:block i18n:translate="">... vous ne pouvez donc pas la supprimer.</tal:block>
     </div>
 </metal:macro>
 

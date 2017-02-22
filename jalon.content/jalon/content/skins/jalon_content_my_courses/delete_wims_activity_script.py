@@ -10,7 +10,7 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-
+# context = context
 request = context.REQUEST
 user_id = request.form["user_id"]
 

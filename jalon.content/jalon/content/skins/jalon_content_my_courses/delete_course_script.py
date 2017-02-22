@@ -9,10 +9,11 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-#from OFS.ObjectManager import BeforeDeleteException
+# from OFS.ObjectManager import BeforeDeleteException
+# context = context
 
 req = context.REQUEST
-#req.set("tab", "2")
+# req.set("tab", "2")
 course_id = req.form["course_id"]
 course_user_folder = context.getCourseUserFolder(req.form["user_id"])
 
@@ -30,14 +31,9 @@ message = _(u'Please select one or more items to delete.')
 # it shouldn't...
 context.REQUEST.set('link_integrity_events_to_expect', len(paths))
 
-#Dans un cours
-classes_list = []
+# Dans un cours
 for path in paths:
     course = getattr(course_user_folder, course_id)
-    #On recupere la liste des classes WIMS du cours.
-    for class_dict in course.getListeClasses():
-        for key in class_dict.keys():
-            classes_list.append(class_dict[key])
     related_items_list = course.getRelatedItems()
     for related_item in related_items_list:
         links = related_item.getRelatedItems()
@@ -47,21 +43,22 @@ for path in paths:
             related_item.reindexObject()
         except:
             pass
-    #suppression des tabBU sur les ressources
-    #course.tagBU("remove")
+    # Suppressions suplementaires (sur les serveurs tiers)
+    if course.getListeClasses():
+        course.supprimerActivitesWims()
+    # suppression des tabBU sur les ressources
+    # course.tagBU("remove")
 
 success, failure = putils.deleteObjectsByPaths(paths, REQUEST=req)
 
 if success:
     status = 'success'
-    #Le message "elements supprimés" est maintenant géré en ajax
-    #message = _(u'Item(s) deleted.')
+    # Le message "elements supprimés" est maintenant géré en ajax
+    #  message = _(u'Item(s) deleted.')
     # Possible lenteur quand bcp d'objets dans le catalogue
-    #catalog = context.portal_catalog
-    #err = catalog.refreshCatalog(clear=True)
-    #Suppressions suplementaires (sur les serveurs tiers)
-    if classes_list:
-        context.delClassesWims(classes_list, req)
+    #  catalog = context.portal_catalog
+    #  err = catalog.refreshCatalog(clear=True)
+
 
 if failure:
     # we want a more descriptive message when trying
