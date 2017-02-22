@@ -2025,7 +2025,7 @@ class JalonCours(ATFolder):
                 return self.getUrlWebconference(reunion['url'])
         return ""
 
-    def getWebconferencesUser(self, personnel, authMember, webconference_id):
+    def getWebconferencesUser(self, personnel, authMember, webconference_id=None):
         #self.plone_log("getWebconferencesUser")
         reunions = []
         dossiers = self.connect("getAttribut", {"attribut": "dossiers"})
@@ -2042,9 +2042,11 @@ class JalonCours(ATFolder):
             reunionsCreator = self.connect("rechercherReunions", {"login": authMember, "modele": modele})
             if reunionsCreator:
                 for webconference in reunionsCreator:
-                    if webconference['id'] == webconference_id:
+                    if webconference_id and webconference['id'] == webconference_id:
                         reunions.append(webconference)
                         break
+                    elif not webconference_id:
+                        reunions.append(webconference)
         return reunions
 
     def getUrlWebconference(self, url):
