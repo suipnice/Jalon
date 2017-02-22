@@ -191,7 +191,7 @@
 
     <tal:comment replace="nothing">
         <script charset="UTF-8"
-            tal:content="structure string:setRevealFormPlanRefresh('js-directExtResCreator','reveal-main')" />
+            tal:content="structure string:setRevealFormPlanRefresh('js-directExtResCreator')" />
     </tal:comment>
     </tal:define>
 </metal:macro>

@@ -152,7 +152,7 @@
 
     <tal:comment replace="nothing">
     <script charset="UTF-8"
-            tal:content="structure string:setRevealForm('js-glossaryCreator','reveal-main')"></script>
+            tal:content="structure string:setRevealForm('js-glossaryCreator')"></script>
     </tal:comment>
     </tal:define>
 </metal:macro>

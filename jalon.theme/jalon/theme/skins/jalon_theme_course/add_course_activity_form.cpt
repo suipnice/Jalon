@@ -58,7 +58,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormPlanRefresh('js-activityCreator','reveal-main')"></script>
+            tal:content="structure string:setRevealFormPlanRefresh('js-activityCreator')"></script>
 
 </metal:main>
 

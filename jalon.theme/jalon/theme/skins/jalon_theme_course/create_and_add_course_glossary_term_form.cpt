@@ -34,7 +34,7 @@
              tal:attributes="class python:context.test(error, 'field error', 'field')">
             <label for="title" i18n:translate="">Titre</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
-            <input type="text" maxlength="255" size="30" id="title" name="title" placeholder="Saisie obligatoire" 
+            <input type="text" maxlength="255" size="30" id="title" name="title" placeholder="Saisie obligatoire"
                    required="required"
                    tal:attributes="value request/title | nothing"
                    i18n:attributes="placeholder" />
@@ -63,7 +63,7 @@
 
     <tal:comment replace="nothing">
     <script charset="UTF-8"
-            tal:content="structure string:setRevealForm('js-glossaryCreator','reveal-main')"></script>
+            tal:content="structure string:setRevealForm('js-glossaryCreator')"></script>
     </tal:comment>
 
     </main>

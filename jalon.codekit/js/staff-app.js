@@ -38,7 +38,7 @@ $.datetimepicker.setLocale('fr');
 
 */
 
-function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
+function setRevealFormPlanRefresh( formID, ckEditorInstanceName ) {
 
     if ( typeof ckEditorInstanceName !== 'undefined' ) {
         ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
@@ -55,8 +55,8 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
         event.preventDefault( );
 
         var $form = $( this ),
-            $planContainer = Foundation.utils.S( '#course_plan-plan' ),
-            $reveal = Foundation.utils.S( '#' + revealID );
+            $reveal = $form.parent( '.reveal-modal' ),
+            $planContainer = Foundation.utils.S( '#course_plan-plan' );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
@@ -64,7 +64,9 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
 
                 // Refresh course
                 $.get( data ).done( function( coursePlanMarkup ) {
+
                     $planContainer.html( coursePlanMarkup );
+
                     if ( $planContainer.children( 'li' ).length > 1 ) {
 
                         var $legendBar = Foundation.utils.S( '#course_plan .legend_bar' );
@@ -83,9 +85,11 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
                         Foundation.utils.S( '#course_plan .legend_bar' ).addClass( 'hide' );
                         Foundation.utils.S( '#course_plan .course_help' ).removeClass( 'show-for-medium-up' ).addClass( 'hide' );
                     }
+
                     $reveal.foundation( 'reveal', 'close' );
                     //$( document ).foundation( 'dropdown', 'reflow' );
                     setAlertBox( 'success', $form.data( 'success_msg' ) );
+
                 } );
 
             } else {
@@ -107,10 +111,10 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
                     //$( document ).foundation( 'dropdown', 'reflow' );
                     setAlertBox( 'success', $form.data( 'success_msg' ) );
                 } );
-            } //*/
-
+            } */
         } );
     } );
+
 }
 
 
@@ -122,7 +126,7 @@ function setRevealFormPlanRefresh( formID, revealID, ckEditorInstanceName ) {
 
 */
 
-function setRevealForm( formID, revealID, ckEditorInstanceName ) {
+function setRevealForm( formID, ckEditorInstanceName ) {
 
     if ( typeof ckEditorInstanceName !== 'undefined' ) {
         ckEditorInstanceName = instantiateCKEditor( ckEditorInstanceName );
@@ -138,21 +142,27 @@ function setRevealForm( formID, revealID, ckEditorInstanceName ) {
 
         event.preventDefault( );
 
-        $form = $( this );
-        var $reveal = Foundation.utils.S( '#' + revealID );
+        var $form = $( this ),
+            $reveal = $form.parent( '.reveal-modal' );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
+
             var html = $.parseHTML( data );
+
             if ( $( html ).find( '.error' ).length ) {
+
                 $reveal.empty( ).html( data );
                 revealInit( $reveal );
+
             } else {
+
                 Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
                 $reveal.foundation( 'reveal', 'close' );
                 setAlertBox( 'success', $form.data( 'success_msg_pre' ) + " « " + $form.find( '#title' ).val( ) + " » " + $form.data( 'success_msg_post' ) );
             }
         } );
     } );
+
 }
 
 
