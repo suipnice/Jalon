@@ -183,13 +183,13 @@ class Connect(SimpleItem):
 
     def majPasswordUser(self, params):
         """maj Password User."""
-        LOG.info("majPasswordUser")
+        # LOG.info("majPasswordUser")
         userid = self.rechercherIdUser(params["userid"])
         return self.requete({'action': 'user-update-pwd', 'user-id': userid, 'password': params["password"], 'password-verify': params["password"]}, 'status/code')
 
     def rechercherReunions(self, params):
         """rechercher Reunions."""
-        LOG.info("@@@ RECHERCHER REUNIONS")
+        # LOG.info("@@@ RECHERCHER REUNIONS")
 
         # Vérification des paramètres
         if "login" in params:
@@ -231,8 +231,8 @@ class Connect(SimpleItem):
         return None
 
     def rechercherEnregistrements(self, params):
-        """rechercherEnregistrements."""
-        LOG.info("rechercherEnregistrements")
+        """recherche les enregistrements."""
+        # LOG.info("rechercherEnregistrements")
 
         rep = self.requete({'action': 'sco-contents',
                             'sco-id': params['id'],

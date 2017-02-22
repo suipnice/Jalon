@@ -14,23 +14,22 @@ Pour une installation en production, rendez vous sur [jalon.unice.fr/telecharger
 * Les scripts ont le suffixe "_script"
 
 ### Charte ergonomique
-La structure de base d'une page principale est la suivante : 
+La structure de base d'une page principale est la suivante :
 
 	<main class="row">
 	      <div class="small-12 columns">
 	      </div>
 	</main>
-	
+
 La structure de base d'une page de type "reveal" est la suivante :
 
 	<metal:main fill-slot="content">
-	
 	    <h2>
 	        <i class="fa fa-$ICON_ID"></i>
 	        <tal:block i18n:translate="">$TITRE</tal:block>
 	        <a class="close-reveal-modal"></a>
 	    </h2>
-	
+
 	    <form tal:attributes="action string:${context/absolute_url}/$MONSCRIPT_script" method="post">
 	        <div class="formControls">
 	            <button type="submit" class="button small">
@@ -39,5 +38,4 @@ La structure de base d'une page de type "reveal" est la suivante :
 	            </button>
 	        </div>
 	    </form>
-	
 	</metal:main>

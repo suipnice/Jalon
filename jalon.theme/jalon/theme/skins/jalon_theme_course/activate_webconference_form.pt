@@ -14,9 +14,14 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <div>
+    <div tal:define="webconferences python:context.getWebconferencesUser(True, user.getId())">
+        <div class="panel callout"
+             tal:condition="not:webconferences"
+             i18n:translate="">
+            Vous ne disposez pas de salle virtuelle pour le moment. N'hésitez-pas à nous contacter pour en savoir plus.
+        </div>
+
         <table class="listing"
-               tal:define="webconferences python:context.getWebconferencesUser(True, user.getId())"
                tal:condition="webconferences">
             <thead>
                 <tr>

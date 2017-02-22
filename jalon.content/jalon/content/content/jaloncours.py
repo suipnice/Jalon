@@ -923,7 +923,8 @@ class JalonCours(ATFolder):
         return course_map_title
 
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
-        LOG.info("----- getCourseMapItems -----")
+        """Fournit la liste des elements a afficher dans le plan du cours."""
+        # LOG.info("----- getCourseMapItems -----")
         # LOG.info(course_map_items_list)
         ol_css_id = ""
         ol_css_class = ""
