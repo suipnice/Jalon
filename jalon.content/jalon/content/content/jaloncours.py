@@ -969,6 +969,9 @@ class JalonCours(ATFolder):
                     if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "TexteLibre"]:
                         item["item_div_css"] = "elemactivite"
                         item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"], "view"])
+                    elif item_properties["typeElement"] == "SalleVirtuelle":
+                        item["item_div_css"] = "elemressource"
+                        item["item_link"] = "%s/display_course_webconference_page?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
                     else:
                         item["item_div_css"] = "elemressource"
                         item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
@@ -1141,90 +1144,6 @@ class JalonCours(ATFolder):
     def getCourseAddActivityForm(self, activity_type):
         # LOG.info("----- getCourseAddActivityForm -----")
         return self._activity_dict[activity_type]["activity_title"]
-
-    def getUrlWebconference(self, url):
-        # LOG.info("----- getUrlWebconference -----")
-        url_base = self.connect("getAttribut", {"attribut": "url_connexion"}).split("/api")[0]
-        id_reunion = url.split("/")[-2]
-        authMember = self.portal_membership.getAuthenticatedMember()
-        idMember = authMember.getId()
-        # fullname = authMember.getProperty("fullname", idMember)
-        fullname = jalon_utils.getInfosMembre(idMember)["fullname"]
-        if id_reunion != idMember:
-            try:
-                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
-            except:
-                return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, idMember)
-        else:
-            portal = self.portal_url.getPortalObject()
-            home = getattr(getattr(getattr(portal, "Members"), idMember), "Webconference")
-            session = home.getSessionConnect(idMember)
-            return "%s/%s?session=%s" % (url_base, idMember, session)
-
-    def getWebconferencesAuteurs(self, personnel):
-        # LOG.info("----- getWebconferencesAuteurs -----")
-        reunions = []
-        creators = [self.Creator()]
-        creators.extend(self.getCoAuteurs())
-        dossiers = self.connect("getAttribut", {"attribut": "dossiers"})
-        if dossiers:
-            modele = ""
-            for ligne in dossiers.split("\n"):
-                if "Webconference" in ligne:
-                    modele = ligne.split(":")[-1]
-                    break
-            if modele == "":
-                return []
-        if modele:
-            actives = self.getWebconferences()
-            for creator in creators:
-                reunionsCreator = self.connect("rechercherReunions", {"login": creator, "modele": modele})
-                if reunionsCreator:
-                    for webconference in reunionsCreator:
-                        webconference["active"] = self.test(webconference['id'] in actives, 1, 0)
-                        webconference["urlSession"] = self.getUrlWebconference(webconference['url'])
-                        if personnel or webconference["active"]:
-                            reunions.append(webconference)
-        return reunions
-
-    def getWebconferencesUser(self, personnel, authMember):
-        # LOG.info("----- getWebconferencesUser -----")
-        reunions = []
-        dossiers = self.connect("getAttribut", {"attribut": "dossiers"})
-        if dossiers:
-            modele = ""
-            for ligne in dossiers.split("\n"):
-                if "Webconference" in ligne:
-                    modele = ligne.split(":")[-1]
-                    break
-            if modele == "":
-                return []
-        if modele:
-            actives = self.getWebconferences()
-            reunionsCreator = self.connect("rechercherReunions", {"login": authMember, "modele": modele})
-            if reunionsCreator:
-                for webconference in reunionsCreator:
-                    webconference["active"] = self.test(webconference['id'] in actives, 1, 0)
-                    webconference["urlSession"] = self.getUrlWebconference(webconference['url'])
-                    if personnel or webconference["active"]:
-                        reunions.append(webconference)
-        return reunions
-
-    def getWebconferenceUrlById(self, authMember, webid):
-        # LOG.info("----- getWebconferenceUrlById -----")
-        for reunion in self.getWebconferencesUser(True, authMember):
-            if reunion["id"] == webid:
-                return self.getUrlWebconference(reunion['url'])
-        return ""
-
-    def activerWebconference(self, idwebconference):
-        # LOG.info("----- activerWebconference -----")
-        webconferences = list(self.webconferences)
-        if not idwebconference in webconferences:
-            webconferences.append(idwebconference)
-        else:
-            webconferences.remove(idwebconference)
-        self.webconferences = tuple(webconferences)
 
     def readCourseMapItem(self, item_id):
         # LOG.info("----- readCourseMapItem -----")
@@ -2078,16 +1997,70 @@ class JalonCours(ATFolder):
         return self.portal_connect.__getattribute__(methode)(param)
 
     def getSessionConnect(self, user_id, repertoire):
-        # LOG.info("----- ----- getSessionConnect -----")
+        # LOG.info("----- getSessionConnect -----")
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, user_id), repertoire)
         return home.getSessionConnect(user_id)
 
     def getReunion(self, user_id, request, repertoire):
-        # LOG.info("----- ----- getReunion -----")
+        # LOG.info("----- getReunion -----")
         portal = self.portal_url.getPortalObject()
         home = getattr(getattr(portal.Members, user_id), repertoire)
         return home.getReunion(user_id)
+
+    def getDisplayCourseWebconference(self, webconference_id):
+        # LOG.info("----- getDisplayCourseWebconference -----")
+        item_properties = self.getCourseItemProperties(webconference_id)
+
+        item = {"item_id":      webconference_id,
+                "item_title":   item_properties["titreElement"],
+                "item_link":    self.getWebconferenceUrlById(item_properties["createurElement"], webconference_id)}
+
+        return item
+
+    def getWebconferenceUrlById(self, authMember, webconference_id):
+        #self.plone_log("getWebconferenceUrlById")
+        for reunion in self.getWebconferencesUser(True, authMember, webconference_id):
+            if reunion["id"] == webconference_id:
+                return self.getUrlWebconference(reunion['url'])
+        return ""
+
+    def getWebconferencesUser(self, personnel, authMember, webconference_id):
+        #self.plone_log("getWebconferencesUser")
+        reunions = []
+        dossiers = self.connect("getAttribut", {"attribut": "dossiers"})
+        if dossiers:
+            modele = ""
+            for ligne in dossiers.split("\n"):
+                if "Webconference" in ligne:
+                    modele = ligne.split(":")[-1]
+                    break
+            if modele == "":
+                return []
+        if modele:
+            #actives = self.getWebconferences()
+            reunionsCreator = self.connect("rechercherReunions", {"login": authMember, "modele": modele})
+            if reunionsCreator:
+                for webconference in reunionsCreator:
+                    if webconference['id'] == webconference_id:
+                        reunions.append(webconference)
+                        break
+        return reunions
+
+    def getUrlWebconference(self, url):
+        #self.plone_log("getUrlWebconference")
+        url_base = self.connect("getAttribut", {"attribut": "url_connexion"}).split("/api")[0]
+        id_reunion = url.split("/")[-2]
+        authMember = self.portal_membership.getAuthenticatedMember()
+        idMember = authMember.getId()
+        fullname = authMember.getProperty("fullname", idMember)
+        if id_reunion != idMember:
+            return "%s/system/login-guest?account-id=7&next=/%s&path=/%s&set-lang=fr&chooser=1&guestName=%s" % (url_base, id_reunion, id_reunion, fullname)
+        else:
+            portal = self.portal_url.getPortalObject()
+            home = getattr(getattr(getattr(portal, "Members"), idMember), "Webconference")
+            session = home.getSessionConnect(idMember)
+            return "%s/%s?session=%s" % (url_base, idMember, session)
 
     #---------------------#
     # Course Participants #

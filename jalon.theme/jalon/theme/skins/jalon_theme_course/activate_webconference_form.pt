@@ -1,0 +1,60 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+    <metal:main fill-slot="content">
+
+    <h2>
+        <i class="fa fa-globe">
+        </i><tal:block i18n:translate="">Ajouter ma salle virtuelle</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div>
+        <table class="listing"
+               tal:define="webconferences python:context.getWebconferencesUser(True, user.getId())"
+               tal:condition="webconferences">
+            <thead>
+                <tr>
+                    <th i18n:translate="">
+                        Titre
+                    </th>
+                    <th i18n:translate="">
+                        Action / état
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tal:repeat repeat="webconference webconferences">
+                <tr tal:define="checked python:context.isInCourseMap(webconference['id'])">
+                    <td tal:content="webconference/title" class="fullwidth" />
+                    <td>
+                        <form name="element_add" method="post"
+                              tal:condition="not:checked"
+                              tal:attributes="action string:${context/absolute_url}/activate_webconference_script">
+                            <input type="hidden" name="meeting_id" tal:attributes="value webconference/id" />
+                            <input type="hidden" name="meeting_owner" tal:attributes="value user/getId" />
+                            <input type="hidden" name="meeting_title" tal:attributes="value webconference/title" />
+                            <button type="submit" class="button small radius"
+                                    name="form.button.save">
+                                <i class="fa fa-plus-circle"></i>
+                                <tal:block i18n:translate="">Ajouter cette salle virtuelle</tal:block>
+                            </button>
+                        </form>
+                        <i class="fa fa-check fa-lg success" tal:condition="checked"></i>
+                    </td>
+                </tr>
+                </tal:repeat>
+            </tbody>
+        </table>
+    </div>
+
+    </metal:main>
+
+</body>
+
+</html>
