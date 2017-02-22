@@ -18,7 +18,7 @@
     <tal:condition condition="isFavorite">
     <div class="panel warning radius"
          i18n:translate="">
-        <strong>Attention :</strong> Ce cours est déjà un cours favori.
+        <strong>Attention :</strong> ce cours est déjà un cours favori.
     </div>
     <div class="text-center">
         <a class="button small warning radius"

@@ -164,13 +164,13 @@
                                 <li>Je suis allé au cinéma la semaine dernière</li>
                             </ul>
                         </blockquote>
-                        Attention. Ce mode a quelques inconvénients :
+                        Attention ! Ce mode a quelques inconvénients :
                         <ul>
-                            <li>Forcement, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML :
-                                <ul><li><code>&amp;#123;</code> pour l'accolade ouvrante {</li>
-                                <li><code>&amp;#125;</code> pour l'accolade fermante }</li></ul>
+                            <li>forcément, vous ne pouvez pas afficher d'accolades, à moins de les remplacer par leur code HTML :
+                                <ul><li><code>&amp;#123;</code> pour l'accolade ouvrante {,</li>
+                                <li><code>&amp;#125;</code> pour l'accolade fermante } ;</li></ul>
                             </li>
-                            <li>Si vous utiliser du code LaTeX dans ce mode, les accolades ne seront pas fonctionnelles</li>
+                            <li>si vous utilisez du code LaTeX dans ce mode, les accolades ne seront pas fonctionnelles.</li>
                         </ul>
                     </div>
                 </div>

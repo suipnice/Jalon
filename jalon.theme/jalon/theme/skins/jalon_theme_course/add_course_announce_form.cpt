@@ -19,7 +19,7 @@
     <div class="panel warning radius"
          tal:condition="not:listeAcces"
          i18n:translate="">
-        <strong>Attention :</strong> votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.
+        <strong>Attention :</strong> votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.
     </div>
 
     <form id="js-createAnnounce" method="POST"

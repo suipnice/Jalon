@@ -45,7 +45,7 @@
 
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <strong>Attention :</strong>
+        <strong>Attention :</strong>
         <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
     </div>
 
@@ -146,7 +146,7 @@
 -->
 <metal:macro define-macro="peers-list">
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
 
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
@@ -199,7 +199,7 @@
     </tal:on-error>
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <strong>Attention :</strong>
+        <strong>Attention :</strong>
         <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
     </div>
 
@@ -221,7 +221,7 @@
 -->
 <metal:macro define-macro="peers_teacher_macro">
     <div class="panel warning radius">
-        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
     <form method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
@@ -311,7 +311,7 @@
 -->
 <metal:macro define-macro="peers_student_macro">
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
     <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius"
        tal:condition="evaluation_by_peers_dict/evaluate_button">
@@ -605,7 +605,7 @@
     <tal:condition condition="python:not is_personnel and not afficher_comp">
         <div class="panel alert radius"
              i18n:translate="">
-            <strong>Attention :</strong> l'affichage des compétences n'est pas permise aux étudiants sur cette boîte.
+            <strong>Attention :</strong> l'affichage des compétences n'est pas permis aux étudiants sur cette boîte.
         </div>
     </tal:condition>
     </tal:define>

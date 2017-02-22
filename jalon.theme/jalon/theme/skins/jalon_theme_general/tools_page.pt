@@ -46,7 +46,7 @@
                     </div>
                     <div class="panel warning radius text-justify"
                          i18n:translate="">
-                        <strong>Attention :</strong> Une fois connecté à Intracursus, si vous n'avez pas de formations associées, vous devez demander au responsable de votre formation de contacter <a href="mailto:intracursus@unice.fr">intracursus@unice.fr</a> afin de configurer l'accès à votre formation dans Intracursus.
+                        <strong>Attention :</strong> une fois connecté à Intracursus, si vous n'avez pas de formations associées, vous devez demander au responsable de votre formation de contacter <a href="mailto:intracursus@unice.fr">intracursus@unice.fr</a> afin de configurer l'accès à votre formation dans Intracursus.
                     </div>
                     <div class="text-center">
                         <a class="button small radius" target="_blank"
@@ -84,7 +84,7 @@
                     </div>
                     <div class="panel warning radius text-justify"
                          i18n:translate="">
-                        <strong>Attention :</strong> Un connecteur entre Jalon et UNS.Pod est actuellement en test. Une prochaine mise à jour vous permettra de rechercher une vidéo dans UNS.Pod et de l'ajouter à Jalon directement depuis Jalon prochainement.
+                        <strong>Attention :</strong> un connecteur entre Jalon et UNS.Pod est actuellement en test. Une prochaine mise à jour vous permettra de rechercher une vidéo dans UNS.Pod et de l'ajouter à Jalon directement depuis Jalon.
                     </div>
                     <div class="text-center">
                         <a class="button small radius" target="_blank"
@@ -116,7 +116,7 @@
                     </div>
                     <div class="panel warning radius text-justify"
                          i18n:translate="">
-                        <strong>Attention : </strong> vous et vos étudiants devez posséder un compte spécifique pour accéder à la Médiathèque Numérique. Pour demander un compte sur la Médiathèque Numérique contacter : <a href="mailto:Iris.vidal@unice.fr">Iris Vidal</a> ou <a href="mailto:hadjopou@unice.fr">Catherine Hadjopoulou</a>
+                        <strong>Attention : </strong> vous et vos étudiants devez posséder un compte spécifique pour accéder à la Médiathèque Numérique. Pour demander un compte sur la Médiathèque Numérique contacter : <a href="mailto:Iris.vidal@unice.fr">Iris Vidal</a> ou <a href="mailto:hadjopou@unice.fr">Catherine Hadjopoulou</a>
                     </div>
                     <div class="text-center">
                         <a class="button small radius" target="_blank"

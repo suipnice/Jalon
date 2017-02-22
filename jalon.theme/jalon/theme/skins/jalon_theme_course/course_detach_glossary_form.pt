@@ -18,7 +18,7 @@
 
     <div class="panel warning radius">
         <strong i18n:translate="">Attention :</strong>
-        <tal:block i18n:translate="">les étudiants n'auront plus accès à cet terme de glossaire.</tal:block>
+        <tal:block i18n:translate="">les étudiants n'auront plus accès à ce terme de glossaire.</tal:block>
     </div>
 
     <form tal:attributes="action string:${context/absolute_url}/course_detach_glossary_script"

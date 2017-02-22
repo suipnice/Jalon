@@ -22,7 +22,7 @@
     <main class="row" role="main" aria-labelledby="page_title">
 
         <div class="panel warning radius">
-            <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+            <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
         </div>
 
         <section id="evaluate_deposit_file" class="small-12 columns">

@@ -20,7 +20,7 @@
     <tal:condition condition="not:course_data/is_course_owner">
     <div class="panel warning radius">
         <strong i18n:translate="">Attention :</strong>
-        Vous n'êtes pas l'auteur de ce cours vous ne pouvez pas le dupliquer.
+        vous ne pouvez pas dupliquer ce cours car vous n'en êtes pas l'auteur.
     </div>
     </tal:condition>
 

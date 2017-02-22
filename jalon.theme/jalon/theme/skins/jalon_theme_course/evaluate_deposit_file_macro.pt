@@ -1,7 +1,7 @@
 <metal:macro define-macro="student_evaluate">
     <tal:condition condition="not:my_form/is_evaluable">
         <div class="panel warning radius">
-            <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous ne pouvez plus évaluer de devoirs.
+            <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous ne pouvez plus évaluer de devoirs.
         </div>
     </tal:condition>
     <tal:condition condition="my_form/is_evaluable">

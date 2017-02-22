@@ -17,7 +17,7 @@
     <div class="panel warning radius"
          tal:condition="is_not_standard"
          i18n:translate="">
-        <strong>Attention :</strong> Dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez valider ou invalider un dépôt. Ajouter un nouveau dépôt invalidera automatiquement le précédent.
+        <strong>Attention :</strong> dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez valider ou invalider un dépôt. Ajouter un nouveau dépôt invalidera automatiquement le précédent.
     </div>
 
     <form method="post"

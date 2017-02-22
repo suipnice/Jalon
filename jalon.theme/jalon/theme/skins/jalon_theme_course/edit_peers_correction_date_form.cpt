@@ -18,12 +18,12 @@
     </h2>
 
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
 
     <div class="panel warning radius"
          tal:condition="not:is_date_depot">
-        <strong>Attention :</strong> Vous ne pouvez choisir une date limite d'évaluation. Vous devez d'abord choisir une date limite de dépôts.
+        <strong>Attention :</strong> avant de choisir une date limite d'évaluation, vous devez déterminer une date limite de dépôt.
     </div>
 
     <form id="js-modBoxDate" method="post"

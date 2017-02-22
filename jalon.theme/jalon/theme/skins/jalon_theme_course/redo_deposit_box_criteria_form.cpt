@@ -22,7 +22,7 @@
 
         <div class="panel alert radius">
             <strong i18n:translate="">Attention :</strong>
-            <tal:block i18n:translate="">Vous allez modifier le coefficient ce critère d'évaluation, il doit être comprise entre 1 et 5, le calcul de la moyenne sera fait cette nuit.</tal:block>
+            <tal:block i18n:translate="">vous allez modifier le coefficient de ce critère d'évaluation, il doit être compris entre 1 et 5. Le calcul de la moyenne sera fait cette nuit.</tal:block>
         </div>
 
         <div id="archetypes-fieldname-coefficient"

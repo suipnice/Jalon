@@ -17,7 +17,7 @@
     </h2>
 
     <div class="panel warning radius">
-        <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
 
     <form id="js-editNombreCorrection" method="post"

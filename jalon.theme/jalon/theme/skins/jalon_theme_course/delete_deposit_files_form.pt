@@ -16,7 +16,7 @@
     </h2>
 
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="">Attention :</strong>
         <tal:block i18n:translate="">vous allez supprimer tous les dépôts de cette boite, cette opération est définitive.</tal:block>
     </div>
     <div class="panel callout radius"

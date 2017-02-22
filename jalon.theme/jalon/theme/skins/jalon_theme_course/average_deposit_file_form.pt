@@ -16,7 +16,7 @@
     </h2>
     <div class="panel warning radius"
          tal:condition="not:is_finish_evaluation">
-        <strong>Attention :</strong> Les moyennes ne peuvent être calculée qu'une fois la date limite d'évaluation dépassée.
+        <strong>Attention :</strong> les moyennes ne peuvent être calculées qu'une fois la date limite d'évaluation dépassée.
     </div>
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/average_deposit_file_script"
@@ -27,7 +27,7 @@
             <legend>Calculer les moyennes des évaluations</legend>
 
             <p class="text-justify" i18n:translate="">
-                Cette opération n'est réalisable qu'une fois la "date limite d'évaluation" dépassée. Pour chaque étudiant, une moyenne sera calculé pour chaque critère et une note sur 20. Lors du calcul de la moyenne d'un critère, la meilleure note que l'étudiant aura obtenu sur le critère sera comparé à la moins bonne note qu'il a obtenu sur ce même critère. Si l'écart entre ces deux note est supérieure ou égale à la marge du critère l'évaluation de cet étudiant vous sera signalé "<i class="fa fa-exclamation-triangle alert"></i> à vérifier"
+                Cette opération n'est réalisable qu'une fois la "date limite d'évaluation" dépassée. Pour chaque étudiant, une moyenne sera calculée pour chaque critère et une note sur 20. Lors du calcul de la moyenne d'un critère, la meilleure note que l'étudiant(e) a obtenu sur le critère sera comparée à la moins bonne note qu'il/elle aura obtenu sur ce même critère. Si l'écart entre ces deux note est supérieur ou égal à la marge du critère, l'évaluation de cet étudiant(e) vous sera signalé "<i class="fa fa-exclamation-triangle alert"></i> à vérifier"
             </p>
 
         </fieldset>

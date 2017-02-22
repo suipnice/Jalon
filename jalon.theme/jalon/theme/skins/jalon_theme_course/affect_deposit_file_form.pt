@@ -15,7 +15,7 @@
     </h2>
     <div class="panel warning radius"
          tal:condition="context/getAffectationEvaluation">
-         <strong>Attention :</strong> L'affectation des évaluations a déjà été réalisée.
+         <strong>Attention :</strong> l'affectation des évaluations a déjà été réalisée.
     </div>
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/affect_deposit_file_script"
@@ -26,7 +26,7 @@
             <legend>Affecter les dépôts pour évaluation</legend>
 
             <p class="text-justify" i18n:translate="">
-                Cette opération n'est réalisable <strong>qu'une seule fois</strong> et seulement lorsque la "date limite de dépôts" et la date "Tolérer les dépôts juqu'au" sont dépassées. Elle affecte à chaque étudiant ayant réalisé un dépot dans la boite le nombre d'évaluations de la boite réglé en option
+                Cette opération n'est réalisable <strong>qu'une seule fois</strong> et seulement lorsque la "date limite de dépôts" et la date "Tolérer les dépôts jusqu'au" sont dépassées. Elle affecte à chaque étudiant ayant réalisé un dépot dans la boite le nombre d'évaluations de la boite réglé en option.
             </p>
 
         </fieldset>
