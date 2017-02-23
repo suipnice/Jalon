@@ -312,7 +312,7 @@ class JalonCours(ATFolder):
                       "item_action_icon": "fa fa-trash-o fa-fw",
                       "item_action_name": "Supprimer"}]
 
-    _course_map_item_dict = {"1": {"form_title_type":    "titre",
+    _course_map_item_dict = {"1": {"form_title_type":    "titre de cet élément",
                                    "is_type_title":      True,
                                    "item_type":          "Titre",
                                    "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem')"},
@@ -861,7 +861,7 @@ class JalonCours(ATFolder):
             form_properties["typeElement"] = ""
         else:
             form_properties["data-success_msg"] = _(u"L'élément de plan a été modifié.")
-            form_properties["form_title_text"] = "Modifier un"
+            form_properties["form_title_text"] = "Modifier le"
             form_properties["is_add_form"] = False
             form_properties["item_id"] = item_id
             form_properties["form_button_css"] = "button small radius"
@@ -1316,7 +1316,7 @@ class JalonCours(ATFolder):
                     item_object = getattr(getattr(getattr(portal.Members, item_properties["createurElement"]), self._type_folder_my_space_dict[item_properties["typeElement"]]), item_id.replace("*-*", "."))
                     item_object_state = portal_workflow.getInfoFor(item_object, "review_state", wf_id="jalon_workflow")
                     if course_state != item_object_state:
-                        portal_workflow.doActionFor(objet, "publish", "jalon_workflow")
+                        portal_workflow.doActionFor(item_object, "publish", "jalon_workflow")
 
             if not is_update_from_title:
                 update_actuality = True
