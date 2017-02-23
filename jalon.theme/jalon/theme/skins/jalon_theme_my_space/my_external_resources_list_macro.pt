@@ -198,7 +198,7 @@
             <script charset="UTF-8"
                     tal:content="structure string:$$(document).foundation('reveal', 'reflow')"></script>
             <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>>
+                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>
 
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
