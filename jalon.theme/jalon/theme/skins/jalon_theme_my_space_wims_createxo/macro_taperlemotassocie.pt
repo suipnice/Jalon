@@ -13,7 +13,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_question" class="button tiny radius"
                data-reveal-id="reveal_question"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>
@@ -42,7 +42,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_words" class="button tiny radius"
                data-reveal-id="reveal_words"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>
@@ -76,7 +76,7 @@
 
         <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options" title="Afficher d'autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content"
                      tal:define="arch_class string:panel ArchetypesStringWidget">
                     <div class="row">

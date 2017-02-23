@@ -172,7 +172,7 @@
                         <tal:block i18n:translate="">Titre des cours</tal:block>
                     </span>
                 </th>
-                <th class="sort has-tip" data-tooltip data-sort="etat" title="Trier selon l'état des cours'"
+                <th class="sort has-tip" data-tooltip data-sort="etat" title="Trier selon l'état des cours"
                     i18n:attributes="etat">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -181,7 +181,7 @@
                         <tal:block i18n:translate="">État des cours</tal:block>
                     </span>
                 </th>
-                <th class="sort has-tip" data-tooltip data-sort="categorie" title="Trier selon les catégories iTunesU'"
+                <th class="sort has-tip" data-tooltip data-sort="categorie" title="Trier selon les catégories iTunesU"
                     i18n:attributes="categorie">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -195,7 +195,7 @@
                         RSS
                     </span>
                 </th>
-                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="action" title="Trier selon l'action'"
+                <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="action" title="Trier selon l'action"
                     i18n:attributes="action">
                 <span>
                     <i class="fa fa-sort"></i>

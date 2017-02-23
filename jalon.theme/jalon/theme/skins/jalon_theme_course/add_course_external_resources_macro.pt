@@ -121,7 +121,7 @@
 
     <form id="js-directExtResCreator" method="POST"
           tal:attributes="action string:${my_view/course_link}/add_course_external_resource_script;
-                          data-success_msg string:La ressource externe a été créée et ajouté au cours.">
+                          data-success_msg string:La ressource externe a été créée et ajoutée au cours.">
 
         <div id="title"
              tal:define="error errors/title | nothing;"

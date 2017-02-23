@@ -210,7 +210,7 @@
                            i18n:translate="">
                         <a href="#reveal_search_keywords" class="button tiny radius right"
                            data-reveal-id="reveal_search_keywords"
-                           title="afficher une aide sur cet élément">
+                           title="Afficher de l'aide concernant cet élément">
                             <i class="fa fa-question"></i> Aide à la recherche
                         </a>
                         Rechercher un exercice dans le catalogue des exercices WIMS et l'ajouter à votre espace

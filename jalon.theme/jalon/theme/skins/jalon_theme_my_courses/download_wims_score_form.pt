@@ -73,7 +73,7 @@
             <label for="format">
                 <span class="has-tip"
                       data-tooltip="csv_tooltip" aria-haspopup="true"
-                      title="Un fichier CSV est un fichier tableur, contenant des données sur chaque ligne séparés par un caractère de séparation (généralement une virgule, un point-virgule ou une tabulation). Il peut être lu avec un tableur tel que Microsoft Excel (payant), Excel Viewer (gratuit), LibreOffice/OpenOffice (gratuits/libres)..."
+                      title="Un fichier CSV est un fichier contenant des données tabulaires dont les lignes sont séparées par un caractère préalablement défini (généralement une virgule, un point-virgule ou une tabulation). Il peut être lu avec un tableur tel que Microsoft Excel (payant), Excel Viewer (gratuit), LibreOffice/OpenOffice (gratuits/libres)..."
                       i18n:translate="" i18n:attributes="title">
                     Format du fichier :
                 </span>

@@ -11,7 +11,7 @@
         <div class="panel">
             <a href="#reveal_question" class="button tiny radius"
                data-reveal-id="reveal_question"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                <i class="fa fa-question"></i>
                Aide
             </a>
@@ -34,7 +34,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_listeObjets" class="button tiny radius"
                data-reveal-id="reveal_listeObjets"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                <i class="fa fa-question"></i>
                Aide
             </a>
@@ -131,7 +131,7 @@ dormir, je dors
                             </div>
                         </div>
                     </fieldset>
-                    
+
                     <div class="row">
                         <div class="medium-6 columns">
                             <div tal:define="error errors/tot | nothing;

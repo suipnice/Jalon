@@ -87,7 +87,7 @@
                             <tal:block i18n:translate="">Session</tal:block>
                         </span>
                     </th>
-                    <th class="sort text-left" data-sort="colonne_3" title="Trier selon l'exercice'" i18n:attributes="title">
+                    <th class="sort text-left" data-sort="colonne_3" title="Trier selon l'exercice" i18n:attributes="title">
                         <span>
                             <i class="fa fa-sort"></i>
                             <i class="fa fa-sort-asc"></i>
@@ -111,7 +111,7 @@
                             <tal:block i18n:translate="">Résultat</tal:block>
                         </span>
                     </th>
-                    <th class="sort text-left show-for-medium-up" data-sort="IP" title="Trier selon l'IP" i18n:attributes="title">
+                    <th class="sort text-left show-for-medium-up" data-sort="IP" title="Trier selon l'adresse IP" i18n:attributes="title">
                         <span>
                             <i class="fa fa-sort"></i>
                             <i class="fa fa-sort-asc"></i>

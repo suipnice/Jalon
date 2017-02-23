@@ -107,9 +107,9 @@
          class="reveal-modal large wims-edit_reveal"
          data-reveal="data-reveal"
          data-options="close_on_background_click: true;" >
-        <h2><tal:block i18n:translate="">Aide sur Les réponses aux questions</tal:block> <a class="close-reveal-modal"></a></h2>
+        <h2><tal:block i18n:translate="">Aide sur les réponses aux questions</tal:block> <a class="close-reveal-modal"></a></h2>
         <div i18n:translate="">
-            Indiquer le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne.<br/>
+            Indiquez le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne.<br/>
             Vous pouvez définir plusieurs bonnes réponses. Indiquez alors sur la premiere ligne plusieurs numéros, séparés par des virgules.
         </div>
         <div class="text-center">Exemple pour définir les propositions 1 et 2 comme bonnes :<br/>

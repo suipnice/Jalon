@@ -11,7 +11,7 @@
         <div class="panel ArchetypesStringWidget">
             <a href="#reveal_question" class="button tiny radius"
                data-reveal-id="reveal_question"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 <tal:block i18n:translate="">Aide</tal:block>
             </a>
@@ -36,7 +36,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_datatrue" class="button tiny radius"
                data-reveal-id="reveal_datatrue"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>
@@ -68,7 +68,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_datafalse" class="button tiny radius"
                data-reveal-id="reveal_datafalse"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>

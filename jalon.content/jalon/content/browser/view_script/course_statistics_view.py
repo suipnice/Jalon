@@ -269,7 +269,7 @@ class CourseStatisticsView(BrowserView):
                           "th_text":   "Année en cours"}]
         if not element_id:
             thead_th_list.insert(0, {"data-sort": "title",
-                                     "th_title":  "le titre du fichiers",
+                                     "th_title":  "le titre du fichier",
                                      "th_text":   "Titre"})
             elements_consultation = []
             elements_cours = self.getElementsCoursByType()
@@ -349,7 +349,7 @@ class CourseStatisticsView(BrowserView):
                           "th_text":   "Année en cours"}]
         if not element_id:
             thead_th_list.insert(0, {"data-sort": "title",
-                                     "th_title":  "le titre du fichiers",
+                                     "th_title":  "le titre du fichier",
                                      "th_text":   "Titre"})
             elements_consultation = []
             elements_cours = self.getElementsCoursByType()
