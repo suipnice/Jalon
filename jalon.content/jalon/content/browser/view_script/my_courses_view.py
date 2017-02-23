@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Scripts de vue pour "Mes cours"."""
 from zope.component import getMultiAdapter
 from Products.Five.browser import BrowserView
 from Products.CMFCore.utils import getToolByName
@@ -11,8 +12,7 @@ LOG = getLogger('[MyCoursesView]')
 
 
 class MyCoursesView(BrowserView):
-    """Class pour le first_page
-    """
+    """Classe de vue pour la page "Mes cours"."""
 
     def __init__(self, context, request):
         # LOG.info("----- Init -----")
@@ -21,11 +21,13 @@ class MyCoursesView(BrowserView):
         self.request = request
 
     def isAnonymous(self):
+        # LOG.info("----- isAnonymous -----")
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
 
     def getBreadcrumbs(self):
+        # LOG.info("----- getBreadcrumbs -----")
         return [{"title": _(u"Mes cours"),
                  "icon":  "fa fa-university",
                  "link":  self.context.absolute_url()}]
@@ -188,10 +190,10 @@ class MyCoursesView(BrowserView):
                                 "action_name": "Désarchiver ce cours"}
 
         messages_dict = {"1": "Vous n'avez aucun cours en favoris.",
-                         "2": "Vous n'avez pas encore de cours dans Jalon. Pour ajouter un nouveau cours, cliquez sur la barre « Créer un cours » ci-dessus.",
+                         "2": "Vous n'avez pas encore de cours dans Jalon. Pour ajouter un nouveau cours, cliquez sur le bouton « Créer un cours » ci-dessus.",
                          "3": "Vous n'êtes co-auteur d'aucun cours.",
                          "4": "Vous n'êtes lecteur d'aucun cours.",
-                         "5": "Vous n'avez aucun cours en archives."}
+                         "5": "Vous n'avez aucun cours archivé."}
         if not courses_list:
             return {"is_courses_list": False,
                     "message": messages_dict[tab]}
@@ -235,7 +237,7 @@ class MyCoursesView(BrowserView):
                 search_courses_list = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=user_id))
                 for course_brain in search_courses_list:
                     course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
-                    #course_data["course_access"] = ["Invité"]
+                    # course_data["course_access"] = ["Invité"]
                     courses_list.append(course_data)
                     course_authorized_list.append(course_data["course_id"])
                 diploma_list.append({"diploma_course_list": courses_list})
@@ -244,12 +246,12 @@ class MyCoursesView(BrowserView):
                 return {"is_diploma_list": True,
                         "diploma_list":    diploma_list}
 
-            #educational_unity_dict = {}
+            # educational_unity_dict = {}
             educational_unity_list = []
             for user_diploma_id in user_diploma_list:
                 user_diploma_data = portal_jalon_bdd.getVersionEtape(user_diploma_id)
                 if user_diploma_data:
-                    #educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
+                    # educational_unity_dict["etape*-*%s" % user_diploma_id] = {"type":    "etape",
                     #                                                          "libelle": user_diploma_data[0]}
                     educational_unity_list.append("etape*-*%s" % user_diploma_id)
                     user_educational_registration_list = portal_jalon_bdd.getInscriptionPedago(user_id, user_diploma_id)
@@ -257,9 +259,9 @@ class MyCoursesView(BrowserView):
                         user_educational_registration_list = portal_jalon_bdd.getUeEtape(user_diploma_id)
                     for user_educational_registration in user_educational_registration_list:
                         ELP = "*-*".join([user_educational_registration["TYP_ELP"], user_educational_registration["COD_ELP"]])
-                        #if not ELP in educational_unity_dict:
-                        if not ELP in educational_unity_list:
-                            #educational_unity_dict[ELP] = {"type":    user_educational_registration["TYP_ELP"],
+                        # if ELP not in educational_unity_dict:
+                        if ELP not in educational_unity_list:
+                            # educational_unity_dict[ELP] = {"type":    user_educational_registration["TYP_ELP"],
                             #                               "libelle": user_educational_registration["LIB_ELP"]}
                             educational_unity_list.append(ELP)
                     educational_unity_list.append(user_id)
@@ -269,19 +271,21 @@ class MyCoursesView(BrowserView):
                     course_list = []
                     course_brain_list = list(portal_catalog.searchResults(portal_type="JalonCours", getRechercheAcces=query))
                     for course_brain in course_brain_list:
-                        #course_access_list = []
+                        # course_access_list = []
                         course_data = self.getCourseData(course_brain, authors_dict, user_id, member_login_time, tab, [])
-                        #for course_access in course_brain.getListeAcces:
-                        #    if course_access in educational_unity_dict:
-                        #        course_access_list.append("%s : %s" % (educational_unity_dict[course_access]['type'], educational_unity_dict[course_access]['libelle']))
-                        #if user_id in course_brain.getGroupe:
-                        #    course_access_list.append("Invité")
-                        #try:
-                        #    if user_id in course_brain.getInscriptionsLibres:
-                        #        course_access_list.append("Inscription par mot de passe")
-                        #except:
-                        #    pass
-                        #course_data["course_access"] = course_access_list
+                        """
+                        for course_access in course_brain.getListeAcces:
+                            if course_access in educational_unity_dict:
+                                course_access_list.append("%s : %s" % (educational_unity_dict[course_access]['type'], educational_unity_dict[course_access]['libelle']))
+                        if user_id in course_brain.getGroupe:
+                            course_access_list.append("Invité")
+                        try:
+                            if user_id in course_brain.getInscriptionsLibres:
+                                course_access_list.append("Inscription par mot de passe")
+                        except:
+                            pass
+                        course_data["course_access"] = course_access_list
+                        """
                         course_list.append(course_data)
                         course_authorized_list.append(course_data["course_id"])
                         self.request.SESSION.set("course_authorized_list", course_authorized_list)
@@ -326,14 +330,14 @@ class MyCoursesView(BrowserView):
         course_author_id = course_brain.getAuteurPrincipal
         if not course_author_id:
             course_author_id = course_brain.Creator
-        if not course_author_id in authors_dict:
+        if course_author_id not in authors_dict:
             authors_dict[course_author_id] = jalon_utils.getInfosMembre(course_author_id)["fullname"]
-            #course_author_data = jalon_utils.getInfosMembre(course_author_id)
-            #authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
+            # course_author_data = jalon_utils.getInfosMembre(course_author_id)
+            # authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
                                               #"course_author_email": course_author_data["email"]}
         course_data["course_author_id"] = course_author_id
         course_data["course_author_name"] = authors_dict[course_author_id]
-        #course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
-        #course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
+        # course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
+        # course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
 
         return course_data
