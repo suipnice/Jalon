@@ -947,7 +947,7 @@ class JalonCours(ATFolder):
                     "item_video":   False}
 
             if "complementElement" in item_properties:
-                if "image" in item_properties["complementElement"]:
+                if "value" in item_properties["complementElement"] and item_properties["complementElement"]["value"] and "image" in item_properties["complementElement"]:
                     item["item_video"] = True
                     item["item_image"] = item_properties["complementElement"]["image"]
                     item["item_auteur"] = item_properties["complementElement"]["auteur"]
@@ -1590,6 +1590,8 @@ class JalonCours(ATFolder):
 
         if display_item_in_course_map:
             item_properties["complementElement"]["value"] = True
+        else:
+            item_properties["complementElement"]["value"] = False
 
         self._elements_cours[item_id] = item_properties
         self.setCourseItemsProperties(self._elements_cours)
