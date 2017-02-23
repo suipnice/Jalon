@@ -103,6 +103,13 @@
                         </tal:items>
                     </form>
 
+                    <!--
+                    <script charset="UTF-8"
+                            tal:condition="python:context.test(context.getId() in ['mes_fichiers', 'mes_presentations_sonorisees', 'mes_ressources_externes', 'mes_webconferences', 'mes_videos_pod'], 1, 0)">setAttachmentCreator()</script>
+                    <script charset="UTF-8"
+                            tal:condition="python:context.test(context.getId() in ['mes_termes_glossaire', 'mes_exercices_wims', 'course_bibliography'], 1, 0)">setTagFilter(true)</script>
+                    -->
+
                     <script charset="UTF-8"
                             tal:content="my_view/course_add_js"></script>
                 </div>

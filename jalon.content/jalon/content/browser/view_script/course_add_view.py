@@ -57,7 +57,7 @@ class CourseAddView(MySpaceView):
                                                          "portal_type":          ["JalonRessourceExterne"],
                                                          "course_add_list_icon": "fa fa-external-link",
                                                          "is_display_hide":      False,
-                                                         "course_add_js": "setTagFilter(true)"}}
+                                                         "course_add_js":        "setTagFilter(true)"}}
 
     def __init__(self, context, request):
         """initialise CourseAddView."""
@@ -74,11 +74,12 @@ class CourseAddView(MySpaceView):
 
     def getCourseAddView(self, user, course_path):
         """Fournit les infos d'ajout d'un element dans le cours."""
-        # LOG.info("----- getCourseAddView -----")
+        LOG.info("----- getCourseAddView -----")
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
         course_add_dict = self._course_add_dict[self.context.getId()]
+        LOG.info(self.context.getId())
 
         folder = getattr(getattr(portal.Members, user.getId()), course_add_dict["folder_id"])
         selected_tags_list = folder.getSelectedTags().split(",")
