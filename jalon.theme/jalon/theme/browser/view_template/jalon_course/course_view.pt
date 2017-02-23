@@ -52,7 +52,7 @@
                     </a>
                     <ul id="course-options" class="f-dropdown" data-dropdown-content>
                         <li tal:repeat="course_map_action my_view/course_map_action_list">
-                            <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                            <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                                tal:attributes="href course_map_action/action_link">
                                 <i tal:attributes="class course_map_action/action_icon"></i>
                                 <tal:replace replace="course_map_action/action_name"

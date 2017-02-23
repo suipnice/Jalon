@@ -39,7 +39,7 @@
 <metal:macro define-macro="display_students">
     <h2>
         <a class="right"
-           data-reveal-ajax="true" data-reveal-id="reveal-main"
+           data-reveal-ajax="true" data-reveal-id="reveal-main-large"
            tal:attributes="href string:${context/absolute_url}/download_course_students_page"
            tal:condition="my_view/is_personnel">
             <i class="fa fa-list"></i>
@@ -58,7 +58,7 @@
                 <ul tal:attributes="id course_action/course_actions_id"
                     class="f-dropdown" data-dropdown-content>
                     <li tal:repeat="action_dict course_action/course_actions_list">
-                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main-large"
                            tal:attributes="href string:${course_link}/${action_dict/action_link}">
                             <i tal:attributes="class action_dict/action_icon"></i>
                             <tal:replace replace="action_dict/action_name"/>
@@ -132,7 +132,7 @@
                 </dl>
                 <a class="button tiny expand radius"
                    tal:attributes="href string:${context/absolute_url}/display_course_news_page?mode_etudiant=${mode_etudiant}"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true">
+                   data-reveal-id="reveal-main-large" data-reveal-ajax="true">
                     <i class="fa fa-arrow-circle-right"></i>
                     <tal:block i18n:translate="label_consulter_actualites">Voir toutes les nouveautés</tal:block>
                 </a>
@@ -150,13 +150,13 @@
             <tal:condition condition="my_view/is_personnel">
                 <ul id="annonce-options" data-dropdown-content class="f-dropdown">
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/add_course_announce_form">
                             <i class="fa fa-plus-circle fa-fw"></i><tal:block i18n:translate="">Ajouter</tal:block>
                         </a>
                     </li>
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/delete_all_course_announce_form">
                             <i class="fa fa-trash-o fa-fw alert"></i><tal:block i18n:translate="">Supprimer</tal:block>
                         </a>
@@ -185,14 +185,14 @@
                 </a>
                 <ul id="last_announce" class="f-dropdown" data-dropdown-content="data-dropdown-content">
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/annonce/${last_announce/getId}/edit_course_announce_form">
                             <i class="fa fa-pencil fa-fw"></i>
                             <tal:block i18n:translate="">Modifier</tal:block>
                         </a>
                     </li>
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:define="titre python:context.jalon_quote(last_announce['title'])"
                            tal:attributes="href string:${context/absolute_url}/delete_course_announce_form?item_id=${last_announce/getId}">
                             <i class="fa fa-trash-o fa-fw"></i>
@@ -205,7 +205,7 @@
                 <h4 class="typeElementTitre" tal:content="last_announce/Title"/>
                 <p class="panel radius" tal:content="structure last_announce/getDescriptionAff"/>
                 <a class="button tiny expand radius"
-                   data-reveal-id="reveal-main" data-reveal-ajax="true"
+                   data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                    tal:attributes="href string:${context/absolute_url}/display_course_all_advert_page?mode_etudiant=${mode_etudiant}">
                     <i class="fa fa-arrow-circle-right"></i>
                     <tal:block i18n:translate="label_consulter_annonces">Voir toutes les annonces</tal:block>
@@ -225,19 +225,19 @@
             <tal:condition condition="my_view/is_personnel">
                 <ul id="forum-options" data-dropdown-content class="f-dropdown">
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-forum">
                             <i class="fa fa-plus-circle fa-fw"></i><tal:block i18n:translate="">Créer un forum</tal:block>
                         </a>
                     </li>
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=alerte-forum">
                             <i class="fa fa-envelope-o fa-fw"></i><tal:block i18n:translate="">Notification</tal:block>
                         </a>
                     </li>
                     <li>
-                        <a data-reveal-id="reveal-main" data-reveal-ajax="true"
+                        <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
                            tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=manage-forum-permission">
                             <i class="fa fa-lock fa-fw"></i><tal:block i18n:translate="">Permission</tal:block>
                         </a>

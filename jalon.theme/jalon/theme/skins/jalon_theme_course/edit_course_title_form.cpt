@@ -42,8 +42,8 @@
             </button>
         </div>
 
-        <script charset="UTF-8"
-                tal:content="structure string:setRevealFormNewPage('js-courseTitleMod','reveal-course_access')"></script>
+        <!--script charset="UTF-8"
+                tal:content="structure string:setRevealFormNewPage('js-courseTitleMod','reveal-main-large')"></script-->
 
     </form>
 
