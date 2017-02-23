@@ -137,10 +137,10 @@
 
         <tal:block define="script1 string:setSortableList('js-createAnnounce',['title','rank','code','number'],'title','asc');
                            script2 string:setBatchSelect('js-createAnnounce',true);
-                           script3 string:setRevealFormNewPage('js-createAnnounce','reveal-main-large')">
+                           script3 string:setRevealFormNewPage('js-createAnnounce')">
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
-            <!--tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" /-->
+            <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" />
         </tal:block>
 
         <script charset="UTF-8"

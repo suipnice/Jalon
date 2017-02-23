@@ -70,7 +70,7 @@
 
 </tal:define>
 
-<tal:block define="script1 string:setRevealFormNewPage('js-modWIMS-activity-exo','reveal-main')">
+<tal:block define="script1 string:setRevealFormNewPage('js-modWIMS-activity-exo')">
     <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
 </tal:block>
 

@@ -79,7 +79,7 @@
 
     <tal:block define="script1 string:setDateTimePicker('datetime-depot');
                        script2 string:setDateTimePicker('datetime-retard');
-                       script3 string:setRevealFormNewPage('js-modBoxDate','reveal-main')">
+                       script3 string:setRevealFormNewPage('js-modBoxDate')">
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script2)" />
         <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script3)" />

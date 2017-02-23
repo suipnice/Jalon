@@ -52,7 +52,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-activateCriteria','reveal-main')"></script>
+            tal:content="structure string:setRevealFormNewPage('js-activateCriteria')"></script>
 
 </metal:main>
 

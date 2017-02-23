@@ -151,7 +151,7 @@
     </form>
 
     <script charset="UTF-8"
-            tal:content="structure string:setRevealFormNewPage('js-addCriteria','reveal-main')"></script>
+            tal:content="structure string:setRevealFormNewPage('js-addCriteria')"></script>
 
 </metal:main>
 
