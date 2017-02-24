@@ -23,7 +23,7 @@
 
 
 /*
-    Comportements des elements de plan
+    Selecteur d'affichage de chapitres racine
 */
 
 function setPlanChapterSelection( ) {
@@ -72,68 +72,69 @@ function setPlanChapterSelection( ) {
 }
 
 
-function setPlanChapterFolding( disclosureState ) {
+/*
+    Pliage / depliage de chapitres du cours
+*/
 
-    var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
-        $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
-        $legendBarDown = $legendBar.find( ' > li:first-child > a' ),
-        $legendBarUp = $legendBar.find( ' > li:last-child > a' );
+function setPlanBehaviors( ) {
 
-    if ( $target.length ) {
+    function _setPlanChapterFolding( disclosureState ) {
 
-        if ( disclosureState ) {
+        var $target = Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' ),
+            $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
+            $legendBarDown = $legendBar.find( ' > li:first-child > a' ),
+            $legendBarUp = $legendBar.find( ' > li:last-child > a' );
 
-            $legendBarDown.addClass( 'disabled' );
-            $legendBarUp.removeClass( 'disabled' );
-            $target.removeClass( 'collapsed' ).addClass( 'expanded' );
+        if ( $target.length ) {
+
+            if ( disclosureState ) {
+
+                $legendBarDown.addClass( 'disabled' );
+                $legendBarUp.removeClass( 'disabled' );
+                $target.removeClass( 'collapsed' ).addClass( 'expanded' );
+
+            } else {
+
+                $legendBarUp.addClass( 'disabled' );
+                $legendBarDown.removeClass( 'disabled' );
+                $target.removeClass( 'expanded' ).addClass( 'collapsed' );
+            }
 
         } else {
 
             $legendBarUp.addClass( 'disabled' );
-            $legendBarDown.removeClass( 'disabled' );
-            $target.removeClass( 'expanded' ).addClass( 'collapsed' );
+            $legendBarDown.addClass( 'disabled' );
         }
 
-    } else {
-
-        $legendBarUp.addClass( 'disabled' );
-        $legendBarDown.addClass( 'disabled' );
     }
 
-}
-
-
-function setPlanBehaviors( isNotStudent ) {
 
     Foundation.utils.S( '#course_plan .legend_bar' ).on( 'click', 'li:not(:nth-child(2)) > a', function( event ) {
 
         event.preventDefault( );
         event.stopPropagation( );
 
-        var isStaff = ( typeof isNotStudent === "undefined" ) ? false : true;
-
         if ( ! $( this).hasClass( 'disabled' ) ) {
 
             if ( $( this ).parent( 'li' ).is( ':first-child' ) ) {
 
-                if ( isStaff ) {
-                    setStaffPlanChapterFolding( true );
-                } else {
-                    setPlanChapterFolding( true );
-                }
+                _setPlanChapterFolding( true );
 
             } else if ( $( this ).parent( 'li' ).is( ':last-child' ) ) {
 
-                if ( isStaff ) {
-                    setStaffPlanChapterFolding( false );
-                } else {
-                    setPlanChapterFolding( false );
-                }
+                _setPlanChapterFolding( false );
             }
 
             $( this ).blur( );
 
         }
+    } );
+
+    Foundation.utils.S( '#course_plan-plan' ).on( 'click', '.js-fold', function( ) {
+
+        $( this ).closest( 'li' ).toggleClass( 'collapsed expanded' );
+        setLegendBarButtonsState( );
+
     } );
 
     Foundation.utils.S( '#course_plan-plan' ).on( {
@@ -152,10 +153,10 @@ function setPlanBehaviors( isNotStudent ) {
 
 
 /*
-    Actualisation de l'activation des boutons « Tout deplier » et « Tout replier »
+    Actualisation de l'etat des boutons « Tout deplier » et « Tout replier »
 */
 
-function setLegendBarButtonsActivation( ) {
+function setLegendBarButtonsState( ) {
 
     var $plan = Foundation.utils.S( '#course_plan-plan' ),
         $legendBar = Foundation.utils.S( '#course_plan .legend_bar' ),
@@ -174,30 +175,7 @@ function setLegendBarButtonsActivation( ) {
 
         $legendBardUp.addClass( 'disabled' );
     }
-}
 
-
-/*
-    Pliage / repliage des chapitres du plan de cours
-*/
-
-function setPlanChapterFold( $target ) {
-
-    $target.closest( 'li' ).toggleClass( 'collapsed expanded' );
-    setLegendBarButtonsActivation( );
-
-}
-
-
-/*
-    Initialisation de tous les chapitres du plan a l'etat deplie
-*/
-
-function expandPlanChapters( ) {
-
-    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
-        //.removeClass( 'collapsed' )
-        .addClass( 'expanded' );
 }
 
 
@@ -301,21 +279,25 @@ function setConditionalFormat( column_nbr, value_max, selector ) {
 
 /***************************************************************************************************
 
-    Specifique etudiants
+        Specifique etudiants
 
 */
 
 
 /*
-    Commande du pliage / repliage des chapitres du plan de cours
+    Initialisation de tous les chapitres du plan a l'etat deplie
 */
 
-function setPlanChapterFoldCommand( ) {
+function expandPlanChapters( ) {
 
-    Foundation.utils.S( '#course_plan-plan' ).on( 'click', '.js-fold', function( ) {
+    var $legendBar = Foundation.utils.S( '#course_plan .legend_bar' );
 
-        setPlanChapterFold( $( this ) );
-    } );
+    $legendBar.find( ' > li:first-child > a' ).addClass( 'disabled' );
+    $legendBar.find( ' > li:last-child > a' ).removeClass( 'disabled' );
+
+    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
+        .addClass( 'expanded' );
+
 }
 
 

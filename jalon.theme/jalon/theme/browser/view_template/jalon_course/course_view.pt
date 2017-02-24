@@ -179,33 +179,25 @@
         </div>
     </div>
 
-    <tal:comments replace="nothing">
-    <!--
-            Une fois la position dépliée / repliée mémorisée cote srv,
-            l'appel à app/setPlanChapterFolding( ) devra être supprimé
-            et remplacé par app/setLegendBarButtonsActivation( ).
-    -->
-    </tal:comments>
-
-    <tal:block tal:condition="not:my_view/is_personnel"
-               define="script1 string:setPlanChapterFolding(true);
-                       script2 string:setPlanBehaviors();
-                       script3 string:setPlanChapterFoldCommand();
-                       script4 string:readSwitcher()">
+    <tal:define tal:condition="not:my_view/is_personnel"
+               define="script1 string:readSwitcher();
+                       script2 string:expandPlanChapters()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script2)" />
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script3)" />
-        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script4)" />
-    </tal:block>
+    </tal:define>
 
-    <tal:block tal:condition="my_view/is_personnel"
+    <tal:define tal:condition="my_view/is_personnel"
                define="script string:setSortablePlan()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
         <tal:jsBuffer define="addExtraFile python:jsBuffer.addExtraFile('ckeditor/ckeditor')" />
         <script charset="UTF-8"
                 tal:define="tmp python:jsTranslate.addJsTranslate([('MSG_TOKEN_HINT_TEXT','Commencez à taper…'),('MSG_TOKEN_SEARCH_TEXT','Recherche…'),('MSG_TOKEN_EMPTY_TEXT','Aucun résultat')])"
                 tal:content="jsTranslate/getJsTranslate"></script>
-    </tal:block>
+    </tal:define>
+
+    <tal:define define="script string:setPlanBehaviors()">
+        <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+    </tal:define>
 
 </metal:main>
 

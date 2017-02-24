@@ -161,7 +161,7 @@ function setAttachmentCreator( ) {
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( url ) {
             $.get( url ).done( function( data ) {
                 $( '#course_plan-plan' ).html( data );
-                setLegendBarButtonsActivation( );
+                setLegendBarButtonsState( );
                 $form.parents( '.reveal-modal' ).foundation( 'reveal', 'close' );
                 //$( document ).foundation( 'dropdown', 'reflow' );
                 //$( document ).foundation( { dropdown: { align: 'left' } } );
@@ -179,24 +179,16 @@ function setAttachmentCreator( ) {
 
 function setSortablePlan( ) {
 
+    var $coursePlan = Foundation.utils.S( '#course_plan-plan' );
+
     if ( matchMedia( Foundation.media_queries.small ).matches
-        && !matchMedia( Foundation.media_queries.medium ).matches ) {
+            && !matchMedia( Foundation.media_queries.medium ).matches ) {
 
         //setAlertBox( 'warning', "Small media detected" );
-        /*
-            Une fois la position depliee / repliee memorisee cote srv,
-            l'appel à app/setPlanChapterFolding( ) devra être supprime
-            et remplace par app/setLegendBarButtonsActivation( ).
-        */
-        setPlanChapterFolding( true );
-        //setLegendBarButtonsActivation( );
-        setPlanBehaviors( true );
-        setStaffPlanChapterFoldCommand( );
 
     } else {
 
         //setAlertBox( 'warning', "Medium & up media detected" );
-        var $coursePlan = Foundation.utils.S( '#course_plan-plan' );
 
         $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-unsortable' );
 
@@ -268,130 +260,15 @@ function setSortablePlan( ) {
                 }
             }
         } );
-
-        setPlanBehaviors( true );
-        //setLegendBarButtonsActivation( ); // Decommenter quand etat des chapitres memorise cote srv
-        setStaffPlanChapterFoldCommand( );
-
     }
-}
 
+    $coursePlan.find( '.elemtitre.ui-sortable-handle' ).on( 'mouseup', function( ) {
 
-
-/*
-    Initialisation de tous les chapitres du plan a l'etat deplie
-*/
-
-function expandPlanChapters( ) {
-
-    Foundation.utils.S( '#course_plan-plan li.branch:not(.element)' )
-        //.removeClass( 'collapsed' )
-        .addClass( 'expanded' );
-}
-
-
-
-/*
-    Memorisation du pliage / repliage de tous les chapitres du plan de cours
-*/
-
-function setStaffPlanChapterFolding( disclosureState ) {
-
-    if ( !isRefreshing ) {
-
-        // Verrouilage
-        isRefreshing = true;
-
-        // Init
-        var $plan = Foundation.utils.S( '#course_plan-plan' ),
-            $title = Foundation.utils.S( '#js-update_title' ),
-            titleOrgHtml = $title.html( );
-
-        // Actualisation
-        $title.html( MSG_LOADING );
-        $plan.fadeTo( 200, 0.33, function( ) {
-
-            $.ajax( {
-                type: "GET",
-                url: ABSOLUTE_URL + "/open_course_map_item_script",
-                data: {
-                    id: "all" ,
-                    open: disclosureState,
-                },
-                success: function( data ) {
-                    $title.html( MSG_LOADING_OK );
-                    setPlanChapterFolding( disclosureState );
-                    $plan.fadeTo( 200, 1, function( ) {
-                        $title.html( titleOrgHtml );
-                    } );
-                },
-                error: function( data, textStatus, errorThrown ) {
-                    console.log( errorThrown );
-                    console.log( textStatus );
-                },
-                complete: function( ) {
-                    // Deverrouillage
-                    isRefreshing = false;
-                }
-            } );
-        } );
-    }
-}
-
-
-
-/*
-    Commande et memorisation du pliage / repliage d'un chapitre du plan de cours
-*/
-
-function setStaffPlanChapterFoldCommand( ) {
-
-    var $plan = Foundation.utils.S( '#course_plan-plan' );
-
-    $plan.on( 'click', '.js-fold', function( ) {
-
-        if ( !isRefreshing ) {
-
-            // Verrouilage
-            isRefreshing = true;
-
-            // Init
-            var $target = $( this ),
-                $parentListItem = $target.closest( 'li' ),
-                $title = Foundation.utils.S( '#js-update_title' ),
-                titleOrgHtml = $title.html( );
-
-            // Actualisation
-            $title.html( MSG_LOADING );
-            $plan.fadeTo( 200, 0.33, function( ) {
-
-                $.ajax( {
-                    type: "GET",
-                    url: ABSOLUTE_URL + "/open_course_map_item_script",
-                    data: {
-                        id: $parentListItem.attr('id') ,
-                        open: $parentListItem.hasClass( 'collapsed' ),
-                    },
-                    success: function( data ) {
-                        $title.html( MSG_LOADING_OK );
-                        setPlanChapterFold( $target );
-                        $plan.fadeTo( 200, 1, function( ) {
-                            $title.html( titleOrgHtml );
-                        } );
-                    },
-                    error: function( data, textStatus, errorThrown ) {
-                        console.log( errorThrown );
-                        console.log( textStatus );
-                    },
-                    complete: function( ) {
-                        // Deverrouillage
-                        isRefreshing = false;
-                    }
-                } );
-            } );
-        }
+        setLegendBarButtonsState( );
     } );
+
 }
+
 
 
 

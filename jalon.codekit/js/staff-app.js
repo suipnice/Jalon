@@ -77,7 +77,7 @@ function setRevealFormPlanRefresh( formID, ckEditorInstanceName ) {
 
                         } else {
 
-                            setLegendBarButtonsActivation( );
+                            setLegendBarButtonsState( );
                         }
 
                     } else {
