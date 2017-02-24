@@ -85,7 +85,7 @@ class JalonAnnonce(ATDocumentBase):
                         jalon_utils.envoyerMail(dico)
             else:
                 if typeELP == "groupeperso":
-                    listeEtudiants = parent.getInfosGroupe()
+                    listeEtudiants = parent.getNominativeRegistration()
                 if typeELP == "coauteurs":
                     listeEtudiants = parent.getCoAuteursCours()
                 if typeELP == "colecteurs":

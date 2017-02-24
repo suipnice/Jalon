@@ -2802,8 +2802,8 @@ class JalonCours(ATFolder):
         announce_object.setProperties({"Title":       announce_title,
                                        "Description": announce_description,
                                        "Publics":     announce_publics})
-        #if mail_announce:
-        #    announce_object.envoyerAnnonce()
+        if mail_announce:
+            announce_object.envoyerAnnonce()
 
     def deleteAnnounce(self, announce_id):
         # LOG.info("----- deleteAnnounce -----")

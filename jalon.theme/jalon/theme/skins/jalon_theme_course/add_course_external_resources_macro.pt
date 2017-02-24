@@ -13,6 +13,14 @@
         </div>
     </tal:no_items>
 
+    <tal:block condition="not:my_view/is_no_items">
+        <div class="panel callout radius"
+             tal:condition="not:my_view/course_add_list"
+             i18n:translate="">
+            Il n'y a aucune ressource avec cette association d'étiquettes.
+        </div>
+    </tal:block>
+
     <tal:listing condition="my_view/course_add_list">
     <div class="el_counter">
         <tal:block replace="my_view/nb_display_items"/>

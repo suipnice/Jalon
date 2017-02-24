@@ -17,7 +17,6 @@
     </tal:define>
 
     <main class="row" role="main" aria-labelledby="page_title">
-
     <h2>
         <i class="fa fa-plus-circle no-pad"></i>
         <tal:block i18n:translate="">Ajouter un terme de glossaire au cours et dans "Mes ressources > Termes de glossaire"</tal:block>
