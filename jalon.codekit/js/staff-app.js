@@ -269,23 +269,23 @@ function setPodContentMultipleSelection( ) {
 
 function setMailRegistrationForm( ) {
 
-    var $registrationForm = Foundation.utils.S( '#js-mailRegistration' );
-    var $registrationFormFieldset = $registrationForm.children( 'fieldset' );
-    var $registrationFormButton = $registrationForm.find( 'button[type=submit]' );
-    var registrationList = [ ];
+    var $registrationForm = Foundation.utils.S( '#js-mailRegistration' ),
+        $registrationFormFieldset = $registrationForm.children( 'fieldset' ),
+        $registrationFormButton = $registrationForm.find( 'button[type=submit]' ),
+        registrationList = [ ];
 
-    var $listForm = Foundation.utils.S( '#js-mailRegistrationList' );
-    var $listFormFirstInput = $listForm.find( 'input[name=lastname]' );
-    var $listInput = Foundation.utils.S( '#mailUserList' );
+    var $listForm = Foundation.utils.S( '#js-mailRegistrationList' ),
+        $listFormFirstInput = $listForm.find( 'input[name=lastname]' ),
+        $listInput = Foundation.utils.S( '#mailUserList' );
 
-    var $listTableBody = $listForm.find( 'tbody' );
-    var listTableRowHTML = '';
+    var $listTableBody = $listForm.find( 'tbody' ),
+        listTableRowHTML = '';
 
-    var lastname = '';
-    var firstname = '';
-    var email = '';
-    var mailUserList = '';
-    var doubleCheck = false;
+    var lastname = '',
+        firstname = '',
+        email = '',
+        mailUserList = '',
+        doubleCheck = false;
 
     function _validateUsersList( inputString ) {
 
@@ -413,9 +413,15 @@ function setMailRegistrationForm( ) {
         firstname = $listForm.find( 'input[name=firstname]' ).val( ).trim( );
         lastname = $listFormFirstInput.val( ).trim( );
         email = $listForm.find( 'input[name=email]' ).val( ).trim( );
-        mailUserList = firstname + ' ' + lastname + ' <' + email + '>';
         doubleCheck = false;
 
+        if ( ! firstname || ! lastname || ! email ) {
+            // A FAIRE : validation des entrées
+            // (les attributs de champ ne sont pas toujours pris en compte)
+            return false;
+        }
+
+        mailUserList = firstname + ' ' + lastname + ' <' + email + '>';
         $listForm.find( 'input' ).val( '' );
 
         listTableRowHTML = '<tr class="hide" data-user_info="' + mailUserList + '">';
