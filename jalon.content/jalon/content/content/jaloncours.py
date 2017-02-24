@@ -270,13 +270,13 @@ class JalonCours(ATFolder):
                                   "TermeGlossaire":          "Glossaire"}
 
     _activity_dict = {"1": {"activity_id":          "BoiteDepot",
-                            "activity_title":       "Boite de dépots",
+                            "activity_title":       _(u"Boite de dépots"),
                             "activity_portal_type": "JalonBoiteDepot"},
                       "2": {"activity_id":          "AutoEvaluation",
-                            "activity_title":       "Entrainement WIMS",
+                            "activity_title":       _(u"Entrainement WIMS"),
                             "activity_portal_type": "JalonCoursWims"},
                       "3": {"activity_id":          "Examen",
-                            "activity_title":       "Examen WIMS",
+                            "activity_title":       _(u"Examen WIMS"),
                             "activity_portal_type": "JalonCoursWims"}}
 
     _actuality_dict = {"chapdispo":          _(u"et son contenu sont maintenant disponibles."),
@@ -295,45 +295,45 @@ class JalonCours(ATFolder):
 
     _item_actions = [{"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye fa-fw",
-                      "item_action_name": "Afficher"},
+                      "item_action_name": _(u"Afficher")},
                      {"item_action_id":   "edit_course_item_visibility_form",
                       "item_action_icon": "fa fa-eye-slash fa-fw",
-                      "item_action_name": "Masquer"},
+                      "item_action_name": _(u"Masquer")},
                      {"item_action_id":   "edit_course_map_item_form",
                       "item_action_icon": "fa fa-pencil fa-fw",
-                      "item_action_name": "Modifier"},
+                      "item_action_name": _(u"Modifier")},
                      {"item_action_id":   "mark_out_course_map_item_form",
                       "item_action_icon": "fa fa-hand-o-left fa-fw",
-                      "item_action_name": "Jalonner"},
+                      "item_action_name": _(u"Jalonner")},
                      {"item_action_id":   "course_detach_item_form",
                       "item_action_icon": "fa fa-chain-broken fa-fw",
-                      "item_action_name": "Détacher"},
+                      "item_action_name": _(u"Détacher")},
                      {"item_action_id":   "course_delete_item_form",
                       "item_action_icon": "fa fa-trash-o fa-fw",
-                      "item_action_name": "Supprimer"}]
+                      "item_action_name": _(u"Supprimer")}]
 
-    _course_map_item_dict = {"1": {"form_title_type":    "titre de cet élément",
+    _course_map_item_dict = {"1": {"form_title_type":    _(u"titre"),
                                    "is_type_title":      True,
                                    "item_type":          "Titre",
                                    "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem')"},
-                             "2": {"form_title_type":    "texte libre",
+                             "2": {"form_title_type":    _(u"texte libre"),
                                    "is_type_title":      False,
                                    "item_type":          "TexteLibre",
                                    "form_js":            "setRevealFormPlanRefresh('js-editCourseMapItem','titreElement')"}}
 
-    _course_delete_item_form = {"Titre":          {"form_title":       "le titre",
+    _course_delete_item_form = {"Titre":          {"form_title":       _(u"le titre"),
                                                    "form_has_warning": False},
-                                "TexteLibre":     {"form_title":       "le texte libre",
+                                "TexteLibre":     {"form_title":       _(u"le texte libre"),
                                                    "form_has_warning": False},
-                                "BoiteDepot":     {"form_title":       "la boite de dépôts",
+                                "BoiteDepot":     {"form_title":       _(u"la boite de dépôts"),
                                                    "form_has_warning": True,
-                                                   "form_waning_text": "vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !"}}
+                                                   "form_waning_text": _(u"vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !")}}
 
-    _training_offer_type = {"etape":   "Diplôme",
-                            "ue":      "Unité d'enseignement",
-                            "uel":     "Unité d'enseignement libre",
-                            "groupe":  "Groupe",
-                            "inconnu": "Inconnu"}
+    _training_offer_type = {"etape":   _(u"Diplôme"),
+                            "ue":      _(u"Unité d'enseignement"),
+                            "uel":     _(u"Unité d'enseignement libre"),
+                            "groupe":  _(u"Groupe"),
+                            "inconnu": _(u"Inconnu")}
 
     def __init__(self, *args, **kwargs):
         super(JalonCours, self).__init__(*args, **kwargs)
@@ -850,27 +850,33 @@ class JalonCours(ATFolder):
 
         form_properties = copy.deepcopy(self._course_map_item_dict[item_type])
 
+        # Creation
         if not item_id:
             form_properties["data-success_msg"] = _(u"L'élément de plan a été créé.")
-            form_properties["form_title_text"] = "Créer un"
+            form_properties["form_title_text"] = _(u"Créer un")
             form_properties["is_add_form"] = True
             form_properties["form_button_css"] = "button small create radius"
-            form_properties["form_button_text"] = "Créer"
+            form_properties["form_button_text"] = _(u"Créer")
             form_properties["form_button_icon"] = "fa fa-plus-circle"
             form_properties["validate_key"] = "create_course_map_item"
             form_properties["typeElement"] = ""
+        # Modification
         else:
+
             form_properties["data-success_msg"] = _(u"L'élément de plan a été modifié.")
-            form_properties["form_title_text"] = "Modifier le"
+            form_properties["form_title_text"] = _(u"Modifier le")
             form_properties["is_add_form"] = False
             form_properties["item_id"] = item_id
             form_properties["form_button_css"] = "button small radius"
-            form_properties["form_button_text"] = "Modifier"
+            form_properties["form_button_text"] = _(u"Modifier")
             form_properties["form_button_icon"] = "fa fa-pencil"
             form_properties["validate_key"] = "edit_course_map_item"
 
             form_properties["item_title"] = item_properties["titreElement"]
             form_properties["typeElement"] = item_properties["typeElement"]
+
+            if (item_type == "1" and form_properties["typeElement"] != "Titre"):
+                form_properties["form_title_type"] = _(u"titre de l'élément")
 
             if item_properties["typeElement"] in self._type_folder_my_space_dict.keys():
                 form_properties["item_title_in_my_space"] = item_properties["titreElement"]
@@ -1205,11 +1211,11 @@ class JalonCours(ATFolder):
 
         display_properties = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
         if display_properties["val"]:
-            form_properties["help_text"] = "Vous êtes sur le point de masquer cette ressource à vos étudiants."
+            form_properties["help_text"] = _(u"Vous êtes sur le point de masquer cette ressource à vos étudiants.")
             form_properties["help_css"] = "panel radius warning"
             form_properties["form_button_css"] = "button small radius warning"
-            form_properties["form_button_directly_text"] = "Masquer l'élément maintenant"
-            form_properties["form_button_lately_text"] = "Programmer le masquage de l'élément à l'instant choisi"
+            form_properties["form_button_directly_text"] = _(u"Masquer l'élément maintenant")
+            form_properties["form_button_lately_text"] = _(u"Programmer le masquage de l'élément à l'instant choisi")
             form_properties["item_property_name"] = "masquerElement"
             if item_properties["typeElement"] == "TexteLibre":
                 form_properties["form_title_text"] = "Masquer l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
@@ -1218,19 +1224,19 @@ class JalonCours(ATFolder):
             form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
             form_properties["item_parent_title"] = ""
 
-            form_properties["text_title_lately"] = "… ou programmer son masquage."
+            form_properties["text_title_lately"] = _(u"… ou programmer son masquage.")
             if item_properties["typeElement"] == "Titre":
                 form_properties["is_item_title"] = True
-                form_properties["text_title_directly"] = "Masquer directement le titre / sous titre et son contenu…"
+                form_properties["text_title_directly"] = _(u"Masquer directement le titre / sous titre et son contenu…")
             else:
-                form_properties["text_title_directly"] = "Masquer directement…"
+                form_properties["text_title_directly"] = _(u"Masquer directement…")
 
             form_properties["form_name"] = "masquer-element"
             form_properties["item_date"] = self.getFormattedDate(item_properties["masquerElement"])
         else:
             form_properties["form_button_css"] = "button small radius"
-            form_properties["form_button_directly_text"] = "Afficher l'élément maintenant"
-            form_properties["form_button_lately_text"] = "Programmer l'affichage de l'élément à l'instant choisi"
+            form_properties["form_button_directly_text"] = _(u"Afficher l'élément maintenant")
+            form_properties["form_button_lately_text"] = _(u"Programmer l'affichage de l'élément à l'instant choisi")
             form_properties["item_property_name"] = "affElement"
             if item_properties["typeElement"] == "TexteLibre":
                 form_properties["form_title_text"] = "Afficher l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
@@ -1238,13 +1244,13 @@ class JalonCours(ATFolder):
                 form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye no-pad"
 
-            form_properties["text_title_lately"] = "… ou programmer son affichage."
+            form_properties["text_title_lately"] = _(u"… ou programmer son affichage.")
             if item_properties["typeElement"] == "Titre":
                 form_properties["is_item_title"] = True
-                form_properties["text_title_directly"] = "Afficher directement le titre / sous titre et son contenu…"
+                form_properties["text_title_directly"] = _(u"Afficher directement le titre / sous titre et son contenu…")
                 form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> les autoévaluations et examens vides ne seront pas affichés avec le titre."
             else:
-                form_properties["text_title_directly"] = "L'afficher directement…"
+                form_properties["text_title_directly"] = _(u"L'afficher directement…")
                 if item_properties["typeElement"] == "Examen":
                     form_properties["wims_help_text"] = "<strong><i class=\"fa fa-warning\"></i>Attention :</strong> vous allez activer votre examen, il ne pourra plus être modifié."
 

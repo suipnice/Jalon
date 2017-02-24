@@ -58,7 +58,7 @@
                 <ul tal:attributes="id course_action/course_actions_id"
                     class="f-dropdown" data-dropdown-content>
                     <li tal:repeat="action_dict course_action/course_actions_list">
-                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main-large"
+                        <a class="right" data-reveal-ajax="true" data-reveal-id="reveal-main"
                            tal:attributes="href string:${course_link}/${action_dict/action_link}">
                             <i tal:attributes="class action_dict/action_icon"></i>
                             <tal:replace replace="action_dict/action_name"/>
