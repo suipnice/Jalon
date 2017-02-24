@@ -43,7 +43,7 @@
     </div>
 
     <div class="panel radius">
-        <strong>Éditeur : </strong>
+        <strong>Éditeur :</strong>
         <tal:block replace="external_resource/publisher" />
         <tal:block content="external_resource/creationdate" />
     </div>

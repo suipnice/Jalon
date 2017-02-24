@@ -236,7 +236,7 @@ En entrée :
                             <tal:block i18n:translate="">Note (cumul)</tal:block>
                         </span>
                     </th>
-                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon l'Indice de réussite'"
+                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon l'indice de réussite"
                         i18n:attributes="title">
                         <span>
                             <i class="fa fa-sort"></i>
@@ -247,7 +247,7 @@ En entrée :
                     </th>
                 </tal:block>
                 <tal:block condition="my_view/is_personnel">
-                    <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon le Taux de réussite"
+                    <th class="sort text-left has-tip" data-tooltip data-sort="score" title="Trier selon le taux de réussite"
                         i18n:attributes="title">
                         <span>
                             <i class="fa fa-sort"></i>
@@ -257,7 +257,7 @@ En entrée :
                             <span class="show-for-medium-up" i18n:translate="">Taux de réussite</span>
                         </span>
                     </th>
-                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon la Qualité moyenne"
+                    <th class="sort text-left has-tip" data-tooltip data-sort="wims_quality" title="Trier selon la qualité moyenne"
                         i18n:attributes="title">
                         <span>
                             <i class="fa fa-sort"></i>
@@ -512,7 +512,7 @@ En entrée :
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Nombre d’essais</tal:block>
+                        <tal:block i18n:translate="">Nombre d'essais</tal:block>
                     </span>
                 </th>
                 <th class="sort text-left has-tip" title="Trier selon la note"
@@ -669,7 +669,7 @@ En entrée :
                         <tal:block i18n:translate="">Étudiant</tal:block>
                     </span>
                 </th>
-                <th class="sort text-left has-tip" title="Trier selon le Taux de réussite"
+                <th class="sort text-left has-tip" title="Trier selon le taux de réussite"
                     data-tooltip data-sort="score"
                     i18n:attributes="title">
                     <span>
@@ -680,7 +680,7 @@ En entrée :
                         <span class="show-for-medium-up" i18n:translate="">Taux de réussite</span>
                     </span>
                 </th>
-                <th class="sort text-left has-tip" title="Trier selon la Qualité"
+                <th class="sort text-left has-tip" title="Trier selon la qualité"
                     data-tooltip data-sort="wims_quality"
                     i18n:attributes="title">
                     <span>

@@ -19,7 +19,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <a href="#reveal_data" class="button tiny radius"
                data-reveal-id="reveal_data"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>
@@ -69,7 +69,7 @@
         <div class="panel ArchetypesStringWidget alert">
             <a href="#reveal_words" class="button tiny radius"
                data-reveal-id="reveal_words"
-               title="afficher une aide sur cet élément">
+               title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>

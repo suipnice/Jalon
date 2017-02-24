@@ -115,7 +115,8 @@
                   i18n:attributes="data-success_msg; data-all_att_msg; data-s_all_att_msg; data-p_all_att_msg; data-s_supp_msg; data-s_att_msg; data-p_supp_msg; data-p_att_msg">
                 <div class="panel alert radius"
                      i18n:translate="">
-                    <strong>Attention :</strong> cette opération est définitive.
+                    <strong i18n:translate="">Attention :</strong>
+                    <tal:block i18n:translate="">cette opération est définitive.</tal:block>
                 </div>
                 <input type="hidden" name="orig_template" tal:attributes="value context/absolute_url"/>
                 <input tal:replace="structure context/@@authenticator/authenticator" />

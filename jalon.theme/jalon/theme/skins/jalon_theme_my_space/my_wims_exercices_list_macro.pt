@@ -32,7 +32,7 @@
         <thead>
             <tr>
                 <th class="checkall show-for-medium-up">
-                    <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
+                    <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
                          i18n:attributes="title">
                         <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
                         <label for="switch-all"></label>

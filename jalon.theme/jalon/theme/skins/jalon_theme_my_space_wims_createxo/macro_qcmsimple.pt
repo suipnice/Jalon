@@ -161,12 +161,12 @@
                                      data-reveal="data-reveal"
                                      data-options="close_on_background_click: true;" >
                                     <h2>Note Partielle <a class="close-reveal-modal"></a></h2>
-                                    <div>Valable uniquement lorsque l'option 'autoriser plusieurs réponses' est cochée.</div>
-                                    <div>Cochez 'Note partielle' si vous souhaitez donner une partie de la note totale quand seulement une partie des bonnes réponses a été donnée.</div>
+                                    <div>Valable uniquement lorsque l'option « autoriser plusieurs réponses » est cochée.</div>
+                                    <div>Cochez « Note partielle » si vous souhaitez donner une partie de la note totale quand seulement une partie des bonnes réponses a été donnée.</div>
                                     <div>
                                         <ul>
-                                            <li> Lorsque "Note partielle" est <strong>décochée</strong>, l’apprenant a un zéro tant que sa réponse ne contient pas l'intégralité des bonnes réponses attendues.</li>
-                                            <li> Lorsque "Note partielle" est <strong>cochée</strong>, la note sera calculée selon la proportion des bons choix repérés par l’apprenant par rapport a la totalité des bons choix attendus.</li>
+                                            <li> Lorsque « Note partielle » est <strong>décochée</strong>, l’apprenant a un zéro tant que sa réponse ne contient pas l'intégralité des bonnes réponses attendues.</li>
+                                            <li> Lorsque « Note partielle » est <strong>cochée</strong>, la note sera calculée selon la proportion des bons choix repérés par l’apprenant par rapport a la totalité des bons choix attendus.</li>
                                          </ul>
                                     </div>
 
@@ -190,17 +190,17 @@
                                      data-reveal="data-reveal"
                                      data-options="close_on_background_click: true;" >
                                     <h2>Pénalité faible <a class="close-reveal-modal"></a></h2>
-                                    <div>Valable uniquement lorsque les 2 options  "autoriser plusieurs réponses" et "Note partielle" sont cochées.</div>
+                                    <div>Valable uniquement lorsque les 2 options « Autoriser plusieurs réponses » et « Note partielle » sont cochées.</div>
                                     <div>
                                         <ul>
-                                            <li>Par défaut, si des bons et des mauvais choix sont pris, chaque mauvaise réponse annule deux bons choix jusqu’à ce que la note atteigne 0.<br/>
+                                            <li>Par défaut, si des bons et des mauvais choix sont pris, chaque mauvaise réponse annule deux bons choix jusqu'à ce que la note atteigne 0.<br/>
                                                 Une telle politique est nécessaire, entre autres, pour dissuader des gens de prendre tous les choix disponibles dans le cas où beaucoup d’entre eux sont bons. </li>
-                                            <li>Bien que cette formule fonctionne bien dans la plupart des situations, vous pouvez cocher cette case si ce n’est pas votre cas.<br/>
-                                                Cette option force le calcul à prendre le même poids positivement et négativement, c’est-à-dire que tout mauvais choix compense un bon choix.<br/>
+                                            <li>Bien que cette formule fonctionne bien dans la plupart des situations, vous pouvez cocher cette case si ce n'est pas votre cas.<br/>
+                                                Cette option force le calcul à prendre le même poids positivement et négativement, c'est-à-dire que tout mauvais choix compense un bon choix.<br/>
                                                 Mais vous devez savoir que cette politique en apparence juste peut conduire à des effets pervers !
                                             </li>
                                          </ul>
-                                         <div>Vous pouvez voir ci-dessous quelques exemples de notes calculées sur une base de 4 bonnes réponses attendues, en comparant avec ou sans l'option "Pénalité faible" activée.</div>
+                                         <div>Vous pouvez voir ci-dessous quelques exemples de notes calculées sur une base de 4 bonnes réponses attendues, en comparant avec ou sans l'option « Pénalité faible » activée.</div>
                                          <table>
                                             <caption>Exemples de notation</caption>
                                             <thead>

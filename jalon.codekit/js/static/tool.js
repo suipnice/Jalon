@@ -103,28 +103,36 @@ function setRevealFormNewPage( formID, ckEditorInstanceName, isForum ) {
     Initialisation des "reveal"
 */
 
+
+function revealFormOnSubmitBehavior( $form ) {
+
+    // Spinner
+    var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
+    $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
+
+    // Protection anti double-clic
+    $form.find( '[type="submit"]' ).prop( 'disabled', true );
+}
+
+
 function revealInit( $reveal ) {
 
     // Focus sur le 1er input
-    //var $firstInput = $reveal.find( 'input[type=text], input[type=password], input[type=radio], input[type=checkbox], textarea, select').filter( ':visible:first' );
-    var $firstInput = $reveal.find( 'input[type=text], input[type=radio], input[type=checkbox], textarea, select').filter( ':visible:first' );
+    var $firstInput = $reveal
+            .find( 'input[type=text], input[type=radio], input[type=checkbox], textarea, select')
+            .filter( ':visible:first' );
+
     if ( $firstInput.length > 0 ) {
         $firstInput.focus( );
     }
 
-    // Ajout attr. "title" lien de fermeture
+    // Ajout attr. "title" du lien de fermeture
     $reveal.find( 'h2 > a.close-reveal-modal' ).attr( 'title', CLOSE_REVEAL_TITLE );
 
     // Comportement lors de l'envoi (sauf form.no_reveal_action)
-    var $form = $reveal.find( 'form' ).not('.no_reveal_action');
-    $form.submit( function( event ) {
+    $reveal.find( 'form' ).not( '.no_reveal_action' ).submit( function( event ) {
 
-        // Spinner
-        var $h2 = $form.parents( '.reveal-modal' ).children( 'h2' );
-        $h2.html( $h2.text( ) + '<i class="fa fa-refresh fa-spin"></i>' );
-
-        // Protection anti double-clic
-        $form.find( '[type="submit"]' ).prop( 'disabled', true );
+        revealFormOnSubmitBehavior( $( this ) );
     } );
 
     /* Comportement si envoi de fichier

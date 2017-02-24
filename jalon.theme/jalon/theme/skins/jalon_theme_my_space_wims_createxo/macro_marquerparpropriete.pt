@@ -8,7 +8,7 @@
     <metal:macro define-macro="createxo">
 
         <div class="panel ArchetypesStringWidget">
-            <a href="#reveal_explain" class="button tiny radius" data-reveal-id="reveal_explain" title="afficher une aide sur cet élément">
+            <a href="#reveal_explain" class="button tiny radius" data-reveal-id="reveal_explain" title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>
@@ -48,7 +48,7 @@
         <div tal:define="error errors/data | nothing;
                          arch_class string:panel ArchetypesStringWidget"
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
-            <a href="#reveal_data" class="button tiny radius" data-reveal-id="reveal_data" title="afficher une aide sur cet élément">
+            <a href="#reveal_data" class="button tiny radius" data-reveal-id="reveal_data" title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
                 Aide
             </a>

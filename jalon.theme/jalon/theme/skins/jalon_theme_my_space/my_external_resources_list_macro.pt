@@ -15,7 +15,8 @@
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
         <strong i18n:translate="">Il n'y a aucun lien vers une ressource externe dans votre espace.</strong><br />
-        <tal:block i18n:translate="">Pour en ajouter, cliquez sur la barre « Créer un lien vers une ressource externe » ci-dessus.</tal:block>
+        <tal:block tal:condition="my_view/is_two_actions" i18n:translate="">Pour en ajouter, cliquez sur une des barres « Créer un lien » ou « Rechercher et ajouter depuis le catalogue BU » ci-dessus.</tal:block>
+        <tal:block tal:condition="not:my_view/is_two_actions" i18n:translate="">Pour en ajouter, cliquez sur la barre « Créer un lien » ci-dessus.</tal:block>
     </div>
 
     <tal:listing condition="my_view/my_items_list">
@@ -32,7 +33,7 @@
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
-                <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
+                <div class="switch tiny round has-tip" data-tooltip title="Action par lot : tout sélectionner / désélectionner"
                      i18n:attributes="title">
                     <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
                     <label for="switch-all"></label>
@@ -197,7 +198,7 @@
             <script charset="UTF-8"
                     tal:content="structure string:$$(document).foundation('reveal', 'reflow')"></script>
             <script charset="UTF-8"
-                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>>
+                    tal:content="structure string:$$(document).foundation('dropdown', 'reflow')"></script>
 
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script0)" />
             <tal:jsBuffer define="addDirectJsContent python:jsBuffer.addJSDirect(script1)" />
