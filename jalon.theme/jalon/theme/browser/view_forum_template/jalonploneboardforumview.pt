@@ -127,7 +127,7 @@
                 </thead>
                 <tbody class="list">
 
-        <tal:repeat repeat="conversation python:view.getConversations()">
+        <tal:repeat repeat="conversation python:view.getConversations(limit=100)">
 
                     <tr tal:define="conv_url conversation/absolute_url;
                                     conv_modified conversation/modified;

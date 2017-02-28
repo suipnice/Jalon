@@ -53,7 +53,7 @@ def sendMail(object, event):
     for auteur in cours.getCoAuteursCours():
         if not auteur["email"] in send_to:
             send_to.append(auteur["email"])
-    for lecteur in cours.getCoLecteursCours():
+    for lecteur in cours.getCourseReader():
         if not lecteur["email"]:
             send_to.append(lecteur["email"])
     if not cours.getAuteur()["email"] in send_to:
