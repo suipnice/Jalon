@@ -586,10 +586,26 @@ button.dropdown.small:after { right: .5rem; }
 
 */
 
-// Boîtes d'info
+#message_container,
+#sticky_container {
+    background-color: transparent;
+    position: fixed;
+    width: 100%;
+    left: 0;
+
+    & > div > .medium-9 {
+        padding-right: 0 !important;
+    }
+}
+
+#message_container {
+    top: rem-calc( 20 );
+    z-index: 50;
+}
 
 .alert-box {
     line-height: 1.1em;
+    z-index: 100;
 
     h3,
     a:not(.close),
@@ -736,8 +752,6 @@ button.dropdown.small:after { right: .5rem; }
 
     .panel .panel { margin-top: rem-calc( 8 ); }
 }
-
-// Symbole de fermeture
 
 .alert-box > .close,
 .reveal-modal > .close { font-weight: bold; }
@@ -1272,18 +1286,7 @@ code {
 
 */
 
-
-#sticky_container {
-    background-color: transparent;
-    position: fixed;
-    width: 100%;
-    left: 0;
-    top: 0;
-
-    & > div > nav {
-        padding-right: 0 !important;
-    }
-}
+#sticky_container { top: 0; }
 
 ul.course-item_adder {
 

@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <tal:block define="script string:alterAlertBox()">
+    <tal:block define="script string:setGlobalStatusMessage()">
         <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
     </tal:block>
 

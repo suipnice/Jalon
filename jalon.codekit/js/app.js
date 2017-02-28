@@ -417,7 +417,7 @@ $( document ).ready( function ( ) {
     // Gestion des erreurs AJAX
     $( document ).ajaxError( function( event, jqXHR, ajaxSettings, thrownError ) {
         Foundation.utils.S( '[data-reveal]' ).foundation( 'reveal', 'close' );
-        setAlertBox( 'alert', "Une erreur est survenue", thrownError );
+        setAlertBox( 'alert', "Une erreur est survenue.", thrownError );
     } );
 
     // Init. reveal

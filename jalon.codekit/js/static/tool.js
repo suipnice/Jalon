@@ -220,11 +220,59 @@ function removeErrorImages( containerId ) {
         className = alert / warning / info / success / secondary
 */
 
-// Disparition auto
-function _alertBoxRemover( $boxContainer, $box ) {
+// Sticky
+function setAlertBox( className, text, title ) {
 
-    if ( !$box.hasClass( 'alert' ) ) {
-        $box.delay( 5000 ).slideUp( function( ) { $boxContainer.remove( ); } );
+    var $messageContainer = Foundation.utils.S( '#message_container' ),
+        $row = $messageContainer.children( 'div.row' ),
+        $boxContainer = $row.children( 'div.columns' ),
+        message = "";
+
+    if ( ! Foundation.utils.S( 'main > aside' ).length
+            && $row.children( 'aside.columns' ).length ) {
+
+        $row.children( 'aside.columns' ).remove( );
+        $boxContainer.removeClass( 'medium-9' );
+    }
+
+    if ( title ) { message = "<h3>" + title + "</h3>"; }
+    message += text;
+    if ( className === 'alert' ) { message += '<a class="close"></a>'; }
+
+    var $box = $( "<div>", {
+            'class': "alert-box radius " + className,
+            'data-alert': "data-alert",
+            'html': message,
+            'css': { 'display': 'none' },
+        } );
+
+    $boxContainer.prepend( $box );
+
+    $box.slideDown( 'fast', function( ) {
+
+        if ( className !== 'alert' ) {
+
+            $box.delay( 4000 ).slideUp( function( ) { $box.remove( ); } );
+
+        } else {
+
+            $box.on( 'click', '> a.close', function( event ) {
+                event.preventDefault( );
+                event.stopPropagation( );
+                $box.slideUp( function( ) { $box.remove( ); } );
+            } );
+        }
+    } );
+}
+
+// Inline
+function setGlobalStatusMessage( ) {
+
+    var $boxContainer = Foundation.utils.S( '#js-alert_box' ),
+        $box = $boxContainer.children( '.alert-box' );
+
+    if ( ! $box.hasClass( 'alert' ) ) {
+        $box.delay( 4000 ).slideUp( function( ) { $boxContainer.remove( ); } );
     }
 
     $box.on( 'click', '> a.close', function( event ) {
@@ -232,43 +280,6 @@ function _alertBoxRemover( $boxContainer, $box ) {
         event.stopPropagation( );
         $boxContainer.slideUp( function( ) { $( this ).remove( ); } );
     } );
-}
-
-// Injection
-function setAlertBox( className, text, title ) {
-
-    var message = "";
-
-    if ( title ) {
-        message += "<h3>" + title + "</h3>";
-    }
-    message += text + '<a class="close"></a>';
-
-    var $boxContainer = $( "<div>", {
-        'id': "js-alert_box",
-        'class': "small-12 columns",
-    } );
-    var $box = $( "<div>", {
-        'class': "alert-box radius " + className,
-        'data-alert': "data-alert",
-        'html': message,
-        'css': { 'display': 'none' },
-    } );
-
-    $boxContainer.prepend( $box );
-    Foundation.utils.S( 'main' ).prepend( $boxContainer );
-
-    $box.slideDown( );
-
-    _alertBoxRemover( $boxContainer, $box );
-}
-
-// Inline
-function alterAlertBox( ) {
-
-    $box = Foundation.utils.S( '.alert-box' );
-
-    _alertBoxRemover( $box.parent( 'div' ), $box );
 }
 
 
