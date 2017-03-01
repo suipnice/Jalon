@@ -1782,6 +1782,13 @@ class JalonCours(ATFolder):
             boite.reindexObject()
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def deleteDepositBox(self):
+        # LOG.info("----- deleteDepositBox -----")
+        for item_id in self.objectIds():
+            if item_id.startswith("BoiteDepot-"):
+                deposit_box = getattr(self, item_id)
+                deposit_box.detachAllDocuments()
+
     # --------------------------------- #
     #  Course Activity (WIMS Activity)  #
     # --------------------------------- #

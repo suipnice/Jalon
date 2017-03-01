@@ -46,6 +46,7 @@ for path in paths:
     # Suppressions suplementaires (sur les serveurs tiers)
     if course.getListeClasses():
         course.supprimerActivitesWims()
+    course.deleteDepositBox()
     # suppression des tabBU sur les ressources
     # course.tagBU("remove")
 
