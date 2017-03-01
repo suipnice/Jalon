@@ -8,19 +8,23 @@
 <body>
     <metal:main fill-slot="content"
                 tal:define="object_tags context/Subject;
-                            resName python:context.aq_parent.getShortText(context.Title(), 80)">
+                            resName python:context.aq_parent.getShortText(context.Title(), 80);
+                            tags context/aq_parent/getDisplaySubjects">
 
     <h2>
         <tal:block i18n:translate="">Étiqueter la ressource</tal:block>
          « <tal:block content="resName" /> »
         <a class="close-reveal-modal"></a>
     </h2>
+    <div class="panel warning radius">
+        Il n'y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
+    </div>
     <form id="js-resTagger" method="POST"
-          tal:define="tags context/aq_parent/getDisplaySubjects"
           tal:attributes="action string:${context/absolute_url}/add_tag_object_script;
                           data-res_name resName;
                           data-success_msg_pre string:L'étiquetage de la ressource;
                           data-success_msg_post string:a été modifié."
+          tal:condition="tags"
           i18n:attributes="data-success_msg_pre; data-success_msg_post">
         <div class="panel callout radius"
              i18n:translate="">
