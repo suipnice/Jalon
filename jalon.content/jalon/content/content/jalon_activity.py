@@ -195,9 +195,10 @@ class JalonActivity(SimpleItem):
 
         item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, document_dict["createurElement"]), self.aq_parent._type_folder_my_space_dict[document_dict["typeElement"].replace(" ", "")]), item_id.replace("*-*", "."))
         item_relatedItems = item_object.getRelatedItems()
-        item_relatedItems.remove(self)
-        item_object.setRelatedItems(item_relatedItems)
-        item_object.reindexObject()
+        if self in item_relatedItems:
+            item_relatedItems.remove(self)
+            item_object.setRelatedItems(item_relatedItems)
+            item_object.reindexObject()
 
         activity_relatedItems = self.getRelatedItems()
         activity_relatedItems.remove(item_object)

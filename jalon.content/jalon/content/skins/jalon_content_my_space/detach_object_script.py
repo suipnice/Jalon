@@ -17,25 +17,25 @@ if request.has_key("listeCours"):
     brains = context.portal_catalog(path={"query": request["listeCours"], "depth": 0})
 
     for brain in brains:
-        cours = brain.getObject()
-        relatedItems.remove(cours)
+        parent = brain.getObject()
+        relatedItems.remove(parent)
         if "." in idElement:
             idElement = idElement.replace(".", "*-*")
-        if cours.portal_type == "JalonCours":
+        if parent.portal_type == "JalonCours":
             try:
                 if request.form["type"] == "Catalogue BU":
-                    cours.tagBU("remove", idElement)
+                    parent.tagBU("remove", idElement)
             except:
                 pass
             if objet.portal_type == "JalonTermeGlossaire":
-                cours.detachGlossaryItem(idElement)
+                parent.detachGlossaryItem(idElement)
             elif objet.portal_type == "JalonRessourceExterne":
-                cours.detachBibliographyItem(idElement)
-                cours.deleteCourseMapItem(idElement, None)
+                parent.detachBibliographyItem(idElement)
+                parent.deleteCourseMapItem(idElement, None)
             else:
-                cours.deleteCourseMapItem(idElement, None)
+                parent.deleteCourseMapItem(idElement, None)
         else:
-            cours.retirerElement(idElement, "sujets")
+            parent.detachDocument(idElement)
 
     objet.setRelatedItems(relatedItems)
     objet.reindexObject()
