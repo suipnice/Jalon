@@ -16,7 +16,9 @@
          « <tal:block content="resName" /> »
         <a class="close-reveal-modal"></a>
     </h2>
-    <div class="panel warning radius">
+    <div class="panel warning radius"
+         tal:condition="not:tags"
+         i18n:translate="">
         Il n'y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
     </div>
     <form id="js-resTagger" method="POST"

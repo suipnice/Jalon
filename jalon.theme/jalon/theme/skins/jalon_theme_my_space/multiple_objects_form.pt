@@ -11,17 +11,23 @@
     <metal:macro define-macro="add_tags_objects">
         <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
         <div id="tag_sel" class="reveal-modal medium"
-             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+             data-reveal="data-reveal" data-options="close_on_background_click: true;"
+             tal:define="isnt_selected_tags python:context.test(my_view['is_selected_tags'] == 'isnt_selected_tags', 1, 0)">
             <h2>
                 <tal:block i18n:translate="">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
-
+            <div class="panel callout radius"
+                 tal:condition="isnt_selected_tags"
+                 i18n:translate="">
+                Vous devez au minimum sélectionner une étiquette pour pouvoir étiqueter.
+            </div>
             <form method="POST"
                   tal:attributes="action string:${context/absolute_url}/add_tags_objects_script;
                                   data-success_msg string:L'ensemble sélectionné a été étiqueté.;
                                   data-s_tag_msg string:Choisissez une ou plusieurs étiquettes à associer à la ressource sélectionnée :;
                                   data-p_tag_msg string:Choisissez une ou plusieurs étiquettes à associer aux ressources sélectionnées :"
+                  tal:condition="not:isnt_selected_tags"
                   i18n:attributes="data-success_msg; data-s_tag_msg; data-p_tag_msg">
 
                 <ul>
