@@ -78,6 +78,8 @@ class MySpaceView(BrowserView):
 
     def getItemsList(self, folder, selected_tags_list, content_filter):
         # LOG.info("----- getItemsList -----")
+        content_filter["sort_on"] = "modified"
+        content_filter["sort_order"] = "descending"
         if selected_tags_list and selected_tags_list != ["last"]:
             last = False
             subjects = []
@@ -91,16 +93,16 @@ class MySpaceView(BrowserView):
             else:
                 content_filter['Subject'] = subjects[0]
             if last:
-                content_filter["sort_on"] = "modified"
-                content_filter["sort_order"] = "descending"
+                #content_filter["sort_on"] = "modified"
+                #content_filter["sort_order"] = "descending"
                 return folder.getFolderContents(contentFilter=content_filter, batch=True, b_size=20)
             else:
                 return folder.getFolderContents(contentFilter=content_filter)
         elif selected_tags_list == ["last"]:
-            content_filter["sort_on"] = "modified"
-            content_filter["sort_order"] = "descending"
+            #content_filter["sort_on"] = "modified"
+            #content_filter["sort_order"] = "descending"
             return folder.getFolderContents(contentFilter=content_filter, batch=True, b_size=20)
         else:
-            content_filter["sort_on"] = "modified"
-            content_filter["sort_order"] = "descending"
+            #content_filter["sort_on"] = "modified"
+            #content_filter["sort_order"] = "descending"
             return folder.getFolderContents(contentFilter=content_filter)
