@@ -1036,6 +1036,7 @@ class JalonProperties(SimpleItem):
                 val = DateTime(val)
             setattr(self, "_%s" % key, val)
         self.generatePageMonEspace(request)
+        self.generateMessages(request)
 
     #------------------------#
     # Fonction Elasticsearch #
