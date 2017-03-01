@@ -192,6 +192,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def __init__(self, *args, **kwargs):
         super(JalonBoiteDepot, self).__init__(*args, **kwargs)
         super(ATFolder, self).__init__(*args, **kwargs)
+        self.setDocumentsProperties({})
 
     # #-------------------# #
     #  Fonctions générales  #

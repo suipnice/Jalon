@@ -230,7 +230,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         """Initialize JalonCoursWims."""
         # LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
-        self._infos_element = {}
+        self.setDocumentsProperties({})
 
     # #-------------------# #
     #  Fonctions générales  #
