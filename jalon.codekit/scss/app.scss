@@ -599,13 +599,12 @@ button.dropdown.small:after { right: .5rem; }
 }
 
 #message_container {
-    top: rem-calc( 20 );
-    z-index: 50;
+    top: rem-calc( 40 );
+    z-index: 101;
 }
 
 .alert-box {
     line-height: 1.1em;
-    z-index: 100;
 
     h3,
     a:not(.close),
