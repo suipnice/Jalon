@@ -272,7 +272,7 @@ class JalonFolder(ATFolder):
         return dicoAccess
 
     def getCourseStatistics(self, course_id):
-        # LOG.info("----- getCourseStatistics -----")
+        LOG.info("----- getCourseStatistics START %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
         portal = self.portal_url.getPortalObject()
         course_brain = portal.portal_catalog.searchResults(
             portal_type="JalonCours", id=course_id)[0]
@@ -285,6 +285,7 @@ class JalonFolder(ATFolder):
             requete_dict = dict(requete)
             frequentation_graph = course_object.genererFrequentationGraph(requete_dict)
 
+        LOG.info("----- getCourseStatistics END %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
         return {"course_link":  "%s/course_statistics_view" % course_object.absolute_url(),
                 "course_graph": frequentation_graph}
 

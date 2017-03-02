@@ -19,6 +19,7 @@
     </h2>
 
     <tal:isManager condition="python:user.has_role(['Manager', 'Secretaire', 'Personnel'])">
+        <tal:hasGraph condition="course_statistics/course_graph">
         <script charset="UTF-8"
                 tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/amcharts.js"></script>
         <script charset="UTF-8"
@@ -29,14 +30,22 @@
                 tal:attributes="src string:${base_link}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.min.js"></script>
         <link rel="stylesheet"
               tal:attributes="href string:${base_link}/++resource++jalon.theme.javascript/amcharts/plugins/export/export.css" />
+        </tal:hasGraph>
     </tal:isManager>
 
     <h3>
         <i class="fa fa-bar-chart"></i>
         Fréquentation étudiantes sur les 90 derniers jours
     </h3>
-    <tal:replace replace="structure course_statistics/course_graph"/>
-    <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
+    <div class="panel callout radius"
+         tal:condition="not:course_statistics/course_graph"
+         i18n:translate="">
+        Aucune fréquentation étudiante sur les 90 derniers jours.
+    </div>
+    <tal:hasGraph condition="course_statistics/course_graph">
+        <tal:replace replace="structure course_statistics/course_graph"/>
+        <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
+    </tal:hasGraph>
 
     <a class="button expand"
        tal:attributes="href course_statistics/course_link">
