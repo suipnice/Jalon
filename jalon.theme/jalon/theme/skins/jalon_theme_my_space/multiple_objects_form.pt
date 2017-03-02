@@ -113,7 +113,7 @@
                                   data-success_msg string:La suppression demandée a été effectuée.;
                                   data-all_att_msg string:Suppression impossible :;
                                   data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;
-                                  data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs cours.;
+                                  data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs éléments (cours, activité ou groupe d'exercices WIMS).;
                                   data-s_supp_msg string:La ressource suivante va être supprimée :;
                                   data-p_supp_msg string:Les ressources suivantes vont être supprimées :;
                                   data-s_att_msg string:La ressource suivante, attachée à un ou plusieurs cours, ne sera pas supprimée :;
