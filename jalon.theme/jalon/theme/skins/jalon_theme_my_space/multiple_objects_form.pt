@@ -17,7 +17,7 @@
                 <tal:block i18n:translate="">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
-            <div class="panel warning radius"
+            <div class="panel callout radius"
                  tal:condition="not:is_tags"
                  i18n:translate="">
                 Il n'y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
