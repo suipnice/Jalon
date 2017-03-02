@@ -1669,7 +1669,7 @@ class JalonCours(ATFolder):
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
-        # LOG.info("----- deleteCourseMapItem -----")
+        LOG.info("----- deleteCourseMapItem -----")
         # LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         # anciennement "retirerElementPlan"
@@ -1700,7 +1700,9 @@ class JalonCours(ATFolder):
                         self.setCourseItemsProperties(self._elements_cours)
 
                     if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
-                        self.detachCourseItem(element["idElement"].replace("*-*", "."), infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
+                        if (not infosElement["typeElement"].replace(" ", "") in ["Lienweb", "Lecteurexportable", "CatalogueBU"]) or (not idElement in list(self.getBibliographie())):
+                            LOG.info(infosElement["typeElement"])
+                            self.detachCourseItem(element["idElement"].replace("*-*", "."), infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
 
                     if infosElement["typeElement"] == "BoiteDepot":
                         boite = getattr(self, element["idElement"])
