@@ -211,7 +211,7 @@ class CourseView(BrowserView):
                                           "course_actions_icon":         "fa fa-users fa-fw",
                                           "course_actions_text":         "Lecteur(s) enseignant(s)",
                                           "course_actions_list":         self.getActionsList(my_view["is_personnel"], self._course_cr_actions_list),
-                                          "course_actions_registration": len(self.context.getCoLecteurs()),
+                                          "course_actions_registration": self.context.getCourseNbReader(),
                                           "is_course_password":          False})
 
         my_view["course_life_tabs_list"] = [{"tab_link":   "#course_life-historique",

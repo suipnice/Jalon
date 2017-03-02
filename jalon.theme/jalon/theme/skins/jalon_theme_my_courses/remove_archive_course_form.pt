@@ -16,7 +16,7 @@
     <form method="POST"
           tal:attributes="action string:${context/absolute_url}/modify_archive_course_script">
         <div class="panel warning radius">
-            Désarchiver un cours des favoris le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
+            Désarchiver un cours le replacera dans l'onglet d'origne (Auteur, co-auteur ou lecteur).
         </div>
         <input type="hidden" name="user_id"
                tal:attributes="value user/getId"/>

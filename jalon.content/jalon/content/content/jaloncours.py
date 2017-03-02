@@ -701,7 +701,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCoAuteursCours -----")
         retour = []
         for username in self.getCoAuteurs():
-            if username:
+            if username and username != "***":
                 retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
         return retour
 
@@ -739,6 +739,9 @@ class JalonCours(ATFolder):
             self.useJalonUtils("envoyerMail", {"form": {"a":      infosMembre["email"],
                                                         "objet":  "Vous avez été retiré d'un cours",
                                                         "message": message}})
+
+        if auteurs == []:
+            auteurs.append("***")
         self.coAuteurs = tuple(auteurs)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
@@ -2259,11 +2262,20 @@ class JalonCours(ATFolder):
         self.setInvitations(tuple(email_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
+    def getCourseNbReader(self):
+        # LOG.info("----- getCourseNbReader -----")
+        nb_reader = 0
+        for username in self.getCoLecteurs():
+            if username != "***":
+                nb_reader = nb_reader + 1
+        return nb_reader
+
     def getCourseReader(self):
         # LOG.info("----- getCourseReader -----")
         retour = []
         for username in self.getCoLecteurs():
-            retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
+            if username != "***":
+                retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
         return retour
 
     def addCourseReader(self, course_reader_list):
@@ -2293,6 +2305,8 @@ class JalonCours(ATFolder):
             self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                         "objet":   "Vous avez été retiré d'un cours",
                                                         "message": message}})
+        if course_reader_list == []:
+            course_reader_list.append("***")
         self.coLecteurs = tuple(course_reader_list)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
