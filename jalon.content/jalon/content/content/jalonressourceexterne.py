@@ -89,6 +89,8 @@ JalonRessourceExterneSchema = ATDocumentSchema.copy() + atpublic.Schema((
                        required=True,
                        accessor="getLecteur",
                        searchable=False,
+                       default_content_type='text/plain',
+                       allowable_content_types=('text/plain',),
                        widget=atpublic.TextAreaWidget(label=_(u"Lecteur exportable"),)
                        ),
     atpublic.StringField("videourl",

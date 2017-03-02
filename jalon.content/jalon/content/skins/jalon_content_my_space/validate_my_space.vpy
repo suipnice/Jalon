@@ -31,6 +31,10 @@ validate_dict = {"create_tag":               ["title"],
                  "edit_external_resource":   ["title", "urlbiblio"],
                  "edit_glossary_term":       ["title", "description"]}
 
+if validate_key == "edit_external_resource":
+    if "lecteur" in form:
+        validate_dict[validate_key][1] = "lecteur"
+
 for validate_field in validate_dict[validate_key]:
     if not validate_field in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
