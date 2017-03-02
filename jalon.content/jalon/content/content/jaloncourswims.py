@@ -377,7 +377,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         return False
 
     def detachExercice(self, item_id, ordre):
-        """supprime l'exercice de l'activité, puis met à jour les relatedItems"""
+        """Supprime l'exercice de l'activité, puis met à jour les relatedItems"""
         # LOG.info("----- detachExercice -----")
 
         # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
@@ -393,6 +393,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         idClasse = self.getClasse()
         idFeuille = self.getIdFeuille()
         idExo = int(ordre) + 1
+        item_title = item_props["titreElement"].decode("utf-8")
         dico = {"authMember": authMember.getId(),
                 "qclass": idClasse,
                 "qsheet": idFeuille,
@@ -402,8 +403,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # resp = {"status":"OK"}
         if resp["status"] != "OK":
             message = _(u"Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché",
-                        mapping={'item_title': item_props["titreElement"]})
-            self.plone_utils.addPortalMessage(message, type='failure')
+                        mapping={'item_title': item_title})
+            self.plone_utils.addPortalMessage(message, type='error')
         else:
 
             # Puisque la suppression est effective coté WIMS, on le détache côté Jalon :
@@ -421,7 +422,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 self.removeRelatedExercice(item_object)
 
             message = _(u"L'exercice '${item_title}' a bien été détaché de cette activité.",
-                        mapping={'item_title': item_props["titreElement"]})
+                        mapping={'item_title': item_title})
             self.plone_utils.addPortalMessage(message, type='success')
 
     def removeRelatedExercice(self, item_object):

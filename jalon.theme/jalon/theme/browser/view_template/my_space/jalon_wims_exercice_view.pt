@@ -50,12 +50,11 @@
                 <tal:block tal:condition="python:modele!='externe'" i18n:translate="">Modifier cet exercice</tal:block>
                 <tal:block tal:condition="python:modele=='externe'" i18n:translate="">Changer cet exercice</tal:block>
             </a>
-            <a class="button small success right disabled"
-               tal:condition="python:modele=='groupe'"
-               title="Un groupe d'exercices ne peut pas être modifié.">
-                <i class="fa fa-pencil no-pad"></i>
-                <tal:block i18n:translate="">Modifier ce groupe</tal:block>
-            </a>
+            <em class="right texte_icone icone_information"
+                tal:condition="python:modele=='groupe'"
+                style="font-size:80%;max-width:12em;">
+                <tal:block i18n:translate="">Un groupe d'exercices ne peut pas être modifié.</tal:block>
+            </em>
 
             <ul id="tab_button-group" class="button-group radius expand" tal:condition="python:modele!='externe'">
 

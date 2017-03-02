@@ -87,7 +87,12 @@
         </dl>
 
         <div class="panel warning radius formHelp" i18n:translate="" tal:condition="python:len(listeExports)>1">
-            <tal:block i18n:translate="">Étant données les limitations de chaque format et du logiciel dans lequel vous importez, seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.</tal:block>
+            Étant données les limitations de chaque format et du logiciel dans lequel vous importez, seul le format OEF permet d'obtenir un exercice absolument identique à ce que vous voyez dans WIMS.
+        </div>
+        <div class="text-right texte_icone icone_information"
+             i18n:translate="" tal:condition="python:len(listeExports)<=1"
+             style="font-size:80%;">
+            Contactez-nous si vous souhaitez exporter cet exercice dans un format qui n'apparait pas ici.
         </div>
 
         <div class="formControls">
