@@ -50,7 +50,7 @@
                     <li tal:condition="is_owner">
                         <a title="Modifier la vidéo sur POD"
                            target="_blank"
-                           tal:attributes="href string:${context/absolute_url}/${item/getId}/cas_pod_login/edit"
+                           tal:attributes="href string:${item/getURL}/cas_pod_login/edit"
                            i18n:attributes="title">
                             <i class="fa fa-pencil fa-lg fa-fw no-pad"></i>Modifier
                         </a>
