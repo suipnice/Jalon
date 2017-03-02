@@ -494,7 +494,7 @@ class JalonFolder(ATFolder):
         if folder_subjects:
             subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]}
                 for key in folder_subjects.keys()]
-            subjects_list.sort(lambda x, y: cmp(x["tag_id"], y["tag_id"]))
+            subjects_list.sort(lambda x, y: cmp(x["tag_title"], y["tag_title"]))
             # LOG.info("subjects_list : %s" % subjects_list)
             return subjects_list
         return []
