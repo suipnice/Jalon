@@ -17,7 +17,7 @@
 
     <form tal:attributes="action string:${context/absolute_url}/display_all_course_map_script">
         <div class="panel warning radius">
-            <strong>Attention :</strong> cette opération permettra en une seule fois d'afficher ou de masquer tous les éléments du plan à l'ensemble des participants du cours.
+            <strong>Attention :</strong> cette opération permettra en une seule fois d'afficher ou de masquer tous les éléments du plan à l'ensemble des participants du cours. Les "Entrainements WIMS" et "Examens WIMS" ne serpont pas affichés.
         </div>
         <div id="formControls" class="formControls">
             <input type="radio"
