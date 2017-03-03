@@ -881,7 +881,7 @@ class JalonCours(ATFolder):
             if (item_type == "1" and form_properties["typeElement"] != "Titre"):
                 form_properties["form_title_type"] = _(u"titre de l'élément")
 
-            if item_properties["typeElement"] in self._type_folder_my_space_dict.keys():
+            if item_properties["typeElement"].replace(" ", "") in self._type_folder_my_space_dict.keys():
                 form_properties["item_title_in_my_space"] = item_properties["titreElement"]
                 if "titreElementMonEspace" in item_properties:
                     form_properties["item_title_in_my_space"] = item_properties["titreElementMonEspace"]
@@ -1600,7 +1600,10 @@ class JalonCours(ATFolder):
         if display_item_in_course_map:
             item_properties["complementElement"]["value"] = True
         else:
-            item_properties["complementElement"]["value"] = False
+            try:
+                item_properties["complementElement"]["value"] = False
+            except:
+                pass
 
         self._elements_cours[item_id] = item_properties
         self.setCourseItemsProperties(self._elements_cours)
