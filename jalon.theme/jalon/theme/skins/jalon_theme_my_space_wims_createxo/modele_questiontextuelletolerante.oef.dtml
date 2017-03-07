@@ -1,6 +1,7 @@
 type=datalist
 modele_jalon=QuestionTexte
-textarea='data words'
+textarea="data words"
+
 :Questions à réponses textuelles tolérantes incorporées dans un texte aléatoire.
 <p>Cet exercice présente des textes 'à trous', chacun devant être rempli par un mot (voire une très courte phrase).</p>
 <p>Pour construire un exercice avec ce modèle, il suffit d'entrer les textes.</p>
@@ -18,8 +19,10 @@ Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
 :\title{$$title$$}
 :\author{$$author$$}
 :\email{$$email$$}
+
 :Longueur des cases à taper. Il faut prévoir les réponses les plus longues.
 \integer{len=$$len$$}
+
 :Données principales.
 Définir une question par ligne, et séparer les lignes par un point-virgule. (Donc les textes eux-memes ne peuvent pas contenir des point-virgules.) <br />
 La question à poser doit être mise entre une paire de double-point d'interrogation '??'.<br/>
@@ -28,21 +31,24 @@ Si une question accepte plusieurs réponses correctes possibles, mettre toutes l
 L'analyseur ne tient pas compte des petites différences dans la réponse : absence ou ajout d'un article, majuscule/minuscule, accents, pluriel/singulier.
 $embraced_randitem
 \text{data=$$data$$}
+
 :Type d'analyse de réponse.
 Les types <tt>case</tt> et <tt>nocase</tt> sont surtout adaptés pour les
 applications linguistiques. Dans les autres cas, préférez <tt>atext</tt>.
 \text{atype=$$atype$$}
-#%%\text{atype=item(3,case (aucune tolérance d'erreur), nocase (tolère le minuscule/manuscule), atext (ignore pluriel/singulier et les articles))}
-:Inclure les bonnes réponses a la liste des mots reconnus.
+
+:Inclure les bonnes réponses a la liste des mots reconnus (oui/non).
 \text{include_good=$$include_good$$}
-#%% \text{include_good=item(2,non,oui)}
+
 :Liste de mots reconnus.
 Mettez les mots reconnus dans la liste. Toute réponse contenant un mot en dehors de cette liste sera considérée comme une erreur de frappe et renvoyée pour retaper. <p>
 Si ce champ est vide, toute réponse non-reconnue est jugée fausse. Ce qui doit être le cas en général pour les applications linguistiques.
 \text{words=$$words$$}
+
 :Texte affiché avant la question. Balises html admises. Peut être vide.
  $embraced_randitem
 \text{pre=$$pre$$}
+
 :Texte affiché après la question. Balises html admises. Peut être vide.
 $embraced_randitem
 \text{post=$$post$$}
@@ -54,26 +60,41 @@ $embraced_randitem
 \text{post=wims(embraced randitem \post)}
 \text{data=wims(singlespace \data)}
 \text{data=wims(nonempty rows \data)}
+\text{nb_quest=rows(\data)}
+
+:: Quand include_good=oui, On ajoute a words la liste des bonnes reponses
+\if{oui iswordof \include_good}{
+  \for{i=1 to \nb_quest}{
+    \text{resp=slib(text/cutchoice2 \data[\i])}
+    \integer{nb_quest_in_resp=floor(rows(\resp)/2)}
+    \for{j=1 to \nb_quest_in_resp}{
+      \text{new_word=\resp[2*\j;]}
+      \if{\new_word notwordof \words}
+        {\text{words=\words \new_word}}
+    }
+  }
+}
+
 \text{data=randomrow(\data)}
 \text{data=wims(embraced randitem \data)}
 \text{data=slib(text/cutchoice2 \data)}
 \integer{qs=floor(rows(\data)/2)}
-:%%Quand include_good=1, On ajoute a words la liste des bonnes reponses
-\if{oui iswordof \include_good}{
- \for{i=1 to \qs}{
-  \text{words=\words \data[2*\i;]} }}
-:%%qlist contient la liste des reponses attendues
+
+:: qlist contient la liste des reponses attendues
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
 \steps{\qlist}
 
 :%%%%%%%%%%%%% Maintenant l'enonce en code html. %%%%%%%%%%%%%%%%%%%%
 ::Vous n'avez pas besoin de modifier ceci en general.
-\statement{\pre
-\data[1;]
-\for{k=1 to \qs}{
- \embed{r \k,\len
-autocomplete='off' id='reply\k'} \data[2*\k+1;]}
-\post}
+\statement{
+  \pre \data[1;]
+  \for{k=1 to \qs}{
+    \embed{r \k,\len
+      autocomplete='off' id='reply\k'}
+    \data[2*\k+1;]
+  }
+ \post
+}
 
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
 \answer{Champ 1}{\data[2;];\words}{type=\atype}

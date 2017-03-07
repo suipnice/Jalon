@@ -90,7 +90,7 @@
                     Si cette liste est vide, aucune tolérance ne sera appliquée : toute réponse en dehors de la bonne sera comptée fausse (ce qui doit être le cas en général pour les applications linguistiques). On retrouve alors le fonctionnement du texte à trous habituel.
                 </div>
             </div>
-            <div class="formHelp texte_icone icone_information">Séparez les mauvaises réponses par des espaces.</div>
+            <div class="formHelp texte_icone icone_information">Un mot non reconnu ne sera pas comptabilisé comme faux, laissant une nouvelle chance à l'apprenant. Séparez les mots par des espaces.</div>
             <textarea name="words" id="words" rows="4" cols="60" tal:content="QCM_parsed/words"/>
 
             <div>
@@ -99,7 +99,7 @@
                        tal:define="include_good QCM_parsed/include_good"
                        tal:attributes="checked python:context.test(include_good=='oui', 'checked', None)"/>
                 Inclure automatiquement les bonnes réponses</label>
-                <div class="formHelp texte_icone icone_information">En cochant cette case, les bonnes réponses d'un même paragraphe seront ajoutées à la liste des mauvaises réponses reconnues pour ce paragraphe : elles ne seront pas comptées comme des fautes de frappe.</div>
+                <div class="formHelp texte_icone icone_information">En cochant cette case, toutes les bonnes réponses de l'exercice seront ajoutées à la liste des mauvaises réponses reconnues.</div>
             </div>
         </div>
 
