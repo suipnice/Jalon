@@ -33,7 +33,7 @@ class CourseStatisticsView(BrowserView):
                  "link":  self.context.absolute_url()},
                 {"title": "Statistiques",
                  "icon":  "fa fa-bar-chart",
-                 "link":  self.context.absolute_url()}]
+                 "link":  "%s/course_statistics_view" % self.context.absolute_url()}]
 
     def getRequest(self):
         return self.request
@@ -109,7 +109,7 @@ class CourseStatisticsView(BrowserView):
                 type_element = "Fichiers"
             if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
-            if type_element == "Presentations sonorisees":
+            if type_element in ["Presentations sonorisees", "Sonorisation"]:
                 type_element = "Presentations"
             element_by_type_dict[type_element]["elements_count"] += 1
             element_by_type_dict[type_element]["elements_list"].append(element_id)
@@ -127,9 +127,7 @@ class CourseStatisticsView(BrowserView):
         course_actions = [{"course_actions_id":           "course_to",
                            "course_actions_icon":         "fa fa-university fa-fw",
                            "course_actions_text":         "Offre(s) de formation",
-                           "course_actions_list":         [{"action_link": "course_display_training_offer_page",
-                                                            "action_icon": "fa fa-eye fa-fw no-pad",
-                                                            "action_name": "Voir"}],
+                           "course_actions_list":         [],
                            "course_actions_registration": "%s (%s étu.)" % (course_training_offer, course_training_offer_students),
                            "is_course_password":          False}]
         course_actions.append({"course_actions_id":           "course_nr",
@@ -183,7 +181,7 @@ class CourseStatisticsView(BrowserView):
                 type_element = "Fichiers"
             if type_element in ["Lien web", "Lecteur exportable", "Ressource bibliographique", "Catalogue BU", "Video", "VOD"]:
                 type_element = "Externes"
-            if type_element == "Presentations sonorisees":
+            if type_element in ["Presentations sonorisees", "Sonorisation"]:
                 type_element = "Presentations"
             nb_element_by_type[type_element] += 1
         return {"macro":               "indicateurs_generalite",

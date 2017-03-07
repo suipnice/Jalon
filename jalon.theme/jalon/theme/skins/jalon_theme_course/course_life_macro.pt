@@ -50,7 +50,8 @@
          tal:define="course_link context/absolute_url">
         <dl>
             <dd tal:repeat="course_action my_view/course_actions">
-                <span class="right">
+                <span class="right"
+                      tal:condition="course_action/course_actions_list">
                 <a class="dropdown" data-options="align:bottom"
                    tal:attributes="data-dropdown course_action/course_actions_id">
                     <i class="fa fa-cog fa-lg"></i>
