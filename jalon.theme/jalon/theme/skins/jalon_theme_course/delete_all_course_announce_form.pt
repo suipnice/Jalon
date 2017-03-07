@@ -8,15 +8,21 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="hasAnnounce context/hasAnnounce">
 
     <h2>
         <i class="fa fa-trash-o"></i>
         <tal:block i18n:translate="">Supprimer toutes les annonces</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
+    <div class="panel callout radius"
+         tal:condition="not:hasAnnounce">
+        Il n'y a actuellement aucune annonce dans ce cours.
+    </div>
     <form id="js-supp-annonce" method="POST"
-          tal:attributes="action string:${context/absolute_url}/delete_all_course_announce_script">
+          tal:attributes="action string:${context/absolute_url}/delete_all_course_announce_script"
+          tal:condition="hasAnnounce">
 
         <div class="panel alert radius">
             <strong i18n:translate="">Attention :</strong>

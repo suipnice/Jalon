@@ -682,7 +682,7 @@ class JalonCours(ATFolder):
         if not ancienPrincipal:
             ancienPrincipal = self.Creator()
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         self.auteurPrincipal = form["username"]
         infosMembre = self.useJalonUtils("getInfosMembre", {"username": form["username"]})
         # self.tagBU(ancienPrincipal)
@@ -708,7 +708,7 @@ class JalonCours(ATFolder):
     def addCoAuteurs(self, form):
         # LOG.info("----- addCoAuteurs -----")
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme co-auteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        message = 'Bonjour\n\nVous avez été ajouté comme co-auteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         coAuteurs = list(self.getCoAuteurs())
         usernames = form["username"].split(",")
         if usernames != ['']:
@@ -2175,7 +2175,7 @@ class JalonCours(ATFolder):
     def addNominativeRegistration(self, nominative_registration_list):
         # LOG.info("----- addNominativeRegistration -----")
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         course_nominative_registration_list = list(self.getGroupe())
         for nominative_registration in nominative_registration_list:
             if not nominative_registration in course_nominative_registration_list:
@@ -2249,7 +2249,7 @@ class JalonCours(ATFolder):
                     portal_membership.addMember(email_registration_email, password, ("EtudiantJalon", "Member",), "", {"fullname": email_registration_name, "email": email_registration_email})
                     portal_registration.registeredNotify(email_registration_email)
                 course_email_registration_list.append(email_registration_email)
-                message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+                message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
                 self.useJalonUtils("envoyerMail", {"form": {"a":       email_registration_email,
                                                             "objet":   "Vous avez été inscrit à un cours",
                                                             "message": message}})
@@ -2289,7 +2289,7 @@ class JalonCours(ATFolder):
     def addCourseReader(self, course_reader_list):
         # LOG.info("----- addCourseReader -----")
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), portal.absolute_url(), portal.Title())
+        message = 'Bonjour\n\nVous avez été ajouté comme lecteur du cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         course_readers_list = list(self.getCoLecteurs())
         if course_reader_list != ['']:
             for course_reader in course_reader_list:
@@ -2379,23 +2379,25 @@ class JalonCours(ATFolder):
         # LOG.info("----- rechercherUtilisateur -----")
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
 
-    """
+
     def hasParticipants(self):
         # LOG.info("----- hasParticipants -----")
-        formations = self.getAffichageFormations()
+        formations = self.getFormationsOfferData()
         if formations:
             return True
-        nomminatives = self.getInfosGroupe()
+        nomminatives = self.getGroupe()
         if nomminatives:
             return True
-        invitations = self.getInfosInvitations()
+        invitations = self.getInvitations()
         if invitations:
             return True
+        password = self.getLibre()
+        if password:
+            return True
         lecteurs = self.getCoLecteurs()
-        if lecteurs:
+        if lecteurs and lecteurs != ("***", ):
             return True
         return False
-    """
 
     def getFormationsOfferData(self):
         # LOG.info("----- getFormationsOfferData -----")
@@ -2553,7 +2555,8 @@ class JalonCours(ATFolder):
 
         # Ajout des lecteurs enseignants
         lecteurs = self.getCoLecteurs()
-        if lecteurs:
+        LOG.info(lecteurs)
+        if lecteurs and lecteurs != ("***",):
             # Création de la feuille des lecteurs enseignants
             feuille = listing.add_sheet("LecteursEnseignants")
 
@@ -2851,6 +2854,10 @@ class JalonCours(ATFolder):
         announce_folder = self.annonce
         announce_ids = announce_folder.objectIds()
         announce_folder.manage_delObjects(announce_ids)
+
+    def hasAnnounce(self):
+        # LOG.info("----- hasAnnounce -----")
+        return True if list(self.annonce.objectValues()) else False
 
     # -------------------------------- #
     #  Course Glossary & Bibliography  #

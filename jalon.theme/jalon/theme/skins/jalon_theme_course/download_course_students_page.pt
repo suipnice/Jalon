@@ -7,7 +7,8 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="has_participants context/hasParticipants">
 
     <h2>
         <i class="fa fa-list no-pad"></i>
@@ -15,6 +16,11 @@
         <a class="close-reveal-modal"></a>
     </h2>
 
+    <div class="panel callout radius"
+         tal:condition="not:has_participants">
+        Il n'y a actuellement aucun participant dans ce cours.
+    </div>
+    <tal:condition condition="has_participants">
     <div class="panel callout radius"
          i18n:translate="">
         Cette opération peut prendre quelques minutes, merci de patienter.
@@ -29,6 +35,7 @@
             </button>
         </div>
     </form>
+    </tal:condition>
 
 </metal:main>
 
