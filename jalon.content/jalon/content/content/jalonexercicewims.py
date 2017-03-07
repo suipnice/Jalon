@@ -105,7 +105,8 @@ class JalonExerciceWims(ATDocumentBase):
     def getVariablesDefaut(self, modele):
         """Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
         # LOG.info("----- getVariablesDefaut -----")
-        variables_defaut = {"qcmsimple":
+        variables_defaut = {"exercicelibre":{},
+                            "qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
                                  "mauvaisesrep"    : "mauvais choix n°1\nmauvais choix n°2",
@@ -197,7 +198,7 @@ Jens Lehmann , allemande\nOliver Kahn , allemande\nTimo Hildebrand , allemande\n
                                  "data"         : "l'intensité est : ??ampère??;\nla tension est : ??volt??;\nla résistance est : ??ohm??;\nla capacité d'un condensateur est : ??farad??. Son symbole est : ??F??;\nl'inductance d'un solénoïde est : ??henri??;\nla puissance dissipée sur une composante est : ??watt??;\nla fréquence est : ??hertz??. Son symbole est : ??Hz??;",
                                  "atype"        : "atext",
                                  "include_good" : "oui",
-                                 "words"        : "electricite electrique circuit composante intensite courant tension charge resistor resistance diode transistor condensateur capacite solenoide inductance puissance frequence",
+                                 "words"        : "électricité intensité courant tension capacité puissance fréquence",
                                  "pre"          : "En électricité, l'unité de base pour mesurer ",
                                  "post"         : "."
                                  },
@@ -320,7 +321,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
     def addExoWims(self, idobj=None, title=None, author_id=None, modele=None, form=None, sandbox=False):
         """Ajoute ou modifie un exercice wims."""
-        # LOG.info("----- addExoWims -----")
+        # LOG.info("----- addExoWims (sandbox=%s)-----" % sandbox)
         title = self.formaterTitreWIMS(title)
         member = self.portal_membership.getMemberById(author_id)
         auth_email = member.getProperty("email")
@@ -341,6 +342,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # on souhaite conserver certains '&quot;'
         source = source.replace("$$quot;", '&quot;')
 
+        variables_base = {"author": fullname, "email": auth_email, "title": title}
+        variables_modele = self.getVariablesDefaut(modele)
+        # ajoute les variables communes aux variables du modele
+        variables_modele.update(variables_base)
+
         # dico contiendra les parametres a envoyer a WIMS
         dico = {"authMember": author_id, "qexo": idobj}
         dico["qclass"] = "%s_1" % self.aq_parent.getComplement()
@@ -349,13 +355,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         if not form:
             if modele == "groupe":
                 return self.ajouterSerie(author_id)
+
+            param = variables_modele
             if modele == "exercicelibre":
-                param = {"author": fullname, "email": auth_email, "title": title}
                 for key in param.keys():
                     source = source.replace("$$%s$$" % key, param[key])
                     param["exercicelibre"] = source
-            else:
-                param = self.getVariablesDefaut(modele)
             if param is None:
                 # LOG.error("addExoWims / getVariablesDefaut return None")
                 return None
@@ -425,28 +430,30 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             # result = json.loads(self.aq_parent.wims("callJob", dico))
             return self.aq_parent.wims("creerExercice", dico)
         else:
-            param["author"] = fullname
-            param["email"] = auth_email
-            param["title"] = title
+            param.update(variables_base)
 
-            for key in param.keys():
+            for key in variables_modele:
+                if key in param:
+                    # Le parametre a été envoyé par le formulaire
+                    try:
+                        param[key].decode("utf-8")
+                    except:
+                        LOG.info("[addExoWims] - Chaine non UTF-8 envoyee : %s" % key)
+                        LOG.info(param[key])
 
-                try:
-                    param[key].decode("utf-8")
-                except:
-                    print "jalonexercicewims/addExoWims - Chaine non UTF-8 envoyee : %s" % key
-                    print param[key]
-
-                try:
-                    source = source.replace("$$%s$$" % key, param[key])
-                except UnicodeDecodeError, e:
-                    # typiquement, dans le cas de l'admin par exemple, son nom est en unicode, pas utf-8
-                    source = source.replace("$$%s$$" % key, param[key].encode("utf-8"))
-                    """print e
-                    print "[jalonexercicewims/addExoWims] - UnicodeDecodeError"
-                    print "param[%s] = '%s'" % (key, param[key])
-                    #return None"""
-
+                    try:
+                        source = source.replace("$$%s$$" % key, param[key])
+                    except UnicodeDecodeError:
+                        # typiquement, dans le cas de l'admin par exemple, son nom est en unicode, pas utf-8
+                        source = source.replace("$$%s$$" % key, param[key].encode("utf-8"))
+                        """print e
+                        LOG.info("[addExoWims] - UnicodeDecodeError")
+                        LOG.info("[addExoWims] param[%s] = '%s'" % (key, param[key]))
+                        #return None"""
+                else:
+                    # Si la variable n'est pas fournie par le formulaire, on la place à vide
+                    # (cas des checkboxes décochées par exemple)
+                    source = source.replace("$$%s$$" % key, "")
             # source = source.replace("--nbsp;", "&nbsp;")
             source = source.replace("*-*", "\\")
 

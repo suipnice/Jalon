@@ -52,7 +52,6 @@ if error:
         form["list_id_questions"] = range(int(form["nb_questions"]))
     return state
 
-# Avant de modifier un exercice WIMS, on teste la compilation de celui-ci dans la "sandbox"
 if modele == "externe":
     permalink = context.parser_permalien(form["permalink"])
     if permalink == "":
@@ -62,8 +61,8 @@ if modele == "externe":
     else:
         form["permalink"] = permalink
 else:
-    # Le dernier parametre "True" permet de tester l'exo en mode "bac à sable"
-    rep = context.addExoWims(form["idobj"], form["title"], form["member_id"], form["modele"], form, True)
+    # Avant de modifier un exercice WIMS, on teste la compilation de celui-ci dans la "sandbox"
+    rep = context.addExoWims(form["idobj"], form["title"], form["member_id"], form["modele"], form, sandbox=True)
     if not (rep and rep["status"] == "OK"):
         if modele == "qcmsuite":
             form["list_id_questions"] = rep["list_id_questions"]
