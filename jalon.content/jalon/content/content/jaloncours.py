@@ -2209,9 +2209,21 @@ class JalonCours(ATFolder):
             part3 = ''.join([random.choice(string.ascii_uppercase) for i in range(3)])
             short = part1 + part2 + part3
             self.setLienMooc(short)
+            self.setCourseProperties({"Categorie": ["2"]})
+        else:
+            self.setCourseProperties({"Categorie": ["1"]})
 
         self.setLibre(activate_password)
         self.setCourseProperties({"DateDerniereModif": DateTime()})
+
+    def addPasswordStudent(self, member_id):
+        # LOG.info("----- addPasswordStudent -----")
+        if self.getLibre():
+            inscriptionsLibres = list(self.getInscriptionsLibres())
+            if not member_id in inscriptionsLibres:
+                inscriptionsLibres.append(member_id)
+                self.setCourseProperties({"InscriptionsLibres": inscriptionsLibres,
+                                          "DateDerniereModif":  DateTime()})
 
     def getEmailRegistration(self):
         # LOG.info("----- getEmailregistration -----")

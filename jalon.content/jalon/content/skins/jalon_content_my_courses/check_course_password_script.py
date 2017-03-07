@@ -10,6 +10,6 @@
 
 REQUEST = context.REQUEST
 
-context.inscrireMOOC(REQUEST["member_id"])
+context.addPasswordStudent(REQUEST["member_id"])
 
 context.REQUEST.RESPONSE.redirect(context.absolute_url())
