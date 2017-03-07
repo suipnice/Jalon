@@ -947,7 +947,7 @@ class JalonCours(ATFolder):
         for course_map_item in course_map_items_list:
             # index = index + 1
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
-            # LOG.info(item_properties)
+            LOG.info(course_map_item["idElement"])
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
@@ -1555,7 +1555,7 @@ class JalonCours(ATFolder):
         return activity_id
 
     def detachCourseItem(self, item_id, item_creator, folder_id):
-        # LOG.info("----- detachCourseItem -----")
+        LOG.info("----- detachCourseItem ----- %s" % item_id)
 
         item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, item_creator), self._type_folder_my_space_dict[folder_id]), item_id)
         item_relatedItems = item_object.getRelatedItems()
@@ -1675,7 +1675,7 @@ class JalonCours(ATFolder):
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
-        LOG.info("----- deleteCourseMapItem -----")
+        LOG.info("----- deleteCourseMapItem %s %s-----" % (idElement, listeElement))
         # LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         # anciennement "retirerElementPlan"
@@ -1683,7 +1683,9 @@ class JalonCours(ATFolder):
         if listeElement is None:
             listeElement = list(self.getPlan())
             start = True
-        for element in listeElement:
+        for element in listeElement[:]:
+            LOG.info("FOR : %s" % element)
+            LOG.info("1 listeElement : %s" % listeElement)
             if element["idElement"] == idElement or idElement == "all":
                 # Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
@@ -1692,7 +1694,9 @@ class JalonCours(ATFolder):
 
                 # On supprime element de la liste où il etait dans le plan
                 while element in listeElement:
+                    LOG.info("remove : %s" % element)
                     listeElement.remove(element)
+                LOG.info("2 listeElement : %s" % listeElement)
 
                 infosElement = self.getCourseItemProperties().get(element["idElement"])
 
@@ -1707,7 +1711,6 @@ class JalonCours(ATFolder):
 
                     if infosElement["typeElement"] not in ["Titre", "TexteLibre", "AutoEvaluation", "Examen", "BoiteDepot", "Forum", "SalleVirtuelle"]:
                         if (not infosElement["typeElement"].replace(" ", "") in ["Lienweb", "Lecteurexportable", "CatalogueBU"]) or (not idElement in list(self.getBibliographie())):
-                            LOG.info(infosElement["typeElement"])
                             self.detachCourseItem(element["idElement"].replace("*-*", "."), infosElement["createurElement"], infosElement["typeElement"].replace(" ", ""))
 
                     if infosElement["typeElement"] == "BoiteDepot":
@@ -1716,10 +1719,12 @@ class JalonCours(ATFolder):
 
                     if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
+                LOG.info("3 listeElement : %s" % listeElement)
             elif "listeElement" in element:
                 # LOG.info("***** parent item_id : %s" % element["idElement"])
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
                 self.deleteCourseMapItem(idElement, element["listeElement"], force_WIMS)
+            LOG.info("4 listeElement : %s" % listeElement)
 
         if start:
             self.plan = tuple(listeElement)
