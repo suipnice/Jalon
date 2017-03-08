@@ -213,6 +213,8 @@ class JalonRessourceExterne(ATDocumentBase):
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
         self.reindexObject()
+        self.aq_parent.majFichier(self)
+        """
         items = self.getRelatedItems()
         for item in items:
             if item.portal_type in ["JalonCours"]:
@@ -228,6 +230,7 @@ class JalonRessourceExterne(ATDocumentBase):
                     dico[self.getId()]["titreElement"] = self.Title()
                     #item.setInfos_element(dico)
                     item.setDocumentsProperties(dico)
+        """
 
     def editFromBUCatalogBU(self, recordid):
         portal_primo = getToolByName(self, "portal_primo")

@@ -665,8 +665,8 @@ class JalonFolder(ATFolder):
             if item.portal_type in ["JalonCours"]:
                 element_cours = copy.deepcopy(item.getCourseItemProperties())
                 idFichier = fichier.getId()
-                if "." in idFichier:
-                    idFichier = idFichier.replace(".", "*-*")
+                #if "." in idFichier:
+                idFichier = idFichier.replace(".", "*-*")
                 if idFichier in element_cours:
                     if "titreElementMonEspace" in element_cours[idFichier]:
                         element_cours[idFichier]["titreElementMonEspace"] = fichier.Title()
@@ -676,8 +676,8 @@ class JalonFolder(ATFolder):
             if item.portal_type in ["JalonBoiteDepot", "JalonCoursWims"]:
                 dico = copy.deepcopy(item.getDocumentsProperties())
                 idFichier = fichier.getId()
-                if "." in idFichier:
-                    idFichier = idFichier.replace(".", "*-*")
+                #if "." in idFichier:
+                idFichier = idFichier.replace(".", "*-*")
                 if idFichier in dico:
                     dico[idFichier]["titreElement"] = fichier.Title()
                     item.setDocumentsProperties(dico)
