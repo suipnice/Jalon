@@ -48,16 +48,23 @@ class MyStudentsView(BrowserView):
                 "access_dict":       access_dict}
 
     def getAccessDict(self, user_id):
+        LOG.info("----- getAccessDict START-----")
         portal = self.context.portal_url.getPortalObject()
         portal_catalog = portal.portal_catalog
 
+        LOG.info("SEARCH Creator")
         course_list = list(portal_catalog.searchResults(portal_type="JalonCours", Creator=user_id))
+        LOG.info(course_list)
 
-        author_course_list = list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=user_id))
-        if author_course_list:
-            course_list.extend(author_course_list)
+        LOG.info("SEARCH getAuteurPrincipal")
+        course_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getAuteurPrincipal=user_id)))
+        #if author_course_list:
+        #    course_list.extend(author_course_list)
+        LOG.info(course_list)
 
+        LOG.info("SEARCH getCoAuteurs")
         course_list.extend(list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=user_id)))
+        LOG.info(course_list)
         #coauthor_course_list = list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=user_id))
         #if coauthor_course_list:
         #    course_list.extend(coauthor_course_list)
@@ -69,8 +76,11 @@ class MyStudentsView(BrowserView):
                            "groupe": "Le code *-* n'est plus valide pour ce groupe."}
         portal_jalon_bdd = portal.portal_jalon_bdd
         for course in course_list:
+            LOG.info("FOR COURSE : %s" % course.getId)
             for course_access in course.getListeAcces:
+                LOG.info("FOR COURSE ACCESS : %s" % course_access)
                 access_type, access_code = course_access.split("*-*")
+                LOG.info((access_type, access_code))
                 if not access_code in course_access_dict:
                     access_response_request = portal_jalon_bdd.getELPData(access_code)
                     if not access_response_request:
@@ -83,5 +93,7 @@ class MyStudentsView(BrowserView):
                                                        "access_students":    access_data[4],
                                                        "access_course_list": [course.Title]}
                 else:
-                    course_access_dict[access_code]["access_course_list"].append(course.Title)
+                    if not course.Title in course_access_dict[access_code]["access_course_list"]:
+                        course_access_dict[access_code]["access_course_list"].append(course.Title)
+        LOG.info("----- getAccessDict END-----")
         return course_access_dict
