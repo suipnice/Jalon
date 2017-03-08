@@ -668,7 +668,10 @@ class JalonFolder(ATFolder):
                 if "." in idFichier:
                     idFichier = idFichier.replace(".", "*-*")
                 if idFichier in element_cours:
-                    element_cours[idFichier]["titreElement"] = fichier.Title()
+                    if "titreElementMonEspace" in element_cours[idFichier]:
+                        element_cours[idFichier]["titreElementMonEspace"] = fichier.Title()
+                    else:
+                        element_cours[idFichier]["titreElement"] = fichier.Title()
                     item.setCourseItemsProperties(element_cours)
             if item.portal_type in ["JalonBoiteDepot", "JalonCoursWims"]:
                 dico = copy.deepcopy(item.getDocumentsProperties())
