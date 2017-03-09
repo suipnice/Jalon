@@ -647,14 +647,14 @@ class JalonCours(ATFolder):
 
     def getCreateur(self):
         # LOG.info("----- getCreateur -----")
-        return self.useJalonUtils("getInfosMembre", {"username": self.Creator()})
+        return self.useJalonUtils("getIndividu", {"sesame": self.Creator(), "type": "dict"})
 
     def getAuteur(self):
         # LOG.info("----- getAuteur -----")
         username = self.getAuteurPrincipal()
         if username:
-            return self.useJalonUtils("getInfosMembre", {"username": username})
-        return self.useJalonUtils("getInfosMembre", {"username": self.Creator()})
+            return self.useJalonUtils("getIndividu", {"sesame": username, "type": "dict"})
+        return self.useJalonUtils("getIndividu", {"sesame": self.Creator(), "type": "dict"})
 
     def getAuteurs(self):
         # LOG.info("----- getAuteurs -----")
@@ -684,12 +684,12 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été ajouté comme auteur du cours "%s" ayant eu pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace Mes cours.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         self.auteurPrincipal = form["username"]
-        infosMembre = self.useJalonUtils("getInfosMembre", {"username": form["username"]})
+        infosMembre = self.useJalonUtils("getIndividu", {"sesame": form["username"], "type": "dict"})
         # self.tagBU(ancienPrincipal)
         self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                     "objet":   "Vous avez été ajouté à un cours",
                                                     "message": message}})
-        infosMembre = self.useJalonUtils("getInfosMembre", {"username": ancienPrincipal})
+        infosMembre = self.useJalonUtils("getIndividu", {"sesame": ancienPrincipal, "type": "dict"})
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ou vous êtiez auteur.\n\nCordialement,\n%s.' % (self.Title(), portal.Title())
         self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                     "objet":   "Vous avez été retiré d'un cours",
@@ -702,7 +702,7 @@ class JalonCours(ATFolder):
         retour = []
         for username in self.getCoAuteurs():
             if username and username != "***":
-                retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
+                retour.append(self.useJalonUtils("getIndividu", {"sesame": username, "type": "dict"}))
         return retour
 
     def addCoAuteurs(self, form):
@@ -716,7 +716,7 @@ class JalonCours(ATFolder):
                 if username not in coAuteurs:
                     coAuteurs.append(username)
                     self.manage_setLocalRoles(username, ["Owner"])
-                    infosMembre = self.useJalonUtils("getInfosMembre", {"username": username})
+                    infosMembre = self.useJalonUtils("getIndividu", {"sesame": username, "type": "dict"})
                     self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                                 "objet":   "Vous avez été ajouté à un cours",
                                                                 "message": message}})
@@ -735,7 +735,7 @@ class JalonCours(ATFolder):
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez co-auteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
 
         for idMember in supprAuteurs:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": idMember})
+            infosMembre = self.useJalonUtils("getIndividu", {"sesame": idMember, "type": "dict"})
             self.useJalonUtils("envoyerMail", {"form": {"a":      infosMembre["email"],
                                                         "objet":  "Vous avez été retiré d'un cours",
                                                         "message": message}})
@@ -2180,7 +2180,7 @@ class JalonCours(ATFolder):
         for nominative_registration in nominative_registration_list:
             if not nominative_registration in course_nominative_registration_list:
                 course_nominative_registration_list.append(nominative_registration)
-                infosMembre = self.useJalonUtils("getInfosMembre", {"username": nominative_registration})
+                infosMembre = self.useJalonUtils("getIndividu", {"sesame": nominative_registration, "type": "dict"})
                 self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                             "objet":   "Vous avez été inscrit à un cours",
                                                             "message": message}})
@@ -2194,7 +2194,7 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for delete_nominative_registration in delete_nominative_registration_list:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": delete_nominative_registration})
+            infosMembre = self.useJalonUtils("getIndividu", {"sesame": delete_nominative_registration, "type": "dict"})
             self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                         "objet":   "Vous avez été désincrit d'un cours",
                                                         "message": message}})
@@ -2275,7 +2275,7 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for email_registration in delete_email_registration_list:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": email_registration})
+            infosMembre = self.useJalonUtils("getIndividu", {"sesame": email_registration, "type": "dict"})
             self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                         "objet":   "Vous avez été désincrit d'un cours",
                                                         "message": message}})
@@ -2295,7 +2295,7 @@ class JalonCours(ATFolder):
         retour = []
         for username in self.getCoLecteurs():
             if username != "***":
-                retour.append(self.useJalonUtils("getInfosMembre", {"username": username}))
+                retour.append(self.useJalonUtils("getIndividu", {"sesame": username, "type": "dict"}))
         return retour
 
     def addCourseReader(self, course_reader_list):
@@ -2307,7 +2307,7 @@ class JalonCours(ATFolder):
             for course_reader in course_reader_list:
                 if not course_reader in course_readers_list:
                     course_readers_list.append(course_reader)
-                    infosMembre = self.useJalonUtils("getInfosMembre", {"username": course_reader})
+                    infosMembre = self.useJalonUtils("getIndividu", {"sesame": course_reader, "type": "dict"})
                     self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                                 "objet":   "Vous avez été ajouté à un cours",
                                                                 "message": message}})
@@ -2321,7 +2321,7 @@ class JalonCours(ATFolder):
         portal = self.portal_url.getPortalObject()
         message = 'Bonjour\n\nVous avez été retiré du cours "%s" ayant pour auteur %s ou vous êtiez lecteur.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
         for idMember in supprLecteurs:
-            infosMembre = self.useJalonUtils("getInfosMembre", {"username": idMember})
+            infosMembre = self.useJalonUtils("getIndividu", {"sesame": idMember, "type": "dict"})
             self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
                                                         "objet":   "Vous avez été retiré d'un cours",
                                                         "message": message}})

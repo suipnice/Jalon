@@ -1201,7 +1201,7 @@ class JalonProperties(SimpleItem):
         listeUsers = []
         for user in self._dicoUsersPodcast.keys():
             listeUsers.append({"id": user,
-                               "fullname": jalon_utils.getInfosMembre(user)["fullname"]})
+                               "fullname": jalon_utils.getIndividu(user, "dict")["fullname"]})
         listeUsers.sort(lambda x, y: cmp(x["fullname"], y["fullname"]))
         return listeUsers
 
@@ -1251,12 +1251,12 @@ class JalonProperties(SimpleItem):
                 else:
                     catPrinCours = "Erreur : catégorie à redéfinir"
                     catSecCours = ""
-                retour.append({"idCours"      : idCours,
-                               "titreCours"   : cours.Title(),
-                               "etatCours"    : cours.isDiffuseriTunesU(),
-                               "catPrinCours" : catPrinCours,
-                               "catSecCours"  : catSecCours,
-                               "urlCours"     : cours.absolute_url()})
+                retour.append({"idCours":      idCours,
+                               "titreCours":   cours.Title(),
+                               "etatCours":    cours.isDiffuseriTunesU(),
+                               "catPrinCours": catPrinCours,
+                               "catSecCours":  catSecCours,
+                               "urlCours":     cours.absolute_url()})
 
         retour.sort(lambda x, y: cmp(x["titreCours"], y["titreCours"]))
         return retour
@@ -1274,9 +1274,9 @@ class JalonProperties(SimpleItem):
         if idCours:
             cours.setProperties({"diffusioniTunesU": True})
             cours.setProperties({"DateDerniereModif": DateTime()})
-            infosMembre = jalon_utils.getInfosMembre(auteurCours)
-            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
-                                     "objet"  : "Validation de votre demande iTunesU",
+            infosMembre = jalon_utils.getIndividu(auteurCours, "dict")
+            jalon_utils.envoyerMail({"a":       infosMembre["email"],
+                                     "objet":   "Validation de votre demande iTunesU",
                                      "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU a été validé dans la catégorie : \"%s\".\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
 
     def rejeterCoursiTunesU(self, idCours, auteurCours):
@@ -1284,9 +1284,9 @@ class JalonProperties(SimpleItem):
         repCours = getattr(getattr(portal, "cours"), auteurCours)
         cours = getattr(repCours, idCours, None)
         if idCours:
-            infosMembre = jalon_utils.getInfosMembre(auteurCours)
-            jalon_utils.envoyerMail({"a"      : infosMembre["email"],
-                                     "objet"  : "Rejet de votre demande iTunesU",
+            infosMembre = jalon_utils.getIndividu(auteurCours, "dict")
+            jalon_utils.envoyerMail({"a":        infosMembre["email"],
+                                     "objet":    "Rejet de votre demande iTunesU",
                                      "message": "Bonjour\n\nLe cours \"%s\" pour lequel vous avez demandé une publication sur iTunesU dans la catégorie : \"%s\" a été rejeté.\n\nNous vous remercions de votre compréhension,\n\nCordialement,\nL'équipe %s" % (cours.Title(), cours.getAffCatiTunesUCours(), portal.Title()), })
             cours.setProperties({"DiffusioniTunesU": False})
             cours.setProperties({"CatiTunesU": ""})

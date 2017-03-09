@@ -106,7 +106,7 @@ class JalonAnnonce(ATDocumentBase):
         if not auteurCours:
             auteurCours = cours.Creator()
         if self.Creator() != auteurCours:
-            infosAuteurCours = jalon_utils.getInfosMembre(auteurCours)
+            infosAuteurCours = jalon_utils.getIndividu(auteurCours, "dict")
             jalon_utils.envoyerMail({"de":      de,
                                      "a":       infosAuteurCours["email"],
                                      "objet":   self.Title(),

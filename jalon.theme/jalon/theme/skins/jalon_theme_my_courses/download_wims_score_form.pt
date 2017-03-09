@@ -61,7 +61,7 @@
                                                checked python:context.test(user_index == 0, 'checked', '');"/>
                         <label tal:attributes="for string:utilisateur_${wims_class_author_id}">
                             <i class="fa fa-user fa-fw"></i>
-                            <span tal:content="python:context.getInfosMembre(wims_class_author_id)['fullname']"/>
+                            <span tal:content="python:context.getIndividu(wims_class_author_id, 'dict')['fullname']"/>
                             <span tal:condition="python:wims_class_author_id == user_id">(moi)</span>
                         </label>
                     </li>

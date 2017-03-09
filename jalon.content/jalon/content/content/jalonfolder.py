@@ -312,9 +312,9 @@ class JalonFolder(ATFolder):
             return list(retour)
 
     # getInfosMembre recupere les infos sur les personnes.
-    def getInfosMembre(self, username):
-        # self.plone_log("getInfosMembre")
-        return jalon_utils.getInfosMembre(username)
+    #def getInfosMembre(self, username):
+    #    # self.plone_log("getInfosMembre")
+    #    return jalon_utils.getInfosMembre(username)
 
     def getListeEtudiants(self, code, typeCode):
         bdd = getToolByName(self, "portal_jalon_bdd")
@@ -1045,7 +1045,7 @@ class JalonFolder(ATFolder):
         """
 
         listeSubject = list(self.Subject())
-        etiquette = jalon_utils.getInfosMembre(user_source)["fullname"]
+        etiquette = jalon_utils.getIndividu(user_source, "dict")["fullname"]
 
         authMember = self.aq_parent.getId()
         nbExos = 0

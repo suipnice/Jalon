@@ -16,7 +16,7 @@
     </h2>
 
     <form id="js-UESendMail" method="POST"
-          tal:define="auteur python:context.getInfosMembre(user.getId())"
+          tal:define="auteur python:context.getIndividu(user.getId(), 'dict')"
           tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-success_msg string:Votre courriel a été envoyé.">
         <div class="field">

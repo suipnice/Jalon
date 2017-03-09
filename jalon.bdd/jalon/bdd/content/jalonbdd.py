@@ -572,7 +572,7 @@ class JalonBDD(SimpleItem):
         if "password" in param:
             portal.acl_users.source_users.updateUserPassword(param["SESAME_ETU"], param["password"])
             authMember = portal.portal_membership.getAuthenticatedMember()
-            infos = jalon_utils.getInfosMembre(authMember.getId())
+            infos = jalon_utils.getIndividu(authMember.getId(), "dict")
             message = 'Bonjour\n\nVotre mot de passe a été changé par "%s". Pour vous connecter à %s (%s) vous devez utiliser :\n\nNom d\'utilisateur : %s\nMot de passe : %s\n\nVous pouvez changer ce mot de passe en cliquant sur le lien suivant : %s/mail_password_form?userid=%s\n\nCordialement,\nL\'équipe %s.' % (infos["fullname"],
                 portal.Title(),
                 portal.absolute_url(), param["SESAME_ETU"].encode("UTF-8"),

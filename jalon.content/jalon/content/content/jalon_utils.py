@@ -83,7 +83,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
 
-            dico_ETU = getInfosMembre(quser)
+            dico_ETU = getIndividu(quser, "dict")
 
             """
             dico_ETU = getIndividu(quser, type="dict")
@@ -316,18 +316,21 @@ def getIndividu(sesame, type=None, portal=None):
     individu = bdd.getIndividuLITE(sesame)
     if type == "dict":
         if individu:
-            # individu = individu[0]
-            dico = {"sesame":  sesame,
-                    "nom":     individu["LIB_NOM_PAT_IND"],
-                    "prenom":  individu["LIB_PR1_IND"],
-                    "num_etu": individu["COD_ETU"],
-                    "email":   individu["EMAIL_ETU"]}
+            dico = {"sesame":   sesame,
+                    "id":       sesame,
+                    "nom":      individu["LIB_NOM_PAT_IND"],
+                    "prenom":   individu["LIB_PR1_IND"],
+                    "fullname": ("%s %s" % (individu["LIB_NOM_PAT_IND"], individu["LIB_PR1_IND"])).encode("utf-8"),
+                    "num_etu":  individu["COD_ETU"],
+                    "email":    individu["EMAIL_ETU"]}
             return dico
-        return {"sesame":  sesame,
-                "nom":     sesame,
-                "prenom":  sesame,
-                "num_etu": sesame,
-                "email":   sesame}
+        return {"sesame":   sesame,
+                "id":       sesame,
+                "nom":      sesame,
+                "prenom":   sesame,
+                "fullname": sesame,
+                "num_etu":  sesame,
+                "email":    sesame}
 
     return individu
 
@@ -439,9 +442,9 @@ def getFicheAnnuaire(valeur, base=None):
         base = getBaseAnnuaire()
     return "".join([base['base'], valeur[base["variable"]], base["fin"]])
 
-
+"""
 def getInfosMembre(username):
-    """ Fournit un dico des infos du membre 'username'."""
+    # Fournit un dico des infos du membre 'username'.
     portal = getUtility(IPloneSiteRoot)
     portal_membership = getToolByName(portal, "portal_membership")
     member = portal_membership.getMemberById(username)
@@ -486,6 +489,7 @@ def getInfosMembre(username):
             "email":    email,
             "prenom":   prenom,
             "nom":      nom}
+"""
 
 
 def getCourseUserFolder(context, user_id):

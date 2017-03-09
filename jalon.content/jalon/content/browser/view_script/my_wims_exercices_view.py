@@ -89,7 +89,7 @@ class MyWimsExercicesView(MySpaceView):
         u"""Crée le groupement de classes WIMS pour un nouvel utilisateur si il n'existe pas déjà."""
         # LOG.info("----- createWimsClass -----")
         # 1er  cas : Aucune classe n'existe pour cet utilisateur
-        member_properties = self.context.getInfosMembre(user_id)
+        member_properties = self.context.getIndividu(user_id, "dict")
         member_email = member_properties["email"]
         member_fullname = member_properties["fullname"]
         # Création du groupement de classes

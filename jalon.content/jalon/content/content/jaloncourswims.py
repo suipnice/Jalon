@@ -1519,7 +1519,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         rep_wims = self.wims("verifierRetourWims", {"rep": rep_wims,
                                                     "fonction": "jaloncourswims.py/getUserLog",
                                                     "message": "parametres de la requete : %s" % param})
-        rep_wims["fullname"] = jalon_utils.getInfosMembre(quser)["fullname"]
+        rep_wims["fullname"] = jalon_utils.getIndividu(quser, "dict")["fullname"]
         # On enleve un eventuel element vide a la liste :
         try:
             rep_wims["user_log"].remove("")

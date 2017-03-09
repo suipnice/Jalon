@@ -60,7 +60,7 @@ class JalonFile(ATDocumentBase):
         self.reindexObject()
 
     def getAuteur(self):
-        return jalon_utils.getInfosMembre(self.Creator())["fullname"]
+        return jalon_utils.getIndividu(self.Creator(), "dict")["fullname"]
 
     def isNotStandard(self):
         # LOG.info("----- isNotStandard -----")

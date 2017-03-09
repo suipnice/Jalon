@@ -81,7 +81,7 @@
                                                disabled is_disabled"/>
                         <label tal:attributes="for string:utilisateur_${wims_class_author_id}">
                             <i class="fa fa-user fa-fw"></i>
-                            <span tal:content="python:context.getInfosMembre(wims_class_author_id)['fullname']"/>
+                            <span tal:content="python:context.getIndividu(wims_class_author_id, 'dict')['fullname']"/>
                             <span tal:condition="course_data/is_course_author">(moi)</span>
                         </label>
                     </li>

@@ -331,13 +331,9 @@ class MyCoursesView(BrowserView):
         if not course_author_id:
             course_author_id = course_brain.Creator
         if course_author_id not in authors_dict:
-            authors_dict[course_author_id] = jalon_utils.getInfosMembre(course_author_id)["fullname"]
-            # course_author_data = jalon_utils.getInfosMembre(course_author_id)
-            # authors_dict[course_author_id] = {"course_author_name": course_author_data["fullname"],
-                                              #"course_author_email": course_author_data["email"]}
+            authors_dict[course_author_id] = jalon_utils.getIndividu(course_author_id, "dict")["fullname"]
+
         course_data["course_author_id"] = course_author_id
         course_data["course_author_name"] = authors_dict[course_author_id]
-        # course_data["course_author_name"] = authors_dict[course_author_id]["course_author_name"]
-        # course_data["course_author_email"] = authors_dict[course_author_id]["course_author_email"]
 
         return course_data

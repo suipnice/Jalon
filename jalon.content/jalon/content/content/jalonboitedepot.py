@@ -442,11 +442,11 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             etudiant_id = str(depot.Creator)
             if not etudiant_id in liste_etudiants:
                 liste_etudiants.append(etudiant_id)
-                etudiant_infos = self.getInfosMembre(etudiant_id)
-                if etudiant_infos:
-                    etudiant_name = "%s %s" % (etudiant_infos["nom"], etudiant_infos["prenom"])
-                else:
-                    etudiant_name = etudiant_id
+                etudiant_name = self.getIndividu(etudiant_id, "dict")["fullname"]
+                #if etudiant_infos:
+                #    etudiant_name = "%s %s" % (etudiant_infos["nom"], etudiant_infos["prenom"])
+                #else:
+                #    etudiant_name = etudiant_id
                 dico_name_etudiants[etudiant_id] = etudiant_name
             else:
                 etudiant_name = dico_name_etudiants[etudiant_id]
@@ -1850,8 +1850,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
     def supprimerMarquageHTML(self, chaine):
         return jalon_utils.supprimerMarquageHTML(chaine)
 
-    def getInfosMembre(self, etudiant_id):
-        return jalon_utils.getInfosMembre(etudiant_id)
+    #def getInfosMembre(self, etudiant_id):
+    #    return jalon_utils.getInfosMembre(etudiant_id)
 
     def getIndividu(self, sesame, data_type=None, portal=None):
         return jalon_utils.getIndividu(sesame, data_type, portal)

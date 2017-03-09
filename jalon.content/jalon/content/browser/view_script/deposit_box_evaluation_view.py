@@ -44,11 +44,12 @@ class DepositBoxEvaluationView(BrowserView):
         # LOG.info("----- getStudentEvaluationView (Start) -----")
         deposit_box = self.context
         deposit_box_id = deposit_box.getId()
-        student_infos = deposit_box.getInfosMembre(student_id)
-        if student_infos:
-            student_name = "%s %s" % (student_infos["nom"], student_infos["prenom"])
-        else:
-            student_name = student_id
+        student_name = deposit_box.getIndividu(student_id, "dict")["fullname"]
+        #student_infos = deposit_box.getIndividu(student_id, "dict")
+        #if student_infos:
+        #    student_name = "%s %s" % (student_infos["nom"], student_infos["prenom"])
+        #else:
+        #    student_name = student_id
 
         my_view = {"is_anonymous":          self.isAnonymous(),
                    "student_name":          student_name,
