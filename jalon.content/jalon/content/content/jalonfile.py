@@ -81,15 +81,15 @@ class JalonFile(ATDocumentBase):
         return self.file.get_size()
 
     def notifierCorrection(self, correction=False, note=False):
-        self.plone_log("----- notifierCorrection -----")
+        LOG.info("----- notifierCorrection START -----")
         boite = self.aq_parent
         cours = boite.aq_parent
         if not boite.getNotificationCorrection():
-            self.plone_log("Notification correction désactivée")
+            LOG.info("Notification correction désactivée")
             return None
 
-        self.plone_log("Notification correction activée")
-        portal = getToolByName(self,"portal_url").getPortalObject()
+        LOG.info("Notification correction activée")
+        portal = getToolByName(self, "portal_url").getPortalObject()
         portal_membership = getToolByName(self, 'portal_membership')
 
         authMember = portal_membership.getAuthenticatedMember()
@@ -97,33 +97,32 @@ class JalonFile(ATDocumentBase):
         if not send_from:
             send_from = portal.getProperty("email_from_address")
 
-        self.plone_log(send_from)
+        LOG.info(send_from)
 
         etudiant = portal_membership.getMemberById(self.Creator())
         send_to = etudiant.getProperty("email")
         if not send_to:
-            self.plone_log("Pas d'email de destinataire")
+            LOG.info("Pas d'email de destinataire")
             return None
 
-
-        self.plone_log(send_to)
+        LOG.info(send_to)
         """
         for auteur in cours.getCoAuteursCours():
             send_to.append(auteur["email"])
         send_to.append(cours.getAuteur()["email"])
+        LOG.info(send_to)
         """
-        self.plone_log(send_to)
 
         if correction:
             objet = "Une correction est disponible"
         if note:
             objet = "Une note est disponible"
         if correction and note:
-            objet ="Une correction et une note sont disponibles"
+            objet = "Une correction et une note sont disponibles"
 
-        form = {"de"    : send_from,
-                "a"     : send_to,
-                "objet" : objet}
+        form = {"de":    send_from,
+                "a":     send_to,
+                "objet": objet}
 
         message = ["Bonjour %s\n" % etudiant.getProperty("fullname")]
         message.append("%s pour votre dépôt \"%s\" dans :" % (objet, self.Title()))
@@ -135,16 +134,16 @@ class JalonFile(ATDocumentBase):
             message.append("    - co-auteurs du cours :")
             for coAuteur in coAuteurs:
                 message.append("        - %s" % coAuteur["fullname"])
-        message.append("Consulter sur %s : %s.\n" % (portal.Title(), portal.absolute_url()))
+        message.append("Consulter sur %s : %s.\n" % (portal.Title(), self.aq_parent.absolute_url()))
         message.append("Cordialement,")
         message.append("L'équipe %s" % portal.Title())
         form["message"] = "\n".join(message)
-        self.plone_log(form["message"])
+        LOG.info(form["message"])
         try:
             jalon_utils.envoyerMail(form)
         except:
-            self.plone_log("----- erreur envoi email -----")
+            LOG.info("----- erreur envoi email -----")
 
-        self.plone_log("----- notifierCorrection -----")
+        LOG.info("----- notifierCorrection END -----")
 
 registerATCT(JalonFile, PROJECTNAME)
