@@ -101,7 +101,7 @@ class DepositBoxView(CourseView):
                                             "css_class": " selected" if my_view["is_documents_tab"] else "",
                                             "icon":      "fa-upload",
                                             "text":      "Documents enseignants",
-                                            "nb":        my_deposit_box.getNbSujets()})
+                                            "nb":        my_deposit_box.getNbSujets(my_view["is_personnel"])})
         if my_view["is_documents_tab"]:
             portal = my_deposit_box.portal_url.getPortalObject()
             deposit_box_path = my_deposit_box.getPhysicalPath()

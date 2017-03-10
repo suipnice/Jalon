@@ -134,9 +134,9 @@ class JalonActivity(SimpleItem):
 
             if is_personnel or document_dict["is_display_item_bool"]:
                 document_dict["document_link"] = "/".join([portal.absolute_url(), "Members", document_properties["createurElement"], course_parent._type_folder_my_space_dict[document_properties["typeElement"].replace(" ", "")], document_id.replace("*-*", "."), "view"])
-            if is_personnel:
-                document_dict["document_actions"] = self.getItemActions(course_parent, document_properties, document_dict["is_display_item_bool"])
-            documents_list.append(document_dict)
+                if is_personnel:
+                    document_dict["document_actions"] = self.getItemActions(course_parent, document_properties, document_dict["is_display_item_bool"])
+                documents_list.append(document_dict)
         return documents_list
 
     def getCourseItemProperties(self, key=None):

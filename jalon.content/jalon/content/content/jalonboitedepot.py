@@ -288,8 +288,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         else:
             return jalon_utils.getLocaleDate(date, '%d %B %Y - %Hh%M')
 
-    def getNbSujets(self):
-        return len(self.getInfosListeAttribut("sujets", True))
+    def getNbSujets(self, is_personnel=False):
+        return len(self.getInfosListeAttribut("sujets", is_personnel))
 
     def getDepositFileOptions(self):
         options = {}
