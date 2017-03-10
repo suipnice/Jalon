@@ -84,11 +84,36 @@ class JalonFile(ATDocumentBase):
         LOG.info("----- notifierCorrection START -----")
         boite = self.aq_parent
         cours = boite.aq_parent
-        if not boite.getNotificationCorrection():
-            LOG.info("Notification correction désactivée")
+        #if not boite.getNotificationCorrection() and not boite.getNotificationNotation():
+        #    LOG.info("Notification correction et notation désactivée")
+        #    return None
+
+        is_notifier_correction = True if correction and boite.getNotificationCorrection() else False
+        is_notifier_note = True if note and boite.getNotificationNotation() else False
+
+        if is_notifier_correction and is_notifier_note:
+            LOG.info("Envoyer mail Correction et Note")
+            self.envoyerMailCorrectionNote(boite, cours, correction, note)
+            LOG.info("----- notifierCorrection END -----")
             return None
 
-        LOG.info("Notification correction activée")
+        if is_notifier_correction:
+            LOG.info("Envoyer mail Correction")
+            self.envoyerMailCorrectionNote(boite, cours, correction, note)
+            LOG.info("----- notifierCorrection END -----")
+            return None
+
+        if is_notifier_note:
+            LOG.info("Envoyer mail Note")
+            self.envoyerMailCorrectionNote(boite, cours, correction, note)
+            LOG.info("----- notifierCorrection END -----")
+            return None
+
+        LOG.info("Notification correction et notation désactivée")
+        LOG.info("----- notifierCorrection END -----")
+
+    def envoyerMailCorrectionNote(self, boite, cours, correction=False, note=False):
+        LOG.info("----- envoyerMailCorrectionNote START -----")
         portal = getToolByName(self, "portal_url").getPortalObject()
         portal_membership = getToolByName(self, 'portal_membership')
 
@@ -106,12 +131,6 @@ class JalonFile(ATDocumentBase):
             return None
 
         LOG.info(send_to)
-        """
-        for auteur in cours.getCoAuteursCours():
-            send_to.append(auteur["email"])
-        send_to.append(cours.getAuteur()["email"])
-        LOG.info(send_to)
-        """
 
         if correction:
             objet = "Une correction est disponible"
@@ -143,7 +162,6 @@ class JalonFile(ATDocumentBase):
             jalon_utils.envoyerMail(form)
         except:
             LOG.info("----- erreur envoi email -----")
-
-        LOG.info("----- notifierCorrection END -----")
+        LOG.info("----- envoyerMailCorrectionNote END -----")
 
 registerATCT(JalonFile, PROJECTNAME)
