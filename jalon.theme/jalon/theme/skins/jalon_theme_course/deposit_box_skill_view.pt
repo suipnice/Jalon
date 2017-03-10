@@ -15,10 +15,15 @@
         <tal:replace replace="competence/titre">Titre de la compétence</tal:replace>
         <a class="close-reveal-modal"></a>
     </h2>
+
     <div class="panel bkgrnd radius"
-         tal:content="structure python:competence['description'].replace('\n', '<br/>')">
-        Description de la compétence
+         tal:condition="not:python:competence['description']">
+        Pas de description pour cette compétence.
     </div>
+
+    <div class="panel bkgrnd radius"
+         tal:condition="python:competence['description']"
+         tal:content="structure python:competence['description'].replace('\n', '<br />')" />
 
 </metal:main>
 

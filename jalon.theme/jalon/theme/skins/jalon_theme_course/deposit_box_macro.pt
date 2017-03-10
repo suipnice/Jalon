@@ -470,7 +470,7 @@
                                 </th>
                             <tal:repeat repeat="index ordre">
                                 <th tal:define="competence python:dicoCompetences[index]">
-                                    <tal:replace tal:replace="competence/titre">Titre de la compétence</tal:replace>
+                                    <tal:block i18n:translate="">Compétence</tal:block> <tal:replace tal:replace="repeat/index/number"/>
                                 </th>
                             </tal:repeat>
                             </tr>

@@ -31,7 +31,7 @@
     <tal:define define="competence python:dicoCompetences[index]">
         <h3 class="texte_icone icone_liste">
             <i class="fa fa-tasks"></i>
-            Compétence
+            Compétence <tal:replace replace="repeat/index/number"/>
         </h3>
         <div class="panel bkgrnd radius">
             <div id="archetypes-fieldname-title"

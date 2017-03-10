@@ -17,7 +17,7 @@
     </h2>
 
     <tal:repeat repeat="index ordre">
-        <tal:define define="competence python:dicoCompetences[index]">
+    <tal:define define="competence python:dicoCompetences[index]">
 
     <h3 tal:content="competence/titre" />
 
@@ -26,11 +26,11 @@
         Pas de description pour cette compétence.
     </div>
 
-    <div class="panel callout radius"
+    <div class="panel bkgrnd radius"
          tal:condition="python:competence['description']"
          tal:content="structure python:competence['description'].replace('\n', '<br />')" />
 
-        </tal:define>
+    </tal:define>
     </tal:repeat>
 
 </metal:main>

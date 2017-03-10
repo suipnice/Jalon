@@ -20,16 +20,22 @@
     <tal:repeat repeat="index ordre">
     <tal:define define="competence python:dicoCompetences[index]">
 
-    <h3 tal:content="competence/titre" />
+    <h3>
+        <tal:block i18n:translate="">Compétence</tal:block> <tal:replace replace="repeat/index/number"/>
+    </h3>
 
-    <div class="panel bkgrnd radius"
-         tal:condition="not:python:competence['description']">
-        Pas de description pour cette compétence.
+    <div class="panel bkgrnd radius">
+        <strong i18n:translate="">Titre :</strong> <tal:replace replace="competence/titre" />
+        <br/>
+        <strong i18n:translate="">Description :</strong>
+
+        <div tal:condition="not:python:competence['description']">
+            Pas de description pour cette compétence.
+        </div>
+
+        <div tal:condition="python:competence['description']"
+             tal:content="structure python:competence['description'].replace('\n', '<br />')" />
     </div>
-
-    <div class="panel callout radius"
-         tal:condition="python:competence['description']"
-         tal:content="structure python:competence['description'].replace('\n', '<br />')" />
 
     </tal:define>
     </tal:repeat>
