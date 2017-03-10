@@ -341,16 +341,20 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         # LOG.info("***** deposit_box_profil : %s" % deposit_box_profil)
         return [{"deposit_box_profile_text":    "Standard",
                  "deposit_box_profile_value":   "standard",
-                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "standard" else ""},
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "standard" else "",
+                 "deposit_box_profile_help":    "Les étudiants peuvent avoir autant de fichiers actifs qu'ils le désirent, les télécharger et les invalider. La date limite de dépôts est facultative."},
                 {"deposit_box_profile_text":    "Examen",
                  "deposit_box_profile_value":   "examen",
-                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "examen" else ""},
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "examen" else "",
+                 "deposit_box_profile_help":    "Les étudiants ne peuvent avoir qu'un seul fichier actif. Ils ne peuvent pas télécharger les fichiers qu'ils ont déposé. La date limite de dépôts est facultative."},
                 {"deposit_box_profile_text":    "Évaluation par compétences",
                  "deposit_box_profile_value":   "competences",
-                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "competences" else ""},
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "competences" else "",
+                 "deposit_box_profile_help":    "Les étudiants ne peuvent avoir qu'un seul fichier actif. La date limite de dépôts est facultative. Vous pouvez créer et évaluer vos étudiants à l'aide d'une grille de compétences accessible depuis l'onglet Compétences."},
                 {"deposit_box_profile_text":    "Évaluation par les pairs",
                  "deposit_box_profile_value":   "pairs",
-                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else ""}]
+                 "deposit_box_profile_checked": "selected" if deposit_box_profil == "pairs" else "",
+                 "deposit_box_profile_help":    "Les étudiants ne peuvent avoir qu'un seul fichier actif. À partir de l'onglet Par les pairs, vous pourrez créer une grille d'évaluations et demander à vos étudiants d'évaluer leurs pairs. Les dates limites de dépots et d'évaluation sont obligatoires."}]
 
     def isExamen(self):
         # LOG.info("----- isExamen -----")
@@ -714,6 +718,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         self.reindexObject()
 
     def telechargerDepots(self, HTTP_USER_AGENT):
+        LOG.info("----- telechargerDepots START -----")
         import tempfile
         fd, path = tempfile.mkstemp('.zipfiletransport')
         close(fd)
@@ -735,9 +740,11 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                     "file_data":  str(obj.file.data)})
 
         dicoEtudiants = jalon_utils.getIndividus(listeEtudiants, type="dict")
+        LOG.info("dicoEtudiants")
+        LOG.info(dicoEtudiants)
         for depot in listeDepots:
             try:
-                filename_path = "%s/%s %s (%s)/%s" % (self.Title(), dicoEtudiants[depot["idEtudiant"]]["nom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["prenom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["num_etu"], depot["filename"])
+                filename_path = "%s/%s %s (%s)/%s" % (self.Title(), dicoEtudiants[depot["idEtudiant"]]["nom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["prenom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["num_etu"].encode("utf-8"), depot["filename"])
             except:
                 filename_path = "%s/%s/%s" % (self.Title(), depot["idEtudiant"], depot["filename"])
             if 'Windows' in HTTP_USER_AGENT:
@@ -751,6 +758,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         fp = open(path, 'rb')
         data = fp.read()
         fp.close()
+        LOG.info("----- telechargerDepots END -----")
         return {"length": str(os.stat(path)[6]), "data": data}
 
     def telechargerListingDepots(self, HTTP_USER_AGENT):

@@ -29,7 +29,7 @@
             <button type="submit" class="button alert small"
                     name="purger">
                 <i class="fa fa-trash-o"></i>
-                <tal:block i18n:translate="">Purger tous les dépôts</tal:block>
+                <tal:block i18n:translate="">Supprimer tous les dépôts</tal:block>
             </button>
         </div>
     </form>

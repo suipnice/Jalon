@@ -17,6 +17,7 @@
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/edit_deposit_box_script">
 
+        <tal:comment replace="nothing">
         <div id="archetypes-fieldname-profil" class="field">
             <label for="profil" i18n:translate="">Profil</label>
             <tal:repreat repeat="profile context/getDepositBoxProfile">
@@ -24,11 +25,32 @@
                        tal:attributes="id profile/deposit_box_profile_value;
                                        value profile/deposit_box_profile_value;
                                        checked profile/deposit_box_profile_checked"/>
+                
                 <label tal:attributes="for profile/deposit_box_profile_value"
                        tal:content="profile/deposit_box_profile_text"
-                       i18n:translate=""/><br/>
+                       i18n:translate=""/>
             </tal:repreat>
         </div>
+        </tal:comment>
+
+        <fieldset class="panel bkgrnd radius"
+                  tal:repeat="profile context/getDepositBoxProfile">
+
+            <legend tal:content="profile/deposit_box_profile_text"/>
+
+            <p tal:content="profile/deposit_box_profile_help"
+               i18n:translate=""/>
+
+            <div class="formControls">
+                <input type="radio" name="profile"
+                       tal:attributes="id profile/deposit_box_profile_value;
+                                       value profile/deposit_box_profile_value;
+                                       checked profile/deposit_box_profile_checked"/>
+                <label tal:attributes="for profile/deposit_box_profile_value"
+                       i18n:translate="">Sélectionner</label>
+            </div>
+
+        </fieldset>
 
         <input type="hidden" name="tab" tal:attributes="value tab"/>
 
@@ -36,7 +58,7 @@
             <button type="submit" class="button small"
                     name="form.button.save">
                 <i class="fa fa-pencil"></i>
-                <tal:block i18n:translate="">Modifier</tal:block>
+                <tal:block i18n:translate="">Enregistrer</tal:block>
             </button>
         </div>
 
