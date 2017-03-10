@@ -25,6 +25,8 @@ class MyDepositFileBoxView(BrowserView):
     def getMyDepositFileBoxView(self):
         # LOG.info("----- getMyDepositFileBoxView -----")
         context = self.context
+        deposit_box = context.aq_parent
+        deposit_box_profil = deposit_box.getProfile()
 
         deposit_comment = "Aucun commentaire"
         if context.Description():
@@ -43,4 +45,5 @@ class MyDepositFileBoxView(BrowserView):
                 "deposit_correction_text": deposit_correction_text,
                 "deposit_note":            deposit_note,
                 "deposit_link":            "%s/at_download/file" % context.absolute_url(),
-                "deposit_correction_file": context.getFichierCorrection()}
+                "deposit_correction_file": context.getFichierCorrection(),
+                "deposit_download":        True if deposit_box_profil != "examen" else False}

@@ -31,12 +31,14 @@
 
     <div class="row">
         <tal:condition condition="not:my_view/deposit_correction_file">
-        <a class="small-12 column button expand radius" tal:attributes="href my_view/deposit_link">
+        <a class="small-12 column button expand radius" tal:attributes="href my_view/deposit_link"
+           tal:condition="my_view/deposit_download">
             <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
         </a>
         </tal:condition>
         <tal:condition condition="my_view/deposit_correction_file">
-        <div class="small-12 medium-6 column">
+        <div class="small-12 medium-6 column"
+             tal:condition="my_view/deposit_download">
             <a class="button expand radius"
                tal:attributes="href my_view/deposit_link">
                 <i class="fa fa-download"></i><tal:block i18n:translate="">Télécharger ce dépôt</tal:block>
