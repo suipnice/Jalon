@@ -1088,10 +1088,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
         #    retour.sort(lambda x, y: cmp(x["titreElement"], y["titreElement"]))
         return retour
 
-    def getNbSujets(self):
+    def getNbSujets(self, is_personnel):
         """Obtient le nombre de sujets à afficher."""
         # LOG.info("----- getNbSujets -----")
-        return len(self.getInfosListeAttribut("sujets", True))
+        return len(self.getInfosListeAttribut("sujets", is_personnel))
 
     def getNbExercices(self):
         """Obtient le nombre d'exercices."""

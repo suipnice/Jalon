@@ -100,7 +100,7 @@ class WimsActivityView(CourseView):
                                                   "icon": "fa-eye",
                                                   "text": "Afficher"})
             if my_view["activity_type"] == "Examen" and nb_exos > 0:
-                my_view["wims_activity_edit"].append({"href" : "%s/wims_activity_exercice_view" % my_view["activity_link"],
+                my_view["wims_activity_edit"].append({"href": "%s/wims_activity_exercice_view" % my_view["activity_link"],
                                                       "icon": "fa-laptop",
                                                       "text": "Tester les exercices"})
         my_view["wims_activity_edit"].append({"href": "%s/edit_wims_activity_form?tab=%s" % (my_view["activity_link"], tab),
@@ -135,7 +135,7 @@ class WimsActivityView(CourseView):
                                               "css_class": " selected" if tab == "documents" else "",
                                               "icon":      "fa-upload",
                                               "text":      "Documents enseignants",
-                                              "nb":        my_wims_activity.getNbSujets()})
+                                              "nb":        my_wims_activity.getNbSujets(my_view["is_personnel"])})
         if tab == "documents":
             my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["activity_link"], activity_path, portal)["my_space"]
             my_view["documents_list"] = my_wims_activity.displayDocumentsList(my_view["is_personnel"], portal)
