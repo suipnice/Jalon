@@ -21,6 +21,9 @@
           tal:define="listeExports context/getListeExports"
           id="js-exportWIMS-form">
 
+         <metal:macro tal:condition="not:is_ajax | nothing"
+                      use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
+
         <h3>Choisissez sous quel format vous souhaitez exporter cet exercice :</h3>
         <input type="hidden" name="format" id="js-export_format" value="OEF" />
 

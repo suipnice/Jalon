@@ -8,29 +8,29 @@
 ##
 #import OEF_to_OLX
 
-u"""  Script (Python) "getExoWIMS".
+u"""  Script (Python) "export_wims_exercice_script".
 
 Fournit un fichier telechargeable de l'exo WIMS courant, selon le format demandé (QTI, EDX, OEF...)
 
 """
-
+# context = context
 request = context.REQUEST
-modele = context.getModele()
+modele  = context.getModele()
 
 portal = context.aq_parent
 authMember = portal.portal_membership.getAuthenticatedMember()
 
-#request n'est pas un veritable dico, donc pas de "in"
+# request n'est pas un veritable dico, donc pas de "in"
 if request.has_key("format"):
     file_format = request["format"]
 else:
-    #par défaut, on exporte en QTI
+    # Par défaut, on exporte en QTI
     file_format = "QTI"
 
 if request.has_key("version"):
     version = request["version"]
 else:
-    #par défaut, on exporte dans la derniere version
+    # Par défaut, on exporte dans la derniere version
     version = "latest"
 
 if file_format == "QTI":
@@ -46,7 +46,11 @@ elif file_format == "OEF":
     filename = "%s.oef" % context.getId()
     request.RESPONSE.setHeader('content-type', "text/plain")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    return context.getExoOEF(modele, authMember, request)
+    exo_file = context.getExoOEF(modele, authMember, request)
+    if exo_file["request_status"] == "OK":
+        return exo_file["code_source"]
+    else:
+        return exo_file["error_message"]
 
 elif file_format == "FLL":
     filename = "%s.fll" % context.getId()

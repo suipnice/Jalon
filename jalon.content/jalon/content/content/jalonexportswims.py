@@ -2,7 +2,7 @@
 u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS dans différents formats."""
 
 import xml.etree.ElementTree as ET
-#import HTMLParser
+# import HTMLParser
 
 import jalon_utils
 
@@ -10,6 +10,9 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import os
 
 from random import shuffle
+
+import string
+import lxml
 
 from logging import getLogger
 LOG = getLogger('jalonExportsWims')
@@ -22,11 +25,9 @@ LOG.error('error message')
 LOG.critical('critical message')
 """
 
-import string
 alphabet = list(string.ascii_uppercase)
 
-import lxml
-#lxml parser est plus permissif qu'elementTree : grace a l'option "recover" il est capable d'ignorer les balises attributs html non conforms en XML.
+# lxml parser est plus permissif qu'elementTree : grace a l'option "recover" il est capable d'ignorer les balises attributs html non conforms en XML.
 parser_lxml = lxml.etree.XMLParser(recover=True)
 
 
@@ -39,7 +40,7 @@ def getExoTXT(context, format="GIFT", version="latest"):
 
 
 def getExoZIP(filename_path, exo_donnees):
-    """ fournit les donnees "exo_donnees" compressees au format zip."""
+    """Fournit les donnees "exo_donnees" compressees au format zip."""
     import tempfile
     fd, path = tempfile.mkstemp('.zipfiletransport')
     os.close(fd)
@@ -82,17 +83,21 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
     if not membership_tool.isAnonymousUser():
         demandeur = membership_tool.getAuthenticatedMember()
-
-        #try:
-        #    source = str(getattr(self, "%s_%s.xml" % (format, modele)))
-        #except:
-        #    return ("<error>Désolé, ce modèle ne peut être exporté dans le format %s.</error>" % format)
-        #tree = ET.ElementTree(root)
-        #for key in dicoXML.keys():
-        #    source = source.replace("$$%s$$" % key, ET.tostring(dicoXML[key])
+        """
+        try:
+            source = str(getattr(self, "%s_%s.xml" % (format, modele)))
+        except:
+            return ("<error>Désolé, ce modèle ne peut être exporté dans le format %s.</error>" % format)
+        tree = ET.ElementTree(root)
+        for key in dicoXML.keys():
+            source = source.replace("$$%s$$" % key, ET.tostring(dicoXML[key])
+        """
         parsed_exo = context.getExoWims(modele, demandeur)
+        if parsed_exo["code_source"] is None:
+            return "<error>%s</error>" % parsed_exo["error_message"]
+
         parsed_exo["id"] = context.getId()
-        #### Parametres communs :
+        # Parametres communs :
         parsed_exo["titre"] = context.Title().decode("utf-8")
 
         if formatXML == "OLX":
@@ -103,42 +108,42 @@ def getExoXML(context, formatXML="OLX", version="latest"):
             elementXML.text = parsed_exo["titre"]
             exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
 
-        #Format Moodle XML
+        # Format Moodle XML
         elif formatXML == "Moodle_XML":
             if modele == "qcmsimple":
                 exoXML = __qcmsimple_to_moodleXML(parsed_exo)
 
-        #Format QTI
+        # Format QTI
         elif formatXML == "QTI":
             if version == "1.1":
-                #Format QTI v1.1
+                # Format QTI v1.1
                 exoXML = ET.Element("assessmentItem",
-                         attrib={"xmlns"             : "http://www.imsproject.org/xsd/ims_qti_rootv1p1",
-                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                 "xsi:schemaLocation": "http://www.imsproject.org/xsd/ims_qti_rootv1p1 http://www.imsproject.org/xsd/ims_qti_rootv1p1.xsd",
-                                 "identifier"        : parsed_exo["id"],
-                                 "title"             : parsed_exo["titre"]})
+                                    attrib={"xmlns"             : "http://www.imsproject.org/xsd/ims_qti_rootv1p1",
+                                            "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                            "xsi:schemaLocation": "http://www.imsproject.org/xsd/ims_qti_rootv1p1 http://www.imsproject.org/xsd/ims_qti_rootv1p1.xsd",
+                                            "identifier"        : parsed_exo["id"],
+                                            "title"             : parsed_exo["titre"]})
                 if modele == "qcmsimple":
                     exoXML = __qcmsimple_to_qti_11(exoXML, parsed_exo)
             elif version == "1.2.1":
-                #Format QTI v1.2.1
+                # Format QTI v1.2.1
 
-                ### Plus d'infos sur le format QTI v1.2.1 :
+                # Plus d'infos sur le format QTI v1.2.1 :
                 # http://www.imsglobal.org/question/qtiv1p2/imsqti_litev1p2.html
                 # http://www.imsglobal.org/question/qtiv1p2/imsqti_oviewv1p2.html
                 # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_outv1p2.html  "ASI Outcomes Processing"
                 # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_bestv1p2.html "ASI Best Practice & Implementation Guide"
                 # http://www.imsglobal.org/question/qtiv1p2/imsqti_asi_bindv1p2.html "ASI XML Binding Specification"
-                ## XSD :
+                # XSD :
                 # ASI LITE                        https://www.imsglobal.org/sites/default/files/xsd/ims_qtilitev1p2p1.xsd
                 # ASI (Assessment, Section, Item) https://www.imsglobal.org/sites/default/files/xsd/ims_qtiasiv1p2p1.xsd
                 # RES (Results Reporting)         https://www.imsglobal.org/sites/default/files/xsd/ims_qtiresv1p2p1.xsd
 
                 exoXML = ET.Element("questestinterop",
-                         attrib={"xmlns"             : "http://www.imsglobal.org/xsd/ims_qtiasiv1p2",
-                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                                 "xsi:schemaLocation": "http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd"
-                                 })
+                                    attrib={"xmlns"             : "http://www.imsglobal.org/xsd/ims_qtiasiv1p2",
+                                            "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                            "xsi:schemaLocation": "http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd"
+                                            })
                 elementXML = ET.SubElement(exoXML,
                                            "assessment",
                                            attrib={"ident" : parsed_exo["id"],
@@ -151,18 +156,18 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                 elif modele == "qcmsuite":
                     __qcmsuite_to_qti_121(elementXML, parsed_exo)
             else:
-                #Format QTI v2.1
-                ### Plus d'infos sur le format QTI v2.1 :
+                # Format QTI v2.1
+                # Plus d'infos sur le format QTI v2.1 :
                 # XML Binding : http://www.imsglobal.org/question/qtiv2p1/imsqti_bindv2p1.html
 
                 exoXML = ET.Element("assessmentTest",
-                    attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
-                            "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
-                            "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
-                            "identifier"        : parsed_exo["id"],
-                            "title"             : parsed_exo["titre"],
-                            "adaptive"          : "false",
-                            "timeDependent"     : "false"})
+                                    attrib={"xmlns"             : "http://www.imsglobal.org/xsd/imsqti_v2p1",
+                                            "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance",
+                                            "xsi:schemaLocation": "http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd",
+                                            "identifier"        : parsed_exo["id"],
+                                            "title"             : parsed_exo["titre"],
+                                            "adaptive"          : "false",
+                                            "timeDependent"     : "false"})
 
                 if modele == "qcmsimple":
                     exoXML = __qcmsimple_to_qti_21(exoXML, parsed_exo)
@@ -171,13 +176,13 @@ def getExoXML(context, formatXML="OLX", version="latest"):
                 else:
                     exoXML.text = u"Désolé, ce modèle n'est pas pris en charge dans ce format."
 
-        #Format "Flow Lecon", généré par "Lesson Builder" de Turning Technologies
+        # Format "Flow Lecon", généré par "Lesson Builder" de Turning Technologies
         elif formatXML == "FLL":
-            #<TestDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+            # <TestDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
             exoXML = ET.Element("TestDefinition",
-                         attrib={"xmlns:xsd"         : "http://www.w3.org/2001/XMLSchema",
-                                 "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance"
-                                 })
+                                attrib={"xmlns:xsd"         : "http://www.w3.org/2001/XMLSchema",
+                                        "xmlns:xsi"         : "http://www.w3.org/2001/XMLSchema-instance"
+                                        })
 
             elementXML = ET.SubElement(exoXML, "name")
             elementXML.text = u"Leçon importée de Jalon"
@@ -204,10 +209,10 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
 
 def __qcmsimple_to_olx(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers OLX:
+    # Modele "QCM Simple" vers OLX:
     # LOG.info("[__qcmsimple_to_olx] parsed_exo = %s" % parsed_exo)
     enonce = jalon_utils.convertHTMLEntitiesToUTF8(parsed_exo["enonce"])
-    #enonce = jalon_utils.convertHTMLToXHTML(enonce)
+    # enonce = jalon_utils.convertHTMLToXHTML(enonce)
     enonce = '<div class="enonce">%s</div>' % enonce
 
     exoXML.append(ET.fromstring(enonce, parser=parser_lxml))
@@ -217,7 +222,7 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
         element = "choiceresponse"
         attributs_element = {}
         if parsed_exo["options_checkbox"] == 1:
-            #Les modes partiels "halves" et "EDC" existent, mais aucun d'eux ne semble fonctionner avec EDX (oct. 2015)
+            # Les modes partiels "halves" et "EDC" existent, mais aucun d'eux ne semble fonctionner avec EDX (oct. 2015)
             if parsed_exo["options_eqweight"] == 1:
                 attributs_element["partial_credit"] = "EDC"
             else:
@@ -231,13 +236,13 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
         # Radio buttons
         element = "multiplechoiceresponse"
         attributs_element = {"targeted-feedback": ""}
-        #partial_credit = "points"
+        # partial_credit = "points"
 
         sousElement = "choicegroup"
         attributs_sousElement = {"label": parsed_exo["id"],
                                  "shuffle": "true",
                                  # EDX est incapable de gérer à la fois "answer-pool" et "shuffle"... :/
-                                 #"answer-pool": parsed_exo["tot"]
+                                 # "answer-pool": parsed_exo["tot"]
                                  }
 
     elementXML = ET.SubElement(exoXML, element, attrib=attributs_element)
@@ -309,8 +314,8 @@ def __qcmsimple_to_olx(exoXML, parsed_exo):
 
 
 def __qcmsimple_to_qti_11(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers QTI 1.1:
-    ### TODO !!
+    # Modele "QCM Simple" vers QTI 1.1:
+    # TODO !!
     ###
 
     elementXML = ET.SubElement(exoXML,
@@ -363,8 +368,8 @@ def __qcmsimple_to_qti_11(exoXML, parsed_exo):
 
 
 def __qcmsimple_to_qti_121(exoXML, parsed_exo):
-    """ Modele "QCM Simple" vers QTI 1.2.1."""
-    ### TODO !!
+    """Modele "QCM Simple" vers QTI 1.2.1."""
+    # TODO !!
 
     ###
     # Pour TurningPoint, le title doit absolument ressembler à ca "parsed_exo["titre"] Question MC #N"
@@ -436,15 +441,15 @@ def __qcmsimple_to_qti_121(exoXML, parsed_exo):
                                    attrib={"feedbacktype": feedbacktype,
                                            "linkrefid":    rep_item["type"]})
 
-    ## Feedbacks ##
+    # Feedbacks #
 
-    ## Feedback bon
+    # Feedback bon #
     elementXML = ET.SubElement(element_item,
                                "itemfeedback",
                                attrib={"ident": "Correct"})
     __add_matttext(elementXML, parsed_exo["feedback_bon"].decode("utf-8"))
 
-    ## Feedback Mauvais (+Solution)##
+    # Feedback Mauvais (+Solution) #
     elementXML = ET.SubElement(element_item,
                                "itemfeedback",
                                attrib={"ident": "Incorrect"})
@@ -478,7 +483,7 @@ def __add_matttext(elementXML, texte, flow_type="flow_mat"):
 
 
 def __qcmsimple_to_qti_21(exoXML, parsed_exo):
-    ### Modele "QCM Simple" vers QTI 2.1:
+    # Modele "QCM Simple" vers QTI 2.1:
 
     assessmentItem = ET.SubElement(exoXML,
                                    "assessmentItem",
@@ -496,10 +501,10 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
         cardinality = "single"
 
     elementXML = ET.SubElement(assessmentItem,
-                           "responseDeclaration",
-                           attrib={"identifier":  "RESPONSE",
-                                   "cardinality": cardinality,
-                                   "baseType":    "identifier"})
+                               "responseDeclaration",
+                               attrib={"identifier":  "RESPONSE",
+                                       "cardinality": cardinality,
+                                       "baseType":    "identifier"})
 
     correctResponse = ET.SubElement(elementXML, "correctResponse")
 
@@ -554,9 +559,9 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
                                            "showHide": "show"})
         elementXML.text = parsed_exo["feedback_general"].decode("utf-8")
 
-    #"options"         : "checkbox split",
-    #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="correct">correct</modalFeedback>
-    #<modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="incorrect">incorrect</modalFeedback>
+    # "options"         : "checkbox split",
+    # <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="correct">correct</modalFeedback>
+    # <modalFeedback outcomeIdentifier="FEEDBACK" showHide="show" identifier="incorrect">incorrect</modalFeedback>
     elementXML = ET.SubElement(assessmentItem, "responseProcessing", attrib={"template": "http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"})
     return exoXML
 
@@ -662,16 +667,16 @@ def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
     rep_items = __randomize_responses_qcmsimple(parsed_exo["bonnesrep"], parsed_exo["mauvaisesrep"])
     liste_questions = []
     nb_rep = 0
+    # for ligne in liste_bons:
     for rep_id, rep_item in rep_items:
-    #for ligne in liste_bons:
         if nb_rep <= len(alphabet):
             elementReponse = ET.SubElement(elementAnswers, "answer")
             elementXML = ET.SubElement(elementReponse, "aId")
             elementXML.text = "%s" % nb_rep
             elementXML = ET.SubElement(elementReponse, "aKey")
             elementXML.text = alphabet[nb_rep]
-            #elementXML = ET.SubElement(elementReponse, "aText")
-            #elementXML.text = alphabet[nb_rep]
+            # elementXML = ET.SubElement(elementReponse, "aText")
+            # elementXML.text = alphabet[nb_rep]
             elementXML = ET.SubElement(elementReponse, "isCorrect")
             if rep_item["value"] == "1":
                 elementXML.text = "true"
@@ -682,9 +687,9 @@ def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
 
     elementXML = ET.SubElement(element_question, "questionContent")
 
-    ### On intègre les proposition dans l'enoncé pour les faire apparaitre.
+    # On intègre les proposition dans l'enoncé pour les faire apparaitre.
     # Pour le moment, un bug d'affichage dans Flow empeche d'utiliser les puces autres que numériques pour les <ol>...
-    #questionContent = "<div class=\"oef_explain\" style=\"font-size:24px;\">%s</div><ol type=\"A\" style=\"list-style-type: upper-alpha;font-size:24px;\">%s</ol>" % (parsed_exo["enonce"].decode("utf-8"), "\n".join(liste_questions))
+    # questionContent = "<div class=\"oef_explain\" style=\"font-size:24px;\">%s</div><ol type=\"A\" style=\"list-style-type: upper-alpha;font-size:24px;\">%s</ol>" % (parsed_exo["enonce"].decode("utf-8"), "\n".join(liste_questions))
     questionContent = "<div class=\"oef_explain\" style=\"font-size:24px;\">%s</div><ul style=\"font-size:24px;\">%s</ul>" % (parsed_exo["enonce"].decode("utf-8"), "\n".join(liste_questions))
 
     elementXML.text = "<![CDATA[%s]]>" % questionContent
@@ -693,8 +698,8 @@ def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
     elementXML = ET.SubElement(element_question, "questionContentType")
     elementXML.text = "6"
     return exoXML
-    #elementXML = ET.SubElement(element_question, "advancedMode")
-    #elementXML.text = "false"
+    # elementXML = ET.SubElement(element_question, "advancedMode")
+    # elementXML.text = "false"
 
     """  Checkbox :
       <questionType>1</questionType>
@@ -741,7 +746,7 @@ def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
 
 
 def __qcmsuite_to_qti_121(exoXML, parsed_exo):
-    u""" Modele "QCM à la suite" vers QTI 1.2.1 (principalement pour TurningPoint 5)."""
+    u"""Modele "QCM à la suite" vers QTI 1.2.1 (principalement pour TurningPoint 5)."""
     for index, id_question in enumerate(parsed_exo["list_id_questions"]):
         element_item = ET.SubElement(exoXML, "item",
                                      attrib={"ident" : id_question,
@@ -780,7 +785,7 @@ def __qcmsuite_to_qti_121(exoXML, parsed_exo):
         nb_rep = 0
 
         dico_reponses = {}
-        ##  answers
+        # answers
         liste_reponses = parsed_exo["reponses%s" % index].split("\n")
 
         for num_ligne, ligne in enumerate(liste_reponses):
@@ -833,7 +838,7 @@ def __qcmsuite_to_qti_121(exoXML, parsed_exo):
                                        attrib={"feedbacktype": rep_item["feedbacktype"],
                                                "linkrefid":    "general"})
 
-        ## Feedbacks ##
+        # Feedbacks #
 
         elementXML = ET.SubElement(element_item,
                                    "itemfeedback",
@@ -844,7 +849,7 @@ def __qcmsuite_to_qti_121(exoXML, parsed_exo):
 
 
 def __qcmsuite_to_qti_21(exoXML, parsed_exo):
-    ### Modele "QCM a la Suite" vers QTI 2.1:
+    # Modele "QCM a la Suite" vers QTI 2.1:
 
     if parsed_exo["anstype"] == "checkbox":
         cardinality = "multiple"
@@ -854,17 +859,17 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
     for index, id_question in enumerate(parsed_exo["list_id_questions"]):
 
         assessmentItem = ET.SubElement(exoXML,
-                               "assessmentItem",
-                               attrib={"identifier"        : id_question,
-                                       "title"             : parsed_exo["titre"],
-                                       "adaptive"          : "false",
-                                       "timeDependent"     : "false"})
+                                       "assessmentItem",
+                                       attrib={"identifier"        : id_question,
+                                               "title"             : parsed_exo["titre"],
+                                               "adaptive"          : "false",
+                                               "timeDependent"     : "false"})
 
         elementXML = ET.SubElement(assessmentItem,
-                               "responseDeclaration",
-                               attrib={"identifier":  "RESPONSE",
-                                       "cardinality": cardinality,
-                                       "baseType":    "identifier"})
+                                   "responseDeclaration",
+                                   attrib={"identifier":  "RESPONSE",
+                                           "cardinality": cardinality,
+                                           "baseType":    "identifier"})
 
         correctResponse = ET.SubElement(elementXML, "correctResponse")
 
@@ -913,14 +918,14 @@ def __qcmsuite_to_qti_21(exoXML, parsed_exo):
 
 
 def __randomize_responses_qcmsimple(liste_bons, liste_mauvais):
-    ### Renvoit un tuple mélangeant les 2 listes en parametres
+    # Renvoit un tuple mélangeant les 2 listes en parametres
 
     liste_bons = liste_bons.decode("utf-8").split("\n")
     liste_mauvais = liste_mauvais.decode("utf-8").split("\n")
 
     dico_reponses = {}
     nb_rep = 0
-    ## Correct answers
+    # Correct answers #
     for ligne in liste_bons:
         rep = ligne.strip()
         if rep != "":
@@ -931,7 +936,7 @@ def __randomize_responses_qcmsimple(liste_bons, liste_mauvais):
                                      "data": rep,
                                      "value": "1",  # On donne "+1" par bonne réponse.
                                      }
-    ## Incorrect answers
+    # Incorrect answers #
     liste_mauvais
     for ligne in liste_mauvais:
         rep = ligne.strip()

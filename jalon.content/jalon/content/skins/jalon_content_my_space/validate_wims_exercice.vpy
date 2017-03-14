@@ -66,13 +66,17 @@ else:
     if not (rep and rep["status"] == "OK"):
         if modele == "qcmsuite":
             form["list_id_questions"] = rep["list_id_questions"]
-        state.setError("syntax_error", _(u"Erreur de syntaxe"))
+        if "error_code" in rep and rep["error_code"] == "503":
+            # state.setError("wims_unavailable", _(rep["message"]))
+            context.plone_utils.addPortalMessage(_(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp..."), type="error")
+        else:
+            state.setError("syntax_error", _(u"Erreur de syntaxe"))
         state.set(status='failure')
         error = True
 
 if not error:
     state.set(status="success")
 else:
-    context.plone_utils.addPortalMessage(_(u"Une erreur est survenue. Votre exercice n'a pas été modifié."), 'error')
+    context.plone_utils.addPortalMessage(_(u"Votre exercice n'a pas été modifié."), 'error')
 
 return state

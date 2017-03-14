@@ -536,9 +536,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
             if dico["status"] and not self.idExam:
                 # print "jaloncourswims/afficherRessource // dico =%s" % str(dico)
                 reponse = self.wims("creerExamen", dico)
-                self.idExam = str(reponse["exam_id"])
-                # L'examen est créé, on lui ajoute alors la liste des exercices de la feuille
-                reponse = self.wims("injecter_exercice", {"authMember": dico["authMember"], "qclass": dico["qclass"], "qsheet": dico["qsheet"], "qexam": self.idExam})
+                if reponse["status"] == "OK":
+                    self.idExam = str(reponse["exam_id"])
+                    # L'examen est créé, on lui ajoute alors la liste des exercices de la feuille
+                    reponse = self.wims("injecter_exercice", {"authMember": dico["authMember"], "qclass": dico["qclass"], "qsheet": dico["qsheet"], "qexam": self.idExam})
 
             # Cas de l'examen créé
             if self.idExam:
@@ -549,13 +550,17 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 if newdico["status"] == 0:
                     newdico["status"] = 3
                 newdico["qexam"] = self.idExam
-                self.wims("modifierExamen", newdico)
+                reponse = self.wims("modifierExamen", newdico)
 
         # Cas des autoevaluations
         else:
-            self.wims("modifierFeuille", dico)
+            reponse = self.wims("modifierFeuille", dico)
 
-        super(JalonCoursWims, self).editCourseItemVisibility(item_id, item_date, item_property_name)
+        if reponse["status"] == "OK":
+            super(JalonCoursWims, self).editCourseItemVisibility(item_id, item_date, item_property_name)
+        else:
+            message = _(u"Une erreur est survenue. La visibilité de l'activité « ${title} » n'a pas changé.", mapping={'title':  self.Title().decode("utf-8")})
+            self.plone_utils.addPortalMessage(message, type='error')
 
     """
     def afficherRessource(self, idElement, dateAffichage, attribut):
@@ -1525,6 +1530,16 @@ class JalonCoursWims(JalonActivity, ATDocument):
             rep_wims["user_log"].remove("")
         except:
             pass
+
+        if rep_wims["status"] == "ERROR":
+            if "error_code" in rep_wims and rep_wims["error_code"] == "450":
+                message = _(u"La ressource que vous tentez d'afficher est trop importante et dépasse la limite autorisée.")
+            else:
+                message = _(u"Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possible permettant de reproduire cette erreur svp.")
+            if "error_reason" in rep_wims:
+                message = "<p>%s</p><strong>%s</strong>" % (message, rep_wims["error_reason"])
+            self.plone_utils.addPortalMessage(message, type='error')
+
         # print "Retour WIMS de getUserLog : %s " % rep_wims
         return rep_wims
 

@@ -639,18 +639,21 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         try:
             json.loads(fichier)
             # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
-            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible.
-            # autre erreur possible : l'exercice demandé a disparu de WIMS.
+            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible (ou mal configuré).
+            # autre erreur possible : l'exercice demandé a disparu de WIMS ?
 
             self.aq_parent.wims("verifierRetourWims", {"rep": fichier,
-                                                       "fonction": "jalonexercicewims.py/getExoWims",
+                                                       "fonction": "jalonexercicewims.py/getExoOEF",
                                                        "message": "Impossible d'obtenir un exo WIMS (demandeur = %s)" % authMember,
                                                        "jalon_request": requete
                                                        })
-            return None
+            message = _(u"Impossible d'obtenir cet exercice. Le serveur WIMS semble temporairement inaccessible. Merci de retenter ultérieurement svp.")
+            self.plone_utils.addPortalMessage(message, type='error')
+            # [TODO] : ici on pourrait peut-etre renvoyer un dico avec un eventuel code d'erreur pour pouvoir prendr en charge plus de cas.
+            return {"request_status": "ERROR", "code_source": None, "error_message": message}
         except:
             # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
-            return fichier
+            return {"request_status": "OK", "code_source": fichier}
 
     def getExoWims(self, modele, authMember, requete={}):
         """Permet de parser le code source d'un exercice WIMS."""
@@ -683,14 +686,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     requete["options_checkbox"] = 1
             return requete
 
-        fichier = self.getExoOEF(modele, authMember, requete)
-        if fichier is None:
-            return None
+        parsed_exercice = self.getExoOEF(modele, authMember, requete)
+        fichier = parsed_exercice["code_source"]
 
-        if modele == "exercicelibre":
-            return {"exercicelibre": fichier}
+        if fichier is None or modele == "exercicelibre":
+            return parsed_exercice
         else:
-            retour = {"code_source": fichier}
             variables_parse = {"qcmsimple": {"enonce":           "text{explain",
                                              "bonnesrep":        "matrix{datatrue",
                                              "mauvaisesrep":     "matrix{datafalse",
@@ -847,28 +848,28 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     variable = self.getVariablesDefaut(modele)[key]
                 if key == "options":
                     if "split" in variable:
-                        retour["%s_split" % key] = 1
+                        parsed_exercice["%s_split" % key] = 1
                     else:
-                        retour["%s_split" % key] = 0
+                        parsed_exercice["%s_split" % key] = 0
                     if "checkbox" in variable:
-                        retour["%s_checkbox" % key] = 1
+                        parsed_exercice["%s_checkbox" % key] = 1
                     else:
-                        retour["%s_checkbox" % key] = 0
+                        parsed_exercice["%s_checkbox" % key] = 0
                     if "eqweight" in variable:
-                        retour["%s_eqweight" % key] = 1
+                        parsed_exercice["%s_eqweight" % key] = 1
                     else:
-                        retour["%s_eqweight" % key] = 0
+                        parsed_exercice["%s_eqweight" % key] = 0
                 else:
                     variable = variable.replace("_ENDLINE_", "\n")
                     # when variable = asis(variable)
                     if variable.startswith("asis("):
-                        retour[key] = variable[5:-1]
+                        parsed_exercice[key] = variable[5:-1]
                     else:
-                        retour[key] = variable
+                        parsed_exercice[key] = variable
                     # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
-                    if retour[key] == ("&#36;&#36;%s&#36;&#36;" % key):
-                        retour[key] = self.getVariablesDefaut(modele)[key]
-                        # retour[key] = variable.decode("iso-8859-1").encode("utf-8")
+                    if parsed_exercice[key] == ("&#36;&#36;%s&#36;&#36;" % key):
+                        parsed_exercice[key] = self.getVariablesDefaut(modele)[key]
+                        # parsed_exercice[key] = variable.decode("iso-8859-1").encode("utf-8")
 
             if modele == "qcmsuite":
                 i = 0
@@ -878,7 +879,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 variable = recherche.group(1)
                 variable = variable.replace("_ENDLINE_", "")
                 list_id_questions = variable.split(" ")
-                retour["list_id_questions"] = list_id_questions
+                parsed_exercice["list_id_questions"] = list_id_questions
                 for id_question in list_id_questions:
                     pattern = "text{%s=(.*?)}_ENDLINE_" % id_question
                     m = re.compile(pattern)
@@ -895,11 +896,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     if variable.startswith("Qtitle"):
                         variable = variable.replace("\n", "<br/>", 1)
                     list_variable = variable.split("\n")
-                    retour["enonce%s" % str(i)] = list_variable[0].replace("<br/>", "\n")
-                    retour["feedback%s" % str(i)] = list_variable[1]
-                    retour["reponses%s" % str(i)] = "\n".join(list_variable[2:])
+                    parsed_exercice["enonce%s" % str(i)] = list_variable[0].replace("<br/>", "\n")
+                    parsed_exercice["feedback%s" % str(i)] = list_variable[1]
+                    parsed_exercice["reponses%s" % str(i)] = "\n".join(list_variable[2:])
                     i = i + 1
-            return retour
+            return parsed_exercice
 
     def extendResearch(self, variable, fichier, end_offset):
         u"""Permet d'etendre une recherche d'expression reguliere dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""

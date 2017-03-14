@@ -16,7 +16,8 @@
             tal:define="tag context/getTypeWims;
                         anonymous python:user.has_role('Anonymous');
                         icones python:{'AutoEvaluation': 'icone_refresh', 'Examen': 'icone_examen'};
-                        pageWIMS request/pageWIMS | string:user_log;">
+                        pageWIMS request/pageWIMS | string:user_log;
+                        user_id user/getId">
 
 <tal:comment replace="nothing"><!--seul un enseignant ou l'etudiant demandé peut voir la page --></tal:comment>
 <tal:condition condition="not:anonymous"
@@ -38,35 +39,23 @@
         td.warning { color: #f08a24; }
     </style>
 
-    <tal:condition condition="python: (personnel or quser==user) and quser != None">
+
+    <tal:condition condition="python: (personnel or quser==user_id) and quser != None">
     <div id="js-list-log"
-         tal:define="user_logs python:context.getUserLog(quser=quser, authUser=user, isProf=personnel);
+         tal:define="user_logs python:context.getUserLog(quser=quser, authUser=user_id, isProf=personnel);
                      connexions user_logs/user_log  | nothing;"
          tal:condition="python:context.test(pageWIMS == 'user_log', 1, 0)">
+
+        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
+
+
         <h3>
             <tal:block i18n:translate="">Connexions de</tal:block>
             <span tal:content="user_logs/fullname"/>
             <tal:block i18n:translate="">à l'activité</tal:block>
             "<span tal:content="context/title_or_id"/>"
         </h3>
-        <div data-alert="data-alert" class="portalMessage alert-box radius alert"
-             tal:condition="python:user_logs['status']=='ERROR'"
-             tal:define="error_code user_logs/error_code | nothing">
-            <tal:condition condition="python:error_code=='450'">
-                <!--metal:macro use-macro="context/macro_messages/macros/wims_limit_reached">
-                    encart d'affichage du message d'erreur "limit reached".
-                </metal:macro-->
-                limit reached
-            </tal:condition>
-            <tal:condition condition="python:error_code!='450'">
-                <!--metal:macro use-macro="context/macro_messages/macros/wims_unknown_error">
-                    encart d'affichage du message "erreur inconnue".
-                </metal:macro-->
-                wims_unknown_error
-            </tal:condition>
-            <pre tal:content="user_logs/message"/>
-            <tal:comment replace="nothing" ><!--pre tal:content="user_logs/error_body"/--></tal:comment>
-        </div>
+
         <tal:condition condition="connexions">
         <table class="listing">
             <thead>

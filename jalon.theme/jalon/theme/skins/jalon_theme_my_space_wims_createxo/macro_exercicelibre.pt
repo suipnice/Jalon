@@ -13,7 +13,7 @@
          tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
             <label for="exercicelibre">Code source de l'exercice </label>
             <div   class="fieldErrorBox" tal:condition="error" tal:content="error"/>
-            <textarea name="exercicelibre" id="exercicelibre" rows="15" class="big" tal:content="QCM_parsed/exercicelibre"/>
+            <textarea name="exercicelibre" id="exercicelibre" rows="15" class="big" tal:content="QCM_parsed/code_source"/>
         </div>
 
     </metal:macro>

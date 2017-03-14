@@ -148,7 +148,13 @@ class Wims(SimpleItem):
             error_body = self.string_for_json(error_body)
 
             asked_url = "%s?%s" % (self.url_connexion, data)
-            rep = '{"status":"ERROR", "URL":"%s"' % asked_url
+            rep = '{"status":"ERROR", "URL": "%s"' % asked_url
+
+            if hasattr(e, 'code'):
+                # -- HTTPError --
+                # L'erreur HTTP 450 survient souvent lors de parentheses mal fermées detectées par WIMS
+                # Mais elle peut également survenir quand la taille d'une variable a dépassé la limite de WIMS
+                rep = '%s, "error_code": "%s"' % (rep, e.code)
 
             if hasattr(e, 'reason'):
                 # -- URLError --
@@ -156,13 +162,10 @@ class Wims(SimpleItem):
                 #  * "Time out" Cela peut aussi bien provenir du client (modifier alors la valeur de timeout ci-dessus) que du serveur appelé.
                 #  * ou lorsqu'on envoi des parentheses mal fermées. (reason = WIMS User Error)
                 #  * ou lorsque le serveur WIMS est en maintenance. (reason = WIMS Interruption)
-                rep = '%s, "type":"URLError", "message":"%s", "error_body":"%s"}' % (rep, e.reason, error_body)
-            elif hasattr(e, 'code'):
-                # -- HTTPError --
-                # L'erreur HTTP 450 survient souvent lors de parenthese mal fermées detectées par WIMS
-                rep = '%s, "type":"HTTPError", "error_code":"%s", "message":"%s"}' % (rep, e.code, error_body)
-            else:
-                rep = '%s, "type":"Unknown IOError", "message":"%s"}' % (rep, error_body)
+                #  * ou lorsque la taille des données envoyées à WIMS etait trop grosse et a été tronquée : WIMS indique donc que les parentheses sont mal fermées.
+                rep = '%s, "message": "%s"' % (rep, e.reason)
+
+            rep = '%s, "error_body": "%s"}' % (rep, error_body)
             # mail = rep.decode("iso-8859-1")
             # self.verifierRetourWims({"rep": mail.encode("utf-8"), "fonction": "jalon.wims/utility.py/callJob", "requete" : param})
         # print "--- REP Wims ---"
@@ -643,8 +646,8 @@ class Wims(SimpleItem):
         return questions_list
 
     def verifierRetourWims(self, params):
-        """verifie le bon retour d'un appel Wims, et envoie un mail d'erreur si besoin."""
-        # rep doit etre une chaine de caracteres au format json.
+        """verifie le bon retour d'un appel WIMS, et envoie un mail d'erreur si besoin."""
+        # params["rep"] doit etre une chaine de caracteres au format json.
         if "fonction" in params:
             fonction = params["fonction"]
         else:
@@ -696,15 +699,19 @@ class Wims(SimpleItem):
                 mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"],
                                                                                                                                                                                                                      params["jalon_URL"])
             mail_erreur["message"] = "%s <h2>Fonction appelante :</h2><p>%s</p>" % (mail_erreur["message"], fonction)
-            mail_erreur["message"] = '%s <h2>Requ&ecirc;te effectu&eacute;e :</h2><pre>%s</pre>' % (mail_erreur["message"], requete)
 
-            if "error_code" in params:
-                mail_erreur["message"] = "%s <h2>Code d'erreur :</h2><div>%s</div>" % (mail_erreur["message"], params["error_code"])
-            if "error_body" in params:
-                mail_erreur["message"] = "%s <h2>Page d'erreur :</h2><div>%s</div>" % (mail_erreur["message"], params["error_body"])
+            if requete != "":
+                mail_erreur["message"] = '%s <h2>Requ&ecirc;te effectu&eacute;e :</h2><pre>%s</pre>' % (mail_erreur["message"], requete)
+
+            if "error_code" in rep:
+                mail_erreur["message"] = "%s <h2>Code d'erreur : <code>%s</code></h2>" % (mail_erreur["message"], rep["error_code"])
 
             mail_erreur["message"] = "%s <h2>Message d'erreur :</h2><pre>%s</pre>" % (mail_erreur["message"], rep["message"])
             mail_erreur["message"] = "%s <h2>Informations sur l'erreur</h2><pre>%s</pre>" % (mail_erreur["message"], message.decode("utf-8"))
+
+            if "error_body" in rep:
+                mail_erreur["message"] = "%s <h2>Page d'erreur :</h2><div style='border-left:2px orange;padding-left:2em'>%s</div>" % (mail_erreur["message"], rep["error_body"])
+
             mail_erreur["message"] = "%s <h2>R&eacute;ponse WIMS :</h2><div><pre>%s</pre></div>" % (mail_erreur["message"], rep)
 
             if "jalon_request" in params:

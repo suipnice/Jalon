@@ -118,7 +118,7 @@
     </div>
 
     <form method="POST"
-          tal:condition="QCM_parsed"
+          tal:condition="QCM_parsed/code_source"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
         <div tal:define="error errors/title | nothing"

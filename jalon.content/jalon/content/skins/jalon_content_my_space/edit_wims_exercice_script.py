@@ -29,6 +29,7 @@ title = context.Title().decode("utf-8")
 success_message       = _(u"Votre exercice « %s » a bien été modifié." % title)
 unknown_model_message = _(u"Une erreur est survenue sur votre exercice « %s » (modèle introuvable ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp." % title)
 syntax_error_message  = _(u"Votre exercice « %s » n'a pas été enregistré, probablement suite à une erreur de syntaxe.<br />Par exemple, lorsque vous utilisez des parenthèses, accolades ou crochets, veillez à les placer par paires correctement fermées." % title)
+unavailable_message   = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
 
 if "save_and_test" in form:
     # url de test direct de l'exercice actuel :
@@ -61,8 +62,13 @@ else:
             context.setProperties({"Title":  form["title"],
                                    "Modele": wims_exercice_model})
         else:
-            # La creation a planté coté WIMS, on suppose que la creation a planté suite a une erreur de syntaxe.
-            context.plone_utils.addPortalMessage(syntax_error_message, 'error')
+            # La creation a planté coté WIMS
+            if "error_code" in rep and rep["error_code"] == "503":
+                # L'erreur 503 indique une interruption de WIMS
+                context.plone_utils.addPortalMessage(unavailable_message, 'error')
+            else:
+                # on suppose que la creation a planté suite a une erreur de syntaxe.
+                context.plone_utils.addPortalMessage(syntax_error_message, 'error')
             page_url = object_link
 
 context.REQUEST.RESPONSE.redirect(page_url)

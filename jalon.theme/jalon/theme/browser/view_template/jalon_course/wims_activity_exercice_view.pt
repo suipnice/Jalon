@@ -67,7 +67,7 @@
 
             <section tal:condition="affElement/val" class="small-12 columns">
                 <tal:condition tal:condition="not:param_wims">
-                    <h1 class="alert"><i class="fa fa-lock"></i><span i18n:translate="">Impossible d'accéder à cet examen.</span></h1>
+                    <h1 class="alert"><i class="fa fa-lock"></i><span i18n:translate="">Impossible d'accéder à cette activité.</span></h1>
                 </tal:condition>
 
                 <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
@@ -153,7 +153,7 @@
 
         <tal:prof condition="isCoAuteur" >
             <!-- Version Prof -->
-            <tal:OK tal:condition="python:param_wims['status']!= 'ERROR'">
+            <tal:OK tal:condition="python:param_wims and param_wims['status']!= 'ERROR'">
                 <tal:comment replace="nothing">
                     <!--lien vers la feuille (autoeval ou examen non activé) : &module=adm/sheet&sh=${qsheet}-->
                 </tal:comment>

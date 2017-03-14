@@ -27,14 +27,6 @@
     <main class="row" role="main" aria-labelledby="page_title"
           tal:define="edit_wims_exercice_macro_name context/getEditWimsExerciceMacroName">
 
-        <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
-            Message de session
-        </metal:macro>
-
-        <!--metal:macro use-macro="context/macro_messages/macros/messages">
-            Encart d'affichage des messages de feedback
-        </metal:macro-->
-
         <!-- id="wims-edit" -->
         <section id="wims-edit" class="small-12 columns"
                  tal:define="modele context/getModele;
@@ -42,19 +34,15 @@
                  tal:attributes="data-modele modele"
                  tal:condition="can_view">
 
-            <div data-alert="data-alert" class="alert-box alert radius"
-                 tal:condition="not:QCM_parsed"
-                 i18n:translate="">
-                <!-- 2 cas possibles : exercice supprimé coté WIMS, ou WIMS inaccessible -->
-                <tal:block i18n:translate="">Une erreur est survenue. Le serveur WIMS est peut-être injoignable. Veuillez réessayer ultérieurement.</tal:block>
-                <a class="close"></a>
-            </div>
+            <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">
+                Message de session
+            </metal:macro>
 
-        <metal:macro use-macro="python:context.edit_wims_exercice_macro.macros[edit_wims_exercice_macro_name]" />
+            <metal:macro use-macro="python:context.edit_wims_exercice_macro.macros[edit_wims_exercice_macro_name]" />
 
-        <tal:block define="script string:preventMultipleFormSubmits('wims-edit');">
-            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
-        </tal:block>
+            <tal:block define="script string:preventMultipleFormSubmits('wims-edit');">
+                <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+            </tal:block>
 
         </section>
 
