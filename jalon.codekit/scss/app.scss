@@ -135,7 +135,7 @@ button:focus { border: 0 none; outline: 0; }
 
 #breadcrumb {
 
-    @include background( 'stars.svg', 0 0, repeat, #2a9ccc );
+    @include background( 'stars.svg', 0 0, repeat, $primary-color );
 
     & > div.row {
         position: relative;
@@ -1173,6 +1173,8 @@ table {
             &.res-utilisateurs { @include button-style( $users-color, true, false, scale-color( $users-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-bug { @include button-style( $bug-color, true, false, scale-color( $bug-color, $lightness: $button-function-factor), $button-border-color ); }
             &.res-autre { @include button-style( $other-color, true, false, scale-color( $other-color, $lightness: $button-function-factor), $button-border-color ); }
+            &.res-liens { color: $oil; }
+
         }
     }
 }
@@ -1861,7 +1863,7 @@ body.template-firstpage_view.role-anonymous {
         margin-bottom: rem-calc( 8 );
         text-align: center;
 
-        @include background( '#{$imgPath}/stars.svg', 0 0, repeat, #2a9ccc );
+        @include background( '#{$imgPath}/stars.svg', 0 0, repeat, $primary-color );
 
         h1, h2 {
             font-family: 'hero_lightlight', sans-serif;

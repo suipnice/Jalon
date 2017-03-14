@@ -4,32 +4,35 @@
 */
 
 
-
-// Couleurs : http://www.colorcombos.com/color-schemes/2477/ColorCombo2477.html
-
 //* UNS
-$primary-color: #2a9ccc;
+$primary-color: #11aded;
 //*/
 
 /* Campus Pegasus
 $primary-color: #8c82b2;
 //*/
 
-$button_primary-color: #21b6a8; // bleu-vert
+$secondary-color: #e7e7e7;
+$alert-color: #ff4137;
+$success-color: #00cc01;
+$warning-color: #ff8c37;
+$info-color: #168ab6;
 
-$file-color: #e78841;           // orange
-$pod-color: #a53b81;            // mauve 1
-$connect-color: #79a445;        // vert
-$wims-color: #865977;           // mauve 2
-$link-color: #f1c340;           // jaune
-$glossary-color: #6588a2;       // bleu
-$users-color: #f5ebd0;          // crème
-$bug-color: #d64638;            // rouge
-$other-color: #1e4459;          // marine
+$button_primary-color: #18cbb3;
+
+$file-color: #ff8c37;
+$pod-color: #e33187;
+$connect-color: #17b616;
+$wims-color: #b02ed7;
+$link-color: #ffdc37;
+$glossary-color: $info-color;
+$users-color: #f5ebd0;
+$bug-color: $alert-color;
+$other-color: $glossary-color;
 
 $course_title-color: $connect-color;
 $course_space_el-color: $glossary-color;
-$course_activity-color: $wims-color;
+$course_activity-color: $pod-color;
 
 $date-color: $users-color;
 
