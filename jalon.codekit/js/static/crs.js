@@ -190,11 +190,9 @@ function setSortablePlan( ) {
 
         //setAlertBox( 'warning', "Medium & up media detected" );
 
-        $coursePlan.find( '.elemtextelibre > span:first-of-type li' ).addClass( 'js-unsortable' );
-
         $coursePlan.nestedSortable( {
 
-            items: 'li:not(.js-unsortable)',
+            items: 'li',
             handle: 'div',
             tabSize: 20,
             isTree: true,

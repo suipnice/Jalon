@@ -18,11 +18,9 @@ function instantiateCKEditor( textareaID ) {
             customConfig: '',
             language: 'fr',
             toolbarGroups: [
-                //{ 'name': "document",    'groups': [ "mode" ] },
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
                 { 'name': "clipboard",   'groups': [ "clipboard", "undo" ] },
                 { 'name': "links",       'groups': [ "links" ] },
-                { 'name': "paragraph",   'groups': [ "list" ] },
                 { 'name': "insert",      'groups': [ "insert" ] }
             ],
             removePlugins: 'base64image',

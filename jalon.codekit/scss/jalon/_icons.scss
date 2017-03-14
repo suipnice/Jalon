@@ -8,7 +8,6 @@
 
 dl.typeElement > dd:before,
 #course_plan-plan span:before,
-#course_plan-plan li.element > div.elemtextelibre > span ul > li:before,
 .texte_icone:before,
 .accordion-navigation>a:after {
     display: inline-block;
@@ -82,7 +81,6 @@ dl.typeElement > dd,
 
     li.collapsed > div.elemtitre > span > i.fa:before { content: $fa-var-arrow-circle-right; }
     li.expanded > div.elemtitre > span > i.fa:before { content: $fa-var-arrow-circle-down; }
-    li.element > div.elemtextelibre > span ul > li:before { content: $fa-var-genderless; }
 }
 
 
