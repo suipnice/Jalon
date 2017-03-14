@@ -12,6 +12,7 @@
 
 <metal:macro define-macro="informations_jalon">
 
+<tal:comments replace="nothing"><!--
 <div id="jalon_stats" class="reveal-modal small" data-reveal="data-reveal" data-options="close_on_background_click: true;">
 
     <h2>
@@ -47,6 +48,7 @@
     </table>
 
 </div>
+--></tal:comments>
 
 <div class="row" data-equalizer="data-equalizer">
 
@@ -135,13 +137,13 @@
             <i class="fa fa-download"></i>
             Plaquette de présentation
         </a>
+    <tal:comments replace="nothing"><!--
         <a class="button radius small" data-reveal-id="jalon_stats"
-           href="http://portail.unice.fr/services-centraux/service_universitaire_innovation_pedagogique/Services_aux_enseignants/Enseigner_avec_le_numerique/plaquette_web.pdf"
+           href="#"
            i18n:translate="">
             <i class="fa fa-calculator"></i>
             Statistiques
         </a>
-    <tal:comments replace="nothing"><!--
         <a class="button radius small" href="http://unice.fr/suip/jalon/support" i18n:translate="">
             <i class="fa fa-download"></i>
             Support de formation
