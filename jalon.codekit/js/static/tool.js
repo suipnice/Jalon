@@ -20,7 +20,6 @@ function instantiateCKEditor( textareaID ) {
             toolbarGroups: [
                 { 'name': "basicstyles", 'groups': [ "basicstyles" ] },
                 { 'name': "clipboard",   'groups': [ "clipboard", "undo" ] },
-                { 'name': "links",       'groups': [ "links" ] },
                 { 'name': "insert",      'groups': [ "insert" ] }
             ],
             removePlugins: 'base64image',
