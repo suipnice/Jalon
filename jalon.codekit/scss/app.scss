@@ -2028,47 +2028,6 @@ div.boardComment {
 
 /***************************************************************************************************
 
-        CKEditor : éléments de texte libre & description du cours
-
-*/
-
-#reveal-main .type_TexteLibre,
-#course_plan ol .type_TexteLibre .typeElementTitre {
-
-    p, ul, ol {
-        margin-top: 0;
-        margin-bottom: rem-calc( 3 );
-        font-size: rem-calc( 13 ) !important;
-        line-height: rem-calc( 16 ) !important;
-    }
-
-    ul {
-        margin-left: rem-calc( 5 ) !important;
-        //list-style-type: circle !important;
-        //list-style-position: inside !important;
-        // Pb de list-style-type, utilisation d'une icône FA en
-        // remplacement, voir « scss/jalon/_icons.css ».
-        li:before { margin-right: rem-calc( 3 );}
-    }
-
-    ol {
-        margin-left: rem-calc( 6 );
-        list-style-type: decimal !important;
-        list-style-position: inside !important;
-    }
-
-    li {
-        padding-top: 0;
-        font-weight: normal;
-        font-style: normal;
-    }
-}
-
-
-
-
-/***************************************************************************************************
-
         Admin
 
 */
