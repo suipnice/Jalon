@@ -264,6 +264,17 @@ def setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, 
     session.commit()
 
 
+def deletePeersEvaluation(session, DEPOSIT_BOX):
+    session.execute("delete from peers_evaluation_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.execute("delete from peers_average_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.execute("delete from peers_self_evaluation_note_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.execute("delete from peers_self_evaluation_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.execute("delete from peers_evaluation_note_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.execute("delete from peers_evaluation_mysql where DEPOSIT_BOX='%s'" % DEPOSIT_BOX)
+    session.flush()
+    session.commit()
+
+
 def setSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT):
     session.add(tables.PeersSelfEvaluationMySQL(DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_DATE, CRITERIA_NOTE, CRITERIA_COMMENT))
     session.commit()

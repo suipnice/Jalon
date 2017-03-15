@@ -8,7 +8,8 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="errors options/state/getErrors | nothing;">
+            tal:define="errors options/state/getErrors | nothing;
+                        is_affection context/getAffectationEvaluation">
 
     <h2 i18n:translate="">
         <tal:block i18n:translate="">Modifier le nombre de corrections par étudiant</tal:block>
@@ -19,8 +20,14 @@
         <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
     </div>
 
+    <div class="panel warning radius"
+         tal:condition="is_affection">
+         <strong>Attention :</strong> l'affectation des évaluations a déjà été réalisée. Vous ne pouvez plus changer le nombre de corrections par étudiants.
+    </div>
+
     <form id="js-editNombreCorrection" method="post"
-          tal:attributes="action string:${context/absolute_url}/${template/id}">
+          tal:attributes="action string:${context/absolute_url}/${template/id}"
+          tal:condition="not:is_affection">
 
         <div id="archetypes-fieldname-nombreCorrection"
              tal:define="error errors/nombreCorrection | nothing;"

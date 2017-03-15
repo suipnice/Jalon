@@ -220,9 +220,6 @@
     Évaluation par les pairs Liste role Personnel
 -->
 <metal:macro define-macro="peers_teacher_macro">
-    <div class="panel warning radius">
-        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
-    </div>
     <form method="post"
           tal:attributes="action string:${my_view/deposit_box_link}/enregistrer_comp_script"
           tal:condition="my_view/is_personnel">
@@ -230,13 +227,14 @@
             <strong>Étudiants évalués :</strong>
             <tal:replace replace="evaluation_by_peers_dict/evaluations_notes"/>
             <br/>
-            <strong>Évaluations correctes :</strong>
-            <tal:replace replace="evaluation_by_peers_dict/evaluations_validate"/>
-            <br/>
-            <a class="button tiny radius right" tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_details_evaluations_view">Consulter</a>
             <strong>Évaluations à vérifier :</strong>
             <tal:replace replace="evaluation_by_peers_dict/verif_evaluations_notes"/>
+            <br/>
+            <strong>Évaluations correctes :</strong>
+            <tal:replace replace="evaluation_by_peers_dict/evaluations_validate"/>
         </div>
+        <a class="button expand radius"
+           tal:attributes="href string:${my_view/deposit_box_link}/deposit_box_details_evaluations_view">Consulter les évaluations</a>
         <h2><i class="fa fa-check-square-o" aria-hidden="true"></i>Notes sur 20</h2>
         <div class="panel callout radius">
             <strong>Note minimale :</strong>
@@ -310,9 +308,6 @@
     Évaluation par les pairs Liste role Étudiant V1
 -->
 <metal:macro define-macro="peers_student_macro">
-    <div class="panel warning radius">
-        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
-    </div>
     <a tal:attributes="href evaluation_by_peers_dict/evaluate_link" class="button expand radius"
        tal:condition="evaluation_by_peers_dict/evaluate_button">
         <i class="fa fa-check-square-o" aria-hidden="true"></i>

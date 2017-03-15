@@ -630,9 +630,19 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         #else:
         #    return self.dateCorrection.strftime("%Y/%m/%d %H:%M")
 
+    def isFinishDeposit(self):
+        # LOG.info("----- isFinishDeposit -----")
+        now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
+        return True if now > self.getDateDepot() else False
+
     def isFinishEvaluation(self):
+        # LOG.info("----- isFinishEvaluation -----")
         now = DateTime(DateTime()).strftime("%Y/%m/%d %H:%M")
         return True if now > self.getDateCorrection() else False
+
+    def isPossibleAffection(self):
+        # LOG.info("----- isPossibleAffection -----")
+        return True if (not self.getAffectationEvaluation()) and self.getPeerLength(True, "") else False
 
     def getNbDepots(self, is_personnel, user_id):
         # LOG.info("----- getNbDepots -----")
@@ -715,6 +725,10 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         self.manage_delObjects(object_ids)
         self.setListeDevoirs(())
         self.setCompEtudiants({})
+        self.setPeersDict({})
+        self.setProperties({"AffectationEvaluation": False})
+        portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
+        portal_jalon_bdd.deletePeersEvaluation(self.getId())
         self.reindexObject()
 
     def telechargerDepots(self, HTTP_USER_AGENT):
@@ -1220,7 +1234,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 if number == 0:
                     evaluation_by_peers_dict["evaluate_button_name"] = "Commencer l'évaluation des dépôts"
                     evaluation_by_peers_dict["evaluate_button"] = True
-                elif number < evaluation_number:
+                elif number < evaluation_number and not self.isFinishEvaluation():
                     evaluation_by_peers_dict["evaluate_button_name"] = "Poursuivre l'évaluation des dépôts"
                     evaluation_by_peers_dict["evaluate_button"] = True
 
@@ -1289,10 +1303,13 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         return infos_peers
 
     def getPeerLength(self, is_personnel, user_id):
-        # LOG.info("----- getPeerLength -----")
+        LOG.info("----- getPeerLength -----")
         if is_personnel:
+            LOG.info("is_personnel")
+            LOG.info(self._peers_dict.keys())
             return len(self._peers_dict.keys())
         else:
+            LOG.info(self.getPeersDict(user_id))
             return len(self.getPeersDict(user_id))
 
     def getDisplayPenality(self):
@@ -1369,7 +1386,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             macro_form = "student_evaluate"
             my_evaluate_form = self.getStudentEvaluateDepositFileForm(user.getId(), deposit_id)
 
-        return {"breadcrumbs":      self.getEvaluateBreadcrumbs(),
+        return {"breadcrumbs":      self.getEvaluateBreadcrumbs(is_personnel),
                 "is_personnel":     is_personnel,
                 "mode_etudiant":    mode_etudiant,
                 "comment_dict":     {"0": "Aucun",
@@ -1460,7 +1477,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             if average_dict[2] == 2:
                 criteria_error = True
                 criteria_style = "color: #f04124;"
-                criteria_text = "Nombre d'évaluation attendu insuffisant : %s sur %s" % (criteria_value, evaluation_number)
+                criteria_text = "Nombre d'évaluation attendu insuffisant : %s sur %s" % (average_dict[3], evaluation_number)
             if average_dict[2] == 3:
                 criteria_error = True
                 criteria_style = "color: #f04124;"
@@ -1514,19 +1531,24 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                 "criteria_avg":         criteria_avg,
                 "form_link":            "%s/evaluate_deposit_file_form" % self.absolute_url()}
 
-    def getEvaluateBreadcrumbs(self):
+    def getEvaluateBreadcrumbs(self, is_personnel=False):
         # LOG.info("----- getEvaluateBreadcrumbs -----")
         portal = self.portal_url.getPortalObject()
         parent = self.aq_parent
-        return [{"title": _(u"Mes cours"),
-                 "icon":  "fa fa-university",
-                 "link":  "%s/mes_cours" % portal.absolute_url()},
-                {"title": parent.Title(),
-                 "icon":  "fa fa-book",
-                 "link":  parent.absolute_url()},
-                {"title": self.Title(),
-                 "icon":  "fa fa-inbox",
-                 "link":  self.absolute_url()}]
+        breadcrumbs = [{"title": _(u"Mes cours"),
+                        "icon":  "fa fa-university",
+                        "link":  "%s/mes_cours" % portal.absolute_url()},
+                       {"title": parent.Title(),
+                        "icon":  "fa fa-book",
+                        "link":  parent.absolute_url()},
+                       {"title": self.Title(),
+                        "icon":  "fa fa-inbox",
+                        "link":  "%s?tab=peers" % self.absolute_url()}]
+        if is_personnel:
+            breadcrumbs.append({"title": _(u"Évaluations à vérifier"),
+                                "icon":  "fa fa-list",
+                                "link":  "%s/deposit_box_details_evaluations_view" % self.absolute_url()})
+        return breadcrumbs
 
     def setEvaluatePeer(self, param_dict):
         # LOG.info("----- setEvaluatePeer -----")
@@ -1634,6 +1656,8 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         jalon_bdd = self.portal_jalon_bdd
         criteria_dict = self.getCriteriaDict()
         correction_number = self.getNombreCorrection()
+        jalon_bdd.deleteAverageByDepositBox(self.getId())
+        jalon_bdd.deleteEvaluationsAverageByDepositBox(self.getId())
         criteria_average_list = jalon_bdd.generatePeersAverage(self.getId()).all()
         for average in criteria_average_list:
             # LOG.info("***** average : %s" % str(average))
@@ -1642,7 +1666,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
             criteria_data = criteria_dict[average[1]]
             if not average[0] in is_verification_evaluation:
                 is_verification_evaluation[average[0]] = False
-            if average[2] < correction_number:
+            if average[3] < correction_number:
                 criteria_code = 2
                 criteria_value = average[3]
                 is_verification_evaluation[average[0]] = True

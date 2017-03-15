@@ -32,6 +32,12 @@
             <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
         </div>
 
+        <div class="panel callout radius"
+             tal:condition="not:my_view/has_evaluation">
+            Vous n'avez pas encore été évalué.
+        </div>
+
+        <tal:condition condition="my_view/has_evaluation">
         <ul class="tabs" data-tab role="tablist">
             <tal:repeat repeat="index my_view/criteria_order">
             <li class="tab-title" role="presentation">
@@ -115,6 +121,7 @@
             </section>
             </tal:repeat>
         </div>
+        </tal:condition>
         </section>
     </main>
 </metal:main>

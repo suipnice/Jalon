@@ -55,7 +55,8 @@ class DepositBoxEvaluationView(BrowserView):
                    "student_name":          student_name,
                    "acces_evaluations":     deposit_box.getAccesEvaluation(),
                    "acces_self_evaluation": deposit_box.getAutoriserAutoEvaluation(),
-                   "has_self_evaluation":   False}
+                   "has_self_evaluation":   False,
+                   "has_evaluation":        True}
         jalon_bdd = self.context.portal_jalon_bdd
 
         if my_view["acces_self_evaluation"]:
@@ -86,7 +87,11 @@ class DepositBoxEvaluationView(BrowserView):
                 criteria_state = True if ligne[2] != 1 else False
                 my_view["peer_average"][ligne[0]] = {"criteria_state": criteria_state, "criteria_note": ligne[1], "criteria_note_t": ligne[-2], "criteria_comment": ligne[-1]}
             # LOG.info("***** peer_average : %s" % str(my_view["peer_average"]))
-            my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
+            try:
+                my_view["evaluation_note"] = jalon_bdd.getEvaluationNoteByDeposiSTU(deposit_box_id, student_id).first()[0]
+            except:
+                my_view["has_evaluation"] = False
+                my_view["evaluation_note"] = "Non noté"
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()
         my_view["criteria_order"] = deposit_box.getCriteriaOrder()
         my_view["comment_dict"] = {"0": "Aucun",
@@ -130,7 +135,7 @@ class DepositBoxEvaluationView(BrowserView):
                                    "link":  "%s?tab=peers" % my_view["deposit_box_link"]},
                                   {"title": "Évaluations à vérifier",
                                    "icon":  "fa fa-list",
-                                   "link":  "%s/ddeposit_box_details_evaluations_view?tab=%s&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], tab, my_view["mode_etudiant"])}]
+                                   "link":  "%s/deposit_box_details_evaluations_view?tab=%s&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], tab, my_view["mode_etudiant"])}]
 
         my_view["peers_average_dict"] = {}
         my_view["criteria_dict"] = deposit_box.getCriteriaDict()

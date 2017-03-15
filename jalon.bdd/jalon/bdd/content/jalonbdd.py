@@ -1442,6 +1442,10 @@ class JalonBDD(SimpleItem):
         session = self.getSessionMySQL()
         jalon_mysql.setEvaluatePeer(session, DEPOSIT_BOX, DEPOSIT_STU, CORRECTED_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)
 
+    def deletePeersEvaluation(self, DEPOSIT_BOX):
+        session = self.getSessionMySQL()
+        jalon_mysql.deletePeersEvaluation(session, DEPOSIT_BOX)
+
     def setSelfEvaluate(self, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, CRITERIA_NOTE, CRITERIA_COMMENT):
         session = self.getSessionMySQL()
         jalon_mysql.setSelfEvaluate(session, DEPOSIT_BOX, DEPOSIT_STU, CRITERIA, datetime.now(), CRITERIA_NOTE, CRITERIA_COMMENT)

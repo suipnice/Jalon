@@ -7,19 +7,26 @@
 
 <body>
 
-<metal:main fill-slot="content">
+<metal:main fill-slot="content"
+            tal:define="is_finish_deposit context/isFinishDeposit;
+                        is_possible_affectation context/isPossibleAffection">
 
     <h2 i18n:translate="">
         <tal:block i18n:translate="">Affecter les dépôts</tal:block>
         <a class="close-reveal-modal"></a>
-    </h2>
+    </h2>    
     <div class="panel warning radius"
-         tal:condition="context/getAffectationEvaluation">
-         <strong>Attention :</strong> l'affectation des évaluations a déjà été réalisée.
+         tal:condition="not:is_finish_deposit">
+        <strong>Attention :</strong> la date limite de dépôts n'est pas dépassée. Vous ne pouvez pas affecter les dépôts.
+    </div>
+    <tal:condition condition="is_finish_deposit">
+    <div class="panel warning radius"
+         tal:condition="not:is_possible_affectation">
+         <strong>Attention :</strong> il n'y a pas d'évaluations à affecter ou l'affectation des évaluations a déjà été réalisée.
     </div>
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/affect_deposit_file_script"
-          tal:condition="not:context/getAffectationEvaluation">
+          tal:condition="is_possible_affectation">
 
         <fieldset class="panel bkgrnd radius">
 
@@ -44,6 +51,7 @@
         </div>
 
     </form>
+    </tal:condition>
 
 </metal:main>
 
