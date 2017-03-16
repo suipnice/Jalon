@@ -35,10 +35,10 @@ class ConsultationCoursMySQL(Base):
     NUM_CONS = Column(Integer, primary_key=True, autoincrement=True)
     SESAME_ETU = Column(String(50), ForeignKey(IndividuMySQL.SESAME_ETU))
     DATE_CONS = Column(DateTime(True))
-    ID_COURS = Column(String(50))
-    TYPE_CONS = Column(String(10))
+    ID_COURS = Column(String(50), index=True)
+    TYPE_CONS = Column(String(10), index=True)
     ID_CONS = Column(String(50))
-    PUBLIC_CONS = Column(String(50))
+    PUBLIC_CONS = Column(String(50), index=True)
 
     def __init__(self, SESAME_ETU=None, DATE_CONS=None, ID_COURS=None, TYPE_CONS=None, ID_CONS=None, PUBLIC_CONS=None):
         self.SESAME_ETU = SESAME_ETU

@@ -10,8 +10,8 @@ class PeersEvaluationMySQL(Base):
     __tablename__ = "peers_evaluation_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     CORRECTED_STU = Column(String(50))
     CRITERIA = Column(String(5))
     CRITERIA_DATE = Column(DateTime(True))
@@ -38,8 +38,8 @@ class PeersEvaluationNoteMySQL(Base):
     __tablename__ = "peers_evaluation_note_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     CORRECTED_STU = Column(String(50))
     NOTE = Column(Float)
     UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU", "CORRECTED_STU")
@@ -58,8 +58,8 @@ class PeersSelfEvaluationMySQL(Base):
     __tablename__ = "peers_self_evaluation_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     CRITERIA = Column(String(5))
     CRITERIA_DATE = Column(DateTime(True))
     CRITERIA_NOTE = Column(Integer)
@@ -82,8 +82,8 @@ class PeersSelfEvaluationNoteMySQL(Base):
     __tablename__ = "peers_self_evaluation_note_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     NOTE = Column(Float)
     UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
 
@@ -100,8 +100,8 @@ class PeersAverageMySQL(Base):
     __tablename__ = "peers_average_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     CRITERIA = Column(String(5))
     CRITERIA_CODE = Column(Integer)
     # 1 : OK ; 2 : Pas assez d'évaluation ; 3 : MARGE du critère dépassée
@@ -131,8 +131,8 @@ class PeersEvaluationAverageMySQL(Base):
     __tablename__ = "peers_evaluation_average_mysql"
 
     PKEY = Column(Integer, primary_key=True, autoincrement=True)
-    DEPOSIT_BOX = Column(String(50))
-    DEPOSIT_STU = Column(String(50))
+    DEPOSIT_BOX = Column(String(50), index=True)
+    DEPOSIT_STU = Column(String(50), index=True)
     AVERAGE = Column(Float)
     IS_VERIFICATION = Column(Boolean)
     UniqueConstraint("DEPOSIT_BOX", "DEPOSIT_STU")
