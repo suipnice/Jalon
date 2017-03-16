@@ -28,8 +28,8 @@ import random
 import os
 import copy
 
-from logging import getLogger
-LOG = getLogger('[JalonCours]')
+# from logging import getLogger
+# LOG = getLogger('[JalonCours]')
 
 JalonCoursSchema = ATFolderSchema.copy() + Schema((
     StringField("auteurPrincipal",
@@ -897,7 +897,7 @@ class JalonCours(ATFolder):
         return self.getCourseMapItems(self.getPlan(), user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, True)
 
     def getCourseMapAjax(self, course_map_id, user_id, my_view):
-        LOG.info("----- getCourseMapAjax -----")
+        # LOG.info("----- getCourseMapAjax -----")
         if not course_map_id or course_map_id == "all":
             if len(self.getCourseMapList()) > 50:
                 my_view["is_sub_course_map"] = False
@@ -907,7 +907,7 @@ class JalonCours(ATFolder):
         return my_view
 
     def getCourseMapTitle(self, course_map_id, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal):
-        LOG.info("----- getCourseMapTitle -----")
+        # LOG.info("----- getCourseMapTitle -----")
         for item in list(self.getPlan()):
             if item["idElement"] == course_map_id:
                 # item_properties = item
@@ -919,7 +919,7 @@ class JalonCours(ATFolder):
                 "course_map_items_list":  []}
 
     def getCourseMapFirstTitle(self):
-        LOG.info("----- getCourseMapFirstTitle -----")
+        # LOG.info("----- getCourseMapFirstTitle -----")
         course_map_title = []
         item_properties_dict = self.getCourseItemProperties()
         for item in list(self.getPlan()):
@@ -947,7 +947,7 @@ class JalonCours(ATFolder):
         for course_map_item in course_map_items_list:
             # index = index + 1
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
-            LOG.info(course_map_item["idElement"])
+            # LOG.info(course_map_item["idElement"])
 
             item = {"item_id":      course_map_item["idElement"],
                     "item_title":   item_properties["titreElement"],
@@ -1274,7 +1274,7 @@ class JalonCours(ATFolder):
 
     def editCourseTitleVisibility(self, item_id, item_date, item_property_name, items_list=None):
         """Edit the Visibility of a Course Title and all its contents ."""
-        LOG.info("----- editCourseTitleVisibility (item_id = %s)-----" % item_id)
+        # LOG.info("----- editCourseTitleVisibility (item_id = %s)-----" % item_id)
         actuality_code = "chapdispo" if item_property_name == "affElement" else ""
 
         if actuality_code:
@@ -1555,7 +1555,7 @@ class JalonCours(ATFolder):
         return activity_id
 
     def detachCourseItem(self, item_id, item_creator, folder_id):
-        LOG.info("----- detachCourseItem ----- %s" % item_id)
+        # LOG.info("----- detachCourseItem ----- %s" % item_id)
 
         item_object = getattr(getattr(getattr(self.portal_url.getPortalObject().Members, item_creator), self._type_folder_my_space_dict[folder_id]), item_id)
         item_relatedItems = item_object.getRelatedItems()
@@ -1675,7 +1675,7 @@ class JalonCours(ATFolder):
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
     def deleteCourseMapItem(self, idElement, listeElement=None, force_WIMS=False):
-        LOG.info("----- deleteCourseMapItem %s %s-----" % (idElement, listeElement))
+        # LOG.info("----- deleteCourseMapItem %s %s-----" % (idElement, listeElement))
         # LOG.info("***** item_id : %s" % idElement)
         """ Fonction recursive qui supprime l'element idElement du plan, ainsi que tout son contenu si c'est un Titre."""
         # anciennement "retirerElementPlan"
@@ -1684,8 +1684,8 @@ class JalonCours(ATFolder):
             listeElement = list(self.getPlan())
             start = True
         for element in listeElement[:]:
-            LOG.info("FOR : %s" % element)
-            LOG.info("1 listeElement : %s" % listeElement)
+            # LOG.info("FOR : %s" % element)
+            # LOG.info("1 listeElement : %s" % listeElement)
             if element["idElement"] == idElement or idElement == "all":
                 # Si element contient lui-même une liste d'elements, on appelle a nouveau cette fonction
                 #   avec le parametre "all" et la liste des elements a supprimer
@@ -1694,9 +1694,9 @@ class JalonCours(ATFolder):
 
                 # On supprime element de la liste où il etait dans le plan
                 while element in listeElement:
-                    LOG.info("remove : %s" % element)
+                    # LOG.info("remove : %s" % element)
                     listeElement.remove(element)
-                LOG.info("2 listeElement : %s" % listeElement)
+                # LOG.info("2 listeElement : %s" % listeElement)
 
                 infosElement = self.getCourseItemProperties().get(element["idElement"])
 
@@ -1719,12 +1719,12 @@ class JalonCours(ATFolder):
 
                     if (infosElement["typeElement"] in ["Forum", "BoiteDepot"]) or (force_WIMS is True and infosElement["typeElement"] in ["AutoEvaluation", "Examen"]):
                         self.manage_delObjects([element["idElement"]])
-                LOG.info("3 listeElement : %s" % listeElement)
+                # LOG.info("3 listeElement : %s" % listeElement)
             elif "listeElement" in element:
                 # LOG.info("***** parent item_id : %s" % element["idElement"])
                 # Si on tombe sur un titre, on vérifie alors qu'il ne contient pas idElement
                 self.deleteCourseMapItem(idElement, element["listeElement"], force_WIMS)
-            LOG.info("4 listeElement : %s" % listeElement)
+            # LOG.info("4 listeElement : %s" % listeElement)
 
         if start:
             self.plan = tuple(listeElement)
@@ -1943,7 +1943,7 @@ class JalonCours(ATFolder):
 
                     retour = {"status": "OK", "nb_activity": len(liste_activitesWIMS), "data": "\n".join(export_file)}
 
-        else :
+        else:
             retour = {"status": "not_relevant", "nb_activity": len(liste_activitesWIMS)}
 
         return retour
@@ -2571,7 +2571,7 @@ class JalonCours(ATFolder):
 
         # Ajout des lecteurs enseignants
         lecteurs = self.getCoLecteurs()
-        LOG.info(lecteurs)
+        # LOG.info(lecteurs)
         if lecteurs and lecteurs != ("***",):
             # Création de la feuille des lecteurs enseignants
             feuille = listing.add_sheet("LecteursEnseignants")
