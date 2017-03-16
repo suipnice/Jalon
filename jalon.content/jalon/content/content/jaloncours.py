@@ -2225,6 +2225,11 @@ class JalonCours(ATFolder):
                 self.setCourseProperties({"InscriptionsLibres": inscriptionsLibres,
                                           "DateDerniereModif":  DateTime()})
 
+    def deletePasswordStudent(self, password_students):
+        # LOG.info("----- deletePasswordStudent -----")
+        self.setCourseProperties({"InscriptionsLibres": password_students,
+                                  "DateDerniereModif":  DateTime()})
+
     def getEmailRegistration(self):
         # LOG.info("----- getEmailregistration -----")
         course_email_registration_list = self.getInvitations()
