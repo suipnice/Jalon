@@ -12,19 +12,12 @@
             res_name python:context.getShortText(context.getCourseItemProperties(request['item_id'])['titreElement'], 80)">
 
     <h2>
-        <tal:block i18n:translate="">Supprimer</tal:block> <tal:replace replace="my_form/form_title"/>:
-        « <tal:content content="my_form/item_short_title" /> »
+        <tal:block i18n:translate="">Supprimer <tal:content content="my_form/form_title" /> « <tal:content content="my_form/item_short_title" /> »</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
-    <div class="panel radius"
-         i18n:translate="">
-        <tal:block i18n:translate="">Supprimer</tal:block>
-        « <strong tal:content="my_form/item_short_title" /> »
-        <tal:block tal:condition="python:context.test('Titre' in request['item_id'], 1, 0)"
-                   i18n:translate="">
-            et détacher tout son contenu
-        </tal:block> ?
+    <div class="panel callout radius">
+        <tal:block i18n:translate="">Supprimer « <strong tal:content="my_form/item_short_title" /> »<tal:block tal:condition="python:context.test('Titre' in request['item_id'], 1, 0)" i18n:translate=""> et détacher tout son contenu</tal:block> ?</tal:block>
     </div>
 
     <div class="panel warning radius">
