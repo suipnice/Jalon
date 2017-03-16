@@ -1759,7 +1759,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
         form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
-        form_properties["item_short_title"] = self.getShortText(item_properties['titreElement'], 80)
+        form_properties["item_short_title"] = self.getShortText(self.supprimerMarquageHTML(item_properties['titreElement']), 80)
         return form_properties
 
     def verifType(self, typeElement):
