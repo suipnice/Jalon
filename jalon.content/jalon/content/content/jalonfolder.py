@@ -289,6 +289,27 @@ class JalonFolder(ATFolder):
         return {"course_link":  "%s/course_statistics_view" % course_object.absolute_url(),
                 "course_graph": frequentation_graph}
 
+    def insererConsultation(self, user, course_id, type_cons, id_cons):
+        # LOG.info("----- insererConsultation -----")
+        public_cons = "Anonymous"
+        if user.has_role("Personnel"):
+            public_cons = "Personnel"
+            #username = user.getId()
+            #if self.isAuteur(username):
+            #    public_cons = "Auteur"
+            #if username in self.coAuteurs:
+            #    public_cons = "Co-auteur"
+            #if username in self.coLecteurs:
+            #    public_cons = "Lecteur"
+        if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
+            public_cons = "Etudiant"
+        if user.has_role("Manager"):
+            public_cons = "Manager"
+        if user.has_role("Secretaire"):
+            public_cons = "Secretaire"
+        portal = self.portal_url.getPortalObject()
+        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=user.getId(), ID_COURS=course_id, TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
+
     # ----------------------- #
     #  My Students Utilities  #
     # ----------------------- #

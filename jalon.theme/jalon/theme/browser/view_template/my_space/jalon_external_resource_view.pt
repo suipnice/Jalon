@@ -10,7 +10,12 @@
 <body>
 
 <metal:main fill-slot="content"
-            tal:define="external_resource_type context/getTypeRessourceExterne">
+            tal:define="external_resource_type context/getTypeRessourceExterne;
+                        course_id request/course_id | nothing">
+
+    <tal:condition condition="course_id">
+        <tal:define define="no_return python:context.aq_parent.insererConsultation(user, course_id, external_resource_type.replace(' ', ''), context.getId())"/>
+    </tal:condition>
 
     <h2>
         <tal:replace replace="context/Title"/>

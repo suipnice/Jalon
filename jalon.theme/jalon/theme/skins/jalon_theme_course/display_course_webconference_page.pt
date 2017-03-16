@@ -13,6 +13,8 @@
             tal:define="webconference_id request/item_id;
                         webconference_dict python:context.getDisplayCourseWebconference(webconference_id)">
 
+    <tal:define define="no_return python:context.insererConsultation(user, 'SalleVirtuelle', context.getId())"/>
+
     <h2>
         <tal:replace replace="webconference_dict/item_title"/>
         <a class="close-reveal-modal"></a>

@@ -984,7 +984,7 @@ class JalonCours(ATFolder):
                         item["item_link"] = "%s/display_course_webconference_page?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
                     else:
                         item["item_div_css"] = "elemressource"
-                        item["item_link"] = "/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"])
+                        item["item_link"] = "%s?course_id=%s" % ("/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"]), self.getId())
 
                 item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
                 item["item_span_css"] = "type%s" % item_properties["typeElement"].replace(" ", "").lower()
@@ -2390,7 +2390,6 @@ class JalonCours(ATFolder):
     def rechercherUtilisateur(self, username, typeUser, match=False, json=True):
         # LOG.info("----- rechercherUtilisateur -----")
         return jalon_utils.rechercherUtilisateur(username, typeUser, match, json)
-
 
     def hasParticipants(self):
         # LOG.info("----- hasParticipants -----")

@@ -416,7 +416,7 @@ def rechercherUtilisateursByName(session, listeRecherche, typeUser):
         listeCond.append(IND.TYPE_IND == "Etudiant")
     else:
         listeCond.append(IND.TYPE_IND <> "Etudiant")
-    recherche = session.query(IND.LIB_PR1_IND.concat(" ").concat(IND.LIB_NOM_PAT_IND).label("name"), IND.SESAME_ETU.label("id"), IND.EMAIL_ETU.label("email")).filter(and_(*listeCond)).order_by(IND.LIB_NOM_PAT_IND)
+    recherche = session.query(IND.LIB_PR1_IND.concat(" ").concat(IND.LIB_NOM_PAT_IND).concat(" (").concat(IND.SESAME_ETU).concat(")").label("name"), IND.SESAME_ETU.label("id"), IND.EMAIL_ETU.label("email")).filter(and_(*listeCond)).order_by(IND.LIB_NOM_PAT_IND)
     return convertirResultatBDD(recherche)
 
 

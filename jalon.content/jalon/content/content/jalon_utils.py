@@ -536,7 +536,7 @@ def rechercherUserLDAPSupann(username, attribut, ldap="ldap-plugin", match=False
             if "mail" in user:
                 email = user["mail"].decode("iso-8859-1")
             retour.append({"id":    user["supannAliasLogin"],
-                           "name":  user["displayName"].decode("iso-8859-1"),
+                           "name":  "%s (%s)" % (user["displayName"].decode("iso-8859-1"), user["supannAliasLogin"]),
                            "email": email})
     return retour
 
