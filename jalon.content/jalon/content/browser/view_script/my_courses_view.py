@@ -167,15 +167,14 @@ class MyCoursesView(BrowserView):
         if tab == "3":
             courses_list.extend(
                 list(portal_catalog.searchResults(portal_type="JalonCours", getCoAuteurs=member_id)))
-            del actions_list[1]
+            del actions_list[2]
             del actions_list[-1]
         if tab == "4":
             courses_list.extend(
                 list(portal_catalog.searchResults(portal_type="JalonCours", getCoLecteurs=member_id)))
-            del actions_list[1]
-            del actions_list[1]
-            del actions_list[1]
-            del actions_list[-1]
+            actions_list = [{"action_link": "/display_course_page?course_id=",
+                             "action_icon": "fa fa-book fa-fw",
+                             "action_name": "Accéder à ce cours"}]
         if tab == "5":
             filtre["getArchive"] = member_id
             courses_list = list(portal_catalog.searchResults(

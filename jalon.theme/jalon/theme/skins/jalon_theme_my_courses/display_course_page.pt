@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.content">
+
+<body>
+
+<metal:main fill-slot="content"
+            tal:define="course_id request/course_id;
+                        course_properties python:context.getCourseProperties(course_id)">
+
+    <h2>
+        <tal:replace replace="course_properties/course_title"
+                     i18n:translate="">Titre du cours</tal:replace>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <div class="panel callout radius"
+         tal:content="structure course_properties/course_desc"
+         i18n:translate="">
+        Description du cours
+    </div>
+
+    <a class="button expand"
+       tal:attributes="href course_properties/course_link">
+       <i class="fa fa-book"></i>
+       Accéder à ce cours
+   </a>
+
+</metal:main>
+
+</body>
+
+</html>

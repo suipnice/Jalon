@@ -160,6 +160,18 @@ class JalonFolder(ATFolder):
         # LOG.info("----- getCourseUserFolder -----")
         return jalon_utils.getCourseUserFolder(self, user_id)
 
+    def getCourseProperties(self, course_id):
+        LOG.info("----- getCourseProperties -----")
+        portal = self.portal_url.getPortalObject()
+        portal_catalog = portal.portal_catalog
+        course_object = portal_catalog.searchResults(portal_type="JalonCours", getId=course_id)[0].getObject()
+        course_desc = course_object.getRawDescription()
+        if not course_desc:
+            course_desc = "Description non renseignée."
+        return {"course_title": course_object.Title(),
+                "course_desc":  course_desc,
+                "course_link":  course_object.absolute_url()}
+
     def isFavorite(self, user_id, course_id):
         # LOG.info("----- isFavorite -----")
         course_user_folder = self.getCourseUserFolder(user_id)
