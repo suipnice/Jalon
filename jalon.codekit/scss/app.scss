@@ -2,11 +2,7 @@
 
         Jalon v4.5
 
-    Version Campus Pegasus :
-        - “_base.css”   ->  commenter le bloc « UNS » / décommenter le bloc « Campus Pegasus »
-        - “app.css”     ->  decommenter le bloc « Campus Pegasus » en fin de fichier
-
-    Correctif “expand” 5.5.3 --> L1107
+    Correctif “expand” 5.5.3 --> L1084
 */
 
 
@@ -2161,25 +2157,3 @@ dl.deflist {
     target-new: tab;
 }
 
-
-
-
-/***************************************************************************************************
-
-        Campus Pegasus
-
-*/
-
-/*
-.top-bar .title-area .name h1 a {
-    @include background( 'logo_pegasus.png', center );
-}
-
-#accueil .jumbotron {
-    @include background( 'stars.svg', 0 0, repeat, #8c82b2 );
-}
-
-#breadcrumb {
-    @include background( 'stars.svg', 0 0, repeat, #8c82b2 );
-}
-//*/
