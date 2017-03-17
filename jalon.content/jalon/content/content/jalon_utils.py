@@ -592,7 +592,7 @@ def getShortText(text, limit=75, suffix=u'…'):
 
 def getPlainShortText(html, limit=75):
     u"""
-        Troncature de contenu CKEditor (HTML).
+        Troncature de contenu HTML.
 
     Renvoie le retour de getShortText() ci-dessus appliqué au contenu texte brut.
 

@@ -531,6 +531,10 @@ class JalonCours(ATFolder):
         # LOG.info("----- getShortText -----")
         return jalon_utils.getShortText(text, limit)
 
+    def getPlainShortText(self, html, limit=75):
+        # LOG.info("----- getPlainShortText -----")
+        return jalon_utils.getPlainShortText(html, limit)
+
     def supprimerMarquageHTML(self, chaine):
         # LOG.info("----- supprimerMarquageHTML -----")
         return jalon_utils.supprimerMarquageHTML(chaine)
@@ -1172,7 +1176,7 @@ class JalonCours(ATFolder):
     def getMarkOutCourseMapItemForm(self, item_id):
         # LOG.info("----- getMarkOutCourseMapItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
-        return {"form_title":         self.getShortText(self.supprimerMarquageHTML(item_properties['titreElement']), 80),
+        return {"form_title":         self.getPlainShortText(item_properties['titreElement'], 80),
                 "is_visible_item":    self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])["val"],
                 "mark_out_item_text": self.getCommentaireEpingler(item_id)}
 
@@ -1221,7 +1225,7 @@ class JalonCours(ATFolder):
             form_properties["form_button_lately_text"] = _(u"Programmer le masquage de l'élément à l'instant choisi")
             form_properties["item_property_name"] = "masquerElement"
             if item_properties["typeElement"] == "TexteLibre":
-                form_properties["form_title_text"] = "Masquer l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
+                form_properties["form_title_text"] = "Masquer l'élément : %s" % self.getPlainShortText(item_properties["titreElement"], 80)
             else:
                 form_properties["form_title_text"] = "Masquer l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye-slash no-pad"
@@ -1242,7 +1246,7 @@ class JalonCours(ATFolder):
             form_properties["form_button_lately_text"] = _(u"Programmer l'affichage de l'élément à l'instant choisi")
             form_properties["item_property_name"] = "affElement"
             if item_properties["typeElement"] == "TexteLibre":
-                form_properties["form_title_text"] = "Afficher l'élément : %s" % self.getShortText(self.supprimerMarquageHTML(item_properties["titreElement"]), 80)
+                form_properties["form_title_text"] = "Afficher l'élément : %s" % self.getPlainShortText(item_properties["titreElement"], 80)
             else:
                 form_properties["form_title_text"] = "Afficher l'élément : %s" % item_properties["titreElement"]
             form_properties["form_title_icon"] = "fa fa-eye no-pad"
@@ -1759,7 +1763,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
         form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
-        form_properties["item_short_title"] = self.getShortText(self.supprimerMarquageHTML(item_properties['titreElement']), 80)
+        form_properties["item_short_title"] = self.getPlainShortText(item_properties['titreElement'], 80)
         return form_properties
 
     def verifType(self, typeElement):

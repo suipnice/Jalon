@@ -19,7 +19,7 @@
                     <tal:repeat repeat="tmp python:range(position - 1)">
                         &nbsp;&nbsp;
                     </tal:repeat>
-                    <tal:replace replace="python:context.getShortText(context.supprimerMarquageHTML(context.getCourseItemProperties(element['idElement'])['titreElement']))"/>
+                    <tal:replace replace="python:context.getPlainShortText(context.getCourseItemProperties(element['idElement'])['titreElement'])"/>
                     <tal:define define="course_map element/listeElement;
                                         parent_id string:${parent_id}*-*${element/idElement}">
                         <metal:macro use-macro="context/course_map_form/macros/course_map_select"/>

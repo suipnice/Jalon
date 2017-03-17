@@ -120,9 +120,9 @@
                               tal:content="python:context.getLocaleDate(news['date'])" />
                     </dt>
                     <dd tal:attributes="class string:typeElement type_${news/type}">
-                        « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(news['titre']), 60)"
+                        « <strong tal:content="python:context.getPlainShortText(news['titre'], 60)"
                                   tal:condition="python:news['type'] == 'Titre'"/>
-                          <tal:block content="python:context.getShortText(context.supprimerMarquageHTML(news['titre']), 120)"
+                          <tal:block content="python:context.getPlainShortText(news['titre'], 120)"
                                      condition="python:news['type'] == 'TexteLibre'"/>
                         <strong tal:content="python:context.getShortText(news['titre'], 60)"
                                 tal:condition="python:not(news['type'] == 'Titre' or news['type'] == 'TexteLibre')"/>
