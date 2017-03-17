@@ -884,7 +884,16 @@ class JalonCours(ATFolder):
             form_properties["validate_key"] = "edit_course_map_item"
 
             form_properties["typeElement"] = item_properties["typeElement"]
-            if item_properties["typeElement"] == "TexteLibre":
+
+            if item_properties["typeElement"] == "Titre":
+                """
+                Supp. du marquage HTML potentiellement présent dans les titres
+                des éléments "titre" (cf. cours annales UFR Droit).
+                """
+                form_properties["item_title"] = self.supprimerMarquageHTML(
+                    item_properties['titreElement'])
+
+            elif item_properties["typeElement"] == "TexteLibre":
                 """
                 Rétrocompat. supp. listes dans les éléments "texte" :
                     contenu existant présenté lors de l'édition identique à
@@ -1018,10 +1027,15 @@ class JalonCours(ATFolder):
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
                 item["is_item_title_or_text"] = False
+
                 if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
                     item["is_item_title_or_text"] = True
                     item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
-                    if item_properties["typeElement"] == "TexteLibre":
+
+                    if item_properties["typeElement"] == "Titre":
+                        item["item_title"] = self.supprimerMarquageHTML(item["item_title"])
+
+                    elif item_properties["typeElement"] == "TexteLibre":
                         """
                         Rétrocompat. supp. listes dans les éléments "texte" :
                             modification du contenu existant pour présentation
@@ -1802,7 +1816,28 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
         form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
-        form_properties["item_short_title"] = self.getPlainShortText(item_properties['titreElement'], 80)
+        """
+        Rétro-compatibilité avec l'existant
+        (présence possible de HTML dans les titres des éléments "titres").
+        """
+        if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
+            form_properties["item_short_title"] = self.getPlainShortText(
+                item_properties['titreElement'], 80)
+        else:
+            form_properties["item_short_title"] = self.getShortText(
+                item_properties['titreElement'], 80)
+        """
+        À remplacer par ce qui suit si une migration permettant de supprimer
+        tout marquage HTML dans les titres est effectuée.
+
+        if item_properties["typeElement"] == "TexteLibre":
+            form_properties["item_short_title"] = self.getPlainShortText(
+                item_properties['titreElement'], 80)
+        else:
+            form_properties["item_short_title"] = self.getShortText(
+                item_properties['titreElement'], 80)
+
+        """
         return form_properties
 
     def verifType(self, typeElement):
