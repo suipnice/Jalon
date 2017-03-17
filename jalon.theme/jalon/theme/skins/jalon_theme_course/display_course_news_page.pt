@@ -24,7 +24,7 @@
                       tal:content="python:context.getLocaleDate(actu['date'])" />
             </dt>
             <dd tal:attributes="class string:typeElement type_${actu/type}">
-                « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 60)" /> ...»
+                « <strong tal:content="python:context.getShortText(context.supprimerMarquageHTML(actu['titre']), 60)" /> »
                 <i tal:content="actu/description" />
             </dd>
         </tal:repeat>
