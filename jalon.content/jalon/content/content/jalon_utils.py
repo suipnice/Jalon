@@ -626,6 +626,13 @@ def supprimerMarquageHTML(chaine):
     return re.sub('<[^<]+?>', '', chaine)
 
 
+def remplaceChaine(chaine, elements):
+    """Remplacement d'éléments dans une chaîne."""
+    for prev, new in elements.iteritems():
+        chaine = chaine.replace(prev, new)
+    return chaine
+
+
 def supprimerCaractereSpeciaux(chaine):
     u"""
         "Nettoyage" d'une chaîne de caractères.
