@@ -27,8 +27,8 @@ import re
 import copy
 
 # Messages de debug :
-from logging import getLogger
-LOG = getLogger('[jalon_utils]')
+# from logging import getLogger
+# LOG = getLogger('[jalon_utils]')
 
 
 def authUser(context, quser=None, qclass=None, request=None, session_keep=False):
@@ -115,7 +115,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             context.plone_utils.addPortalMessage(message, type=mess_type)
             context.wims("verifierRetourWims", {"rep": rep, "fonction": "jalon_utils/authUser",
                          "message": "impossible d'authentifier le supervisor", "requete": dico})
-            LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
+            # LOG.info("**** authUser | Impossible d'authentifier le supervisor : %s" % rep)
             return None
     rep["url_connexion"] = url_connexion
     # LOG.info("**** authUser | rep = %s" % rep)
