@@ -312,8 +312,8 @@ class MyCoursesView(BrowserView):
     def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list, is_tab_password=False):
         # LOG.info("----- getCourseData -----")
         course_data = {"course_id":                course_brain.getId,
-                       "course_title":             course_brain.Title,
-                       "course_short_title":       jalon_utils.getShortText(course_brain.Title),
+                       "course_title":             jalon_utils.supprimerMarquageHTML(course_brain.Title),
+                       "course_short_title":       jalon_utils.getPlainShortText(course_brain.Title),
                        "course_short_description": jalon_utils.getPlainShortText(course_brain.Description, 210),
                        "course_creator":           course_brain.Creator,
                        "course_is_nouveau":        "fa fa-bell-o fa-fw no-pad" if cmp(course_brain.getDateDerniereActu, member_login_time) > 0 else "",
