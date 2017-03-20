@@ -15,7 +15,10 @@ course_user_folder = context.getCourseUserFolder(REQUEST.form["user_id"])
 course_id = course_user_folder.invokeFactory(type_name='JalonCours', id="Cours-%s-%s" % (REQUEST["user_id"], DateTime().strftime("%Y%m%d%H%M%S")))
 
 course_object = getattr(course_user_folder, course_id)
-param = {"Title": REQUEST["title"], "Description": REQUEST["description"]}
+param = {
+    "Title": context.supprimerMarquageHTML(REQUEST["title"]),
+    "Description": REQUEST["description"]
+}
 
 course_object.setCourseProperties(param)
 course_object.invokeFactory(type_name='Folder', id="annonce")
