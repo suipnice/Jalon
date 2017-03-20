@@ -122,7 +122,7 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
     return rep
 
 
-def string_for_json(self, chaine):
+def string_for_json(chaine):
     """string_for_json : Supprime tous les caracteres indesirables d'une chaine pour l'integrer au format JSON (quotes, retour chariot, barre oblique )."""
     return chaine.replace('\"', "'").replace('\n', "").replace("\\", "")
 
