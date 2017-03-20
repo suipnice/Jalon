@@ -627,7 +627,7 @@ class JalonCours(ATFolder):
         if not description:
             return {"link": False, "desc": "ce cours n'a pas encore de description."}
         if len(description) > 100:
-            return {"link": True, "desc": self.getShortText(description, 100)}
+            return {"link": True, "desc": self.getPlainShortText(description, 100)}
         return {"link": False, "desc": description}
 
     def isCourseOwner(self, user_id):
