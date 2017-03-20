@@ -1,7 +1,7 @@
 <metal:macro define-macro="course_informations">
 <div class="row">
     <nav class="right" tal:condition="my_view/is_personnel">
-        <a data-reveal-ajax="true" data-reveal-id="reveal-main-large"
+        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
            tal:attributes="href string:${context/absolute_url}/edit_course_title_form;
                            title string:Modifier le titre"
            i18n:attributes="title">
@@ -23,7 +23,7 @@
     <div id="description_cours"
          class="panel bkgrnd radius small-12 medium-6 columns">
         <a class="right"
-           data-reveal-ajax="true" data-reveal-id="reveal-main-large"
+           data-reveal-ajax="true" data-reveal-id="reveal-main"
            tal:attributes="href string:${context/absolute_url}/edit_course_description_form"
            tal:condition="my_view/is_personnel">
             <i class="fa fa-pencil fa-lg"></i>
@@ -33,7 +33,7 @@
             <tal:block i18n:translate="">Description du cours :</tal:block>
         </h2>
         <p tal:content="structure my_view/course_short_description/desc" />
-        <a data-reveal-ajax="true" data-reveal-id="reveal-main-large"
+        <a data-reveal-ajax="true" data-reveal-id="reveal-main"
            tal:attributes="href string:${context/absolute_url}/course_full_description_page"
            tal:condition="my_view/course_short_description/link">
            <i>Voir la description complète…</i>
