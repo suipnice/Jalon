@@ -4,8 +4,8 @@ from zope.component import getMultiAdapter
 
 from jalon.content import contentMessageFactory as _
 
-from logging import getLogger
-LOG = getLogger('[CourseView]')
+# from logging import getLogger
+# LOG = getLogger('[CourseView]')
 
 
 class CourseView(BrowserView):
