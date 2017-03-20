@@ -13,6 +13,10 @@ now = DateTime()
 # context = context
 form = context.REQUEST.form
 
+if form["item_type"] == "Titre":
+    # Supp. marquage HTML éventuellement saisi.
+    form["title"] = context.supprimerMarquageHTML(form["title"])
+
 if not form.has_key("item_id"):
     item_id = "%s-%s-%s" % (form["item_type"], form["user_id"], ''.join([now.strftime('%Y%m%d'), now.strftime('%H%M%S')]))
     context.addItemInCourseMap(item_id, form["map_position"])

@@ -539,6 +539,10 @@ class JalonCours(ATFolder):
         # LOG.info("----- supprimerMarquageHTML -----")
         return jalon_utils.supprimerMarquageHTML(chaine)
 
+    def remplaceChaine(self, chaine, elements):
+        # LOG.info("----- remplaceChaine -----")
+        return jalon_utils.remplaceChaine(chaine, elements)
+
     def test(self, condition, valeurVrai, valeurFaux):
         # LOG.info("----- test -----")
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
@@ -879,8 +883,36 @@ class JalonCours(ATFolder):
             form_properties["form_button_icon"] = "fa fa-pencil"
             form_properties["validate_key"] = "edit_course_map_item"
 
-            form_properties["item_title"] = item_properties["titreElement"]
             form_properties["typeElement"] = item_properties["typeElement"]
+
+            if item_properties["typeElement"] == "Titre":
+                """
+                Supp. du marquage HTML potentiellement présent dans les titres
+                des éléments "titre" (cf. cours annales UFR Droit).
+                """
+                form_properties["item_title"] = self.supprimerMarquageHTML(
+                    item_properties['titreElement'])
+
+            elif item_properties["typeElement"] == "TexteLibre":
+                """
+                Rétrocompat. supp. listes dans les éléments "texte" :
+                    contenu existant présenté lors de l'édition identique à
+                    celui présenté dans le plan : CKEditor n'ajoutera pas le
+                    tiret de substitution (à supp. si données existantes migrées
+                    suite à la suppression des listes dans CKEditor).
+                """
+                form_properties["item_title"] = self.remplaceChaine(
+                    item_properties["titreElement"], {
+                        '<ol>':'',
+                        '<ul>':'',
+                        '</ol>':'',
+                        '</ul>':'',
+                        '<li>':'<p>- ',
+                        '</li>':'</p>'
+                    })
+
+            else:
+                form_properties["item_title"] = item_properties["titreElement"]
 
             if (item_type == "1" and form_properties["typeElement"] != "Titre"):
                 form_properties["form_title_type"] = _(u"titre de l'élément")
@@ -998,9 +1030,30 @@ class JalonCours(ATFolder):
                 item["course_map_sub_items_list"] = course_map_sub_items_list
 
                 item["is_item_title_or_text"] = False
+
                 if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
                     item["is_item_title_or_text"] = True
                     item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
+
+                    if item_properties["typeElement"] == "Titre":
+                        item["item_title"] = self.supprimerMarquageHTML(item["item_title"])
+
+                    elif item_properties["typeElement"] == "TexteLibre":
+                        """
+                        Rétrocompat. supp. listes dans les éléments "texte" :
+                            modification du contenu existant pour présentation
+                            dans le plan (à supp. si données existantes migrées
+                            suite à la suppression des listes dans CKEditor).
+                        """
+                        item["item_title"] = self.remplaceChaine(
+                            item["item_title"], {
+                                '<ol>':'',
+                                '<ul>':'',
+                                '</ol>':'',
+                                '</ul>':'',
+                                '<li>':'<p>- ',
+                                '</li>':'</p>'
+                            })
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
@@ -1766,7 +1819,28 @@ class JalonCours(ATFolder):
         # LOG.info("----- getCourseDeleteItemForm -----")
         item_properties = self.getCourseItemProperties(item_id)
         form_properties = copy.deepcopy(self._course_delete_item_form[item_properties["typeElement"]])
-        form_properties["item_short_title"] = self.getPlainShortText(item_properties['titreElement'], 80)
+        """
+        Rétro-compatibilité avec l'existant
+        (présence possible de HTML dans les titres des éléments "titres").
+        """
+        if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
+            form_properties["item_short_title"] = self.getPlainShortText(
+                item_properties['titreElement'], 80)
+        else:
+            form_properties["item_short_title"] = self.getShortText(
+                item_properties['titreElement'], 80)
+        """
+        À remplacer par ce qui suit si une migration permettant de supprimer
+        tout marquage HTML dans les titres est effectuée.
+
+        if item_properties["typeElement"] == "TexteLibre":
+            form_properties["item_short_title"] = self.getPlainShortText(
+                item_properties['titreElement'], 80)
+        else:
+            form_properties["item_short_title"] = self.getShortText(
+                item_properties['titreElement'], 80)
+
+        """
         return form_properties
 
     def verifType(self, typeElement):
