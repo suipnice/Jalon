@@ -3,6 +3,7 @@ from Products.Five.browser import BrowserView
 from zope.component import getMultiAdapter
 
 from jalon.content import contentMessageFactory as _
+from jalon.content.content import jalon_utils
 
 # from logging import getLogger
 # LOG = getLogger('[CourseView]')
@@ -78,7 +79,7 @@ class CourseView(BrowserView):
         return [{"title": _(u"Mes cours"),
                  "icon":  "fa fa-university",
                  "link":  "%s/mes_cours" % portal.absolute_url()},
-                {"title": self.context.Title(),
+                {"title": jalon_utils.supprimerMarquageHTML(self.context.Title()),
                  "icon":  "fa fa-book",
                  "link":  self.context.absolute_url()}]
 
@@ -138,9 +139,12 @@ class CourseView(BrowserView):
             #                                      "action_name": "Afficher en mode page"},
 
             course_path = self.context.getPhysicalPath()
-            my_view["course_map_item_adder"] = self.getCourseItemAdderList(course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
-            my_view["course_add_glossary_link"] = "%s/mes_ressources/mes_termes_glossaire/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
-            my_view["course_add_bibliography_link"] = "%s/mes_ressources/course_bibliography/course_add_view?course_path=%s" % (portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
+            my_view["course_map_item_adder"] = self.getCourseItemAdderList(
+                course_link, "%s/%s" % (course_path[-2], course_path[-1]), portal)
+            my_view["course_add_glossary_link"] = "%s/mes_ressources/mes_termes_glossaire/course_add_view?course_path=%s" % (
+                portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
+            my_view["course_add_bibliography_link"] = "%s/mes_ressources/course_bibliography/course_add_view?course_path=%s" % (
+                portal.absolute_url(), "%s/%s" % (course_path[-2], course_path[-1]))
 
         my_view["course_news"] = self.context.getActualitesCours()
         my_view["user_last_login_time"] = user.getProperty('login_time', "")
@@ -149,25 +153,30 @@ class CourseView(BrowserView):
         my_view["is_course_map_display"] = False
         if not is_personnel:
             # Désactivation de l'option en mode page
-            #and self.context.getCourseMapDisplay():
+            # and self.context.getCourseMapDisplay():
             my_view["is_course_map_display"] = True
             if not course_map_id or course_map_id == "all":
-                my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+                my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view[
+                                                                  "is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
                 if len(self.context.getCourseMapList()) > 50:
                     my_view["is_sub_course_map"] = False
             else:
-                my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+                my_view["course_map"] = self.context.getCourseMapTitle(course_map_id, user.getId(), my_view["user_last_login_time"], my_view[
+                                                                       "is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
         else:
-            my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view["is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
+            my_view["course_map"] = self.context.getCourseMap(user.getId(), my_view["user_last_login_time"], my_view[
+                                                              "is_personnel"], my_view["course_news"]['listeActu'], my_view["item_jalonner"], portal)
 
-        my_view["has_course_map"] = True if my_view["course_map"]["course_map_items_list"] else False
+        my_view["has_course_map"] = True if my_view[
+            "course_map"]["course_map_items_list"] else False
 
         my_view["is_course_map_help_text"] = False
         my_view["course_map_help_text"] = ""
         portal_jalon_properties = portal.portal_jalon_properties
         if portal_jalon_properties.getJalonProperty("activer_aide_plan"):
             my_view["is_course_map_help_text"] = True
-            my_view["course_map_help_text"] = portal_jalon_properties.getJalonProperty("lien_aide_plan")
+            my_view["course_map_help_text"] = portal_jalon_properties.getJalonProperty(
+                "lien_aide_plan")
 
         my_view["course_bibliography_dict"] = self.context.getGloBib('bibliographie')
         my_view["course_bibliography_letter_list"] = my_view["course_bibliography_dict"].keys()
@@ -182,7 +191,8 @@ class CourseView(BrowserView):
         course_training_offer_list = self.context.getCourseTrainingOffer()
         course_training_offer_students = 0
         for course_training_offer in course_training_offer_list:
-            course_training_offer_students = course_training_offer_students + int(course_training_offer["nb_etu"])
+            course_training_offer_students = course_training_offer_students + \
+                int(course_training_offer["nb_etu"])
         course_training_offer = len(course_training_offer_list)
 
         my_view["course_actions"] = [{"course_actions_id":           "course_to",
