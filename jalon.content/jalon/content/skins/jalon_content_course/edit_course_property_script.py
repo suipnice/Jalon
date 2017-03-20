@@ -11,6 +11,11 @@
 form = context.REQUEST.form
 
 course_property = form["course_property"]
+
+if course_property == "title":
+    # Supp. marquage HTML éventuellement saisi.
+    form["title"] = context.supprimerMarquageHTML(form["title"])
+
 context.setCourseProperties({course_property.capitalize(): form[course_property]})
 context.setCourseProperties({"DateDerniereModif" : DateTime()})
 
