@@ -7,8 +7,8 @@ from Products.CMFCore.utils import getToolByName
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 
-from logging import getLogger
-LOG = getLogger('[MyCoursesView]')
+# from logging import getLogger
+# LOG = getLogger('[MyCoursesView]')
 
 
 class MyCoursesView(BrowserView):
