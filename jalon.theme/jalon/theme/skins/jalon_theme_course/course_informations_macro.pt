@@ -15,7 +15,7 @@
         </a>
     </nav>
     <h1>
-        <i class="fa fa-book"></i><tal:replace replace="here/Title" />
+        <i class="fa fa-book"></i><tal:replace replace="python:context.supprimerMarquageHTML(context.Title())" />
     </h1>
 </div>
 

@@ -143,7 +143,11 @@ function setRevealForm( formID, ckEditorInstanceName ) {
         event.preventDefault( );
 
         var $form = $( this ),
-            $reveal = $form.parent( '.reveal-modal' );
+            $reveal = $form.parent( '.reveal-modal' ),
+            $titleInput = $form.find( '#title' );
+
+        // Supp. marquage eventuel dans le "input#title"
+        $titleInput.val( $( $titleInput.val( ) ).text( ) );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
@@ -158,7 +162,7 @@ function setRevealForm( formID, ckEditorInstanceName ) {
 
                 Foundation.utils.S( '#js-update_target' ).empty( ).html( data );
                 $reveal.foundation( 'reveal', 'close' );
-                setAlertBox( 'success', $form.data( 'success_msg_pre' ) + " « " + $form.find( '#title' ).val( ) + " » " + $form.data( 'success_msg_post' ) );
+                setAlertBox( 'success', $form.data( 'success_msg_pre' ) + " « " + $titleInput.val( ) + " » " + $form.data( 'success_msg_post' ) );
             }
         } );
     } );
