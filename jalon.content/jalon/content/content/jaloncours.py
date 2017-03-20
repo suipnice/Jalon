@@ -964,7 +964,10 @@ class JalonCours(ATFolder):
                     item["item_video"] = True
                     item["item_image"] = item_properties["complementElement"]["image"]
                     item["item_auteur"] = item_properties["complementElement"]["auteur"]
-                    item["item_description"] = item_properties["complementElement"]["description"]
+                    try:
+                        item["item_description"] = item_properties["complementElement"]["description"]
+                    except:
+                        item["item_description"] = "Description non disponible"
 
             is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
             item["is_display_item_bool"] = True if is_display_item["val"] else False
