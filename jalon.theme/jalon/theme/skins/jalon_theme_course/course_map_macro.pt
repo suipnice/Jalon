@@ -7,7 +7,7 @@
                 <select name="course_title"
                         tal:define="course_map_title_list context/getCourseMapFirstTitle">
                     <option value="all">
-                        <tal:block i18n:translate="">Cours</tal:block> « <tal:block tal:content="here/Title" /> »
+                        <tal:block i18n:translate="">Cours</tal:block> « <tal:block tal:content="python:context.supprimerMarquageHTML(context.Title())" /> »
                     </option>
                     <optgroup tal:condition="course_map_title_list"
                               label="contenant les titres :"
