@@ -964,7 +964,7 @@ class JalonCours(ATFolder):
                 is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
                 if is_display_item["val"]:
                     course_map_title.append({"title_id":   item["idElement"],
-                                             "title_text": item_properties["titreElement"]})
+                                             "title_text": self.getPlainShortText(item_properties["titreElement"])})
         return course_map_title
 
     def getCourseMapItems(self, course_map_items_list, user_id, user_last_login_time, is_personnel, course_actuality_list, item_jalonner, portal, is_map_top_level=False):
