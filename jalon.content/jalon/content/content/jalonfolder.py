@@ -28,15 +28,15 @@ import string
 import os
 import copy
 
-from logging import getLogger
-LOG = getLogger('[JalonFolder]')
+# from logging import getLogger
+# LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
-#LOG.debug('debug message')
+## LOG.debug('debug message')
 # LOG.info('info message')
-#LOG.warn('warn message')
-#LOG.error('error message')
-#LOG.critical('critical message')
+## LOG.warn('warn message')
+## LOG.error('error message')
+## LOG.critical('critical message')
 """
 
 JalonFolderSchema = ATFolderSchema.copy() + atpublic.Schema((
@@ -161,7 +161,7 @@ class JalonFolder(ATFolder):
         return jalon_utils.getCourseUserFolder(self, user_id)
 
     def getCourseProperties(self, course_id):
-        LOG.info("----- getCourseProperties -----")
+        # LOG.info("----- getCourseProperties -----")
         portal = self.portal_url.getPortalObject()
         portal_catalog = portal.portal_catalog
         course_object = portal_catalog.searchResults(portal_type="JalonCours", getId=course_id)[0].getObject()
@@ -284,7 +284,7 @@ class JalonFolder(ATFolder):
         return dicoAccess
 
     def getCourseStatistics(self, course_id):
-        LOG.info("----- getCourseStatistics START %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
+        # LOG.info("----- getCourseStatistics START %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
         portal = self.portal_url.getPortalObject()
         course_brain = portal.portal_catalog.searchResults(
             portal_type="JalonCours", id=course_id)[0]
@@ -297,7 +297,7 @@ class JalonFolder(ATFolder):
             requete_dict = dict(requete)
             frequentation_graph = course_object.genererFrequentationGraph(requete_dict)
 
-        LOG.info("----- getCourseStatistics END %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
+        # LOG.info("----- getCourseStatistics END %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
         return {"course_link":  "%s/course_statistics_view" % course_object.absolute_url(),
                 "course_graph": frequentation_graph}
 
@@ -578,7 +578,7 @@ class JalonFolder(ATFolder):
         return retour
 
     def getNewTagId(self):
-        LOG.info("----- getNewTagId -----")
+        # LOG.info("----- getNewTagId -----")
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
@@ -595,7 +595,7 @@ class JalonFolder(ATFolder):
         folder_subjects = folder.getSubjectsDict()
         tag_id_list = folder_subjects.keys()
         if len(tag_id_list) > 0:
-            tag_id_list.sort()
+            tag_id_list.sort(lambda x, y: cmp(int(x), int(y)))
             return int(tag_id_list[-1]) + 1
         else:
             return "1"
@@ -938,15 +938,15 @@ class JalonFolder(ATFolder):
                 # LOG.info("object found")
                 relatedItems = objet.getRelatedItems()
                 if conteneur_object not in relatedItems:
-                    LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' %
+                    # LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' %
                              (conteneur_object.getId(), id_objet))
                     # on ajoute  ##<JalonCoursWims at
                     # AutoEvaluation-bado-20161201175055577435>## aux relatedItems de
                     # ##classerparpropriete-bado-20140901113857## ----
                     relatedItems.append(conteneur_object)
-                    LOG.info('---- puis on ecrase les anciens relatedItems ---')
+                    # LOG.info('---- puis on ecrase les anciens relatedItems ---')
                     objet.setRelatedItems(relatedItems)
-                    LOG.info("---- et enfin on réindexe l'objet ---")
+                    # LOG.info("---- et enfin on réindexe l'objet ---")
                     objet.reindexObject()
 
     def isNouveau(self, idcours):
