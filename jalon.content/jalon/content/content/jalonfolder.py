@@ -939,7 +939,7 @@ class JalonFolder(ATFolder):
                 relatedItems = objet.getRelatedItems()
                 if conteneur_object not in relatedItems:
                     # LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' %
-                             (conteneur_object.getId(), id_objet))
+                    #         (conteneur_object.getId(), id_objet))
                     # on ajoute  ##<JalonCoursWims at
                     # AutoEvaluation-bado-20161201175055577435>## aux relatedItems de
                     # ##classerparpropriete-bado-20140901113857## ----
