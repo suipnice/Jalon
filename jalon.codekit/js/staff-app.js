@@ -147,7 +147,7 @@ function setRevealForm( formID, ckEditorInstanceName ) {
             $titleInput = $form.find( '#title' );
 
         // Supp. marquage eventuel dans le "input#title"
-        $titleInput.val( $( $titleInput.val( ) ).text( ) );
+        // $titleInput.val( $( $titleInput.val( ) ).text( ) );
 
         $.post( $form.attr( 'action' ), $form.serialize( ) ).done( function( data ) {
 
