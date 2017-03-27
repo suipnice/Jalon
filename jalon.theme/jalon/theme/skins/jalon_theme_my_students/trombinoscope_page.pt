@@ -13,9 +13,19 @@
             tal:define="personnel python:user.has_role(['Manager', 'Personnel', 'Secretaire'])">
 
     <tal:condition condition="personnel">
-    <metal:macro use-macro="context/macro_navigation/macros/fil_d_ariane">
-        Page d'affichage du fil d'ariane des jalon_folder
-    </metal:macro>
+    <div id="breadcrumb">
+        <div class="row">
+            <span>
+                <i class="fa fa-users no-pad"></i>
+                <a tal:attributes="href context/absolute_url">Mes etudiants</a>
+                <i class="fa fa-angle-double-right no-pad"></i>
+            </span>
+            <span>
+                <i class="fa fa-camera-retro no-pad"></i>
+                <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${request/code}&amp;type=${request/type}">Trombinoscope</a>
+            </span>
+        </div>
+    </div>
 
     <main class="row" role="main" aria-labelledby="page_title">
 

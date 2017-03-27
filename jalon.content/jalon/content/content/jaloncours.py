@@ -903,12 +903,12 @@ class JalonCours(ATFolder):
                 """
                 form_properties["item_title"] = self.remplaceChaine(
                     item_properties["titreElement"], {
-                        '<ol>':'',
-                        '<ul>':'',
-                        '</ol>':'',
-                        '</ul>':'',
-                        '<li>':'<p>- ',
-                        '</li>':'</p>'
+                        '<ol>':  '',
+                        '<ul>':  '',
+                        '</ol>': '',
+                        '</ul>': '',
+                        '<li>':  '<p>- ',
+                        '</li>': '</p>'
                     })
 
             else:
@@ -1047,12 +1047,12 @@ class JalonCours(ATFolder):
                         """
                         item["item_title"] = self.remplaceChaine(
                             item["item_title"], {
-                                '<ol>':'',
-                                '<ul>':'',
-                                '</ol>':'',
-                                '</ul>':'',
-                                '<li>':'<p>- ',
-                                '</li>':'</p>'
+                                '<ol>':  '',
+                                '<ul>':  '',
+                                '</ol>': '',
+                                '</ul>': '',
+                                '<li>':  '<p>- ',
+                                '</li>': '</p>'
                             })
 
                 item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False

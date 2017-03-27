@@ -108,9 +108,11 @@
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
                 <tal:condition condition="my_view/is_course_map_display">
+                <tal:condition condition="not:my_view/is_sub_course_map">
                 <metal:macro use-macro="context/course_map_macro/macros/course_map_chapter_form">
                     Affichage du formulaire de choix de titre
                 </metal:macro>
+                </tal:condition>
                 </tal:condition>
                 <ol tal:attributes="id course_map/ol_css_id;
                                     class course_map/ol_css_class">
