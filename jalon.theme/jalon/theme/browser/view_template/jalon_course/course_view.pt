@@ -108,7 +108,7 @@
                 <tal:define define="course_map my_view/course_map;
                                     course_link context/absolute_url;">
                 <tal:condition condition="my_view/is_course_map_display">
-                <tal:condition condition="not:my_view/is_sub_course_map">
+                <tal:condition condition="python:context.test(not my_view['is_sub_course_map'] or course_map_id, True, False)">
                 <metal:macro use-macro="context/course_map_macro/macros/course_map_chapter_form">
                     Affichage du formulaire de choix de titre
                 </metal:macro>
