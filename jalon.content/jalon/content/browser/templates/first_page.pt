@@ -19,6 +19,18 @@
 
     <metal:macro define-macro="connexion">
 
+    <div id="accueil_header" class="row">
+        <div class="small-12 large-5 columns" id="logo_container">
+            <a href="//unice.fr" title="visiter le portail de l'UNS (s'ouvre dans une nouvelle fenêtre)" target="_blank">
+                <!--tal:block i18n:translate="">Université Nice Sophia Antipolis, membre de l'Université Côte d'azur</tal:block-->
+                <img style="width:24em;" alt="Membre del'Université Côte d'azur" src="++resource++jalon.theme.images/logo_UNS_UCA.png"/>
+            </a>
+        </div>
+        <div class="small-12 large-7 columns">
+            <h1 id="site_title" tal:content="infos_connexion/site"/>
+        </div>
+    </div>
+
     <div id="breadcrumb"></div>
 
     <main id="accueil" role="main" aria-labelledby="page_title"
@@ -26,27 +38,6 @@
 
         <div class="jumbotron" role="banner" aria-labelledby="page_title">
 
-        <tal:comments replace="nothing"><!--
-            <div class="row">
-                <a class="button tiny dropdown right" data-dropdown="language-selector" data-options="align:bottom">
-                    <i class="fa fa-flag fa-fw"></i>
-                    <tal:block i18n:translate="">Langue préférée</tal:block>
-                </a>
-                <ul id="language-selector" class="f-dropdown" data-dropdown-content="data-dropdown-content">
-                    <li>
-                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=en">English</a>
-                    </li>
-                    <li class="active">
-                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=fr">Français</a>
-                    </li>
-                    <li>
-                        <a tal:attributes="href string:${context/absolute_url}/switchLanguage?set_language=it">Italiano</a>
-                    </li>
-                </ul>
-            </div>
-        --></tal:comments>
-
-            <h1 tal:content="infos_connexion/site"/>
             <h2>
                 <tal:block i18n:translate="">Ergonomie</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />
                 <tal:block i18n:translate="Simplicity">Simplicité</tal:block><span class="show-for-medium-up">&nbsp;&bull; </span><br class="show-for-small-only" />

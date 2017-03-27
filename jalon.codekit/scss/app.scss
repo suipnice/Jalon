@@ -1852,6 +1852,31 @@ body.template-firstpage_view.role-anonymous {
     }
 }
 
+#stats_UNS{
+    .wims-color{color:$wims-color;}
+    .file-color{color:$file-color;}
+    .connect-color{color:$connect-color;}
+}
+
+#accueil_header{
+
+    h1 {
+        font-family: 'hero_lightlight', sans-serif;
+        font-size: 4rem;
+        font-weight: bold;
+        letter-spacing: 0.24em;
+        text-shadow: 0 0 2px rgba( 0, 0, 0, 0.33 );
+        color: $primary-color;
+    }
+    h1, #logo_container {
+        text-align: center;
+    }
+    #logo_container{
+        margin-top: 1rem;
+        /*@include background( 'logo_uns_uca.svg', center 0 );*/
+    }
+}
+
 #accueil {
 
     .jumbotron {
@@ -1864,13 +1889,6 @@ body.template-firstpage_view.role-anonymous {
         h1, h2 {
             font-family: 'hero_lightlight', sans-serif;
             color: #fff;
-        }
-
-        h1 {
-            font-size: 4.6rem;
-            line-height: 6rem;
-            letter-spacing: 0.24em;
-            text-shadow: 0px 0px 9px rgba( 0, 0, 0, 0.33 );
         }
 
         h2 {
@@ -1916,19 +1934,14 @@ body.template-firstpage_view.role-anonymous {
 
         &:last-child {
             margin-bottom: 1rem;
-
-            #logo_container {
-                padding-top: 150px;
-                @include background( 'logo_uns.svg', center 20px );
-            }
         }
 
         .columns {
             text-align: center;
 
             h3,
-            h4,
-            .fa-circle { color: $primary-color; }
+            h4/*,
+            .fa-circle*/ { color: $primary-color; }
 
             h3 {
                 font-size: 1.3rem;
