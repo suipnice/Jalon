@@ -28,8 +28,8 @@ import random
 import os
 import copy
 
-# from logging import getLogger
-# LOG = getLogger('[JalonCours]')
+from logging import getLogger
+LOG = getLogger('[JalonCours]')
 
 JalonCoursSchema = ATFolderSchema.copy() + Schema((
     StringField("auteurPrincipal",
@@ -416,7 +416,7 @@ class JalonCours(ATFolder):
     def getCourseItemProperties(self, key=None):
         """Fournit les propriétés des (ou d'un) element(s) du cours."""
         # Anciennement "getElementCours"
-        # LOG.info("----- getCourseItemProperties -----")
+        LOG.info("----- getCourseItemProperties : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         # LOG.info("***** item_id : %s" % key)
         if key:
             return self._elements_cours.get(key, None)
@@ -425,11 +425,12 @@ class JalonCours(ATFolder):
     def setCourseItemsProperties(self, elements_cours):
         """Définit la liste des propriétés des elements du cours."""
         # Anciennement "setElementCours"
-        # LOG.info("----- setCourseItemsProperties -----")
+        LOG.info("----- setCourseItemsProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if type(self._elements_cours).__name__ != "PersistentMapping":
             self._elements_cours = PersistentDict(elements_cours)
         else:
             self._elements_cours = elements_cours
+        LOG.info("----- setCourseItemsProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     # def getKeyElementCours(self):
     #    # LOG.info("----- getKeyElementCours -----")
@@ -451,15 +452,17 @@ class JalonCours(ATFolder):
         if date != "":
             return date.strftime("%Y/%m/%d %H:%M")
         else:
-            return DateTime().strftime("%Y/%m/%d %H:%M")
+            return DateTime().strftime("%Y/%m/%d %H:%M:%S")
 
     def setCourseProperties(self, dico):
         """ Met à jour les propriétés du cours (anciennement "setProperties")."""
-        # LOG.info("----- setCourseProperties -----")
+        LOG.info("----- setCourseProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
         if key == "DateDerniereModif":
+            LOG.info("***** reindexObject : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             self.reindexObject()
+        LOG.info("----- setCourseProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def getCourseProperty(self, property_id):
         # LOG.info("----- getCourseProperty -----")
@@ -1147,7 +1150,7 @@ class JalonCours(ATFolder):
         # return self.getPlanCours(True)
 
     def isAfficherElement(self, affElement, masquerElement):
-        # LOG.info("----- isAfficherElement -----")
+        LOG.info("----- isAfficherElement : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return jalon_utils.isAfficherElement(affElement, masquerElement)
 
     def getCourseMapItemJalonner(self):
@@ -1430,22 +1433,26 @@ class JalonCours(ATFolder):
             self.setActuCours(actuality_dict)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
-        # LOG.info("----- getParentPlanElement -----")
+        LOG.info("----- getParentPlanElement Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if idParent == "racine":
             listeElement = self.plan
         # LOG.info("***** listeElement : %s" % str(listeElement))
         for element in listeElement:
             if idElement == element["idElement"]:
                 if idParent == "racine":
+                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return {"idElement": "racine", "affElement": "", "masquerElement": ""}
                 else:
                     dico = dict(self.getCourseItemProperties(idParent))
                     dico["idElement"] = idParent
+                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return dico
             elif "listeElement" in element:
                 retour = self.getParentPlanElement(idElement, element["idElement"], element["listeElement"])
                 if retour:
+                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return retour
+        LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return None
 
     def getEnfantPlanElement(self, idElement, listeElement=None):
@@ -1498,7 +1505,7 @@ class JalonCours(ATFolder):
         self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemInCourseMap(self, item_id, map_position):
-        # LOG.info("----- addItemInCourseMap -----")
+        LOG.info("----- addItemInCourseMap Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         course_map = list(self.getPlan())
 
         item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": item_id}
@@ -1512,6 +1519,7 @@ class JalonCours(ATFolder):
             self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
 
         self.plan = tuple(course_map)
+        LOG.info("----- addItemInCourseMap End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addMySpaceItemGlossary(self, folder_object, item_id, item_type, user_id):
         # LOG.info("----- addMySpaceItemGlossary -----")
@@ -1562,7 +1570,7 @@ class JalonCours(ATFolder):
         self.plan = tuple(plan)
 
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
-        # LOG.info("----- setCourseMapPosition -----")
+        LOG.info("----- setCourseMapPosition Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if len(course_title_list) > 1:
             for item in items_list:
                 if item["idElement"] == course_title_list[0]:
@@ -1572,9 +1580,10 @@ class JalonCours(ATFolder):
                 if item["idElement"] == course_title_list[0]:
                     item["listeElement"].append(item_properties)
                     break
+        LOG.info("----- setCourseMapPosition End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
-        # LOG.info("----- addItemProperty -----")
+        LOG.info("----- addItemProperty Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         parent = self.getParentPlanElement(item_id, 'racine', '')
         # LOG.info("***** parent : %s" % str(parent))
         if parent and parent['idElement'] != 'racine':
@@ -1599,12 +1608,15 @@ class JalonCours(ATFolder):
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
             self.setCourseItemsProperties(items_properties)
+        LOG.info("----- addItemProperty End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addCourseActivity(self, user_id, activity_type, activity_title, activity_description, map_position):
         """Ajoute une activité dans le cours."""
-        # LOG.info("----- addCourseActivity -----")
+        LOG.info("----- addCourseActivity Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         activity_dict = self._activity_dict[activity_type]
+        LOG.info("***** invokeFactory Start : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
+        LOG.info("***** invokeFactory End : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
         activity = getattr(self, activity_id)
         activity.setProperties({"Title":       activity_title,
@@ -1612,6 +1624,7 @@ class JalonCours(ATFolder):
 
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
+        LOG.info("----- addCourseActivity End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return activity_id
 
     def detachCourseItem(self, item_id, item_creator, folder_id):

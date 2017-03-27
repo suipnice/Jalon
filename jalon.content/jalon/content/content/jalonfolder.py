@@ -28,8 +28,9 @@ import string
 import os
 import copy
 
-# from logging import getLogger
-# LOG = getLogger('[JalonFolder]')
+from DateTime import DateTime
+from logging import getLogger
+LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
 ## LOG.debug('debug message')
@@ -601,7 +602,7 @@ class JalonFolder(ATFolder):
             return "1"
 
     def addTagFolder(self, tag_id, tag_title):
-        # LOG.info("----- addTagFolder -----")
+        LOG.info("----- addTagFolder Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
@@ -622,7 +623,9 @@ class JalonFolder(ATFolder):
             tags = list(folder.Subject())
             tags.append(tag_id)
             folder.setSubject(tuple(tags))
+            LOG.info("***** reindexObject : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             folder.reindexObject()
+        LOG.info("----- addTagFolder End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def editTagFolder(self, tag_id, tag_title):
         # LOG.info("----- addTagFolder -----")
