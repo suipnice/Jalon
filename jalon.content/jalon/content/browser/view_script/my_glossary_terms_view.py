@@ -43,7 +43,9 @@ class MyGlossaryTermsView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_glossary_terms_list, selected_tags_list, tags_dict)
 
-        nb_display_items = len(my_glossary_terms_list)
+        nb_display_items = my_glossary_terms_list.length
+        # Deprecated
+        # nb_display_items = len(my_glossary_terms_list)
         nb_items = len(folder.objectIds())
 
         return {"tags_list":        tags_list,

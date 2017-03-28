@@ -42,7 +42,9 @@ class MyFilesView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_files_list, selected_tags_list, tags_dict)
 
-        nb_display_items = len(my_files_list)
+        nb_display_items = my_files_list.length
+        # Deprecated
+        # nb_display_items = len(my_files_list)
         nb_items = len(folder.objectIds())
 
         return {"tags_list":        tags_list,
