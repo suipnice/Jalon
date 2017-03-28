@@ -51,12 +51,10 @@ elif must_change_password:
     state.set(status='change_password')
 
 memberid = member.getId()
-if (not hasattr(context.Members, memberid)) and (not member.has_role(["Etudiant", "EtudiantJalon"])):
+if (not hasattr(context.Members, memberid)) and ( member.has_role(["Personnel", "Secretaire", "Manager"])):
     context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
     home = getattr(context.Members, memberid)
     home.addSubJalonFolder(memberid)
-
-if not hasattr(context.cours, memberid):
     context.cours.invokeFactory(type_name='JalonFolder', id=memberid)
     cours = getattr(context.cours, memberid)
     cours.setTitle("Mes cours")

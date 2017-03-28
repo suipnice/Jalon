@@ -63,7 +63,6 @@ listeSubJalonFolder = [["Fichiers", "Fichiers"],
                        ["Externes", "Liens"],
                        ["Glossaire", "Termes de glossaire"],
                        ["Webconference", u"Webconférences".encode("utf-8")],
-                       ["CatalogueBU", "Catalogue BU"],
                        ["Video", "Vidéos"]]
 
 SIZE_CONST = {'KB': 1024, 'MB': 1024 * 1024, 'GB': 1024 * 1024 * 1024}
