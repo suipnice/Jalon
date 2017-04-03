@@ -913,8 +913,9 @@ class JalonFolder(ATFolder):
         * portal_members : dossier "Members", qu'on fournit afin d'optimiser.
 
         """
-        # LOG.info("----- associerCoursListeObjets -----")
-        # LOG.info('[associerCoursListeObjets] dico_espaces : %s' % dico_espaces)
+        # LOG.info("----- associerCoursListeObjets START : %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
+        # LOG.info('***** dico_espaces : %s' % dico_espaces)
+        # LOG.info("***** conteneur_object : %s" % "/".join(conteneur_object.getPhysicalPath()))
         for id_objet in liste_objets:
             # LOG.info("object_id : %s" % id_objet)
             infos_objet = infos_elements[id_objet]
@@ -937,11 +938,13 @@ class JalonFolder(ATFolder):
 
             objet = getattr(rep_createur, id_objet, None)
             if objet:
-                # LOG.info("object found")
+                # LOG.info("***** object found")
+                # LOG.info("***** object : %s" % "/".join(objet.getPhysicalPath()))
                 relatedItems = objet.getRelatedItems()
+                # LOG.info("***** object relatedItems : %s" % str(relatedItems))
                 if conteneur_object not in relatedItems:
-                    # LOG.info('---- on ajoute  ##%s## aux relatedItems de ##%s## ----' %
-                    #         (conteneur_object.getId(), id_objet))
+                    # LOG.info('***** on ajoute  ## %s ## aux relatedItems de ## %s ## ' %
+                    #          (conteneur_object.getId(), id_objet))
                     # on ajoute  ##<JalonCoursWims at
                     # AutoEvaluation-bado-20161201175055577435>## aux relatedItems de
                     # ##classerparpropriete-bado-20140901113857## ----
@@ -950,6 +953,7 @@ class JalonFolder(ATFolder):
                     objet.setRelatedItems(relatedItems)
                     # LOG.info("---- et enfin on réindexe l'objet ---")
                     objet.reindexObject()
+        # LOG.info("----- associerCoursListeObjets END : %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
 
     def isNouveau(self, idcours):
         portal = self.portal_url.getPortalObject()

@@ -231,6 +231,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info('__init__')
         super(JalonCoursWims, self).__init__(*args, **kwargs)
         self.setDocumentsProperties({})
+        self.setListeSujets([])
+        self.setListeExercices([])
 
     # #-------------------# #
     #  Fonctions générales  #
@@ -1739,11 +1741,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info("----- setJalonProperties -----")
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
-
-        if "DateDerniereModif" in dico.keys():
-            # self.plone_log("DateDerniereModif")
-            self.reindexObject()
-        return dico
+        self.reindexObject()
 
     """
     def setAttributActivite(self, form):
