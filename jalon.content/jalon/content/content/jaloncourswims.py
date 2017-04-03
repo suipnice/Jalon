@@ -1453,7 +1453,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             return _("Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.")
 
         actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
-        listeEtudiant = self.getNotes(authMember, actif, isProf, detailed=True, request="[jaloncourswims.py]/getNotesTableur")
+        listeEtudiant = self.getNotes(authMember, actif, self.isPersonnel(authMember, False), detailed=True, request="[jaloncourswims.py]/getNotesTableur")
         if self.idExam:
             entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("NOMBRE d'ESSAIS"),
                        _(u"NOTE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
