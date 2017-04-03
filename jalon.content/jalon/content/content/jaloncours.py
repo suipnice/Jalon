@@ -2270,15 +2270,18 @@ class JalonCours(ATFolder):
     def addNominativeRegistration(self, nominative_registration_list):
         # LOG.info("----- addNominativeRegistration -----")
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         course_nominative_registration_list = list(self.getGroupe())
+        message = 'Bonjour\n\nVous avez été inscrit au cours "%s" ayant pour auteur %s.\n\nPour accéder à ce cours, connectez vous sur %s (%s), le cours est listé dans votre espace "Mes cours".\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title(), self.absolute_url(), portal.Title())
         for nominative_registration in nominative_registration_list:
             if not nominative_registration in course_nominative_registration_list:
                 course_nominative_registration_list.append(nominative_registration)
-                infosMembre = self.useJalonUtils("getIndividu", {"sesame": nominative_registration, "type": "dict"})
-                self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
-                                                            "objet":   "Vous avez été inscrit à un cours",
-                                                            "message": message}})
+                try:
+                    infosMembre = self.useJalonUtils("getIndividu", {"sesame": nominative_registration, "type": "dict"})
+                    self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
+                                                                "objet":   "Vous avez été inscrit à un cours",
+                                                                "message": message}})
+                except:
+                    pass
         self.setGroupe(tuple(course_nominative_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
@@ -2287,12 +2290,15 @@ class JalonCours(ATFolder):
         course_nominative_registration_list = set(self.getGroupe())
         delete_nominative_registration_list = course_nominative_registration_list.difference(set(nominative_registration_list))
         portal = self.portal_url.getPortalObject()
-        message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
-        for delete_nominative_registration in delete_nominative_registration_list:
-            infosMembre = self.useJalonUtils("getIndividu", {"sesame": delete_nominative_registration, "type": "dict"})
-            self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
-                                                        "objet":   "Vous avez été désincrit d'un cours",
-                                                        "message": message}})
+        try:
+            message = 'Bonjour\n\nVous avez été désinscrit du cours "%s" ayant pour auteur %s.\n\nCordialement,\n%s.' % (self.Title(), self.getAuteur()["fullname"], portal.Title())
+            for delete_nominative_registration in delete_nominative_registration_list:
+                infosMembre = self.useJalonUtils("getIndividu", {"sesame": delete_nominative_registration, "type": "dict"})
+                self.useJalonUtils("envoyerMail", {"form": {"a":       infosMembre["email"],
+                                                            "objet":   "Vous avez été désincrit d'un cours",
+                                                            "message": message}})
+        except:
+            pass
         self.setGroupe(tuple(nominative_registration_list))
         self.setCourseProperties({"DateDerniereModif": DateTime()})
 
