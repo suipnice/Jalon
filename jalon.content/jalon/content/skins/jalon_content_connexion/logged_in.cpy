@@ -51,7 +51,7 @@ elif must_change_password:
     state.set(status='change_password')
 
 memberid = member.getId()
-if (not hasattr(context.Members, memberid)) and ( member.has_role(["Personnel", "Secretaire", "Manager"])):
+if (not hasattr(context.Members, memberid)) and (member.has_role(["Personnel", "Secretaire", "Manager"])):
     context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
     home = getattr(context.Members, memberid)
     home.addSubJalonFolder(memberid)

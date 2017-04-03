@@ -18,18 +18,16 @@ from jalon.content.interfaces import IJalonCours
 
 from DateTime import DateTime
 from os import close
-# from zipfile import ZipFile, ZIP_DEFLATED
 
 import json
-# import urllib2
 import string
 import jalon_utils
 import random
 import os
 import copy
 
-from logging import getLogger
-LOG = getLogger('[JalonCours]')
+# from logging import getLogger
+# LOG = getLogger('[JalonCours]')
 
 JalonCoursSchema = ATFolderSchema.copy() + Schema((
     StringField("auteurPrincipal",
@@ -384,9 +382,8 @@ class JalonCours(ATFolder):
         course_authorized_list = request.SESSION.get("course_authorized_list", None)
         if course_authorized_list is None:
             portal = self.portal_url.getPortalObject()
-            my_courses = getattr(portal.cours, user_id)
-            view = getMultiAdapter((my_courses, request), name="mes_cours_view")
-            view.getStudentCoursesList(user, "1", my_courses, False)
+            view = getMultiAdapter((portal.mes_cours, request), name="mes_cours_view")
+            view.getStudentCoursesList(user, "1", False)
             course_authorized_list = request.SESSION.get("course_authorized_list", [])
 
         if not self.getId() in course_authorized_list:
@@ -416,7 +413,7 @@ class JalonCours(ATFolder):
     def getCourseItemProperties(self, key=None):
         """Fournit les propriétés des (ou d'un) element(s) du cours."""
         # Anciennement "getElementCours"
-        LOG.info("----- getCourseItemProperties : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getCourseItemProperties : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         # LOG.info("***** item_id : %s" % key)
         if key:
             return self._elements_cours.get(key, None)
@@ -425,12 +422,12 @@ class JalonCours(ATFolder):
     def setCourseItemsProperties(self, elements_cours):
         """Définit la liste des propriétés des elements du cours."""
         # Anciennement "setElementCours"
-        LOG.info("----- setCourseItemsProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseItemsProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if type(self._elements_cours).__name__ != "PersistentMapping":
             self._elements_cours = PersistentDict(elements_cours)
         else:
             self._elements_cours = elements_cours
-        LOG.info("----- setCourseItemsProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseItemsProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     # def getKeyElementCours(self):
     #    # LOG.info("----- getKeyElementCours -----")
@@ -456,13 +453,13 @@ class JalonCours(ATFolder):
 
     def setCourseProperties(self, dico):
         """ Met à jour les propriétés du cours (anciennement "setProperties")."""
-        LOG.info("----- setCourseProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
         if key == "DateDerniereModif":
-            LOG.info("***** reindexObject : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # LOG.info("***** reindexObject : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             self.reindexObject()
-        LOG.info("----- setCourseProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseProperties End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def getCourseProperty(self, property_id):
         # LOG.info("----- getCourseProperty -----")
@@ -988,97 +985,101 @@ class JalonCours(ATFolder):
             item_properties = self.getCourseItemProperties(course_map_item["idElement"])
             # LOG.info(course_map_item["idElement"])
 
-            item = {"item_id":      course_map_item["idElement"],
-                    "item_title":   item_properties["titreElement"],
-                    "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", ""),
-                    "item_link":    "",
-                    "item_video":   False}
+            if item_properties:
+                item = {"item_id":      course_map_item["idElement"],
+                        "item_title":   item_properties["titreElement"],
+                        "item_drop_id": "drop-%s" % course_map_item["idElement"].replace("*-*", ""),
+                        "item_link":    "",
+                        "item_video":   False}
 
-            if "complementElement" in item_properties:
-                if "value" in item_properties["complementElement"] and item_properties["complementElement"]["value"] and "image" in item_properties["complementElement"]:
-                    item["item_video"] = True
-                    item["item_image"] = item_properties["complementElement"]["image"]
-                    item["item_auteur"] = item_properties["complementElement"]["auteur"]
-                    try:
-                        item["item_description"] = item_properties["complementElement"]["description"]
-                    except:
-                        item["item_description"] = "Description non disponible"
+                if "complementElement" in item_properties:
+                    if "value" in item_properties["complementElement"] and item_properties["complementElement"]["value"] and "image" in item_properties["complementElement"]:
+                        item["item_video"] = True
+                        item["item_image"] = item_properties["complementElement"]["image"]
+                        item["item_auteur"] = item_properties["complementElement"]["auteur"]
+                        try:
+                            item["item_description"] = item_properties["complementElement"]["description"]
+                        except:
+                            item["item_description"] = "Description non disponible"
 
-            is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
-            item["is_display_item_bool"] = True if is_display_item["val"] else False
-            item["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
-            item["is_display_item_text"] = is_display_item["legende"]
+                is_display_item = self.isAfficherElement(item_properties["affElement"], item_properties["masquerElement"])
+                item["is_display_item_bool"] = True if is_display_item["val"] else False
+                item["is_display_item_icon"] = "fa %s fa-fw fa-lg no-pad right" % is_display_item["icon"]
+                item["is_display_item_text"] = is_display_item["legende"]
 
-            if is_personnel or item["is_display_item_bool"]:
-                item["is_item_title"] = False
-                item["item_css_class"] = "element"
-                course_map_sub_items_list = []
-                if "listeElement" in course_map_item:
-                    item["is_item_title"] = True
-                    item["item_css_class"] = "branch"
-                    course_map_sub_items_list = course_map_item["listeElement"]
-                else:
-                    if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "TexteLibre"]:
-                        item["item_div_css"] = "elemactivite"
-                        item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"], "view"])
-                    elif item_properties["typeElement"] == "SalleVirtuelle":
-                        item["item_div_css"] = "elemressource"
-                        item["item_link"] = "%s/display_course_webconference_page?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                if is_personnel or item["is_display_item_bool"]:
+                    item["is_item_title"] = False
+                    item["item_css_class"] = "element"
+                    course_map_sub_items_list = []
+                    if "listeElement" in course_map_item:
+                        item["is_item_title"] = True
+                        item["item_css_class"] = "branch"
+                        course_map_sub_items_list = course_map_item["listeElement"]
                     else:
-                        item["item_div_css"] = "elemressource"
-                        item["item_link"] = "%s?course_id=%s" % ("/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"]), self.getId())
+                        if item_properties["typeElement"] in ["BoiteDepot", "AutoEvaluation", "Examen", "TexteLibre"]:
+                            item["item_div_css"] = "elemactivite"
+                            item["item_link"] = "/".join([self.absolute_url(), course_map_item["idElement"], "view"])
+                        elif item_properties["typeElement"] == "SalleVirtuelle":
+                            item["item_div_css"] = "elemressource"
+                            item["item_link"] = "%s/display_course_webconference_page?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                        else:
+                            item["item_div_css"] = "elemressource"
+                            try:
+                                item["item_link"] = "%s?course_id=%s" % ("/".join([portal.absolute_url(), "Members", item_properties["createurElement"], self._type_folder_my_space_dict[item_properties["typeElement"].replace(" ", "")], course_map_item["idElement"].replace("*-*", "."), "view"]), self.getId())
+                            except:
+                                item["item_link"] = ""
 
-                item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
-                item["item_span_css"] = "type%s" % item_properties["typeElement"].replace(" ", "").lower()
-                item["course_map_sub_items_list"] = course_map_sub_items_list
+                    item["item_css_id"] = "%s-%s" % (item["item_css_class"], course_map_item["idElement"])
+                    item["item_span_css"] = "type%s" % item_properties["typeElement"].replace(" ", "").lower()
+                    item["course_map_sub_items_list"] = course_map_sub_items_list
 
-                item["is_item_title_or_text"] = False
+                    item["is_item_title_or_text"] = False
 
-                if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
-                    item["is_item_title_or_text"] = True
-                    item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
+                    if item_properties["typeElement"] in ["Titre", "TexteLibre"]:
+                        item["is_item_title_or_text"] = True
+                        item["item_div_css"] = "elem%s" % item_properties["typeElement"].lower()
 
-                    if item_properties["typeElement"] == "Titre":
-                        item["item_title"] = self.supprimerMarquageHTML(item["item_title"])
+                        if item_properties["typeElement"] == "Titre":
+                            item["item_title"] = self.supprimerMarquageHTML(item["item_title"])
 
-                    elif item_properties["typeElement"] == "TexteLibre":
-                        """
-                        Rétrocompat. supp. listes dans les éléments "texte" :
-                            modification du contenu existant pour présentation
-                            dans le plan (à supp. si données existantes migrées
-                            suite à la suppression des listes dans CKEditor).
-                        """
-                        item["item_title"] = self.remplaceChaine(
-                            item["item_title"], {
-                                '<ol>':  '',
-                                '<ul>':  '',
-                                '</ol>': '',
-                                '</ul>': '',
-                                '<li>':  '<p>- ',
-                                '</li>': '</p>'
-                            })
+                        elif item_properties["typeElement"] == "TexteLibre":
+                            """
+                            Rétrocompat. supp. listes dans les éléments "texte" :
+                                modification du contenu existant pour présentation
+                                dans le plan (à supp. si données existantes migrées
+                                suite à la suppression des listes dans CKEditor).
+                            """
+                            item["item_title"] = self.remplaceChaine(
+                                item["item_title"], {
+                                    '<ol>':  '',
+                                    '<ul>':  '',
+                                    '</ol>': '',
+                                    '</ul>': '',
+                                    '<li>':  '<p>- ',
+                                    '</li>': '</p>'
+                                })
 
-                item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
+                    item["is_item_readable"] = True if not is_personnel and not item["is_item_title"] else False
 
-                if not is_personnel:
-                    item["item_read_link"] = "%s/read_course_map_item_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
-                    item["item_read_css"] = "decoche right"
-                    item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
-                    if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
-                        item["item_read_css"] = "coche right"
-                        item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
-                else:
-                    item["item_actions"] = self.getItemActions(item_properties, item["is_display_item_bool"])
+                    if not is_personnel:
+                        item["item_read_link"] = "%s/read_course_map_item_script?item_id=%s" % (self.absolute_url(), course_map_item["idElement"])
+                        item["item_read_css"] = "decoche right"
+                        item["item_read_icon"] = "fa fa-square-o fa-fw fa-lg no-pad"
+                        if item["is_item_readable"] and "marque" in item_properties and user_id in item_properties["marque"]:
+                            item["item_read_css"] = "coche right"
+                            item["item_read_icon"] = "fa fa-check-square-o fa-fw fa-lg no-pad"
+                    else:
+                        item["item_actions"] = self.getItemActions(item_properties, item["is_display_item_bool"])
 
-                item["is_item_jalonner"] = False
-                item["item_jalonner_comment"] = ""
-                if course_map_item["idElement"] == item_jalonner["item_jalonner_id"]:
-                    item["is_item_jalonner"] = True
-                    item["item_jalonner_comment"] = item_jalonner["item_jalonner_comment"]
+                    item["is_item_jalonner"] = False
+                    item["item_jalonner_comment"] = ""
+                    if course_map_item["idElement"] == item_jalonner["item_jalonner_id"]:
+                        item["is_item_jalonner"] = True
+                        item["item_jalonner_comment"] = item_jalonner["item_jalonner_comment"]
 
-                item["is_item_new"] = True if item["is_display_item_bool"] and cmp(item_properties["affElement"], user_last_login_time) > 0 else False
+                    item["is_item_new"] = True if item["is_display_item_bool"] and cmp(item_properties["affElement"], user_last_login_time) > 0 else False
 
-                course_map_list.append(item)
+                    course_map_list.append(item)
 
         return {"ol_css_id":              ol_css_id,
                 "ol_css_class":           ol_css_class,
@@ -1150,7 +1151,7 @@ class JalonCours(ATFolder):
         # return self.getPlanCours(True)
 
     def isAfficherElement(self, affElement, masquerElement):
-        LOG.info("----- isAfficherElement : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- isAfficherElement : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return jalon_utils.isAfficherElement(affElement, masquerElement)
 
     def getCourseMapItemJalonner(self):
@@ -1433,26 +1434,26 @@ class JalonCours(ATFolder):
             self.setActuCours(actuality_dict)
 
     def getParentPlanElement(self, idElement, idParent, listeElement):
-        LOG.info("----- getParentPlanElement Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getParentPlanElement Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if idParent == "racine":
             listeElement = self.plan
         # LOG.info("***** listeElement : %s" % str(listeElement))
         for element in listeElement:
             if idElement == element["idElement"]:
                 if idParent == "racine":
-                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+                    # LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return {"idElement": "racine", "affElement": "", "masquerElement": ""}
                 else:
                     dico = dict(self.getCourseItemProperties(idParent))
                     dico["idElement"] = idParent
-                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+                    # LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return dico
             elif "listeElement" in element:
                 retour = self.getParentPlanElement(idElement, element["idElement"], element["listeElement"])
                 if retour:
-                    LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+                    # LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                     return retour
-        LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getParentPlanElement End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return None
 
     def getEnfantPlanElement(self, idElement, listeElement=None):
@@ -1505,7 +1506,7 @@ class JalonCours(ATFolder):
         self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemInCourseMap(self, item_id, map_position):
-        LOG.info("----- addItemInCourseMap Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addItemInCourseMap Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         course_map = list(self.getPlan())
 
         item_properties = {"idElement": item_id, "listeElement": []} if item_id.startswith("Titre") else {"idElement": item_id}
@@ -1519,7 +1520,7 @@ class JalonCours(ATFolder):
             self.setCourseMapPosition(item_id, item_properties, course_map, course_title_list[1:])
 
         self.plan = tuple(course_map)
-        LOG.info("----- addItemInCourseMap End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addItemInCourseMap End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addMySpaceItemGlossary(self, folder_object, item_id, item_type, user_id):
         # LOG.info("----- addMySpaceItemGlossary -----")
@@ -1570,7 +1571,7 @@ class JalonCours(ATFolder):
         self.plan = tuple(plan)
 
     def setCourseMapPosition(self, item_id, item_properties, items_list, course_title_list):
-        LOG.info("----- setCourseMapPosition Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseMapPosition Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         if len(course_title_list) > 1:
             for item in items_list:
                 if item["idElement"] == course_title_list[0]:
@@ -1580,10 +1581,10 @@ class JalonCours(ATFolder):
                 if item["idElement"] == course_title_list[0]:
                     item["listeElement"].append(item_properties)
                     break
-        LOG.info("----- setCourseMapPosition End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- setCourseMapPosition End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
-        LOG.info("----- addItemProperty Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addItemProperty Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         parent = self.getParentPlanElement(item_id, 'racine', '')
         # LOG.info("***** parent : %s" % str(parent))
         if parent and parent['idElement'] != 'racine':
@@ -1608,15 +1609,15 @@ class JalonCours(ATFolder):
             if complement_element:
                 items_properties[item_id]["complementElement"] = complement_element
             self.setCourseItemsProperties(items_properties)
-        LOG.info("----- addItemProperty End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addItemProperty End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def addCourseActivity(self, user_id, activity_type, activity_title, activity_description, map_position):
         """Ajoute une activité dans le cours."""
-        LOG.info("----- addCourseActivity Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addCourseActivity Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         activity_dict = self._activity_dict[activity_type]
-        LOG.info("***** invokeFactory Start : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("***** invokeFactory Start : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         activity_id = self.invokeFactory(type_name=activity_dict["activity_portal_type"], id="-".join([activity_dict["activity_id"], user_id, DateTime().strftime("%Y%m%d%H%M%S%f")]))
-        LOG.info("***** invokeFactory End : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("***** invokeFactory End : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
         activity = getattr(self, activity_id)
         activity.setProperties({"Title":       activity_title,
@@ -1624,7 +1625,7 @@ class JalonCours(ATFolder):
 
         self.addItemInCourseMap(activity_id, map_position)
         self.addItemProperty(activity_id, activity_dict["activity_id"], activity_title, user_id, "", None)
-        LOG.info("----- addCourseActivity End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addCourseActivity End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return activity_id
 
     def detachCourseItem(self, item_id, item_creator, folder_id):
