@@ -11,7 +11,10 @@ from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonRessourceExterne
 
 import jalon_utils
-import copy
+
+# from DateTime import DateTime
+# from logging import getLogger
+# LOG = getLogger('[JalonRessourceExterne]')
 
 ressourceType = [u"Lien web".encode("utf-8"), u"Lecteur exportable".encode("utf-8")]
 
@@ -201,12 +204,14 @@ class JalonRessourceExterne(ATDocumentBase):
         return ressourceType
 
     def getURLLien(self):
+        # LOG.info("----- getURLLien START : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         lien = self.getURLWEB()
         lien = lien.replace("http//", "http://")
         lien = lien.replace("https//", "https://")
         lien = lien.replace("ftp//", "ftp://")
-        if lien and not(lien.startswith("http://") or lien.startswith("ftp://")):
+        if lien and not(lien.startswith("http://") or lien.startswith("https://") or lien.startswith("ftp://")):
             lien = "http://%s" % lien
+        # LOG.info("----- getURLLien END : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return lien
 
     def setProperties(self, dico):
