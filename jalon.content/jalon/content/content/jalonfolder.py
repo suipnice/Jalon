@@ -28,9 +28,9 @@ import string
 import os
 import copy
 
-from DateTime import DateTime
-from logging import getLogger
-LOG = getLogger('[JalonFolder]')
+# from DateTime import DateTime
+# from logging import getLogger
+# LOG = getLogger('[JalonFolder]')
 """
 # Log examples :
 ## LOG.debug('debug message')
@@ -601,7 +601,7 @@ class JalonFolder(ATFolder):
             return "1"
 
     def addTagFolder(self, tag_id, tag_title):
-        LOG.info("----- addTagFolder Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- addTagFolder Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         portal = self.portal_url.getPortalObject()
         member_id = portal.portal_membership.getAuthenticatedMember().getId()
         home = getattr(portal.Members, member_id)
@@ -622,9 +622,9 @@ class JalonFolder(ATFolder):
             tags = list(folder.Subject())
             tags.append(tag_id)
             folder.setSubject(tuple(tags))
-            LOG.info("***** reindexObject : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
-            folder.reindexObject()
-        LOG.info("----- addTagFolder End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # LOG.info("***** reindexObject : %s" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # folder.reindexObject(idxs=["Subject"])
+        # LOG.info("----- addTagFolder End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
     def editTagFolder(self, tag_id, tag_title):
         # LOG.info("----- addTagFolder -----")
@@ -645,7 +645,7 @@ class JalonFolder(ATFolder):
             folder_subjects[tag_id] = tag_title
             # LOG.info.info("folder_subjects : %s" % folder_subjects)
             folder.setSubjectsDict(folder_subjects)
-            folder.reindexObject()
+            # folder.reindexObject(idxs=["Subject"])
 
     def deleteTagFolder(self, tag):
         tag = urllib.unquote(tag)
@@ -669,7 +669,7 @@ class JalonFolder(ATFolder):
             folder_subjects = folder.getSubjectsDict()
             del folder_subjects[tag]
             folder.setSubjectsDict(folder_subjects)
-            folder.reindexObject()
+            # folder.reindexObject(idxs=["Subject"])
 
             # Mise à jour des sélections enregistrées en session
             tags_in_session = self.REQUEST.SESSION.get('tags')

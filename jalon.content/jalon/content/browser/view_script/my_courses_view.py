@@ -7,9 +7,9 @@ from Products.CMFCore.utils import getToolByName
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 
-from DateTime import DateTime
-from logging import getLogger
-LOG = getLogger('[MyCoursesView]')
+# from DateTime import DateTime
+# from logging import getLogger
+# LOG = getLogger('[MyCoursesView]')
 
 
 class MyCoursesView(BrowserView):
@@ -22,28 +22,27 @@ class MyCoursesView(BrowserView):
         self.request = request
 
     def isAnonymous(self):
-        LOG.info("----- isAnonymous : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- isAnonymous : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         portal_state = getMultiAdapter((self.context, self.request),
                                        name=u'plone_portal_state')
         return portal_state.anonymous()
 
     def getBreadcrumbs(self):
-        LOG.info("----- getBreadcrumbs : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getBreadcrumbs : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return [{"title": _(u"Mes cours"),
                  "icon":  "fa fa-university",
                  "link":  self.context.absolute_url()}]
 
     def getUserFolder(self, user_id):
-        LOG.info("----- getUserFolder : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getUserFolder : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         portal_state = getMultiAdapter((self.context, self.request), name=u'plone_portal_state')
         portal = portal_state.portal()
 
         return getattr(portal.cours, user_id)
 
     def getMyCoursesView(self, user, tab=None):
-        LOG.info("----- getMyCoursesView Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getMyCoursesView Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
 
-        folder = jalon_utils.getCourseUserFolder(self.context, user.getId())
         context_link = self.context.absolute_url()
 
         is_manager = user.has_role("Manager")
@@ -61,8 +60,9 @@ class MyCoursesView(BrowserView):
             is_tab_password = True if tab == "2" else False
             my_courses_macro = "my_courses_list_student_macro"
             tab = tab if tab else "1"
-            courses_dict = self.getStudentCoursesList(user, tab, folder, is_tab_password)
+            courses_dict = self.getStudentCoursesList(user, tab, is_tab_password)
         else:
+            folder = jalon_utils.getCourseUserFolder(self.context, user.getId())
             my_courses_macro = "my_courses_list_teacher_macro"
             actions_list = [{"css_class":   "button create expand",
                              "action_link": "%s/create_course_form" % context_link,
@@ -102,7 +102,7 @@ class MyCoursesView(BrowserView):
 
             courses_dict = self.getTeacherCoursesList(user, tab, folder)
 
-        LOG.info("----- getMyCoursesView End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getMyCoursesView End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return {"macro_messages":   macro_messages,
                 "my_courses_macro": my_courses_macro,
                 "tab":              tab,
@@ -114,7 +114,7 @@ class MyCoursesView(BrowserView):
 
     def getTeacherCoursesList(self, member, tab, folder):
         """Renvoi la liste des cours pour l'enseignant member."""
-        LOG.info("----- getTeacherCoursesList Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getTeacherCoursesList Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         courses_list = []
         courses_ids_list = []
         courses_list_filter = []
@@ -196,7 +196,7 @@ class MyCoursesView(BrowserView):
                          "4": "Vous n'êtes lecteur d'aucun cours.",
                          "5": "Vous n'avez aucun cours archivé."}
         if not courses_list:
-            LOG.info("----- getTeacherCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # LOG.info("----- getTeacherCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             return {"is_courses_list": False,
                     "message": messages_dict[tab]}
         authors_dict = {}
@@ -212,13 +212,13 @@ class MyCoursesView(BrowserView):
                     courses_list_filter.append(
                         self.getCourseData(course_brain, authors_dict, member_id, member_login_time, tab, actions_list))
                 courses_ids_list.append(course_brain.getId)
-        LOG.info("----- getTeacherCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getTeacherCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return {"is_courses_list": True if courses_list_filter else False,
                 "message": messages_dict[tab],
                 "courses_list":    list(courses_list_filter)}
 
-    def getStudentCoursesList(self, member, tab, folder, is_tab_password):
-        LOG.info("----- getStudentCoursesList Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+    def getStudentCoursesList(self, member, tab, is_tab_password):
+        # LOG.info("----- getStudentCoursesList Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         diploma_list = []
         authors_dict = {}
         portal = self.context.portal_url.getPortalObject()
@@ -246,7 +246,7 @@ class MyCoursesView(BrowserView):
                 diploma_list.append({"diploma_course_list": courses_list})
                 self.request.SESSION.set("course_authorized_list", course_authorized_list)
                 # LOG.info(course_authorized_list)
-                LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+                # LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
                 return {"is_diploma_list": True,
                         "diploma_list":    diploma_list}
 
@@ -308,16 +308,16 @@ class MyCoursesView(BrowserView):
         self.request.SESSION.set("course_authorized_list", course_authorized_list)
         # LOG.info(course_authorized_list)
         if diploma_list:
-            LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             return {"is_diploma_list": True,
                     "diploma_list":    diploma_list}
         else:
-            LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+            # LOG.info("----- getStudentCoursesList End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
             return {"is_diploma_list": False,
                     "message":         "Vous n'êtes inscrit(e) à aucun diplôme."}
 
     def getCourseData(self, course_brain, authors_dict, member_id, member_login_time, tab, actions_list, is_tab_password=False):
-        LOG.info("----- getCourseData Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getCourseData Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         course_data = {"course_id":                course_brain.getId,
                        "course_title":             jalon_utils.supprimerMarquageHTML(course_brain.Title),
                        "course_short_title":       jalon_utils.getPlainShortText(course_brain.Title),
@@ -342,5 +342,5 @@ class MyCoursesView(BrowserView):
         course_data["course_author_id"] = course_author_id
         course_data["course_author_name"] = authors_dict[course_author_id]
 
-        LOG.info("----- getCourseData End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("----- getCourseData End : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
         return course_data
