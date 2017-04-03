@@ -62,9 +62,12 @@ class MyExternalResourcesView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_external_resources_list, selected_tags_list, tags_dict)
 
-        nb_display_items = my_external_resources_list.length
-        # Deprecated
-        # nb_display_items = len(my_external_resources_list)
+        try:
+            nb_display_items = my_external_resources_list.length
+        except:
+            # Deprecated
+            nb_display_items = len(my_external_resources_list)
+
         nb_items = len(folder.objectIds())
 
         return {"is_two_actions":   is_two_actions,

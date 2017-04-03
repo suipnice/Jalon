@@ -73,7 +73,11 @@ class MyAdobeConnectRecordingView(MySpaceView):
             no_items_strong = "Il n'y a aucune présentation sonorisée dans votre espace."
             no_items_button = "Pour en ajouter, cliquez sur la barre « Créer une présentation sonorisée » ci-dessus."
 
-        nb_display_items = len(my_adobe_connect_recording_list)
+        try:
+            nb_display_items = my_adobe_connect_recording_list.length
+        except:
+            nb_display_items = len(my_adobe_connect_recording_list)
+
         nb_items = len(folder.objectIds())
 
         return {"adobe_connect_session": adobe_connect_session,

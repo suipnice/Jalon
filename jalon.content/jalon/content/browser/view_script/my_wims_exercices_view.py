@@ -49,10 +49,10 @@ class MyWimsExercicesView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_wims_exercices_list, selected_tags_list, tags_dict)
 
-        if selected_tags_list == ["last"]:
+        try:
             # dans ce cas, my_wims_exercices_list est un object dont la fonction "len" est deprecated.
             nb_display_items = my_wims_exercices_list.length
-        else:
+        except:
             # dans ce cas, my_wims_exercices_list est un 'LazyMap' object, qui n'a pas d'attribut 'length'
             nb_display_items = len(my_wims_exercices_list)
 
