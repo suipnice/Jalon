@@ -109,7 +109,7 @@
             <ul>
                 <tal:block repeat="etudiant python:context.getListeEtudiants(code, type)">
                 <li>
-                    <img tal:attributes="src python:context.getJalonPhoto(etudiant['SESAME_ETU']);
+                    <img tal:attributes="src python:context.getJalonPhoto(etudiant['COD_ETU']);
                                          alt string:Photo de ${etudiant/name}"
                          class="image_trombinoscope"/>
                     <p>

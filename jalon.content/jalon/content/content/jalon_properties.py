@@ -341,7 +341,7 @@ class JalonProperties(SimpleItem):
             portal = self.portal_url.getPortalObject()
             return "%s/etudiants/%s" % (portal.absolute_url(), user_id)
         else:
-            return "%s/%s.jpg" % (self._lien_trombinoscope, user_id)
+            return "%s/%sApog0060931E.jpg" % (self._lien_trombinoscope, user_id)
 
     def getTopBarMenuLeft(self, user_role):
         # LOG.info("----- getTopBar -----")
