@@ -135,7 +135,10 @@ def sendMail(object, event):
     #object.plone_log(text)
 
     text = text.encode("utf-8")
-    data_to_plaintext = portal_transforms.convert("html_to_web_intelligent_plain_text", text)
+    try:
+        data_to_plaintext = portal_transforms.convert("html_to_text", text)
+    except:
+        data_to_plaintext = text
     plain_text = data_to_plaintext.getData()
 
     for to in send_to:
