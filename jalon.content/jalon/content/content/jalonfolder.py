@@ -160,6 +160,15 @@ class JalonFolder(ATFolder):
         # LOG.info("----- getCourseUserFolder -----")
         return jalon_utils.getCourseUserFolder(self, user_id)
 
+    def getCourseObject(self, course_user_folder, course_id):
+        # LOG.info("----- getCourseObject -----")
+        course_object = getattr(course_user_folder, course_id, None)
+        if not course_object:
+            portal = self.portal_url.getPortalObject()
+            portal_catalog = getToolByName(portal, "portal_catalog")
+            course_object = portal_catalog.searchResults(portal_type="JalonCours", getId=course_id)[0].getObject()
+        return course_object
+
     def getCourseProperties(self, course_id):
         # LOG.info("----- getCourseProperties -----")
         portal = self.portal_url.getPortalObject()
@@ -175,7 +184,7 @@ class JalonFolder(ATFolder):
     def isFavorite(self, user_id, course_id):
         # LOG.info("----- isFavorite -----")
         course_user_folder = self.getCourseUserFolder(user_id)
-        course = getattr(course_user_folder, course_id)
+        course = self.getCourseObject(course_user_folder, course_id)
         favorites = list(course.Subject())
         # LOG.info("favorites : %s" % favorites)
         return True if user_id in favorites else False
@@ -183,7 +192,7 @@ class JalonFolder(ATFolder):
     def modifyFavoriteCourse(self, user_id, course_id):
         # LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        course = getattr(course_user_folder, course_id)
+        course = self.getCourseObject(course_user_folder, course_id)
         favorites = list(course.Subject())
         if user_id not in favorites:
             favorites.append(user_id)
@@ -199,7 +208,7 @@ class JalonFolder(ATFolder):
     def modifyArchiveCourse(self, user_id, course_id):
         # LOG.info("----- modifyFavorite -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        course = getattr(course_user_folder, course_id)
+        course = self.getCourseObject(course_user_folder, course_id)
         archives = list(course.getArchive())
         if user_id not in archives:
             archives.append(user_id)
@@ -215,14 +224,15 @@ class JalonFolder(ATFolder):
     def getDataCourseFormAction(self, user_id, course_id):
         # LOG.info("----- getDataCourseFormAction -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        course_object = getattr(course_user_folder, course_id)
-        return course_object.getDataCourseFormAction(user_id, course_id)
+        course = self.getCourseObject(course_user_folder, course_id)
+        return course.getDataCourseFormAction(user_id, course_id)
 
     def getDataCourseWimsActivity(self, user_id, course_id):
         # LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        course_object = getattr(course_user_folder, course_id)
-        return course_object.getDataCourseWimsActivity(user_id, course_id)
+        #course_object = getattr(course_user_folder, course_id)
+        course = self.getCourseObject(course_user_folder, course_id)
+        return course.getDataCourseWimsActivity(user_id, course_id)
 
     def getClefsDico(self, dico):
         return jalon_utils.getClefsDico(dico)
