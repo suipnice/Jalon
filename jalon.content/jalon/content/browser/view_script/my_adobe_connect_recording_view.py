@@ -104,7 +104,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
         portal_connect.connexion()
         if not user_connect_password:
             # LOG.info("***** not user_connect_password")
-            self.addAdobeConnectPassword(folder.aq_parent)
+            user_connect_password = self.addAdobeConnectPassword(folder.aq_parent)
             user_email = user.getProperty("email")
             user_fullname = user.getProperty("fullname")
             if not user_fullname:
@@ -127,6 +127,7 @@ class MyAdobeConnectRecordingView(MySpaceView):
             [random.choice(string.ascii_letters + string.digits) for i in range(8)])
         for folder_key in self.folder_dict:
             getattr(folder_parent, self.folder_dict[folder_key]).setComplement(user_connect_password)
+        return user_connect_password
 
     def getAdobeConnectReunion(self, user, folder, portal_connect):
         # LOG.info("----- getAdobeConnectReunion -----")
