@@ -79,7 +79,7 @@
                                   tal:content="access/access_type"/>
                         </td>
                         <td class="code show-for-medium-up"
-                            tal:content="access/access_code"/>
+                            tal:content="access/access_display"/>
                         <td class="number show-for-medium-up"
                             tal:content="access/access_students"/>
                         <td class="show-for-medium-up">

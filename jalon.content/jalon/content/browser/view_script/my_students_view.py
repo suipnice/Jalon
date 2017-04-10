@@ -88,7 +88,8 @@ class MyStudentsView(BrowserView):
                     else:
                         access_data = list(access_response_request)
                     course_access_dict[access_code] = {"access_title":       access_data[0],
-                                                       "access_code":        access_data[3] if access_data[1] == "groupe" else access_data[2],
+                                                       "access_code":        access_data[2],
+                                                       "access_display":     access_data[3] if access_data[1] == "groupe" else access_data[2],
                                                        "access_type":        access_data[1],
                                                        "access_students":    access_data[4],
                                                        "access_course_list": [course.Title]}
