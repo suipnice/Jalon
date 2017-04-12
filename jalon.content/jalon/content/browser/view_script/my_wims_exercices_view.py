@@ -125,7 +125,7 @@ class MyWimsExercicesView(MySpaceView):
                                                   "qclass":     "%s_1" % member_wims_class,
                                                   "jalon_URL":   folder.absolute_url()})
         if exercices["status"] == "ERROR":
-            # en cas d'indisponibilite, le code retour de WIMS donne un type "HTTPError"
+            # en cas d'indisponibilite, WIMS donne un code d'erreur 450 ("HTTPError")
             if "type" in exercices:
                 return {"status": "ERROR", "message": "wims_unavailable"}
             else:

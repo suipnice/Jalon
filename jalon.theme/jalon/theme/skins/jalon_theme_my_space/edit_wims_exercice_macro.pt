@@ -98,27 +98,32 @@
 
 <metal:macro define-macro="edit_wims_exercice_createxo">
 
-    <div data-alert="data-alert" class="alert-box alert radius"
-         tal:condition="errors">
-        <tal:block tal:condition="not:errors/syntax_error|nothing"
-                   i18n:translate="">Veuillez compléter les champs requis svp.</tal:block>
-        <tal:block tal:condition="errors/syntax_error|nothing">
-            <h3 tal:content="errors/syntax_error"/>
-            <tal:block i18n:translate="">Il y a une erreur de syntaxe dans votre exercice.</tal:block><br/>
-            <div i18n:translate="">Merci de prêter attention aux points suivants :</div>
-            <ul style="margin-bottom:0;">
-                <li i18n:translate="">Lorsque vous mettez des parenthèses, accolades ou crochets, placez-les par paires correctement fermées.</li>
-                <li tal:condition="python:modele == 'exercicelibre'">
-                    <tal:block i18n:translate="">Lorsque vous tapez le code source d'un exercice, celui-ci doit au minimum contenir l'instruction suivante :</tal:block>
-                    <code>\statement{<tal:block i18n:translate="">Ici l'énoncé de l'exercice.</tal:block>}</code>
-                </li>
-            </ul>
-        </tal:block>
-        <a class="close"></a>
+    <div class="row">
+        <div class="small-12 columns">
+            <div data-alert="data-alert" class="alert-box alert radius"
+                 tal:condition="errors">
+                <tal:block tal:condition="not:errors/syntax_error|nothing"
+                           i18n:translate="">Veuillez compléter les champs requis svp.</tal:block>
+                <tal:block tal:condition="errors/syntax_error|nothing">
+                    <h3 tal:content="errors/syntax_error"/>
+                    <tal:block i18n:translate="">Il y a une erreur de syntaxe dans votre exercice.</tal:block><br/>
+                    <div i18n:translate="">Merci de prêter attention aux points suivants :</div>
+                    <ul style="margin-bottom:0;">
+                        <li i18n:translate="">Lorsque vous mettez des parenthèses, accolades ou crochets, placez-les par paires correctement fermées.</li>
+                        <li tal:condition="python:modele == 'exercicelibre'">
+                            <tal:block i18n:translate="">Lorsque vous tapez le code source d'un exercice, celui-ci doit au minimum contenir l'instruction suivante :</tal:block>
+                            <code>\statement{<tal:block i18n:translate="">Ici l'énoncé de l'exercice.</tal:block>}</code>
+                        </li>
+                    </ul>
+                </tal:block>
+                <a class="close"></a>
+            </div>
+        </div>
     </div>
 
     <form method="POST"
-          tal:condition="QCM_parsed/code_source"
+          tal:define="code_source QCM_parsed/code_source | nothing"
+          tal:condition="code_source"
           tal:attributes="action string:${context/absolute_url}/${template/id}">
 
         <div tal:define="error errors/title | nothing"

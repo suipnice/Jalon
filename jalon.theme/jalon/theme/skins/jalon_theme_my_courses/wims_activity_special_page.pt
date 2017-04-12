@@ -9,7 +9,7 @@
 <body>
 <!--
   wims_activity_special_page.pt (ex cours_activites_pageWIMS.pt)
-  Page generique d'affichage de contenus WIMS concernant une activité d'un cours (Autoeval / examen)
+  Page generique d'affichage de contenus WIMS concernant une activité d'un cours (entrainement ou examen)
  -->
 
 <metal:core fill-slot="content"
