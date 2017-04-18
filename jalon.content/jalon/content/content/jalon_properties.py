@@ -410,7 +410,7 @@ class JalonProperties(SimpleItem):
                                             "link":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_bdd"},
                                            {"id":    "gestion_utilisateurs",
                                             "icon":  "fa fa-users",
-                                            "title": _(u"Utilsateurs"),
+                                            "title": _(u"Utilisateurs"),
                                             "link":  "portal_jalon_bdd/@@jalon-bdd?gestion=gestion_utilisateurs"},
                                            {"id":    "gestion_connexion_bdd",
                                             "icon": "fa fa-key",
