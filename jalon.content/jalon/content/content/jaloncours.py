@@ -2323,7 +2323,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- addPasswordStudent -----")
         if self.getLibre():
             inscriptionsLibres = list(self.getInscriptionsLibres())
-            if not member_id in inscriptionsLibres:
+            if member_id not in inscriptionsLibres:
                 inscriptionsLibres.append(member_id)
                 self.setCourseProperties({"InscriptionsLibres": inscriptionsLibres,
                                           "DateDerniereModif":  DateTime()})
@@ -2334,6 +2334,7 @@ class JalonCours(ATFolder):
                                   "DateDerniereModif":  DateTime()})
 
     def getEmailRegistration(self):
+        """Fournit la liste des étudiants inscrits par courriel."""
         # LOG.info("----- getEmailregistration -----")
         course_email_registration_list = self.getInvitations()
         if not course_email_registration_list:
@@ -2341,6 +2342,9 @@ class JalonCours(ATFolder):
         email_registration_list = []
         portal_membership = getToolByName(self, "portal_membership")
         for email_registration in course_email_registration_list:
+            # Tant que l'utilisateur ne s'est pas connecté,
+            #  ses infos ne sont pas dans la BDD (jalon_utils.getIndividu() ne renverra que le login)
+            # On ne fournit donc que le fullname.
             username = email_registration
             member = portal_membership.getMemberById(username)
             if member:
@@ -2349,6 +2353,7 @@ class JalonCours(ATFolder):
         return email_registration_list
 
     def addEmailRegistration(self, email_registration_list):
+        """Ajoute un/des étudiant(s) à la liste des inscrits par courriel."""
         # LOG.info("----- addEmailRegistration -----")
         portal = self.portal_url.getPortalObject()
         portal_membership = getToolByName(portal, 'portal_membership')
@@ -2362,7 +2367,7 @@ class JalonCours(ATFolder):
                 email_registration_name = email_registration.replace("@", " ")
                 email_registration_email = email_registration
             email_registration_email = email_registration_email.lower()
-            if not email_registration_email in course_email_registration_list:
+            if email_registration_email not in course_email_registration_list:
                 if not portal_membership.getMemberById(email_registration_email):
                     portal_registration = getToolByName(portal, 'portal_registration')
                     password = portal_registration.generatePassword()

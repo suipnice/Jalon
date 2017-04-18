@@ -429,7 +429,7 @@ function setMailRegistrationForm( ) {
         $listForm.find( 'input' ).val( '' );
 
         listTableRowHTML = '<tr class="hide" data-user_info="' + mailUserList + '">';
-        listTableRowHTML += '<td class="name">' + lastname + '</td><td class="name">' + firstname + '</td><td class="email">' + email + '</td><td>';
+        listTableRowHTML += '<td class="name">' + firstname + '</td><td class="name">' + lastname + '</td><td class="email">' + email + '</td><td>';
         listTableRowHTML += '<a title="Retirer de la liste"><i class="fa fa-minus-circle fa-lg fa-fw no-pad warning"></i></a></td></tr>';
 
         if ( ! $listTableBody.find( 'tr' ).length ) {
