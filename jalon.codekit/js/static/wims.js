@@ -1,6 +1,6 @@
 /*
 
-        Jalon v4.5 (static) : WIMS
+        javascripts for the Jalon-WIMS plugin
 
 
 
@@ -177,75 +177,95 @@ function setWimsGroupCreator( ) {
 */
 
 function setQCMSuite( ) {
-
     var suppQuestButton = Foundation.utils.S("#supprimerQuestion");
+    var addQuestButton = Foundation.utils.S("#ajouterQuestion");
+    var maxQuestHelper = Foundation.utils.S("#js-max_questions_helper");
 
+    // Nombre maximum autorisé de questions dans un exo
+    var max_questions = 40;
+
+    // Texte du nombre de questions
+    input_nb_questions = Foundation.utils.S('#nb_questions');
+
+    refreshQCMSuite();
     /*
         Ajout d'une question au modele WIMS "QCM Suite"
         (question = ensemble d'input et de textareas)
     */
-    Foundation.utils.S('#ajouterQuestion').on('click', function() {
-
-        // Liste des questions
+    addQuestButton.on('click', function() {
         var questionList = Foundation.utils.S('.question');
 
-        // Nombre de questions existantes
         var n = questionList.length;
-
         // Clonage de la premiere question
-        var firstQuestion = $(questionList[0]);
+        var firstQuestion = Foundation.utils.S(questionList[0]);
         var clonedQuestion = firstQuestion.clone();
 
         // Initialisation de la question clonee
         clonedQuestion.find('input, textarea').each(function() {
             // On vide la valeur
-            $(this).val('');
-            var name = $(this).parent().attr('data-name')+n;
+            Foundation.utils.S(this).val('');
+            var name = Foundation.utils.S(this).parent().attr('data-name')+n;
             // On change le nom en ajoutant le numero
-            $(this).attr('name', name);
-            $(this).attr('id',  name);
+            Foundation.utils.S(this).attr('name', name);
+            Foundation.utils.S(this).attr('id',  name);
         });
         clonedQuestion.find('label').each(function() {
             // On change l'attribut "for" en ajoutant le numero
-            $(this).attr('for', $(this).parent().attr('data-name')+n);
+            Foundation.utils.S(this).attr('for', Foundation.utils.S(this).parent().attr('data-name')+n);
         });
         clonedQuestion.find('legend').each(function() {
             // On change l'attribut "for" en ajoutant le numero
-            $(this).html($(this).attr('data-titre')+(n+1));
+            Foundation.utils.S(this).html(Foundation.utils.S(this).attr('data-titre')+(n+1));
         });
 
         // On l'ajoute au dom apres les autres (nombre questions = n+1)
-        clonedQuestion.insertAfter($(questionList[n-1])).hide().fadeIn('slow');
-
-        // On ajoute le lien de suppression s'il y a plus d'une question
-        //if ( suppQuestButton.is(':hidden') && ( Foundation.utils.S('.question').length > 1 ) ) {
-        if ( suppQuestButton.is(':hidden') && ( n > 0 ) ) {
-            suppQuestButton.fadeIn();
-        }
-
-        // Maj du nombre de questions
-        Foundation.utils.S('#nb_questions').val(n+1);
-
+        clonedQuestion.insertAfter(Foundation.utils.S(questionList[n-1])).hide().fadeIn('slow');
+        Foundation.utils.S("html, body").animate({ scrollTop: clonedQuestion.offset().top }, 1000);
+        refreshQCMSuite( );
     });
 
 
     /*
-        Supp. de la dernière question
+        Supprime la dernière question
     */
     suppQuestButton.on('click', function() {
-
-        $('.question:last').fadeOut('slow', function() {
-            $(this).remove();
-            var n = Foundation.utils.S('.question').length;
-            Foundation.utils.S('#nb_questions').val(n);
-            // S'il y a moins de 2 questions on cache le bouton supprimer.
-            if ( n < 2 ) {
-                suppQuestButton.fadeOut();
-            }
+        var questionList = $.makeArray(Foundation.utils.S('.question'));
+        var last_quest = Foundation.utils.S(questionList.pop());
+        var new_last_quest = Foundation.utils.S(questionList.pop());
+        Foundation.utils.S("html, body").animate({ scrollTop: new_last_quest.offset().top }, 900);
+        last_quest.fadeOut('slow', function() {
+            Foundation.utils.S(this).remove();
+            refreshQCMSuite( );
        });
     });
 
+    function refreshQCMSuite( ) {
+        var n = Foundation.utils.S('.question').length;
+
+        // Maj du nombre de questions
+        input_nb_questions.val(n);
+
+        if (n >= (max_questions/2)){
+            maxQuestHelper.fadeIn();
+        }
+        // S'il y a plus de max_questions, on masque le bouton 'ajouter'
+        if (n>=max_questions){
+            addQuestButton.fadeOut();
+        } else {
+            // S'il y a moins de max_questions questions, on s'assure que le bouton 'ajouter' est présent.
+            addQuestButton.fadeIn();
+        }
+
+        // S'il y a moins de 2 questions on cache le bouton supprimer.
+        if ( n < 2 ) {
+            suppQuestButton.fadeOut();
+        } else {
+            suppQuestButton.fadeIn();
+        }
+    }
+
 }
+
 
 
 
