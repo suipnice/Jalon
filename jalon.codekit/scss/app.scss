@@ -1683,16 +1683,9 @@ ul.course-item_adder {
             &:first-child a { @include side-radius( 'left' ); }
             &:last-child a { @include side-radius( 'right' ); }
 
-            &.active a {
-                color: #fff;
-                background-color: $primary-color;
-            }
-
             a {
                 position: relative;
                 padding: .5em .75em .25em;
-                font-size: rem-calc( 11 );
-                background-color: $secondary-color;
 
                 i.fa {
                     display: block;

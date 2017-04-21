@@ -100,7 +100,7 @@
 }
 
 /*
-    css utilsés dans les indicateurs du cours
+    css utilisés dans les indicateurs du cours
     fichier : macro_cours_indicateurs
     macro   : indicateurs_ressources
 */
@@ -193,13 +193,9 @@
 }
 
 /*
-    css utilsés dans l'évaluation par les pairs
+    css utilisés dans l'évaluation par les pairs
     fichier : evaluate_deposit_file_form
 */
-.tabs dd.active > a, .tabs .tab-title.active > a {
-    background-color: #2a9ccc;
-    color: #fff;
-}
 
 .peer_evaluate {
     border-color: #d8d8d8;
