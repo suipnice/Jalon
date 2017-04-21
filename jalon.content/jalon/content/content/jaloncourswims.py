@@ -14,6 +14,8 @@ from DateTime import DateTime
 from persistent.dict import PersistentDict
 
 from jalon.content import contentMessageFactory as _
+from zope.i18n import translate
+
 from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonCoursWims
 
@@ -38,10 +40,10 @@ LOG.critical('critical message')
 languages = DisplayList((
     # ('', _(u'Laisser les apprenants choisir')),
     ('', _(u'Par défaut (français)')),
-    ('fr', 'Français'),
-    ('en', 'English'),
-    ('it', 'Italiano'),
-    ('cn', '简体中文(中国)'),
+    ('fr', u'Français'),
+    ('en', u'English'),
+    ('it', u'Italiano'),
+    ('cn', u'简体中文(中国)'),
 ))
 # Correspondance des langues Plone <=> WIMS :
 # zh-cn <=> cn
@@ -339,8 +341,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
             listeSujets = list(self.getListeSujets())
             listeSujets.append(item_id)
             setattr(self, "listeSujets", tuple(listeSujets))
-            message = _(u"'%s' a bien été ajouté aux documents enseignants." % item_title.decode("utf-8"))
-
+            message = _(u"'${item_title}' a bien été ajouté aux documents enseignants.",
+                        mapping={'item_title': item_title.decode("utf-8")})
         self.plone_utils.addPortalMessage(message, type='success')
 
     def checkRoles(self, user=None, action="edit", function=""):
@@ -1440,7 +1442,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         return retour
 
-    def getNotesTableur(self, format="csv", site_lang="fr"):
+    def getNotesTableur(self, format="csv", site_lang="fr", charset="utf-8"):
         """renvoit les notes de l'activite courante, dans un format tableur (csv ou tsv)."""
         # LOG.info("----- getNotesTableur -----")
         separateurs = {"tsv": "\t", "csv": ";"}
@@ -1456,12 +1458,18 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         actif = self.isAfficherElement(self.dateAff, self.dateMasq)["val"]
         listeEtudiant = self.getNotes(authMember, actif, self.isPersonnel(authMember, False), detailed=True, request="[jaloncourswims.py]/getNotesTableur")
+
+        # À cause des frasques d'Excel Français (il pense que tous les csv sont en ISO), on ne met pas encore les accents.
+        entetes = [translate(_(u"NOM"), target_language=site_lang),
+                   translate(_(u"PRENOM"), target_language=site_lang),
+                   translate(_(u"NUMERO ETU"), target_language=site_lang),
+                   translate(_(u"IDENTIFIANT"), target_language=site_lang)]
         if self.idExam:
-            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("NOMBRE d'ESSAIS"),
-                       _(u"NOTE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+            entetes = entetes + [translate(_(u"NOMBRE d'ESSAIS"), target_language=site_lang),
+                                 translate(_(u"NOTE (sur ${max_score})", mapping={'max_score': self.getNoteMax()}), target_language=site_lang)]
         else:
-            entetes = [_("NOM"), _("PRENOM"), _("NUMERO ETU"), _("IDENTIFIANT"), _("TAUX DE REUSSITE"),
-                       _(u"QUALITE (sur ${max_score})", mapping={'max_score': self.getNoteMax()})]
+            entetes = entetes + [translate(_(u"TAUX DE REUSSITE"), target_language=site_lang),
+                                 translate(_(u"QUALITE (sur ${max_score})", mapping={u"max_score": self.getNoteMax()}), target_language=site_lang)]
         export = [sep.join(entetes)]
 
         for etudiant in listeEtudiant["data_scores"]:
@@ -1484,7 +1492,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 #    qualite = qualite.replace(",", ".")
                 ligne = [etudiant["last_name"], etudiant["first_name"], num_etu, id_etu, note, qualite]
             export.append(sep.join(ligne))
-        return "\n".join(export)
+        export = "\n".join(export)
+
+        # Toujours pour Excel Français
+        if charset != "utf-8":
+            export = export.encode(charset)
+        return export
 
     def getRubriqueEspace(self, ajout=None):
         """get Rubrique Espace."""
