@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Jalon 4.6\n"
+"Project-Id-Version: Jalon 5.0\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI +ZONE\n"
-"PO-Revision-Date: 2017-01-06 15:24+0100\n"
+"PO-Revision-Date: 2017-04-14 14:20+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Service PI - Université Nice Sophia Antipolis <pi@unice.fr>\n"
 "MIME-Version: 1.0\n"
@@ -13,11 +13,11 @@ msgstr ""
 "Language-Name: Français\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: jalon.content\n"
-"X-Generator: Poedit 1.8.11\n"
-"Language: en\n"
+"X-Generator: Poedit 2.0\n"
+"Language: fr\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
-#: ../skins/jalon_content_my_courses/delete_course_script.py:95
+#: ../skins/jalon_content_my_courses/delete_course_script.py:93
 #: ../skins/jalon_content_my_space/delete_object_script.py:105
 msgid "${items} could not be deleted."
 msgstr "${items} could not be deleted."
@@ -26,23 +26,24 @@ msgstr "${items} could not be deleted."
 msgid "${typ_parenthese} mal fermées : ${incoherence}"
 msgstr ""
 
-#: ../content/jalonfolder.py:1089
+#: ../content/jalonfolder.py:1300
 msgid "%s Quick Upload"
 msgstr ""
 
-#: ../content/jalon_activity.py:110
+#: ../content/jalon_activity.py:111
+#: ../content/jaloncourswims.py:347
 msgid "'${item_title}' a bien été ajouté aux documents enseignants."
 msgstr ""
 
-#: ../content/jaloncourswims.py:339
-msgid "'%s' a bien été ajouté aux documents enseignants.utf-8"
-msgstr ""
-
 #: ../event/notify.py:94
-msgid ", pour le cours: "
+msgid ", pour le cours : "
 msgstr ""
 
-#: ../content/jaloncours.py:345
+#: ../skins/jalon_content_my_courses/delete_wims_activity_script.py:42
+msgid "<strong>%s</strong> activité(s) WIMS a(ont) bien été supprimée(s) du cours « <strong>%s</strong> »."
+msgstr ""
+
+#: ../content/jaloncours.py:349
 msgid "Accès par mot de passe"
 msgstr ""
 
@@ -70,12 +71,28 @@ msgstr ""
 msgid "Activer les corrections individuelles"
 msgstr ""
 
-#: ../content/jalonboitedepot.py:297
+#: ../content/jalonboitedepot.py:298
 msgid "Activée"
 msgstr ""
 
 #: ../skins/jalon_content_connexion/creationcompte_form_validate.vpy:43
 msgid "Adresse électronique incorrecte"
+msgstr ""
+
+#: ../content/jaloncours.py:100
+msgid "Affichage du plan en mode page"
+msgstr ""
+
+#: ../content/jaloncours.py:296
+msgid "Afficher"
+msgstr ""
+
+#: ../content/jaloncours.py:1317
+msgid "Afficher directement le titre / sous titre et son contenu…"
+msgstr ""
+
+#: ../content/jaloncours.py:1305
+msgid "Afficher l'élément maintenant"
 msgstr ""
 
 #: ../content/jalonboitedepot.py:107
@@ -86,36 +103,36 @@ msgstr ""
 msgid "Afficher les compétences aux étudiants"
 msgstr ""
 
-#: ../content/jaloncourswims.py:153
+#: ../content/jaloncourswims.py:158
 msgid "Ajoutez un mot de passe pour s&eacute;curiser votre examen."
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:62
+#: ../content/jalonressourceexterne.py:65
 msgid "Année"
 msgstr ""
 
-#: ../content/jaloncours.py:230
+#: ../content/jaloncours.py:234
 msgid "Archive(s) du cours."
 msgstr ""
 
-#: ../content/jalonexercicewims.py:506
+#: ../content/jalonexercicewims.py:513
 #: ../skins/jalon_content_my_space/create_wims_exercice_group_script.py:44
 msgid "Aucun exercice selectionné"
 msgstr ""
 
-#: ../content/jaloncours.py:40
+#: ../content/jaloncours.py:38
 msgid "Auteur Principal"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:104
+#: ../content/jalonressourceexterne.py:109
 msgid "Auteur de la vidéo"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:38
+#: ../content/jalonressourceexterne.py:41
 msgid "Auteurs"
 msgstr ""
 
-#: ../content/jaloncours.py:204
+#: ../content/jaloncours.py:208
 msgid "Autorise le telechargement d'une archive de tous les fichiers d'un cours"
 msgstr ""
 
@@ -131,19 +148,23 @@ msgstr ""
 msgid "Autoriser les étudiants à voir les résultats des évaluations"
 msgstr ""
 
-#: ../content/jaloncours.py:156
+#: ../content/jaloncours.py:160
 msgid "Avancement de l'enseignant et des étudiants dans le plan du cours."
 msgstr ""
 
-#: ../content/jaloncourswims.py:81
+#: ../content/jaloncourswims.py:86
 msgid "Barême"
 msgstr ""
 
-#: ../content/jaloncours.py:209
+#: ../content/jaloncours.py:271
+msgid "Boite de dépots"
+msgstr ""
+
+#: ../content/jaloncours.py:213
 msgid "Catégorie iTunesU du cours"
 msgstr ""
 
-#: ../content/jaloncours.py:164
+#: ../content/jaloncours.py:168
 msgid "Catégorie(s) du cours."
 msgstr ""
 
@@ -153,15 +174,15 @@ msgstr ""
 msgid "Champ obligatoire"
 msgstr ""
 
-#: ../content/jaloncours.py:47
+#: ../content/jaloncours.py:45
 msgid "Co-auteurs"
 msgstr ""
 
-#: ../content/jaloncours.py:55
+#: ../content/jaloncours.py:53
 msgid "Co-lecteurs"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:74
+#: ../content/jalonressourceexterne.py:77
 msgid "Collection"
 msgstr ""
 
@@ -169,11 +190,11 @@ msgstr ""
 msgid "Commentaire invalide, taille min : %s, taille max : %s, taille actuelle : %s"
 msgstr ""
 
-#: ../content/jaloncours.py:172
+#: ../content/jaloncours.py:176
 msgid "Commentaires sur les réseaux sociaux"
 msgstr ""
 
-#: ../content/jalonfolder.py:52
+#: ../content/jalonfolder.py:55
 msgid "Complement propre a chaque dossier"
 msgstr ""
 
@@ -181,7 +202,7 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: ../content/jalon_properties.py:1332
+#: ../content/jalon_properties.py:1333
 msgid "Configuration de Jalon"
 msgstr ""
 
@@ -189,7 +210,7 @@ msgstr ""
 msgid "Connexion à Jalon"
 msgstr ""
 
-#: ../content/jaloncourswims.py:220
+#: ../content/jaloncourswims.py:225
 msgid "Consigne"
 msgstr ""
 
@@ -201,11 +222,19 @@ msgstr ""
 msgid "Courriels"
 msgstr ""
 
-#: ../content/jalonfolder.py:382
+#: ../content/jaloncours.py:870
+msgid "Créer"
+msgstr ""
+
+#: ../content/jaloncours.py:867
+msgid "Créer un"
+msgstr ""
+
+#: ../content/jalonfolder.py:447
 msgid "Créer un lien à partir d'un lecteur exportable comme Youtube, Dailymotion, WIMS"
 msgstr ""
 
-#: ../content/jalonfolder.py:378
+#: ../content/jalonfolder.py:443
 msgid "Créer un lien à partir d'une URL"
 msgstr ""
 
@@ -213,11 +242,11 @@ msgstr ""
 msgid "Dans"
 msgstr ""
 
-#: ../content/jaloncourswims.py:129
+#: ../content/jaloncourswims.py:134
 msgid "Date a laquelle cette activite s'affiche"
 msgstr ""
 
-#: ../content/jaloncourswims.py:128
+#: ../content/jaloncourswims.py:133
 #: ../content/jalonforum.py:22
 msgid "Date d'affichage"
 msgstr ""
@@ -230,12 +259,12 @@ msgstr ""
 msgid "Date de création sur Adobe Connect"
 msgstr ""
 
-#: ../content/jaloncours.py:196
-#: ../content/jaloncourswims.py:169
+#: ../content/jaloncours.py:200
+#: ../content/jaloncourswims.py:174
 msgid "Date de dernière modification"
 msgstr ""
 
-#: ../content/jaloncours.py:222
+#: ../content/jaloncours.py:226
 msgid "Date de la dernière Actu du cours"
 msgstr ""
 
@@ -251,7 +280,7 @@ msgstr ""
 msgid "Date limite de dépôt affichée aux étudiants"
 msgstr ""
 
-#: ../content/jaloncourswims.py:137
+#: ../content/jaloncourswims.py:142
 msgid "Date servant &agrave; masquer cette activit&eacute;"
 msgstr ""
 
@@ -259,7 +288,7 @@ msgstr ""
 msgid "Date servant à masquer cette activité"
 msgstr ""
 
-#: ../content/jaloncourswims.py:136
+#: ../content/jaloncourswims.py:141
 #: ../content/jalonforum.py:29
 msgid "Date à laquelle cette activité est masquée"
 msgstr ""
@@ -276,8 +305,17 @@ msgstr ""
 msgid "Diffusion de messages"
 msgstr ""
 
-#: ../content/jaloncours.py:64
+#: ../content/jaloncours.py:62
 msgid "Diffusion du cours:"
+msgstr ""
+
+#: ../content/jaloncours.py:330
+msgid "Diplôme"
+msgstr ""
+
+#: ../browser/view_script/deposit_box_view.py:103
+#: ../browser/view_script/wims_activity_view.py:137
+msgid "Documents enseignants"
 msgstr ""
 
 #: ../content/jalon_properties.py:455
@@ -288,15 +326,15 @@ msgstr ""
 msgid "Durée"
 msgstr ""
 
-#: ../content/jaloncourswims.py:91
+#: ../content/jaloncourswims.py:96
 msgid "Durée de l’examen (en minutes)"
 msgstr ""
 
-#: ../content/jaloncourswims.py:93
+#: ../content/jaloncourswims.py:98
 msgid "Durée en minutes (obligatoire)"
 msgstr ""
 
-#: ../content/jalonboitedepot.py:299
+#: ../content/jalonboitedepot.py:300
 msgid "Désactivée"
 msgstr ""
 
@@ -304,51 +342,67 @@ msgstr ""
 msgid "Désolé, seul un utilisateur connecté peux participer aux activités d'un cours."
 msgstr ""
 
-#: ../content/jaloncours.py:191
-msgid "EPermission d'ajout de forum par les étudiants."
+#: ../content/jaloncours.py:308
+msgid "Détacher"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:56
+#: ../content/jalonressourceexterne.py:59
 msgid "Editeur"
 msgstr ""
 
-#: ../content/jaloncours.py:184
-msgid "Envoie de courriels"
+#: ../content/jaloncourswims.py:47
+msgid "English"
 msgstr ""
 
-#: ../content/jaloncours.py:185
+#: ../content/jaloncours.py:274
+msgid "Entrainement WIMS"
+msgstr ""
+
+#: ../content/jaloncours.py:188
+msgid "Envoi de courriels"
+msgstr ""
+
+#: ../content/jaloncours.py:189
 msgid "Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."
 msgstr ""
 
-#: ../browser/templates/first_page.pt:51
+#: ../browser/templates/first_page.pt:43
 msgid "Ergonomie"
 msgstr ""
 
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:70
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:75
 msgid "Erreur de syntaxe"
+msgstr ""
+
+#: ../content/jaloncours.py:277
+msgid "Examen WIMS"
 msgstr ""
 
 #: ../browser/view_script/wims_activity_view.py:37
 msgid "Exercice(s)"
 msgstr ""
 
-#: ../content/jalonfolder.py:1086
+#: ../content/jalonfolder.py:1297
 msgid "Files Quick Upload"
+msgstr ""
+
+#: ../content/jaloncourswims.py:46
+msgid "Français"
 msgstr ""
 
 #: ../content/jalon_properties.py:431
 msgid "Gestion \"Mes ressources\""
 msgstr ""
 
-#: ../content/jalon_properties.py:1404
+#: ../content/jalon_properties.py:1405
 msgid "Gestion de Google Analytics"
 msgstr ""
 
-#: ../content/jalon_properties.py:1380
+#: ../content/jalon_properties.py:1381
 msgid "Gestion de la diffusion de messages"
 msgstr ""
 
-#: ../content/jalon_properties.py:1356
+#: ../content/jalon_properties.py:1357
 msgid "Gestion des Cours"
 msgstr ""
 
@@ -356,23 +410,23 @@ msgstr ""
 msgid "Gestion des cours"
 msgstr ""
 
-#: ../content/jalon_properties.py:1372
+#: ../content/jalon_properties.py:1373
 msgid "Gestion des didacticiels"
 msgstr ""
 
-#: ../content/jalon_properties.py:1396
+#: ../content/jalon_properties.py:1397
 msgid "Gestion des données utilisateurs"
 msgstr ""
 
-#: ../content/jalon_properties.py:1364
+#: ../content/jalon_properties.py:1365
 msgid "Gestion des liens d'informations"
 msgstr ""
 
-#: ../content/jalon_properties.py:1388
+#: ../content/jalon_properties.py:1389
 msgid "Gestion des paramètres de courriels"
 msgstr ""
 
-#: ../content/jalon_properties.py:1412
+#: ../content/jalon_properties.py:1413
 msgid "Gestion des paramètres de maintenance"
 msgstr ""
 
@@ -384,39 +438,55 @@ msgstr ""
 msgid "Google Analytics"
 msgstr ""
 
-#: ../content/jaloncourswims.py:144
+#: ../content/jaloncours.py:333
+msgid "Groupe"
+msgstr ""
+
+#: ../content/jaloncourswims.py:149
 msgid "Heures de coupure"
 msgstr ""
 
-#: ../content/jaloncourswims.py:145
+#: ../content/jaloncourswims.py:150
 msgid "Heures pendant lesquelles l&rsquo;examen ne sera pas accessible."
 msgstr ""
 
-#: ../content/jaloncourswims.py:1449
+#: ../content/jaloncourswims.py:1469
 msgid "IDENTIFIANT"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:80
+#: ../content/jalonressourceexterne.py:83
 msgid "ISBN"
 msgstr ""
 
-#: ../content/jaloncourswims.py:72
+#: ../content/jaloncourswims.py:77
 msgid "Identifiant Wims de l'examen"
 msgstr ""
 
-#: ../content/jaloncourswims.py:64
+#: ../content/jaloncourswims.py:69
 msgid "Identifiant Wims de la feuille"
 msgstr ""
 
-#: ../content/jalonfolder.py:1088
+#: ../content/jalonfolder.py:1299
 msgid "Images Quick Upload"
+msgstr ""
+
+#: ../content/jaloncourswims.py:475
+msgid "Importer des exercices"
+msgstr ""
+
+#: ../content/jalonexercicewims.py:650
+msgid "Impossible d'obtenir cet exercice. Le serveur WIMS semble temporairement inaccessible. Merci de retenter ultérieurement svp."
+msgstr ""
+
+#: ../content/jaloncours.py:334
+msgid "Inconnu"
 msgstr ""
 
 #: ../content/jalonboitedepot.py:163
 msgid "Indique si l'affectation des évaluations a été faite."
 msgstr ""
 
-#: ../content/jaloncourswims.py:297
+#: ../content/jaloncourswims.py:305
 msgid "Information sur l'erreur "
 msgstr ""
 
@@ -424,16 +494,20 @@ msgstr ""
 msgid "Inscription par mot de passe"
 msgstr ""
 
-#: ../content/jaloncours.py:96
+#: ../content/jaloncours.py:94
 msgid "Inscriptions libres"
 msgstr ""
 
 #. Default: "Intégration"
-#: ../browser/templates/first_page.pt:53
+#: ../browser/templates/first_page.pt:45
 msgid "Integration"
 msgstr ""
 
-#: ../content/jaloncours.py:178
+#: ../content/jaloncourswims.py:48
+msgid "Italiano"
+msgstr ""
+
+#: ../content/jaloncours.py:182
 msgid "J'aime sur Facebook"
 msgstr ""
 
@@ -445,15 +519,23 @@ msgstr ""
 msgid "Jalon navigation"
 msgstr ""
 
-#: ../content/jaloncours.py:41
+#: ../content/jaloncours.py:305
+msgid "Jalonner"
+msgstr ""
+
+#: ../content/jaloncours.py:1320
+msgid "L'afficher directement…"
+msgstr ""
+
+#: ../content/jaloncours.py:39
 msgid "L'auteur principal du cours a accès à celui-ci en modification, son nom est affiché aux étudiants comme étant l'auteur du cours."
 msgstr ""
 
-#: ../content/jaloncourswims.py:422
+#: ../content/jaloncourswims.py:431
 msgid "L'exercice '${item_title}' a bien été détaché de cette activité."
 msgstr ""
 
-#: ../content/jaloncourswims.py:334
+#: ../content/jaloncourswims.py:342
 msgid "L'exercice '%s' a bien été ajouté.utf-8"
 msgstr ""
 
@@ -461,19 +543,19 @@ msgstr ""
 msgid "L'exercice « %s » a été ajouté. Construisez-le ci-dessous."
 msgstr ""
 
-#: ../content/jaloncours.py:846
+#: ../content/jaloncours.py:866
 msgid "L'élément de plan a été créé."
 msgstr ""
 
-#: ../content/jaloncours.py:855
+#: ../content/jaloncours.py:877
 msgid "L'élément de plan a été modifié."
 msgstr ""
 
-#: ../content/jaloncours.py:283
+#: ../content/jaloncours.py:287
 msgid "La correction est disponible."
 msgstr ""
 
-#: ../content/jaloncours.py:284
+#: ../content/jaloncours.py:288
 msgid "La correction n'est plus disponible"
 msgstr ""
 
@@ -481,11 +563,11 @@ msgstr ""
 msgid "La date US"
 msgstr ""
 
-#: ../content/jaloncours.py:129
+#: ../content/jaloncours.py:133
 msgid "La liste des éléments de la bibliographie."
 msgstr ""
 
-#: ../content/jaloncours.py:122
+#: ../content/jaloncours.py:126
 msgid "La liste des éléments du glossaire."
 msgstr ""
 
@@ -501,55 +583,61 @@ msgstr ""
 msgid "La note partielle doit être inférieure ou égale à la note maximale"
 msgstr ""
 
-#: ../content/jaloncourswims.py:161
+#: ../content/jaloncourswims.py:1552
+msgid "La ressource que vous tentez d'afficher est trop importante et dépasse la limite autorisée."
+msgstr ""
+
+#: ../content/jaloncourswims.py:166
 msgid "Langue dans laquelle s'affichera l&rsquo;interface des exercices. La tol&eacute;rance des exercices &agrave; r&eacute;ponse ouverte d&eacute;pendra de cette langue."
 msgstr ""
 
-#: ../content/jaloncourswims.py:160
+#: ../content/jaloncourswims.py:165
 msgid "Langue des exercices"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1587
-msgid "Le coefficient de l'exercice '${item_title}' a bien été modifié."
+#: ../content/jaloncourswims.py:1622
+msgid "Le coefficient de l'exercice '${item_title}' a bien été modifié"
 msgstr ""
 
-#: ../content/jalonfolder.py:53
+#: ../content/jalonfolder.py:56
 msgid "Le complement du dossier"
 msgstr ""
 
-#: ../content/jaloncours.py:282
+#: ../content/jaloncours.py:286
 msgid "Le dépôt n'est plus permis"
 msgstr ""
 
-#: ../content/jaloncours.py:90
+#: ../content/jaloncours.py:88
 msgid "Le lien cours n'existe que pour le cours public"
 msgstr ""
 
-#: ../content/jaloncours.py:108
+#: ../content/jaloncours.py:112
 msgid "Le lien court MOOC d'un cours"
 msgstr ""
 
-#: ../content/jaloncours.py:109
+#: ../content/jaloncours.py:113
 msgid "Le lien court MOOC n'existe que pour le cours en accès libre"
 msgstr ""
 
-#: ../content/jaloncours.py:89
+#: ../content/jaloncours.py:87
 msgid "Le lien court d'un cours"
 msgstr ""
 
-#: ../content/jalonfolder.py:46
+#: ../content/jalonfolder.py:49
 msgid "Le mot de passe du dossier"
 msgstr ""
 
 #: ../event/notify.py:103
-msgid "Le nouveau message est:"
+msgid "Le nouveau message est : "
 msgstr ""
 
-#: ../content/jaloncours.py:115
+#: ../content/jaloncours.py:119
 msgid "Le plan intéractif."
 msgstr ""
 
 #: ../content/jalon_utils.py:74
+#: ../skins/jalon_content_my_space/edit_wims_exercice_script.py:32
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:73
 msgid "Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp..."
 msgstr ""
 
@@ -557,11 +645,11 @@ msgstr ""
 msgid "Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement."
 msgstr ""
 
-#: ../content/jaloncours.py:285
+#: ../content/jaloncours.py:289
 msgid "Le sujet est disponible."
 msgstr ""
 
-#: ../content/jaloncours.py:286
+#: ../content/jaloncours.py:290
 msgid "Le sujet n'est plus disponible."
 msgstr ""
 
@@ -569,31 +657,31 @@ msgstr ""
 msgid "Le titre est obligatoire"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:92
+#: ../content/jalonressourceexterne.py:97
 msgid "Lecteur exportable"
 msgstr ""
 
-#: ../content/jaloncours.py:150
+#: ../content/jaloncours.py:154
 msgid "Les actualités du cours."
 msgstr ""
 
-#: ../content/jaloncours.py:136
+#: ../content/jaloncours.py:140
 msgid "Les classes du cours."
 msgstr ""
 
-#: ../content/jaloncours.py:143
+#: ../content/jaloncours.py:147
 msgid "Les webconferences du cours."
 msgstr ""
 
-#: ../content/jalonfolder.py:389
+#: ../content/jalonfolder.py:454
 msgid "Lien catalogue"
 msgstr ""
 
-#: ../content/jalonfolder.py:381
+#: ../content/jalonfolder.py:446
 msgid "Lien vidéo"
 msgstr ""
 
-#: ../content/jalonfolder.py:377
+#: ../content/jalonfolder.py:442
 msgid "Lien web"
 msgstr ""
 
@@ -601,7 +689,7 @@ msgstr ""
 msgid "Liens d'informations"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:50
+#: ../content/jalonressourceexterne.py:53
 msgid "Lieu"
 msgstr ""
 
@@ -617,19 +705,19 @@ msgstr ""
 msgid "Liste des devoirs des étudiants"
 msgstr ""
 
-#: ../content/jaloncourswims.py:119
+#: ../content/jaloncourswims.py:124
 msgid "Liste des documents"
 msgstr ""
 
-#: ../content/jaloncourswims.py:120
+#: ../content/jaloncourswims.py:125
 msgid "Liste des documents de cette activité"
 msgstr ""
 
-#: ../content/jaloncourswims.py:110
+#: ../content/jaloncourswims.py:115
 msgid "Liste des exercices"
 msgstr ""
 
-#: ../content/jaloncourswims.py:111
+#: ../content/jaloncourswims.py:116
 msgid "Liste des exercices de l&rsquo;entrainement / examen"
 msgstr ""
 
@@ -637,11 +725,11 @@ msgstr ""
 msgid "Liste des sujets"
 msgstr ""
 
-#: ../content/jaloncours.py:128
+#: ../content/jaloncours.py:132
 msgid "Liste des éléments de la bibliographie"
 msgstr ""
 
-#: ../content/jaloncours.py:121
+#: ../content/jaloncours.py:125
 msgid "Liste des éléments du glossaire"
 msgstr ""
 
@@ -661,8 +749,37 @@ msgstr ""
 msgid "Maintenance"
 msgstr ""
 
+#: ../content/jaloncours.py:299
+msgid "Masquer"
+msgstr ""
+
+#: ../content/jaloncours.py:1297
+msgid "Masquer directement le titre / sous titre et son contenu…"
+msgstr ""
+
+#: ../content/jaloncours.py:1299
+msgid "Masquer directement…"
+msgstr ""
+
+#: ../content/jaloncours.py:1284
+msgid "Masquer l'élément maintenant"
+msgstr ""
+
+#: ../skins/jalon_content_course/validate_import_wims_activity.vpy:36
+msgid "Mauvais type de fichier"
+msgstr ""
+
+#: ../content/jaloncourswims.py:1554
+msgid "Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possible permettant de reproduire cette erreur svp."
+msgstr ""
+
+#: ../browser/view_script/my_pod_videos_view.py:25
+#: ../content/jalonfolder.py:148
+msgid "Mes contenus UNSPod"
+msgstr ""
+
 #: ../browser/view_script/course_statistics_view.py:28
-#: ../browser/view_script/course_view.py:78
+#: ../browser/view_script/course_view.py:79
 #: ../browser/view_script/deposit_box_criteria_view.py:31
 msgid "Mes cours"
 msgstr ""
@@ -702,11 +819,6 @@ msgstr ""
 msgid "Mes termes de glossaire"
 msgstr ""
 
-#: ../browser/view_script/my_pod_videos_view.py:25
-#: ../content/jalonfolder.py:148
-msgid "Mes contenus UNSPod"
-msgstr ""
-
 #: ../content/jalon_properties.py:390
 msgid "Mes étudiants"
 msgstr ""
@@ -716,15 +828,20 @@ msgid "Message ajouté par : "
 msgstr ""
 
 #: ../browser/templates/exercicewims_view_CORS.pt:71
+#: ../content/jaloncours.py:302
 msgid "Modifier"
+msgstr ""
+
+#: ../content/jaloncours.py:878
+msgid "Modifier le"
 msgstr ""
 
 #: ../content/jalonexercicewims.py:31
 msgid "Modèle CreateExo de Wims"
 msgstr ""
 
-#: ../content/jaloncourswims.py:152
-#: ../content/jalonfolder.py:45
+#: ../content/jaloncourswims.py:157
+#: ../content/jalonfolder.py:48
 msgid "Mot de passe"
 msgstr ""
 
@@ -732,19 +849,19 @@ msgstr ""
 msgid "Mot de passe incorrect"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1449
+#: ../content/jaloncourswims.py:1466
 msgid "NOM"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1449
+#: ../content/jaloncourswims.py:1471
 msgid "NOMBRE d'ESSAIS"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1450
+#: ../content/jaloncourswims.py:1472
 msgid "NOTE (sur ${max_score})"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1449
+#: ../content/jaloncourswims.py:1468
 msgid "NUMERO ETU"
 msgstr ""
 
@@ -752,7 +869,7 @@ msgstr ""
 msgid "Nom complet incorrect, veuillez entrer vos nom et prénom"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:110
+#: ../content/jalonressourceexterne.py:115
 msgid "Nom de l'auteur de la vidéo"
 msgstr ""
 
@@ -764,11 +881,11 @@ msgstr ""
 msgid "Nombre de correction"
 msgstr ""
 
-#: ../content/jaloncourswims.py:102
+#: ../content/jaloncourswims.py:107
 msgid "Nombre de fois o&ugrave; l&rsquo;&eacute;tudiant pourra passer cet examen"
 msgstr ""
 
-#: ../content/jaloncourswims.py:101
+#: ../content/jaloncourswims.py:106
 msgid "Nombre de passages autorisés"
 msgstr ""
 
@@ -776,15 +893,15 @@ msgstr ""
 msgid "Nombre de points d'ajustement"
 msgstr ""
 
-#: ../content/jalonboitedepot.py:795
+#: ../content/jalonboitedepot.py:823
 msgid "Non corrigé"
 msgstr ""
 
-#: ../content/jalonboitedepot.py:805
+#: ../content/jalonboitedepot.py:833
 msgid "Non noté"
 msgstr ""
 
-#: ../event/notify.py:169
+#: ../event/notify.py:172
 msgid "Not able to send notifications"
 msgstr ""
 
@@ -797,26 +914,26 @@ msgid "Note ou appréciation"
 msgstr ""
 
 #: ../event/notify.py:87
-msgid "Nouveau message ajouté dans le forum: "
+msgid "Nouveau message ajouté dans le forum : "
 msgstr ""
 
 #: ../event/notify.py:66
 msgid "Nouveau message ajouté dans un forum"
 msgstr ""
 
-#: ../content/jaloncours.py:280
+#: ../content/jaloncours.py:284
 msgid "Nouveau message dans le sujet de discussion."
 msgstr ""
 
-#: ../content/jaloncours.py:281
+#: ../content/jaloncours.py:285
 msgid "Nouvelle date limite de dépôt : "
 msgstr ""
 
-#: ../content/jaloncourswims.py:73
+#: ../content/jaloncourswims.py:78
 msgid "Numero de l'examen sur WIMS"
 msgstr ""
 
-#: ../content/jaloncourswims.py:65
+#: ../content/jaloncourswims.py:70
 msgid "Numero de la feuille sur WIMS"
 msgstr ""
 
@@ -828,15 +945,15 @@ msgstr ""
 msgid "Outils"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1449
+#: ../content/jaloncourswims.py:1467
 msgid "PRENOM"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:68
+#: ../content/jalonressourceexterne.py:71
 msgid "Pagination"
 msgstr ""
 
-#: ../content/jaloncourswims.py:40
+#: ../content/jaloncourswims.py:45
 msgid "Par défaut (français)"
 msgstr ""
 
@@ -844,19 +961,23 @@ msgstr ""
 msgid "Permalien d'un exercice wims publié"
 msgstr ""
 
-#: ../content/jalonexercicewims.py:1035
+#: ../content/jalonexercicewims.py:1043
 msgid "Permalien incorrect. Assurez-vous de coller un permalien correct svp."
 msgstr ""
 
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:59
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:60
 msgid "Permalien mal formé"
 msgstr ""
 
-#: ../content/jaloncours.py:190
+#: ../content/jaloncours.py:194
 msgid "Permission d'ajout de forum par les étudiants"
 msgstr ""
 
-#: ../content/jaloncours.py:114
+#: ../content/jaloncours.py:195
+msgid "Permission d'ajout de forum par les étudiants."
+msgstr ""
+
+#: ../content/jaloncours.py:118
 msgid "Plan interactif"
 msgstr ""
 
@@ -864,12 +985,12 @@ msgstr ""
 msgid "Please re-enter validation code."
 msgstr ""
 
-#: ../skins/jalon_content_my_courses/delete_course_script.py:24
+#: ../skins/jalon_content_my_courses/delete_course_script.py:25
 #: ../skins/jalon_content_my_space/delete_object_script.py:25
 msgid "Please select one or more items to delete."
 msgstr ""
 
-#: ../browser/templates/first_page.pt:67
+#: ../browser/templates/first_page.pt:59
 msgid "Pour fonctionner"
 msgstr ""
 
@@ -877,11 +998,19 @@ msgstr ""
 msgid "Profil de la boite de dépots"
 msgstr ""
 
+#: ../content/jaloncours.py:1306
+msgid "Programmer l'affichage de l'élément à l'instant choisi"
+msgstr ""
+
+#: ../content/jaloncours.py:1285
+msgid "Programmer le masquage de l'élément à l'instant choisi"
+msgstr ""
+
 #: ../content/jalon_properties.py:417
 msgid "Propriétés"
 msgstr ""
 
-#: ../content/jaloncourswims.py:464
+#: ../content/jaloncourswims.py:473
 msgid "Propriétés de l'activité"
 msgstr ""
 
@@ -893,15 +1022,19 @@ msgstr ""
 msgid "Pénalité"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1453
+#: ../content/jaloncourswims.py:1475
 msgid "QUALITE (sur ${max_score})"
 msgstr ""
 
-#: ../content/jaloncourswims.py:221
+#: ../content/jaloncourswims.py:1624
+msgid "QUALITÉ (sur ${max})"
+msgstr ""
+
+#: ../content/jaloncourswims.py:226
 msgid "Quelques consignes que devront suivre vos &eacute;tudiants pour travailler sur cette activit&eacute;."
 msgstr ""
 
-#: ../content/jalonfolder.py:147
+#: ../content/jalonfolder.py:151
 msgid "Rechercher un contenu sur UNSPod"
 msgstr ""
 
@@ -909,36 +1042,36 @@ msgstr ""
 msgid "Restreindre la modification des compétences au créateur de la boite de dépôts"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1125
+#: ../content/jaloncourswims.py:1141
 msgid "Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1136
+#: ../content/jaloncourswims.py:1152
 msgid "Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer une feuille WIMS)"
 msgstr ""
 
 #. Default: "Simplicité"
-#: ../browser/templates/first_page.pt:52
+#: ../browser/templates/first_page.pt:44
 msgid "Simplicity"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:98
+#: ../content/jalonressourceexterne.py:103
 msgid "Slug de la vidéo sur le serveur de vidéo"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:23
+#: ../content/jalonressourceexterne.py:26
 msgid "Sous titre"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1452
+#: ../content/jaloncours.py:311
+msgid "Supprimer"
+msgstr ""
+
+#: ../content/jaloncourswims.py:1474
 msgid "TAUX DE REUSSITE"
 msgstr ""
 
-#: ../content/jaloncours.py:203
-msgid "Telechargement de fichiers"
-msgstr ""
-
-#: ../skins/jalon_content_my_courses/delete_course_script.py:92
+#: ../skins/jalon_content_my_courses/delete_course_script.py:90
 #: ../skins/jalon_content_my_space/delete_object_script.py:102
 msgid "These items are locked for editing: ${lockeditems}."
 msgstr ""
@@ -947,23 +1080,27 @@ msgstr ""
 msgid "Tolérer les dépôts jusqu'au"
 msgstr ""
 
-#: ../content/jalonfolder.py:390
+#: ../content/jalonfolder.py:455
 msgid "Trouver une oeuvre ou une revue dans le catalogue de la BU"
 msgstr ""
 
-#: ../content/jaloncourswims.py:56
+#: ../content/jaloncourswims.py:61
 msgid "Type de l'activité"
 msgstr ""
 
-#: ../content/jaloncourswims.py:57
+#: ../content/jaloncourswims.py:62
 msgid "Type de l'objet JalonCoursWims (feuille (Entrainement) ou Examen)"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:31
+#: ../content/jalonressourceexterne.py:34
 msgid "Type de la Ressource Externe"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:86
+#: ../content/jaloncours.py:207
+msgid "Téléchargement de fichiers"
+msgstr ""
+
+#: ../content/jalonressourceexterne.py:89
 msgid "URL"
 msgstr ""
 
@@ -971,35 +1108,35 @@ msgstr ""
 msgid "URL de l'enregistrement Connect"
 msgstr ""
 
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:50
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:52
 msgid "Un champ obligatoire n'a pas été renseigné. Votre exercice n'a pas été modifié."
 msgstr ""
 
-#: ../content/jaloncours.py:48
+#: ../content/jaloncours.py:46
 msgid "Un co-auteur du cours a accès à celui-ci en modification, comme s'il en était l'auteur."
 msgstr ""
 
-#: ../content/jaloncourswims.py:92
+#: ../content/jaloncourswims.py:97
 msgid "Un compte &agrave; rebours d&eacute;marera d&egrave;s l&rsquo;affichage de la premi&egrave;re question. Une fois atteint, l&rsquo;&eacute;tudiant ne pourra plus r&eacute;pondre."
 msgstr ""
 
-#: ../content/jalonexercicewims.py:1011
+#: ../content/jalonexercicewims.py:1019
 msgid "Un exercice ne peux avoir qu'un seul permalien.<br/>"
 msgstr ""
 
-#: ../content/jaloncours.py:56
+#: ../content/jaloncours.py:54
 msgid "Un lecteur du cours a accès à celui-ci en lecture, comme s'il était étudiant."
 msgstr ""
 
-#: ../content/jaloncourswims.py:83
+#: ../content/jaloncourswims.py:88
 msgid "Un nombre entier (obligatoire)"
 msgstr ""
 
-#: ../content/jaloncourswims.py:82
+#: ../content/jaloncourswims.py:87
 msgid "Un quotient sera effectu&eacute; pour calculer la note en fonction de ce bar&ecirc;me"
 msgstr ""
 
-#: ../content/jalonfolder.py:606
+#: ../content/jalonfolder.py:778
 msgid "Une erreur est survenue lors de la duplication des activités WIMS du cours. Merci de <a href=\"%s\"><i class=\"fa fa-envelope-o\"></i>contacter votre administrateur</a> svp."
 msgstr ""
 
@@ -1008,28 +1145,36 @@ msgstr ""
 msgid "Une erreur est survenue sur votre exercice « %s » (modèle introuvable ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp."
 msgstr ""
 
-#: ../content/jaloncourswims.py:403
+#: ../content/jaloncourswims.py:412
 msgid "Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché"
 msgstr ""
 
-#: ../content/jaloncourswims.py:296
+#: ../content/jaloncourswims.py:569
+msgid "Une erreur est survenue. La visibilité de l'activité « ${title} » n'a pas changé."
+msgstr ""
+
+#: ../content/jaloncourswims.py:304
 msgid "Une erreur est survenue. Merci de <a href=\"%s\"><i class=\"fa fa-envelope-o\"></i>contacter un administrateur</a> svp."
 msgstr ""
 
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:77
-msgid "Une erreur est survenue. Votre exercice n'a pas été modifié."
-msgstr ""
-
-#: ../skins/jalon_content_my_courses/download_wims_score_script.py:69
+#: ../skins/jalon_content_my_courses/download_wims_all_activities_scores_script.py:72
 msgid "Une erreur est survenue.<blockquote>%s</blockquote> nb : attention à ne pas dépasser <strong>60</strong> activités WIMS dans un seul cours.message"
 msgstr ""
 
-#: ../content/jaloncours.py:229
+#: ../content/jaloncours.py:331
+msgid "Unité d'enseignement"
+msgstr ""
+
+#: ../content/jaloncours.py:332
+msgid "Unité d'enseignement libre"
+msgstr ""
+
+#: ../content/jaloncours.py:233
 msgid "Utilisateur ayant archivé ce cours."
 msgstr ""
 
 #: ../content/jalon_properties.py:413
-msgid "Utilsateurs"
+msgid "Utilisateurs"
 msgstr ""
 
 #: ../skins/jalon_content_my_space/update_version_on_edit.cpy:28
@@ -1073,16 +1218,20 @@ msgstr ""
 msgid "Veuillez vous connecter."
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:116
+#: ../content/jalonressourceexterne.py:121
 msgid "Vignette de la vidéo"
 msgstr ""
 
-#: ../content/jalonressourceexterne.py:44
+#: ../content/jalonressourceexterne.py:47
 msgid "Volume"
 msgstr ""
 
-#: ../skins/jalon_content_my_courses/download_wims_score_script.py:64
+#: ../skins/jalon_content_my_courses/download_wims_all_activities_scores_script.py:67
 msgid "Votre cours ne contient aucun examen ou autoévaluation active créé(s) par l'utilisateur « <strong>%s</strong> ».<br/>                      Commencez par afficher une autoévaluation pour pouvoir télécharger des notes."
+msgstr ""
+
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:82
+msgid "Votre exercice n'a pas été modifié."
 msgstr ""
 
 #: ../skins/jalon_content_my_space/edit_wims_exercice_script.py:29
@@ -1101,7 +1250,7 @@ msgstr ""
 msgid "Votre groupe d'exercices %s n'a pas été créé.<div><strong>%s</strong></div>"
 msgstr ""
 
-#: ../content/jalonexercicewims.py:1014
+#: ../content/jalonexercicewims.py:1022
 msgid "Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement."
 msgstr ""
 
@@ -1109,26 +1258,34 @@ msgstr ""
 msgid "Vous devez taper un nombre"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1444
+#: ../content/jaloncourswims.py:1460
 msgid "Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord."
 msgstr ""
 
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:41
+#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:43
 msgid "Vous n'avez pas renseigné ce champ obligatoire."
 msgstr ""
 
-#: ../content/jaloncourswims.py:366
-#: ../content/jalonexercicewims.py:1108
+#: ../skins/jalon_content_my_courses/delete_wims_activity_script.py:33
+msgid "Vous n'avez selectionné aucun utilisateur. Aucune activité supprimée."
+msgstr ""
+
+#: ../content/jaloncourswims.py:374
+#: ../content/jalonexercicewims.py:1116
 #: ../skins/jalon_content_my_courses/delete_wims_activity_script.py:45
 msgid "Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site."
 msgstr ""
 
-#: ../content/jaloncourswims.py:362
-#: ../content/jalonexercicewims.py:1105
+#: ../content/jaloncourswims.py:370
+#: ../content/jalonexercicewims.py:1113
 msgid "Vous êtes déconnecté. Merci de vous connecter pour accéder à cette page."
 msgstr ""
 
-#: ../content/jaloncours.py:348
+#: ../content/jaloncours.py:1281
+msgid "Vous êtes sur le point de masquer cette ressource à vos étudiants."
+msgstr ""
+
+#: ../content/jaloncours.py:352
 msgid "Vérification du mot de passe"
 msgstr ""
 
@@ -1146,23 +1303,23 @@ msgstr ""
 msgid "error_WIMS_unavailable"
 msgstr ""
 
-#: ../content/jaloncours.py:278
+#: ../content/jaloncours.py:282
 msgid "est disponible."
 msgstr ""
 
-#: ../content/jaloncours.py:277
+#: ../content/jaloncours.py:281
 msgid "et son contenu ne sont plus disponibles."
 msgstr ""
 
-#: ../content/jaloncours.py:276
+#: ../content/jaloncours.py:280
 msgid "et son contenu sont maintenant disponibles."
 msgstr ""
 
-#: ../content/jaloncourswims.py:1050
+#: ../content/jaloncourswims.py:1066
 msgid "exercice sans titre ?"
 msgstr ""
 
-#: ../content/jaloncours.py:76
+#: ../content/jaloncours.py:74
 msgid "groupe d'étudiants personnalisé du cours"
 msgstr ""
 
@@ -1194,6 +1351,10 @@ msgstr ""
 #. Default: "How many folders should be included before the navigation tree stops. 0 means no limit. 1 only includes the root folder."
 #: ../portlets/navigation.py:69
 msgid "help_navigation_tree_depth"
+msgstr ""
+
+#: ../content/jaloncours.py:326
+msgid "la boite de dépôts"
 msgstr ""
 
 #. Default: "Only show the contents of the current folder."
@@ -1231,27 +1392,35 @@ msgstr ""
 msgid "label_relevance_percentage"
 msgstr ""
 
-#: ../content/jaloncours.py:149
+#: ../content/jaloncours.py:324
+msgid "le texte libre"
+msgstr ""
+
+#: ../content/jaloncours.py:322
+msgid "le titre"
+msgstr ""
+
+#: ../content/jaloncours.py:153
 msgid "liste des actualités du cours"
 msgstr ""
 
-#: ../content/jaloncours.py:135
+#: ../content/jaloncours.py:139
 msgid "liste des classes du cours"
 msgstr ""
 
-#: ../content/jaloncours.py:82
+#: ../content/jaloncours.py:80
 msgid "liste des courriels d'invités au cours"
 msgstr ""
 
-#: ../content/jaloncours.py:70
+#: ../content/jaloncours.py:68
 msgid "liste des diplômes, ue, uel, groupe d'Apogée"
 msgstr ""
 
-#: ../content/jaloncours.py:101
+#: ../content/jaloncours.py:105
 msgid "liste des inscriptions libres"
 msgstr ""
 
-#: ../content/jaloncours.py:142
+#: ../content/jaloncours.py:146
 msgid "liste des webconferences du cours"
 msgstr ""
 
@@ -1264,12 +1433,12 @@ msgstr ""
 msgid "multiple_elements_corresponding"
 msgstr ""
 
-#: ../content/jaloncours.py:279
+#: ../content/jaloncours.py:283
 msgid "n'est plus disponible."
 msgstr ""
 
 #. Default: "nécessite que JavaScript soit activé dans votre logiciel de navigation."
-#: ../browser/templates/first_page.pt:69
+#: ../browser/templates/first_page.pt:61
 msgid "needs_js_activated"
 msgstr ""
 
@@ -1283,11 +1452,11 @@ msgstr ""
 msgid "no_exo_WIMS_chosen"
 msgstr ""
 
-#: ../content/jaloncours.py:287
+#: ../content/jaloncours.py:291
 msgid "nouveau(x) dépôt(s) disponible(s)"
 msgstr ""
 
-#: ../content/jaloncours.py:288
+#: ../content/jaloncours.py:292
 msgid "nouveau(x) message(s) disponible(s)"
 msgstr ""
 
@@ -1326,11 +1495,43 @@ msgstr ""
 msgid "tabs_home"
 msgstr ""
 
+#: ../content/jaloncours.py:317
+msgid "texte libre"
+msgstr ""
+
+#: ../content/jaloncours.py:313
+msgid "titre"
+msgstr ""
+
+#: ../content/jaloncours.py:918
+msgid "titre de l'élément"
+msgstr ""
+
 #. Default: "à vos critères de recherche."
 #: ../browser/view_script_4_5/jalonploneboardsearchview.pt:59
 msgid "to_your_criteria"
 msgstr ""
 
-#: ../content/jaloncours.py:216
+#: ../content/jaloncours.py:328
+msgid "vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !"
+msgstr ""
+
+#: ../content/jaloncours.py:220
 msgid "État de la diffusion sur iTunesU"
+msgstr ""
+
+#: ../content/jalonboitedepot.py:1548
+msgid "Évaluations à vérifier"
+msgstr ""
+
+#: ../content/jaloncours.py:1314
+msgid "… ou programmer son affichage."
+msgstr ""
+
+#: ../content/jaloncours.py:1294
+msgid "… ou programmer son masquage."
+msgstr ""
+
+#: ../content/jaloncourswims.py:49
+msgid "简体中文(中国)"
 msgstr ""
