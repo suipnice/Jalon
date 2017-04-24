@@ -89,10 +89,10 @@ class DepositBoxView(CourseView):
             my_view["class_limit_date"] = "warning"
             if my_view["is_authorized_deposit"] == 3:
                 my_view["is_authorized_deposit"] = 0
-                my_view["is_authorized_deposit_text"] = "Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
+                my_view["is_authorized_deposit_text"] = _(u"Dans le profil évaluation par les pairs les \"dates limite de dépôts et d'évaluation\" sont obligatoires.")
 
         my_view["grid_access"] = True if my_deposit_box.getAccesGrille(my_view["is_personnel"]) else False
-        #my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
+        # my_view["grid_link"] = "%s/deposit_box_criteria_view?mode_etudiant=true" % my_view["deposit_box_link"]
 
         my_view["deposit_box_tabs"] = []
 
@@ -100,7 +100,7 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=documents&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                             "css_class": " selected" if my_view["is_documents_tab"] else "",
                                             "icon":      "fa-upload",
-                                            "text":      "Documents enseignants",
+                                            "text":      _(u"Documents enseignants"),
                                             "nb":        my_deposit_box.getNbSujets(my_view["is_personnel"])})
         if my_view["is_documents_tab"]:
             portal = my_deposit_box.portal_url.getPortalObject()
@@ -112,21 +112,21 @@ class DepositBoxView(CourseView):
         my_view["deposit_box_tabs"].append({"href":      "%s?tab=deposit&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                             "css_class": " selected" if my_view["is_deposit_tab"] else "",
                                             "icon":      "fa-download",
-                                            "text":      "Mes dépôts" if not my_view["is_personnel"] and not my_deposit_box.getAccesDepots() else "Dépôts étudiants",
+                                            "text":      _(u"Mes dépôts") if not my_view["is_personnel"] and not my_deposit_box.getAccesDepots() else _(u"Dépôts étudiants"),
                                             "nb":        my_deposit_box.getNbDepots(my_view["is_personnel"], user_id)})
         my_view["deposit_tab_options"] = []
         if my_view["is_deposit_tab"]:
             my_view["deposit_tab_options_link"] = "%s/edit_deposit_tab_form" % my_view["deposit_box_link"]
             my_view["deposit_tab_options"] = [{"icon": "fa-toggle-on success" if my_deposit_box.getCorrectionIndividuelle() else "fa-toggle-off",
-                                               "text": "Correction des dépôts"},
+                                               "text": _(u"Correction des dépôts")},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getNotificationCorrection() else "fa-toggle-off",
-                                               "text": "Notification des corrections"},
+                                               "text": _(u"Notification des corrections")},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getNotation() else "fa-toggle-off",
-                                               "text": "Notation des dépôts"},
+                                               "text": _(u"Notation des dépôts")},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getNotificationNotation() else "fa-toggle-off",
-                                               "text": "Notification des notations"},
+                                               "text": _(u"Notification des notations")},
                                               {"icon": "fa-toggle-on success" if my_deposit_box.getAccesDepots() else "fa-toggle-off",
-                                               "text": "Visualisation des dépôts entre étudiants"}]
+                                               "text": _(u"Visualisation des dépôts entre étudiants")}]
 
         deposit_box_profile = my_deposit_box.getProfile() or "standard"
 
@@ -135,7 +135,7 @@ class DepositBoxView(CourseView):
             my_view["deposit_box_tabs"].append({"href":      "%s?tab=skills&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                                 "css_class": " selected" if my_view["is_skills_tab"] else "",
                                                 "icon":      "fa-tasks",
-                                                "text":      "Compétences",
+                                                "text":      _(u"Compétences"),
                                                 "nb":        my_deposit_box.getNbCompetences()})
         if my_view["is_skills_tab"]:
             my_view["skills_macro"] = "skills_teacher" if my_view["is_personnel"] else "skills_student"
@@ -144,7 +144,7 @@ class DepositBoxView(CourseView):
                                                "text": "Affichage de l'onglet \"Compétences\" aux étudiants"}]
             if my_deposit_box.getPermissionModifierCompetence(my_view["is_personnel"], user_id):
                 my_view["deposit_tab_options"].append({"icon": "fa-toggle-on success" if my_deposit_box.getModifierCompetences() else "fa-toggle-off",
-                                                       "text": "Restriction de la gestion des compétences"})
+                                                       "text": _(u"Restriction de la gestion des compétences")})
 
         my_view["deposit_peer_options"] = []
         my_view["is_peers_tab"] = True if tab == "peers" else False
@@ -152,7 +152,7 @@ class DepositBoxView(CourseView):
             my_view["deposit_box_tabs"].append({"href":      "%s?tab=peers&amp;mode_etudiant=%s" % (my_view["deposit_box_link"], mode_etudiant),
                                                 "css_class": " selected" if my_view["is_peers_tab"] else "",
                                                 "icon":      "fa-users",
-                                                "text":      "Dépôts à évaluer" if not my_view["is_personnel"] else "Par les pairs",
+                                                "text":      _(u"Dépôts à évaluer") if not my_view["is_personnel"] else _(u"Par les pairs"),
                                                 "nb":        my_deposit_box.getPeerLength(my_view["is_personnel"], user_id)})
         if my_view["is_peers_tab"]:
             my_view["accessEvaluation"] = not my_view["is_personnel"] and my_deposit_box.getAccesEvaluation()
@@ -161,22 +161,22 @@ class DepositBoxView(CourseView):
             my_view["deposit_peer_options"] = [{"link":  "%s/edit_peers_correction_number_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-users fa-fw no-pad",
-                                                "text":  "Évaluation(s) par étudiants",
+                                                "text":  _(u"Évaluation(s) par étudiants"),
                                                 "value": my_deposit_box.getNombreCorrection()},
                                                {"link":  "%s/edit_peers_adjustment_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-balance-scale fa-fw no-pad",
-                                                "text":  "Ajustement",
+                                                "text":  _(u"Ajustement"),
                                                 "value": my_deposit_box.getDisplayPenality()},
                                                {"link":  "%s/edit_peers_grid_access_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-th fa-fw no-pad",
-                                                "text":  "Accès à la grille d'évaluation",
+                                                "text":  _(u"Accès à la grille d'évaluation"),
                                                 "value": my_deposit_box.getDisplayGridAccess()},
                                                {"link":  "%s/edit_peers_self_evaluation_form" % my_view["deposit_box_link"],
                                                 "class": "panel callout radius",
                                                 "icon":  "fa fa-user fa-fw no-pad",
-                                                "text":  "Autoriser l'auto-évaluation",
+                                                "text":  _(u"Autoriser l'auto-évaluation"),
                                                 "value": my_deposit_box.getDisplayAuthorizeSelfEvaluation()}]
             my_view["is_depot_actif"] = True
             my_view["is_correction_actif"] = True

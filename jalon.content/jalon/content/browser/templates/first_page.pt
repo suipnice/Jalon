@@ -21,9 +21,13 @@
 
     <div id="accueil_header" class="row">
         <div class="small-12 large-5 columns" id="logo_container">
-            <a href="//unice.fr" title="visiter le portail de l'UNS (s'ouvre dans une nouvelle fenêtre)" target="_blank">
+            <a href="//unice.fr"
+               title="visiter le portail de l'UNS (s'ouvre dans une nouvelle fenêtre)"
+               i18n:attributes="title title_visit_portal"
+               target="_blank">
                 <!--tal:block i18n:translate="">Université Nice Sophia Antipolis, membre de l'Université Côte d'azur</tal:block-->
-                <img style="width:24em;" alt="Membre del'Université Côte d'azur" 
+                <img style="width:24em;" alt="Membre de l'Université Côte d'azur"
+                     i18n:attributes="alt alt_UCA_member"
                      tal:attributes="src string:${navroot}/++resource++jalon.theme.images/logo_uns_uca.svg"/>
             </a>
         </div>

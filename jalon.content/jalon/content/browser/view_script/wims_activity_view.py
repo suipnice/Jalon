@@ -116,7 +116,7 @@ class WimsActivityView(CourseView):
         my_view["wims_activity_tabs"].append({"href":      "%s?tab=exercices&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
                                               "css_class": " selected" if tab == "exercices" else "",
                                               "icon":      "fa-random",
-                                              "text":      "Exercices",
+                                              "text":      _("Exercices"),
                                               "nb":        my_wims_activity.getNbExercices()})
         activity_path = my_wims_activity.getPhysicalPath()
         activity_path = "/".join([activity_path[-3], activity_path[-2], activity_path[-1]])
@@ -134,7 +134,7 @@ class WimsActivityView(CourseView):
         my_view["wims_activity_tabs"].append({"href":      "%s?tab=documents&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
                                               "css_class": " selected" if tab == "documents" else "",
                                               "icon":      "fa-upload",
-                                              "text":      "Documents enseignants",
+                                              "text":      _("Documents enseignants"),
                                               "nb":        my_wims_activity.getNbSujets(my_view["is_personnel"])})
         if tab == "documents":
             my_view["documents_add"] = self.getCourseItemAdderMenuList(my_view["activity_link"], activity_path, portal)["my_space"]
@@ -145,7 +145,7 @@ class WimsActivityView(CourseView):
             my_view["wims_activity_tabs"].append({"href":      "%s?tab=results&mode_etudiant=%s" % (my_view["activity_link"], mode_etudiant),
                                                   "css_class": " selected" if tab == "results" else "",
                                                   "icon":      "fa-trophy",
-                                                  "text":      "Résultats"})
+                                                  "text":      _(u"Résultats")})
 
         # LOG.info("----- getWimsActivityView (End) -----")
         return my_view

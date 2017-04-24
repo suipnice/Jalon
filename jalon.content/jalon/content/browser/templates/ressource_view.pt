@@ -52,17 +52,17 @@
    </tal:block>
 
    <tal:block condition="python:context.getTypeRessourceExterne() == 'Ressource bibliographique'">
-      Sous titre <tal:block content="context/getSousTitre"/><br />
-      Description <tal:block content="context/Description"/><br />
-      Auteurs <tal:block content="context/getAuteurs"/><br />
-      Volume <tal:block content="context/getVolume"/><br />
-      Lieu <tal:block content="context/getLieu"/><br />
-      Editeur <tal:block content="context/getEditeur"/><br />
-      Année <tal:block content="context/getAnnee"/><br />
-      Pagination <tal:block content="context/getPagination"/><br />
-      Collection <tal:block content="context/getCollection"/><br />
-      ISBN <tal:block content="context/getISBN"/><br />
-      URL <tal:block content="context/getURLWEB"/>
+      <tal:block i18n:translate="bibliography_subtitle">Sous titre</tal:block> <tal:block content="context/getSousTitre"/><br />
+      <tal:block i18n:translate="bibliography_desc">Description</tal:block> <tal:block content="context/Description"/><br />
+      <tal:block i18n:translate="bibliography_authors">Auteurs</tal:block> <tal:block content="context/getAuteurs"/><br />
+      <tal:block i18n:translate="bibliography_volume">Volume</tal:block> <tal:block content="context/getVolume"/><br />
+      <tal:block i18n:translate="bibliography_location">Lieu</tal:block> <tal:block content="context/getLieu"/><br />
+      <tal:block i18n:translate="bibliography_editor">Editeur</tal:block> <tal:block content="context/getEditeur"/><br />
+      <tal:block i18n:translate="bibliography_year">Année</tal:block> <tal:block content="context/getAnnee"/><br />
+      <tal:block i18n:translate="bibliography_pagination">Pagination</tal:block> <tal:block content="context/getPagination"/><br />
+      <tal:block i18n:translate="bibliography_collection">Collection</tal:block> <tal:block content="context/getCollection"/><br />
+      <tal:block i18n:translate="bibliography_ISBN">ISBN</tal:block> <tal:block content="context/getISBN"/><br />
+      <tal:block i18n:translate="bibliography_URL">URL</tal:block> <tal:block content="context/getURLWEB"/>
    </tal:block>
 
    <tal:block condition="python:context.getTypeRessourceExterne() == 'Catalogue BU'">
@@ -80,12 +80,14 @@
        <br />
        <a tal:condition="ressource/urlcatalogue"
           tal:attributes="href ressource/urlcatalogue"
-          target="_new" title="Plus d'informations sur le catalogue de la BU dans une nouvelle fenêtre.">
+          target="_new" title="Plus d'informations sur le catalogue de la BU dans une nouvelle fenêtre."
+          i18n:translate=""
+          i18n:attributes="title title_urlcatalogue_more_informations">
          Plus d'informations sur le catalogue de la BU
        </a>
-       <span tal:condition="not:ressource/urlcatalogue">La ressource n'est plus disponible dans le catalogue de la BU.</span>
+       <span tal:condition="not:ressource/urlcatalogue" i18n:translate="">La ressource n'est plus disponible dans le catalogue de la BU.</span>
        <br /><br />
-       Annotation(s) personnelle(s) :
+       <span i18n:translate="">Annotation(s) personnelle(s) :</span>
        <br />
        <span tal:content="ressource/description"/>
      </span>
