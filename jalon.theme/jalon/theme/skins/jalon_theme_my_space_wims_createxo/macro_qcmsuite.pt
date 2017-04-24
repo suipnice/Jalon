@@ -123,6 +123,8 @@ Mauvaise réponse n°2</pre>
         <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
     </div>
 
+    <div class="formHelp hide text-right" id="js-max_questions_helper" i18n:translate="">Ce modèle permet d'ajouter jusqu'à 40 questions.</div>
+
     <div class="text-right">
         <a id="ajouterQuestion" class="button small">
             <i class="fa fa-plus"></i>

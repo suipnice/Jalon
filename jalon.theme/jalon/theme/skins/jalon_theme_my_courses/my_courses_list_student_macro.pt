@@ -27,7 +27,8 @@
             <tal:block i18n:translate="">Vous n'êtes inscrit à aucun cours.</tal:block>
         </div>
         <table summary="Liste des cours"
-               tal:condition="diploma/diploma_course_list">
+               tal:condition="diploma/diploma_course_list"
+               tal:attributes="id string:js-list-cours_diploma_${repeat/diploma/index}">
         <thead>
             <tr>
                 <th class="sort has-tip" data-sort="new" data-tooltip
@@ -102,6 +103,9 @@
         </tr>
         </tbody>
         </table>
+        <tal:block define="script string:setSortableList('js-list-cours_diploma_${repeat/diploma/index}', ['new', 'title', 'author'], 'new', 'title');">
+            <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
+        </tal:block>
         </tal:repeat>
     </section>
 

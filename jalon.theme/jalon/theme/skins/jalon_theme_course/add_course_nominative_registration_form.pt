@@ -60,7 +60,7 @@
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        <tal:block i18n:translate="">Prénom NOM</tal:block>
                     </span>
                 </th>
                 <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">

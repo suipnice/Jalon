@@ -18,7 +18,7 @@
                         owner string:Université Nice Sophia Antipolis - Nice Sophia Antipolis University;
                         owner_mail string:pi@unice.fr">
 
-    <channel tal:condition="not:categorie_itunesu">
+    <channel tal:condition="not:categorie_itunesu" i18n:translate="">
         Une erreur est survenue dans la génération de ce flux, merci de contacter l'administrateur.
     </channel>
     <channel tal:condition="categorie_itunesu">

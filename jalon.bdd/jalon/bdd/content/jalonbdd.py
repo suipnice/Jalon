@@ -539,7 +539,7 @@ class JalonBDD(SimpleItem):
             sesame = param["SESAME_ETU"].replace(" ", "")
             portal_membership = getToolByName(self, 'portal_membership')
             portal_registration = getToolByName(self, 'portal_registration')
-            if not "PASSWORD" in param:
+            if "PASSWORD" not in param:
                 param["PASSWORD"] = portal_registration.generatePassword()
             roles = (param["TYPE_IND"], "Member",)
             if param["TYPE_IND"] == "Secretaire":

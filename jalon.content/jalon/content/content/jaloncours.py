@@ -116,7 +116,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                accessor="getPlan",
                searchable=False,
                widget=LinesWidget(label=_(u"Plan interactif"),
-                                  description=_(u"Le plan intéractif."),
+                                  description=_(u"Le plan interactif."),
                                   visible={'view': 'visible', 'edit': 'invisible'},)),
     LinesField("elements_glossaire",
                required=False,
@@ -185,26 +185,26 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                  accessor="getActiverEmailForum",
                  searchable=False,
                  default=True,
-                 widget=StringWidget(label=_(u"Envoie de courriels"),
+                 widget=StringWidget(label=_(u"Envoi de courriels"),
                                      description=_(u"Envoyer un courriel à tous les utilisateurs du cours à chaque message posté dans un forum."),)),
     BooleanField("add_forum_permission",
                  required=False,
                  accessor="getAddForumPermission",
                  searchable=False,
                  widget=StringWidget(label=_(u"Permission d'ajout de forum par les étudiants"),
-                                     description=_(u"EPermission d'ajout de forum par les étudiants."),)),
+                                     description=_(u"Permet aux étudiant d'ajouter des forum."),)),
     StringField("dateDerniereModif",
                 required=False,
                 accessor="getDateDerniereModif",
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de dernière modification"),
-                                    description=_(u"Date de dernière modification"),)),
+                                    description=_(u"Date de la dernière modification intervenue sur le cours."),)),
     BooleanField("activer_dll_fichier",
                  required=True,
                  accessor="getActiver_dll_fichier",
                  searchable=False,
                  default=False,
-                 widget=BooleanWidget(label=_(u"Telechargement de fichiers"),
+                 widget=BooleanWidget(label=_(u"Téléchargement de fichiers"),
                                       description=_(u"Autorise le telechargement d'une archive de tous les fichiers d'un cours"),)),
     StringField("catiTunesU",
                 required=False,
@@ -224,13 +224,13 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 accessor="getLastDateActu",
                 searchable=False,
                 widget=StringWidget(label=_(u"Date de la dernière Actu du cours"),
-                                    description=_(u"Date de la dernière Actu du cours"),)),
+                                    description=_(u"Date de la dernière Actualité du cours"),)),
     LinesField("archive",
                required=False,
                accessor="getArchive",
                searchable=False,
                default=[],
-               widget=LinesWidget(label=_(u"Utilisateur ayant archivé ce cours."),
+               widget=LinesWidget(label=_(u"Utilisateur ayant archivé ce cours"),
                                   description=_(u"Archive(s) du cours."),
                                   visible={'view': 'visible', 'edit': 'invisible'},)),
 ))
@@ -2327,7 +2327,7 @@ class JalonCours(ATFolder):
         # LOG.info("----- addPasswordStudent -----")
         if self.getLibre():
             inscriptionsLibres = list(self.getInscriptionsLibres())
-            if not member_id in inscriptionsLibres:
+            if member_id not in inscriptionsLibres:
                 inscriptionsLibres.append(member_id)
                 self.setCourseProperties({"InscriptionsLibres": inscriptionsLibres,
                                           "DateDerniereModif":  DateTime()})
@@ -2338,6 +2338,7 @@ class JalonCours(ATFolder):
                                   "DateDerniereModif":  DateTime()})
 
     def getEmailRegistration(self):
+        """Fournit la liste des étudiants inscrits par courriel."""
         # LOG.info("----- getEmailregistration -----")
         course_email_registration_list = self.getInvitations()
         if not course_email_registration_list:
@@ -2345,6 +2346,9 @@ class JalonCours(ATFolder):
         email_registration_list = []
         portal_membership = getToolByName(self, "portal_membership")
         for email_registration in course_email_registration_list:
+            # Tant que l'utilisateur ne s'est pas connecté,
+            #  ses infos ne sont pas dans la BDD (jalon_utils.getIndividu() ne renverra que le login)
+            # On ne fournit donc que le fullname.
             username = email_registration
             member = portal_membership.getMemberById(username)
             if member:
@@ -2353,6 +2357,7 @@ class JalonCours(ATFolder):
         return email_registration_list
 
     def addEmailRegistration(self, email_registration_list):
+        """Ajoute un/des étudiant(s) à la liste des inscrits par courriel."""
         # LOG.info("----- addEmailRegistration -----")
         portal = self.portal_url.getPortalObject()
         portal_membership = getToolByName(portal, 'portal_membership')
@@ -2366,7 +2371,7 @@ class JalonCours(ATFolder):
                 email_registration_name = email_registration.replace("@", " ")
                 email_registration_email = email_registration
             email_registration_email = email_registration_email.lower()
-            if not email_registration_email in course_email_registration_list:
+            if email_registration_email not in course_email_registration_list:
                 if not portal_membership.getMemberById(email_registration_email):
                     portal_registration = getToolByName(portal, 'portal_registration')
                     password = portal_registration.generatePassword()

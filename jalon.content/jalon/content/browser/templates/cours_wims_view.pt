@@ -140,7 +140,7 @@
                 </li>
 
                 <tal:comment replace="nothing">
-                    <!-- Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché>
+                    Le mode "Simuler un examen" n'est possible sur WIMS que si l'examen n'est pas caché
                 </tal:comment>
                 <li tal:condition="python:is_personnel and tag == 'Examen'">
                     <a tal:define="qexam context/getIdExam;"

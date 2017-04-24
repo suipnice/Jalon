@@ -1,4 +1,4 @@
-##Python Script "add_course_email_registration_form"
+##Python Script "add_course_email_registration_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -8,8 +8,11 @@
 ##title=
 ##
 
+# context = context
+
 form = context.REQUEST.form
 if form.has_key("invitation"):
+    # Cas où on inscrit plusieurs utilisateurs d'un coup
     if "," in form["invitation"]:
         email_registration_list = form["invitation"].split(",")
     else:

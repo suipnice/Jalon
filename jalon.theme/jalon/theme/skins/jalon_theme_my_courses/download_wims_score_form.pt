@@ -46,7 +46,7 @@
     </div>
 
     <form method="POST" id="js-getScoresWIMS-form"
-          tal:attributes="action string:${context/absolute_url}/download_wims_score_script"
+          tal:attributes="action string:${context/absolute_url}/download_wims_all_activities_scores_script"
           data-success_msg="Votre fichier est en cours de téléchargement…"
           i18n:attributes="data-success_msg">
 

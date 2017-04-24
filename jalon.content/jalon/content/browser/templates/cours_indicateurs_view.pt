@@ -38,7 +38,7 @@
           tal:define="page_view view/getPageView;
                       onglet_view page_view/onglet_view">
         <h1>
-            <i class="fa fa-line-chart no-pad"></i> Indicateurs
+            <i class="fa fa-line-chart no-pad"></i> <tal:block i18n:translate="">Indicateurs</tal:block>
         </h1>
 
         <ul id="tab_button-group" class="button-group radius">
