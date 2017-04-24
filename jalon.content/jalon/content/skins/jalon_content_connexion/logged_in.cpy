@@ -50,24 +50,9 @@ if initial_login:
 elif must_change_password:
     state.set(status='change_password')
 
-memberid = member.getId()
-if (not hasattr(context.Members, memberid)) and (member.has_role(["Personnel", "Secretaire", "Manager"])):
-    context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
-    home = getattr(context.Members, memberid)
-    home.addSubJalonFolder(memberid)
-    context.cours.invokeFactory(type_name='JalonFolder', id=memberid)
-    cours = getattr(context.cours, memberid)
-    cours.setTitle("Mes cours")
-    cours.setPortlets()
-    # context.portal_catalog.refreshCatalog(clear=True)
-
-# if REQUEST.form.has_key("action"):
-#    if REQUEST.form["action"] == "mooc":
-#        cours = getattr(getattr(context.cours, REQUEST.form["auteur"]), REQUEST.form["idcours"])
-#        cours.inscrireMOOC(memberid)
-
 membership_tool.loginUser(REQUEST)
 
+memberid = member.getId()
 portal_jalon_bdd = getToolByName(context, 'portal_jalon_bdd')
 portal_jalon_properties = getToolByName(context, 'portal_jalon_properties')
 infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
@@ -93,6 +78,15 @@ if not infos_user:
                                                    "PROMO_IND"       : ""})
         infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
 
+if (not hasattr(context.Members, memberid)) and (member.has_role(["Personnel", "Secretaire", "Manager"])):
+    context.Members.invokeFactory(type_name='JalonFolder', id=memberid)
+    home = getattr(context.Members, memberid)
+    home.addSubJalonFolder(memberid)
+    context.cours.invokeFactory(type_name='JalonFolder', id=memberid)
+    cours = getattr(context.cours, memberid)
+    cours.setTitle("Mes cours")
+    cours.setPortlets()
+
 if member.has_role("EtudiantJalon"):
     LIB_PR1_IND, LIB_NOM_PAT_IND = member.getProperty("fullname", "Non renseigné").rsplit(" ", 1)
     portal_jalon_bdd.creerUtilisateur({"SESAME_ETU":      memberid,
@@ -113,7 +107,6 @@ if member.has_role("EtudiantJalon"):
 try:
     portal_jalon_bdd.addConnexionUtilisateur(memberid)
 except:
-    # infos_user = portal_jalon_bdd.getIndividuLITE(memberid)
     portal_jalon_bdd.creerUtilisateurMySQL({"SESAME_ETU":      memberid,
                                             "DATE_NAI_IND":    "",
                                             "LIB_NOM_PAT_IND": infos_user["LIB_NOM_PAT_IND"],

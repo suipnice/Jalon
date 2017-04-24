@@ -174,7 +174,7 @@ class JalonRessourceExterne(ATDocumentBase):
         return dico[self.getTypeRessourceExterne()]
 
     def getLecteurExportable(self):
-        return self.lecteur
+        return str(self.lecteur)
 
     def getMacroType(self):
         dico = {"Lien web":                   "lien",

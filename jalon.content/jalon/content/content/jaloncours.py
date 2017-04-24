@@ -454,6 +454,7 @@ class JalonCours(ATFolder):
     def setCourseProperties(self, dico):
         """ Met à jour les propriétés du cours (anciennement "setProperties")."""
         # LOG.info("----- setCourseProperties Start : %s -----" % DateTime().strftime("%Y/%m/%d %H:%M:%S"))
+        # LOG.info("***** dico : %s" % dico)
         for key in dico.keys():
             self.__getattribute__("set%s" % key)(dico[key])
         if key == "DateDerniereModif":
@@ -623,7 +624,10 @@ class JalonCours(ATFolder):
     # ---------------- #
     def getShortDescription(self):
         # LOG.info("----- getShortDescription -----")
-        description = self.Description()
+        try:
+            description = self.getRawDescription()
+        except:
+            description = self.Description()
         if not description:
             return {"link": False, "desc": "ce cours n'a pas encore de description."}
         if len(description) > 100:
