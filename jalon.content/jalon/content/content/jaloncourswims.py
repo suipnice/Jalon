@@ -528,7 +528,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # dans l'etat 3 (périmé+caché), et y rester.
             if dico["status"] or self.idExam:
                 dico_feuille["status"] = 3
-            self.wims("modifierFeuille", dico_feuille)
+            # cas des examens jamais affiché qui pourrait être masqué lors du masquage d'un titre qui les contient
+            reponse = self.wims("modifierFeuille", dico_feuille)
 
             dico["title"] = self.Title()
             dico["description"] = self.Description()
