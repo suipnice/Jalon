@@ -378,6 +378,8 @@ class JalonCours(ATFolder):
                 return True
             if self.isCoLecteurs(user_id):
                 return True
+        elif self.getCategorieCours() > 2:
+            return True
 
         course_authorized_list = request.SESSION.get("course_authorized_list", None)
         if course_authorized_list is None:
@@ -2458,26 +2460,28 @@ class JalonCours(ATFolder):
         listeAcces = self.getListeAcces()
         portal_jalon_bdd = getToolByName(self, "portal_jalon_bdd")
         for acces in listeAcces:
-            type, code = acces.split("*-*")
-            if type == "etape":
+            type_code, code = acces.split("*-*")
+            if type_code == "etape":
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            if type in ["ue", "uel"]:
+                    elem.append(type_code)
+            if type_code in ["ue", "uel"]:
                 retour = portal_jalon_bdd.getInfosELP2(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            if type == "groupe":
+                    elem.append(type_code)
+            if type_code == "groupe":
                 retour = portal_jalon_bdd.getInfosGPE(code)
                 if not retour:
                     elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
-            elem.append(type)
+                    elem.append(type_code)
             res.append(elem)
         groupe = self.getGroupe()
         if groupe:
