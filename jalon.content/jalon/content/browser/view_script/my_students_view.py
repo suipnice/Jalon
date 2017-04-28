@@ -70,10 +70,11 @@ class MyStudentsView(BrowserView):
         #    course_list.extend(coauthor_course_list)
 
         course_access_dict = {}
-        not_access_dict = {"etape":  "Le code *-* n'est plus valide pour ce diplôme.",
-                           "ue":     "Le code *-* n'est plus valide pour cette UE / UEL.",
-                           "uel":    "Le code *-* n'est plus valide pour cette UE / UEL.",
-                           "groupe": "Le code *-* n'est plus valide pour ce groupe."}
+        not_access_dict = {"etape":   "Le code *-* n'est plus valide pour ce diplôme.",
+                           "ue":      "Le code *-* n'est plus valide pour cette UE / UEL.",
+                           "uel":     "Le code *-* n'est plus valide pour cette UE / UEL.",
+                           "groupe":  "Le code *-* n'est plus valide pour ce groupe.",
+                           "inconnu": "Le code *-* n'est plus valide."}
         portal_jalon_bdd = portal.portal_jalon_bdd
         for course in course_list:
             LOG.info("FOR COURSE : %s" % course.getId)
