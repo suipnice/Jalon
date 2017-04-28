@@ -758,7 +758,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         LOG.info(dicoEtudiants)
         for depot in listeDepots:
             try:
-                filename_path = "%s/%s %s (%s)/%s" % (self.Title(), dicoEtudiants[depot["idEtudiant"]]["nom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["prenom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["num_etu"].encode("utf-8"), depot["filename"])
+                filename_path = "%s/%s %s (%s)/%s" % (self.Title(), dicoEtudiants[depot["idEtudiant"]]["nom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["prenom"].encode("utf-8"), dicoEtudiants[depot["idEtudiant"]]["num_etu"].encode("utf-8"), depot["filename"].encode("utf-8"))
             except:
                 filename_path = "%s/%s/%s" % (self.Title(), depot["idEtudiant"], depot["filename"])
             if 'Windows' in HTTP_USER_AGENT:
@@ -1105,6 +1105,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                 ligne1.write(index_comp, dicoGradation[compEtu[idcompetence]], styleAcquise)
                         if competence["evaluation"] == "note":
                             style = XFStyle()
+                            has_note = True
                             if "." in compEtu[idcompetence] or "," in compEtu[idcompetence]:
                                 style.num_format_str = "0.00"
                                 if competence["note_partielle"]:
@@ -1113,18 +1114,23 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
                                     note_acquise = float(competence["note_acquise"])
                                 note = float(compEtu[idcompetence])
                             else:
-                                style.num_format_str = "0"
                                 if competence["note_partielle"]:
                                     note_partielle = int(competence["note_partielle"])
                                 if competence["note_acquise"]:
                                     note_acquise = int(competence["note_acquise"])
-                                note = int(compEtu[idcompetence])
-                            if note_acquise and note >= note_acquise:
-                                style.pattern = patternAcquise
-                            elif note_partielle and note >= note_partielle:
-                                style.pattern = patternEnCours
-                            elif note_acquise and note_partielle:
-                                style.pattern = patternAcquerir
+                                try:
+                                    note = int(compEtu[idcompetence])
+                                    style.num_format_str = "0"
+                                except:
+                                    note = "Non noté"
+                                    has_note = False
+                            if has_note:
+                                if note_acquise and note >= note_acquise:
+                                    style.pattern = patternAcquise
+                                elif note_partielle and note >= note_partielle:
+                                    style.pattern = patternEnCours
+                                elif note_acquise and note_partielle:
+                                    style.pattern = patternAcquerir
 
                             ligne1.write(index_comp, note, style)
                     else:

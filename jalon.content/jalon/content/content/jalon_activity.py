@@ -201,8 +201,11 @@ class JalonActivity(SimpleItem):
             item_object.reindexObject()
 
         activity_relatedItems = self.getRelatedItems()
-        activity_relatedItems.remove(item_object)
-        self.setRelatedItems(activity_relatedItems)
+        try:
+            activity_relatedItems.remove(item_object)
+            self.setRelatedItems(activity_relatedItems)
+        except:
+            pass
 
         self.reindexObject()
 
