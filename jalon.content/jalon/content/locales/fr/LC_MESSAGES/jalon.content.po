@@ -23,7 +23,7 @@ msgid "${items} could not be deleted."
 msgstr "${items} could not be deleted."
 
 #: ../skins/jalon_content_course/validate_wims_activity_property.vpy:48
-msgid "${typ_parenthese} mal fermées : ${incoherence}"
+msgid "${typ_parenthese} mal fermées : ${incoherence}"
 msgstr ""
 
 #: ../content/jalonfolder.py:1300
@@ -31,12 +31,11 @@ msgid "%s Quick Upload"
 msgstr ""
 
 #: ../content/jalon_activity.py:111
-#: ../content/jaloncourswims.py:344
 msgid "'${item_title}' a bien été ajouté aux documents enseignants."
 msgstr ""
 
 #: ../event/notify.py:94
-msgid ", pour le cours : "
+msgid ", pour le cours : "
 msgstr ""
 
 #: ../skins/jalon_content_my_courses/download_wims_all_activities_scores_script.py:78
@@ -99,11 +98,11 @@ msgstr ""
 msgid "Afficher"
 msgstr ""
 
-#: ../content/jaloncours.py:1317
+#: ../content/jaloncours.py:1323
 msgid "Afficher directement le titre / sous titre et son contenu…"
 msgstr ""
 
-#: ../content/jaloncours.py:1305
+#: ../content/jaloncours.py:1311
 msgid "Afficher l'élément maintenant"
 msgstr ""
 
@@ -121,10 +120,6 @@ msgstr ""
 
 #: ../browser/view_script/deposit_box_view.py:169
 msgid "Ajustement"
-msgstr ""
-
-#: ../browser/templates/ressource_view.pt:90
-msgid "Annotation(s) personnelle(s) :"
 msgstr ""
 
 #: ../content/jalonressourceexterne.py:65
@@ -194,7 +189,7 @@ msgstr ""
 
 #: ../skins/jalon_content_connexion/creationcompte_form_validate.vpy:54
 #: ../skins/jalon_content_course/validate_course_property.vpy:33
-#: ../skins/jalon_content_course/validate_deposit_box_coefficient.vpy:20
+#: ../skins/jalon_content_course/validate_deposit_box_coefficient.vpy:21
 msgid "Champ obligatoire"
 msgstr ""
 
@@ -211,7 +206,7 @@ msgid "Collection"
 msgstr ""
 
 #: ../skins/jalon_content_course/validate_peer_evaluate.vpy:46
-msgid "Commentaire invalide, taille min : %s, taille max : %s, taille actuelle : %s"
+msgid "Commentaire invalide, taille min : %s, taille max : %s, taille actuelle : %s"
 msgstr ""
 
 #: ../content/jaloncours.py:176
@@ -254,11 +249,11 @@ msgstr ""
 msgid "Courriels"
 msgstr ""
 
-#: ../content/jaloncours.py:870
+#: ../content/jaloncours.py:876
 msgid "Créer"
 msgstr ""
 
-#: ../content/jaloncours.py:867
+#: ../content/jaloncours.py:873
 msgid "Créer un"
 msgstr ""
 
@@ -350,7 +345,7 @@ msgid "Diffusion de messages"
 msgstr ""
 
 #: ../content/jaloncours.py:62
-msgid "Diffusion du cours:"
+msgid "Diffusion du cours :"
 msgstr ""
 
 #: ../content/jaloncours.py:330
@@ -498,7 +493,7 @@ msgstr ""
 msgid "Heures pendant lesquelles l&rsquo;examen ne sera pas accessible."
 msgstr ""
 
-#: ../content/jaloncourswims.py:1466
+#: ../content/jaloncourswims.py:1467
 msgid "IDENTIFIANT"
 msgstr ""
 
@@ -539,7 +534,7 @@ msgid "Indique si l'affectation des évaluations a été faite."
 msgstr ""
 
 #: ../content/jaloncourswims.py:302
-msgid "Information sur l'erreur "
+msgid "Information sur l'erreur :"
 msgstr ""
 
 #: ../content/jalon_properties.py:325
@@ -571,7 +566,7 @@ msgstr ""
 msgid "Jalonner"
 msgstr ""
 
-#: ../content/jaloncours.py:1320
+#: ../content/jaloncours.py:1326
 msgid "L'afficher directement…"
 msgstr ""
 
@@ -580,22 +575,22 @@ msgid "L'auteur principal du cours a accès à celui-ci en modification, son nom
 msgstr ""
 
 #: ../content/jaloncourswims.py:428
-msgid "L'exercice '${item_title}' a bien été détaché de cette activité."
+msgid "L'exercice « ${item_title} » a bien été détaché de cette activité."
 msgstr ""
 
 #: ../content/jaloncourswims.py:339
-msgid "L'exercice '%s' a bien été ajouté.utf-8"
+msgid "L'exercice « %s » a bien été ajouté.utf-8"
 msgstr ""
 
 #: ../skins/jalon_content_my_space/create_wims_exercice_script.py:37
 msgid "L'exercice « %s » a été ajouté. Construisez-le ci-dessous."
 msgstr ""
 
-#: ../content/jaloncours.py:866
+#: ../content/jaloncours.py:872
 msgid "L'élément de plan a été créé."
 msgstr ""
 
-#: ../content/jaloncours.py:877
+#: ../content/jaloncours.py:883
 msgid "L'élément de plan a été modifié."
 msgstr ""
 
@@ -619,15 +614,15 @@ msgstr ""
 msgid "La liste des éléments du glossaire."
 msgstr ""
 
-#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:43
+#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:44
 msgid "La note d'acquisition doit être inférieure ou égale à la note maximale"
 msgstr ""
 
-#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:47
-msgid "La note d'acquisition doit être supérieure ou égale à la note \"en cours d'acquisition à partir de\""
+#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:48
+msgid "La note d'acquisition doit être supérieure ou égale à la note « en cours d'acquisition à partir de »"
 msgstr ""
 
-#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:39
+#: ../skins/jalon_content_course/validate_deposit_box_skill.vpy:40
 msgid "La note partielle doit être inférieure ou égale à la note maximale"
 msgstr ""
 
@@ -635,7 +630,7 @@ msgstr ""
 msgid "La ressource n'est plus disponible dans le catalogue de la BU."
 msgstr ""
 
-#: ../content/jaloncourswims.py:1551
+#: ../content/jaloncourswims.py:1552
 msgid "La ressource que vous tentez d'afficher est trop importante et dépasse la limite autorisée."
 msgstr ""
 
@@ -647,7 +642,7 @@ msgstr ""
 msgid "Langue des exercices"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1621
+#: ../content/jaloncourswims.py:1622
 msgid "Le coefficient de l'exercice '${item_title}' a bien été modifié."
 msgstr ""
 
@@ -680,7 +675,7 @@ msgid "Le mot de passe du dossier"
 msgstr ""
 
 #: ../event/notify.py:103
-msgid "Le nouveau message est : "
+msgid "Le nouveau message est : "
 msgstr ""
 
 #: ../content/jaloncours.py:119
@@ -688,13 +683,9 @@ msgid "Le plan interactif."
 msgstr ""
 
 #: ../content/jalon_utils.py:74
-#: ../skins/jalon_content_my_space/edit_wims_exercice_script.py:32
-#: ../skins/jalon_content_my_space/validate_wims_exercice.vpy:73
-msgid "Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp..."
-msgstr ""
-
 #: ../skins/jalon_content_my_space/create_wims_exercice_script.py:39
-msgid "Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement."
+#: ../skins/jalon_content_my_space/edit_wims_exercice_script.py:32
+msgid "Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp..."
 msgstr ""
 
 #: ../content/jaloncours.py:289
@@ -805,15 +796,15 @@ msgstr ""
 msgid "Masquer"
 msgstr ""
 
-#: ../content/jaloncours.py:1297
+#: ../content/jaloncours.py:1303
 msgid "Masquer directement le titre / sous titre et son contenu…"
 msgstr ""
 
-#: ../content/jaloncours.py:1299
+#: ../content/jaloncours.py:1305
 msgid "Masquer directement…"
 msgstr ""
 
-#: ../content/jaloncours.py:1284
+#: ../content/jaloncours.py:1290
 msgid "Masquer l'élément maintenant"
 msgstr ""
 
@@ -821,7 +812,7 @@ msgstr ""
 msgid "Mauvais type de fichier"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1553
+#: ../content/jaloncourswims.py:1554
 msgid "Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possible permettant de reproduire cette erreur svp."
 msgstr ""
 
@@ -888,7 +879,7 @@ msgstr ""
 msgid "Modifier"
 msgstr ""
 
-#: ../content/jaloncours.py:878
+#: ../content/jaloncours.py:884
 msgid "Modifier le"
 msgstr ""
 
@@ -905,19 +896,19 @@ msgstr ""
 msgid "Mot de passe incorrect"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1463
+#: ../content/jaloncourswims.py:1464
 msgid "NOM"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1468
+#: ../content/jaloncourswims.py:1469
 msgid "NOMBRE d'ESSAIS"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1469
+#: ../content/jaloncourswims.py:1470
 msgid "NOTE (sur ${max_score})"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1465
+#: ../content/jaloncourswims.py:1466
 msgid "NUMERO ETU"
 msgstr ""
 
@@ -1013,7 +1004,7 @@ msgstr ""
 msgid "Outils"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1464
+#: ../content/jaloncourswims.py:1465
 msgid "PRENOM"
 msgstr ""
 
@@ -1030,7 +1021,7 @@ msgid "Par les pairs"
 msgstr ""
 
 #: ../content/jalonexercicewims.py:39
-msgid "Permalien d'un exercice wims publié"
+msgid "Permalien d'un exercice Wims publié"
 msgstr ""
 
 #: ../content/jalonexercicewims.py:1043
@@ -1074,11 +1065,11 @@ msgstr ""
 msgid "Profil de la boite de dépots"
 msgstr ""
 
-#: ../content/jaloncours.py:1306
+#: ../content/jaloncours.py:1312
 msgid "Programmer l'affichage de l'élément à l'instant choisi"
 msgstr ""
 
-#: ../content/jaloncours.py:1285
+#: ../content/jaloncours.py:1291
 msgid "Programmer le masquage de l'élément à l'instant choisi"
 msgstr ""
 
@@ -1098,7 +1089,7 @@ msgstr ""
 msgid "Pénalité"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1472
+#: ../content/jaloncourswims.py:1473
 msgid "QUALITE (sur ${max_score})"
 msgstr ""
 
@@ -1122,11 +1113,11 @@ msgstr ""
 msgid "Résultats"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1138
+#: ../content/jaloncourswims.py:1139
 msgid "Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer la classe WIMS)"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1149
+#: ../content/jaloncourswims.py:1150
 msgid "Serveur injoignable. Merci de réessayer plus tard svp. (Impossible de créer une feuille WIMS)"
 msgstr ""
 
@@ -1147,7 +1138,7 @@ msgstr ""
 msgid "Supprimer"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1471
+#: ../content/jaloncourswims.py:1472
 msgid "TAUX DE REUSSITE"
 msgstr ""
 
@@ -1201,7 +1192,7 @@ msgid "Un compte &agrave; rebours d&eacute;marera d&egrave;s l&rsquo;affichage d
 msgstr ""
 
 #: ../content/jalonexercicewims.py:1019
-msgid "Un exercice ne peux avoir qu'un seul permalien.<br/>"
+msgid "Un exercice ne peux avoir qu'un seul permalien."
 msgstr ""
 
 #: ../content/jaloncours.py:54
@@ -1226,10 +1217,10 @@ msgid "Une erreur est survenue sur votre exercice « %s » (modèle introuvabl
 msgstr ""
 
 #: ../content/jaloncourswims.py:409
-msgid "Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché"
+msgid "Une erreur est survenue. L'exercice « ${item_title} » n'a pas été détaché"
 msgstr ""
 
-#: ../content/jaloncourswims.py:566
+#: ../content/jaloncourswims.py:567
 msgid "Une erreur est survenue. La visibilité de l'activité « ${title} » n'a pas changé."
 msgstr ""
 
@@ -1238,7 +1229,7 @@ msgid "Une erreur est survenue. Merci de <a href=\"%s\"><i class=\"fa fa-envelop
 msgstr ""
 
 #: ../skins/jalon_content_my_courses/download_wims_all_activities_scores_script.py:72
-msgid "Une erreur est survenue.<blockquote>%s</blockquote> nb : attention à ne pas dépasser <strong>60</strong> activités WIMS dans un seul cours.message"
+msgid "Une erreur est survenue.<blockquote>%s</blockquote> nb : attention à ne pas dépasser <strong>%s</strong> activités WIMS dans un seul cours.message"
 msgstr ""
 
 #: ../content/jaloncours.py:331
@@ -1262,31 +1253,16 @@ msgid "Versioning for this file has been disabled because it is too large"
 msgstr ""
 
 #: ../skins/jalon_content_course/validate_peer_evaluate.vpy:61
-msgid "Veuillez corriger les critères d'évaluations : %s,"
+msgid "Veuillez corriger les critères d'évaluations : %s,"
 msgstr ""
 
-#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:48
-msgid "Veuillez saisir un entier compris entre 0 et 5"
-msgstr ""
-
-#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:37
-msgid "Veuillez saisir un entier compris entre 1 et 10"
-msgstr ""
-
-#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:71
-msgid "Veuillez saisir un entier compris entre 1 et 300"
-msgstr ""
-
-#: ../skins/jalon_content_course/validate_deposit_box_coefficient.vpy:31
+#: ../skins/jalon_content_course/validate_deposit_box_coefficient.vpy:32
+#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:38
 #: ../skins/jalon_content_course/validate_deposit_box_property.vpy:43
-msgid "Veuillez saisir un entier compris entre 1 et 5"
+msgid "Veuillez saisir un entier compris entre %s et %s"
 msgstr ""
 
-#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:82
-msgid "Veuillez saisir un entier compris entre 500 et 1500"
-msgstr ""
-
-#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:92
+#: ../skins/jalon_content_course/validate_deposit_box_criteria.vpy:93
 msgid "Veuillez saisir un entier supérieur au minimum"
 msgstr ""
 
@@ -1342,7 +1318,7 @@ msgstr ""
 msgid "Vous devez taper un nombre"
 msgstr ""
 
-#: ../content/jaloncourswims.py:1457
+#: ../content/jaloncourswims.py:1458
 msgid "Vous n'avez pas le droit de telecharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord."
 msgstr ""
 
@@ -1369,7 +1345,7 @@ msgstr ""
 msgid "Vous êtes déconnecté. Merci de vous connecter pour accéder à cette page."
 msgstr ""
 
-#: ../content/jaloncours.py:1281
+#: ../content/jaloncours.py:1287
 msgid "Vous êtes sur le point de masquer cette ressource à vos étudiants."
 msgstr ""
 
@@ -1463,7 +1439,7 @@ msgstr ""
 msgid "et son contenu sont maintenant disponibles."
 msgstr ""
 
-#: ../content/jaloncourswims.py:1063
+#: ../content/jaloncourswims.py:1064
 msgid "exercice sans titre ?"
 msgstr ""
 
@@ -1661,7 +1637,7 @@ msgstr ""
 msgid "titre"
 msgstr ""
 
-#: ../content/jaloncours.py:918
+#: ../content/jaloncours.py:924
 msgid "titre de l'élément"
 msgstr ""
 
@@ -1674,6 +1650,10 @@ msgstr ""
 msgid "vous devez récupérer les devoirs des étudiants avant de supprimer une boite de dépôts !"
 msgstr ""
 
+#: ../content/jaloncourswims.py:344
+msgid "« ${item_title} » a bien été ajouté aux documents enseignants."
+msgstr ""
+
 #: ../content/jaloncours.py:220
 msgid "État de la diffusion sur iTunesU"
 msgstr ""
@@ -1682,14 +1662,14 @@ msgstr ""
 msgid "Évaluation(s) par étudiants"
 msgstr ""
 
-#: ../content/jalonboitedepot.py:1548
+#: ../content/jalonboitedepot.py:1554
 msgid "Évaluations à vérifier"
 msgstr ""
 
-#: ../content/jaloncours.py:1314
+#: ../content/jaloncours.py:1320
 msgid "… ou programmer son affichage."
 msgstr ""
 
-#: ../content/jaloncours.py:1294
+#: ../content/jaloncours.py:1300
 msgid "… ou programmer son masquage."
 msgstr ""
