@@ -1728,6 +1728,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
             # Si sheet_properties n'est pas donné, c'est que l'activité existe côté Jalon mais pas côté WIMS.
             if "Title" not in sheet_properties:
                 sheet_properties["Title"] = self.Title()
+            if "Description" not in sheet_properties:
                 sheet_properties["Description"] = self.Description()
             # On crée la classe si elle n'existe pas.
             idclasse = self.setClasse()
