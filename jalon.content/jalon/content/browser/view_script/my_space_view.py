@@ -29,16 +29,17 @@ class MySpaceView(BrowserView):
                  "link":  self.context.absolute_url()}]
 
     def getTags(self, folder, selected_tags_list):
+        """Fournit la liste des etiquettes do dossier 'folder'."""
         # LOG.info.info("----- getTags -----")
-        #tags_dict = {"last": "Les 20 derniers"}
+        # tags_dict = {"last": "Les 20 derniers"}
         tags_list = []
         tags = list(folder.Subject())
         # LOG.info.info(tags)
         tags_dict = folder.getSubjectsDict()
         # LOG.info.info(tags_dict)
-        #tags.sort()
+        # tags.sort()
         for tag in tags:
-            #tags_dict[tag] = tag
+            # tags_dict[tag] = tag
             tags_list.append({"tag_id":    tag,
                               "tag_title": tags_dict[tag],
                               "tag_css":   "filter-button selected" if tag in selected_tags_list else "filter-button unselected"})

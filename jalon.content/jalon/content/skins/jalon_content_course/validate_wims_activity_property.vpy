@@ -45,7 +45,7 @@ for couple in listeReplace_desc_wims:
 if len(incoherence) > 0:
     incoherence = " et ".join(incoherence)
     typ_parenthese = " et ".join(typ_parenthese)
-    message = _(u"${typ_parenthese} mal fermées : ${incoherence}",
+    message = _(u"${typ_parenthese} mal fermées : ${incoherence}",
                         mapping={'typ_parenthese': typ_parenthese, 'incoherence': incoherence})
     state.setError("description", message, "bad_parenthesis")
     state.set(status='failure')

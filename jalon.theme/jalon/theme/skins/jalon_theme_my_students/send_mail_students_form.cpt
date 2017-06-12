@@ -4,14 +4,14 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
 <metal:main fill-slot="content">
 
     <h2>
-        <i class="fa fa-envelope-o"></i><tal:block i18n:translate="">Écrire aux étudiants</tal:block>
+        <i class="fa fa-envelope-o"></i><tal:block i18n:translate="write_to_students">Écrire aux étudiants</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -20,7 +20,7 @@
           tal:attributes="action string:${context/absolute_url}/${template/id};
                           data-success_msg string:Votre courriel a été envoyé.">
         <div class="field">
-            <label i18n:translate="">De :</label>
+            <label i18n:translate="email_from">De :</label>
             <tal:comment replace="nothing"><!--
             <input type="text" name="de" tal:attributes="value auteur/email" readonly="readonly" />
             --></tal:comment>
@@ -32,14 +32,14 @@
 
         <div class="field">
 
-            <label i18n:translate="">À :</label>
+            <label i18n:translate="email_to">À :</label>
             <table class="listing">
                 <thead>
                     <tr>
-                        <th i18n:translate="">Type</th>
-                        <th i18n:translate="">Titre</th>
-                        <th i18n:translate="">Code</th>
-                        <th i18n:translate="">Nbre d'étudiants</th>
+                        <th i18n:translate="th_type">Type</th>
+                        <th i18n:translate="th_title">Titre</th>
+                        <th i18n:translate="th_code">Code</th>
+                        <th i18n:translate="th_nb_students">Nbre d'étudiants</th>
                     </tr>
                 </thead>
                 <tbody tal:define="a request/SESSION/a | python:[]">
@@ -65,7 +65,7 @@
         <div tal:define="error errors/objet | nothing;"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
 
-            <label for="objet" i18n:translate="">Objet :</label>
+            <label for="objet" i18n:translate="email_subject">Objet :</label>
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error"/>
             <input type="text" name="objet" id="objet"
@@ -78,7 +78,7 @@
         <div tal:define="error errors/message | nothing;"
             tal:attributes="class python:context.test(error, 'field error', 'field')">
 
-            <label for="message" i18n:translate="">Message :</label>
+            <label for="message" i18n:translate="email_message">Message :</label>
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error" />
             <textarea name="message" id="message" rows="10"

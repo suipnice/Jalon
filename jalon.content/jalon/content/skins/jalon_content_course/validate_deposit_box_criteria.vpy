@@ -22,7 +22,7 @@ if form["comment"] in ["1", "2"]:
     obligatory_fields.append("comment_max")
 
 for validate_field in obligatory_fields:
-    if not validate_field in form or form[validate_field] in ["", " ", None]:
+    if validate_field not in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
@@ -30,33 +30,33 @@ for validate_field in obligatory_fields:
 failed = False
 try:
     notation = int(form["notation"])
-    failed = True if notation < 1 or notation > 10 else False 
+    failed = True if notation < 1 or notation > 10 else False
 except:
     failed = True
 if failed:
-    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 10"), "%s_required" % validate_field)
+    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (1, 10)), "%s_required" % validate_field)
     state.set(status='failure')
     error = True
 
 failed = False
 try:
     coefficient = int(form["coefficient"])
-    failed = True if coefficient < 0 and coefficient > 5 else False 
+    failed = True if coefficient < 0 and coefficient > 5 else False
 except:
     failed = True
 if failed:
-    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 0 et 5"), "%s_required" % validate_field)
+    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (0, 5)), "%s_required" % validate_field)
     state.set(status='failure')
     error = True
 
 failed = False
 try:
     gap = int(form["gap"])
-    failed = True if gap < 0 and gap > 5 else False 
+    failed = True if gap < 0 and gap > 5 else False
 except:
     failed = True
 if failed:
-    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 0 et 5"), "%s_required" % validate_field)
+    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (0, 5)), "%s_required" % validate_field)
     state.set(status='failure')
     error = True
 
@@ -64,22 +64,22 @@ if form["comment"] in ["1", "2"]:
     failed = False
     try:
         comment_min = int(form["comment_min"])
-        failed = True if comment_min < 1 and comment_min > 300 else False 
+        failed = True if comment_min < 1 and comment_min > 300 else False
     except:
         failed = True
     if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 300"), "%s_required" % validate_field)
+        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (1, 300)), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 
     failed = False
     try:
         comment_max = int(form["comment_max"])
-        failed = True if comment_max < 500 and comment_max > 1500 else False 
+        failed = True if comment_max < 500 and comment_max > 1500 else False
     except:
         failed = True
     if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 500 et 1500"), "%s_required" % validate_field)
+        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (500, 1500)), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 

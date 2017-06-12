@@ -7,7 +7,7 @@
 # bind state=state
 # bind subpath=traverse_subpath
 # parameters=
-# title=Validation des formulaires
+# title=Validation des formulaires de "Mes ressources"
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
@@ -36,7 +36,7 @@ if validate_key == "edit_external_resource":
         validate_dict[validate_key][1] = "lecteur"
 
 for validate_field in validate_dict[validate_key]:
-    if not validate_field in form or form[validate_field] in ["", " ", None]:
+    if validate_field not in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True

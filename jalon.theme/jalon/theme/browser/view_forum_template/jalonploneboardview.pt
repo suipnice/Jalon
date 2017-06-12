@@ -103,7 +103,7 @@
                         <th i18n:translate="actions"
                           tal:condition="personnel"
                           class="action">
-                          <i class="fa fa-cog fa-fw fa-lg no-pad" title="Actions"></i>
+                          <i class="fa fa-cog fa-fw fa-lg no-pad" title="Actions" i18n:attributes="title"></i>
                         </th>
                     </tr>
                 </thead>

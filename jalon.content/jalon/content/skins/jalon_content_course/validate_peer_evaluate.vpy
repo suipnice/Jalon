@@ -43,7 +43,7 @@ for tmp in criteria_order:
             comment_length = len(form[criteria_comment])
             if comment_length != 0 or form[criteria_comment_code] == "2":
                 if comment_length < int(form[criteria_comment_min])  or comment_length > int(form[criteria_comment_max]):
-                    state.setError(criteria_comment, _(u"Commentaire invalide, taille min : %s, taille max : %s, taille actuelle : %s") % (form[criteria_comment_min], form[criteria_comment_max], comment_length), "%s_required" % criteria_comment)
+                    state.setError(criteria_comment, _(u"Commentaire invalide, taille min : %s, taille max : %s, taille actuelle : %s") % (form[criteria_comment_min], form[criteria_comment_max], comment_length), "%s_required" % criteria_comment)
                     error = True
                     error_index.append(str(index))
 
@@ -58,7 +58,7 @@ for tmp in criteria_order:
 if not error:
     state.set(status="success")
 else:
-    state.setError("error_index", _(u"Veuillez corriger les critères d'évaluations : %s" % ",".join(error_index)), "")
+    state.setError("error_index", _(u"Veuillez corriger les critères d'évaluations : %s" % ",".join(error_index)), "")
     state.set(status='failure')
 
 return state

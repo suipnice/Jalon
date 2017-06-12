@@ -121,8 +121,9 @@
                         </th>
                         <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
                             tal:condition="personnel"
-                            i18n:attributes="title"
-                            i18n:translate=""><i class="fa fa-cog fa-fw fa-lg no-pad" title="Actions"></i></th>
+                            i18n:attributes="title">
+                            <i class="fa fa-cog fa-fw fa-lg no-pad"></i>
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="list">

@@ -1,12 +1,12 @@
-<metal:macro define-macro="details-graph">
+<metal:macro define-macro="details-graph" i18n:domain="jalon.theme">
     <tal:define define="minMaxYear python:context.jalonBDD('getMinMaxYearByELP', {'COD_ELP': request['COD_ELP']});
                         anneeSelec request/anneeSelec | minMaxYear/max;
                         nbConnexionCourante python:context.jalonBDD('displayConnexion', {'COD_ELP': request['COD_ELP'], 'year': int(anneeSelec)});">
-        Nombre d'étudiants : <span tal:content="nbConnexionCourante/etu"/><br/>
-        Nombre de connexion de l'année en  <tal:replace replace="anneeSelec"/> : <tal:replace replace="nbConnexionCourante/annee"/><br/>
+        <tal:block i18n:translate="label_students_count">Nombre d'étudiants :</tal:block> <span tal:content="nbConnexionCourante/etu"/><br/>
+        <tal:block i18n:translate="label_connections_count">Nombre de connexion de l'année en  <tal:replace replace="anneeSelec"/> :</tal:block> <tal:replace replace="nbConnexionCourante/annee"/><br/>
 
     <form tal:attributes="action string:${context/absolute_url}/statistique_page">
-        Sélectionner une année :
+        <tal:block i18n:translate="label_select_a_year">Sélectionner une année :</tal:block>
         <select name="anneeSelec">
             <option value="0">----</option>
             <option tal:attributes="value minMaxYear/min;
@@ -29,7 +29,7 @@
     </form>
 
         <center>
-            <h3>Détail des connexions par mois pour l'année <tal:replace replace="anneeSelec"/> :</h3>
+            <h3 i18n:translate="header_year_connections_details">Détail des connexions par mois pour l'année <tal:replace replace="anneeSelec"/> :</h3>
             <tal:replace replace="structure nbConnexionCourante/graph"/>
             <div id="chartdiv" style="width:80%; height:400px;"></div>
         </center>
@@ -43,55 +43,67 @@
                          detailsConnexion python:context.jalonBDD('getConnexionByDateByELPByIND', {'COD_ELP': request['COD_ELP'], 'month' : int(moisSelec), 'year' : int(anneeSelec)});
                          minMaxYear python:context.jalonBDD('getMinMaxYearByELP', {'COD_ELP': request['COD_ELP']})">
     <form tal:attributes="action string:${context/absolute_url}/statistique_page">
-        Sélectionner un mois :
+        <tal:block i18n:translate="label_select_a_month">Sélectionner un mois :</tal:block>
         <select name="moisSelec">
             <option value="0">-------</option>
             <option value="01"
-                    tal:attributes="selected python:context.test('01' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('01' == moisSelec, 'selected', '')"
+                    i18n:translate="month_01">
                 Janvier
             </option>
             <option value="02"
-                    tal:attributes="selected python:context.test('02' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('02' == moisSelec, 'selected', '')"
+                    i18n:translate="month_02">
                 Février
             </option>
             <option value="03"
-                    tal:attributes="selected python:context.test('03' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('03' == moisSelec, 'selected', '')"
+                    i18n:translate="month_03">
                 Mars
             </option>
             <option value="04"
-                    tal:attributes="selected python:context.test('04' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('04' == moisSelec, 'selected', '')"
+                    i18n:translate="month_04">
                 Avril
             </option>
             <option value="05"
-                    tal:attributes="selected python:context.test('05' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('05' == moisSelec, 'selected', '')"
+                    i18n:translate="month_05">
                 Mai
             </option>
             <option value="06"
-                    tal:attributes="selected python:context.test('06' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('06' == moisSelec, 'selected', '')"
+                    i18n:translate="month_06">
                 Juin
             </option>
             <option value="07"
-                    tal:attributes="selected python:context.test('07' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('07' == moisSelec, 'selected', '')"
+                    i18n:translate="month_07">
                 Juillet
             </option>
             <option value="08"
-                    tal:attributes="selected python:context.test('08' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('08' == moisSelec, 'selected', '')"
+                    i18n:translate="month_08">
                 Août
             </option>
             <option value="09"
-                    tal:attributes="selected python:context.test('09' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('09' == moisSelec, 'selected', '')"
+                    i18n:translate="month_09">
                 Septembre
             </option>
             <option value="10"
-                    tal:attributes="selected python:context.test('10' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('10' == moisSelec, 'selected', '')"
+                    i18n:translate="month_10">
                 Octobre
             </option>
             <option value="11"
-                    tal:attributes="selected python:context.test('11' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('11' == moisSelec, 'selected', '')"
+                    i18n:translate="month_11">
                 Novembre
             </option>
             <option value="12"
-                    tal:attributes="selected python:context.test('12' == moisSelec, 'selected', '')">
+                    tal:attributes="selected python:context.test('12' == moisSelec, 'selected', '')"
+                    i18n:translate="month_12">
                 Décembre
             </option>
         </select>
@@ -116,71 +128,71 @@
         <input type="submit" value="Afficher" class="button small"/>
     </form>
 
-    <table summary="Détails des connexions par étudiant par mois">
+    <table summary="Détails des connexions par étudiant par mois" i18n:attributes="summary table_connections_details_per_month">
         <thead>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nom"
-                title="Trier selon le nom" i18n:attributes="title">
+                title="Trier selon le nom" i18n:attributes="title sort_by_lastname">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Nom</tal:block>
+                    <tal:block i18n:translate="th_lastname">Nom</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="prenom"
-                title="Trier selon le prénom" i18n:attributes="title">
+                title="Trier selon le prénom" i18n:attributes="title sort_by_firstname">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Prénom</tal:block>
+                    <tal:block i18n:translate="th_firstname">Prénom</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="univ"
-                title="Trier selon l'université" i18n:attributes="title">
+                title="Trier selon l'université" i18n:attributes="title sort_by_university">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Univ.</tal:block>
+                    <tal:block i18n:translate="th_university">Univ.</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_prec"
-                title="Trier selon les connexions du mois précédent" i18n:attributes="title"h>
+                title="Trier selon les connexions du mois précédent" i18n:attributes="title sort_by_month_connections">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Mois précédent</tal:block>
+                    <tal:block i18n:translate="th_last_month">Mois précédent</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
-                title="Trier selon les connexions du mois courant" i18n:attributes="title"
+                title="Trier selon les connexions du mois courant" i18n:attributes="title sort_by_current_month_connections"
                 tal:condition="python:context.test(moisSelec == '0', 1, 0)">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Mois courant</tal:block>
+                    <tal:block i18n:translate="th_current_month">Mois courant</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
-                title="Trier selon les connexions du mois sélectionné" i18n:attributes="title"
+                title="Trier selon les connexions du mois sélectionné" i18n:attributes="title sort_by_selected_month_connections"
                 tal:condition="python:context.test(moisSelec == '0', 0, 1)">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Mois sélectionné</tal:block>
+                    <tal:block i18n:translate="th_selected_month">Mois sélectionné</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="annee"
-                title="Trier selon les connexions de l'année" i18n:attributes="title">
+                title="Trier selon les connexions de l'année" i18n:attributes="title sort_by_year_connections">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Année</tal:block>
+                    <tal:block i18n:translate="th_year">Année</tal:block>
                     <tal:replace replace="python:context.test(anneeSelec == '0', 'en cours', anneeSelec)"/>
                 </span>
             </th>
@@ -245,7 +257,7 @@
                 <table summary="Liste des connexions par mois">
                     <thead>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="date"
-                            title="Trier selon la date" i18n:attributes="title">
+                            title="Trier selon la date" i18n:attributes="title sort_by_date">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
@@ -254,7 +266,7 @@
                             </span>
                         </th>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="connexion"
-                            title="Trier selon le nombre de connexions" i18n:attributes="title">
+                            title="Trier selon le nombre de connexions" i18n:attributes="title sort_by_connections">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
@@ -387,50 +399,50 @@
         <table summary="Consultations des cours pour le mois sélectionné">
             <thead>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="titre"
-                            title="Trier selon le titre du cours" i18n:attributes="title">
+                            title="Trier selon le titre du cours" i18n:attributes="title sort_by_title">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Titre du cours</tal:block>
+                        <tal:block i18n:translate="th_course_title">Titre du cours</tal:block>
                     </span>
                 </th>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_prec"
-                            title="Trier selon les consultations du mois précédent" i18n:attributes="title">
+                            title="Trier selon les consultations du mois précédent" i18n:attributes="title sort_by_last_month_connections">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Mois précédent</tal:block>
+                        <tal:block i18n:translate="th_previous_month">Mois précédent</tal:block>
                     </span>
                 </th>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
-                            title="Trier selon les consultations du mois courant" i18n:attributes="title"
+                            title="Trier selon les consultations du mois courant" i18n:attributes="title sort_by_current_month_views"
                     tal:condition="python:context.test(moisSelec == '0', 1, 0)">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Mois courant</tal:block>
+                        <tal:block i18n:translate="th_current_month">Mois courant</tal:block>
                     </span>
                 </th>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="con_sel"
-                            title="Trier selon les consultations du mois sélectionné" i18n:attributes="title"
+                            title="Trier selon les consultations du mois sélectionné" i18n:attributes="title sort_by_selected_month_views"
                     tal:condition="python:context.test(moisSelec == '0', 0, 1)">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Mois sélectionné</tal:block>
+                        <tal:block i18n:translate="th_selected_month">Mois sélectionné</tal:block>
                     </span>
                 </th>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="annee"
-                            title="Trier selon les consultations sur l'année" i18n:attributes="title">
+                            title="Trier selon les consultations sur l'année" i18n:attributes="title sort_by_year_views">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Année</tal:block>
+                        <tal:block i18n:translate="th_year">Année</tal:block>
                         <tal:replace replace="python:context.test(anneeSelec == '0', 'en cours', anneeSelec)"/>
                     </span>
                 </th>

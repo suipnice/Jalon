@@ -9,7 +9,7 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-#from OFS.ObjectManager import BeforeDeleteException
+# from OFS.ObjectManager import BeforeDeleteException
 
 req = context.REQUEST
 paths = req.get('paths', [])
@@ -31,13 +31,13 @@ message = _(u'Please select one or more items to delete.')
 # it shouldn't...
 context.REQUEST.set('link_integrity_events_to_expect', len(paths))
 
-#Dans un cours
+# Dans un cours
 listeClasses = []
 if "/cours/" in context.absolute_url():
     for path in paths:
         idcours = path.split("/")[-1]
         cours = getattr(context, idcours)
-        #On recupere la liste des classes WIMS du cours.
+        # On recupere la liste des classes WIMS du cours.
         for dico in cours.getListeClasses():
             for key in dico.keys():
                 listeClasses.append(dico[key])
@@ -50,24 +50,24 @@ if "/cours/" in context.absolute_url():
                 item.reindexObject()
             except:
                 pass
-        #suppression des tabBU sur les ressources
+        # Suppression des tabBU sur les ressources
         cours.tagBU("remove")
 
 # On supprime les exos coté Wims avant de le faire coté jalon
 if context.getId() == "Wims":
     context.delExoWims(paths)
-    #Ici il faudrait analyser le retour de Wims, et ne pas continuer à supprimer coté jalon en cas d'erreur.
+    # Ici il faudrait analyser le retour de Wims, et ne pas continuer à supprimer coté jalon en cas d'erreur.
 
 success, failure = putils.deleteObjectsByPaths(paths, REQUEST=req)
 
 if success:
     status = 'success'
-    #Le message "elements supprimés" est maintenant géré en ajax
-    #message = _(u'Item(s) deleted.')
+    # Le message "elements supprimés" est maintenant géré en ajax
+    # message = _(u'Item(s) deleted.')
     # Possible lenteur quand bcp d'objets dans le catalogue
-    #catalog = context.portal_catalog
-    #err = catalog.refreshCatalog(clear=True)
-    #Suppressions suplementaires (sur les serveurs tiers)
+    # catalog = context.portal_catalog
+    # err = catalog.refreshCatalog(clear=True)
+    # Suppressions suplementaires (sur les serveurs tiers)
     if listeClasses:
         context.delClassesWims(listeClasses, context.REQUEST)
     if context.getId() in ["Webconference", "Sonorisation"]:

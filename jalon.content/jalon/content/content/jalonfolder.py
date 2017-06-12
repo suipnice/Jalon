@@ -627,7 +627,7 @@ class JalonFolder(ATFolder):
         folder_subjects = folder.getSubjectsDict()
         if tag_title not in folder_subjects.values():
             folder_subjects[tag_id] = tag_title
-            # LOG.info.info("folder_subjects : %s" % folder_subjects)
+            # LOG.info("folder_subjects : %s" % folder_subjects)
             folder.setSubjectsDict(folder_subjects)
             tags = list(folder.Subject())
             tags.append(tag_id)
@@ -710,7 +710,7 @@ class JalonFolder(ATFolder):
             if item.portal_type in ["JalonCours"]:
                 element_cours = copy.deepcopy(item.getCourseItemProperties())
                 idFichier = fichier.getId()
-                #if "." in idFichier:
+                # if "." in idFichier:
                 idFichier = idFichier.replace(".", "*-*")
                 if idFichier in element_cours:
                     if "titreElementMonEspace" in element_cours[idFichier]:
@@ -721,7 +721,7 @@ class JalonFolder(ATFolder):
             if item.portal_type in ["JalonBoiteDepot", "JalonCoursWims"]:
                 dico = copy.deepcopy(item.getDocumentsProperties())
                 idFichier = fichier.getId()
-                #if "." in idFichier:
+                # if "." in idFichier:
                 idFichier = idFichier.replace(".", "*-*")
                 if idFichier in dico:
                     dico[idFichier]["titreElement"] = fichier.Title()
@@ -760,8 +760,9 @@ class JalonFolder(ATFolder):
             new_listeClasses.append({})
             for auteur in dico:
                 classe_id = dico[auteur]
-                dico_wims = {"job": "copyclass", "code": self.portal_membership.getAuthenticatedMember(
-                    ).getId(), "qclass": classe_id}
+                dico_wims = {"job": "copyclass",
+                             "code": self.portal_membership.getAuthenticatedMember().getId(),
+                             "qclass": classe_id}
                 rep_wims = self.wims("callJob", dico_wims)
                 rep_wims = self.wims("verifierRetourWims",
                                      {"rep": rep_wims,

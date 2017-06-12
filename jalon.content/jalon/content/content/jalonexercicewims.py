@@ -36,7 +36,7 @@ JalonExerciceWimsSchema = ATDocumentSchema.copy() + atpublic.Schema((
         accessor='getPermalink',
         searchable=False,
         widget=atpublic.StringWidget(
-            label=_(u"Permalien d'un exercice wims publié")
+            label=_(u"Permalien d'un exercice Wims publié")
         )),
     atpublic.StringField(
         'qnum',
@@ -105,7 +105,7 @@ class JalonExerciceWims(ATDocumentBase):
     def getVariablesDefaut(self, modele):
         """Liste les valeurs par defaut a definir en fonction du modele d'exercice."""
         # LOG.info("----- getVariablesDefaut -----")
-        variables_defaut = {"exercicelibre":{},
+        variables_defaut = {"exercicelibre": {},
                             "qcmsimple":
                                 {"enonce"          : "Cochez la(les) bonne(s) réponse(s).",
                                  "bonnesrep"       : "bon choix n°1\nbon choix n°2",
@@ -1016,7 +1016,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         if new_permalink.count(test_string) > 1:
             # We take only the last URL.
             new_permalink = "%s%s" % (test_string, new_permalink.split(test_string)[-1])
-            message = _(u"Un exercice ne peux avoir qu'un seul permalien.<br/>")
+            message = _(u"Un exercice ne peux avoir qu'un seul permalien.") + "<br/>"
 
         if new_permalink != permalien:
             message = message + _(u"Votre permalien était incorrect, et il a été corrigé automatiquement. Merci de vérifier son bon fonctionnement.")

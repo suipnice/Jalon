@@ -65,7 +65,7 @@
                     <legend i18n:translate="label_quickreply">Réponse rapide</legend>
 
                     <div id="archetypes-fieldname-description" class="field">
-                        <div class="fieldErrorBox hide">Champ obligatoire</div>
+                        <div class="fieldErrorBox hide" i18n:translate="">Champ obligatoire</div>
                         <textarea name="text" rows="8" id="rapide"
                                   required="required" placeholder="Saisie obligatoire"
                                   i18n:attributes="placeholder" ></textarea>

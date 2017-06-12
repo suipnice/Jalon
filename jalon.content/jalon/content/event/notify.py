@@ -91,8 +91,8 @@ def sendMail(object, event):
                                               default=msg_arg_1,
                                               context=object)
     argument += forum.Title().decode('utf-8')
-    dummy = _(u", pour le cours : ")
-    msg_arg_2 = u", pour le cours : "
+    dummy = _(u", pour le cours : ")
+    msg_arg_2 = u", pour le cours : "
     argument += translation_service.utranslate(domain='jalon.content',
                                                msgid=msg_arg_2,
                                                default=msg_arg_2,
@@ -100,8 +100,8 @@ def sendMail(object, event):
     argument += cours.Title().decode('utf-8')
     #object.plone_log(argument)
 
-    dummy = _(u"Le nouveau message est : ")
-    msg_txt = u"Le nouveau message est : "
+    dummy = _(u"Le nouveau message est : ")
+    msg_txt = u"Le nouveau message est : "
     new_mess = translation_service.utranslate(domain='jalon.content',
                                               msgid=msg_txt,
                                               default=msg_txt,

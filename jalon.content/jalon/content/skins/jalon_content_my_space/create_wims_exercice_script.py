@@ -36,7 +36,7 @@ page_url = context.absolute_url()
 title = form["title"].decode("utf-8")
 success_message       = _(u"L'exercice « %s » a été ajouté. Construisez-le ci-dessous." % title)
 unknown_model_message = _(u"Une erreur est survenue sur votre exercice « %s » (modèle introuvable ?). Merci de contacter l'administrateur de cette plateforme, en fournissant tous les détails possibles permettant de reproduire cette erreur svp." % title)
-unavailable_message   = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement.")
+unavailable_message   = _(u"Le serveur WIMS est actuellement injoignable. Merci de réessayer ultérieurement svp...")
 
 # Cas des Modules externes
 if wims_exercice_model == "externe":
