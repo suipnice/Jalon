@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
     <body>
     <metal:content-core fill-slot="content-core">
     <!--Marquer par propriété -->
@@ -10,13 +10,13 @@
         <div class="panel ArchetypesStringWidget">
             <a href="#reveal_explain" class="button tiny radius" data-reveal-id="reveal_explain" title="Afficher de l'aide concernant cet élément">
                 <i class="fa fa-question"></i>
-                Aide
+                <tal:block i18n:translate="label_help">Aide</tal:block>
             </a>
-            <label for="explain">La question à poser</label>
+            <label for="explain" i18n:translate="label_wims_enonce">La question à poser</label>
             <div id="reveal_explain" class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
-                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <h2><tal:block i18n:translate="label_wims_enonce">La question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
                 <div>Pour évoquer automatiquement la propriété qui sera choisie, écrire <code class="indicateur">\prop</code>.</div>
                 <div>Par exemple, si vous écrivez <code>marquez ceux qui sont dans l'équipe \prop.</code>, cela affichera aux étudiants l'un des cas suivants : </div>
                 <blockquote>
@@ -42,7 +42,7 @@
                       rows="4" cols="60"
                       tal:content="QCM_parsed/prop"
                       required="required" placeholder="Saisir ici la liste des propriétés"
-                      i18n:attributes="placeholder" />
+                      i18n:attributes="placeholder placeholder_wims_marquerparprop_list-props" />
         </div>
 
         <div tal:define="error errors/data | nothing;
@@ -78,12 +78,12 @@
                     tal:content="QCM_parsed/data"
                     required="required"
                     placeholder="un objet, une propriété associée"
-                    i18n:attributes="placeholder" />
+                    i18n:attributes="placeholder placeholder_wims_marquerparprop_data" />
             </div>
 
             <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content">
 
                     <div class="row" tal:define="field_class string:field panel ArchetypesStringWidget">
@@ -151,7 +151,7 @@
             </dd>
 
             <dd class="accordion-navigation">
-                <a href="#usages_avances" class="icone_options"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <a href="#usages_avances" class="icone_options"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="wims_advanced_usages">Usages avancés</tal:block></a>
                 <div id="usages_avances" class="content">
                         <p>La question à poser accepte la mise en aléatoire par des accolades emboitables : <code class="indicateur">{ ... }</code>.</p>
                         <p>Si vous mettez plusieurs mots (ou groupes de mots) séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard.</p>

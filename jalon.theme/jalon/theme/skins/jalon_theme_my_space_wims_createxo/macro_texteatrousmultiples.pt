@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -51,8 +51,8 @@
                    tal:attributes="value QCM_parsed/post"/>
         </div>
         <div class="panel callout">
-            <label for="feedback_general">Feedback général</label>
-            <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+            <label for="feedback_general" i18n:translate="label_wims_general_feedback">Feedback général</label>
+            <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_general">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
             <input type="text"
                    name="feedback_general" id="feedback_general"
                    tal:attributes="value QCM_parsed/feedback_general"/>
@@ -76,14 +76,14 @@
         <dl class="accordion" data-accordion="data-accordion">
 
             <dd class="accordion-navigation">
-                <a href="#param_avances" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#param_avances" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="param_avances" class="content">
                     <metal:macro use-macro="context/macro_commune/macros/hint_and_help"/>
                     <metal:macro use-macro="context/macro_commune/macros/credits"/>
                 </div>
             </dd>
             <dd class="accordion-navigation">
-                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="wims_advanced_usages">Usages avancés</tal:block></a>
                 <div id="usages_avances" class="content">
                     <p>Pour accepter plusieurs réponses correctes possibles, séparez chaque bonne réponse (synonyme) par un trait vertical « <code class="indicateur">|</code> ».</p>
                     <p>Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class="indicateur">Napoléon <span class="strong">??Premier|Bonaparte??</span> est mort à Sainte-Hélène.</code></p>

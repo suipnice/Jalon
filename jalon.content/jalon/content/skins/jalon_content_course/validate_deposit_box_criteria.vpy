@@ -12,7 +12,8 @@
 
 from Products.CMFPlone import PloneMessageFactory as _
 
-#context.plone_log("[valider_form]")
+# context.plone_log("[valider_form]")
+# state = state
 error = False
 form = context.REQUEST.form
 

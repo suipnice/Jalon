@@ -1,14 +1,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
     xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-    metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+    metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
 <metal:content-core fill-slot="content-core">
 <!--Reordonner -->
 <metal:macro define-macro="createxo">
         <div class="panel">
-            <label for="question">La question à poser</label>
+            <label for="question" i18n:translate="label_wims_enonce">La question à poser</label>
             <div class="formHelp texte_icone icone_information">Html admis.</div>
             <textarea name="explain" id="question" rows="5"
                       tal:content="QCM_parsed/explain"
@@ -47,7 +47,7 @@
 
         <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options" title="Afficher d'autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options" title="Afficher d'autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content">
 
                     <div class="row" tal:define="arch_class string:ArchetypesStringWidget small-6 columns">

@@ -1,17 +1,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
 
     <!-- embraced_randitem : Message commun concernant la mise en aléatoire par des accolades emboitables. -->
     <metal:macro define-macro="embraced_randitem">
-        <!--<div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>-->
         <div>
-            <h2 i18n:translate="">Mise en aléatoire par des accolades emboitables</h2>
-            <div class="embraced_randitem" i18n:translate="label_wims_embraced_randitem">
+            <h2 i18n:translate="head_wims_embraced_randitem">Mise en aléatoire par des accolades emboitables</h2>
+            <div class="embraced_randitem" i18n:translate="help_wims_embraced_randitem">
                 Si vous mettez plusieurs mots séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard, ce qui rendra le texte aléatoire.<br/>
                 Par exemple
                 <code class="indicateur">Je suis allé
@@ -34,23 +33,23 @@
     <metal:macro define-macro="texte_a_trous">
         <div class="texte_a_trous">
             <h3 i18n:translate="">Trous "classiques"</h3>
-            <div i18n:translate="">
+            <div i18n:translate="help_wims_texte_a_trous">
               Les questions à poser (les "trous") doivent être mises entre une paire de double-point d'interrogation <code class="indicateur">??</code><br/>
               Par exemple, en tapant
             </div>
-            <div i18n:translate=""><code class="indicateur">Napoléon Bonaparte est né à <span class="strong">??Ajaccio??</span> et mort sur l'île <span class="strong">??Sainte-Hélène??</span></code>,</div>
-            <div i18n:translate="">
+            <div i18n:translate="help_wims_texte_a_trous_sample"><code class="indicateur">Napoléon Bonaparte est né à <span class="strong">??Ajaccio??</span> et mort sur l'île <span class="strong">??Sainte-Hélène??</span></code>,</div>
+            <div i18n:translate="help_wims_texte_a_trous_sample_result">
               Vous obtiendrez ceci :<br/>
               <blockquote>Napoléon Bonaparte est né à <input class="disabled mini"/> et mort sur l'île <input class="disabled mini"/></blockquote>
             </div>
 
             <hr/>
-            <h3 i18n:translate="">Trous sous forme de liste de choix</h3>
-            <div i18n:translate="">
+            <h3 i18n:translate="head_wims_texte_a_trous_list">Trous sous forme de liste de choix</h3>
+            <div i18n:translate="help_wims_texte_a_trous_list">
               Chaque "trou" peut présenter une liste de choix s'il contient plusieurs éléments séparés par des virgules.<br/>
               La bonne réponse étant alors toujours la première de la liste.
             </div>
-            <div i18n:translate="">
+            <div i18n:translate="head_wims_texte_a_trous_list_sample">
                 Par exemple, en tapant
                 <code class="indicateur">Napoléon Bonaparte est né
                     à <span class="strong">??Ajaccio, Bastia??</span> et mort sur
@@ -76,7 +75,7 @@
     <!--HTML_allowed : Message commun concernant l'utilisation de code HTML. -->
     <metal:macro define-macro="html_allowed">
         <div><h2 i18n:translate="">Utiliser de l'HTML pour la mise en forme.</h2></div>
-        <div class="html_allowed" i18n:translate="label_wims_html_allowed">
+        <div class="html_allowed" i18n:translate="help_wims_html_allowed">
             <div>Vous pouvez ici utiliser des balises HTML pour faire de la mise en forme.</div>
             <div>
                 Tapez par exemple :
@@ -134,22 +133,22 @@
                 <i class="fa fa-question"></i>
                 <tal:block i18n:translate="label_help">Aide</tal:block>
             </a>
-            <label for="accolade">Accolades aléatoires</label>
-            <div class="formHelp texte_icone icone_information">Les mots placés dans une paire d'accolades seront tirés au hasard.</div>
+            <label for="accolade" i18n:translate="label_wims_accolades">Accolades aléatoires</label>
+            <div class="formHelp texte_icone icone_information" i18n:translate="hint_wims_accolades">Les mots placés dans une paire d'accolades seront tirés au hasard.</div>
             <input type="radio" name="accolade" id="accolade_yes" value="1"
                    tal:attributes="checked python:context.test(accolade=='1', 'checked', '')"/>
-            <label for="accolade_yes"><i class="fa fa-check"></i><tal:block i18n:translate="">Activées</tal:block></label>
+            <label for="accolade_yes"><i class="fa fa-check"></i><tal:block i18n:translate="label_wims_accolade_yes">Activées</tal:block></label>
             <input type="radio" name="accolade" id="accolade_no" value="2"
                    tal:attributes="checked python:context.test(accolade=='2', 'checked', '')"/>
-            <label for="accolade_no"><i class="fa fa-times"></i><tal:block i18n:translate="">Désactivées</tal:block></label>
+            <label for="accolade_no"><i class="fa fa-times"></i><tal:block i18n:translate="label_wims_accolade_no">Désactivées</tal:block></label>
             <div id="reveal_accolade"
                  class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
                 <h2>Aide sur Les modes d'affichage <a class="close-reveal-modal"></a></h2>
                 <div class="panel">
-                    <h3><i class="fa fa-check success"></i><tal:block i18n:translate="">Mode "accolades aléatoires" activé :</tal:block></h3>
-                    <div i18n:translate="">
+                    <h3><i class="fa fa-check success"></i><tal:block i18n:translate="head_wims_accolades_yes">Mode "accolades aléatoires" activé :</tal:block></h3>
+                    <div i18n:translate="help_wims_accolades_yes">
                         <p>Lorsque ce mode est activé, si vous mettez plusieurs mots séparés par des virgules dans une paire d'accolades, ces mots seront tirés au hasard.</p>
                         Par exemple,
                         <code class="indicateur">Je suis allé
@@ -176,9 +175,9 @@
                 </div>
                 <hr/>
                 <div class="panel">
-                    <h3><i class="fa fa-times alert"></i><tal:block i18n:translate="">Mode "accolades aléatoires" désactivé :</tal:block></h3>
-                    <div i18n:translate="">En désactivant ce mode, les accolades ne sont plus utilisées pour afficher du texte aléatoire.</div>
-                    <div i18n:translate="">
+                    <h3><i class="fa fa-times alert"></i><tal:block i18n:translate="head_wims_accolades_no">Mode "accolades aléatoires" désactivé :</tal:block></h3>
+                    <div i18n:translate="help_wims_accolades_no">En désactivant ce mode, les accolades ne sont plus utilisées pour afficher du texte aléatoire.</div>
+                    <div i18n:translate="help_wims_accolades_no_sample">
                         Vous pourrez alors :
                         <ul>
                             <li>Afficher des accolades</li>
@@ -220,9 +219,9 @@
     <!-- cannot_view : affichage d'un avertissement dans le cas ou l'utilisateur connecté n'as pas de droits d'acces à la page. -->
     <metal:macro define-macro="cannot_view">
         <div class="panel radius alert">
-            <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="">Accès Interdit</tal:block></h1>
-            <p i18n:translate="">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
-            <p i18n:translate="">N'hésitez-pas à
+            <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="head_access_denied">Accès Interdit</tal:block></h1>
+            <p i18n:translate="msg_sorry_access_denied">Désolé, vous n'avez pas l'autorisation de voir cette page.</p>
+            <p i18n:translate="msg_contact_admin">N'hésitez-pas à
                 <strong tal:define="contact_link here/portal_jalon_properties/getLienContact;
                                     object_title here/Title;
                                     abs_url here/absolute_url;">

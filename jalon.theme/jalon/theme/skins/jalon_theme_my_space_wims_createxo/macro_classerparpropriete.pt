@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -11,7 +11,7 @@
         <div tal:define="error errors/explain | nothing;
                          arch_class string:panel ArchetypesStringWidget"
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
-            <label for="explain">La question à poser.</label>
+            <label for="explain" i18n:translate="label_wims_enonce">La question à poser</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
             <div class="formHelp texte_icone icone_information">Les balises HTML sont admises.</div>
             <textarea name="explain" id="explain"
@@ -101,7 +101,7 @@
 
         <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content">
                     <div class="panel">
                         <label for="noclass">Comment dire si un objet n'est pas classé ?</label>
@@ -173,8 +173,8 @@
                     </div>
 
                     <div class="panel callout">
-                        <label for="feedback_general">Feedback général</label>
-                        <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+                        <label for="feedback_general" i18n:translate="label_wims_general_feedback">Feedback général</label>
+                        <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_general">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
                         <input type="text" class="mini"
                                name="feedback_general" id="feedback_general"
                                tal:attributes="value QCM_parsed/feedback_general" />

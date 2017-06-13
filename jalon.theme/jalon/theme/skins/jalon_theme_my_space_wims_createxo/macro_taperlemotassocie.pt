@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
     xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-    metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+    metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -17,13 +17,13 @@
                 <i class="fa fa-question"></i>
                 Aide
             </a>
-            <label for="question">La question à poser</label>
+            <label for="question" i18n:translate="label_wims_enonce">La question à poser</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <div id="reveal_question"
                  class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
-                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <h2><tal:block i18n:translate="label_wims_enonce">La question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
                 <div>Saississez simplement ici la question, en évoquant le mot qui aura été tiré grâce au mot-clé <code class="indicateur">\name</code></div>
                 <div>Par exemple, saisissez ceci : <br/>
                     <code class="indicateur">Donnez le participe présent du verbe <big>\name</big> :</code>
@@ -34,7 +34,7 @@
                      tal:content="QCM_parsed/explain"
                      required="required"
                      placeholder="Posez une question, sans oublier de mentioner l'objet pioché (\name)."
-                     i18n:attributes="placeholder" />
+                     i18n:attributes="placeholder placeholder_wims_taperlemotassocie_explain" />
         </div>
 
         <div tal:define="error errors/words | nothing;
@@ -52,7 +52,7 @@
                  class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
-                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                <h2><tal:block i18n:translate="label_wims_enonce">La question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
                 <div>Définir un objet par ligne : d'abord le nom de l'objet à afficher, ensuite sa propriété telle qu'elle doit être tapée, séparés par une virgule.</div>
                 <div>Exemple avec des verbes et leur participe présent :<br/>
                     <code class="indicateur">contacter, contactant</code><br/>
@@ -71,12 +71,12 @@
                       tal:content="QCM_parsed/words"
                       required="required"
                       placeholder="Saisir la liste des mots et leur propriétés."
-                      i18n:attributes="placeholder" />
+                      i18n:attributes="placeholder placeholder_wims_taperlemotassocie_words" />
         </div>
 
         <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options" title="Afficher d'autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options" title="Afficher d'autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content"
                      tal:define="arch_class string:panel ArchetypesStringWidget">
                     <div class="row">
@@ -114,7 +114,7 @@
             </dd>
 
             <dd class="accordion-navigation">
-                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="">Usages avancés</tal:block></a>
+                <a href="#usages_avances" class="icone_options" title="afficher une aide sur des usages avancés de ce modèle"><i class="fa fa-fw fa-question"></i><tal:block i18n:translate="wims_advanced_usages">Usages avancés</tal:block></a>
                 <div id="usages_avances" class="content">
                     <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
                 </div>
