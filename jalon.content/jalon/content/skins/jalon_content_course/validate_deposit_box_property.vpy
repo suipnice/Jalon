@@ -40,7 +40,7 @@ if validate_key == "correction_number":
     except:
         failed = True
     if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
+        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (1, 5)), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 
@@ -52,7 +52,7 @@ if validate_key == "penality":
     except:
         failed = True
     if failed:
-        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
+        state.setError(validate_field, _(u"Veuillez saisir un entier compris entre %s et %s" % (1, 5)), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
 

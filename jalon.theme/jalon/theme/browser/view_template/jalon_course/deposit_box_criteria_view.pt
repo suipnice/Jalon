@@ -30,11 +30,11 @@
     <main class="row" role="main" aria-labelledby="page_title">
         <section>
         <h1>
-            <i class="fa fa-th falfw"></i>Grille d'évaluation
+            <i class="fa fa-th falfw"></i><tal:block i18n:translate="">Grille d'évaluation</tal:block>
         </h1>
 
-        <div class="panel warning radius">
-            <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+        <div class="panel warning radius" i18n:translate="">
+            <strong >Attention :</strong> Cette fonction est actuellement en phase de test. Merci de remonter vos difficultés d'utilisation.
         </div>
 
         <tal:condition condition="my_view/is_personnel">
@@ -47,18 +47,20 @@
             </a>
         </nav>
         <div class="panel radius warning"
-             tal:condition="not:my_view/is_authorized_deposit">
+             tal:condition="not:my_view/is_authorized_deposit" i18n:translate="">
             <strong>Attention :</strong> dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
         </div>
 
         <tal:condition condition="my_view/is_authorized_deposit">
 
         <div class="panel radius warning"
-             tal:condition="not:my_view/is_depot_actif">
+             tal:condition="not:my_view/is_depot_actif"
+             i18n:translate="">
             <strong>Attention :</strong> la date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
         </div>
         <div class="panel radius warning"
-             tal:condition="not:my_view/is_correction_actif">
+             tal:condition="not:my_view/is_correction_actif"
+              i18n:translate="">
             <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.
         </div>
 

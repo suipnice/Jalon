@@ -299,7 +299,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 admin_link = u"%s?subject=[%s] Erreur d'insertion exercice WIMS&amp;body=exercice : %s%%0D%%0DDécrivez précisément votre souci svp:\n" % (
                     contact_link["contact_link"], contact_link["portal_title"], item_id)
                 message = _(u'Une erreur est survenue. Merci de <a href="%s"><i class="fa fa-envelope-o"></i>contacter un administrateur</a> svp.' % admin_link)
-                message = "<p>%s</p><p><strong>%s:</strong> %s</p>" % (message, _(u"Information sur l'erreur "), rep_wims['message'])
+                message = "<p>%s</p><p><strong>%s</strong> %s</p>" % (message, _(u"Information sur l'erreur :"), rep_wims['message'])
                 self.plone_utils.addPortalMessage(message, type='error')
 
                 # L'exercice n'est pas ajouté.
@@ -336,12 +336,12 @@ class JalonCoursWims(JalonActivity, ATDocument):
             listeExercices = list(self.getListeExercices())
             listeExercices.append(item_id)
             setattr(self, "listeExercices", tuple(listeExercices))
-            message = _(u"L'exercice '%s' a bien été ajouté." % item_title.decode("utf-8"))
+            message = _(u"L'exercice « %s » a bien été ajouté." % item_title.decode("utf-8"))
         else:
             listeSujets = list(self.getListeSujets())
             listeSujets.append(item_id)
             setattr(self, "listeSujets", tuple(listeSujets))
-            message = _(u"'${item_title}' a bien été ajouté aux documents enseignants.",
+            message = _(u"« ${item_title} » a bien été ajouté aux documents enseignants.",
                         mapping={'item_title': item_title.decode("utf-8")})
         self.plone_utils.addPortalMessage(message, type='success')
 
@@ -406,7 +406,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         resp = self.wims("retirerExoFeuille", dico)
         # resp = {"status":"OK"}
         if resp["status"] != "OK":
-            message = _(u"Une erreur est survenue. L'exercice '${item_title}' n'a pas été détaché",
+            message = _(u"Une erreur est survenue. L'exercice « ${item_title} » n'a pas été détaché",
                         mapping={'item_title': item_title})
             self.plone_utils.addPortalMessage(message, type='error')
         else:
@@ -425,7 +425,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 item_object = getattr(getattr(getattr(getattr(self.portal_url.getPortalObject(), "Members"), item_props["createurElement"]), "Wims"), item_id)
                 self.removeRelatedExercice(item_object)
 
-            message = _(u"L'exercice '${item_title}' a bien été détaché de cette activité.",
+            message = _(u"L'exercice « ${item_title} » a bien été détaché de cette activité.",
                         mapping={'item_title': item_title})
             self.plone_utils.addPortalMessage(message, type='success')
 

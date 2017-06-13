@@ -21,7 +21,7 @@ Une fois fait, `i18ndude` sera disponible depuis le dossier `buildout/bin`.
 
 > **ATTENTION !** Ne pas utiliser `easy_install i18ndude`.
 >
-> i18ndude importe plusieurs packages Zope, et l'insatller au niveau du système vous provoquera indéniablement des conflits.
+> i18ndude importe plusieurs packages Zope, et l'installer au niveau du système vous provoquera indéniablement des conflits.
 
 [Plus d'infos...](http://docs.plone.org/develop/plone/i18n/internationalisation.html#installing-i18ndude)
 
@@ -39,6 +39,8 @@ mettre à jour les fichiers de traduction :
 
 	cd CHEMIN_PLONE/zinstance/src/jalon.content/jalon/content/locales/
 	./update_pot.sh
+    cd CHEMIN_PLONE/zinstance/src/jalon.theme/jalon/theme/locales/
+    ./update_pot.sh
 
 ...et en cas d'erreur(s), consulter le fichier "rebuild_i18n.log" pour plus de détals...
 

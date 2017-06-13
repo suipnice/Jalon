@@ -1,33 +1,33 @@
 <!--
         Mes etudiants (Enseignants)
 -->
-<metal:macro define-macro="my_students">
+<metal:macro define-macro="my_students" i18n:domain="jalon.theme">
     <section id="js-list-etudiants" class="small-12 columns">
         <h2 id="js-update_title">
             <i class="fa fa-users"></i>
-            <tal:block i18n:translate="">Étudiants attachés à mes cours via l'offre de formation</tal:block>
+            <tal:block i18n:translate="head_attached_corporate_students">Étudiants attachés à mes cours via l'offre de formation</tal:block>
         </h2>
 
         <div id="js-update_target">
             <div class="panel callout radius"
                  tal:condition="not:my_view/access_dict">
-                <strong i18n:translate="">Aucun étudiant n'a accès à vos cours via une inscription à l'offre de formation pour l'instant.</strong><br/>
-                <tal:block i18n:translate="">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
+                <strong i18n:translate="msg_no_corporate_student">Aucun étudiant n'a accès à vos cours via une inscription à l'offre de formation pour l'instant.</strong><br/>
+                <tal:block i18n:translate="how_to_attach_corporate_students">Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation.</tal:block>
             </div>
 
             <tal:condition condition="my_view/access_dict">
             <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
             <div id="reveal-etudiants" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
-            <table summary="Liste des cours de la catégorie">
+            <table summary="Liste des cours de la catégorie" i18n:attributes="summary table_courses_list_of_category">
                 <thead>
                     <tr>
-                        <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le diplôme, l'UE, le groupe…" i18n:attributes="title">
+                        <th class="sort text-left has-tip" data-tooltip data-sort="title" title="Trier selon le diplôme, l'UE, le groupe…" i18n:attributes="title sort_by_diploma_TU_group">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Diplôme / UE / groupe…</tal:block>
+                                <tal:block i18n:translate="th_diploma_TU_group">Diplôme / UE / groupe…</tal:block>
                             </span>
                         </th>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="rank" title="Trier selon le classement" i18n:attributes="title">
@@ -54,7 +54,7 @@
                                 <tal:block i18n:translate="">Eff.</tal:block>
                             </span>
                         </th>
-                        <th class="att_number show-for-medium-up" i18n:translate="">Cours attachés</th>
+                        <th class="att_number show-for-medium-up" i18n:translate="attached_courses">Cours attachés</th>
                         <th class="action" data-tooltip title="Actions" i18n:attributes="title">
                             <i class="fa fa-cog fa-lg no-pad"></i>
                         </th>
@@ -89,7 +89,7 @@
                             <div class="reveal-modal medium"
                                  data-reveal="data-reveal" data-options="close_on_background_click: true;"
                                  tal:attributes="id string:reveal-cours_att-${repeat/access_key/index}">
-                                <h2><tal:block i18n:translate="">Cours attachés</tal:block>
+                                <h2><tal:block i18n:translate="attached_courses">Cours attachés</tal:block>
                                     <a class="close-reveal-modal"></a>
                                 </h2>
                                 <div>
@@ -125,7 +125,7 @@
                                     <a data-reveal-id="reveal-etudiants" data-reveal-ajax="true"
                                        tal:attributes="href string:${context/absolute_url}/send_mail_students_form?code=${access/access_code}&amp;type=${access/access_type}">
                                         <i class="fa fa-envelope-o fa-fw"></i>
-                                        <tal:block i18n:translate="">Écrire</tal:block>
+                                        <tal:block i18n:translate="link_write">Écrire</tal:block>
                                     </a>
                                 </li>
                             </ul>
@@ -147,7 +147,7 @@
 <!--
         Mes etudiants (Administrateur et Secretaire)
 -->
-<metal:macro define-macro="all_students">
+<metal:macro define-macro="all_students" i18n:domain="jalon.theme">
 
     <main role="main" class="row" aria-labelledby="page_title">
         <section id="js-list-etudiants" class="small-12 columns"
@@ -158,13 +158,13 @@
                 <li>
                     <a tal:attributes="class python:context.test(onglet == 'etape', 'button small selected', 'button small');
                                        href string:${context/absolute_url}?onglet=etape">
-                        <tal:block i18n:translate="">Diplôme(s)</tal:block>
+                        <tal:block i18n:translate="diploma_s">Diplôme(s)</tal:block>
                     </a>
                 </li>
                 <li>
                     <a tal:attributes="class python:context.test(onglet == 'ue', 'button small selected', 'button small');
                                        href string:${context/absolute_url}?onglet=ue">
-                        <tal:block i18n:translate="">Unité d'enseignement(s)</tal:block>
+                        <tal:block i18n:translate="teaching_unit_s">Unité d'enseignement(s)</tal:block>
                     </a>
                 </li>
                 <li>
@@ -178,22 +178,22 @@
                 <i class="fa fa-list"></i>
                 Liste des
                 <tal:block condition="python:context.test(onglet == 'etape', 1, 0)"
-                           i18n:translate="">Diplôme(s)</tal:block>
+                           i18n:translate="diploma_s">Diplôme(s)</tal:block>
                 <tal:block condition="python:context.test(onglet == 'ue', 1, 0)"
-                           i18n:translate="">Unité d'enseignement(s)</tal:block>
+                           i18n:translate="teaching_unit_s">Unité d'enseignement(s)</tal:block>
                 <tal:block condition="python:context.test(onglet == 'groupe', 1, 0)"
-                           i18n:translate="">Groupe(s)</tal:block>
+                           i18n:translate="group_s">Groupe(s)</tal:block>
             </h2>
             <table>
                 <thead>
                     <tr>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="libelle"
-                            title="Trier selon le libellé" i18n:attributes="title">
+                            title="Trier selon le libellé" i18n:attributes="title sort_by_caption">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Libellé</tal:block>
+                                <tal:block i18n:translate="th_caption">Libellé</tal:block>
                             </span>
                         </th>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="type"
@@ -233,12 +233,12 @@
                             </span>
                         </th>
                         <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="nb_etu"
-                            title="Trier selon le nombre d'étudiants" i18n:attributes="title">
+                            title="Trier selon le nombre d'étudiants" i18n:attributes="title sort_by_students_count">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Nb. étu.</tal:block>
+                                <tal:block i18n:translate="th_students_count">Nb. étu.</tal:block>
                             </span>
                         </th>
                         <th class="action show-for-medium-up has-tip" data-tooltip title="Actions" i18n:attributes="title">
@@ -267,7 +267,7 @@
                                   tal:content="EnsResp"/>
                         </td>
                         <td class="nb_ens show-for-medium-up" tal:content="elp/nb_ens"/>
-                        <td class="nb_etu show-for-medium-up"tal:content="elp/nb_etu"/>
+                        <td class="nb_etu show-for-medium-up" tal:content="elp/nb_etu"/>
                         <td class="show-for-medium-up">
                             <a class="dropdown" data-options="align:left"
                                tal:attributes="data-dropdown string:drop-${repeat/elp/index}">
@@ -292,7 +292,7 @@
                                     <a data-reveal-id="reveal-etudiants" data-reveal-ajax="true"
                                        tal:attributes="href string:${context/absolute_url}/send_mail_students_form?code=${elp/COD_ELP}&amp;type=${onglet}">
                                         <i class="fa fa-envelope-o fa-fw"></i>
-                                        <tal:block i18n:translate="">Écrire</tal:block>
+                                        <tal:block i18n:translate="link_write">Écrire</tal:block>
                                     </a>
                                 </li>
                                 <li class="show-for-medium-up">
@@ -314,18 +314,16 @@
                 <tal:condition condition="python:page-1 > 0">
                     <a id="pagination-prev" class="button tiny"
                        tal:define="pagePrec python:page-1"
-                       tal:attributes="href string:${context/absolute_url}?onglet=${onglet}&amp;page=${pagePrec}"
-                       i18n:translate="">
-                       <span>Précédent</span>
+                       tal:attributes="href string:${context/absolute_url}?onglet=${onglet}&amp;page=${pagePrec}">
+                       <span i18n:translate="previous">Précédent</span>
                     </a>
                 </tal:condition>
 
                 <tal:condition condition="python:nbPages >= page+1">
                     <a id="pagination-next" class="button tiny"
                        tal:define="pageSuiv python:page+1"
-                       tal:attributes="href string:${context/absolute_url}?onglet=${onglet}&amp;page=${pageSuiv}"
-                       i18n:translate="">
-                       <span>Suivant</span>
+                       tal:attributes="href string:${context/absolute_url}?onglet=${onglet}&amp;page=${pageSuiv}">
+                       <span i18n:translate="">Suivant</span>
                     </a>
                 </tal:condition>
 
@@ -359,22 +357,22 @@
 <!--
         Mes etudiants (Etudiant et EtudiantJalon)
 -->
-<metal:macro define-macro="my_class_mates">
+<metal:macro define-macro="my_class_mates" i18n:domain="jalon.theme">
 
-    <div class="annonce avertissement">Vous n'avez pas le droit de consulter cette page</div>
+    <div class="annonce avertissement" i18n:translate="">Vous n'avez pas le droit de consulter cette page</div>
 
 </metal:macro>
 
 
-<metal:macro define-macro="mes-camarades-old">
+<metal:macro define-macro="mes-camarades-old" i18n:domain="jalon.theme">
 
     <div tal:define="listeDiplomes python:context.portal_jalon_bdd.getInscriptionIND(user.getId(), 'etape');">
-        <div tal:condition="not:listeDiplomes" class="listing_vide" i18n:translate="">
+        <div tal:condition="not:listeDiplomes" class="listing_vide" i18n:translate="msg_no_diploma_subscription">
             Vous n'êtes inscrit à aucun diplôme.
         </div>
         <div tal:condition="listeDiplomes">
             <tal:repeat repeat="diplome listeDiplomes">
-            <h2 class="texte_icone icone_users" i18n:translate="">Ma promo du diplôme : <tal:replace replace="diplome/LIB_ELP"/></h2>
+            <h2 class="texte_icone icone_users" i18n:translate="head_my_promo">Ma promo du diplôme : <tal:replace replace="diplome/LIB_ELP"/></h2>
 
             <tal:define define="COD_ELP diplome/COD_ELP;
                                 TYP_ELP string:etape">

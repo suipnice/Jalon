@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
   xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-  xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-  metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+  metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -16,53 +16,53 @@
                     <i class="fa fa-question"></i>
                     <tal:block i18n:translate="">Aide</tal:block>
                 </a>
-                <label for="donnees" i18n:translate="">Le texte à présenter </label>
+                <label for="donnees" i18n:translate="wims_text_to_display">Le texte à présenter </label>
                 <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
                 <div id="reveal_donnees"
                      class="reveal-modal large wims-edit_reveal"
                      data-reveal="data-reveal"
                      data-options="close_on_background_click: true;" >
-                    <h2><tal:block i18n:translate="">Aide des textes à trous</tal:block> <a class="close-reveal-modal"></a></h2>
+                    <h2><tal:block i18n:translate="head_wims_texteatrous_help">Aide des textes à trous</tal:block> <a class="close-reveal-modal"></a></h2>
                     <metal:macro use-macro="context/macro_commune/macros/texte_a_trous"/>
                     <hr/>
                     <div>
                         <h3 i18n:translate="">Gestion des synonymes</h3>
-                        <p i18n:translate="">
+                        <p i18n:translate="wims_help_synonyms">
                             Pour accepter plusieurs réponses correctes possibles dans un trou "classique", séparez chaque bonne réponse par un trait vertical <code class="indicateur">|</code>.<br/>
                             Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class="indicateur">Napoléon ??Premier|Bonaparte?? est mort à Sainte-Hélène</code>.
                         </p>
                     </div>
                     <hr/>
                     <div>
-                        <h3 i18n:translate="">Aléatoire</h3>
-                        <p i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</p>
+                        <h3 i18n:translate="wims_head_shuffle">Aléatoire</h3>
+                        <div i18n:translate="msg_embraced_randitem">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
                     </div>
                 </div>
 
-                <div class="formHelp texte_icone icone_information" i18n:translate="">Tapez directement votre texte, en entourant chaque "trou" avec des doubles points d'interrogation : "??".
+                <div class="formHelp texte_icone icone_information" i18n:translate="wims_help_texteatrous_data">Tapez directement votre texte, en entourant chaque "trou" avec des doubles points d'interrogation : "??".
                 Les balises HTML sont admises.<br /> Le texte peut contenir jusqu'à 20 « trous ».</div>
                 <textarea name="donnees" id="donnees"
                           rows="15" tal:content="QCM_parsed/donnees"
                           required="required"
                           placeholder="Tapez le texte à trous ici."
-                          i18n:attributes="placeholder" />
+                          i18n:attributes="placeholder placeholder_wims_texteatrous_data" />
             </div>
 
             <div class="row">
                 <div class="small-12 columns">
                     <div class="panel">
-                        <label for="type_rep" i18n:translate="">Niveau de tolérance</label>
-                        <div class="formHelp texte_icone icone_information" i18n:translate="">La tolérance avec laquelle WIMS analysera les réponses libres.<br />Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext ».</div>
+                        <label for="type_rep" i18n:translate="label_wims_tolerance_level">Niveau de tolérance</label>
+                        <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_tolerance_level">La tolérance avec laquelle WIMS analysera les réponses libres.<br />Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext ».</div>
                         <select name="type_rep" id="type_rep" tal:define="type_rep QCM_parsed/type_rep">
                             <option value="case"
                               tal:attributes="selected python:context.test(type_rep=='case', 'selected', None)"
-                              i18n:translate="">case (aucune tolérance d'erreur)</option>
+                              i18n:translate="option_wims_tolerance_case">case (aucune tolérance d'erreur)</option>
                             <option value="nocase"
                               tal:attributes="selected python:context.test(type_rep=='nocase', 'selected', None)"
-                              i18n:translate="">nocase (tolère le minuscule/majuscule)</option>
+                              i18n:translate="option_wims_tolerance_nocase">nocase (tolère le minuscule/majuscule)</option>
                             <option value="atext"
                               tal:attributes="selected python:context.test(type_rep=='atext', 'selected', None)"
-                              i18n:translate="">atext (ignore le pluriel/singulier et les articles)</option>
+                              i18n:translate="option_wims_tolerance_atext">atext (ignore le pluriel/singulier et les articles)</option>
                         </select>
                     </div>
                 </div>
@@ -71,19 +71,19 @@
             <dl class="accordion" data-accordion="data-accordion">
 
                 <dd class="accordion-navigation">
-                    <a href="#param_avances" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                    <a href="#param_avances" class="icone_options"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                     <div id="param_avances" class="content">
                         <div class="row">
                             <div class="medium-6 columns">
                                 <div class="panel" tal:define="list_order QCM_parsed/list_order | string:1">
                                     <label for="list_order" i18n:translate="">Ordre des listes de choix</label>
-                                    <div class="formHelp texte_icone icone_information" i18n:translate="">Réordonne les propositions avant de les afficher</div>
-                                    <input type="radio" name="list_order" id="order_alpha" value="2"
+                                    <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_list_order_option">Réordonne les propositions avant de les afficher</div>
+                                    <input type="radio" name="list_order" id="order_shuffle" value="2"
                                            tal:attributes="checked python:context.test(list_order=='2', 'checked', '')"/>
-                                    <label for="order_alpha" i18n:translate="">Ordre aléatoire</label>
-                                    <input type="radio" name="list_order" id="order_shuffle" value="1"
+                                    <label for="order_shuffle" i18n:translate="label_wims_order_shuffle">Ordre aléatoire</label>
+                                    <input type="radio" name="list_order" id="order_alpha" value="1"
                                            tal:attributes="checked python:context.test(list_order=='1', 'checked', '')"/>
-                                    <label for="order_shuffle" i18n:translate="">Ordre alphabétique (croissant)</label>
+                                    <label for="order_alpha" i18n:translate="label_wims_order_alpha">Ordre alphabétique (croissant)</label>
                                 </div>
                             </div>
 
@@ -94,24 +94,24 @@
                         <metal:macro use-macro="context/macro_commune/macros/credits"/>
 
                         <div class="panel callout">
-                              <label for="feedback_general" i18n:translate="">Feedback général</label>
-                              <div class="formHelp texte_icone icone_information" i18n:translate=""> Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse. </div>
+                              <label for="feedback_general" i18n:translate="label_wims_general_feedback">Feedback général</label>
+                              <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_general"> Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse. </div>
                               <textarea name="feedback_general" id="feedback_general"
                                       rows="4" tal:content="QCM_parsed/feedback_general" />
                         </div>
 
 
                         <div class="panel success">
-                            <label for="feedback_bon" i18n:translate="">Feedback de bonne réponse</label>
-                            <div class="formHelp texte_icone icone_information" i18n:translate=""> Ce texte s'affichera après la réponse de l'apprenant, s'il a trouvé toutes les bonnes réponses. </div>
+                            <label for="feedback_bon" i18n:translate="label_wims_feedback_good">Feedback de bonne réponse</label>
+                            <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_good">Ce texte s'affichera après la réponse de l'apprenant, s'il a trouvé toutes les bonnes réponses.</div>
                             <input style="width:98%" name="feedback_bon" id="feedback_bon" class="mini"
                                    tal:define="feedback_bon QCM_parsed/feedback_bon"
                                    tal:attributes="value feedback_bon"/>
                         </div>
 
                         <div class="panel alert">
-                            <label for="feedback_mauvais" i18n:translate="">Feedback de mauvaise réponse</label>
-                            <div class="formHelp texte_icone icone_information" i18n:translate="">Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse.</div>
+                            <label for="feedback_mauvais" i18n:translate="label_wims_feedback_bad">Feedback de mauvaise réponse</label>
+                            <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_bad">Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse.</div>
                             <input style="width:98%" name="feedback_mauvais" id="feedback_mauvais" class="mini"
                                    tal:define="feedback_mauvais QCM_parsed/feedback_mauvais"
                                    tal:attributes="value feedback_mauvais"/>

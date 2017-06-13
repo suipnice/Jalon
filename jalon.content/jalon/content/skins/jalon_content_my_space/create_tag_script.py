@@ -1,4 +1,4 @@
-## Controller Python Script "create_tag"
+## Controller Python Script "create_tag_script"
 ##bind container=container
 ##bind context=context
 ##bind namespace=

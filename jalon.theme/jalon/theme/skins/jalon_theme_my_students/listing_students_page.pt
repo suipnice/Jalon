@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -13,7 +13,7 @@
                         personnel python:context.isPersonnel(user, mode_etudiant);">
 
     <h2>
-        <tal:block i18n:translate="">Liste des étudiants de</tal:block>
+        <tal:block i18n:translate="head_students_list_from">Liste des étudiants de</tal:block>
         « <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]" /> »
         (<tal:block replace="request/code" />)
         <a class="close-reveal-modal"></a>
@@ -25,13 +25,13 @@
         <a class="button expand success radius"
            tal:attributes="href string:${context/absolute_url}/listing_students_script?cod_etp=${request/code}"
            tal:condition="personnel"
-           i18n:translate="">Télécharger cette liste d'étudiants au format XLS</a>
+           i18n:translate="link_download_student_list">Télécharger cette liste d'étudiants au format XLS</a>
     </div>
 
-    <table id="js-list-students" summary="Liste des étudiants">
+    <table id="js-list-students" summary="Liste des étudiants" i18n:attributes="summary table_students_list">
         <thead>
             <tr>
-                <th class="sort" data-sort="id" title="Trier selon l'identifiant étudiant" i18n:attributes="title"
+                <th class="sort" data-sort="id" title="Trier selon l'identifiant étudiant" i18n:attributes="title sort_by_student_id"
                     tal:condition="personnel">
                     <span>
                         <i class="fa fa-sort"></i>
@@ -40,15 +40,15 @@
                         <tal:block i18n:translate="label_numero_etudiant">ID</tal:block>
                     </span>
                 </th>
-                <th class="sort text-left" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
+                <th class="sort text-left" data-sort="name" title="Trier selon le nom" i18n:attributes="title sort_by_name">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        <tal:block i18n:translate="th_LASTNAME_firstname">NOM Prénom</tal:block>
                     </span>
                 </th>
-                <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
+                <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title  sort_by_email">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
@@ -72,7 +72,7 @@
                     <a tal:attributes="href string:mailto:${etudiant/EMAIL_ETU}" tal:content="etudiant/EMAIL_ETU" />
         </tal:block>
         <tal:block condition="not:etudiant/EMAIL_ETU">
-                    <span class="label warning round" i18n:translate="">Sésame non ouvert</span>
+                    <span class="label warning round" i18n:translate="msg_unopened_account">Sésame non ouvert</span>
         </tal:block>
                 </td>
             </tr>

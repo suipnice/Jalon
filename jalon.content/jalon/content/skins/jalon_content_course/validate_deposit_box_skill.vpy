@@ -22,7 +22,7 @@ if "competences" in form:
     return state
 
 for validate_field in obligatory_fields:
-    if not validate_field in form or form[validate_field] in ["", " ", None]:
+    if validate_field not in form or form[validate_field] in ["", " ", None]:
         state.setError(validate_field, _(u"Champ obligatoire"), "%s_required" % validate_field)
         state.set(status='failure')
         error = True
@@ -44,7 +44,7 @@ if "evaluation" in form and form["evaluation"] == "note":
             state.set(status='failure')
             error = True
         if int(form["note_acquise"]) < int(form["note_partielle"]):
-            state.setError("note_acquise", _(u"La note d'acquisition doit être supérieure ou égale à la note \"en cours d'acquisition à partir de\""), "%s_required" % obligatoire)
+            state.setError("note_acquise", _(u"La note d'acquisition doit être supérieure ou égale à la note « en cours d'acquisition à partir de »"), "%s_required" % obligatoire)
             state.set(status='failure')
             error = True
 

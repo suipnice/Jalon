@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -15,13 +15,13 @@
                <i class="fa fa-question"></i>
                Aide
             </a>
-            <label for="question">La question à poser</label>
+            <label for="question" i18n:translate="label_wims_enonce">La question à poser</label>
             <div id="reveal_question"
                  class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
-                <h2>La question à poser <a class="close-reveal-modal"></a></h2>
-                <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+                 <h2><tal:block i18n:translate="label_wims_enonce">La question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
+                <div i18n:translate="msg_embraced_randitem">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
             </div>
             <div class="formHelp texte_icone icone_information">Html admis.</div>
             <textarea name="explain" id="question"
@@ -65,7 +65,7 @@ dormir, je dors
                         </ul>
                     </div>
                     <hr/>
-                    <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+                    <div i18n:translate="msg_embraced_randitem">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
                 </div>
             </div>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
@@ -81,7 +81,7 @@ dormir, je dors
 
         <dl class="accordion" data-accordion="data-accordion">
             <dd class="accordion-navigation">
-                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+                <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
                 <div id="options_avancees" class="content">
                     <fieldset class="radius">
                         <legend>Dimensions des étiquettes :</legend>
@@ -154,8 +154,8 @@ dormir, je dors
                     </div>
 
                     <div class="panel callout">
-                        <label for="feedback_general">Feedback général</label>
-                        <div class="formHelp texte_icone icone_information">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
+                        <label for="feedback_general" i18n:translate="label_wims_general_feedback">Feedback général</label>
+                        <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_feedback_general">Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse.</div>
                         <input name="feedback_general" id="feedback_general"
                                type="text" class="mini"
                                tal:attributes="value QCM_parsed/feedback_general"/>

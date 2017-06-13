@@ -1,8 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -63,7 +63,7 @@
                                           id variable"
                           rows="4" cols="60"
                           placeholder="Indiquer le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne."
-                          i18n:attributes="placeholder"><tal:replace replace="python:QCM_parsed[variable]"/></textarea>
+                          i18n:attributes="placeholder placeholder_wims_qcmsuite_variable"><tal:replace replace="python:QCM_parsed[variable]"/></textarea>
             </div>
 
             <div class="panel callout"
@@ -87,9 +87,9 @@
          class="reveal-modal large wims-edit_reveal"
          data-reveal="data-reveal"
          data-options="close_on_background_click: true;" >
-        <h2><tal:block i18n:translate="">Aide sur une question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
+        <h2><tal:block i18n:translate="head_wims_qcmsuite_question_help">Aide sur une question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
         <div i18n:translate="">Tapez simplement votre question.</div>
-        <div class="warning" i18n:translate="">
+        <div class="warning" i18n:translate="msg_wims_qcmsuite_question">
             Notez que :
             <ul>
                 <li>Les points-virgules (;) sont interdits.</li>
@@ -107,12 +107,12 @@
          class="reveal-modal large wims-edit_reveal"
          data-reveal="data-reveal"
          data-options="close_on_background_click: true;" >
-        <h2><tal:block i18n:translate="">Aide sur les réponses aux questions</tal:block> <a class="close-reveal-modal"></a></h2>
-        <div i18n:translate="">
+        <h2><tal:block i18n:translate="head_wims_qcmsuite_reponse_help">Aide sur les réponses aux questions</tal:block> <a class="close-reveal-modal"></a></h2>
+        <div i18n:translate="help_wims_qcmsuite_reponse">
             Indiquez le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne.<br/>
             Vous pouvez définir plusieurs bonnes réponses. Indiquez alors sur la premiere ligne plusieurs numéros, séparés par des virgules.
         </div>
-        <div class="text-center">Exemple pour définir les propositions 1 et 2 comme bonnes :<br/>
+        <div class="text-center" i18n:translate="help_wims_qcmsuite_reponse_sample">Exemple pour définir les propositions 1 et 2 comme bonnes :<br/>
             <pre class="text-left">1,2
 Bonne réponse n°1
 Bonne réponse n°2
@@ -123,7 +123,7 @@ Mauvaise réponse n°2</pre>
         <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
     </div>
 
-    <div class="formHelp hide text-right" id="js-max_questions_helper" i18n:translate="">Ce modèle permet d'ajouter jusqu'à 40 questions.</div>
+    <div class="formHelp hide text-right" id="js-max_questions_helper" i18n:translate="help_wims_qcmsuite_questions_sample">Ce modèle permet d'ajouter jusqu'à 40 questions.</div>
 
     <div class="text-right">
         <a id="ajouterQuestion" class="button small">
@@ -132,13 +132,13 @@ Mauvaise réponse n°2</pre>
         </a>
         <a id="supprimerQuestion" class="button small alert">
             <i class="fa fa-trash"></i>
-            <tal:block i18n:translate="">Supprimer la dernière question</tal:block>
+            <tal:block i18n:translate="link_wims_delete_last_question">Supprimer la dernière question</tal:block>
         </a>
     </div>
 
     <dl class="accordion" data-accordion="data-accordion">
         <dd class="accordion-navigation">
-            <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="">Options avancées</tal:block></a>
+            <a href="#options_avancees" class="icone_options" title="afficher d’autres options pour ce modèle"><i class="fa fa-fw fa-cog"></i><tal:block i18n:translate="wims_advanced_options">Options avancées</tal:block></a>
             <div id="options_avancees" class="content">
                 <div class="row equalize_height">
                     <div class="small-12 medium-4 columns">
@@ -213,13 +213,13 @@ Mauvaise réponse n°2</pre>
                                    tal:attributes="checked python:context.test(alea=='yes', 'checked', '')"/>
                             <label for="alea_yes"
                                    class="activer">
-                                <i class="fa fa-check"></i><tal:block i18n:translate="">Activé</tal:block>
+                                <i class="fa fa-check"></i><tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="alea" id="alea_no" value="no"
                                    tal:attributes="checked python:context.test(alea=='no', 'checked', '')"/>
                             <label for="alea_no"
                                    class="desactiver">
-                                <i class="fa fa-times"></i><tal:block i18n:translate="">Désactivé</tal:block>
+                                <i class="fa fa-times"></i><tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -242,21 +242,21 @@ Mauvaise réponse n°2</pre>
                             <div class="formHelp texte_icone icone_information">Permet de condenser par colonnes les questions d'une page, sur un écran suffisament large.</div>
                             <input type="radio" name="columns" id="columns_1" value="1"
                                    tal:attributes="checked python:context.test(columns=='1', 'checked', '')"/>
-                            <label for="columns_1" i18n:translate="">Simple</label>
+                            <label for="columns_1" i18n:translate="label_wims_qcmsuite_columns_1">Simple</label>
                             <input type="radio" name="columns" id="columns_2" value="2"
                                    tal:attributes="checked python:context.test(columns=='2', 'checked', '')"/>
-                            <label for="columns_2" i18n:translate="">jusqu'à 2 colonnes</label>
+                            <label for="columns_2" i18n:translate="label_wims_qcmsuite_columns_2">jusqu'à 2 colonnes</label>
                             <input type="radio" name="columns" id="columns_3" value="3"
                                    tal:attributes="checked python:context.test(columns=='3', 'checked', '')"/>
-                            <label for="columns_3" i18n:translate="">jusqu'à 3 colonnes</label>
+                            <label for="columns_3" i18n:translate="label_wims_qcmsuite_columns_3">jusqu'à 3 colonnes</label>
                             <div id="reveal_columns"
                                  class="reveal-modal large wims-edit_reveal"
                                  data-reveal="data-reveal" data-options="close_on_background_click: true;" >
                                 <h2>Mode d'affichage <a class="close-reveal-modal"></a></h2>
-                                <div i18n:translate="">En mode "2 colonnes", si la largeur de l'écran le permet, les questions seront réparties sur 2 colonnes.</div>
-                                <div i18n:translate="">Cela peut par exemple permettre d'économiser un peu de papier pour des questions courtes si vous décider des les imprimer...</div>
+                                <div i18n:translate="help_wims_qcmsuite_columns_help">En mode "2 colonnes", si la largeur de l'écran le permet, les questions seront réparties sur 2 colonnes.</div>
+                                <div i18n:translate="help_wims_qcmsuite_columns_help_sample">Cela peut par exemple permettre d'économiser un peu de papier pour des questions courtes si vous décider des les imprimer...</div>
                                 <hr/>
-                                <div i18n:translate="">Notez que sur <a href="http://caniuse.com/#search=flex" target="_blank">certains anciens navigateurs internet</a>, cette fonctionalité peut ne pas fonctionner.</div>
+                                <div i18n:translate="help_wims_qcmsuite_columns_help_note">Notez que sur <a href="http://caniuse.com/#search=flex" target="_blank">certains anciens navigateurs internet</a>, cette fonctionalité peut ne pas fonctionner.</div>
                             </div>
                         </div>
                     </div>
@@ -269,13 +269,13 @@ Mauvaise réponse n°2</pre>
                                    tal:attributes="checked python:context.test(anstype=='checkbox', 'checked', '')"/>
                             <label for="anstype_checkbox"
                                    class="activer">
-                                <i class="fa fa-check"></i><tal:block i18n:translate="">Activé</tal:block>
+                                <i class="fa fa-check"></i><tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="anstype" id="anstype_radio" value="radio"
                                    tal:attributes="checked python:context.test(anstype=='radio', 'checked', '')"/>
                             <label for="anstype_radio"
                                    class="desactiver">
-                                <i class="fa fa-times"></i><tal:block i18n:translate="">Désactivé</tal:block>
+                                <i class="fa fa-times"></i><tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                           </div>
                     </div>

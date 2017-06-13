@@ -16,7 +16,7 @@ from Products.CMFPlone import PloneMessageFactory as _
 error = False
 form = context.REQUEST.form
 
-if not "coefficient" in form or form["coefficient"] in ["", " ", None]:
+if "coefficient" not in form or form["coefficient"] in ["", " ", None]:
     state.setError("coefficient", _(u"Champ obligatoire"), "coefficient_required")
     state.set(status='failure')
     error = True

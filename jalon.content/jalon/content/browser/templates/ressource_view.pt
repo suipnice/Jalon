@@ -87,7 +87,7 @@
        </a>
        <span tal:condition="not:ressource/urlcatalogue" i18n:translate="">La ressource n'est plus disponible dans le catalogue de la BU.</span>
        <br /><br />
-       <span i18n:translate="">Annotation(s) personnelle(s) :</span>
+       <span i18n:translate="">Annotation(s) personnelle(s) :</span>
        <br />
        <span tal:content="ressource/description"/>
      </span>

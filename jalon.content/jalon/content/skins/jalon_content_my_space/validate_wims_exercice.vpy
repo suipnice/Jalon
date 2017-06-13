@@ -11,8 +11,8 @@
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
-#context=context
-#state=state
+# context=context
+# state=state
 error = False
 form = context.REQUEST.form
 modele = form["modele"]

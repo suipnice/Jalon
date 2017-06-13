@@ -59,7 +59,7 @@ JalonCoursSchema = ATFolderSchema.copy() + Schema((
                 searchable=False,
                 default=u"Privé".encode("utf-8"),
                 vocabulary=[u"Privé".encode("utf-8"), u"Aux étudiants".encode("utf-8"), u"Public".encode("utf-8")],
-                widget=SelectionWidget(label=_(u"Diffusion du cours:"),
+                widget=SelectionWidget(label=_(u"Diffusion du cours :"),
                                        format="select",)),
     LinesField("listeAcces",
                required=False,

@@ -1,7 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="en"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="plone">
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
+      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
 
     <body>
     <metal:content-core fill-slot="content-core">
@@ -14,22 +14,22 @@
                  tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                 <a href="#reveal_enonce" class="button tiny radius" data-reveal-id="reveal_enonce">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
-                <label for="enonce">La question à poser</label>
+                <label for="enonce" i18n:translate="label_wims_enonce">La question à poser</label>
                 <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
                 <div id="reveal_enonce"
                      class="reveal-modal large wims-edit_reveal"
                      data-reveal="data-reveal"
                      data-options="close_on_background_click: true;" >
-                    <h2>La question à poser <a class="close-reveal-modal"></a></h2>
+                    <h2><tal:block i18n:translate="label_wims_enonce">La question à poser</tal:block> <a class="close-reveal-modal"></a></h2>
                     <div>
                         Pour afficher la valeur de vos variables, tapez
                         <code class="indicateur">\a</code> pour la variable a,
                         <code class="indicateur">\b</code> pour la variable b, etc...
                     </div>
                     <hr/>
-                    <div i18n:translate="">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
+                    <div i18n:translate="msg_embraced_randitem">Ce texte accepte la mise en aléatoire par des accolades (cf options avancées).</div>
                 </div>
 
                 <div class="formHelp texte_icone icone_information">Tapez simplement votre question, sans oublier d'afficher les variables.</div>
@@ -38,14 +38,14 @@
                           tal:content="QCM_parsed/enonce"
                           required="required"
                           placeholder="Posez votre question ici."
-                          i18n:attributes="placeholder" />
+                          i18n:attributes="placeholder placeholder_wims_equation_enonce" />
             </div>
 
             <fieldset class="field radius">
               <legend>Variables</legend>
                 <a href="#reveal_params" class="button tiny radius" data-reveal-id="reveal_params">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
                 <div id="reveal_params"
                      class="reveal-modal large wims-edit_reveal"
@@ -89,8 +89,7 @@
                                        tal:attributes="name var_name;
                                                        id var_name;
                                                        title string:Variable ${repeat/variable/number};
-                                                       value python:QCM_parsed[var_name]"
-                                        i18n:attributes="title"/>
+                                                       value python:QCM_parsed[var_name]"/>
                             </div>
                         </tal:define>
                     </div>
@@ -128,9 +127,9 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                 <a href="#reveal_equation" class="button tiny radius" data-reveal-id="reveal_equation">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
-                <label for="equation" i18n:translate="">Équation </label>
+                <label for="equation" i18n:translate="label_wims_equation">Équation</label>
                 <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>
                 <div id="reveal_equation"
                      class="reveal-modal large wims-edit_reveal"
@@ -163,7 +162,7 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                 <a href="#reveal_precision" class="button tiny radius" data-reveal-id="reveal_precision">
                     <i class="fa fa-question"></i>
-                    Aide
+                    <tal:block i18n:translate="label_help">Aide</tal:block>
                 </a>
                 <label for="precision">Précision</label>
                 <div  class="fieldErrorBox" tal:condition="error" tal:content="error"/>

@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -27,12 +27,12 @@
         <div class="row">
             <span>
                 <i class="fa fa-users no-pad"></i>
-                <a tal:attributes="href context/absolute_url">Mes etudiants</a>
+                <a tal:attributes="href context/absolute_url" i18n:translate="">Mes etudiants</a>
                 <i class="fa fa-angle-double-right no-pad"></i>
             </span>
             <span>
                 <i class="fa fa-bar-chart no-pad"></i>
-                <a tal:attributes="href context/absolute_url">Statistiques</a>
+                <a tal:attributes="href context/absolute_url" i18n:translate="">Statistiques</a>
             </span>
         </div>
     </div>
@@ -51,7 +51,8 @@
                     <a title="Détail des connexions par mois"
                        tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-graph&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
                                        class python:context.test(onglet == 'details-graph', 'button small selected', 'button small');"
-                       i18n:translate="">
+                       i18n:translate=""
+                       i18n:attributes="title title_stats_connections_per_month">
                         Connexion
                     </a>
                 </li>
@@ -59,7 +60,8 @@
                     <a title="Détail par étudiants"
                        tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-etudiants&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
                                        class python:context.test(onglet == 'details-etudiants', 'button small selected', 'button small')"
-                       i18n:translate="">
+                       i18n:translate="link_stats_students_connection"
+                       i18n:attributes="title title_stats_connections_per_student">
                         Connexion des étudiants
                     </a>
                 </li>
@@ -67,7 +69,8 @@
                     <a title="Détail d'un étudiant"
                        tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=details-etudiant&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
                                        class python:context.test(onglet == 'details-etudiant', 'button small selected', 'button small')"
-                       i18n:translate="">
+                       i18n:translate="link_stats_student_connection"
+                       i18n:attributes="title title_stats_student_details">
                         Connexion d'un étudiant
                     </a>
                 </li>
@@ -75,7 +78,8 @@
                     <a title="Consultation des cours"
                        tal:attributes="href string:${context/absolute_url}/statistique_page?onglet=cons-tous-cours&amp;COD_ELP=${request/COD_ELP}&amp;TYP_ELP=${request/TYP_ELP};
                                        class python:context.test(onglet == 'cons-tous-cours', 'button small selected', 'button small')"
-                       i18n:translate="">
+                       i18n:translate=""
+                       i18n:attributes="title">
                         Consultation des cours
                     </a>
                 </li>

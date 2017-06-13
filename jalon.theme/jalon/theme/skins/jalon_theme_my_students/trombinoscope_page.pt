@@ -1,11 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-     xml:lang="en"
-     lang="en"
+      xml:lang="en"
+      lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="plone">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -17,12 +17,12 @@
         <div class="row">
             <span>
                 <i class="fa fa-users no-pad"></i>
-                <a tal:attributes="href context/absolute_url">Mes etudiants</a>
+                <a tal:attributes="href context/absolute_url" i18n:translate="">Mes etudiants</a>
                 <i class="fa fa-angle-double-right no-pad"></i>
             </span>
             <span>
                 <i class="fa fa-camera-retro no-pad"></i>
-                <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${request/code}&amp;type=${request/type}">Trombinoscope</a>
+                <a tal:attributes="href string:${context/absolute_url}/trombinoscope_page?code=${request/code}&amp;type=${request/type}" i18n:translate="">Trombinoscope</a>
             </span>
         </div>
     </div>
@@ -43,7 +43,7 @@
                    data-reveal-id="reveal-upload_photo" data-reveal-ajax="true"
                    tal:attributes="href string:${context/absolute_url}/folder_form?macro=macro_etudiants&amp;formulaire=maj-photo">
                     <i class="fa fa-cloud-upload"></i>
-                    <tal:block i18n:translate="">Mettre à jour ma photo</tal:block>
+                    <tal:block i18n:translate="label_trombi_update_photo">Mettre à jour ma photo</tal:block>
                 </a>
             </h2>
             <div id="reveal-upload_photo" class="reveal-modal medium" data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
@@ -102,7 +102,7 @@
 </style>
 
             <div class="panel callout radius show-for-medium-up"
-                 i18n:translate="">
+                 i18n:translate="label_trombi_print">
                 Pour obtenir le trombinoscope des étudiants en version imprimable, utilisez la fonction d’impression de votre navigateur : la mise en page se fera automatiquement.
             </div>
 

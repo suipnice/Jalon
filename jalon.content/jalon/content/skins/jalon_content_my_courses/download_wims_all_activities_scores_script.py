@@ -69,7 +69,7 @@ if course_object.isAuteurs(user_id):
         context.plone_utils.addPortalMessage(message, "warning")
     else:
         # Erreur possible : plus de 64 feuilles (sachant que pour chaque examen, une feuille est créée.)
-        message = _(u"Une erreur est survenue.<blockquote>%s</blockquote> nb : attention à ne pas dépasser <strong>60</strong> activités WIMS dans un seul cours." % resultat["message"])
+        message = _(u"Une erreur est survenue.<blockquote>%s</blockquote> nb : attention à ne pas dépasser <strong>%s</strong> activités WIMS dans un seul cours." % (resultat["message"], 60))
         context.plone_utils.addPortalMessage(message, "alert")
 else:
     message = _(u"Vous tentez d'accéder à une page qui ne vous appartient pas. Une suspicion de fraude vous concernant a été envoyée à l'administrateur du site.")
