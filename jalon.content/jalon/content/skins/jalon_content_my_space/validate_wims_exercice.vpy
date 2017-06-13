@@ -17,7 +17,8 @@ error = False
 form = context.REQUEST.form
 modele = form["modele"]
 
-form["code_source"] = form["exercicelibre"]
+if "exercicelibre" in form:
+    form["code_source"] = form["exercicelibre"]
 
 # La validation de l'ajout d'exercice se fait dans valider_form.vpy
 # "ajout-wims":                 ["title"],

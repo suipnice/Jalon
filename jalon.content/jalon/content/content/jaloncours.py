@@ -2464,21 +2464,21 @@ class JalonCours(ATFolder):
             if type_code == "etape":
                 retour = portal_jalon_bdd.getInfosEtape(code)
                 if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0"]
+                    elem = ["Le code %s n'est plus valide pour ce diplôme." % code, code, "0", "invalid"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
                     elem.append(type_code)
             if type_code in ["ue", "uel"]:
                 retour = portal_jalon_bdd.getInfosELP2(code)
                 if not retour:
-                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0"]
+                    elem = ["Le code %s n'est plus valide pour cette UE / UEL." % code, code, "0", "invalid"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
                     elem.append(type_code)
             if type_code == "groupe":
                 retour = portal_jalon_bdd.getInfosGPE(code)
                 if not retour:
-                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0"]
+                    elem = ["Le code %s n'est plus valide pour ce groupe." % code, code, "0", "invalid"]
                 else:
                     elem = list(self.useJalonUtils("encodeUTF8", {"itemAEncoder": retour}))
                     elem.append(type_code)
@@ -2959,7 +2959,10 @@ class JalonCours(ATFolder):
 
     def getPublicsAnnonce(self):
         # LOG.info("----- getPublicsAnnonce -----")
-        res = self.getInfosListeAcces()
+        res = []
+        for access in self.getInfosListeAcces():
+            if access[-1] != "invalid":
+                res.append(access)
         if self.getCoAuteurs():
             res.append(["Tous les co-auteurs", "coauteurs", len(self.getCoAuteurs()), "coauteurs"])
         if self.getCoLecteurs():

@@ -737,7 +737,7 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         fd, path = tempfile.mkstemp('.zipfiletransport')
         close(fd)
 
-        zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
+        zipFile = ZipFile(path, 'w', ZIP_DEFLATED, True)
 
         #dicoEtu = {}
         listeDepots = []

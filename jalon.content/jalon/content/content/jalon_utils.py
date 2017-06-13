@@ -495,7 +495,16 @@ def getInfosMembre(username):
 def getCourseUserFolder(context, user_id):
     # LOG.info("----- getUserFolder -----")
     portal = context.portal_url.getPortalObject()
-    return getattr(portal.cours, user_id)
+    course_folder = getattr(portal.cours, user_id, None)
+    if not course_folder:
+        portal.Members.invokeFactory(type_name='JalonFolder', id=user_id)
+        home = getattr(portal.Members, user_id)
+        home.addSubJalonFolder(user_id)
+        portal.cours.invokeFactory(type_name='JalonFolder', id=user_id)
+        course_folder = getattr(portal.cours, user_id)
+        course_folder.setTitle("Mes cours")
+        course_folder.setPortlets()
+    return course_folder
 
 
 def rechercherUtilisateur(username, typeUser, match=False, isJson=True):

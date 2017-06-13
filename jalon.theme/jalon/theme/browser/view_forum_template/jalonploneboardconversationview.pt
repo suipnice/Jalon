@@ -83,7 +83,7 @@
                 </fieldset>
             </form>
 
-            <tal:define define="script string:setForumSearchReplyForm('forum-quickreply', 'rapide')">
+            <tal:define define="script string:instantiateForumCKEditor('rapide')">
                 <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script)" />
             </tal:define>
 

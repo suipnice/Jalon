@@ -137,9 +137,9 @@ def sendMail(object, event):
     text = text.encode("utf-8")
     try:
         data_to_plaintext = portal_transforms.convert("html_to_text", text)
+        plain_text = data_to_plaintext.getData()
     except:
-        data_to_plaintext = text
-    plain_text = data_to_plaintext.getData()
+        plain_text = text
 
     for to in send_to:
         #msg = MIMEMultipart()
