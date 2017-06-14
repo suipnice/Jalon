@@ -83,10 +83,16 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
                 context.plone_utils.addPortalMessage(message, type=mess_type)
                 return None
 
-            dico_ETU = getIndividu(quser, "dict")
+            dico_ETU = getIndividu(quser, type="dict")
+
+            firstname = dico_ETU["prenom"]
+            lastname = dico_ETU["nom"]
+
+            # Si jamais les infos de l'utilisateur ont été mal renseignées dans la BDD
+            if lastname == "":
+                firstname, lastname = firstname.split(" ", 1)
 
             """
-            dico_ETU = getIndividu(quser, type="dict")
             if dico_ETU:
                 firstname = dico_ETU["prenom"]
                 lastname = dico_ETU["nom"]
@@ -98,8 +104,8 @@ def authUser(context, quser=None, qclass=None, request=None, session_keep=False)
             # Sur une premiere erreur, on considere que l'utilisateur est inexistant.
             # on tente alors de le créer.
             user = context.wims("creerUser", {"quser": quser, "qclass": qclass,
-                                              "firstname": dico_ETU["prenom"],
-                                              "lastname":  dico_ETU["nom"]})
+                                              "firstname": firstname,
+                                              "lastname":  lastname})
             if user["status"] == "ERROR":
                 # Si la creation de l'utilisateur plante, alors WIMS doit être indisponible.
                 context.plone_utils.addPortalMessage(message, type=mess_type)
@@ -657,31 +663,31 @@ def supprimerCaractereSpeciaux(chaine):
         (str):          le résultat du traitement
 
     """
-    accents = { 'a': ['à', 'ã', 'á', 'â', '@', 'ª'],
-                'A': ['À', 'Á', 'Â', 'Ä'],
-                'AE':['Æ'],
-                'ae':['æ'],
-                'B': ['ß'],
-                'c': ['ç', '¢'],
-                'C': ['Ç', '©'],
-                'e': ['é', 'è', 'ê', 'ë', '&'],
-                'E': ['È', 'É', 'Ê', 'Ë', '€'],
-                'i': ['î', 'ï', 'ì', 'í'],
-                'I': ['Ì', 'Í', 'Î', 'Ï'],
-                'L': ['£'],
-                'n': ['ñ'],
-                'N': ['Ñ'],
-                'o': ['ô', 'ö', 'ò', 'ó', 'ø', 'õ'],
-                'O': ['Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø'],
-                'oe':['œ'],
-                'OE':['Œ'],
-                'R': ['®'],
-                'u': ['ù', 'ü', 'û', 'µ', 'ú'],
-                'U': ['Ù', 'Ú', 'Û', 'Ü'],
-                'S': ['$', 'š', 'Š'],
-                'x': ['×'],
-                'y': ['¥', 'Ý','Ÿ', 'ý', 'ÿ'],
-                '_': [' '] }
+    accents = {'a':  ['à', 'ã', 'á', 'â', '@', 'ª'],
+               'A':  ['À', 'Á', 'Â', 'Ä'],
+               'AE': ['Æ'],
+               'ae': ['æ'],
+               'B':  ['ß'],
+               'c':  ['ç', '¢'],
+               'C':  ['Ç', '©'],
+               'e':  ['é', 'è', 'ê', 'ë', '&'],
+               'E':  ['È', 'É', 'Ê', 'Ë', '€'],
+               'i':  ['î', 'ï', 'ì', 'í'],
+               'I':  ['Ì', 'Í', 'Î', 'Ï'],
+               'L':  ['£'],
+               'n':  ['ñ'],
+               'N':  ['Ñ'],
+               'o':  ['ô', 'ö', 'ò', 'ó', 'ø', 'õ'],
+               'O':  ['Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø'],
+               'oe': ['œ'],
+               'OE': ['Œ'],
+               'R':  ['®'],
+               'u':  ['ù', 'ü', 'û', 'µ', 'ú'],
+               'U':  ['Ù', 'Ú', 'Û', 'Ü'],
+               'S':  ['$', 'š', 'Š'],
+               'x':  ['×'],
+               'y':  ['¥', 'Ý', 'Ÿ', 'ý', 'ÿ'],
+               '_':  [' ']}
     chaine = re.sub(r'\s+', r' ', chaine.strip())
     for (char, accentedChars) in accents.iteritems():
         for accentedChar in accentedChars:
