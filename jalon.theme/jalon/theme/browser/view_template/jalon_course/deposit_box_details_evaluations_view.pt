@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -33,7 +33,7 @@
     <main class="row" role="main" aria-labelledby="page_title">
 
         <div class="panel warning radius">
-            <strong>Attention :</strong> Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.
+            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
         </div>
 
         <section id="boite" class="small-12 columns">
@@ -51,7 +51,8 @@
                 <i class="fa fa-list"></i><tal:replace replace="my_view/title"/>
             </h2>
             <div class="panel callout radius"
-                 tal:condition="not:my_view/peers_average_dict">
+                 tal:condition="not:my_view/peers_average_dict"
+                 i18n:translate="">
                 Aucun élément ne correspondant à ce critère.
             </div>
             <div class="table-overflow_container"
@@ -72,7 +73,7 @@
                         </th>
                     <tal:repeat repeat="index my_view/criteria_order">
                         <th tal:define="criteria python:criteria_dict[index]">
-                            Critère <tal:replace tal:replace="index"/>
+                            <tal:block i18n:translate="">Critère</tal:block> <tal:replace tal:replace="index"/>
                         </th>
                     </tal:repeat>
                         <th class="sort has-tip" data-tooltip data-sort="note"

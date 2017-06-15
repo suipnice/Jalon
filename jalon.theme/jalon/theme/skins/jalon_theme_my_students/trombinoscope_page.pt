@@ -17,7 +17,7 @@
         <div class="row">
             <span>
                 <i class="fa fa-users no-pad"></i>
-                <a tal:attributes="href context/absolute_url" i18n:translate="">Mes etudiants</a>
+                <a tal:attributes="href context/absolute_url" i18n:translate="label_my_students">Mes étudiants</a>
                 <i class="fa fa-angle-double-right no-pad"></i>
             </span>
             <span>

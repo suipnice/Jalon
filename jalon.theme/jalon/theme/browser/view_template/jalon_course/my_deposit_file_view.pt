@@ -5,7 +5,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -25,7 +25,7 @@
     <div class="panel bkgrnd radius"
          tal:content="structure my_view/deposit_correction_text"/>
 
-    <h4>Note :</h4>
+    <h4 i18n:translate="">Note :</h4>
     <div class="panel bkgrnd radius"
          tal:content="structure my_view/deposit_note"/>
 

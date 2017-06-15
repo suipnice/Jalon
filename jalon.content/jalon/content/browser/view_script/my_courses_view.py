@@ -67,11 +67,11 @@ class MyCoursesView(BrowserView):
             actions_list = [{"css_class":   "button create expand",
                              "action_link": "%s/create_course_form" % context_link,
                              "action_icon": "fa fa-plus-circle",
-                             "action_name": "Créer un cours"},
+                             "action_name": _(u"Créer un cours")},
                             {"css_class":   "button",
                              "action_link": "%s/choose_author_page" % context_link,
                              "action_icon": "fa fa-code-fork",
-                             "action_name": "Dupliquer un cours"}]
+                             "action_name": _("Dupliquer un cours")}]
             if not is_manager:
                 del actions_list[-1]
 
@@ -82,23 +82,23 @@ class MyCoursesView(BrowserView):
             tabs_list = [{"css_class": "button small selected" if tab == "1" else "button small secondary",
                           "tab_link":  "%s?tab=1" % context_link,
                           "tab_icon":  "fa fa-star fa-fw",
-                          "tab_name":  "Favoris"},
+                          "tab_name":  _("Favoris")},
                          {"css_class": "button small selected" if tab == "2" else "button small secondary",
                           "tab_link":  "%s?tab=2" % context_link,
                           "tab_icon":  "fa fa-user fa-fw",
-                          "tab_name":  "Auteur"},
+                          "tab_name":  _("Auteur")},
                          {"css_class": "button small selected" if tab == "3" else "button small secondary",
                           "tab_link":  "%s?tab=3" % context_link,
                           "tab_icon":  "fa fa-users fa-fw",
-                          "tab_name":  "Co-auteur"},
+                          "tab_name":  _("Co-auteur")},
                          {"css_class": "button small selected" if tab == "4" else "button small secondary",
                           "tab_link":  "%s?tab=4" % context_link,
                           "tab_icon":  "fa fa-graduation-cap fa-fw",
-                          "tab_name":  "Lecteur"},
+                          "tab_name":  _("Lecteur")},
                          {"css_class": "button small selected" if tab == "5" else "button small secondary",
                           "tab_link":  "%s?tab=5" % context_link,
                           "tab_icon":  "fa fa-folder fa-fw",
-                          "tab_name":  "Archives"}]
+                          "tab_name":  _("Archives")}]
 
             courses_dict = self.getTeacherCoursesList(user, tab, folder)
 

@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -33,8 +33,8 @@
             <i class="fa fa-th falfw"></i><tal:block i18n:translate="">Grille d'évaluation</tal:block>
         </h1>
 
-        <div class="panel warning radius" i18n:translate="">
-            <strong >Attention :</strong> Cette fonction est actuellement en phase de test. Merci de remonter vos difficultés d'utilisation.
+        <div class="panel warning radius">
+            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test. Merci de remonter vos difficultés d'utilisation.</tal:block>
         </div>
 
         <tal:condition condition="my_view/is_personnel">
@@ -47,21 +47,21 @@
             </a>
         </nav>
         <div class="panel radius warning"
-             tal:condition="not:my_view/is_authorized_deposit" i18n:translate="">
-            <strong>Attention :</strong> dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.
+             tal:condition="not:my_view/is_authorized_deposit" >
+             <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">dans le profil évaluation par les pairs les "dates limite de dépôts et d'évaluation" sont obligatoires.</tal:block>
         </div>
 
         <tal:condition condition="my_view/is_authorized_deposit">
 
         <div class="panel radius warning"
              tal:condition="not:my_view/is_depot_actif"
-             i18n:translate="">
-            <strong>Attention :</strong> la date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.
+             >
+             <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">la date limite de dépôt est dépassée vous ne pouvez plus modifier la grille d'évaluation.</tal:block>
         </div>
         <div class="panel radius warning"
              tal:condition="not:my_view/is_correction_actif"
-              i18n:translate="">
-            <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.
+              >
+              <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation.</tal:block>
         </div>
 
         </tal:condition>
@@ -69,12 +69,12 @@
 
         <div class="panel radius warning"
              tal:condition="not:my_view/is_grid_access">
-            <strong>Attention :</strong> vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !
+             <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !</tal:block>
         </div>
 
         <tal:condition condition="my_view/is_grid_access">
         <div class="panel callout radius"
-             tal:condition="not:my_view/criteria_order">
+             tal:condition="not:my_view/criteria_order" i18n:translate="">
             La grille d'évaluation ne contient aucun critère d'évaluation
         </div>
 
@@ -95,7 +95,7 @@
              tal:condition="my_view/criteria_order">
             <section role="tabpanel" aria-hidden="true"
                      tal:attributes="class python:context.test(criteria_id == '0', 'content active', 'content')">
-                <div class="panel callout radius">Sélectionnez un onglet</div>
+                <div class="panel callout radius" i18n:translate="">Sélectionnez un onglet</div>
             </section>
 
             <tal:repeat repeat="index my_view/criteria_order">
@@ -132,7 +132,7 @@
 
                 <div class="row">
                     <div class="small-12 columns">
-                        <h3>Description :</h3>
+                        <h3 i18n:translate="">Description :</h3>
                     </div>
                     <div class="small-12 medium-7 columns">
                         <div class="panel callout radius"
@@ -140,17 +140,17 @@
                     </div>
                     <div class="small-12 medium-5 columns">
                         <dl class="deflist">
-                            <dt>Noter sur</dt>
+                            <dt i18n:translate="">Noter sur</dt>
                             <dd tal:content="criteria/notation" />
-                            <dt>Coefficient</dt>
+                            <dt i18n:translate="">Coefficient</dt>
                             <dd tal:content="criteria/coefficient" />
-                            <dt>Marge</dt>
+                            <dt i18n:translate="">Marge</dt>
                             <dd tal:content="criteria/gap" />
-                            <dt>Commentaire étudiant</dt>
+                            <dt i18n:translate="">Commentaire étudiant</dt>
                             <dd>
                                 <tal:replace replace="python:my_view['comment_dict'][criteria['comment']]"/>,
                             </dd>
-                            <dd>
+                            <dd i18n:translate="">
                                 entre <tal:replace replace="criteria/comment_min"/> et <tal:replace replace="criteria/comment_max"/> caractères.
                             </dd>
                         </dl>
@@ -167,14 +167,14 @@
                                        aria-controls string:#criteria${crit_prev}"
                        tal:condition="not: repeat/index/start">
                         <i class="fa fa-arrow-left"></i>
-                        Précédent
+                        <tal:block i18n:translate="">Précédent</tal:block>
                     </a>
                     <a class="button small"
                        tal:attributes="onclick string:document.getElementById('tab${crit_next}').click();
                                        aria-controls string:#criteria${crit_next}"
                        tal:condition="not: repeat/index/end">
                         <i class="fa fa-arrow-right"></i>
-                        Suivant
+                        <tal:block i18n:translate="">Suivant</tal:block>
                     </a>
                     <!--
                     <button type="submit" class="button small"

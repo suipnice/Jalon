@@ -8,8 +8,8 @@
 
         <!-- Infos génériques -->
         <meta name="application-name" content="Jalon" />
-        <meta name="description" content="Environnement pédagogique Jalon" />
-        <meta name="author" content="Service Universitaire des Pédagogies Innovantes de l'Université de Nice - Sophia Antipolis" href="http://tice.unice.fr/" />
+        <meta name="description" content="Environnement pédagogique Jalon" i18n:attributes="content" />
+        <meta name="author" content="Service Universitaire des Pédagogies Innovantes de l'Université de Nice - Sophia Antipolis" href="http://tice.unice.fr/" i18n:attributes="content"/>
         <meta name="copyright" content="Université de Nice - Sophia Antipolis" href="http://unice.fr/" />
 
         <!-- Apple mobile -->
@@ -65,7 +65,7 @@
             La meilleure solution pour l'instant est de laisser un « favicon.ico » à la « racine »,
             et de spécifier uniquement un fichier .png (en 32x32 ?) via une balise link.
 
-        --></tal:comment> 
+        --></tal:comment>
         <link rel="shortcut icon" type="image/x-icon"
               tal:attributes="href string:${navroot}/++resource++jalon.theme.images/favicon.ico" />
         <link rel="icon" type="image/png"

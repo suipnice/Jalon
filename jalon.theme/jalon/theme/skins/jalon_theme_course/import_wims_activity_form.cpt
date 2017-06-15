@@ -4,7 +4,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -12,7 +12,8 @@
             tal:define="errors options/state/getErrors | nothing;">
 
 <!--
-        Création d'une activité et d'exercice(s) WIMS par importation HotPotatoes
+        import_wims_activity_form.cpt
+        Création d'une activité et d'exercice(s) WIMS par importation de fichier (HotPotatoes)
 -->
 
 <tal:define define="tab request/tab | nothing;

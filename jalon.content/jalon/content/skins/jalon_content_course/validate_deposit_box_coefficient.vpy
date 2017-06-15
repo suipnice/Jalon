@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##Script (Python) "validate_deposit_box_criteria"
+##Script (Python) "validate_deposit_box_coefficient"
 ##bind container=container
 ##bind context=context
 ##bind namespace=
@@ -7,12 +7,13 @@
 ##bind state=state
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=Validation des formulaires
+##title=Validation du formulaire de changement de coefficient
 ##
 
 from Products.CMFPlone import PloneMessageFactory as _
 
-#context.plone_log("[valider_form]")
+# context.plone_log("[valider_form]")
+# state = state
 error = False
 form = context.REQUEST.form
 
@@ -24,11 +25,11 @@ if "coefficient" not in form or form["coefficient"] in ["", " ", None]:
 failed = False
 try:
     coefficient = int(form["coefficient"])
-    failed = True if coefficient < 0 and coefficient > 5 else False 
+    failed = True if coefficient < 0 and coefficient > 5 else False
 except:
     failed = True
 if failed:
-    state.setError(validate_field, _(u"Veuillez saisir un entier compris entre 1 et 5"), "%s_required" % validate_field)
+    state.setError(coefficient, _(u"Veuillez saisir un entier compris entre %s et %s" % (1, 5)), "%s_required" % coefficient)
     state.set(status='failure')
     error = True
 

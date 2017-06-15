@@ -1,4 +1,4 @@
-<metal:macro define-macro="footer">
+<metal:macro define-macro="footer" i18n:domain="jalon.theme">
 
         <footer class="row" role="contentinfo"
                 tal:define="footer python:context.mes_etudiants.getFooter()">
@@ -7,7 +7,7 @@
                 <a class="scroll-top left" title="Revenir en haut de la page"><i class="fa fa-arrow-circle-o-up fa-fw no-pad"></i></a>
                 <a class="scroll-top right" title="Revenir en haut de la page"><i class="fa fa-arrow-circle-o-up fa-fw no-pad"></i></a>
                 <p class="show-for-medium-up">
-                    <tal:translate i18n:translate="">Environnement pédagogique</tal:translate> Jalon &copy;&nbsp;2003-<tal:block replace="python:DateTime().year()" />&nbsp;<a href="//unice.fr/" title="Université de Nice - Sophia antipolis">UNS</a>
+                    <tal:translate i18n:translate="learning_environment">Environnement pédagogique</tal:translate> Jalon &copy;&nbsp;2003-<tal:block replace="python:DateTime().year()" />&nbsp;<a href="//unice.fr/" title="Université de Nice - Sophia antipolis">UNS</a>
                 </p>
                 <p>|
                 <tal:condition condition="footer/activer_aide">
@@ -20,11 +20,11 @@
                 </tal:condition>
                 <tal:condition condition="footer/activer_lien_credit">
                     <a tal:attributes="href footer/lien_credit"
-                       i18n:translate="">Crédits</a>&nbsp;|
+                       i18n:translate="credits">Crédits</a>&nbsp;|
                 </tal:condition>
                 <tal:condition condition="footer/activer_lien_mention">
                     <a tal:attributes="href footer/lien_mention"
-                       i18n:translate="">Mentions légales</a>&nbsp;|
+                       i18n:translate="legal_notices">Mentions légales</a>&nbsp;|
                 </tal:condition>
                 </p>
             </div>

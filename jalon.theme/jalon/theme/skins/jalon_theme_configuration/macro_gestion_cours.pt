@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -164,7 +164,7 @@
         <thead>
             <tr>
                 <th class="sort has-tip" data-tooltip data-sort="cours" title="Trier selon le titre des cours"
-                    i18n:attributes="cours">
+                    i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
@@ -173,7 +173,7 @@
                     </span>
                 </th>
                 <th class="sort has-tip" data-tooltip data-sort="etat" title="Trier selon l'état des cours"
-                    i18n:attributes="etat">
+                    i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
@@ -182,7 +182,7 @@
                     </span>
                 </th>
                 <th class="sort has-tip" data-tooltip data-sort="categorie" title="Trier selon les catégories iTunesU"
-                    i18n:attributes="categorie">
+                    i18n:attributes="title">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
@@ -196,7 +196,7 @@
                     </span>
                 </th>
                 <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="action" title="Trier selon l'action"
-                    i18n:attributes="action">
+                    i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>

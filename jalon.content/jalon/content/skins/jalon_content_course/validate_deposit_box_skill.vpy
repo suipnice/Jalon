@@ -14,6 +14,7 @@ from Products.CMFPlone import PloneMessageFactory as _
 
 error = False
 form = context.REQUEST.form
+# state = state
 
 obligatory_fields = ["title", "evaluation"]
 

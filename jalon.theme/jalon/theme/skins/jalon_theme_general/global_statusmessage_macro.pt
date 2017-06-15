@@ -2,13 +2,13 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <!--
     Display Global status messages from user session
     to add a portal message, use this function :
         * if i18n:domain="plone", import : from Products.CMFPlone import PloneMessageFactory as _
-        * if i18n:domain="jalon.content", import : from jalon.content import contentMessageFactory as _)
+        * if i18n:domain="jalon.xxx", import : from jalon.xxx import contentMessageFactory as _)
 
     and next, call like this :
         * If in a python object (self) :
@@ -30,8 +30,7 @@
 -->
 
 <body>
-<tal:block i18n:domain="jalon.content"
-           metal:define-macro="portal_message">
+<tal:block metal:define-macro="portal_message">
 
     <tal:statusmsg tal:define="messages python:context.plone_utils.showPortalMessages()"
                    tal:repeat="message messages">

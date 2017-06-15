@@ -551,32 +551,32 @@ class JalonBoiteDepot(JalonActivity, ATFolder):
         head_table = []
         is_column_correction = self.getCorrectionIndividuelle()
         is_column_notation = self.getNotation()
-        #is_personnel_and_is_actions = True if is_personnel and (is_colmun_correction or is_colmun_notation) else False
+        # is_personnel_and_is_actions = True if is_personnel and (is_colmun_correction or is_colmun_notation) else False
         is_colmun_etudiant = True if is_personnel or self.getAccesDepots() else False
         if is_colmun_etudiant:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Trier selon l'étudiant",
+                               "attr_title":   _(u"Trier selon l'étudiant"),
                                "data-sort":    "name",
-                               "column_title": "Étudiant"})
+                               "column_title": _(u"Étudiant")})
         head_table.append({"css_class":    "sort text-left has-tip",
-                           "attr_title":   "Trier selon la date",
+                           "attr_title":   _(u"Trier selon la date"),
                            "data-sort":    "title",
-                           "column_title": "Dépôt"})
+                           "column_title": _(u"Dépôt")})
         head_table.append({"css_class":    "sort text-left has-tip",
-                           "attr_title":   "Trier selon l'état",
+                           "attr_title":   _(u"Trier selon l'état"),
                            "data-sort":    "valide",
-                           "column_title": "État"})
+                           "column_title": _(u"État")})
         if is_column_correction:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Trier selon la correction",
+                               "attr_title":   _(u"Trier selon la correction"),
                                "data-sort":    "correction",
-                               "column_title": "Correction"})
+                               "column_title": _(u"Correction")})
         if is_column_notation:
             head_table.append({"css_class":    "sort text-left has-tip",
-                               "attr_title":   "Trier selon la note",
+                               "attr_title":   _(u"Trier selon la note"),
                                "data-sort":    "note",
-                               "column_title": "Note"})
-        #if is_personnel_and_is_actions:
+                               "column_title": _(u"Note")})
+        # if is_personnel_and_is_actions:
         #    head_table.append({"css_class":    "nosort",
         #                       "attr_title":   "",
         #                       "data-sort":    "",
