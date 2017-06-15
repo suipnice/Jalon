@@ -9,6 +9,8 @@
 # title=
 ##
 
+# context = context
+
 try:
     tags_list = tuple(context.REQUEST.form["listeTag"])
 except:

@@ -141,7 +141,7 @@ class Wims(SimpleItem):
             try:
                 error_body = e.read()
                 error_body = error_body.decode("iso-8859-1")
-            except:
+            except AttributeError:
                 # Si l'exception ne peux etre lue, c'est probablement un timeout...
                 # (AttributeError: 'timeout' object has no attribute 'read')
                 error_body = str(e)
@@ -191,7 +191,6 @@ class Wims(SimpleItem):
         u"""Purge les activités de la classe param[qclass]."""
         # en entree : params = {"qclass": class_id, "code": authMember}
         params["job"] = "cleanclass"
-        params["rclass"] = self.classe_locale
 
         rep = self.callJob(params)
 
@@ -642,6 +641,256 @@ class Wims(SimpleItem):
                 message = _(u"Attention : une activité WIMS ne peut contenir plus de 64 exercices. Certaines questions n'ont pas été importées.")
                 self.plone_utils.addPortalMessage(message, type='warning')
                 return questions_list
+
+        return questions_list
+
+    def importMoodleQuizXML(self, params):
+        u"""import d'exercices Moodle (quiz) dans une activité WIMS d'un cours."""
+        # See "https://docs.moodle.org/2x/fr/Format_XML_Moodle"
+        # params must be : {folder, member_auth, import_file}
+        import re
+        LOG.info("----- importMoodleQuizXML -----")
+
+        # from Products.CMFCore.utils import getToolByName
+        # putils = getToolByName(object, 'plone_utils')
+
+        folder = params["folder"]
+        member_auth = params["member_auth"]
+        import_file = params["file"]
+
+        h = HTMLParser.HTMLParser()
+        max_exos = 64
+
+        # On s'assure que le curseur de lecture est au début du fichier.
+        import_file.seek(0)
+
+        tree = ET.parse(import_file)
+        root = tree.getroot()
+        # groupe_title = h.unescape(root.find('./data/title').text).encode("utf-8")
+
+        questions_list = []
+
+        if not root.tag == "quiz":
+            message = _(u"Votre fichier n'est pas dans un format XML Moodle valide. Assurez-vous de sélectionner un fichier « .xml », généré depuis des Quiz Moodle V? ou plus.")
+            folder.plone_utils.addPortalMessage(message, type='error')
+            return questions_list
+
+        # On charge la liste des etiquettes existantes pour le dossier WIMS
+        folder_subjects = folder.getSubjectsDict()
+
+        nb_exos = 1
+
+        # liste des nouvelles etiquettes, avec leur id
+        new_tags = {}
+        # Liste d'exercice non reconnus (qui ne seront pas importés)
+        unrecognized_list = {}
+
+        last_question = len(root)
+
+        if params["model_filter"] == "all":
+            # params["model_filter"] = ["cloze", "multichoice", "matching"]
+            params["model_filter"] = ["cloze"]
+
+        for qnum, question in enumerate(root):
+            param_wims = None
+            question_type = question.get('type')
+
+            if question_type == "category":
+                # liste des id des etiquettes à ajouter a l'exo courant
+                tags_list = []
+                cat_structure = question.find('category').find('text').text.strip()
+                # On s'assure que les accents sont bien en unicode.
+                cat_structure = cat_structure.encode("utf-8")
+                cat_structure = cat_structure.split('/')
+                for tag_title in cat_structure:
+                    # si on a pas encore créé cette catégorie
+                    if tag_title not in new_tags:
+                        # Si l'etiquette existe deja, on demande son ID
+                        if tag_title in folder_subjects.values():
+                            for subj_key in folder_subjects:
+                                if folder_subjects[subj_key] == tag_title:
+                                    tag_id = subj_key
+                                    break
+                        # Si elle n'existe pas, on l'ajoute aux etiquettes du jalonfolder
+                        else:
+                            tag_id = "%s" % params["context"].getNewTagId()
+                            folder_subjects[tag_id] = tag_title
+
+                            LOG.info("On ajoute l'etiquette #%s : %s" % (tag_id, tag_title))
+                            folder.setSubjectsDict(folder_subjects)
+                            tags = list(folder.Subject())
+                            tags.append(tag_id)
+                            folder.setSubject(tuple(tags))
+                        new_tags[tag_title] = tag_id
+
+                    # On l'ajoute aux tags du prochain exercice si elle n'y est pas déjà.
+                    if new_tags[tag_title] not in tags_list:
+                        tags_list.append(new_tags[tag_title])
+            # Si le type de question fait partie des modeles à importer
+            elif question_type in params["model_filter"]:
+                # TODO : ici il faudrait s'assurer que le titre ne dépasse pas 40 chars...
+                question_dict = {"title": question.find('name').find('text').text.strip()}
+
+                if question_type == "cloze":
+                    LOG.info("----- Nouvelle question de type 'cloze' (%s) -----" % question_dict["title"])
+                    modele_wims = "texteatrous"
+
+                    donnees = question.find('questiontext').find('text').text
+
+                    # Il faut maintenant parser les donner à la recherches de codes du style :
+                    # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
+
+                    pattern_trous = r"{(.+?)}"
+                    pattern_percent = re.compile(r"%([0-9]*?)%")
+                    matches = re.finditer(pattern_trous, donnees)
+                    for match in matches:
+                        trou = match.group(1)
+                        good_reps = []
+                        bad_reps = []
+                        if trou.startswith("1:MULTICHOICE:"):
+                            trou = trou.replace("1:MULTICHOICE:", "")
+                            trou = trou.split("~")
+                            for rep in trou:
+                                fraction = pattern_percent.search(rep)
+                                if fraction is not None:
+                                    fraction = fraction.group(1)
+                                    if fraction != "100":
+                                        LOG.info("----- ATTENTION : cloze with fraction != 100 !! (%s) -----" % fraction)
+                                    rep = pattern_percent.sub('', rep)
+                                    good_reps.append(rep)
+                                else:
+                                    bad_reps.append(rep)
+                                    # LOG.info("----- Mauvaise -----(%s)" % rep)
+                            good_rep = ",".join(good_reps)
+                            if len(good_reps) > 1:
+                                # On utilise les accolades aléatoires (une des bonnes réponses sera piochée au hasard)
+                                good_rep = "{%s}" % (good_rep)
+
+                            bad_reps = ",".join(bad_reps)
+                            trou = "%s,%s" % (good_rep, bad_reps)
+
+                        elif trou.startswith("1:SHORTANSWER:="):
+                            trou = trou.replace("1:SHORTANSWER:=", "")
+                        else:
+                            LOG.info("----- ATTENTION : cloze with no unrecognized TYPE!! (%s) -----" % trou)
+                            message = _(u"----- ATTENTION : cloze with unrecognized TYPE! (%s) -----" % trou)
+                            folder.plone_utils.addPortalMessage(message, type='warning')
+                        donnees = donnees.replace(match.group(), "??%s??" % trou)
+
+                    feedbacks = {}
+                    for feedback_type in ['generalfeedback', 'correctfeedback', 'incorrectfeedback', 'partiallycorrectfeedback']:
+                        match = question.find(feedback_type)
+                        if match is not None:
+                            # ici tester si match.format = 'html' ?
+                            # moodle formats : html (default), moodle_auto_format, plain_text et markdown
+                            feedbacks[feedback_type] = match.find('text').text
+                        else:
+                            feedbacks[feedback_type] = ""
+
+                    # Todo : partiallycorrectfeedback
+
+                    list_order = int(question.find('shuffleanswers').text) + 1
+
+                    param_wims = {"title": question_dict["title"].encode("utf-8"),
+                                  "type_rep"     : "atext",
+                                  "donnees"      : donnees.encode("utf-8"),
+                                  "feedback_general": feedbacks['generalfeedback'].encode("utf-8"),
+                                  "feedback_bon"    : feedbacks['correctfeedback'].encode("utf-8"),
+                                  "feedback_mauvais": feedbacks['incorrectfeedback'].encode("utf-8"),
+                                  "credits"         : "",
+                                  "accolade"        : "1",
+                                  "list_order"      : "%s" % list_order
+                                  }
+
+                elif question_type == "multichoice":
+                    # TODO : preliminary DRAFT only
+                    LOG.info("----- Nouvelle question de type 'multichoice' -----")
+                    modele_wims = "qcmsimple"
+                    question_dict = {"good_rep": [],
+                                     "bad_rep":  []}
+                    for answer in question.find('answers'):
+                        answer_text = answer.find('text').text
+                        if answer_text:
+                            answer_text = answer_text.replace("&#x2019;", "'")
+                            if int(answer.find("correct").text):
+                                question_dict["good_rep"].append(h.unescape(answer_text).encode("utf-8"))
+                            else:
+                                question_dict["bad_rep"].append(h.unescape(answer_text).encode("utf-8"))
+
+                    enonce = question.find('questiontext').find('text').text
+                    # test the questiontext format ? html ?
+
+                    # if "#x2019;" in enonce:
+                    #    print enonce
+                    enonce = enonce.replace("&#x2019;", "'")
+
+                    param_wims = {"title":            question_dict["title"],
+                                  "enonce":           h.unescape(enonce).encode("utf-8"),
+                                  "bonnesrep":        "\n".join(question_dict["good_rep"]),
+                                  "mauvaisesrep":     "\n".join(question_dict["bad_rep"]),
+                                  "tot":              "5",
+                                  "givetrue":         "2",
+                                  "minfalse":         "0",
+                                  "options":          ["checkbox", "split"],
+                                  "feedback_general": "",
+                                  "feedback_bon":     "",
+                                  "feedback_mauvais": ""
+                                  }
+
+                elif question_type == "matching":
+                    # TODO : preliminary DRAFT only
+                    LOG.info("----- Nouvelle question de type 'matching' -----")
+                else:
+                    # other Moodle question types : truefalse|shortanswer|matching|essay|numerical|description
+                    if question_type not in unrecognized_list :
+                        unrecognized_list[question_type] = 1
+                    else:
+                        unrecognized_list[question_type] = unrecognized_list[question_type] + 1
+
+                if param_wims is not None:
+
+                    obj_id = folder.invokeFactory(type_name='JalonExerciceWims', id="%s-%s-%s-%s" %
+                                                  (modele_wims, member_auth, DateTime().strftime("%Y%m%d%H%M%S"), nb_exos))
+                    question_dict["id_jalon"] = obj_id
+                    questions_list.append(question_dict)
+                    obj_created = getattr(folder, obj_id)
+
+                    # With "no_compile", import is much more faster !
+                    param_wims["option"] = "no_compile"
+                    wims_response = obj_created.addExoWims(obj_id, param_wims["title"], member_auth, modele_wims, param_wims)
+
+                    if not("status" in wims_response):
+                        # La creation a planté (Cause : modele inconnu ?)
+                        folder.manage_delObjects(ids=[obj_id])
+                        # self.plone_log("unknown_model")
+                    else:
+                        # L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
+                        if wims_response["status"] == "OK":
+                            LOG.info("qnum = %s | last = %s)" % (qnum, last_question))
+                            nb_exos = nb_exos + 1
+                            LOG.info("nb_exos = %s | max_exos = %s)" % (nb_exos, max_exos))
+                            obj_created.setProperties({"Title": question_dict["title"],
+                                                       "Modele": modele_wims,
+                                                       })
+
+                            # On etiquette cet exercice :
+                            if len(tags_list) > 0:
+                                obj_created.setSubject(tuple(tags_list))
+                                obj_created.reindexObject()
+                                LOG.info("On etiquette cet exercice (%s)" % tags_list)
+                    if nb_exos > max_exos:
+                        message = _(u"Attention : vous ne pouvez importer plus de %s exercices dans un seul fichier. Certaines questions n'ont pas été importées." % max_exos)
+                        folder.plone_utils.addPortalMessage(message, type='warning')
+                        break
+
+        if nb_exos > 0:
+            # Etant donné que les exos ont tous été ajoutés sans compilation,
+            # on lance une compilation globale :
+            folder.compilExosWIMS(member_auth)
+
+        if len(unrecognized_list.keys()) > 0:
+            message = _(u"Attention : Certaines questions utilisaient un modèle non reconnu et n'ont pas été importées. (%s)" % unrecognized_list)
+            folder.plone_utils.addPortalMessage(message, type='warning')
 
         return questions_list
 

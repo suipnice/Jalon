@@ -28,7 +28,6 @@ import string
 import os
 import copy
 
-# from DateTime import DateTime
 # from logging import getLogger
 # LOG = getLogger('[JalonFolder]')
 """
@@ -537,7 +536,7 @@ class JalonFolder(ATFolder):
 
         if folder_subjects:
             subjects_list = [{"tag_id": key, "tag_title": folder_subjects[key]}
-                for key in folder_subjects.keys()]
+                             for key in folder_subjects.keys()]
             subjects_list.sort(lambda x, y: cmp(x["tag_title"], y["tag_title"]))
             # LOG.info("subjects_list : %s" % subjects_list)
             return subjects_list
@@ -1070,6 +1069,40 @@ class JalonFolder(ATFolder):
         # LOG.info("----- wims -----")
         return self.portal_wims.__getattribute__(methode)(param)
 
+    def compilExosWIMS(self, member_auth):
+        """Compile tous les exercices qui ne le sont pas encore, et reconstruit l'index."""
+        # LOG.info("----- compilExosWIMS START %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
+        if self.getId() != "Wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        params = {"job": "buildexos",
+                  "qclass": "%s_1" % self.getComplement(),
+                  "code": member_auth}
+        # LOG.info("Compilation des exos de la classe %s" % params["qclass"])
+        rep = self.wims("callJob", params)
+        rep = self.wims("verifierRetourWims",
+                        {"rep": rep,
+                         "fonction": "jalonfolder/compilExosWIMS",
+                         "requete": params})
+        # LOG.info("----- compilExosWIMS END %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
+
+    def importExercicesWIMS(self, file_format, member_auth, file, model_filter):
+        """Import d'exercices WIMS via un fichier."""
+        if self.getId() != "mes_exercices_wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        portal = self.portal_url.getPortalObject()
+        folder = getattr(portal.Members, member_auth).Wims
+        if file_format == "MoodleXML":
+            self.wims("importMoodleQuizXML", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
+        else:
+            message = _(u"Ce format d'import d'exercices n'est pas permis.")
+            self.plone_utils.addPortalMessage(message, type='warning')
+
     def transfererExosWIMS(self, user_source):
         u"""Transfert des exercices WIMS d'un prof "user_source" vers le jalonfolder courant.
 
@@ -1194,7 +1227,11 @@ class JalonFolder(ATFolder):
         for path in paths:
             exo_id = path.split("/")[-1]
             exo = getattr(self, exo_id)
-            exo.delExoWims()
+            # l'option "no_build" permet de gagner du temps sur une suppression multiple
+            # LOG.info("Suppression de l'exo '%s'" % exo_id)
+            exo.delExoWims(option="no_build")
+        # Une fois les exos supprimés, on reconstruit l'index
+        self.compilExosWIMS(member_auth=self.aq_parent.getId())
 
     def getModelesWims(self):
         u"""Fournit le dico complet des modèles d'exercices WIMS (groupe compris)."""

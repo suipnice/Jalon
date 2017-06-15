@@ -362,7 +362,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     source = source.replace("$$%s$$" % key, param[key])
                     param["exercicelibre"] = source
             if param is None:
-                # LOG.error("addExoWims / getVariablesDefaut return None")
+                LOG.error("addExoWims / getVariablesDefaut return None")
                 return None
 
         # Cas d'une modification (ou d'un import)
@@ -371,7 +371,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             param = deepcopy(form)
             if "option" in param:
                 # Dans le cas d'une modification, option devrait toujours contenir "force_rewrite" à priori
-                # Si "option" n'est pas défini, c'est qu'on fait un import.
+                # (force_rewrite permet d'ecraser un exo existant)
+                # dans le cas d'un import, "option" peut aussi contenir "no_compile" pour accélérer la procédure.
                 dico["option"] = param["option"]
 
             if "options" in param and type(param["options"]) is list:
@@ -536,8 +537,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # LOG.info("----- authUser -----")
         return jalon_utils.authUser(self.aq_parent, quser, qclass, request)
 
-    def delExoWims(self):
-        u"""Supprime l'exercice wims courant sur le serveur WIMS.
+    def delExoWims(self, option=""):
+        u"""Supprime l'exercice Wims courant sur le serveur WIMS.
 
         La suppression coté jalon se fait ensuite dans folder_delete.cpy
 
@@ -553,7 +554,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         elif modele == "externe":
             retour = "TODO"
         else:
-            dico = {"job": "delexo", "code": author, "qclass": qclass, "qexo": qexo}
+            dico = {"job": "delexo", "code": author, "qclass": qclass, "qexo": qexo, "option": option}
             rep_wims = self.aq_parent.wims("callJob", dico)
             retour = self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/delExoWims", "message": "suppression d'un exo de Mes ressources", "requete": dico})
         return retour

@@ -11,6 +11,8 @@
 from Products.CMFPlone import PloneMessageFactory as _
 # from OFS.ObjectManager import BeforeDeleteException
 
+# context = context
+
 req = context.REQUEST
 paths = req.get('paths', [])
 nonSup = req.get("nonSup", [])

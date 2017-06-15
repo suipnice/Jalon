@@ -1,0 +1,107 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.theme">
+
+<body>
+
+<metal:content-core fill-slot="content"
+                    tal:define="errors options/state/getErrors | nothing">
+    <tal:comment replace="nothing">
+        <!-- import_wims_exercice_form.cpt : formulaire d'import d'exercice(s) WIMS depuis un fichier (Moodle) -->
+    </tal:comment>
+
+    <h2>
+        <tal:block i18n:translate="">Importer un(des) exercice(s) WIMS</tal:block>
+        <a class="close-reveal-modal"></a>
+    </h2>
+
+    <form tal:attributes="action string:${context/absolute_url}/${template/id}"
+          enctype="multipart/form-data" method="post">
+
+        <div class="field">
+            <h3 i18n:translate="">Choisissez le format de votre fichier d'exercice(s) :</h3>
+            <dl id="js-accordion_import-WIMS" class="accordion"
+                data-accordion="import-WIMS">
+
+                <dd class="accordion-navigation">
+                    <a href="#WIMS"><tal:block i18n:translate="">Format WIMS</tal:block></a>
+                    <div id="WIMS" class="content">
+                        <ul>
+                            <li>
+                                <input type="radio" id="OEF" value="oef" name="type" disabled="disabled" />
+                                <label for="OEF" i18n:translate=""><del>Format OEF</del></label>
+                                <span class="label secondary" i18n:translate="">Exercice exporté directement depuis WIMS</span>
+                                <p class="formHelp texte_icone icone_information" i18n:translate=""> Ce format sera bientôt disponible. Revenez nous voir plus tard ;).</p>
+                            </li>
+                        </ul>
+                    </div>
+                </dd>
+
+                <dd class="accordion-navigation">
+                <a href="#Moodle"><tal:block i18n:translate="">Format Moodle</tal:block> <span class="label" i18n:translate="">Un fichier généré depuis un quiz Moodle</span></a>
+                    <div id="Moodle" class="content active">
+                        <ul>
+                            <li>
+                                <input type="radio" id="MoodleXML" value="MoodleXML" name="type" checked="checked"/>
+                                <label for="MoodleXML">
+                                    Moodle XML
+                                    <span class="label secondary" i18n:translate="">Le fichier doit être au format ".xml"</span>
+                                </label>
+                            </li>
+                        </ul>
+                        <p class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, vous ne pouvez pas importer plus de 64 exercices par fichier.</p>
+
+                        <div>
+                            <label for="model_filter" i18n:translate="">Modèle d'exercices</label>
+                            <select id="model_filter" name="model_filter">
+                                <option value="all" i18n:translate="">Tous les modèles compatibles</option>
+                                <option value="cloze" i18n:translate="">Textes à trous (cloze)</option>
+                                <option value="multichoice" disabled="disabled" i18n:translate="">questions simples (multichoice) -  bientôt disponible</option>
+                                <option value="matching" disabled="disabled" i18n:translate="">matching - bientôt disponible</option>
+                            </select>
+                            <p class="formHelp" i18n:translate="">Jalon n'importera que les exercices de ce modèle.</p>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+        </div>
+
+
+        <div tal:define="error errors/file | nothing;
+                         arch_class string:field"
+             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
+
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+
+            <label for="file" class="formQuestion" i18n:translate="">Fichier à importer</label>
+            <div class="fieldErrorBox"
+                 tal:condition="error" tal:content="error" />
+            <input type="file" id="file" name="file"
+                   required="required" />
+        </div>
+
+        <input type="hidden" name="form.submitted" value="1"/>
+        <input type="hidden" name="validate_key" value="import_wims_exercice"/>
+        <input type="hidden" name="member_auth" tal:attributes="value user/getId" />
+
+        <div class="formControls">
+            <button type="submit" class="button small create"
+                    name="submit">
+                <i class="fa fa-upload"></i>
+                <tal:block i18n:translate="">Importer</tal:block>
+            </button>
+        </div>
+
+    </form>
+    <div class="panel" i18n:translate="">L'import d'exercices WIMS est actuellement en phase "Bêta". Assurez-vous de vérifier qu'il n'y a pas eu de souci lors de l'import, et n'hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
+
+</metal:content-core>
+
+</body>
+
+</html>

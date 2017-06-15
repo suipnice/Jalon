@@ -12,6 +12,9 @@
 
 from Products.CMFPlone import PloneMessageFactory as _
 
+# context = context
+# state = state
+
 # context.plone_log("[valider_form]")
 error = False
 form = context.REQUEST.form
@@ -29,7 +32,9 @@ validate_dict = {"create_tag":               ["title"],
                  "create_glossary_term":     ["title", "description"],
                  "edit_file":                ["title"],
                  "edit_external_resource":   ["title", "urlbiblio"],
-                 "edit_glossary_term":       ["title", "description"]}
+                 "edit_glossary_term":       ["title", "description"],
+                 "import_wims_exercice":     ["file", "type"]
+                 }
 
 if validate_key == "edit_external_resource":
     if "lecteur" in form:

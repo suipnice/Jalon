@@ -1,0 +1,11 @@
+[default]
+title=Formulaire d'import d'exercices WIMS
+border=None
+
+[validators]
+validators=validate_my_space
+
+[actions]
+action.failure = traverse_to:string:import_wims_exercice_form
+
+action.success_import_wims_exercice = traverse_to:string:import_wims_exercice_script

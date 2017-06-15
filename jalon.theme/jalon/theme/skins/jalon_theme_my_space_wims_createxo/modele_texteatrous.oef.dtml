@@ -60,11 +60,11 @@ Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabé
 \if{\feedback_general notsametext }{
   \text{feedback_general=<div class='feedback'>\feedback_general</div>}
 }
-\if{\feedback_bon != \empty}{
-  \text{feedback_bon=<p class='feedback oef_indgood'>\feedback_bon</p>}
+\if{\feedback_bon notsametext }{
+  \text{feedback_bon=<div class='feedback oef_indgood'>\feedback_bon</div>}
 }
-\if{\feedback_mauvais != \empty}{
-  \text{feedback_mauvais=<p class='feedback oef_indbad'>\feedback_mauvais</p>}
+\if{\feedback_mauvais notsametext }{
+  \text{feedback_mauvais=<div class='feedback oef_indbad'>\feedback_mauvais</div>}
 }
 \precision{10000}
 \text{data=wims(singlespace \data)}
