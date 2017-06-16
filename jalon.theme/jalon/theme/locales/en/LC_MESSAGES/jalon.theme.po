@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2012-01-19 14:11+0000\n"
-"PO-Revision-Date: 2017-04-19 16:24+0200\n"
+"PO-Revision-Date: 2017-06-16 17:29+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Service PI - Université Nice Sophia Antipolis <pi@unice.fr>\n"
 "MIME-Version: 1.0\n"
@@ -13,897 +13,905 @@ msgstr ""
 "Language-Name: Français\n"
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: jalon.content\n"
-"X-Generator: Poedit 2.0\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
+"Language: en\n"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:58
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:201
 msgid "Afficher"
-msgstr ""
+msgstr "Display"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:17
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrousmultiples.pt:24
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:16
 msgid "Aide"
-msgstr ""
+msgstr "Help"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:131
 msgid "Ajouter une question"
-msgstr ""
+msgstr "Add a question"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:73
 msgid "Au moins 1"
-msgstr ""
+msgstr "At least 1"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:264
 msgid "Aucun"
-msgstr ""
+msgstr "None"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:57
 msgid "Balises html admises."
-msgstr ""
+msgstr "Html tags admitted."
 
 #: ../skins/jalon_theme_forum/valider_forum.vpy:30
 msgid "Champ obligatoire"
-msgstr ""
+msgstr "Mandatory field"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:38
 msgid "Classement"
-msgstr ""
+msgstr "Ranking"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:46
 msgid "Code"
-msgstr ""
+msgstr "Code"
 
 #: ../skins/jalon_theme_forum/add_comment_script.cpy:55
 msgid "Comment added"
-msgstr ""
+msgstr "Comment added"
 
 #: ../skins/jalon_theme_forum/add_comment_script.cpy:53
 msgid "Comment is pending moderation"
-msgstr ""
+msgstr "Comment is pending moderation"
 
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:123
 msgid "Compte UNS non ouvert"
-msgstr ""
+msgstr "UNS account not opened"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:51
 msgid "Connexion"
-msgstr ""
+msgstr "Connection"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:78
 msgid "Consultation des cours"
-msgstr ""
+msgstr "Courses consultation"
 
 #: ../skins/jalon_theme_forum/add_conversation_script.cpy:45
 msgid "Conversation added"
-msgstr ""
+msgstr "Conversation added"
 
 #: ../skins/jalon_theme_forum/add_conversation_script.cpy:43
 msgid "Conversation is pending moderation"
-msgstr ""
+msgstr "Conversation is pending moderation"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:54
 msgid "Eff."
-msgstr ""
+msgstr "Hc."
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:73
 msgid "Effectif"
-msgstr ""
+msgstr "Headcount"
 
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:95
 msgid "Envoyer le courriel"
-msgstr ""
+msgstr "Send email"
 
 #: ../profiles.zcml:12
 msgid "Extension profile for the \"Jalon\" Plone theme."
-msgstr ""
+msgstr "Extension profile for the \"Jalon\" Plone theme."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:29
 msgid "Gestion des synonymes"
-msgstr ""
+msgstr "Synonyms management"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:173
 msgid "Groupe(s)"
-msgstr ""
+msgstr "Group(s)"
+
+#: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:18
+msgid "Importer un exercice Wims"
+msgstr "Import a Wims exercise"
 
 #: ../profiles.zcml:12
 msgid "Jalon Theme"
-msgstr ""
+msgstr "Jalon Theme"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:13
 msgid "Les balises HTML sont admises."
-msgstr ""
+msgstr "Html tags are admitted."
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:115
 msgid "Liste"
-msgstr ""
+msgstr "List"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:41
 msgid "Listez les objets dans le bon ordre."
-msgstr ""
+msgstr "List the items in the right order."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:204
 msgid "Masquer"
-msgstr ""
+msgstr "Hide"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:30
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:20
 msgid "Mes etudiants"
-msgstr ""
+msgstr "My students"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:232
+#, fuzzy
 msgid "Nb. ens."
-msgstr ""
+msgstr "Nb. ens."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:79
 msgid "Ordre des listes de choix"
-msgstr ""
+msgstr "Choice lists' order"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:56
 msgid "Pied de page"
-msgstr ""
+msgstr "Footer"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:118
 msgid "Proposer un texte parmi plusieurs"
-msgstr ""
+msgstr "Propose a text among others"
 
 #. Default: "Question"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:35
 msgid "Question "
-msgstr ""
+msgstr "Question "
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:223
 msgid "Responsable"
-msgstr ""
+msgstr "Supervisor"
 
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:71
 msgid "Saisie obligatoire"
-msgstr ""
+msgstr "Mandatory entry"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:74
 msgid "Saisissez 3 paires d'objets minimum."
-msgstr ""
+msgstr "Enter at least 3 pairs of items."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:102
 msgid "Saisissez au moins une phrase fausse."
-msgstr ""
+msgstr "Enter at least one wrong sentence."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:58
 msgid "Saisissez au moins une phrase vraie."
-msgstr ""
+msgstr "Enter at least one correct sentence."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:17
 msgid "Saisissez ici votre question."
-msgstr ""
+msgstr "Enter your question here."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:13
 msgid "Saisissez simplement votre question."
-msgstr ""
+msgstr "Simply enter your question."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:96
 msgid "Saisissez un nombre"
-msgstr ""
+msgstr "Enter a number"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:124
 msgid "Saisissez un nombre de phrases"
-msgstr ""
+msgstr "Enter a number of sentences"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:108
 msgid "Saisissez un nombre entier"
-msgstr ""
+msgstr "Enter an integer"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:170
 msgid "Saisissez un nombre maximum de pages"
-msgstr ""
+msgstr "Enter a maximum number of pages"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:153
 msgid "Saisissez un nombre maximum de questions par page"
-msgstr ""
+msgstr "Enter a maximum number of questions per page"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:185
 msgid "Saisissez un nombre."
-msgstr ""
+msgstr "Enter a number."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_questiontextuelletolerante.pt:56
 msgid "Saisissez vos phrases ici."
-msgstr ""
+msgstr "Enter your sentences here."
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:301
 #: ../skins/jalon_theme_my_students/statistique_page.pt:35
 msgid "Statistiques"
-msgstr ""
+msgstr "Statistics"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:326
 msgid "Suivant"
-msgstr ""
+msgstr "Next"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:46
 msgid "Tableau de bord"
-msgstr ""
+msgstr "Dashboard"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrousmultiples.pt:40
 msgid "Tapez au moins un texte ici."
-msgstr ""
+msgstr "Enter at least a text here."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:24
 msgid "Tapez simplement les instructions de votre exercice."
-msgstr ""
+msgstr "Symply enter the instructions of your exercise."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:91
 msgid "Tapez simplement votre question."
-msgstr ""
+msgstr "Simply enter your question."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:45
 msgid "Tapez simplement votre question. Balises html admises."
-msgstr ""
+msgstr "Symply enter your question. Html tags admitted."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:46
 msgid "Tapez une question ici"
-msgstr ""
+msgstr "Enter a question here"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:47
 msgid "Tapez votre texte ici."
-msgstr ""
+msgstr "Enter your text here."
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:49
 msgid "Trier selon l'effectif'"
-msgstr ""
+msgstr "Sort according to the headcount’"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:33
 msgid "Trier selon le classement"
-msgstr ""
+msgstr "Sort according to the ranking"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:41
 msgid "Trier selon le code"
-msgstr ""
+msgstr "Sort according to the code"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:226
 msgid "Trier selon le nombre d'enseignants"
-msgstr ""
+msgstr "Sort according to the number of teachers"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:217
 msgid "Trier selon le responsable"
-msgstr ""
+msgstr "Sort according to the supervisor"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:199
 msgid "Trier selon le type"
-msgstr ""
+msgstr "Sort according to the type"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:121
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:25
 msgid "Trombinoscope"
-msgstr ""
+msgstr "Face book"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:205
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:152
 msgid "Une formule est requise"
-msgstr ""
+msgstr "A formula is required"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:362
 msgid "Vous n'avez pas le droit de consulter cette page"
-msgstr ""
+msgstr "You don't have the rights to consult this page"
 
 #: ../skins/jalon_theme_forum/add_comment_script.cpy:40
 msgid "You can only add comments to conversations or comments."
-msgstr ""
+msgstr "You can only add comments to conversations or comments."
 
 #. Default: "Cours attachés"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:57
 msgid "attached_courses"
-msgstr ""
+msgstr "Attached courses"
 
 #. Default: "Diplôme(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:161
 msgid "diploma_s"
-msgstr ""
+msgstr "Diploma(s)"
 
 #. Default: "De :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:23
 msgid "email_from"
-msgstr ""
+msgstr "From: "
 
 #. Default: "Message :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:81
 msgid "email_message"
-msgstr ""
+msgstr "Message: "
 
 #. Default: "Objet :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:68
 msgid "email_subject"
-msgstr ""
+msgstr "Subject: "
 
 #. Default: "À :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:35
 msgid "email_to"
-msgstr ""
+msgstr "To: "
 
 #. Default: "Groupe(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:184
 msgid "group_s"
-msgstr ""
+msgstr "Group(s)"
 
 #. Default: "Étudiants attachés à mes cours via l'offre de formation"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:8
 msgid "head_attached_corporate_students"
-msgstr ""
+msgstr "Students attached to my courses via the course offer"
 
 #. Default: "Ma promo du diplôme : ${DYNAMIC_CONTENT}"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:375
 msgid "head_my_promo"
-msgstr ""
+msgstr "My promotion for the diploma: ${DYNAMIC_CONTENT}"
 
 #. Default: "Liste des étudiants de"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:16
 msgid "head_students_list_from"
-msgstr ""
+msgstr "List of students from"
 
 #. Default: "Le texte à marquer"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:30
 msgid "head_wims_marqueruntexte_data"
-msgstr ""
+msgstr "Text to be highlighted"
 
 #. Default: "Aide sur une question à poser"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:90
 msgid "head_wims_qcmsuite_question_help"
-msgstr ""
+msgstr "Help on a question to be asked"
 
 #. Default: "Aide sur les réponses aux questions"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:110
 msgid "head_wims_qcmsuite_reponse_help"
-msgstr ""
+msgstr "Help on the answers to the questions"
 
 #. Default: "Aide des textes à trous"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:25
 msgid "head_wims_texteatrous_help"
-msgstr ""
+msgstr "Help for the fill-in-the-blank texts"
 
 #. Default: "Détail des connexions par mois pour l'année ${DYNAMIC_CONTENT} :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:32
 msgid "header_year_connections_details"
-msgstr ""
+msgstr "Details on monthly connections for the year ${DYNAMIC_CONTENT}:"
 
 #. Default: "Ce texte accepte la mise en aléatoire par des accolades (cf options avancées). Ceci est particulièrement utile pour générer rapidement plusieurs phrases à partir d'un même modèle."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:87
 msgid "help_embraced_randitem"
-msgstr ""
+msgstr "This text allows randomization by using braces (cf advanced options). This is especially useful to fastly generate several sentences from a same model."
 
 #. Default: "Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:114
 msgid "help_wims_feedback_bad"
-msgstr ""
+msgstr "This text will be displayed after the student's answer if he gave at least one wrong answer."
 
 #. Default: "Ce texte s'affichera après la réponse de l'apprenant, qu'elle soit juste ou fausse."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:158
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:240
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:98
 msgid "help_wims_feedback_general"
-msgstr ""
+msgstr "This text will be displayed after the student's answer be it wrong or right."
 
 #. Default: "Ce texte s'affichera après la réponse de l'apprenant, s'il a trouvé toutes les bonnes réponses."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:106
 msgid "help_wims_feedback_good"
-msgstr ""
+msgstr "This text will be displayed after the student's answer if he gave all the right answers."
 
 #. Default: "Réordonne les propositions avant de les afficher"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:80
 msgid "help_wims_list_order_option"
-msgstr ""
+msgstr "Rearrange the propositions before displaying it"
 
 #. Default: "Les champs à marquer doivent être mis entre une paire de double-point d'interrogation <code class=\"indicateur\">?? champ à marquer ??</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:33
 msgid "help_wims_marqueruntexte_data_1"
-msgstr ""
+msgstr "The fields that have to be highlighted must be written between a pair of double-question marks<code class=\\\"indicator\\\">?? field that must be highlighted ??</code>."
 
 #. Default: "Chaque champ contient une liste de mots séparés par des virgules."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:34
 msgid "help_wims_marqueruntexte_data_2"
-msgstr ""
+msgstr "Each field contain a list of words separated by commas."
 
 #. Default: "Ces mots seront tirés au hasard avant l'affichage de la phrase."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:35
 msgid "help_wims_marqueruntexte_data_3"
-msgstr ""
+msgstr "These words will be randomly picked before displaying the sentence."
 
 #. Default: "Si c'est le premier mot (quand il n'est pas vide), il est à marquer ; sinon on ne doit pas le marquer. <code class=\"indicateur\">?? mot à marquer, mot à ne pas marquer ??</code>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:36
 msgid "help_wims_marqueruntexte_data_4"
-msgstr ""
+msgstr "If it's the first word (when it's not empty), it have to be highlighted; if not it shall not be highlighted. <code class=\\\"indicateur\\\">?? word that have to be highlighted, word that shall not be highlighted ??</code>\""
 
 #. Default: "Jusqu'à une centaine de points de marquage peuvent être posés dans chaque paragraphe. Chaque paragraphe étant séparé par un point-virgule : <code class=\"indicateur\">;</code>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:38
 msgid "help_wims_marqueruntexte_data_5"
-msgstr ""
+msgstr "Up to around one hundred marking points can be put in each paragraph. Each paragraph being separated by a semicolon: <code class=\\\"indicator\\\">;</code>\""
 
 #. Default: "Pour placer un champ « marquable », mais qui ne soit jamais une bonne réponse, commencez votre champ par une virgule : <code class=\"indicateur\">??,mot à ne pas marquer??</code>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:41
 msgid "help_wims_marqueruntexte_data_6"
-msgstr ""
+msgstr "To place a \"highlightable\" field, but that would never be a good answer, start your field with a coma: <code class=\\\"indicator\\\">??,word that shall not be highlighted??</code>\""
 
 #. Default: "Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonne réponses possibles pour un mot marquable."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:124
 msgid "help_wims_marqueruntexte_embraced_randitem"
-msgstr ""
+msgstr "This becomes especially useful with this type of exercises, because it is the only way to define several good possible answers for one highlightable word."
 
 #. Default: "Je lui ai montré ??<span class=\"shuffle\">{cept,cette,ces}</span>,cet?? oiseau."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:126
 msgid "help_wims_marqueruntexte_embraced_randitem_sample"
-msgstr ""
+msgstr "Default: \"I showed him ??<span class=\\\"shuffle\\\">{dat,those,thas}</span>,this?? bird.\""
 
 #. Default: "Si c'est un des mots <span class=\"sample\">\"cept\", \"cette\" ou \"ces\"</span> qui est tiré au hasard, ce sera une réponse à marquer (ici, une faute d'orthographe), et si le dernier mot (<span class=\"sample\">\"cet\"</span>) est tiré au hasard, il ne sera pas à marquer."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:127
 msgid "help_wims_marqueruntexte_embraced_randitem_sample_2"
-msgstr ""
+msgstr "If it is one of the words <span class=\\\"sample\\\">\\\"dat\\\", \\\"those\\\" or \\\"thas\\\"</span> that is randomly picked, it will be an answer that can be highlighted (here, a misspelling), and if the last word (<span class=\\\"sample\\\">\\\"this\\\"</span>) is randomly picked, it won't be to be highlighted.\""
 
 #. Default: "L'apprenant devra au moins en marquer ce minimum pour avoir tous les points. Au moins 1."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:72
 msgid "help_wims_marqueruntexte_minmark"
-msgstr ""
+msgstr "The student will have to at least highlight this much to have all the points. At least 1."
 
 #. Default: "Donner une note partielle aux réponses partiellement correctes."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:107
 msgid "help_wims_marqueruntexte_option_split"
-msgstr ""
+msgstr "Give a partial grade to the partially right answers."
 
 #. Default: "Vous pouvez proposez un texte pioché aléatoirement : <br />séparez chaque texte à proposer par un point-virgule <code class=\"indicateur\">;</code>. (Les textes eux-mêmes ne peuvent donc pas contenir de point-virgule)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:119
 msgid "help_wims_marqueruntexte_randomtext"
-msgstr ""
+msgstr "You can propose a randomly picked text: <br />separate each text that can be proposed by a semicolon <code class=\\\"indicator\\\">;</code>. (Thus, texts cannot contain semicolon)."
 
 #. Default: "En mode \"2 colonnes\", si la largeur de l'écran le permet, les questions seront réparties sur 2 colonnes."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:256
 msgid "help_wims_qcmsuite_columns_help"
-msgstr ""
+msgstr "In \\\"2 columns\\\" mode, if the width of the screen allows it, questions will be spread between 2 columns."
 
 #. Default: "Notez que sur <a href=\"http://caniuse.com/#search=flex\" target=\"_blank\">certains anciens navigateurs internet</a>, cette fonctionalité peut ne pas fonctionner."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:259
 msgid "help_wims_qcmsuite_columns_help_note"
-msgstr ""
+msgstr "Please notice that with <a href=\\\"http://caniuse.com/\\#search=flex\\\" target=\\\"_blank\\\">some older internet browsers</a>, this function cannot be used.\""
 
 #. Default: "Cela peut par exemple permettre d'économiser un peu de papier pour des questions courtes si vous décider des les imprimer..."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:257
 msgid "help_wims_qcmsuite_columns_help_sample"
-msgstr ""
+msgstr "For example, this can allow you to save a bit of paper for short questions is you decide to print it…"
 
 #. Default: "Ce modèle permet d'ajouter jusqu'à 40 questions."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:126
 msgid "help_wims_qcmsuite_questions_sample"
-msgstr ""
+msgstr "This model allows to add up to 40 questions."
 
 #. Default: "Indiquez le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne.<br /> Vous pouvez définir plusieurs bonnes réponses. Indiquez alors sur la premiere ligne plusieurs numéros, séparés par des virgules."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:111
 msgid "help_wims_qcmsuite_reponse"
-msgstr ""
+msgstr "Indicate the number of good answers on the first line, then enter an answer per line<br /> You can define several good answers. Then enter several numbers on the first line, separated by commas."
 
 #. Default: "Exemple pour définir les propositions 1 et 2 comme bonnes :<br /> <pre class=\"text-left\">1,2 Bonne réponse n°1 Bonne réponse n°2 Mauvaise réponse n°1 Mauvaise réponse n°2</pre>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:115
 msgid "help_wims_qcmsuite_reponse_sample"
-msgstr ""
+msgstr "Example to define the 1 and 2 propositions as good: <br /> <pre class=\\\"text-left\\\">1,2 Good answers n°1 Good answer n°2 Wrong answer n°1 Wrong answer n°2</pre>"
 
 #. Default: "La tolérance avec laquelle WIMS analysera les réponses libres.<br />Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext »."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:55
 msgid "help_wims_tolerance_level"
-msgstr ""
+msgstr "Tolerance level used by WIMS to analyze free answers. <br /> \"case\" and \"nocase\" types are mostly appropriated for linguistic applications. Otherwhise, you should rather use \"atext\""
 
 #. Default: "Tapez directement votre texte, en plaçant les mots à marquer entre des paires de points d'interrogation <code class=\"indicateur\">??</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:46
 msgid "hint_wims_marqueruntexte_data_1"
-msgstr ""
+msgstr "Directly enter your text, place words that must be highlighted between a pair of interrogation marks<code class=\\\"indicator\\\">??</code>"
 
 #. Default: "Un point-virgule sépare votre texte en 2."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:46
 msgid "hint_wims_marqueruntexte_data_2"
-msgstr ""
+msgstr "A semicolon shall split your text into two parts."
 
 #. Default: "Pour ouvrir un cours à un diplôme, une unité d'enseignement, etc. ; rendez-vous à la page du plan de ce cours et ajoutez des participants depuis l'offre de formation."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:15
 msgid "how_to_attach_corporate_students"
-msgstr ""
+msgstr "To open a course for a diploma, a teaching unit, etc ; go to the page of the syllabus of this course and add participants from the course offer."
 
 #. Default: "Nombre de connexion de l'année en ${DYNAMIC_CONTENT} :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:6
 msgid "label_connections_count"
-msgstr ""
+msgstr "Number of connections this year in ${DYNAMIC_CONTENT}:"
 
 #. Default: "Désactivé"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:222
 msgid "label_disabled"
-msgstr ""
+msgstr "Disabled"
 
 #. Default: "Courriel"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:56
 msgid "label_email"
-msgstr ""
+msgstr "Email"
 
 #. Default: "Activé"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:216
 msgid "label_enabled"
-msgstr ""
+msgstr "Enabled"
 
 #. Default: "Aide"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:17
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marquerparpropriete.pt:13
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:22
 msgid "label_help"
-msgstr ""
+msgstr "Help"
 
 #. Default: "Liste des étudiants"
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:40
 msgid "label_listing_etudiant"
-msgstr ""
+msgstr "Students list"
 
 #. Default: "ID"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:40
 msgid "label_numero_etudiant"
-msgstr ""
+msgstr "ID"
 
 #. Default: "Sélectionner une année :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:9
 msgid "label_select_a_year"
-msgstr ""
+msgstr "Select a year: "
 
 #. Default: "Nombre d'étudiants :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:5
 msgid "label_students_count"
-msgstr ""
+msgstr "Number of students: "
 
 #. Default: "Pour obtenir le trombinoscope des étudiants en version imprimable, utilisez la fonction d’impression de votre navigateur : la mise en page se fera automatiquement."
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:104
 msgid "label_trombi_print"
-msgstr ""
+msgstr "To obtain the students' face book in printable version, use the print fonction of your internet browser: layout will be done automatically."
 
 #. Default: "Mettre à jour ma photo"
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:46
 msgid "label_trombi_update_photo"
-msgstr ""
+msgstr "Update my photograph"
 
 #. Default: "La question à poser"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:14
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:18
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:19
 msgid "label_wims_enonce"
-msgstr ""
+msgstr "Question to asked"
 
 #. Default: "Équation"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:132
 msgid "label_wims_equation"
-msgstr ""
+msgstr "Equation"
 
 #. Default: "Feedback de mauvaise réponse"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:113
 msgid "label_wims_feedback_bad"
-msgstr ""
+msgstr "Wrong answer feedback"
 
 #. Default: "Feedback de bonne réponse"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:105
 msgid "label_wims_feedback_good"
-msgstr ""
+msgstr "Good answer feedback"
 
 #. Default: "Feedback général"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:157
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:239
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:97
 msgid "label_wims_general_feedback"
-msgstr ""
+msgstr "General feedback"
 
 #. Default: "Texte à marquer"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:24
 msgid "label_wims_marqueruntexte_data"
-msgstr ""
+msgstr "Text to be highlighted"
 
 #. Default: "Maximum de cases à marquer pour chaque exercice"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:87
 msgid "label_wims_marqueruntexte_maxmark"
-msgstr ""
+msgstr "Maximum number of highlight-able boxes for each exercise"
 
 #. Default: "Minimum de cases à marquer pour chaque exercice"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:70
 msgid "label_wims_marqueruntexte_minmark"
-msgstr ""
+msgstr "Minimum number of highlight-able boxes for each exercise"
 
 #. Default: "Question à poser"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:12
 msgid "label_wims_marqueruntexte_question"
-msgstr ""
+msgstr "Question to asked"
 
 #. Default: "Ordre alphabétique (croissant)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:86
 msgid "label_wims_order_alpha"
-msgstr ""
+msgstr "Alphabetical order (crescent)"
 
 #. Default: "Ordre aléatoire"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:83
 msgid "label_wims_order_shuffle"
-msgstr ""
+msgstr "Random order"
 
 #. Default: "Autoriser plusieurs réponses"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:138
 msgid "label_wims_qcmsimple_option_checkbox"
-msgstr ""
+msgstr "Allow multiple answers"
 
 #. Default: "Simple"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:245
 msgid "label_wims_qcmsuite_columns_1"
-msgstr ""
+msgstr "Single"
 
 #. Default: "jusqu'à 2 colonnes"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:248
 msgid "label_wims_qcmsuite_columns_2"
-msgstr ""
+msgstr "Up to 2 columns"
 
 #. Default: "jusqu'à 3 colonnes"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:251
 msgid "label_wims_qcmsuite_columns_3"
-msgstr ""
+msgstr "up to 3 columns"
 
 #. Default: "Niveau de tolérance"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:54
 msgid "label_wims_tolerance_level"
-msgstr ""
+msgstr "Tolerance level"
 
 #. Default: "Télécharger cette liste d'étudiants au format XLS"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:25
 msgid "link_download_student_list"
-msgstr ""
+msgstr "Download this list of the students in XLS "
 
 #. Default: "Connexion d'un étudiant"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:69
 msgid "link_stats_student_connection"
-msgstr ""
+msgstr "Student's connection"
 
 #. Default: "Connexion des étudiants"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:60
 msgid "link_stats_students_connection"
-msgstr ""
+msgstr "Students' connection"
 
 #. Default: "Supprimer la dernière question"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:135
 msgid "link_wims_delete_last_question"
-msgstr ""
+msgstr "Delete last question"
 
 #. Default: "Écrire"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:128
 msgid "link_write"
-msgstr ""
+msgstr "Write"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:67
 msgid "longueur x largeur"
-msgstr ""
+msgstr "Length x width"
 
 #. Default: "Ce texte accepte la mise en aléatoire par des accolades (cf options avancées)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:24
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:32
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:25
 msgid "msg_embraced_randitem"
-msgstr ""
+msgstr "This text allows randomization by using braces (cf advances options) "
 
 #. Default: "Aucun étudiant n'a accès à vos cours via une inscription à l'offre de formation pour l'instant."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:14
 msgid "msg_no_corporate_student"
-msgstr ""
+msgstr "No student can now access your course via an inscription to a course offer."
 
 #. Default: "Vous n'êtes inscrit à aucun diplôme."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:370
 msgid "msg_no_diploma_subscription"
-msgstr ""
+msgstr "You are not registered in any diploma."
 
 #. Default: "Sésame non ouvert"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:75
 msgid "msg_unopened_account"
-msgstr ""
+msgstr "Sésame account not opened"
 
 #. Default: "Notez que : <ul> <li>Les points-virgules (;) sont interdits.</li> <li>les sauts de lignes seront automatiquement remplacés par la balise <code>&lt;br/&gt;</code>.</li> <li>les guillemets doubles (<tt>\"</tt>) seront automatiquement remplacés par des guillemets simples (<tt>'</tt>).</li> </ul>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:92
 msgid "msg_wims_qcmsuite_question"
-msgstr ""
+msgstr "Notice that: <ul> <li>Semicolons (;) are forbiden.</li> <li>line breaks will automatically be replaced by the tag <code>lt;br/gt;</code>.</li> \\<li>double quotes (<tt>\\\"</tt>) will automatically be replaced by single quotes (<tt>'</tt>).</li> </ul>"
 
 #. Default: "atext (ignore le pluriel/singulier et les articles)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:63
 msgid "option_wims_tolerance_atext"
-msgstr ""
+msgstr "atext (ignore plural/singular and articles)"
 
 #. Default: "case (aucune tolérance d'erreur)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:57
 msgid "option_wims_tolerance_case"
-msgstr ""
+msgstr "case (no tolerance for mistakes)"
 
 #. Default: "nocase (tolère le minuscule/majuscule)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:60
 msgid "option_wims_tolerance_nocase"
-msgstr ""
+msgstr "nocase (tolerate lowercase/ capital letters)"
 
 #. Default: "Posez votre question ici."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:36
 msgid "placeholder_wims_equation_enonce"
-msgstr ""
+msgstr "Ask your question here."
 
 #. Default: "un objet, une propriété associée"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marquerparpropriete.pt:76
 msgid "placeholder_wims_marquerparprop_data"
-msgstr ""
+msgstr "item, associated property"
 
 #. Default: "Saisir ici la liste des propriétés"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marquerparpropriete.pt:41
 msgid "placeholder_wims_marquerparprop_list-props"
-msgstr ""
+msgstr "Enter here the list of properties"
 
 #. Default: "Saisissez au moins une bonne réponse"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:52
 msgid "placeholder_wims_qcmsimple_bonnesrep"
-msgstr ""
+msgstr "Enter at least one good answer"
 
 #. Default: "Indiquer le numéro de la bonne réponse sur la première ligne, puis une réponse par ligne."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:62
 msgid "placeholder_wims_qcmsuite_variable"
-msgstr ""
+msgstr "Indicate the number of the good answer on the first line, then an answer per line."
 
 #. Default: "Posez une question, sans oublier de mentioner l'objet pioché (\name)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_taperlemotassocie.pt:33
 msgid "placeholder_wims_taperlemotassocie_explain"
-msgstr ""
+msgstr "Ask a question, do not forget to mention the picked item (\\ name)."
 
 #. Default: "Saisir la liste des mots et leur propriétés."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_taperlemotassocie.pt:69
 msgid "placeholder_wims_taperlemotassocie_words"
-msgstr ""
+msgstr "Enter the list of words and their properties."
 
 #. Default: "Tapez le texte à trous ici."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:44
 msgid "placeholder_wims_texteatrous_data"
-msgstr ""
+msgstr "Enter fill-in-the-blank text here."
 
 #. Default: "Précédent"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:318
 msgid "previous"
-msgstr ""
+msgstr "Previous"
 
 # This entry is only a sample on how to add manual i18n entries
 # It is not automatically picked, since it is referred from external package
 #. Default: "i18n Sample"
 msgid "sample_i18n"
 msgstr ""
+"This entry is only a sample on how to add manual i18n entries\n"
+"It is not automatically picked, since it is referred from external package"
 
 #. Default: "Trier selon le libellé"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:190
 msgid "sort_by_caption"
-msgstr ""
+msgstr "Sort by caption"
 
 #. Default: "Trier selon le diplôme, l'UE, le groupe…"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:25
 msgid "sort_by_diploma_TU_group"
-msgstr ""
+msgstr "Sort by diploma, TU, group"
 
 #. Default: "Trier selon l'adresse de courriel"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:51
 msgid "sort_by_email"
-msgstr ""
+msgstr "Sort by email address"
 
 #. Default: "Trier selon le nom"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:43
 msgid "sort_by_name"
-msgstr ""
+msgstr "Sort by name"
 
 #. Default: "Trier selon l'identifiant étudiant"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:34
 msgid "sort_by_student_id"
-msgstr ""
+msgstr "Sort by student ID"
 
 #. Default: "Trier selon le nombre d'étudiants"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:235
 msgid "sort_by_students_count"
-msgstr ""
+msgstr "Sort by students' number"
 
 #. Default: "Liste des cours de la catégorie"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:22
 msgid "table_courses_list_of_category"
-msgstr ""
+msgstr "List of courses category"
 
 #. Default: "Liste des étudiants"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:31
 msgid "table_students_list"
-msgstr ""
+msgstr "List of students"
 
 #. Default: "Unité d'enseignement(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:167
 msgid "teaching_unit_s"
-msgstr ""
+msgstr "Teaching Unit(s)"
 
 #. Default: "NOM Prénom"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:48
 msgid "th_LASTNAME_firstname"
-msgstr ""
+msgstr "LASTNAME Firstname"
 
 #. Default: "Libellé"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:196
 msgid "th_caption"
-msgstr ""
+msgstr "Caption"
 
 #. Default: "Code"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:41
 msgid "th_code"
-msgstr ""
+msgstr "Code"
 
 #. Default: "Diplôme / UE / groupe…"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:30
 msgid "th_diploma_TU_group"
-msgstr ""
+msgstr "Diploma, TU, group"
 
 #. Default: "Nbre d'étudiants"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:42
 msgid "th_nb_students"
-msgstr ""
+msgstr "Nb of students"
 
 #. Default: "Nb. étu."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:241
 msgid "th_students_count"
-msgstr ""
+msgstr "Nb. stu."
 
 #. Default: "Titre"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:40
 msgid "th_title"
-msgstr ""
+msgstr "Title"
 
 #. Default: "Type"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:39
 msgid "th_type"
-msgstr ""
+msgstr "Type"
 
 #. Default: "Détail des connexions par mois"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:51
 msgid "title_stats_connections_per_month"
-msgstr ""
+msgstr "Details on connections per month"
 
 #. Default: "Détail par étudiants"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:60
 msgid "title_stats_connections_per_student"
-msgstr ""
+msgstr "Details on connections per student"
 
 #. Default: "Détail d'un étudiant"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:69
 msgid "title_stats_student_details"
-msgstr ""
+msgstr "Details on student"
 
 #. Default: "Options avancées"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:84
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marquerparpropriete.pt:86
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:63
 msgid "wims_advanced_options"
-msgstr ""
+msgstr "Advanced options"
 
 #. Default: "Usages avancés"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marquerparpropriete.pt:154
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:116
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_questiontextuelletolerante.pt:146
 msgid "wims_advanced_usages"
-msgstr ""
+msgstr "Advanced uses"
 
 #. Default: "Aléatoire"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:37
 msgid "wims_head_shuffle"
-msgstr ""
+msgstr "Random"
 
 #. Default: "Pour accepter plusieurs réponses correctes possibles dans un trou \"classique\", séparez chaque bonne réponse par un trait vertical <code class=\"indicateur\">|</code>.<br /> Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class=\"indicateur\">Napoléon ??Premier|Bonaparte?? est mort à Sainte-Hélène</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:30
 msgid "wims_help_synonyms"
-msgstr ""
+msgstr "To accept multiple good answers in a blank \\\"classique\\\", separate each good answer with a vertical line <code class=\\\"indicator\\\">|</code>.<br /> For example, to place a blank that would accept \"the first\" AND \"Bonapart\" as good answers, enter <code class=\\\"indicator\\\">Napoléon ??The First|Bonaparte?? died in Sainte-Hélène</code>."
 
 #. Default: "Tapez directement votre texte, en entourant chaque \"trou\" avec des doubles points d'interrogation : \"??\". Les balises HTML sont admises.<br /> Le texte peut contenir jusqu'à 20 « trous »."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:42
 msgid "wims_help_texteatrous_data"
-msgstr ""
+msgstr "Directly enter your text, cercle each \\\"blank\\\" with double interrogation marks: \\\"??\\\". HTML tags are allowed. <br /> Text can contain up to 20 \"blanks\"."
 
 #. Default: "Le texte à présenter"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:19
 msgid "wims_text_to_display"
-msgstr ""
+msgstr "Text to display"
 
 #. Default: "Écrire aux étudiants"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:14
 msgid "write_to_students"
-msgstr ""
+msgstr "Write to students"
