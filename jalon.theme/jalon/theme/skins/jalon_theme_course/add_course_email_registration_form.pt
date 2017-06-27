@@ -5,7 +5,6 @@
       lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"

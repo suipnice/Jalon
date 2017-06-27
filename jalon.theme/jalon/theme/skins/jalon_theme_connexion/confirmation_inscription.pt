@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
@@ -14,7 +14,7 @@
             <div class="documentFirstHeading">
                 <h1 i18n:translate="">Inscription à Jalon</h1>
             </div>
-            <div>
+            <div i18n:translate="">
                 La procédure d'inscription s'est déroulée avec succés, pour vous connecter à Jalon vous devez valider votre compte en suivant la procédure que vous allez recevoir par email.
             </div>
             <div class="formControls">

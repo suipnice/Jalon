@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -17,9 +16,8 @@
     </h2>
 
     <div class="panel warning radius"
-         tal:condition="not:listeAcces"
-         i18n:translate="">
-        <strong>Attention :</strong> votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.
+         tal:condition="not:listeAcces">
+         <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_course_not_visible">votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.</tal:block>
     </div>
 
     <form id="js-createAnnounce" method="POST"

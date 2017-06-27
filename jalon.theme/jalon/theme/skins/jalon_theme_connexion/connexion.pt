@@ -2,11 +2,10 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
-    <body>
+  <body>
 
 <metal:content-core fill-slot="content-core">
 
@@ -16,11 +15,10 @@
             <div class="alert-box alert radius" i18n:translate="">
                 <h3 i18n:translate="">Maintenance en cours</h3>
                 <strong tal:content="infos_connexion/site | infos_mes_ressources/site | request/site" />
-                <tal:block i18n:translate="">est fermé</tal:block>
-                <tal:block i18n:translate="">pour maintenance du</tal:block>
+                <tal:block i18n:translate="">est fermé pour maintenance du
                 <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
-                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.
-                <tal:block i18n:translate="">Merci pour votre compréhension.</tal:block>
+                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.</tal:block>
+                <tal:block i18n:translate="msg_thanks_for_understanding">Merci pour votre compréhension.</tal:block>
             </div>
 
     </metal:macro>
@@ -28,12 +26,11 @@
     <metal:macro define-macro="annoncer-maintenance-jalon">
         <!-- Bloc annonce prévision maintenance -->
             <div data-alert="data-alert" class="alert-box warning radius" i18n:translate="">
-                <h3 i18n:translate="">Maintenance planifiée</h3>
+                <h3 i18n:translate="head_scheduled_downtime">Maintenance planifiée</h3>
                 <strong tal:content="infos_connexion/site | infos_mes_ressources/site | request/site" />
-                <tal:block i18n:translate="">sera indisponible</tal:block>
-                <tal:block i18n:translate="">pour maintenance du</tal:block>
+                <tal:block i18n:translate="">sera indisponible pour maintenance du
                 <strong tal:content="maintenance/date_debut_maintenance_aff" i18n:name="Deb" /> au
-                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.
+                <strong tal:content="maintenance/date_fin_maintenance_aff" i18n:name="Fin" />.</tal:block>
                 <a class="close"></a>
             </div>
     </metal:macro>

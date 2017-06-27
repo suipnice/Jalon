@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -27,7 +26,7 @@
          i18n:translate=""/>
     <div class="text-center" tal:condition="python:my_view['activity_type']=='Examen'">
         <h3>
-            <i class="fa fa-clock-o"></i><tal:block i18n:translate="">Durée : <span tal:content="my_view/duree"/> min.</tal:block>
+            <i class="fa fa-clock-o"></i><tal:block i18n:translate="label_duration_in_min">Durée :<span tal:content="my_view/duree"/> min.</tal:block>
         </h3>
     </div>
     <a class="button expand success"
