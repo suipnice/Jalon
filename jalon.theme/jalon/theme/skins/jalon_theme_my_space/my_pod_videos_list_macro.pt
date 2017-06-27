@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content">
@@ -59,14 +58,14 @@
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="href string:${item/getURL}/add_tag_object_form">
                             <i class="fa fa-tag fa-fw no-pad"></i>
-                            <tal:block i18n:translate="">Étiqueter</tal:block>
+                            <tal:block i18n:translate="button_tagging">Étiqueter</tal:block>
                         </a>
                     </li>
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="href string:${item/getURL}/detach_object_form">
                             <i class="fa fa-chain-broken fa-fw no-pad"></i>
-                            <tal:block i18n:translate="">Détacher</tal:block>
+                            <tal:block i18n:translate="button_unlink">Détacher</tal:block>
                         </a>
                     </li>
                     <li tal:condition="is_owner">
@@ -91,8 +90,7 @@
                 <a title="Voir la vidéo"
                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                    tal:attributes="href string:${item/getURL}/view"
-                   i18n:attributes="title"
-                   i18n:translate="">
+                   i18n:attributes="title title_view_video">
                     <div class="flex-video">
                         <img tal:attributes="src item/getVideothumbnail"/>
                     </div>

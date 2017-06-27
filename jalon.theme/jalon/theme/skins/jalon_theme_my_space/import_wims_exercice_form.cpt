@@ -56,14 +56,14 @@
                         <p class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, vous ne pouvez pas importer plus de 64 exercices par fichier.</p>
 
                         <div>
-                            <label for="model_filter" i18n:translate="">Modèle d'exercices</label>
+                            <label for="model_filter" i18n:translate="label_exo_template">Modèle d'exercices</label>
                             <select id="model_filter" name="model_filter">
-                                <option value="all" i18n:translate="">Tous les modèles compatibles</option>
-                                <option value="cloze" i18n:translate="">Textes à trous (cloze)</option>
+                                <option value="all" i18n:translate="option_all_exo_templates">Tous les modèles compatibles</option>
+                                <option value="cloze" i18n:translate="option_cloze_template">Textes à trous (cloze)</option>
                                 <option value="multichoice" disabled="disabled" i18n:translate="">questions simples (multichoice) -  bientôt disponible</option>
                                 <option value="matching" disabled="disabled" i18n:translate="">matching - bientôt disponible</option>
                             </select>
-                            <p class="formHelp" i18n:translate="">Jalon n'importera que les exercices de ce modèle.</p>
+                            <p class="formHelp" i18n:translate="formHelp_model_filter">Jalon n'importera que les exercices de ce modèle.</p>
                         </div>
                     </div>
                 </dd>

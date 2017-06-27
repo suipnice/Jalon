@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -150,7 +149,7 @@
                             <dd>
                                 <tal:replace replace="python:my_view['comment_dict'][criteria['comment']]"/>,
                             </dd>
-                            <dd i18n:translate="">
+                            <dd i18n:translate="formHelp_chars_limits">
                                 entre <tal:replace replace="criteria/comment_min"/> et <tal:replace replace="criteria/comment_max"/> caractères.
                             </dd>
                         </dl>

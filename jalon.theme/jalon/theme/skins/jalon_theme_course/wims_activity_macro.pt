@@ -338,7 +338,7 @@ En entrée :
                                    data-reveal-id="reveal-main" data-reveal-ajax="true"
                                    i18n:attributes="title">
                                     <i class="fa fa-chain-broken fa-fw"></i>
-                                    <tal:block i18n:translate="">Détacher</tal:block>
+                                    <tal:block i18n:translate="button_unlink">Détacher</tal:block>
                                 </a>
                             </li>
                             <tal:comment replace="nothing">

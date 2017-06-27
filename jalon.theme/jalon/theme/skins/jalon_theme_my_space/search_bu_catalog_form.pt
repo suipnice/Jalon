@@ -5,7 +5,6 @@
       lang="en"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content"
@@ -21,7 +20,7 @@
           tal:attributes="action string:${context/absolute_url}/search_bu_catalog_form">
 
         <div class="field ArchetypesStringWidget" id="archetypes-fieldname-recherche">
-            <label for="term_search" i18n:translate="">Mot clé ou code :</label>
+            <label for="term_search" i18n:translate="label_keyword">Mot clé ou code :</label>
             <input type="text" size="30" maxlength="255"
                    name="term_search" id="term_search"
                    required="required"
@@ -46,7 +45,7 @@
 
         <div class="panel warning radius"
              tal:condition="not:results_search"
-             i18n:translate="">
+             i18n:translate="no_search_result">
             La recherche n'a donné aucun résultat.
         </div>
 
@@ -58,8 +57,8 @@
                     <th class="checkall show-for-medium-up">
                         <div class="switch tiny round">
                             <input type="checkbox" id="switch_reveal-all" name="checkall" role="recordsid:list" />
-                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
-                                   i18n:attributes="title"></label>
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title batch_select_all"></label>
                         </div>
                     </th>
                     <th i18n:translate="">Image</th>
@@ -78,13 +77,13 @@
                 <tr>
                     <td class="show-for-medium-up">
                         <div class="switch tiny round">
-                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
+                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
                                    tal:attributes="id string:switch_reveal-${repeat/item/index};
                                                    value item/recordid"
-                                   i18n:attributes="title" />
-                            <label title="Action par lot : sélectionner / désélectionner"
+                                   i18n:attributes="title batch_select_deselect" />
+                            <label title="Action par lot : sélectionner / désélectionner"
                                    tal:attributes="for string:switch_reveal-${repeat/item/index}"
-                                   i18n:attributes="title"></label>
+                                   i18n:attributes="title batch_select_deselect"></label>
                         </div>
                     </td>
                     <td>
@@ -128,7 +127,7 @@
             <button type="submit" class="button small create"
                     name="form.button.save">
                 <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 

@@ -12,14 +12,14 @@
                             tags context/aq_parent/getDisplaySubjects">
 
     <h2>
-        <tal:block i18n:translate="">Étiqueter la ressource</tal:block>
+        <tal:block i18n:translate="head_tag_content">Étiqueter la ressource</tal:block>
          « <tal:block content="resName" /> »
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel callout radius"
          tal:condition="not:tags"
-         i18n:translate="">
-        Il n'y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
+         i18n:translate="msg_no_tag_created">
+        Il n'y a actuellement aucune étiquette de créée. Pour créer une étiquette, cliquez sur le "+" en bout de la ligne des étiquettes.
     </div>
     <form id="js-resTagger" method="POST"
           tal:attributes="action string:${context/absolute_url}/add_tag_object_script;
@@ -29,7 +29,7 @@
           tal:condition="tags"
           i18n:attributes="data-success_msg_pre; data-success_msg_post">
         <div class="panel callout radius"
-             i18n:translate="">
+             i18n:translate="help_select_tags_to_attach">
             Sélectionnez le jeu d'étiquettes à associer à cette ressource.
         </div>
         <ul>
@@ -46,7 +46,7 @@
             <button type="submit" class="button small radius"
                     name="form.button.save">
                 <i class="fa fa-tag"></i>
-                <tal:block i18n:translate="">Étiqueter</tal:block>
+                <tal:block i18n:translate="button_tagging">Étiqueter</tal:block>
             </button>
         </div>
     </form>

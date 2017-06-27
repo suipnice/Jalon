@@ -130,9 +130,9 @@
              tal:attributes="class python:context.test(error, 'error panel radius', 'panel radius')">
             <label for="title" i18n:translate="">Titre </label>
             <div id="title_wims_help" class="formHelp texte_icone icone_information">
-                <tal:block i18n:translate="">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
-                <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
-                <tal:block i18n:translate="">seront supprimés ou remplacés par des espaces.</tal:block>
+                <tal:block i18n:translate="formHelp_exo_title_limit">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
+                <tal:block i18n:translate="formHelp_forbidden_special_chars">Attention : les caractères spéciaux (&lt; " &gt; { } ( ) $ &amp; …)
+                seront supprimés ou remplacés par des espaces.</tal:block>
             </div>
 
             <div class="fieldErrorBox" tal:condition="error" tal:content="error"/>
@@ -321,13 +321,13 @@
                      tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                   <label for="title" i18n:translate="">Titre </label>
                   <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
-                  <div id="title_help" class="formHelp texte_icone icone_information" i18n:translate="">Le titre d'un exercice est limité à 40 caractères. Les caractères spéciaux seront supprimés.</div>
+                  <div id="title_help" class="formHelp texte_icone icone_information"><tal:block i18n:translate="formHelp_exo_title_limit">Le titre d'un exercice est limité à 40 caractères.</tal:block> <tal:block i18n:translate="formHelp_forbidden_chars_deleted">Les caractères spéciaux seront supprimés.</tal:block></div>
                   <input style="width:20em;" maxlength="40" type="text"
                          name="title" id="title"
                          tal:attributes="value context/title_or_id"
                          required="required"
                          placeholder="Donnez un titre à votre exercice."
-                         i18n:attributes="placeholder"
+                         i18n:attributes="placeholder placeholder_give_a_title"
                          aria-describedby="title_help" />
                 </div>
                 <div tal:define="permalink QCM_parsed/permalink | nothing;
@@ -336,14 +336,14 @@
                      tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
                     <label for="permalink" i18n:translate="">Permalien de l'exercice</label>
                     <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
-                    <div id="permalink_help" class="formHelp texte_icone icone_information" i18n:translate="">Le permalien d'un exercice publié permet de le partager.</div>
+                    <div id="permalink_help" class="formHelp texte_icone icone_information" i18n:translate="formHelp_permalink">Le permalien d'un exercice publié permet de le partager.</div>
                     <input type="url" name="permalink" id="permalink"
                            required="required"
                            placeholder="Collez ici le permalien de l'exercice" i18n:attributes="placeholder"
                            tal:attributes="value permalink"
                            aria-describedby="permalink_help" />
                 </div>
-                <p class="formHelp" i18n:translate="">NB : si vous avez déja placé cet exercice dans une activité d'un cours, ce dernier ne sera pas affecté par une modification du permalien.</p>
+                <p class="formHelp" i18n:translate="formHelp_modify_dont_affect_permalink">NB : si vous avez déja placé cet exercice dans une activité d'un cours, ce dernier ne sera pas affecté par une modification du permalien.</p>
             </fieldset>
 
             <input type="hidden" name="form.submitted" value="1" />
@@ -358,8 +358,8 @@
                 <div class="small-12 columns">
                     <input type="checkbox" checked="checked"
                            name="save_and_test" id="save_and_test" value="1"/>
-                    <label for="save_and_test" i18n:translate="">Visualiser l'exercice à l'enregistrement.</label>
-                    <div class="formHelp texte_icone icone_information">permet d'enregistrer et tester l'exercice</div>
+                    <label for="save_and_test" i18n:translate="label_save_and_test_exo">Visualiser l'exercice à l'enregistrement.</label>
+                    <div class="formHelp texte_icone icone_information" i18n:translate="formHelp_save_and_test_exo">permet d'enregistrer et tester l'exercice</div>
                 </div>
                 <div class="small-12 columns">
                     <button type="submit" class="button small"

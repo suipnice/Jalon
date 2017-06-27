@@ -29,11 +29,11 @@
         </h1>
 
         <div class="panel warning radius">
-            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_depositbox_beta_stage">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
         </div>
 
         <div class="panel callout radius"
-             tal:condition="not:my_view/has_evaluation" i18n:translate="">
+             tal:condition="not:my_view/has_evaluation" i18n:translate="You_have_no_score_yet">
             Vous n'avez pas encore été évalué.
         </div>
 
@@ -74,18 +74,18 @@
                         <dl class="deflist">
                             <dt i18n:translate="">Coefficient</dt>
                             <dd tal:content="criteria/coefficient" />
-                            <dt i18n:translate="">Commentaire étudiant</dt>
+                            <dt i18n:translate="student_comment">Commentaire étudiant</dt>
                             <dd>
                                 <tal:replace replace="python:my_view['comment_dict'][criteria['comment']]"/>,
                             </dd>
-                            <dd i18n:translate="">
+                            <dd i18n:translate="formHelp_chars_limits">
                                 entre <tal:replace replace="criteria/comment_min"/> et <tal:replace replace="criteria/comment_max"/> caractères.
                             </dd>
                         </dl>
                     </div>
                 </div>
                 <div tal:condition="my_view/has_self_evaluation">
-                    <h3 i18n:translate="">
+                    <h3 i18n:translate="my_self_evaluation_for_this_criteria">
                         Mon auto-évaluation de ce critère (<tal:replace replace="python:my_view['self_evaluation_dict'][index]['criteria_note']"/> / <tal:replace replace="criteria/notation"/> points)
                     </h3>
                     <div class="panel callout radius"
@@ -96,7 +96,7 @@
                 <tal:condition condition="my_view/acces_evaluations">
                 <tal:define define="criteria_list python:my_view['peer_evaluation'].get(index, [])">
                 <div tal:repeat="criteria_dict criteria_list">
-                    <h3 i18n:translate="">
+                    <h3 i18n:translate="head_evaluation_number">
                         Évaluation numéro <tal:replace replace="repeat/criteria_dict/number"/> (<tal:replace replace="criteria_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points)
                     </h3>
                     <div class="panel callout radius"
@@ -105,14 +105,14 @@
                 </div>
                 <div tal:define="average_dict python:my_view['peer_average'][index]">
                     <tal:condition condition="python:average_dict['criteria_note_t']">
-                    <h2 i18n:translate="">
+                    <h2 i18n:translate="head_teacher_evaluation">
                         Évaluation de l'enseignant (<tal:replace replace="average_dict/criteria_note"/>  / <tal:replace replace="criteria/notation"/> points)
                     </h2>
                     <div class="panel callout radius"
                          tal:content="average_dict/criteria_comment"
                          tal:condition="average_dict/criteria_comment"/>
                     </tal:condition>
-                    <h2 i18n:translate="">
+                    <h2 i18n:translate="head_criteria_score">
                         Note du critère : <tal:replace replace="average_dict/criteria_note"/> / <tal:replace replace="criteria/notation"/> points
                     </h2>
                 </div>

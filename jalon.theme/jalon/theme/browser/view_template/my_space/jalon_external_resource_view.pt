@@ -29,7 +29,7 @@
     --></tal:comment>
     <div class="panel radius"
          tal:condition="not:context/Description"
-         i18n:translate="">
+         i18n:translate="msg_no_desc">
          Description non renseignée…
     </div>
 

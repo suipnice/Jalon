@@ -38,8 +38,8 @@
                 <th class="checkall show-for-medium-up">
                     <div class="switch tiny round">
                         <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_email:list" checked="checked" />
-                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
-                               i18n:attributes="title"></label>
+                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                               i18n:attributes="title batch_select_all"></label>
                     </div>
                 </th>
                 <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
@@ -47,7 +47,7 @@
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        <tal:block i18n:translate="th_LASTNAME_firstname">NOM Prénom</tal:block>
                     </span>
                 </th>
                 <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
@@ -69,7 +69,7 @@
                                                value email_registration/email" />
                         <label title="Sélectionner / désélectionner"
                                tal:attributes="for string:switch_reveal-${repeat/email_registration/index}"
-                               i18n:attributes="title"></label>
+                               i18n:attributes="title select_deselect"></label>
                     </div>
                 </td>
                 <td class="name" tal:content="email_registration/nom" />

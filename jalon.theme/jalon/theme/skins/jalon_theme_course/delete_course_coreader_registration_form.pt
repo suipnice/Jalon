@@ -42,7 +42,7 @@
                                                value course_reader/id" />
                         <label title="Sélectionner / désélectionner"
                                tal:attributes="for string:switch_reveal-${repeat/course_reader/index}"
-                               i18n:attributes="title"></label>
+                               i18n:attributes="title select_deselect"></label>
                     </div>
                 </td>
                 <td class="text-left" tal:content="course_reader/fullname" />

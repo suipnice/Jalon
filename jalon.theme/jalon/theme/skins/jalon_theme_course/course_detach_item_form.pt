@@ -38,7 +38,7 @@
             <button type="submit" class="button small warning"
                     name="detacher">
                 <i class="fa fa-chain-broken"></i>
-                <tal:block i18n:translate="">Détacher</tal:block>
+                <tal:block i18n:translate="button_unlink">Détacher</tal:block>
             </button>
         </div>
 

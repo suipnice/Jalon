@@ -14,7 +14,7 @@
              data-reveal="data-reveal" data-options="close_on_background_click: true;"
              tal:define="is_tags python:context.test(len(my_view['tags_list']) > 1, 1, 0)">
             <h2>
-                <tal:block i18n:translate="">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <tal:block i18n:translate="head_tag_all_selected">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
             <div class="panel callout radius"
@@ -47,7 +47,7 @@
                     <button type="submit" class="button small radius"
                             name="etiqueter_script:method">
                         <i class="fa fa-tag"></i>
-                        <tal:block i18n:translate="">Étiqueter</tal:block>
+                        <tal:block i18n:translate="button_tagging">Étiqueter</tal:block>
                     </button>
                 </div>
             </form>

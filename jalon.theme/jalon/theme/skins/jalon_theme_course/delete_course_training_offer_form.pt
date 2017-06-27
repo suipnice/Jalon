@@ -42,8 +42,8 @@
         <thead>
             <tr>
                 <th class="checkall show-for-medium-up">
-                    <div class="switch tiny round has-tip" title="Action par lot : tout sélectionner / désélectionner"
-                         i18n:attributes="title">
+                    <div class="switch tiny round has-tip" title="Action par lot : tout sélectionner / désélectionner"
+                         i18n:attributes="title batch_select_all">
                         <input type="checkbox" id="switch-all" name="checkall" role="elements:list" checked="checked"/>
                         <label for="switch-all"></label>
                     </div>
@@ -84,7 +84,7 @@
                                                value string:${training_offer/TYP_ELP}*-*${training_offer/COD_ELP}"/>
                         <label title="Sélectionner / désélectionner"
                                tal:attributes="for string:switch_tagada-${repeat/training_offer/index}"
-                               i18n:attributes="title"></label>
+                               i18n:attributes="title select_deselect"></label>
                     </div>
                 </td>
                 <td class="title" tal:content="training_offer/LIB_ELP" />

@@ -35,8 +35,8 @@
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
-                <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
-                     i18n:attributes="title">
+                <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                     i18n:attributes="title batch_select_all">
                     <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
                     <label for="switch-all"></label>
                 </div>
@@ -56,7 +56,7 @@
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Modèle</tal:block>
+                    <tal:block i18n:translate="label_template">Modèle</tal:block>
                 </span>
             </th>
             <th class="sort text-left" data-sort="title" title="Trier selon le titre"
@@ -77,9 +77,9 @@
             <tal:define define="item_title python:here.getShortText(item['Title'])">
             <td class="show-for-medium-up"
                 tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
-                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
                      tal:condition="not:attached"
-                     i18n:attributes="title">
+                     i18n:attributes="title batch_select_deselect">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
                                            value string:${item/getId}/${item/Type};

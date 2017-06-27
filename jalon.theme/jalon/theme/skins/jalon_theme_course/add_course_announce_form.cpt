@@ -107,7 +107,7 @@
                 <tr tal:repeat="acces listeAcces">
                     <td>
                         <div class="switch tiny round" title="Sélectionner / désélectionner"
-                             i18n:attributes="title">
+                             i18n:attributes="title select_deselect">
                             <input type="checkbox" name="publicsElement:list" checked="checked"
                                    tal:attributes="id string:switch-${repeat/acces/index};
                                                    value python:'%s*-*%s' % (acces[-1], acces[1])" />

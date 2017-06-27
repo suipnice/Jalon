@@ -32,8 +32,8 @@
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
-                <div class="switch tiny round has-tip" title="Action par lot : tout sélectionner / désélectionner"
-                     i18n:attributes="title">
+                <div class="switch tiny round has-tip" title="Action par lot : tout sélectionner / désélectionner"
+                     i18n:attributes="title batch_select_all">
                     <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
                     <label for="switch-all"></label>
                 </div>
@@ -99,13 +99,13 @@
                 </a>
                 <ul id="drop-batch" class="f-dropdown" data-dropdown-content="data-dropdown-content">
                     <li>
-                        <a data-reveal-id="tag_sel"><i class="fa fa-tag fa-fw"></i>Étiqueter la sélection</a>
+                        <a data-reveal-id="tag_sel"><i class="fa fa-tag fa-fw"></i><tal:block i18n:translate="link_tag_selection">Étiqueter la sélection</tal:block></a>
                     </li>
                     <li>
-                        <a data-reveal-id="untag_sel"><i class="fa fa-minus-circle fa-fw"></i>Désétiqueter la sélection</a>
+                        <a data-reveal-id="untag_sel"><i class="fa fa-minus-circle fa-fw"></i><tal:block i18n:translate="link_untag_selection">Désétiqueter la sélection</tal:block></a>
                     </li>
                     <li>
-                        <a data-reveal-id="del_sel"><i class="fa fa-trash-o fa-fw"></i>Supprimer la sélection</a>
+                        <a data-reveal-id="del_sel"><i class="fa fa-trash-o fa-fw"></i><tal:block i18n:translate="link_delete_selection">Supprimer la sélection</tal:block></a>
                     </li>
                 </ul>
             </td>
@@ -115,8 +115,8 @@
     <tal:entry repeat="item my_view/my_items_list">
         <tr>
             <td class="show-for-medium-up">
-                <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
-                     i18n:attributes="title">
+                <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
+                     i18n:attributes="title batch_select_deselect">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
                                            value string:${my_view/folder_path}/${item/getId};
@@ -165,14 +165,14 @@
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="href string:${item/getURL}/add_tag_object_form">
                             <i class="fa fa-tag fa-fw no-pad"></i>
-                            <tal:block i18n:translate="">Étiqueter</tal:block>
+                            <tal:block i18n:translate="button_tagging">Étiqueter</tal:block>
                         </a>
                     </li>
                     <li>
                         <a data-reveal-id="reveal-main" data-reveal-ajax="true"
                            tal:attributes="href string:${item/getURL}/detach_object_form">
                             <i class="fa fa-chain-broken fa-fw no-pad"></i>
-                            <tal:block i18n:translate="">Détacher</tal:block>
+                            <tal:block i18n:translate="button_unlink">Détacher</tal:block>
                         </a>
                     </li>
                     <li>

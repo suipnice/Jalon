@@ -72,11 +72,11 @@
                             <dd tal:content="criteria/notation" />
                             <dt>Coefficient</dt>
                             <dd tal:content="criteria/coefficient" />
-                            <dt>Commentaire étudiant</dt>
+                            <dt i18n:translate="student_comment">Commentaire étudiant</dt>
                             <dd>
                                 <tal:replace replace="python:my_form['comment_dict'][criteria['comment']]"/>,
                             </dd>
-                            <dd>
+                            <dd i18n:translate="formHelp_chars_limits">
                                 entre <tal:replace replace="criteria/comment_min"/> et <tal:replace replace="criteria/comment_max"/> caractères.
                             </dd>
                         </dl>
