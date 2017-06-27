@@ -1,11 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -17,7 +16,7 @@
                         can_view python:context.checkRoles(user, context, action='view');">
 
     <h2 tal:condition="is_ajax">
-        <tal:block i18n:translate="">Visualisation de l'exercice « </tal:block><tal:replace replace="context/Title"/> »
+        <tal:block i18n:translate="head_viewing_exo">Visualisation de l'exercice « <tal:replace replace="context/Title"/> »</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -53,7 +52,7 @@
             <em class="right texte_icone icone_information"
                 tal:condition="python:modele=='groupe'"
                 style="font-size:80%;max-width:12em;">
-                <tal:block i18n:translate="">Un groupe d'exercices ne peut pas être modifié.</tal:block>
+                <tal:block i18n:translate="msg_wims_group_cannot_be_modified">Un groupe d'exercices ne peut pas être modifié.</tal:block>
             </em>
 
             <ul id="tab_button-group" class="button-group radius expand" tal:condition="python:modele!='externe'">
@@ -67,7 +66,7 @@
 
                         id="mode_autoeval">
                         <i class="fa fa-gamepad no-pad"></i>
-                        <tal:block i18n:translate="">Mode "Autoévaluation"</tal:block>
+                        <tal:block i18n:translate="link_wims_training_mode">Mode "Autoévaluation"</tal:block>
                     </a>
                 </li>
 
@@ -101,7 +100,7 @@
                     tal:attributes="src string:${param_wims/home_url}?${permalink}&amp;cmd=new&amp;lang=${wims_lang}"></iframe>
 
             <div tal:condition="not:permalink" class="small-12 columns">
-                <p class="panel warning radius" i18n:translate="">
+                <p class="panel warning radius" i18n:translate="msg_wims_no_public_exo_chosen">
                     Vous n'avez choisi aucun élément dans la banque d'exercices WIMS.
                 </p>
             </div>

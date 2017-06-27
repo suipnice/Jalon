@@ -21,7 +21,7 @@
                       criteria_dict python:context.getCriteriaDict(criteria_id)">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
+            <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">vous allez modifier le coefficient de ce critère d'évaluation, il doit être compris entre 1 et 5. Le calcul de la moyenne sera fait cette nuit.</tal:block>
         </div>
 

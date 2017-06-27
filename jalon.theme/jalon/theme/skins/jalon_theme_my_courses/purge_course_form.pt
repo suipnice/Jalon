@@ -23,7 +23,7 @@
     </div>
 
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block><br />
         <strong i18n:translate="">Assurez-vous d'avoir téléchargé une copie des travaux des étudiants avant de continuer.</strong><br />
     </div>

@@ -19,7 +19,7 @@
           tal:attributes="action string:${context/absolute_url}/delete_deposit_box_criteria_script">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
+            <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">Vous allez supprimer ce critère d'évaluation, cette opération est définitive.</tal:block>
         </div>
 

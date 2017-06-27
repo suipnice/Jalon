@@ -94,7 +94,7 @@
         </div>
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
+            <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">
                 la suppression est définitive. Si vous ne souhaitez retirer que les notes, annulez et cliquez plutôt sur "Purger".
             </tal:block><br />

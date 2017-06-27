@@ -1,8 +1,8 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 
@@ -12,7 +12,7 @@
             tal:define="is_personnel python:context.isPersonnel(user);
                         email_registration_list context/getEmailRegistration">
     <h2>
-        <tal:block i18n:translate="">Inscription(s) extérieure(s) par courriel</tal:block>
+        <tal:block i18n:translate="head_enroll_external_by_mail">Inscription(s) extérieure(s) par courriel</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -23,7 +23,7 @@
             <tal:block i18n:translate="">Mode</tal:block>
         </button>
         <i class="fa fa-envelope-o no-pad"></i>
-        <tal:block i18n:translate="">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
+        <tal:block i18n:translate="head_enroll_external_by_mail_desc">Inscrire par courriel des étudiant(e)s extérieur(e)s à l'établissement</tal:block>
     </h3>
 
     <form id="js-mailRegistrationList" class="no_reveal_action itemAdder"
@@ -32,7 +32,7 @@
         <fieldset class="row">
 
             <div class="panel callout radius">
-                 <tal:block i18n:translate="">Pour constituer la liste des personnes à inscrire, renseignez les champs ci-dessous et cliquez sur « Ajouter ».</tal:block>
+                 <tal:block i18n:translate="help_enroll_external_by_mail">Pour constituer la liste des personnes à inscrire, renseignez les champs ci-dessous et cliquez sur « Ajouter ».</tal:block>
             </div>
 
             <!--legend i18n:translate="">Liste des étudiant(e)s extérieur(e)s à inscrire</legend-->
@@ -73,8 +73,8 @@
         </table>
 
         <div class="panel callout radius hide">
-             <tal:block i18n:translate="">Vous pouvez retirer des élément de la liste en cliquant sur</tal:block>
-             « <i class="fa fa-minus-circle no-pad warning"></i> ».
+             <tal:block i18n:translate="help_how_to_remove_elements_from_list">Vous pouvez retirer des élément de la liste en cliquant sur
+             « <i class="fa fa-minus-circle no-pad warning"></i> ».</tal:block>
         </div>
 
     </form>

@@ -21,13 +21,13 @@
     </div>
 
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">les étudiants n'auront plus accès à cette ressource.</tal:block>
     </div>
 
     <div class="panel warning radius"
          tal:condition="my_form/form_has_warning">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:replace replace="my_form/form_waning_text"/>
     </div>
 

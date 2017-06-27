@@ -19,7 +19,7 @@
           tal:attributes="action string:${context/absolute_url}/undo_deposit_box_criteria_script">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
+            <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">vous allez annuler ce critère d'évaluation, son coefficient deviendra nul. Les notes de ce critère seront annulées dans le calcul de la moyenne.</tal:block>
         </div>
 

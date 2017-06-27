@@ -17,7 +17,7 @@
 
     <div class="panel alert radius"
          i18n:translate="">
-        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
 
     <form tal:attributes="action string:${context/absolute_url}/delete_deposit_box_skill_script"

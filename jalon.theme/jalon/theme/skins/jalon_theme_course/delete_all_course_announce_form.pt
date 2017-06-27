@@ -25,7 +25,7 @@
           tal:condition="hasAnnounce">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
+            <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">Vous allez supprimer toutes les annonces du cours, cette opération est définitive.</tal:block>
         </div>
 

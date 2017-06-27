@@ -4,7 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
       metal:use-macro="context/main_template/macros/master"
-      i18n:domain="jalon.content">
+      i18n:domain="jalon.theme">
 
 <body>
 
@@ -34,11 +34,22 @@
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
         <nav class="show-for-medium-up medium-12 columns">
-            <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
-               tal:attributes="href string:${context/absolute_url}/create_wims_exercice_form">
-               <i class="fa fa-plus-circle"></i>
-               <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
-            </a>
+            <ul class="button-group expand radius even-2">
+                <li>
+                    <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/create_wims_exercice_form">
+                       <i class="fa fa-plus-circle"></i>
+                       <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
+                    </a>
+                </li>
+                <li>
+                    <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
+                       tal:attributes="href string:${context/absolute_url}/import_wims_exercice_form">
+                       <i class="fa fa-level-down"></i>
+                       <tal:block i18n:translate="">Importer un exercice Wims</tal:block>
+                    </a>
+                </li>
+            </ul>
         </nav>
 
         <metal:macro use-macro="context/my_space_tags_macro/macros/tags_section">

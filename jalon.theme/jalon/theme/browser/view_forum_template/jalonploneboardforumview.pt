@@ -47,7 +47,7 @@
                tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-conversation"
                tal:condition="not:isAnon">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer une conversation dans ce forum</tal:block>
+                <tal:block i18n:translate="link_create_subject">Créer une conversation dans ce forum</tal:block>
             </a>
         </nav>
 
@@ -62,7 +62,7 @@
     <tal:condition condition="not:numConversations">
 
             <div class="panel callout radius"
-                  i18n:translate="">
+                  i18n:translate="msg_no_subject_created">
                 Aucune conversation n'a été lancée dans ce forum.
             </div>
 
@@ -71,16 +71,17 @@
     <tal:condition condition="numConversations">
 
             <span class="title-legend"
-                  tal:condition="python:not isAnon and numConversations > 0">
-                <tal:block i18n:translate="">Les conversation signalées par</tal:block>
+                  tal:condition="python:not isAnon and numConversations > 0"
+                  i18n:translate="msg_signaled_subjects_legend">
+                Les conversation signalées par
                 <i class="fa fa-bell-o no-pad"></i>
-                <tal:block i18n:translate="">ont été actives depuis votre dernière visite.</tal:block>
+                ont été actives depuis votre dernière visite.
             </span>
 
             <table id="js-update_target">
                 <thead>
                     <tr>
-                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="new" title="Trier selon la nouveauté" i18n:attributes="title">
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="new" title="Trier selon la nouveauté" i18n:attributes="title title_sort_by_news">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
@@ -98,12 +99,12 @@
                             </span>
                         </th>
                         <th data-sort="number" class="sort has-tip" data-tooltip title="Trier selon le nombre de réponses"
-                            i18n:attributes="title">
+                            i18n:attributes="title title_sort_by_nb_resp">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Rép.</tal:block>
+                                <tal:block i18n:translate="th_forum_responses">Rép.</tal:block>
                             </span>
                         </th>
                         <th data-sort="lastmsg" class="sort has-tip" data-tooltip title="Trier selon la date du dernier message"
@@ -112,11 +113,11 @@
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Dernière activité</tal:block>
+                                <tal:block i18n:translate="th_forum_last_activity">Dernière activité</tal:block>
                             </span>
                         </th>
                         <th class="state has-tip" data-tooltip title="État (verrouillé / déverrouillé)"
-                            i18n:attributes="title">
+                            i18n:attributes="title title_forum_locked_state">
                             <span class="fa fa-unlock-alt fa-fw no-pad"></span>
                         </th>
                         <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"
@@ -174,7 +175,7 @@
                             <div>
                                 <a title="Voir le message…"
                                    tal:attributes="href string:${conversation/absolute_url}/${conversation/getLastCommentId}"
-                                   i18n:attributes="title">
+                                   i18n:attributes="title title_forum_see_message">
                                     <tal:block i18n:translate="">Par</tal:block>
                                     <tal:content define="creator conversation/getLastCommentAuthor;
                                                          creatorinfo python: mtool.getMemberInfo(creator)"
@@ -263,7 +264,7 @@
                tal:attributes="href string:${context/absolute_url}/ploneboard_unanswered">
                 <i class="fa fa-circle no-pad"></i>
                 <i class="fa fa-circle-thin no-pad"></i>
-                <tal:block i18n:translate="">Sans réponse</tal:block>
+                <tal:block i18n:translate="link_forum_no_response">Sans réponse</tal:block>
             </a>
 --></tal:comment>
 
@@ -275,7 +276,7 @@
                 <a class="button small expand radius"
                    tal:attributes="href string:${context/absolute_url}/ploneboard_unanswered">
                     <i class="fa fa-comment-o"></i>
-                    <tal:block i18n:translate="">Afficher les conversations sans réponse</tal:block>
+                    <tal:block i18n:translate="link_forum_display_unresponded">Afficher les conversations sans réponse</tal:block>
                 </a>
             </div>
 

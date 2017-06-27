@@ -39,7 +39,7 @@
 
         <div tal:define="error errors/description | nothing;"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
-            <label for="description" i18n:translate="">Description :</label>
+            <label for="description" i18n:translate="head_description">Description :</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <textarea id="description" name="description" rows="5"
                       required="required" placeholder="Saisie obligatoire"

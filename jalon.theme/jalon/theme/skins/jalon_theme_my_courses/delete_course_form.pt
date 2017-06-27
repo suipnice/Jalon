@@ -19,14 +19,14 @@
 
     <tal:condition condition="not:course_data/is_course_owner">
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         vous ne pouvez pas supprimer ce cours car vous n'en êtes pas le créateur.
     </div>
     </tal:condition>
 
     <tal:condition condition="course_data/is_course_owner">
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"

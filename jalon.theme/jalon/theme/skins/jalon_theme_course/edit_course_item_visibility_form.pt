@@ -19,7 +19,7 @@
 
     <div class="panel warning radius"
          tal:condition="my_form/is_item_parent_title">
-         <i class="fa fa-warning"></i><strong i18n:translate="">Attention :</strong>
+         <i class="fa fa-warning"></i><strong i18n:translate="msg_warning">Attention :</strong>
          <tal:block i18n:translate="">le titre du plan "<strong tal:content="my_form/item_parent_title" />" contenant cet élément est actuellement masqué. Afficher cet élément affichera automatiquement tous les titres le contenant, jusqu'à la racine du plan.</tal:block>
     </div>
 

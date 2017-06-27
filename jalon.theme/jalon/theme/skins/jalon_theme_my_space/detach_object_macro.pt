@@ -22,7 +22,7 @@
     </div>
 
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">les étudiants n'auront plus accès à cette ressource depuis les cours / activités sélectionnés.</tal:block>
     </div>
 

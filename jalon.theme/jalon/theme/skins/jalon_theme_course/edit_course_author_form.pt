@@ -16,7 +16,7 @@
 
     <div class="panel radius warning"
          tal:define="course_author_dict context/getAuthorForm">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">
             vous allez changer l'auteur du cours affiché aux étudiants. Le créateur n'est pas modifiable.
         </tal:block>

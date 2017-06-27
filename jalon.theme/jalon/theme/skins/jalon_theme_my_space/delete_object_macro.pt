@@ -26,7 +26,7 @@
 
 <metal:macro define-macro="isnt_object_attached">
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"

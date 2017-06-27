@@ -17,7 +17,7 @@
     </h2>
 
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">les étudiants n'auront plus accès à ce terme de glossaire.</tal:block>
     </div>
 

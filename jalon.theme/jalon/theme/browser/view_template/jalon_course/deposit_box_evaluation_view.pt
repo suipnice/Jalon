@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
@@ -29,7 +29,7 @@
         </h1>
 
         <div class="panel warning radius">
-            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
         </div>
 
         <div class="panel callout radius"
@@ -51,7 +51,7 @@
 
         <div class="tabs-content peer_evaluate">
             <section role="tabpanel" aria-hidden="true" class="content active">
-                <div class="panel callout radius" i18n:translate="">Sélectionnez un onglet</div>
+                <div class="panel callout radius" i18n:translate="msg_select_a_tab">Sélectionnez un onglet</div>
             </section>
 
             <tal:repeat repeat="index my_view/criteria_order">
@@ -64,7 +64,7 @@
                 </h2>
                 <div class="row">
                     <div class="small-12 columns">
-                        <h3 i18n:translate="">Description :</h3>
+                        <h3 i18n:translate="head_description">Description :</h3>
                     </div>
                     <div class="small-12 medium-7 columns">
                         <div class="panel callout radius"

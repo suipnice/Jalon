@@ -28,7 +28,7 @@
            i18n:translate="link_download_student_list">Télécharger cette liste d'étudiants au format XLS</a>
     </div>
 
-    <table id="js-list-students" summary="Liste des étudiants" i18n:attributes="summary table_students_list">
+    <table id="js-list-students" summary="Liste des étudiants" i18n:attributes="summary head_students_list">
         <thead>
             <tr>
                 <th class="sort" data-sort="id" title="Trier selon l'identifiant étudiant" i18n:attributes="title sort_by_student_id"
