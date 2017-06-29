@@ -74,7 +74,7 @@
                                        data-dropdown item_adder/menu_adder_data-dropdown"
                                        data-options="align:bottom">
                         <i tal:attributes="class item_adder/menu_adder_icon"></i>
-                        <tal:replace replace="item_adder/menu_adder_name" i18n:translate=""/>
+                        <tal:replace replace="item_adder/menu_adder_name"/>
                     </a>
                     <ul tal:attributes="id item_adder/menu_adder_data-dropdown"
                         class="f-dropdown" data-dropdown-content>
@@ -82,7 +82,7 @@
                             <a tal:attributes="href menu_adder_item/item_link"
                                data-reveal-id="reveal-main-large" data-reveal-ajax="true">
                                 <i tal:attributes="class menu_adder_item/item_icon"></i>
-                                <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+                                <tal:replace replace="menu_adder_item/item_name"/>
                             </a>
                         </li>
                     </ul>
@@ -118,7 +118,7 @@
                         <a data-reveal-ajax="true" data-reveal-id="reveal-main"
                            tal:attributes="href string:${course_link}/${item_action/item_action_id}?item_id=${element/item_id}">
                             <i tal:attributes="class item_action/item_action_icon"></i>
-                            <tal:replace tal:replace="item_action/item_action_name" i18n:translate=""/>
+                            <tal:replace tal:replace="item_action/item_action_name"/>
                         </a>
                     </li>
                 </ul>

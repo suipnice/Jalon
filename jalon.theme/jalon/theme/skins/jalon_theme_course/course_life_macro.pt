@@ -16,7 +16,7 @@
             <a tal:attributes="href string:${context/absolute_url}?mode_etudiant=true${menu_aff};
                                class python:context.test(mode_etudiant == 'true', 'button small success', 'button small secondary')">
                 <i class="fa fa-graduation-cap no-pad"></i>
-                <tal:replace i18n:translate="">Étudiant</tal:replace>
+                <tal:replace i18n:translate="Student">Étudiant</tal:replace>
             </a>
         </li>
     </ul>
@@ -90,7 +90,7 @@
             <a tal:attributes="href tab_dict/tab_link">
                 <span tal:content="tab_dict/tab_number" />
                 <i tal:attributes="class tab_dict/tab_icon"></i>
-                <tal:replace replace="tab_dict/tab_name" i18n:translate=""/>
+                <tal:replace replace="tab_dict/tab_name"/>
             </a>
         </li>
     </ul>
@@ -111,8 +111,7 @@
             </div>
             <div class="course_life-actus panel radius"
                  tal:condition="my_view/course_news/nbActu">
-                <h4 tal:replace="my_view/course_news_title"
-                    i18n:translate=""/>
+                <h4 tal:replace="my_view/course_news_title"/>
                 <dl>
                     <tal:block repeat="news my_view/course_news/listeActu">
                     <dt>

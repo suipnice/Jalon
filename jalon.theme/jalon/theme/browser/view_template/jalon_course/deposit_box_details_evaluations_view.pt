@@ -40,7 +40,7 @@
                 <li tal:repeat="onglet my_view/details_evaluations_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
                                        href onglet/href">
-                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text" i18n:translate=""/>
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>
                 </li>
@@ -71,7 +71,7 @@
                         </th>
                     <tal:repeat repeat="index my_view/criteria_order">
                         <th tal:define="criteria python:criteria_dict[index]">
-                            <tal:block i18n:translate="">Critère</tal:block> <tal:replace tal:replace="index"/>
+                            <tal:block i18n:translate="th_Criteria">Critère</tal:block> <tal:replace tal:replace="index"/>
                         </th>
                     </tal:repeat>
                         <th class="sort has-tip" data-tooltip data-sort="note"

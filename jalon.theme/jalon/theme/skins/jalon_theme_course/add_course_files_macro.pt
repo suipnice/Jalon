@@ -8,7 +8,7 @@
         <div class="text-center">
             <a class="button radius"
                tal:attributes="href my_view/folder_link">
-               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title"/>
             </a>
         </div>
     </tal:no_items>

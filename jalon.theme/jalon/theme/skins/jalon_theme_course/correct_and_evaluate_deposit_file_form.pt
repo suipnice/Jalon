@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
@@ -13,35 +12,33 @@
                     errors python:{}">
     <h2>
         <i class="fa fa-legal no-pad"></i>
-        <tal:block replace="corriger_noter/title"
-                   i18n:translate=""></tal:block>
+        <tal:block replace="corriger_noter/title"></tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
     <h3>
-        Titre : <span tal:content="context/Title"/>
+        <tal:block i18n:translate="">Titre :</tal:block>
+        <span tal:content="context/Title"/>
     </h3>
 
     <h3>
-        Auteur : <span tal:content="context/getAuteur"/>
+        <tal:block i18n:translate="">Auteur :</tal:block>
+        <span tal:content="context/getAuteur"/>
     </h3>
 
     <form tal:attributes="action string:${context/absolute_url}/correct_and_evaluate_deposit_file_script"
           enctype="multipart/form-data"
           id="inform" method="post">
 
-
         <div class="field"
              tal:condition="corriger_noter/corriger">
-            <label for="correction">
-                Correction
-            </label>
+            <label for="correction" i18n:translate="">Correction</label>
             <textarea id="correction" name="correction" rows="5"><tal:replace replace="context/getCorrectionDepot"/></textarea>
         </div>
 
         <div id="archetypes-fieldname-file" class="field row"
              tal:condition="corriger_noter/corriger">
-            <label for="file_file">Fichier de correction</label>
+            <label for="file_file" i18n:translate="">Fichier de correction</label>
             <div class="small-6 column">
                 <input type="file" id="file_file" name="file_file" size="30"/>
             </div>
@@ -52,7 +49,7 @@
                    class="tiny button radius success"
                    target="_blank">
                     <i class="fa fa-download"></i>
-                    <tal:block i18n:translate="">Télécharger le fichier de correction</tal:block>
+                    <tal:block i18n:translate="link_download_correction_file">Télécharger le fichier de correction</tal:block>
                 </a>
             </div>
             </tal:define>
@@ -65,11 +62,11 @@
         </tal:comment>
 
         <div class="field">
-            <label for="title">Note ou appréciation</label>
+            <label for="title" i18n:translate="label_score_or_appreciation">Note ou appréciation</label>
             <input type="text" id="note" name="note" maxlength="15" size="15"
                    placeholder="15 caractères maximum"
                    tal:attributes="value context/getNote | nothing"
-                   i18n:attributes="placeholder"/>
+                   i18n:attributes="placeholder placeholder_15_chars_max"/>
         </div>
 
         <input type="hidden" name="correction_text_format" value="text/html">

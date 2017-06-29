@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
@@ -42,8 +42,7 @@
                        tal:attributes="class action/css_class;
                                        href action/action_link">
                        <i tal:attributes="class action/action_icon"></i>
-                       <tal:block tal:replace="action/action_name"
-                                  i18n:translate=""/>
+                       <tal:block tal:replace="action/action_name"/>
                     </a>
                 </li>
             </ul>
@@ -63,7 +62,7 @@
                         <a tal:attributes="class tab/css_class;
                                            href tab/tab_link">
                             <i tal:attributes="class tab/tab_icon"></i>
-                            <tal:block replace="tab/tab_name" i18n:translate=""/>
+                            <tal:block replace="tab/tab_name"/>
                         </a>
                     </li>
                 </ul>
@@ -82,11 +81,9 @@
             tal:condition="not:my_courses_view/is_student">
             <li tal:repeat="tab my_courses_view/tabs_list">
                 <a tal:attributes="class tab/css_class;
-                                   href tab/tab_link"
-                   i18n:translate="">
+                                   href tab/tab_link">
                     <i tal:attributes="class tab/tab_icon"></i>
-                    <tal:block replace="tab/tab_name"
-                               i18n:translate=""/>
+                    <tal:block replace="tab/tab_name"/>
                 </a>
             </li>
         </ul>

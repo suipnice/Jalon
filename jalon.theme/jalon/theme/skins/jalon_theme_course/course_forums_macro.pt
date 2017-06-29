@@ -43,7 +43,7 @@
         <div class="formControls">
             <button type="submit" class="button small create radius">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 
@@ -229,7 +229,7 @@
             <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block tal:condition="is_forum" i18n:translate="">vous allez supprimer ce forum et l'ensemble de ses conversations,</tal:block>
             <tal:block tal:condition="is_conversation" i18n:translate="">vous allez supprimer cette conversation et l'ensemble de ses messages,</tal:block>
-            <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+            <tal:block i18n:translate="msg_definitive_operation">cette opération est définitive.</tal:block>
         </div>
 
         <input type="hidden" name="macro" value="macro_forum"/>
@@ -299,7 +299,7 @@
         <div class="formControls">
             <button type="submit" class="button small create radius">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 

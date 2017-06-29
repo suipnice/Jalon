@@ -8,7 +8,7 @@
         <div class="text-center">
             <a class="button radius"
                tal:attributes="href my_view/folder_link">
-               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title"/>
             </a>
         </div>
     </tal:no_items>
@@ -110,12 +110,12 @@
 
 <metal:macro define-macro="add_new_resource">
     <div class="panel callout radius">
-        <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title" i18n:translate=""/>" pour ajouter une nouvelle ressource.</tal:block>
+        <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title"/>" pour ajouter une nouvelle ressource.</tal:block>
     </div>
     <div class="text-center">
         <a class="button radius"
            tal:attributes="href my_view/folder_link">
-           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title"/>
         </a>
     </div>
 </metal:macro>

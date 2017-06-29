@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="fr"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -70,14 +69,14 @@ div.panel label{
                            tal:attributes="checked python:context.test(connexion['activer_cas'], 'checked', '')" />
                     <label for="activer_cas" class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_cas" id="desactiver_cas" value="0"
                            tal:attributes="checked python:context.test(not connexion['activer_cas'], 'checked', '')" />
                     <label for="desactiver_cas"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
                 <div class="panel callout radius">
@@ -105,13 +104,13 @@ div.panel label{
                     <label for="activer_creationcompte"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_creationcompte" id="desactiver_creationcompte" value="0"
                            tal:attributes="checked python:context.test(not connexion['activer_creationcompte'], 'checked', '')" />
                     <label for="desactiver_creationcompte" class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
                 <div class="formControls">
