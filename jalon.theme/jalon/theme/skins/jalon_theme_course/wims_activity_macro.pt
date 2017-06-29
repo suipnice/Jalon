@@ -37,7 +37,7 @@
 <tal:condition condition="python:my_view['activity_type']=='Examen'">
     <h3>
         <i class="fa fa-clock-o"></i>
-        <tal:block i18n:translate="">Durée</tal:block>
+        <tal:block i18n:translate="th_duration">Durée</tal:block>
     </h3>
     <div class="text-right">
         <tal:replace replace="context/getDuree"/> <tal:block i18n:translate="">min.</tal:block>
@@ -169,7 +169,7 @@ En entrée :
                 <a tal:attributes="href menu_adder_item/item_link;title menu_adder_item/item_title"
                    data-reveal-id="reveal-main" data-reveal-ajax="true">
                     <i tal:attributes="class menu_adder_item/item_icon"></i>
-                    <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+                    <tal:replace replace="menu_adder_item/item_name"/>
                 </a>
             </li>
         </ul>

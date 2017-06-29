@@ -1,24 +1,24 @@
 <metal:macro define-macro="student_evaluate">
     <tal:condition condition="not:my_form/is_evaluable">
         <div class="panel warning radius">
-            <strong>Attention :</strong> la date limite d'évaluation est dépassée, vous ne pouvez plus évaluer de devoirs.
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_evaluation_time_reached">la date limite d'évaluation est dépassée, vous ne pouvez plus évaluer de devoirs.</tal:block>
         </div>
     </tal:condition>
     <tal:condition condition="my_form/is_evaluable">
     <h1>
         <i class="fa fa-check-square-o no-pad"></i>
-        Évaluer <tal:replace replace="my_evaluate_form/deposit_name"/>
+        <tal:block i18n:translate="head_evaluate">Évaluer</tal:block> <tal:replace replace="my_evaluate_form/deposit_name"/>
     </h1>
 
     <div class="panel warning radius"
-         tal:condition="not:my_evaluate_form/evaluation">
+         tal:condition="not:my_evaluate_form/evaluation" i18n:translate="msg_no_deposit_to_evaluate">
         Vous n'avez aucun dépôt à évaluer.
     </div>
 
     <tal:condition condition="my_evaluate_form/evaluation">
     <a class="button expand radius"
        tal:attributes="href my_evaluate_form/deposit_link">
-        <i class="fa fa-download"></i> Télécharger <tal:replace replace="my_evaluate_form/deposit_name"/>
+       <i class="fa fa-download"></i> <tal:block i18n:translate="download">Télécharger</tal:block> <tal:replace replace="my_evaluate_form/deposit_name"/>
     </a>
 
     <div class="panel alert radius"

@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="fr"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -13,8 +12,8 @@
 
     <div class="panel callout radius"
          tal:condition="my_view/is_no_items">
-        <strong tal:content="my_view/no_items_strong" i18n:translate=""/><br/>
-        <tal:replace replace="my_view/no_items_button" i18n:translate=""/>
+        <strong tal:content="my_view/no_items_strong"/><br/>
+        <tal:replace replace="my_view/no_items_button"/>
     </div>
 
     <tal:listing condition="my_view/my_items_list">
@@ -60,7 +59,7 @@
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Durée</tal:block>
+                    <tal:block i18n:translate="th_duration">Durée</tal:block>
                 </span>
             </th>
             <th class="action show-for-medium-up has-tip" data-tooltip title="Actions"

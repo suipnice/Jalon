@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content">
@@ -211,14 +209,14 @@
                   id="wims_search" tal:attributes="action string:${param_wims/url_connexion}#searchform" method="get">
 
                 <div class="field">
-                    <label for="search_keywords"
-                           i18n:translate="">
+                    <label for="search_keywords">
                         <a href="#reveal_search_keywords" class="button tiny radius right"
                            data-reveal-id="reveal_search_keywords"
-                           title="Afficher de l'aide concernant cet élément">
-                            <i class="fa fa-question"></i> Aide à la recherche
+                           title="Afficher de l'aide concernant cet élément"
+                           i18n:attributes="title">
+                           <i class="fa fa-question"></i> <tal:block i18n:translate="">Aide à la recherche</tal:block>
                         </a>
-                        Rechercher un exercice dans le catalogue des exercices WIMS et l'ajouter à votre espace
+                        <tal:block i18n:translate="">Rechercher un exercice dans le catalogue des exercices WIMS et l'ajouter à votre espace</tal:block>
                     </label>
                     <input type="text" size="20" class="prefix round"
                            name="search_keywords" id="search_keywords"
@@ -243,8 +241,8 @@
                  class="reveal-modal large wims-edit_reveal"
                  data-reveal="data-reveal"
                  data-options="close_on_background_click: true;" >
-                <h2>Aide à la recherche <a class="close-reveal-modal"></a></h2>
-                    <h3>Quels mots-clés utiliser ?</h3>
+                 <h2><tal:block i18n:translate="">Aide à la recherche</tal:block> <a class="close-reveal-modal"></a></h2>
+                    <h3 i18n:translate="">Quels mots-clés utiliser ?</h3>
                     <div>
                     <ul>
                         <li i18n:translate="">un thème (exemple <code class="indicateur couleur1">anglais</code>) ou un auteur (exemple <code class="indicateur couleur1">Joachim Yameogo</code>)</li>
@@ -281,11 +279,11 @@
             <tal:block i18n:translate="">Puis coller ci-dessous le permalien de cet exercice :</tal:block>
             <a class="button tiny radius" data-reveal-id="wims-edit_reveal-ext">
                 <i class="fa fa-question"></i>
-                Où trouver le permalien
+                <tal:block i18n:translate="">Où trouver le permalien</tal:block>
             </a>
         </h2>
         <div id="wims-edit_reveal-ext" class="reveal-modal large wims-edit_reveal" data-reveal="data-reveal" data-options="close_on_background_click: true;">
-            <h2>Les modules d'exercices de la communauté WIMS<a class="close-reveal-modal"></a></h2>
+          <h2><tal:block i18n:translate="">Les modules d'exercices de la communauté WIMS</tal:block><a class="close-reveal-modal"></a></h2>
             <h3 i18n:translate="">Où trouver le permalien ?</h3>
             <ul>
                 <li i18n:translate="">Dans les résultats de votre recherche, choisissez un module d'exercices qui vous intéresse.</li>

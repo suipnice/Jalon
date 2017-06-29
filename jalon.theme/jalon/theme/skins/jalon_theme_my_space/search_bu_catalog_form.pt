@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -50,8 +49,8 @@
         </div>
 
         <tal:listing condition="results_search">
-        <h2 class="texte_icone icone_liste">Les 10 premiers résultats dans le catalogue de la BU</h2>
-        <table summary="Liste des ressources BU">
+        <h2 class="texte_icone icone_liste" i18n:translate="head_first_BU_results">Les 10 premiers résultats dans le catalogue de la BU</h2>
+        <table summary="Liste des ressources BU" i18n:attributes="summary">
             <thead>
                 <tr>
                     <th class="checkall show-for-medium-up">
@@ -113,12 +112,12 @@
         <a class="button tiny expand success radius" target="_blank"
            tal:attributes="href python:context.searchBUCatalog(term_search, 'BU')">
             <i class="fa fa-search-plus"></i>
-            <tal:block i18n:translate="">Consulter plus de résultats sur le catalogue de la BU</tal:block>
+            <tal:block i18n:translate="link_more_results_on_BU">Consulter plus de résultats sur le catalogue de la BU</tal:block>
         </a>
         <a class="button tiny expand secondary radius" target="_blank"
            tal:attributes="href python:context.searchBUCatalog(term_search, 'suggestion')">
             <i class="fa fa-asterisk"></i>
-            <tal:block i18n:translate="">Suggestions d’acquisitions</tal:block>
+            <tal:block i18n:translate="link_BU_suggestions">Suggestions d’acquisitions</tal:block>
         </a>
 
         <input type="hidden" name="member_id" tal:attributes="value user/getId"/>

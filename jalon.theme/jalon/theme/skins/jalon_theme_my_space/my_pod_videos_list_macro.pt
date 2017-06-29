@@ -84,7 +84,7 @@
                     </li>
                 </ul>
                 <p>
-                    <strong><tal:block i18n:translate="">Propriétaire :</tal:block></strong>
+                    <strong><tal:block i18n:translate="label_owner">Propriétaire :</tal:block></strong>
                     <tal:replace replace="item/getVideoauteurname"/>
                 </p>
                 <a title="Voir la vidéo"

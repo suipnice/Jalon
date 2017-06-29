@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="main"
@@ -50,7 +48,7 @@
                                     <i class="fa fa-sort"></i>
                                     <i class="fa fa-sort-asc"></i>
                                     <i class="fa fa-sort-desc"></i>
-                                    <tal:block i18n:translate="">Accès étudiant</tal:block>
+                                    <tal:block i18n:translate="th_student_access">Accès étudiant</tal:block>
                                 </span>
                             </th>
                             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="acc_ano"
@@ -59,7 +57,7 @@
                                     <i class="fa fa-sort"></i>
                                     <i class="fa fa-sort-asc"></i>
                                     <i class="fa fa-sort-desc"></i>
-                                    <tal:block i18n:translate="">Accès anonyme</tal:block>
+                                    <tal:block i18n:translate="th_anonymous_access">Accès anonyme</tal:block>
                                 </span>
                             </th>
                             <th i18n:translate="">Action</th>

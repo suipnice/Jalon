@@ -1,20 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
 
-
 <!--
 
         Ajouter un forum
-
 
 -->
 <metal:macro define-macro="ajout-forum"
@@ -22,7 +18,7 @@
                          personnel python:context.isPersonnel(user, mode_etudiant)">
 
     <h2>
-        <tal:block i18n:translate="">Créer un forum</tal:block>
+        <tal:block i18n:translate="head_create_forum">Créer un forum</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -60,7 +56,7 @@
         <div class="formControls">
             <button type="submit" class="button small create radius">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 
@@ -280,7 +276,7 @@
         <div class="formControls">
             <button type="submit" class="button small create radius">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 
@@ -499,7 +495,7 @@
 
             <input type="radio" id="activer_email_forum-false" name="activer_email_forum" value="False"
                    tal:attributes="checked python:context.test(context.getActiverEmailForum(), '', 'checked')" />
-            <label for="activer_email_forum-false" class="warning" i18n:translate="">Désactiver</label>
+            <label for="activer_email_forum-false" class="warning" i18n:translate="label_deactivate">Désactiver</label>
 
         </div>
 
@@ -546,7 +542,7 @@
 
             <input type="radio" id="add_forum_permission-false" name="add_forum_permission" value="False"
                    tal:attributes="checked python:context.test(context.getAddForumPermission(), '', 'checked')" />
-            <label for="add_forum_permission-false" class="warning" i18n:translate="">Désactiver</label>
+            <label for="add_forum_permission-false" class="warning" i18n:translate="label_deactivate">Désactiver</label>
 
         </div>
 

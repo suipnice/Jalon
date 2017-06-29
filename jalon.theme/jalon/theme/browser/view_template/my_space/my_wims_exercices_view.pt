@@ -37,7 +37,7 @@
                     <a class="button expand create" data-reveal-id="reveal-main" data-reveal-ajax="true"
                        tal:attributes="href string:${context/absolute_url}/create_wims_exercice_form">
                        <i class="fa fa-plus-circle"></i>
-                       <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
+                       <tal:block i18n:translate="create_exo_WIMS">Créer un exercice Wims</tal:block>
                     </a>
                 </li>
                 <li>

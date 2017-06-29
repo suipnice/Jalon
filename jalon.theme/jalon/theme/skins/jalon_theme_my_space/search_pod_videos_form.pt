@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -22,9 +21,9 @@
                       term_search request/term_search | nothing;">
 
         <h2 class="texte_icone icone_recherche"><i class="fa fa-plus-circle no-pad"></i>
-            <tal:block i18n:translate="">Rechercher un contenu dans</tal:block>
+            <tal:block i18n:translate="head_search_and_add">Rechercher un contenu dans
             <tal:replace replace="context/getNameServeurElasticsearch"/>
-            <tal:block i18n:translate="">et l'ajouter à votre espace</tal:block>
+            et l'ajouter à votre espace</tal:block>
         </h2>
 
         <form id="js-podFilterSelector" method="POST"
@@ -143,7 +142,7 @@
                                 tal:content="python:context.getShortText(video['title'], 20)"/>
 
                             <p>
-                                <strong i18n:translate="head_owner">Propriétaire :</strong>
+                                <strong i18n:translate="label_owner">Propriétaire :</strong>
                                 <tal:replace replace="video/owner_full_name"/>
                             </p>
 

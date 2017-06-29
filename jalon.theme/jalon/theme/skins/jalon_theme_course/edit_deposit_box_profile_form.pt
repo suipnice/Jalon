@@ -1,16 +1,15 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="tab request/tab">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Modifier le profil de la boite de dépôt</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
@@ -21,14 +20,12 @@
         <div id="archetypes-fieldname-profil" class="field">
             <label for="profil" i18n:translate="">Profil</label>
             <tal:repreat repeat="profile context/getDepositBoxProfile">
-                <input type="radio" name="profile" 
+                <input type="radio" name="profile"
                        tal:attributes="id profile/deposit_box_profile_value;
                                        value profile/deposit_box_profile_value;
                                        checked profile/deposit_box_profile_checked"/>
-                
                 <label tal:attributes="for profile/deposit_box_profile_value"
-                       tal:content="profile/deposit_box_profile_text"
-                       i18n:translate=""/>
+                       tal:content="profile/deposit_box_profile_text"/>
             </tal:repreat>
         </div>
         </tal:comment>
@@ -38,8 +35,7 @@
 
             <legend tal:content="profile/deposit_box_profile_text"/>
 
-            <p tal:content="profile/deposit_box_profile_help"
-               i18n:translate=""/>
+            <p tal:content="profile/deposit_box_profile_help"/>
 
             <div class="formControls">
                 <input type="radio" name="profile"
@@ -47,7 +43,7 @@
                                        value profile/deposit_box_profile_value;
                                        checked profile/deposit_box_profile_checked"/>
                 <label tal:attributes="for profile/deposit_box_profile_value"
-                       i18n:translate="">Sélectionner</label>
+                       i18n:translate="label_select">Sélectionner</label>
             </div>
 
         </fieldset>

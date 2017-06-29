@@ -1,18 +1,17 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content"
                     tal:define="errors options/state/getErrors | nothing">
 
     <h2>
-        <i class="fa fa-font"></i><tal:block i18n:translate="">Créer un terme de glossaire</tal:block>
+        <i class="fa fa-font"></i><tal:block i18n:translate="head_create_glossary_term">Créer un terme de glossaire</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -40,7 +39,7 @@
              tal:define="error errors/description | nothing;
                          arch_class string:field ArchetypesStringWidget;"
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
-            <label for="description" i18n:translate="">Définition</label>
+            <label for="description" i18n:translate="Definition">Définition</label>
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error"/>
             <textarea id="description" name="description" required="required" placeholder="Saisie obligatoire" cols="40" rows="5"></textarea>
@@ -54,7 +53,7 @@
             <button type="submit" class="button small create"
                     name="form.button.save">
                 <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 

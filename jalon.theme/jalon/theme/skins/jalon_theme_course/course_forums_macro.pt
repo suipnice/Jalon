@@ -6,7 +6,7 @@
                          personnel python:context.isPersonnel(user, mode_etudiant)">
 
     <h2>
-        <tal:block i18n:translate="">Créer un forum</tal:block>
+        <tal:block i18n:translate="head_create_forum">Créer un forum</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -82,7 +82,7 @@
             <label for="activer_email_forum-true" class="success" i18n:translate="">Activer</label>
             <input type="radio" id="activer_email_forum-false" name="activer_email_forum" value="False"
                    tal:attributes="checked python:context.test(context.getActiverEmailForum(), '', 'checked')" />
-            <label for="activer_email_forum-false" class="warning" i18n:translate="">Désactiver</label>
+            <label for="activer_email_forum-false" class="warning" i18n:translate="label_deactivate">Désactiver</label>
         </div>
 
         <input type="hidden" name="course_property" value="activer_email_forum" />
