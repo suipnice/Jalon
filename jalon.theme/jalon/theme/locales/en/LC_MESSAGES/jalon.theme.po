@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "POT-Creation-Date: 2012-01-19 14:11+0000\n"
-"PO-Revision-Date: 2017-06-16 17:29+0200\n"
+"PO-Revision-Date: 2017-07-06 17:37+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Service PI - Université Nice Sophia Antipolis <pi@unice.fr>\n"
 "MIME-Version: 1.0\n"
@@ -19,109 +19,120 @@ msgstr ""
 
 #: ../skins/jalon_theme_my_space/delete_object_macro.pt:23
 msgid "... vous ne pouvez donc pas la supprimer."
-msgstr ""
+msgstr "… Thus you cannot delete it."
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:263
 msgid "<code class=\"indicateur couleur1\">levelG</code> pour 3e cycle / Doctorat, <code class=\"indicateur couleur1\">levelR</code> pour Recherche."
-msgstr ""
+msgstr "<code class=\"indicateur couleur1\">levelG</code> for 3rd cycle / Doctorate, <code class=\"indicateur couleur1\">levelR</code> pour Research."
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:254
 msgid "<code class=\"indicateur couleur1\">levelU1</code> pour L1, <code class=\"indicateur couleur1\">levelU2</code> pour L2, <code class=\"indicateur couleur1\">levelU3</code> pour L3,"
-msgstr ""
+msgstr "<code class=\"indicateur couleur1\">levelU1</code> for L1, <code class=\"indicateur couleur1\">levelU2</code> for L2, <code class=\"indicateur couleur1\">levelU3</code> for L3,"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:259
 msgid "<code class=\"indicateur couleur1\">levelU4</code> pour Master 1, <code class=\"indicateur couleur1\">levelU5</code> pour Master 2,"
-msgstr ""
+msgstr "<code class=\"indicateur couleur1\">levelU4</code> for Master 1, <code class=\"indicateur couleur1\">levelU5</code> for Master 2,"
 
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:36
 msgid "<del>Format OEF</del>"
-msgstr ""
+msgstr "<del>OEF format</del>"
 
 #: ../skins/jalon_theme_my_space/my_pod_videos_list_macro.pt:97
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:157
+#, fuzzy
 msgid "<div class=\"flex-video\"> <img src=\"${DYNAMIC_CONTENT}\" /> </div>"
-msgstr ""
+msgstr "<div class=\"flex-video\"> <img src=\"${DYNAMIC_CONTENT}\" /> </div>"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:36
+#, fuzzy
 msgid "<h3>x</h3> <strong>${DYNAMIC_CONTENT}</strong> x x ${Deb} au ${Fin}. <a class=\"close\"></a>"
-msgstr ""
+msgstr "<h3>x</h3><strong>${DYNAMIC_CONTENT}</strong> x x ${Deb} to ${Fin}.<a class=\"close\"></a>"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:23
+#, fuzzy
 msgid "<h3>x</h3> <strong>${DYNAMIC_CONTENT}</strong> x x ${Deb} au ${Fin}. x"
-msgstr ""
+msgstr "<h3>x</h3><strong>${DYNAMIC_CONTENT}</strong> x x ${Deb} to ${Fin}. x"
 
 #: ../browser/view_template/my_courses/my_courses_view.pt:89
+#, fuzzy
 msgid "<i class=\"${DYNAMIC_CONTENT}\"></i> x"
-msgstr ""
+msgstr "<i class=\"${DYNAMIC_CONTENT}\"></i>x"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:128
 #: ../browser/view_template/jalon_course/wims_activity_view.pt:198
+#, fuzzy
 msgid "<i class=\"${DYNAMIC_CONTENT}\"></i>x <span class=\"sup\">${DYNAMIC_CONTENT}</span>"
-msgstr ""
+msgstr "<i class=\"${DYNAMIC_CONTENT}\"></i>x <span class=\"sup\">${DYNAMIC_CONTENT}</span>"
 
 #: ../skins/jalon_theme_connexion/macro_informations_page_connexion.pt:160
 msgid "<i class=\"fa fa-external-link\"></i> Jalon sur Wikipedia"
-msgstr ""
+msgstr "<i class=\"fa fa-external-link\"></i> Jalon on Wikipedia"
 
 #: ../skins/jalon_theme_course/display_all_course_map_form.pt:26
 msgid "<i class=\"fa fa-eye fa-fw\"></i>Afficher"
-msgstr ""
+msgstr "<i class=\"fa fa-eye fa-fw\"></i>Display"
 
 #: ../skins/jalon_theme_course/display_all_course_map_form.pt:34
 msgid "<i class=\"fa fa-eye-slash fa-fw\"></i>Masquer"
-msgstr ""
+msgstr "<i class=\"fa fa-eye-slash fa-fw\"></i>Hide"
 
 #: ../skins/jalon_theme_course/display_course_webconference_page.pt:30
+#, fuzzy
 msgid "<i class=\"fa fa-eye\"></i>x"
-msgstr ""
+msgstr "<i class=\"fa fa-eye\"></i>x"
 
 #: ../skins/jalon_theme_course/download_deposit_zip_form.pt:14
+#, fuzzy
 msgid "<i class=\"fa fa-file-archive-o no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
-msgstr ""
+msgstr "<i class=\"fa fa-file-archive-o no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
 
 #: ../skins/jalon_theme_course/download_deposit_list_form.pt:14
 #: ../skins/jalon_theme_course/download_peers_results_page.pt:14
+#, fuzzy
 msgid "<i class=\"fa fa-list no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
-msgstr ""
+msgstr "<i class=\"fa fa-list no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
 
 #: ../skins/jalon_theme_connexion/macro_informations_page_connexion.pt:166
 msgid "<i class=\"fa fa-sun-o\"></i> Participer au projet opensource Jalon"
-msgstr ""
+msgstr "<i class=\"fa fa-sun-o\"></i> Participate to the opensource Jalon project"
 
 #: ../skins/jalon_theme_course/delete_deposit_files_form.pt:14
+#, fuzzy
 msgid "<i class=\"fa fa-trash-o no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
-msgstr ""
+msgstr "<i class=\"fa fa-trash-o no-pad\"></i> x <a class=\"close-reveal-modal\"></a>"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:65
+#, fuzzy
 msgid "<strong>x</strong> <span>x</span>"
-msgstr ""
+msgstr "<strong>x</strong> <span>x</span>"
 
 #: ../skins/jalon_theme_course/delete_deposit_box_skill_form.pt:20
 #: ../skins/jalon_theme_my_space/multiple_objects_form.pt:125
+#, fuzzy
 msgid "<strong>x</strong> x"
-msgstr ""
+msgstr "<strong>x</strong> x"
 
 #. Default: "Clef de l'application (générée par Twitter)"
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:33
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:876
 msgid "APP_KEY"
-msgstr ""
+msgstr "Application key (generated by Twitter)"
 
 #. Default: "Secret de l'application (généré par Twitter)"
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:42
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:884
 msgid "APP_SECRET"
-msgstr ""
+msgstr "Application's secret (generated by Twitter)"
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_teacher_macro.pt:66
 msgid "Ac. pub."
-msgstr ""
+msgstr "Pub. Ac."
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:204
 #: ../skins/jalon_theme_my_courses/choose_author_page.pt:66
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:65
 msgid "Action"
-msgstr ""
+msgstr "Action"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:123
 #: ../browser/view_forum_template/jalonploneboardview.pt:105
@@ -133,61 +144,61 @@ msgstr "Actions"
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:79
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:93
 msgid "Actions par lots"
-msgstr ""
+msgstr "Actions per batch"
 
 #: ../skins/jalon_theme_course/add_course_password_registration_form.pt:37
 #: ../skins/jalon_theme_course/edit_course_map_display_form.pt:31
 #: ../skins/jalon_theme_course/edit_course_public_access_form.pt:47
 msgid "Activer"
-msgstr ""
+msgstr "Activate"
 
 #: ../skins/jalon_theme_configuration/gestion_connexion.pt:67
 msgid "Activer la connexion a un CAS (Central Authentification Service)"
-msgstr ""
+msgstr "Activate connection to a CAS (Central Authentification Service)"
 
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:67
 msgid "Activer la connexion a un annuaire LDAP"
-msgstr ""
+msgstr "Activate connection to a LDAP directory"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:286
 msgid "Activer la rubrique VOD (Wowza)"
-msgstr ""
+msgstr "Activate VOD section (Wowza)"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:90
 msgid "Activer le bloc de message d'information pour les enseignants"
-msgstr ""
+msgstr "Activate information message pad for teachers"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:28
 msgid "Activer le bloc de message d'information pour tous les utilisateurs"
-msgstr ""
+msgstr "Activate information message pad for users"
 
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:69
 msgid "Activer le lien vers la page \"Aide et tutoriels\""
-msgstr ""
+msgstr "Activate link to \"Help & Tutorials\" page"
 
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:141
 msgid "Activer le lien vers la page \"Contacts\""
-msgstr ""
+msgstr "Activate link to \"Contacts\" page"
 
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:131
 msgid "Activer le stockage des photos"
-msgstr ""
+msgstr "Activate photo storage"
 
 #: ../skins/jalon_theme_configuration/gestion_ga.pt:66
 msgid "Activer les statistiques dans Google Analytics"
-msgstr ""
+msgstr "Activate statistics in Google Analytics"
 
 #: ../browser/view_template/my_space/my_adobe_connect_recording_view.pt:66
 msgid "Actualisation"
-msgstr ""
+msgstr "Refresh"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:108
 msgid "Adresse IP"
-msgstr ""
+msgstr "IP adress"
 
 #: ../skins/jalon_theme_course/affect_deposit_file_form.pt:49
 msgid "Affecter"
-msgstr ""
+msgstr "Affect"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:145
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:201
@@ -196,11 +207,11 @@ msgstr "Display"
 
 #: ../skins/jalon_theme_course/edit_course_map_display_form.pt:15
 msgid "Afficher en mode page"
-msgstr ""
+msgstr "Display in page mode"
 
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:140
 msgid "Afficher un message demandant aux utilisateurs de vider le cache de leur navigateur."
-msgstr ""
+msgstr "Display a message telling the users to empty the cache of their browser."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:17
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrousmultiples.pt:24
@@ -212,31 +223,31 @@ msgstr "Help"
 #: ../skins/jalon_theme_course/add_deposit_box_criteria_form.cpt:139
 #: ../skins/jalon_theme_course/add_deposit_box_skill_form.cpt:108
 msgid "Ajouter"
-msgstr ""
+msgstr "Add"
 
 #: ../skins/jalon_theme_my_courses/add_favorite_course_form.pt:15
 msgid "Ajouter aux favoris"
-msgstr ""
+msgstr "Add to favorites"
 
 #: ../skins/jalon_theme_course/activate_webconference_form.pt:50
 msgid "Ajouter cette salle virtuelle"
-msgstr ""
+msgstr "Add this virtual room"
 
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:13
 msgid "Ajouter des co-auteurs"
-msgstr ""
+msgstr "Add co-authors"
 
 #: ../skins/jalon_theme_course/activate_webconference_form.pt:13
 msgid "Ajouter ma salle virtuelle"
-msgstr ""
+msgstr "Add my virtual room"
 
 #: ../skins/jalon_theme_course/create_and_add_course_file_form.cpt:22
 msgid "Ajouter un fichier au cours et dans \"Mes ressources > Fichiers\""
-msgstr ""
+msgstr "Add a file to the course and in \"My resources > Files\""
 
 #: ../skins/jalon_theme_course/create_and_add_course_glossary_term_form.cpt:22
 msgid "Ajouter un terme de glossaire au cours et dans \"Mes ressources > Termes de glossaire\""
-msgstr ""
+msgstr "Add a word from the glossary in the course and in \"My resources > Words from the glossary\""
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:131
 msgid "Ajouter une question"
@@ -244,28 +255,28 @@ msgstr "Add a question"
 
 #: ../skins/jalon_theme_course/create_and_add_course_external_resource_form.cpt:22
 msgid "Ajouter une ressource externe au cours et dans \"Mes ressources > Ressources externes\""
-msgstr ""
+msgstr "Add an external resource to the course and in \"My resources > External Resources\""
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:48
 msgid "Annonce"
-msgstr ""
+msgstr "Announce"
 
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:70
 msgid "Annoncer une maintenance"
-msgstr ""
+msgstr "Announce a maintenance"
 
 #: ../skins/jalon_theme_course/undo_deposit_box_criteria_form.pt:32
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:373
 msgid "Annuler"
-msgstr ""
+msgstr "Cancel"
 
 #: ../skins/jalon_theme_my_courses/add_archive_course_form.pt:13
 msgid "Archiver ce cours"
-msgstr ""
+msgstr "Archive this course"
 
 #: ../browser/view_template/jalon_course/course_add_view.pt:100
 msgid "Attacher"
-msgstr ""
+msgstr "Attach"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:73
 msgid "Au moins 1"
@@ -279,29 +290,29 @@ msgstr "None"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:157
 msgid "Aucun cours iTunesU pour cet utilisateur"
-msgstr ""
+msgstr "No iTunes U courses for this user"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:163
 msgid "Aucune"
-msgstr ""
+msgstr "None"
 
 #: ../browser/view_template/jalon_course/course_view.pt:87
 msgid "Aucune ressource n'est accessible dans ce cours."
-msgstr ""
+msgstr "No accessible resources in this course."
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:61
 msgid "Auteur"
-msgstr ""
+msgstr "Author"
 
 #: ../skins/jalon_theme_course/edit_peers_grid_access_form.pt:37
 #: ../skins/jalon_theme_course/edit_peers_results_form.pt:37
 #: ../skins/jalon_theme_course/edit_peers_self_evaluation_form.pt:37
 msgid "Autoriser"
-msgstr ""
+msgstr "Allow"
 
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:491
 msgid "Avant de poursuivre vous devez configurer l'envoi de courriels : <a href=\"../@@mail-controlpanel\">Envoi de courriels</a>"
-msgstr ""
+msgstr "Before continuing you have to configure emailing : <a href=\"../@@mail-controlpanel\">Emailing</a>"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:57
 msgid "Balises html admises."
@@ -311,23 +322,23 @@ msgstr "Html tags admitted."
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:24
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:868
 msgid "COMPTE_TWITTER"
-msgstr ""
+msgstr "Twitter account"
 
 #: ../skins/jalon_theme_course/average_deposit_file_form.pt:14
 msgid "Calculer les moyennes"
-msgstr ""
+msgstr "Calculate average notes"
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:40
 msgid "Catalogue BU"
-msgstr ""
+msgstr "University Library Catalogue"
 
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:46
 msgid "Ce cours n'a aucun co-auteur."
-msgstr ""
+msgstr "This course has no co-author."
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:256
 msgid "Ce forum n'a pas de description."
-msgstr ""
+msgstr "This forum doesn't have a description."
 
 #: ../browser/view_forum_template/jalonploneboardconversationview.pt:68
 #: ../skins/jalon_theme_forum/valider_forum.vpy:30
@@ -336,11 +347,11 @@ msgstr "Mandatory field"
 
 #: ../browser/view_template/my_space/jalon_wims_exercice_view.pt:50
 msgid "Changer cet exercice"
-msgstr ""
+msgstr "Change this exercise"
 
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:26
 msgid "Choisissez le format de votre fichier d'exercice(s) :"
-msgstr ""
+msgstr "Select the format of you exercise file(s):"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:82
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:73
@@ -350,11 +361,11 @@ msgstr "Ranking"
 
 #: ../skins/jalon_theme_course/remove_course_coauthor_form.pt:19
 msgid "Co-auteurs"
-msgstr ""
+msgstr "Co-authors"
 
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:51
 msgid "Co-auteurs de ce cours"
-msgstr ""
+msgstr "Co-authors of this course"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:91
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:82
@@ -365,17 +376,17 @@ msgstr "Code"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:145
 #: ../browser/view_template/jalon_course/deposit_box_evaluation_view.pt:75
 msgid "Coefficient"
-msgstr ""
+msgstr "Coefficient"
 
 #: ../skins/jalon_theme_course/add_deposit_box_criteria_form.cpt:60
 #: ../skins/jalon_theme_course/edit_deposit_box_criteria_form.cpt:67
 #: ../skins/jalon_theme_course/redo_deposit_box_criteria_form.cpt:32
 msgid "Coefficient (max 5)"
-msgstr ""
+msgstr "Coefficient (max 5)"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:340
 msgid "Collez ici le permalien de l'exercice"
-msgstr ""
+msgstr "Paste here the exercise's permalink"
 
 #: ../skins/jalon_theme_forum/add_comment_script.cpy:55
 msgid "Comment added"
@@ -383,7 +394,7 @@ msgstr "Comment added"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:45
 msgid "Comment faire ?"
-msgstr ""
+msgstr "How to ?"
 
 #: ../skins/jalon_theme_forum/add_comment_script.cpy:53
 msgid "Comment is pending moderation"
@@ -398,73 +409,73 @@ msgstr "UNS account not opened"
 #: ../skins/jalon_theme_configuration/gestion_email.pt:61
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:487
 msgid "Configuration de l'envoi des courriels"
-msgstr ""
+msgstr "Emailing configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_connexion.pt:61
 msgid "Configuration de la connexion"
-msgstr ""
+msgstr "Connection configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:62
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1039
 msgid "Configuration de la maintenance"
-msgstr ""
+msgstr "Maintenance configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:20
 msgid "Configuration des blocs de messages"
-msgstr ""
+msgstr "Messages pad configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:61
 msgid "Configuration des didactiels"
-msgstr ""
+msgstr "Tutorials configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:364
 msgid "Configuration des didactiels de Jalon"
-msgstr ""
+msgstr "Jalon's tutorials configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:85
 msgid "Configuration des informations de Jalon"
-msgstr ""
+msgstr "Jalon's informations configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:61
 msgid "Configuration des liens d'informations"
-msgstr ""
+msgstr "Informations links configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:18
 msgid "Configuration des outils actifs dans \"Mes ressources\""
-msgstr ""
+msgstr "\"My resources\" active tools configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_ga.pt:60
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:977
 msgid "Configuration des statistiques via Google Analytics"
-msgstr ""
+msgstr "Google Analytics statistics configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:425
 msgid "Configuration du module Adobe Connect"
-msgstr ""
+msgstr "Adobe Connect module configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:730
 msgid "Configuration du module Elasticsearch (Pod)"
-msgstr ""
+msgstr "Elasticsearch module (Pod) configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:661
 msgid "Configuration du module ExLibris Primo"
-msgstr ""
+msgstr "ExLibris Primo module configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:539
 msgid "Configuration du module Wims"
-msgstr ""
+msgstr "Wims module configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:757
 msgid "Configuration du module Wowza"
-msgstr ""
+msgstr "Wowza module configuration"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:136
 msgid "Configuration du module de connexion au serveur de communication NodeJS"
-msgstr ""
+msgstr "Communication server NodeJS connection module’s configuration"
 
 #: ../skins/jalon_theme_configuration/gestion_email.pt:67
 msgid "Configurer l'envoi de courriels"
-msgstr ""
+msgstr "Configure emailing"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:51
 msgid "Connexion"
@@ -472,21 +483,21 @@ msgstr "Connection"
 
 #: ../skins/jalon_theme_my_students/details_etudiants.pt:26
 msgid "Connexion du mois courant"
-msgstr ""
+msgstr "Current month connection"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:64
 msgid "Connexion requise"
-msgstr ""
+msgstr "Connection required"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:53
 msgid "Connexions de"
-msgstr ""
+msgstr "Connections of"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:24
 #: ../browser/view_template/jalon_course/wims_activity_view.pt:24
 #: ../skins/jalon_theme_course/edit_deposit_box_instruction_form.pt:23
 msgid "Consigne"
-msgstr ""
+msgstr "Instructions"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:78
 msgid "Consultation des cours"
@@ -494,28 +505,28 @@ msgstr "Courses consultation"
 
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:497
 msgid "Consulter la configuration de l'envoi de courriels : <a href=\"../@@mail-controlpanel\">Envoi de courriels</a>"
-msgstr ""
+msgstr "Consult emailing configuration:<a href=\"../@@mail-controlpanel\">Emailing</a>"
 
 #: ../skins/jalon_theme_my_courses/add_favorite_course_form.pt:27
 msgid "Consulter mes cours favoris"
-msgstr ""
+msgstr "Consult my favorite courses"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:95
 msgid "Contactez-nous si vous souhaitez exporter cet exercice dans un format qui n'apparait pas ici."
-msgstr ""
+msgstr "Contact us if you wish to export this exercise in a format that does not show here."
 
 #: ../skins/jalon_theme_general/footer_macro.pt:18
 msgid "Contacts"
-msgstr ""
+msgstr "Contacts"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:90
 msgid "Conv."
-msgstr ""
+msgstr "Conv."
 
 #: ../skins/jalon_theme_forum/ploneboard_recent.pt:87
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:85
 msgid "Conversation"
-msgstr ""
+msgstr "Conversation"
 
 #: ../skins/jalon_theme_forum/add_conversation_script.cpy:45
 msgid "Conversation added"
@@ -527,74 +538,74 @@ msgstr "Conversation is pending moderation"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:98
 msgid "Conversations"
-msgstr ""
+msgstr "Conversations"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:296
 msgid "Copiez le permalien"
-msgstr ""
+msgstr "Copy permalink"
 
 #: ../browser/view_template/jalon_course/my_deposit_file_view.pt:24
 msgid "Correction"
-msgstr ""
+msgstr "Correction"
 
 #: ../skins/jalon_theme_course/add_course_nominative_registration_form.pt:79
 #: ../skins/jalon_theme_course/add_course_password_registration_form.pt:88
 #: ../skins/jalon_theme_course/delete_course_email_registration_form.pt:58
 msgid "Courriel"
-msgstr ""
+msgstr "Email"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:47
 msgid "Courriels"
-msgstr ""
+msgstr "Emails"
 
 #: ../skins/jalon_theme_general/tools_page.pt:180
 msgid "Creative Commons"
-msgstr ""
+msgstr "Creative Commons"
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:39
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:94
 #: ../skins/jalon_theme_my_space/my_adobe_connect_recording_list_macro.pt:46
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:124
 msgid "Date de fin de la maintenance"
-msgstr ""
+msgstr "Maintenance end date"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:68
 msgid "Date.Heure"
-msgstr ""
+msgstr "Date.Time"
 
 #: ../browser/view_template/jalon_course/course_add_view.pt:29
 msgid "Depuis mes ressources"
-msgstr ""
+msgstr "From my resources"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:251
 #: ../skins/jalon_theme_course/create_and_add_course_file_form.cpt:37
 #: ../skins/jalon_theme_course/edit_deposit_box_skill_form.cpt:67
 msgid "Description"
-msgstr ""
+msgstr "Description"
 
 #: ../skins/jalon_theme_course/view_deposit_box_skill_page.pt:30
 msgid "Description :"
-msgstr ""
+msgstr "Description:"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:39
 msgid "Didacticiels"
-msgstr ""
+msgstr "Tutorials"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:43
 msgid "Diffusion de messages"
-msgstr ""
+msgstr "Messages dissemination"
 
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:98
 #: ../skins/jalon_theme_my_courses/duplicate_course_form.pt:51
 msgid "Dupliquer"
-msgstr ""
+msgstr "Duplicate"
 
 #: ../skins/jalon_theme_my_courses/duplicate_course_form.pt:15
 msgid "Dupliquer le cours"
-msgstr ""
+msgstr "Duplicate the course"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:100
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:91
@@ -609,25 +620,25 @@ msgstr "Headcount"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:222
 msgid "En attente"
-msgstr ""
+msgstr "Pending"
 
 #: ../skins/jalon_theme_configuration/macro_categorie.pt:41
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:33
 #: ../skins/jalon_theme_course/add_course_coreader_registration_form.pt:37
 msgid "Enregistrer"
-msgstr ""
+msgstr "Save"
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:29
 msgid "Entrainement"
-msgstr ""
+msgstr "Training"
 
 #: ../skins/jalon_theme_configuration/gestion_email.pt:82
 msgid "Envoi de courriels lors des erreurs"
-msgstr ""
+msgstr "Email sending while errors are occurring"
 
 #: ../browser/view_forum_template/jalonploneboardconversationview.pt:79
 msgid "Envoyer"
-msgstr ""
+msgstr "Send"
 
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:95
 msgid "Envoyer le courriel"
@@ -635,24 +646,24 @@ msgstr "Send email"
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:28
 msgid "Examen"
-msgstr ""
+msgstr "Exam"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:223
 msgid "Exemple : temps"
-msgstr ""
+msgstr "Example: time"
 
 #: ../browser/view_template/jalon_course/wims_activity_exercice_view.pt:44
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:84
 msgid "Exercice"
-msgstr ""
+msgstr "Exercise"
 
 #: ../skins/jalon_theme_my_space/my_wims_exercices_list_macro.pt:163
 msgid "Exporter"
-msgstr ""
+msgstr "Export"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:12
 msgid "Exporter l'exercice"
-msgstr ""
+msgstr "Export exercise"
 
 #: ../profiles.zcml:12
 msgid "Extension profile for the \"Jalon\" Plone theme."
@@ -661,60 +672,60 @@ msgstr "Extension profile for the \"Jalon\" Plone theme."
 #: ../skins/jalon_theme_course/create_and_add_course_file_form.cpt:44
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:35
 msgid "Fichier"
-msgstr ""
+msgstr "File"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:59
 msgid "Format Flow Lesson (.fll) de Lesson Builder 2.0"
-msgstr ""
+msgstr "Flow Lesson format (.fll) from Lesson Builder 2.0"
 
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:45
 msgid "Format Moodle"
-msgstr ""
+msgstr "Moodle format"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:84
 msgid "Format OEF"
-msgstr ""
+msgstr "OEF format"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:71
 msgid "Format OLX (Open edX, version Cypress)"
-msgstr ""
+msgstr "OLX (Open edX, version Cypress) format"
 
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:31
 msgid "Format WIMS"
-msgstr ""
+msgstr "WIMS format"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:79
 msgid "Format natif de WIMS"
-msgstr ""
+msgstr "WIMS native format"
 
 #: ../skins/jalon_theme_course/delete_course_training_offer_form.pt:22
 msgid "Formation(s) inscrite(s) au cours"
-msgstr ""
+msgstr "Formation(s) registered in the course"
 
 #: ../skins/jalon_theme_forum/ploneboard_recent.pt:78
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:76
 msgid "Forum"
-msgstr ""
+msgstr "Forum"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:58
 msgid "Forums"
-msgstr ""
+msgstr "Forums"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:27
 msgid "Gestion \"Mes ressources\""
-msgstr ""
+msgstr "\"My resources\" management"
 
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:81
 msgid "Gestion de \"Mes ressources\""
-msgstr ""
+msgstr "\"My resources\" management"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:31
 msgid "Gestion des cours"
-msgstr ""
+msgstr "Course's management"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:526
 msgid "Gestion des permissions des forums"
-msgstr ""
+msgstr "Forums permissions management"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:29
 msgid "Gestion des synonymes"
@@ -722,7 +733,7 @@ msgstr "Synonyms management"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:55
 msgid "Google Analytics"
-msgstr ""
+msgstr "Google Analytics"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:173
 msgid "Groupe(s)"
@@ -730,49 +741,49 @@ msgstr "Group(s)"
 
 #: ../skins/jalon_theme_my_courses/choose_author_page.pt:54
 msgid "Identifiant"
-msgstr ""
+msgstr "IDs"
 
 #: ../skins/jalon_theme_my_space/my_pod_videos_list_macro.pt:17
 msgid "Il n'y a aucun contenu UNSPod dans votre espace."
-msgstr ""
+msgstr "There is no UNSPod content in your space."
 
 #: ../skins/jalon_theme_my_space/my_wims_exercices_list_macro.pt:17
 msgid "Il n'y a aucun exercice Wims dans votre espace."
-msgstr ""
+msgstr "There is no Wims exercise in your space."
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:63
 msgid "Il n'y a aucun forum dans ce cours."
-msgstr ""
+msgstr "There is no forum in this course."
 
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:17
 msgid "Il n'y a aucun lien vers une ressource externe dans votre espace."
-msgstr ""
+msgstr "There is no link to an external resource in your space."
 
 #: ../skins/jalon_theme_my_space/my_glossary_terms_list_macro.pt:17
 msgid "Il n'y a aucun terme de glossaire dans votre espace."
-msgstr ""
+msgstr "There are no glossary in your space."
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:21
 msgid "Il n'y a aucune annonce pour ce cours."
-msgstr ""
+msgstr "There is no announcement in this course."
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:109
 msgid "Il y a une erreur de syntaxe dans votre exercice."
-msgstr ""
+msgstr "There is a syntax error in your exercise."
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:36
 #: ../skins/jalon_theme_my_space/search_bu_catalog_form.pt:65
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
 #: ../skins/jalon_theme_course/import_wims_activity_form.cpt:69
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:96
 msgid "Importer"
-msgstr ""
+msgstr "Import"
 
 #: ../skins/jalon_theme_course/import_wims_activity_form.cpt:30
 msgid "Importer des exercices HotPotatoes"
-msgstr ""
+msgstr "Import HotPotatoes exercises"
 
 #: ../browser/view_template/my_space/my_wims_exercices_view.pt:49
 msgid "Importer un exercice Wims"
@@ -780,42 +791,42 @@ msgstr "Import a Wims exercise"
 
 #: ../skins/jalon_theme_my_space/import_wims_exercice_form.cpt:18
 msgid "Importer un(des) exercice(s) WIMS"
-msgstr ""
+msgstr "Import WIMS exercise(s)"
 
 #: ../skins/jalon_theme_course/mark_out_course_map_item_form.pt:35
 msgid "Indication"
-msgstr ""
+msgstr "Indication"
 
 #: ../skins/jalon_theme_my_courses/check_course_password_form.cpt:21
 msgid "Inscription au cours par mot de passe"
-msgstr ""
+msgstr "Registration to the course by password"
 
 #: ../skins/jalon_theme_course/add_course_nominative_registration_form.pt:15
 msgid "Inscription(s) nominative(s)"
-msgstr ""
+msgstr "Nominative inscription(s)"
 
 #: ../skins/jalon_theme_course/add_course_training_offer_form.pt:17
 msgid "Inscription(s) par formation(s)"
-msgstr ""
+msgstr "Registration(s) by formation(s)"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:147
 #: ../browser/view_template/jalon_course/wims_activity_view.pt:227
 msgid "Instructions"
-msgstr ""
+msgstr "Instructions"
 
 #: ../skins/jalon_theme_course/edit_peers_grid_access_form.pt:43
 #: ../skins/jalon_theme_course/edit_peers_results_form.pt:43
 #: ../skins/jalon_theme_course/edit_peers_self_evaluation_form.pt:43
 msgid "Interdire"
-msgstr ""
+msgstr "Forbid"
 
 #: ../skins/jalon_theme_general/tools_page.pt:32
 msgid "Intracursus"
-msgstr ""
+msgstr "Intracursus"
 
 #: ../skins/jalon_theme_course/edit_validate_deposit_form.pt:45
 msgid "Invalide"
-msgstr ""
+msgstr "Invalid"
 
 #: ../profiles.zcml:12
 msgid "Jalon Theme"
@@ -823,48 +834,48 @@ msgstr "Jalon Theme"
 
 #: ../skins/jalon_theme_course/mark_out_course_map_item_form.pt:57
 msgid "Jalonner"
-msgstr ""
+msgstr "Mark out"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:130
 msgid "Jamais"
-msgstr ""
+msgstr "Never"
 
 #: ../skins/jalon_theme_course/delete_course_announce_form.pt:24
 msgid "L'annonce"
-msgstr ""
+msgstr "Announcement"
 
 #: ../browser/view_template/my_space/jalon_external_resource_view.pt:62
 #: ../skins/jalon_theme_my_space/edit_external_resource_form.cpt:49
 msgid "La ressource n'est plus disponible dans le catalogue de la BU."
-msgstr ""
+msgstr "Resource is not available in the University Library catalogue anymore."
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:465
 msgid "Lancer la recherche"
-msgstr ""
+msgstr "Start research"
 
 #: ../browser/view_template/jalon_course/course_view.pt:100
 msgid "Le contenu de ce titre n'est plus disponible."
-msgstr ""
+msgstr "This title's content is not available anymore."
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:39
 msgid "Lecteur exportable"
-msgstr ""
+msgstr "Embeddable player"
 
 #: ../skins/jalon_theme_course/add_course_coreader_registration_form.pt:16
 msgid "Lecteur(s) enseignant(s)"
-msgstr ""
+msgstr "Teacher reader(s)"
 
 #: ../skins/jalon_theme_course/add_course_coreader_registration_form.pt:50
 msgid "Lecteur(s) enseignant(s) de ce cours"
-msgstr ""
+msgstr "Teacher reader(s) of this course"
 
 #: ../skins/jalon_theme_course/delete_course_coreader_registration_form.pt:22
 msgid "Lecteurs"
-msgstr ""
+msgstr "Readers"
 
 #: ../skins/jalon_theme_course/course_display_coreader_registration_page.pt:15
 msgid "Lecteurs du cours :"
-msgstr ""
+msgstr "Reader of the course:"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:13
 msgid "Les balises HTML sont admises."
@@ -872,19 +883,19 @@ msgstr "Html tags are admitted."
 
 #: ../skins/jalon_theme_course/add_deposit_box_skill_form.cpt:44
 msgid "Libre"
-msgstr ""
+msgstr "Free"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:296
 msgid "Lien pour cet exercice"
-msgstr ""
+msgstr "Link for this exercise"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:303
 msgid "Lien pour la config actuelle"
-msgstr ""
+msgstr "Link for the current configuration"
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:35
 msgid "Liens d'informations"
-msgstr ""
+msgstr "Information link"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:115
 msgid "Liste"
@@ -892,16 +903,16 @@ msgstr "List"
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:17
 msgid "Liste des annonces"
-msgstr ""
+msgstr "List of announcements"
 
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:27
 msgid "Liste des cours de ${DYNAMIC_CONTENT}"
-msgstr ""
+msgstr "List of the courses of ${DYNAMIC_CONTENT}"
 
 #: ../skins/jalon_theme_course/add_course_password_registration_form.pt:61
 #: ../skins/jalon_theme_course/delete_course_password_participants_form.pt:36
 msgid "Liste des participants inscrits par mot de passe"
-msgstr ""
+msgstr "List of participants registered by password"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:41
 msgid "Listez les objets dans le bon ordre."
@@ -909,20 +920,20 @@ msgstr "List the items in the right order."
 
 #: ../browser/view_template/jalon_properties/jalon_properties.pt:59
 msgid "Maintenance"
-msgstr ""
+msgstr "Maintenance"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:17
 msgid "Maintenance en cours"
-msgstr ""
+msgstr "Maintenance in progress"
 
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:147
 msgid "Marge"
-msgstr ""
+msgstr "Margin"
 
 #: ../skins/jalon_theme_course/add_deposit_box_criteria_form.cpt:73
 #: ../skins/jalon_theme_course/edit_deposit_box_criteria_form.cpt:80
 msgid "Marge (max 5)"
-msgstr ""
+msgstr "Margin (max 5)"
 
 #: ../browser/view_template/jalon_course/course_add_view.pt:89
 #: ../skins/jalon_theme_course/create_and_add_course_external_resource_form.cpt:76
@@ -932,11 +943,11 @@ msgstr "Hide"
 
 #: ../browser/view_template/my_space/my_pod_videos_view.pt:59
 msgid "Mes contenus UNSPod"
-msgstr ""
+msgstr "My UNSPod contents"
 
 #: ../browser/view_template/my_courses/my_courses_view.pt:55
 msgid "Mes cours"
-msgstr ""
+msgstr "My courses"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:30
 msgid "Mes etudiants"
@@ -944,128 +955,127 @@ msgstr "My students"
 
 #: ../browser/view_template/my_space/my_space_view.pt:22
 msgid "Mes ressources"
-msgstr ""
+msgstr "My resources"
 
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:89
 msgid "Mettre le site en maintenance"
-msgstr ""
+msgstr "Put the site under maintenance"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:212
 #: ../browser/view_forum_template/jalonploneboardview.pt:159
 #: ../skins/jalon_theme_course/edit_deposit_box_criteria_form.cpt:147
 msgid "Modifier"
-msgstr ""
+msgstr "Modify"
 
 #: ../browser/view_template/my_space/jalon_wims_exercice_view.pt:49
 msgid "Modifier cet exercice"
-msgstr ""
+msgstr "Modify this exercise"
 
 #: ../skins/jalon_theme_course/edit_course_author_form.pt:13
 msgid "Modifier l'auteur"
-msgstr ""
+msgstr "Modify the author"
 
 #: ../skins/jalon_theme_course/edit_wims_activity_exercice_form.pt:27
 msgid "Modifier l'exercice"
-msgstr ""
+msgstr "Modify the exercise"
 
 #: ../skins/jalon_theme_course/edit_course_description_form.pt:13
 msgid "Modifier la description du cours"
-msgstr ""
+msgstr "Modify course's description"
 
 #: ../skins/jalon_theme_my_space/edit_file_form.cpt:16
 msgid "Modifier le fichier"
-msgstr ""
+msgstr "Modify file"
 
 #: ../skins/jalon_theme_my_space/edit_external_resource_form.cpt:15
 msgid "Modifier le lien vers la ressource externe"
-msgstr ""
+msgstr "Modify the link to the external resource"
 
 #: ../skins/jalon_theme_my_space/edit_glossary_term_form.cpt:15
 msgid "Modifier le terme de glossaire"
-msgstr ""
+msgstr "Modify glossary term"
 
 #: ../skins/jalon_theme_course/edit_course_title_form.cpt:14
 msgid "Modifier le titre du cours"
-msgstr ""
+msgstr "Modify course's title"
 
 #: ../skins/jalon_theme_course/edit_wims_activity_form.cpt:25
 msgid "Modifier les informations de l'examen"
-msgstr ""
+msgstr "Modify exam's informations"
 
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:16
 msgid "Modifier une annonce"
-msgstr ""
+msgstr "Modify an announcement"
 
 #: ../skins/jalon_theme_course/average_deposit_file_form.pt:43
 msgid "Moyenne"
-msgstr ""
+msgstr "Average"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:232
-#, fuzzy
 msgid "Nb. ens."
-msgstr "Nb. ens."
+msgstr "# teach."
 
 # This entry is only a sample on how to add manual i18n entries
 # It is not automatically picked, since it is referred from external package
 #. Default: "i18n Sample"
 msgid "Ne pas traduire ce texte. J'ajoute juste des accents pour que PoEdit comprenne bien que c'est du français !"
-msgstr ""
+msgstr "No to be translated !"
 
 #: ../skins/jalon_theme_my_students/details_etudiants.pt:24
 msgid "Nom"
-msgstr ""
+msgstr "Name"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:81
 msgid "Nom / Description"
-msgstr ""
+msgstr "Name/ Description"
 
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:26
 #: ../skins/jalon_theme_course/add_course_coreader_registration_form.pt:30
 #: ../skins/jalon_theme_course/edit_course_author_form.pt:46
 msgid "Nom ou identifiant"
-msgstr ""
+msgstr "Name or ID"
 
 #: ../browser/view_template/jalon_course/deposit_box_details_evaluations_view.pt:85
 #: ../skins/jalon_theme_course/details_verification_evaluations.pt:57
 msgid "Note sur 20"
-msgstr ""
+msgstr "Grade out of 20"
 
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:143
 msgid "Noter sur"
-msgstr ""
+msgstr "Grade out of"
 
 #: ../skins/jalon_theme_course/add_deposit_box_criteria_form.cpt:47
 #: ../skins/jalon_theme_course/edit_deposit_box_criteria_form.cpt:54
 msgid "Noter sur (max 10 points)"
-msgstr ""
+msgstr "Grade out of (max 10 points)"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:330
 msgid "Nouveau titre"
-msgstr ""
+msgstr "New title"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:15
 msgid "Nouvelle annonce"
-msgstr ""
+msgstr "New announcement"
 
 #: ../browser/view_template/jalon_course/course_add_view.pt:39
 msgid "Nouvelle ressource"
-msgstr ""
+msgstr "New resource"
 
 #. Default: "Clef de l'authentification (générée par Twitter)"
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:51
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:892
 msgid "OAUTH_TOKEN"
-msgstr ""
+msgstr "Authentication key (generated by Twitter)"
 
 #. Default: "Secret de l'authentification (généré par Twitter)"
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:60
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:900
 msgid "OAUTH_TOKEN_SECRET"
-msgstr ""
+msgstr "Authentication secret (generated by Twitter)"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:219
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:79
 msgid "Ordre des listes de choix"
@@ -1073,24 +1083,24 @@ msgstr "Choice lists' order"
 
 #: ../skins/jalon_theme_general/tools_page.pt:26
 msgid "Outils"
-msgstr ""
+msgstr "Tools"
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_teacher_macro.pt:80
 msgid "Ouvrir le cours"
-msgstr ""
+msgstr "Open course"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:179
 #: ../skins/jalon_theme_forum/comment_view.pt:36
 msgid "Par"
-msgstr ""
+msgstr "By"
 
 #: ../skins/jalon_theme_connexion/macro_informations_page_connexion.pt:94
 msgid "Parcours de formation"
-msgstr ""
+msgstr "Formation's route"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:337
 msgid "Permalien de l'exercice"
-msgstr ""
+msgstr "Exercise's permalink"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:56
 msgid "Pied de page"
@@ -1098,19 +1108,19 @@ msgstr "Footer"
 
 #: ../browser/view_template/jalon_course/course_view.pt:66
 msgid "Plan du cours"
-msgstr ""
+msgstr "Course's syllabus"
 
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:78
 msgid "Poids"
-msgstr ""
+msgstr "Weight"
 
 #: ../browser/view_template/my_space/my_adobe_connect_recording_view.pt:73
 msgid "Prendre en compte les nouveaux enregistrements"
-msgstr ""
+msgstr "Take into account the new records"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:157
 msgid "Profil"
-msgstr ""
+msgstr "Profile"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:118
 msgid "Proposer un texte parmi plusieurs"
@@ -1119,11 +1129,11 @@ msgstr "Propose a text among others"
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:73
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:64
 msgid "Public cible"
-msgstr ""
+msgstr "Target audience"
 
 #: ../skins/jalon_theme_my_courses/purge_course_form.pt:16
 msgid "Purger le cours"
-msgstr ""
+msgstr "Cleanse the course"
 
 #. Default: "Question"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:35
@@ -1132,41 +1142,41 @@ msgstr "Question "
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:241
 msgid "RSS du cours"
-msgstr ""
+msgstr "Course's RSS"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:454
 msgid "Recherche"
-msgstr ""
+msgstr "Research"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:237
 #: ../skins/jalon_theme_my_space/search_bu_catalog_form.pt:34
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:70
 msgid "Rechercher"
-msgstr ""
+msgstr "Research"
 
 #: ../skins/jalon_theme_my_space/search_bu_catalog_form.pt:16
 msgid "Rechercher dans le catalogue de la BU"
-msgstr ""
+msgstr "Research in University Library catalogue"
 
 #: ../browser/view_template/my_space/my_pod_videos_view.pt:40
 msgid "Rechercher et ajouter du contenu UNSPod"
-msgstr ""
+msgstr "Research and add UNSPod content"
 
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:26
 msgid "Rechercher un contenu dans"
-msgstr ""
+msgstr "Search a content in"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:330
 msgid "Rejeter"
-msgstr ""
+msgstr "Reject"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:307
 msgid "Rejeter la publication du cours"
-msgstr ""
+msgstr "Reject course’s publication"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:89
 msgid "Renommer"
-msgstr ""
+msgstr "Rename"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:223
 msgid "Responsable"
@@ -1174,23 +1184,23 @@ msgstr "Supervisor"
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:37
 msgid "Ressource Pod"
-msgstr ""
+msgstr "Pod resource"
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:38
 msgid "Ressource externe"
-msgstr ""
+msgstr "External resource"
 
 #: ../skins/jalon_theme_my_courses/remove_favorite_course_form.pt:13
 msgid "Retirer des favoris"
-msgstr ""
+msgstr "Remove from favourites"
 
 #: ../browser/view_template/jalon_course/wims_activity_exercice_view.pt:143
 msgid "Retour au mode enseignant"
-msgstr ""
+msgstr "Back to Teacher Mode"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:29
 msgid "Revoir les examens"
-msgstr ""
+msgstr "Review exams"
 
 #: ../browser/view_forum_template/jalonploneboardconversationview.pt:69
 #: ../browser/view_template/jalon_course/wims_activity_exercice_view.pt:131
@@ -1216,7 +1226,7 @@ msgstr "Enter your question here."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:82
 msgid "Saisissez la liste des objets"
-msgstr ""
+msgstr "Enter list of items"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:13
 msgid "Saisissez simplement votre question."
@@ -1229,7 +1239,7 @@ msgstr "Enter a number"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:121
 msgid "Saisissez un nombre > 1"
-msgstr ""
+msgstr "Enter a number > 1"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:124
 msgid "Saisissez un nombre de phrases"
@@ -1253,7 +1263,7 @@ msgstr "Enter a number."
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:164
 msgid "Saisissez une taille"
-msgstr ""
+msgstr "Enter size"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_questiontextuelletolerante.pt:56
 msgid "Saisissez vos phrases ici."
@@ -1261,33 +1271,33 @@ msgstr "Enter your sentences here."
 
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:31
 msgid "Salle virtuelle"
-msgstr ""
+msgstr "Virtual room"
 
 #: ../skins/jalon_theme_my_courses/access_statistics_course.pt:17
 msgid "Satistiques du cours"
-msgstr ""
+msgstr "Course’s statistics"
 
 #: ../browser/view_template/jalon_course/deposit_box_view.pt:90
 #: ../browser/view_template/jalon_course/wims_activity_view.pt:160
 #: ../skins/jalon_theme_connexion/connexion.pt:130
 msgid "Se connecter"
-msgstr ""
+msgstr "Login"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:85
 msgid "Se connecter avec son compte UNS"
-msgstr ""
+msgstr "Login with UNS account"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:76
 msgid "Session"
-msgstr ""
+msgstr "Session"
 
 #: ../skins/jalon_theme_course/mark_out_course_map_item_form.pt:42
 msgid "Si vous laissez le champ"
-msgstr ""
+msgstr "If you let the field"
 
 #: ../skins/jalon_theme_general/tools_page.pt:254
 msgid "Signaler un bug"
-msgstr ""
+msgstr "Report bug"
 
 #: ../browser/view_template/jalon_course/course_statistics_view.pt:52
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:301
@@ -1303,45 +1313,45 @@ msgstr "Next"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:90
 msgid "Suppression de tous les forums"
-msgstr ""
+msgstr "Delete all forums"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:219
 #: ../browser/view_forum_template/jalonploneboardview.pt:166
 #: ../skins/jalon_theme_course/course_delete_item_form.pt:43
 msgid "Supprimer"
-msgstr ""
+msgstr "Delete"
 
 #: ../skins/jalon_theme_course/remove_course_coauthor_form.pt:13
 msgid "Supprimer des co-auteurs"
-msgstr ""
+msgstr "Delete co-authors"
 
 #: ../skins/jalon_theme_course/delete_course_nominative_registration_form.pt:14
 msgid "Supprimer des inscriptions nominatives"
-msgstr ""
+msgstr "Delete nominative registration"
 
 #: ../skins/jalon_theme_course/delete_course_training_offer_form.pt:14
 msgid "Supprimer des inscriptions par formation"
-msgstr ""
+msgstr "Delete registration by formation"
 
 #: ../skins/jalon_theme_course/delete_course_coreader_registration_form.pt:16
 msgid "Supprimer des lecteurs enseignants"
-msgstr ""
+msgstr "Delete teachers readers"
 
 #: ../skins/jalon_theme_my_space/delete_object_form.pt:15
 msgid "Supprimer la ressource"
-msgstr ""
+msgstr "Delete resource"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:229
 msgid "Supprimer tous les forums"
-msgstr ""
+msgstr "Delete all forums"
 
 #: ../skins/jalon_theme_course/delete_all_course_announce_form.pt:16
 msgid "Supprimer toutes les annonces"
-msgstr ""
+msgstr "Delete all announcements"
 
 #: ../skins/jalon_theme_course/delete_course_announce_form.pt:17
 msgid "Supprimer une annonce"
-msgstr ""
+msgstr "Delete an announcement"
 
 #: ../skins/jalon_theme_my_students/statistique_page.pt:46
 msgid "Tableau de bord"
@@ -1373,74 +1383,74 @@ msgstr "Enter your text here."
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:267
 msgid "Texte"
-msgstr ""
+msgstr "Text"
 
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:34
 msgid "Texte :"
-msgstr ""
+msgstr "Text:"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:52
 #: ../skins/jalon_theme_course/activate_webconference_form.pt:28
 #: ../skins/jalon_theme_course/add_course_activity_form.cpt:29
 msgid "Titre"
-msgstr ""
+msgstr "Title"
 
 #: ../skins/jalon_theme_my_space/my_adobe_connect_recording_list_macro.pt:55
 msgid "Titre / Adresse"
-msgstr ""
+msgstr "Title/ address"
 
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:66
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:68
 msgid "Titre / Description"
-msgstr ""
+msgstr "Title/ Description"
 
 #: ../skins/jalon_theme_my_space/search_bu_catalog_form.pt:71
 msgid "Titre / Informations"
-msgstr ""
+msgstr "Title/ Informations"
 
 #: ../skins/jalon_theme_course/view_deposit_box_skill_page.pt:28
 msgid "Titre :"
-msgstr ""
+msgstr "Title:"
 
 #: ../skins/jalon_theme_course/edit_course_map_item_form.cpt:50
 msgid "Titre dans Mes ressources"
-msgstr ""
+msgstr "Title in My resources"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:172
 msgid "Titre des cours"
-msgstr ""
+msgstr "Courses’ title"
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:51
 msgid "Titre du cours"
-msgstr ""
+msgstr "Course’s title"
 
 #: ../skins/jalon_theme_my_courses/delete_wims_activity_form.pt:124
 msgid "Tout supprimer"
-msgstr ""
+msgstr "Delete all"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:198
 msgid "Trier selon l'action"
-msgstr ""
+msgstr "Sort according to actions"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:103
 msgid "Trier selon l'adresse IP"
-msgstr ""
+msgstr "Sort according to IP address"
 
 #: ../skins/jalon_theme_course/add_course_nominative_registration_form.pt:74
 #: ../skins/jalon_theme_course/add_course_password_registration_form.pt:83
 #: ../skins/jalon_theme_course/delete_course_email_registration_form.pt:53
 msgid "Trier selon l'adresse de courriel"
-msgstr ""
+msgstr "Sort according to email address"
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:54
 msgid "Trier selon l'auteur"
-msgstr ""
+msgstr "Sort according to author"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:94
 #: ../skins/jalon_theme_course/delete_course_training_offer_form.pt:67
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:85
 msgid "Trier selon l'effectif"
-msgstr ""
+msgstr "Sort according to the headcount"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:49
 msgid "Trier selon l'effectif'"
@@ -1448,31 +1458,31 @@ msgstr "Sort according to the headcount’"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:79
 msgid "Trier selon l'exercice"
-msgstr ""
+msgstr "Sort according to the exercise"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:63
 #: ../skins/jalon_theme_my_space/my_adobe_connect_recording_list_macro.pt:40
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:42
 msgid "Trier selon la date"
-msgstr ""
+msgstr "Sort according to the date"
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:32
 msgid "Trier selon la date de l'annonce"
-msgstr ""
+msgstr "Sort according to the announcement date"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:110
 #: ../browser/view_forum_template/jalonploneboardview.pt:93
 msgid "Trier selon la date du dernier message"
-msgstr ""
+msgstr "Sort according to last message’s date"
 
 #: ../browser/view_template/jalon_course/deposit_box_details_evaluations_view.pt:78
 #: ../skins/jalon_theme_course/details_verification_evaluations.pt:50
 msgid "Trier selon la note"
-msgstr ""
+msgstr "Sort according to grade"
 
 #: ../skins/jalon_theme_my_courses/wims_activity_special_page.pt:71
 msgid "Trier selon la session"
-msgstr ""
+msgstr "Sort according to session"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:76
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:67
@@ -1490,13 +1500,13 @@ msgstr "Sort according to the code"
 #: ../skins/jalon_theme_course/add_course_password_registration_form.pt:67
 #: ../skins/jalon_theme_course/delete_course_email_registration_form.pt:45
 msgid "Trier selon le nom"
-msgstr ""
+msgstr "Sort according to name"
 
 #: ../browser/view_forum_template/jalonploneboardview.pt:75
 #: ../skins/jalon_theme_forum/ploneboard_recent.pt:72
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:70
 msgid "Trier selon le nom du forum"
-msgstr ""
+msgstr "Sort according to forum’s name"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:226
 msgid "Trier selon le nombre d'enseignants"
@@ -1504,7 +1514,7 @@ msgstr "Sort according to the number of teachers"
 
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:71
 msgid "Trier selon le poids"
-msgstr ""
+msgstr "Sort according to weight"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:217
 msgid "Trier selon le responsable"
@@ -1514,25 +1524,25 @@ msgstr "Sort according to the supervisor"
 #: ../skins/jalon_theme_course/delete_deposit_box_skill_form.pt:41
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:38
 msgid "Trier selon le titre"
-msgstr ""
+msgstr "Sort according to title"
 
 #: ../skins/jalon_theme_course/display_course_all_advert_page.pt:42
 msgid "Trier selon le titre de l'annonce"
-msgstr ""
+msgstr "Sort according to announcement’s title"
 
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:92
 #: ../skins/jalon_theme_forum/ploneboard_recent.pt:81
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:79
 msgid "Trier selon le titre de la conversation"
-msgstr ""
+msgstr "Sort according to conversation’s title"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:166
 msgid "Trier selon le titre des cours"
-msgstr ""
+msgstr "Sort according to courses’ title"
 
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:44
 msgid "Trier selon le titre du cours"
-msgstr ""
+msgstr "Sort according to course’s title"
 
 #: ../skins/jalon_theme_course/delete_course_training_offer_form.pt:59
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:51
@@ -1543,7 +1553,7 @@ msgstr "Sort according to the type"
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:67
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:58
 msgid "Trier selon le type de public"
-msgstr ""
+msgstr "Sort according to public type"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:121
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:25
@@ -1558,7 +1568,7 @@ msgstr "Type"
 
 #: ../skins/jalon_theme_general/tools_page.pt:63
 msgid "UNS.Pod"
-msgstr ""
+msgstr "UNS.Pod"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:152
 msgid "Une formule est requise"
@@ -1566,101 +1576,101 @@ msgstr "A formula is required"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:54
 msgid "Utilisable dans 'Lesson Builder' de Turning Technologies"
-msgstr ""
+msgstr "Usable in ‘Lesson Builder’ by Turning Technologies"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:33
 msgid "Utilisable dans divers LMS et outils tiers"
-msgstr ""
+msgstr "Usable in diverse LMS and outsider tools"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:66
 msgid "Utilisable dans le LMS edX"
-msgstr ""
+msgstr "Usable in LMS edX"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:47
 msgid "Utilisable entre autres par Claroline Connect"
-msgstr ""
+msgstr "Usable among others in Claroline Connect"
 
 #: ../skins/jalon_theme_my_space/export_wims_exercice_form.pt:40
 msgid "Utilisable entre autres par TurningPoint 5 et Respondus 4"
-msgstr ""
+msgstr "Usable among others in TurningPoint 5 and Respondus 4"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:57
 msgid "Utilisateurs"
-msgstr ""
+msgstr "Users"
 
 #: ../skins/jalon_theme_configuration/gestion_email.pt:136
 msgid "Utilisation de liste de diffusion"
-msgstr ""
+msgstr "Use of mailing list"
 
 #: ../skins/jalon_theme_configuration/gestion_email.pt:175
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:609
 msgid "Utiliser la variable *-*code*-* exemple: *-*code*-*@jalon.fr"
-msgstr ""
+msgstr "Use variable *-*code*-* example: *-*code*-*@jalon.fr"
 
 #: ../skins/jalon_theme_course/add_deposit_box_skill_form.cpt:49
 msgid "Validation"
-msgstr ""
+msgstr "Validation"
 
 #: ../skins/jalon_theme_course/edit_validate_deposit_form.pt:39
 msgid "Valide"
-msgstr ""
+msgstr "Valid"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:291
 msgid "Valider"
-msgstr ""
+msgstr "Validate"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:268
 msgid "Valider la publication du cours"
-msgstr ""
+msgstr "Validate course’s publication"
 
 #: ../browser/view_template/my_space/my_adobe_connect_recording_view.pt:70
 msgid "Veuillez cliquer sur le bouton ci-dessous pour prendre en compte vos nouveaux enregistrements."
-msgstr ""
+msgstr "Please click the button below to take into account the new records."
 
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:167
 msgid "Voir"
-msgstr ""
+msgstr "See"
 
 #: ../skins/jalon_theme_my_space/search_bu_catalog_form.pt:99
 msgid "Voir ce document sur le site de la BU (dans une nouvelle page)."
-msgstr ""
+msgstr "See this document on the University Library website (on a new page)."
 
 #: ../browser/view_template/my_space/jalon_external_resource_view.pt:59
 msgid "Voir cette ressource sur le catalogue de la BU"
-msgstr ""
+msgstr "See this resource in the University Library catalogue"
 
 #: ../skins/jalon_theme_my_space/my_wims_exercices_list_macro.pt:131
 msgid "Voir l'exercice"
-msgstr ""
+msgstr "See exercise"
 
 #: ../skins/jalon_theme_my_space/my_adobe_connect_recording_list_macro.pt:120
 msgid "Voir la ressource"
-msgstr ""
+msgstr "See resource"
 
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:123
 msgid "Voir la ressource externe"
-msgstr ""
+msgstr "See external resource"
 
 #: ../skins/jalon_theme_my_space/edit_external_resource_form.cpt:47
 msgid "Voir la ressource sur le catalogue de la BU"
-msgstr ""
+msgstr "See resource on the University Library catalogue"
 
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:74
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:75
 msgid "Voir le cours"
-msgstr ""
+msgstr "See course"
 
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:137
 msgid "Voir le fichier"
-msgstr ""
+msgstr "See file"
 
 #: ../skins/jalon_theme_my_space/my_glossary_terms_list_macro.pt:111
 msgid "Voir le terme de glossaire"
-msgstr ""
+msgstr "See glossary term"
 
 #: ../skins/jalon_theme_my_courses/choose_author_page.pt:87
 msgid "Voir les cours"
-msgstr ""
+msgstr "See courses"
 
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:362
 msgid "Vous n'avez pas le droit de consulter cette page"
@@ -1673,182 +1683,183 @@ msgstr "You can only add comments to conversations or comments."
 #. Default: "<i class=\"fa fa-cog fa-fw fa-lg no-pad\" title=\"x\"></i>"
 #: ../browser/view_forum_template/jalonploneboardview.pt:105
 msgid "actions"
-msgstr ""
+msgstr "actions"
 
 #. Default: "Activer le lien vers la page \"Aide et tutoriels\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:373
 msgid "activer_aide"
-msgstr ""
+msgstr "Activate link to \\ \"Help and tutorials\\ \" page"
 
 #. Default: "Activer la vidéo d'aide à la création d'un plan de cours"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:406
 msgid "activer_aide_plan"
-msgstr ""
+msgstr "Activate Course syllabus creation help video"
 
 #. Default: "Activer le bloc de message d'information des étudiants"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:452
 msgid "activer_bie"
-msgstr ""
+msgstr "Activate students’ information message pad"
 
 #. Default: "Activer la connexion a un CAS (Central Authentification Service)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:22
 msgid "activer_cas"
-msgstr ""
+msgstr "Activate connection to a CAS (Central Authentification Service)"
 
 #. Default: "Activer la création d'un compte depuis la page de connexion"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:57
 msgid "activer_creationcompte"
-msgstr ""
+msgstr "Activate account creation from connection page"
 
 #. Default: "Spécifier un adresse réception des courriels d'erreur"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:531
 msgid "activer_email_erreur"
-msgstr ""
+msgstr "Specify a receiving address for error emails"
 
 #. Default: "Envoi de courriels lors des erreurs"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:510
 msgid "activer_erreur"
-msgstr ""
+msgstr "Send email when errors occur"
 
 #. Default: "Activer la propriété établissement"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:94
 msgid "activer_etablissement"
-msgstr ""
+msgstr "Activate establishment property"
 
 #. Default: "Activer la création d'exercices intéractifs WIMS"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:681
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:81
 msgid "activer_exercices_wims"
-msgstr ""
+msgstr "Activate interactive WIMS exercises’ creation"
 
 #. Default: "Activer le dépôt de Fichier"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:635
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:26
 msgid "activer_fichiers"
-msgstr ""
+msgstr "Activate File deposit"
 
 #. Default: "Activer les statistiques dans Google Analytics"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:984
 msgid "activer_ga"
-msgstr ""
+msgstr "Activate statistics in Google Analytics"
 
 #. Default: "Activer la connexion a un annuaire LDAP"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:924
 msgid "activer_ldap"
-msgstr ""
+msgstr "Activate connection to LDAP directory"
 
 #. Default: "Activer la bulle \"Signaler un bug\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:269
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:352
 msgid "activer_lien_assistance"
-msgstr ""
+msgstr "Activate \\\"Report a bug\\\" bubble"
 
 #. Default: "Activer le lien vers la page \"Contacts\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:170
 msgid "activer_lien_contact"
-msgstr ""
+msgstr "Activate link to \\\"Contacts\"\\ page"
 
 #. Default: "Activer le lien vers la page \"Crédits\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:236
 msgid "activer_lien_credit"
-msgstr ""
+msgstr "Activate link to \\\"Credits\\\" page"
 
 #. Default: "Activer la liaison à un serveur Intracursus"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:319
 msgid "activer_lien_intracursus"
-msgstr ""
+msgstr "Activate a connection to an Intracursus server"
 
 #. Default: "Activer le lien vers la page \"Mentions légales\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:203
 msgid "activer_lien_mention"
-msgstr ""
+msgstr "Activate link to \\\"Legal notices\\\" page"
 
 #. Default: "Activer le lien vers la page \"Création des sésames\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:137
+#, fuzzy
 msgid "activer_lien_sesame"
-msgstr ""
+msgstr "Activate link to \"Account creation\" page"
 
 #. Default: "Activer la création de Liens (Url, Lecteurs exportables)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:704
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:112
 msgid "activer_liens"
-msgstr ""
+msgstr "Activate Links creation (url, exportable players)"
 
 #. Default: "Activer la recherche dans le catalogue de la BU (Primo ExLibris)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:727
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:136
 msgid "activer_liens_catalogue_bu"
-msgstr ""
+msgstr "Activate research in the BU catalogue (Primo ExLibris)"
 
 #. Default: "Utilisation de liste de diffusion"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:568
 msgid "activer_liste_diffusion"
-msgstr ""
+msgstr "Use of mailing list"
 
 #. Default: "Mettre le site en maintenance"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1069
 msgid "activer_maintenance"
-msgstr ""
+msgstr "Put site under maintenance"
 
 #. Default: "Activer l'utilisation des Présentations sonorisées (Adobe Connect)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:658
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:50
 msgid "activer_presentations_sonorisees"
-msgstr ""
+msgstr "Activate use of Sound presentations (Adobe Connect)"
 
 #. Default: "Activer le stockage des photos"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:323
 msgid "activer_stockage_photo"
-msgstr ""
+msgstr "Activate photos storage"
 
 #. Default: "Activer le taggage dans le catalogue de la BU (Primo ExLibris)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:750
 msgid "activer_tags_catalogue_bu"
-msgstr ""
+msgstr "Activate tags in the BU Catalogue (Primo ExLibris)"
 
 #. Default: "Activer la création de Termes de glossaire"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:775
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:195
 msgid "activer_termes_glossaire"
-msgstr ""
+msgstr "Activate creation of Glossary's terms"
 
 #. Default: "Activer les \"Trombinoscopes\""
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:112
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:302
 msgid "activer_trombinoscope"
-msgstr ""
+msgstr "Activate \\\"Face Books\\\""
 
 #. Default: "Activer l'utilisation d'un serveur de Vidéo Externe (Serveur Plone)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:821
 msgid "activer_video"
-msgstr ""
+msgstr "Activate use of an external video server (Plone server)"
 
 #. Default: "Activer l'utilisation des Webconférences (Adobe Connect)"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:798
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:219
 msgid "activer_webconferences"
-msgstr ""
+msgstr "Activate use of Webconferences (Adobe Connect)"
 
 #. Default: "Adresse de réception des courriels d'erreur"
 #: ../skins/jalon_theme_configuration/gestion_email.pt:124
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:556
 msgid "adresse_email_erreur"
-msgstr ""
+msgstr "Activate error emails reception"
 
 #. Default: "Pour organiser votre plan, faites glisser les éléments et déposez-les à l'emplacement souhaité."
 #: ../browser/view_template/jalon_course/course_view.pt:129
 msgid "aide_plan"
-msgstr ""
+msgstr "To organize your syllabus drag and drop the elements in the desired location."
 
 #. Default: "Annoncer une maintenance"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1048
 msgid "annoncer_maintenance"
-msgstr ""
+msgstr "Announce a maintenance"
 
 #. Default: "Afficher un message demandant aux utilisateurs de vider le cache de leur navigateur."
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1122
 msgid "annoncer_vider_cache"
-msgstr ""
+msgstr "Display a message asking the users to empty the cache of their browser."
 
 #. Default: "Cours attachés"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:57
@@ -1859,58 +1870,58 @@ msgstr "Attached courses"
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:84
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:943
 msgid "base_ldap"
-msgstr ""
+msgstr "Basic url of LDAP directory"
 
 #. Default: "Contenu du bloc"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:471
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:79
 msgid "bie_message"
-msgstr ""
+msgstr "Pad content"
 
 #. Default: "Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants."
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:474
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:82
 msgid "bie_message_help"
-msgstr ""
+msgstr "This HTML content will be displayed on the bottom of the student's \"My courses\" page"
 
 #. Default: "Url du CAS"
 #: ../skins/jalon_theme_configuration/gestion_connexion.pt:93
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:49
 msgid "casServerUrlPrefix"
-msgstr ""
+msgstr "CAS url"
 
 #. Default: "Identifiant de la classe locale"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:582
 msgid "classe_locale"
-msgstr ""
+msgstr "Local class id"
 
 #: ../skins/jalon_theme_my_courses/delete_wims_activity_form.pt:33
 #: ../skins/jalon_theme_my_courses/download_wims_score_form.pt:35
 msgid "contacter l'administrateur"
-msgstr ""
+msgstr "contact administrator"
 
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:101
 msgid "contenus"
-msgstr ""
+msgstr "contents"
 
 #. Default: "Crédits"
 #: ../skins/jalon_theme_general/footer_macro.pt:22
 msgid "credits"
-msgstr ""
+msgstr "credits"
 
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:272
 msgid "dans iTunesU"
-msgstr ""
+msgstr "in iTunesU"
 
 #. Default: "Date de début de la maintenance"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1092
 msgid "date_debut_maintenance"
-msgstr ""
+msgstr "Maintenance starting date"
 
 #. Default: "Date de fin de la maintenance"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1106
 msgid "date_fin_maintenance"
-msgstr ""
+msgstr "Maintenance end date"
 
 #. Default: "Diplôme(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:161
@@ -1920,83 +1931,83 @@ msgstr "Diploma(s)"
 #. Default: "Schéma d'une classe"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:604
 msgid "donnees_classe"
-msgstr ""
+msgstr "Class diagram"
 
 #. Default: "Schéma d'ajout d'exercices (feuille ou examen)"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:626
 msgid "donnees_exercice"
-msgstr ""
+msgstr "Addition of exercises (sheet or exam) diagram"
 
 #. Default: "Schéma d'un utilisateur"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:615
 msgid "donnees_superviseur"
-msgstr ""
+msgstr "User diagram"
 
 #. Default: "Modèle des réunions"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:503
 msgid "dossiers"
-msgstr ""
+msgstr "Meetings model"
 
 #. Default: "De :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:23
 msgid "email_from"
-msgstr "From: "
+msgstr "From:"
 
 #. Default: "Message :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:81
 msgid "email_message"
-msgstr "Message: "
+msgstr "Message:"
 
 #. Default: "Objet :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:68
 msgid "email_subject"
-msgstr "Subject: "
+msgstr "Subject:"
 
 #. Default: "À :"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:35
 msgid "email_to"
-msgstr "To: "
+msgstr "To:"
 
 #. Default: "Établissement"
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:88
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:115
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:491
 msgid "etablissement"
-msgstr ""
+msgstr "Establishment"
 
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:95
 msgid "exemple : supann ou eduPerson"
-msgstr ""
+msgstr "example : supann or eduPerson"
 
 #. Default: "Chemin vers une fiche de l'annuaire LDAP"
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:101
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:959
 msgid "fiche_ldap"
-msgstr ""
+msgstr "Path to a sheet from the LDAP directory"
 
 #. Default: "Format de la liste de diffusion"
 #: ../skins/jalon_theme_configuration/gestion_email.pt:169
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:603
 msgid "format_diffusion"
-msgstr ""
+msgstr "Dissemination list format"
 
 #. Default: "Clef de cryptage"
 #: ../skins/jalon_theme_configuration/gestion_ga.pt:101
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1021
 msgid "ga_cryptage"
-msgstr ""
+msgstr "Encryption key"
 
 #. Default: "Identifiant Google Analytics"
 #: ../skins/jalon_theme_configuration/gestion_ga.pt:83
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1003
 msgid "ga_id_account"
-msgstr ""
+msgstr "Google Analytics id"
 
 #. Default: "Nom de domaine du site"
 #: ../skins/jalon_theme_configuration/gestion_ga.pt:92
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1012
 msgid "ga_id_domain"
-msgstr ""
+msgstr "Website domain name"
 
 #. Default: "Groupe(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:184
@@ -2006,12 +2017,12 @@ msgstr "Group(s)"
 #. Default: "Ajouter des éléments au cours"
 #: ../browser/view_template/jalon_course/course_add_view.pt:16
 msgid "head_add_element_to_course"
-msgstr ""
+msgstr "Add elements to the course"
 
 #. Default: "Attacher un élément de « Mes ressources »"
 #: ../browser/view_template/jalon_course/course_add_view.pt:50
 msgid "head_attach_from_my_space"
-msgstr ""
+msgstr "Attach an element from \"My resources\""
 
 #. Default: "Étudiants attachés à mes cours via l'offre de formation"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:8
@@ -2021,24 +2032,24 @@ msgstr "Students attached to my courses via the course offer"
 #. Default: "Disponibilité"
 #: ../browser/view_template/jalon_course/course_add_view.pt:80
 msgid "head_availability"
-msgstr ""
+msgstr "Availability"
 
 #. Default: "Description :"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:135
 #: ../browser/view_template/jalon_course/deposit_box_evaluation_view.pt:67
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:41
 msgid "head_description"
-msgstr ""
+msgstr "Description:"
 
 #. Default: "Grille d'évaluation"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:33
 msgid "head_evaluation_grid"
-msgstr ""
+msgstr "Evaluation grid"
 
 #. Default: "Étiquettes"
 #: ../browser/view_template/jalon_course/course_add_view.pt:53
 msgid "head_labels"
-msgstr ""
+msgstr "Labels"
 
 #. Default: "Ma promo du diplôme : ${DYNAMIC_CONTENT}"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:375
@@ -2048,12 +2059,12 @@ msgstr "My promotion for the diploma: ${DYNAMIC_CONTENT}"
 #. Default: "Détails des connexion des étudiants"
 #: ../skins/jalon_theme_my_students/details_etudiants.pt:18
 msgid "head_student_connexions_detail"
-msgstr ""
+msgstr "Details on students connection"
 
 #. Default: "Liste des étudiants"
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:40
 msgid "head_students_list"
-msgstr ""
+msgstr "Students' list"
 
 #. Default: "Liste des étudiants de"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:16
@@ -2063,7 +2074,7 @@ msgstr "List of students from"
 #. Default: "Visualisation de l'exercice « ${DYNAMIC_CONTENT} »"
 #: ../browser/view_template/my_space/jalon_wims_exercice_view.pt:19
 msgid "head_viewing_exo"
-msgstr ""
+msgstr "Visualization of exercise \"${DYNAMIC_CONTENT}\""
 
 #. Default: "Le texte à marquer"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:30
@@ -2093,12 +2104,12 @@ msgstr "Details on monthly connections for the year ${DYNAMIC_CONTENT}:"
 #. Default: "Vous pouvez ajouter un forum à ce cours en utilisant le bouton « Créer un forum dans ce cours » ci-dessus."
 #: ../browser/view_forum_template/jalonploneboardview.pt:206
 msgid "help_add_forum"
-msgstr ""
+msgstr "You can add a forum to this course by using the \"Create a forum in this course\" button above."
 
 #. Default: "Ce texte accepte la mise en aléatoire par des accolades (cf options avancées). Ceci est particulièrement utile pour générer rapidement plusieurs phrases à partir d'un même modèle."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_vraifauxmultiples.pt:87
 msgid "help_embraced_randitem"
-msgstr "This text allows randomization by using braces (cf advanced options). This is especially useful to fastly generate several sentences from a same model."
+msgstr "This text allows randomization by using braces (cf advanced options). This is especially useful to quickly generate several sentences from a same model."
 
 #. Default: "Ce texte s'affichera après la réponse de l'apprenant, s'il a donné au moins une mauvaise réponse."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:114
@@ -2125,7 +2136,7 @@ msgstr "Rearrange the propositions before displaying it"
 #. Default: "Les champs à marquer doivent être mis entre une paire de double-point d'interrogation <code class=\"indicateur\">?? champ à marquer ??</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:33
 msgid "help_wims_marqueruntexte_data_1"
-msgstr "The fields that have to be highlighted must be written between a pair of double-question marks<code class=\\\"indicator\\\">?? field that must be highlighted ??</code>."
+msgstr "The fields that have to be highlighted must be written between a pair of double-question marks <code class=\\\"indicateur\\\">?? field that must be highlighted ??</code>."
 
 #. Default: "Chaque champ contient une liste de mots séparés par des virgules."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:34
@@ -2145,12 +2156,12 @@ msgstr "If it's the first word (when it's not empty), it have to be highlighted;
 #. Default: "Jusqu'à une centaine de points de marquage peuvent être posés dans chaque paragraphe. Chaque paragraphe étant séparé par un point-virgule : <code class=\"indicateur\">;</code>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:38
 msgid "help_wims_marqueruntexte_data_5"
-msgstr "Up to around one hundred marking points can be put in each paragraph. Each paragraph being separated by a semicolon: <code class=\\\"indicator\\\">;</code>\""
+msgstr "Up to around one hundred marking points can be put in each paragraph. Each paragraph being separated by a semicolon: <code class=\\\"indicateur\\\">;</code>\""
 
 #. Default: "Pour placer un champ « marquable », mais qui ne soit jamais une bonne réponse, commencez votre champ par une virgule : <code class=\"indicateur\">??,mot à ne pas marquer??</code>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:41
 msgid "help_wims_marqueruntexte_data_6"
-msgstr "To place a \"highlightable\" field, but that would never be a good answer, start your field with a coma: <code class=\\\"indicator\\\">??,word that shall not be highlighted??</code>\""
+msgstr "To place a \"highlightable\" field, but that would never be a good answer, start your field with a coma: <code class=\\\"indicateur\\\">??,word that shall not be highlighted??</code>\""
 
 #. Default: "Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonne réponses possibles pour un mot marquable."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:124
@@ -2180,7 +2191,7 @@ msgstr "Give a partial grade to the partially right answers."
 #. Default: "Vous pouvez proposez un texte pioché aléatoirement : <br />séparez chaque texte à proposer par un point-virgule <code class=\"indicateur\">;</code>. (Les textes eux-mêmes ne peuvent donc pas contenir de point-virgule)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:119
 msgid "help_wims_marqueruntexte_randomtext"
-msgstr "You can propose a randomly picked text: <br />separate each text that can be proposed by a semicolon <code class=\\\"indicator\\\">;</code>. (Thus, texts cannot contain semicolon)."
+msgstr "You can propose a randomly picked text: <br />separate each text that can be proposed by a semicolon <code class=\\\"indicateur\\\">;</code>. (Thus, texts cannot contain semicolon)."
 
 #. Default: "En mode \"2 colonnes\", si la largeur de l'écran le permet, les questions seront réparties sur 2 colonnes."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:256
@@ -2210,17 +2221,17 @@ msgstr "Indicate the number of good answers on the first line, then enter an ans
 #. Default: "Exemple pour définir les propositions 1 et 2 comme bonnes :<br /> <pre class=\"text-left\">1,2 Bonne réponse n°1 Bonne réponse n°2 Mauvaise réponse n°1 Mauvaise réponse n°2</pre>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:115
 msgid "help_wims_qcmsuite_reponse_sample"
-msgstr "Example to define the 1 and 2 propositions as good: <br /> <pre class=\\\"text-left\\\">1,2 Good answers n°1 Good answer n°2 Wrong answer n°1 Wrong answer n°2</pre>"
+msgstr "Example to define the 1 and 2 propositions as good:<br /> <pre class=\\\"text-left\\\">1,2 Good answers n°1 Good answer n°2 Wrong answer n°1 Wrong answer n°2</pre>"
 
 #. Default: "La tolérance avec laquelle WIMS analysera les réponses libres.<br />Les types « case » et « nocase » sont surtout adaptés pour les applications linguistiques. Dans les autres cas, préférez « atext »."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:55
 msgid "help_wims_tolerance_level"
-msgstr "Tolerance level used by WIMS to analyze free answers. <br /> \"case\" and \"nocase\" types are mostly appropriated for linguistic applications. Otherwhise, you should rather use \"atext\""
+msgstr "Tolerance level used by WIMS to analyze free answers.<br /> \"case\" and \"nocase\" types are mostly appropriated for linguistic applications. Otherwhise, you should rather use \"atext »."
 
 #. Default: "Tapez directement votre texte, en plaçant les mots à marquer entre des paires de points d'interrogation <code class=\"indicateur\">??</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:46
 msgid "hint_wims_marqueruntexte_data_1"
-msgstr "Directly enter your text, place words that must be highlighted between a pair of interrogation marks<code class=\\\"indicator\\\">??</code>"
+msgstr "Directly enter your text, place words that must be highlighted between a pair of interrogation marks<code class=\\\"indicateur\\\">??</code>."
 
 #. Default: "Un point-virgule sépare votre texte en 2."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:46
@@ -2234,40 +2245,40 @@ msgstr "To open a course for a diploma, a teaching unit, etc ; go to the page of
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:193
 msgid "la conversation"
-msgstr ""
+msgstr "the conversation"
 
 #. Default: "Tous les utilisateurs (rôle Personnel)"
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:73
 msgid "label_all_users"
-msgstr ""
+msgstr "All users (role Staff)"
 
 #. Default: "par ${author}"
 #: ../browser/view_forum_template/jalonploneboardview.pt:140
 #: ../skins/jalon_theme_forum/ploneboard_unanswered.pt:126
 msgid "label_by_author"
-msgstr ""
+msgstr "by ${author}"
 
 #. Default: "Cancel"
 #: ../skins/jalon_theme_configuration/gestion_twitter.pt:71
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:174
 msgid "label_cancel"
-msgstr ""
+msgstr "Cancel"
 
 #. Default: "Nombre de connexion de l'année en ${DYNAMIC_CONTENT} :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:6
 msgid "label_connections_count"
-msgstr "Number of connections this year in ${DYNAMIC_CONTENT}:"
+msgstr "Number of connections for the year in ${DYNAMIC_CONTENT}:"
 
 #. Default: "Créer un forum dans ce cours"
 #: ../browser/view_forum_template/jalonploneboardview.pt:49
 msgid "label_create_forum"
-msgstr ""
+msgstr "Create a forum in this course"
 
 #. Default: "Description"
 #: ../skins/jalon_theme_course/create_and_add_course_external_resource_form.cpt:43
 #: ../skins/jalon_theme_my_space/create_external_resource_form.cpt:38
 msgid "label_description"
-msgstr ""
+msgstr "Description"
 
 #. Default: "Désactivé"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:222
@@ -2277,7 +2288,7 @@ msgstr "Disabled"
 #. Default: "Afficher immédiatement"
 #: ../browser/view_template/jalon_course/course_add_view.pt:85
 msgid "label_display_now"
-msgstr ""
+msgstr "Display now"
 
 #. Default: "Courriel"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:56
@@ -2292,7 +2303,7 @@ msgstr "Enabled"
 #. Default: "Prénom"
 #: ../skins/jalon_theme_my_students/details_etudiants.pt:25
 msgid "label_firstname"
-msgstr ""
+msgstr "Firstname"
 
 #. Default: "Aide"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:17
@@ -2305,17 +2316,17 @@ msgstr "Help"
 #: ../skins/jalon_theme_course/create_and_add_course_external_resource_form.cpt:53
 #: ../skins/jalon_theme_my_space/create_external_resource_form.cpt:48
 msgid "label_lecteur_exportable"
-msgstr ""
+msgstr "URL or exportable player"
 
 #. Default: "Mes étudiants"
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:20
 msgid "label_my_students"
-msgstr ""
+msgstr "My students"
 
 #. Default: "Aucun utilisateur (rôle Personnel)"
 #: ../skins/jalon_theme_configuration/macro_gestion_cours.pt:77
 msgid "label_not_users"
-msgstr ""
+msgstr "No users (role Staff)"
 
 #. Default: "ID"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:40
@@ -2325,36 +2336,36 @@ msgstr "ID"
 #. Default: "Réponse rapide"
 #: ../browser/view_forum_template/jalonploneboardconversationview.pt:65
 msgid "label_quickreply"
-msgstr ""
+msgstr "Quick answer"
 
 #. Default: "Save"
 #: ../skins/jalon_theme_configuration/gestion_connexion.pt:119
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:156
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:160
 msgid "label_save"
-msgstr ""
+msgstr "Save"
 
 #. Default: "Sélectionner une année :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:9
 msgid "label_select_a_year"
-msgstr "Select a year: "
+msgstr "Select a year:"
 
 #. Default: "Nombre d'étudiants :"
 #: ../skins/jalon_theme_my_students/my_students_statistics_macro.pt:5
 msgid "label_students_count"
-msgstr "Number of students: "
+msgstr "Number of students:"
 
 #. Default: "Titre"
 #: ../skins/jalon_theme_course/create_and_add_course_external_resource_form.cpt:32
 #: ../skins/jalon_theme_my_space/create_external_resource_form.cpt:27
 #: ../skins/jalon_theme_my_space/edit_file_form.cpt:31
 msgid "label_title"
-msgstr ""
+msgstr "Title"
 
 #. Default: "Pour obtenir le trombinoscope des étudiants en version imprimable, utilisez la fonction d’impression de votre navigateur : la mise en page se fera automatiquement."
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:104
 msgid "label_trombi_print"
-msgstr "To obtain the students' face book in printable version, use the print fonction of your internet browser: layout will be done automatically."
+msgstr "To obtain the students' face book in printable version, use the print function of your Internet browser: layout will be done automatically."
 
 #. Default: "Mettre à jour ma photo"
 #: ../skins/jalon_theme_my_students/trombinoscope_page.pt:46
@@ -2366,7 +2377,7 @@ msgstr "Update my photograph"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:18
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:19
 msgid "label_wims_enonce"
-msgstr "Question to asked"
+msgstr "Question to ask"
 
 #. Default: "Équation"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:132
@@ -2408,7 +2419,7 @@ msgstr "Minimum number of highlight-able boxes for each exercise"
 #. Default: "Question à poser"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_marqueruntexte.pt:12
 msgid "label_wims_marqueruntexte_question"
-msgstr "Question to asked"
+msgstr "Question to ask"
 
 #. Default: "Ordre alphabétique (croissant)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:86
@@ -2447,109 +2458,109 @@ msgstr "Tolerance level"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:192
 msgid "le forum"
-msgstr ""
+msgstr "the forum"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:194
 msgid "le message"
-msgstr ""
+msgstr "the message"
 
 #. Default: "Environnement pédagogique"
 #: ../skins/jalon_theme_general/footer_macro.pt:10
 msgid "learning_environment"
-msgstr ""
+msgstr "Learning environment"
 
 #. Default: "Mentions légales"
 #: ../skins/jalon_theme_general/footer_macro.pt:26
 msgid "legal_notices"
-msgstr ""
+msgstr "Legal Notices"
 
 #. Default: "Légende du plan du cours"
 #: ../skins/jalon_theme_course/display_map_legend_page.pt:14
 msgid "legende"
-msgstr ""
+msgstr "Syllabus caption"
 
 #. Default: "Lien vers la page \"Aide et tutoriels\""
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:88
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:394
 msgid "lien_aide"
-msgstr ""
+msgstr "Link to the \\\"Help and tutorials\\\" page"
 
 #. Default: "Lien vers la vidéo d'aide à la création d'un plan de cours"
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:119
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:427
 msgid "lien_aide_plan"
-msgstr ""
+msgstr "Link to the help video for syllabus creation"
 
 #. Default: "Lien de la bulle \"Signaler un bug\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:290
 msgid "lien_assitance"
-msgstr ""
+msgstr "\\\"Report a bug\\\" bubble link"
 
 #. Default: "Lien vers la page \"Contacts\""
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:160
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:191
 msgid "lien_contact"
-msgstr ""
+msgstr "Link to \\\"Contacts\\\" page"
 
 #. Default: "Lien vers la page \"Crédits\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:257
 msgid "lien_credit"
-msgstr ""
+msgstr "Link to \\\"Credits\\\" page"
 
 #. Default: "Lien vers la page de l'établissement"
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:98
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:125
 msgid "lien_etablissement"
-msgstr ""
+msgstr "Link to the establishment page"
 
 #. Default: "Url de la connexion CAS à Intracursus"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:340
 msgid "lien_intracursus"
-msgstr ""
+msgstr "URL of the CAS connection to Intracursus"
 
 #. Default: "Lien vers la page \"Mentions légales\""
 #: ../skins/jalon_theme_configuration/gestion_infos.pt:191
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:224
 msgid "lien_mention"
-msgstr ""
+msgstr "Link to the \\\"Legal notices\\\" page"
 
 #. Default: "Lien vers la page \"Création des sésames\""
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:158
 msgid "lien_sesame"
-msgstr ""
+msgstr "Link to the \\\"Sesame Creation\\\" page"
 
 #. Default: "Lien vers le stockage externe des photos du \"Trombinoscopes\""
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:150
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:344
 msgid "lien_trombinoscope"
-msgstr ""
+msgstr "Link to the external storage of the \\\"Face book\\\" photos"
 
 #. Default: "Créer une conversation dans ce forum"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:50
 msgid "link_create_subject"
-msgstr ""
+msgstr "Create a conversation in this forum"
 
 #. Default: "Ajouter un critère d'évaluation"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:46
 msgid "link_depositbox_add_criteria"
-msgstr ""
+msgstr "Add an evaluation criteria"
 
 #. Default: "Télécharger cette liste d'étudiants au format XLS"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:25
 msgid "link_download_student_list"
-msgstr "Download this list of the students in XLS "
+msgstr "Download this list of the students in XLS"
 
 #. Default: "Afficher les conversations sans réponse"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:279
 msgid "link_forum_display_unresponded"
-msgstr ""
+msgstr "Display conversations without answers"
 
 #. Default: "Précédent"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:170
 #: ../skins/jalon_theme_my_space/search_pod_videos_form.pt:217
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:318
 msgid "link_previous"
-msgstr ""
+msgstr "Previous"
 
 #. Default: "Connexion d'un étudiant"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:69
@@ -2574,73 +2585,73 @@ msgstr "Write"
 #. Default: "Compte administrateur du serveur"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:446
 msgid "login"
-msgstr ""
+msgstr "Server administrator account"
 
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_reordonner.pt:67
 msgid "longueur x largeur"
-msgstr "Length x width"
+msgstr "length x width"
 
 #. Default: "Message à destination des enseignants"
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:109
 msgid "message_enseignant"
-msgstr ""
+msgstr "Message aimed at teachers"
 
 #. Default: "Ce contenu HTML sera affiché en bas de la page « Mes ressources » des enseignants."
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:112
 msgid "message_enseignant_help"
-msgstr ""
+msgstr "This HTML content will be displayed at the bottom of teachers \"My resources\" page"
 
 #. Default: "Ce contenu HTML sera affiché en bas de la page « Mes cours » des étudiants, de la page \"Mes ressources\" pour les enseignants."
 #: ../skins/jalon_theme_configuration/macro_gestion_messages.pt:50
 msgid "message_general_help"
-msgstr ""
+msgstr "This HTML content will be displayed at the bottom of students \"My courses\" page, and teachers \\\"My resources\\\" page."
 
 #. Default: "Texte explicatif"
 #: ../skins/jalon_theme_configuration/gestion_didacticiels.pt:148
 msgid "message_guide_anti_spam"
-msgstr ""
+msgstr "Explanatory text"
 
 #. Default: "Cette fonction est actuellement en phase de test. Merci de remonter vos difficultés d'utilisation."
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:37
 msgid "msg_depositbox_beta_stage"
-msgstr ""
+msgstr "This function is currently in testing phase. Please convey your difficulties of using."
 
 #. Default: "vous n'avez pas le droit de visualiser la grille d'évaluation avant de commencer les évaluations !"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:72
 msgid "msg_depositbox_cant_see_before_start"
-msgstr ""
+msgstr "you are not allowed to visualize the evaluation grid before starting the evaluations!"
 
 #. Default: "la date limite de dépôt est dépassée : vous ne pouvez plus modifier la grille d'évaluation."
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:59
 msgid "msg_depositbox_deposit_date_reached"
-msgstr ""
+msgstr "deposit end date is outdated: you cannot modify the evaluation grid anymore."
 
 #. Default: "la date limite d'évaluation est dépassée, vous pouvez annuler un critère d'évaluation."
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:64
 msgid "msg_depositbox_evaluation_date_reached"
-msgstr ""
+msgstr "evaluation end date is outdated, you cannot cancel an evaluation criteria."
 
 #. Default: "La grille d'évaluation ne contient aucun critère d'évaluation"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:76
 msgid "msg_depositbox_no_criteria_in_grid"
-msgstr ""
+msgstr "Evaluation grid doesn't contain any evaluation criteria"
 
 #. Default: "dans le profil évaluation par les pairs, les \"dates limite de dépôts et d'évaluation\" sont obligatoires."
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:51
 msgid "msg_depositbox_required_limit_dates"
-msgstr ""
+msgstr "in the peer evaluation profile, \\\"deposit and evaluation end dates\\\" are mandatory."
 
 #. Default: "Ce texte accepte la mise en aléatoire par des accolades (cf options avancées)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_correspondance.pt:24
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:32
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsimple.pt:25
 msgid "msg_embraced_randitem"
-msgstr "This text allows randomization by using braces (cf advances options) "
+msgstr "This text allows randomization by using braces (cf advanced options)"
 
 #. Default: "Aucun étudiant n'a accès à vos cours via une inscription à l'offre de formation pour l'instant."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:14
 msgid "msg_no_corporate_student"
-msgstr "No student can now access your course via an inscription to a course offer."
+msgstr "No student can access your course via an inscription to a course offer by now."
 
 #. Default: "Vous n'êtes inscrit à aucun diplôme."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:370
@@ -2650,110 +2661,110 @@ msgstr "You are not registered in any diploma."
 #. Default: "Aucune conversation n'a été lancée dans ce forum."
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:64
 msgid "msg_no_subject_created"
-msgstr ""
+msgstr "No conversation has been initiated in this forum."
 
 #. Default: "Sélectionnez un onglet"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:98
 #: ../browser/view_template/jalon_course/deposit_box_evaluation_view.pt:54
 msgid "msg_select_a_tab"
-msgstr ""
+msgstr "Select a tab"
 
 #. Default: "Les conversation signalées par <i class=\"fa fa-bell-o no-pad\"></i> ont été actives depuis votre dernière visite."
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:73
 msgid "msg_signaled_subjects_legend"
-msgstr ""
+msgstr "Conversations indicated by <i class=\\\"fa fa-bell-o no-pad\\\"></i> have been active since your last visit."
 
 #. Default: "Sésame non ouvert"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:75
 msgid "msg_unopened_account"
-msgstr "Sésame account not opened"
+msgstr "Sesame account not opened"
 
 #. Default: "Attention :"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:37
 #: ../browser/view_template/jalon_course/deposit_box_details_evaluations_view.pt:36
 #: ../browser/view_template/jalon_course/deposit_box_evaluation_view.pt:32
 msgid "msg_warning"
-msgstr ""
+msgstr "Warning:"
 
 #. Default: "Un groupe d'exercices ne peut pas être modifié."
 #: ../browser/view_template/my_space/jalon_wims_exercice_view.pt:55
 msgid "msg_wims_group_cannot_be_modified"
-msgstr ""
+msgstr "An exercise group cannot be modified."
 
 #. Default: "Notez que : <ul> <li>Les points-virgules (;) sont interdits.</li> <li>les sauts de lignes seront automatiquement remplacés par la balise <code>&lt;br/&gt;</code>.</li> <li>les guillemets doubles (<tt>\"</tt>) seront automatiquement remplacés par des guillemets simples (<tt>'</tt>).</li> </ul>"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_qcmsuite.pt:92
 msgid "msg_wims_qcmsuite_question"
-msgstr "Notice that: <ul> <li>Semicolons (;) are forbiden.</li> <li>line breaks will automatically be replaced by the tag <code>lt;br/gt;</code>.</li> \\<li>double quotes (<tt>\\\"</tt>) will automatically be replaced by single quotes (<tt>'</tt>).</li> </ul>"
+msgstr "Notice that: <ul> <li>Semicolons (;) are forbidden.</li> <li>line breaks will automatically be replaced by the tag <code>lt;br/gt;</code>.</li> \\<li>double quotes (<tt>\\\"</tt>) will automatically be replaced by single quotes (<tt>'</tt>).</li></ul>"
 
 #. Default: "Nom de l'institution"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:592
 msgid "nom_institution"
-msgstr ""
+msgstr "Institution name"
 
 #: ../skins/jalon_theme_course/add_deposit_box_skill_form.cpt:63
 msgid "notation sur"
-msgstr ""
+msgstr "rating on"
 
 #. Default: "Numéro du serveur"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:478
 msgid "num_serveur"
-msgstr ""
+msgstr "Server number"
 
 #. Default: "Blocs de messages"
 #: ../skins/jalon_theme_configuration/gestion_messages.pt:63
 msgid "ongletBlocsMessages"
-msgstr ""
+msgstr "Messages pads"
 
 #. Default: "Catégorie"
 #: ../skins/jalon_theme_configuration/gestion_mes_cours.pt:71
 msgid "ongletCategorieCours"
-msgstr ""
+msgstr "Category"
 
 #. Default: "<i class=\"fa fa-cog\"></i> Configuration"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:763
 msgid "ongletConfiguration"
-msgstr ""
+msgstr "<i class=\\\"fa fa-cog\\\"></i> Configuration"
 
 #. Default: "Adobe Connect"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:92
 msgid "ongletConnect"
-msgstr ""
+msgstr "Adobe Connect"
 
 #. Default: "<i class=\"fa fa-list\"></i> Extraits"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:771
 msgid "ongletExtraits"
-msgstr ""
+msgstr "<i class=\\\"fa fa-list\\\"></i> Extracts"
 
 #. Default: "Accès Mes ressources"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:85
 msgid "ongletMonEspace"
-msgstr ""
+msgstr "Access to My resources"
 
 #. Default: "Pod"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:113
 msgid "ongletPod"
-msgstr ""
+msgstr "Pod"
 
 #. Default: "ExLibris Primo"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:106
 #: ../skins/jalon_theme_configuration/gestion_messages.pt:71
 msgid "ongletPrimo"
-msgstr ""
+msgstr "ExLibris Primo"
 
 #. Default: "Wims"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:99
 msgid "ongletWims"
-msgstr ""
+msgstr "Wims"
 
 #. Default: "Wowza"
 #: ../skins/jalon_theme_configuration/gestion_mes_ressources.pt:120
 msgid "ongletWowza"
-msgstr ""
+msgstr "Wowza"
 
 #. Default: "iTunesU"
 #: ../skins/jalon_theme_configuration/gestion_mes_cours.pt:79
 msgid "ongletiTunesU"
-msgstr ""
+msgstr "iTunesU"
 
 #. Default: "atext (ignore le pluriel/singulier et les articles)"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:63
@@ -2774,12 +2785,12 @@ msgstr "nocase (tolerate lowercase/ capital letters)"
 #: ../skins/jalon_theme_forum/ploneboard_recent.pt:146
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:80
 msgid "par"
-msgstr ""
+msgstr "by"
 
 #. Default: "Mot de passe du compte administrateur"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:456
 msgid "password"
-msgstr ""
+msgstr "Administrator account password"
 
 #. Default: "Posez votre question ici."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_equation.pt:36
@@ -2809,7 +2820,7 @@ msgstr "Indicate the number of the good answer on the first line, then an answer
 #. Default: "Posez une question, sans oublier de mentioner l'objet pioché (\name)."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_taperlemotassocie.pt:33
 msgid "placeholder_wims_taperlemotassocie_explain"
-msgstr "Ask a question, do not forget to mention the picked item (\\ name)."
+msgstr "Ask a question, do not forget to mention the picked item (\\name)."
 
 #. Default: "Saisir la liste des mots et leur propriétés."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_taperlemotassocie.pt:69
@@ -2823,42 +2834,42 @@ msgstr "Enter fill-in-the-blank text here."
 
 #: ../skins/jalon_theme_connexion/connexion.pt:20
 msgid "pour maintenance du"
-msgstr ""
+msgstr "for maintenance from"
 
 #. Default: "Schema de l'annuaire LDAP"
 #: ../skins/jalon_theme_configuration/gestion_donnees_utilisateurs.pt:92
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:951
 msgid "schema_ldap"
-msgstr ""
+msgstr "LDAP directory diagram"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:33
 msgid "sera indisponible"
-msgstr ""
+msgstr "will be unavailable"
 
 #. Default: "Url du service en retour du CAS"
 #: ../skins/jalon_theme_configuration/gestion_connexion.pt:85
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:41
 msgid "serviceUrl"
-msgstr ""
+msgstr "Service Url returning from CAS"
 
 #. Default: "Afficher l'activité récente"
 #: ../browser/view_forum_template/jalonploneboardview.pt:217
 msgid "show_new_conversations_all"
-msgstr ""
+msgstr "Display latest activity"
 
 #. Default: "Afficher les conversations sans réponse"
 #: ../browser/view_forum_template/jalonploneboardview.pt:222
 msgid "show_no_replies_all"
-msgstr ""
+msgstr "Display conversations without reply"
 
 #: ../skins/jalon_theme_my_courses/delete_wims_activity_form.pt:37
 #: ../skins/jalon_theme_my_courses/download_wims_score_form.pt:39
 msgid "si vous pensez que ce n'est pas le cas."
-msgstr ""
+msgstr "if you think it is not the case."
 
 #: ../skins/jalon_theme_my_space/multiple_objects_form.pt:171
 msgid "sont interdits."
-msgstr ""
+msgstr "are forbidden."
 
 #. Default: "Trier selon le libellé"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:190
@@ -2868,7 +2879,7 @@ msgstr "Sort by caption"
 #. Default: "Trier selon le diplôme, l'UE, le groupe…"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:25
 msgid "sort_by_diploma_TU_group"
-msgstr "Sort by diploma, TU, group"
+msgstr "Sort by diploma, TU, group…"
 
 #. Default: "Trier selon l'adresse de courriel"
 #: ../skins/jalon_theme_my_students/listing_students_page.pt:51
@@ -2891,24 +2902,25 @@ msgid "sort_by_students_count"
 msgstr "Sort by students' number"
 
 #: ../skins/jalon_theme_my_courses/choose_course_page.pt:81
+#, fuzzy
 msgid "string:label_${etudiant}"
-msgstr ""
+msgstr "string:label_${student}"
 
 #. Default: "Commentaire étudiant"
 #: ../browser/view_template/jalon_course/deposit_box_criteria_view.pt:149
 msgid "student_comment"
-msgstr ""
+msgstr "Student's comment"
 
 #: ../skins/jalon_theme_my_space/my_adobe_connect_recording_list_macro.pt:24
 #: ../skins/jalon_theme_my_space/my_external_resources_list_macro.pt:25
 #: ../skins/jalon_theme_my_space/my_files_list_macro.pt:24
 msgid "sur"
-msgstr ""
+msgstr "on"
 
 #. Default: "Liste des cours de la catégorie"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:22
 msgid "table_courses_list_of_category"
-msgstr "List of courses category"
+msgstr "List of courses from the category"
 
 #. Default: "Unité d'enseignement(s)"
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:167
@@ -2938,12 +2950,12 @@ msgstr "Diploma, TU, group"
 #. Default: "Dernière activité"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:116
 msgid "th_forum_last_activity"
-msgstr ""
+msgstr "Latest activity"
 
 #. Default: "Rép."
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:107
 msgid "th_forum_responses"
-msgstr ""
+msgstr "ans."
 
 #. Default: "Nbre d'étudiants"
 #: ../skins/jalon_theme_my_students/send_mail_students_form.cpt:42
@@ -2953,7 +2965,7 @@ msgstr "Nb of students"
 #. Default: "Activité récente"
 #: ../browser/view_forum_template/jalonploneboardview.pt:99
 msgid "th_recent_activity"
-msgstr ""
+msgstr "Latest activity"
 
 #. Default: "Nb. étu."
 #: ../skins/jalon_theme_my_students/my_students_macro.pt:241
@@ -2973,27 +2985,27 @@ msgstr "Type"
 #. Default: "État (verrouillé / déverrouillé)"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:119
 msgid "title_forum_locked_state"
-msgstr ""
+msgstr "Status (locked/ unlocked)"
 
 #. Default: "Voir le message…"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:176
 msgid "title_forum_see_message"
-msgstr ""
+msgstr "Display message…"
 
 #. Default: "Trier selon le nombre de conversations"
 #: ../browser/view_forum_template/jalonploneboardview.pt:84
 msgid "title_sort_by_conversation"
-msgstr ""
+msgstr "Sort according to number of conversations"
 
 #. Default: "Trier selon le nombre de réponses"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:101
 msgid "title_sort_by_nb_resp"
-msgstr ""
+msgstr "Sort according to number of answers."
 
 #. Default: "Trier selon la nouveauté"
 #: ../browser/view_forum_template/jalonploneboardforumview.pt:84
 msgid "title_sort_by_news"
-msgstr ""
+msgstr "Sort according to novelty"
 
 #. Default: "Détail des connexions par mois"
 #: ../skins/jalon_theme_my_students/statistique_page.pt:51
@@ -3013,54 +3025,54 @@ msgstr "Details on student"
 #. Default: "Type d'élément utilisant des listes de diffusion"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:589
 msgid "type_diffusion"
-msgstr ""
+msgstr "Type of element using mailing lists"
 
 #: ../skins/jalon_theme_my_space/edit_wims_exercice_macro.pt:270
 msgid "une adresse de module (exemple <code class=\"indicateur couleur1\">E4/grammar/oeffonction.fr</code>)"
-msgstr ""
+msgstr "module's address (example <code class=\"indicateur couleur1\">E4/grammar/oeffonction.fr</code>)"
 
 #. Default: "Url pour suggerer de nouvelles acquisitions à votre BU"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:694
 msgid "url_acquisition"
-msgstr ""
+msgstr "Url to suggest new acquisitions to your University Library"
 
 #. Default: "Url du catalogue"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:682
 msgid "url_catalogue"
-msgstr ""
+msgstr "Url of the catalogue"
 
 #. Default: "Url de la librairie xml-rpc"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:434
 msgid "url_connexion"
-msgstr ""
+msgstr "Url of the xml-rpc library"
 
 #. Default: "Url de la page nouveauté de la maintenance"
 #: ../skins/jalon_theme_configuration/gestion_maintenance.pt:159
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:1143
 msgid "url_news_maintenance"
-msgstr ""
+msgstr "Url of the maintenance novelty page"
 
 #. Default: "Url du serveur de Vidéo Externe"
 #: ../skins/jalon_theme_configuration/macro_gestion.pt:842
 msgid "url_video"
-msgstr ""
+msgstr "Url of the external video server"
 
 #. Default: "Version d'Adobe Connect"
 #: ../skins/jalon_theme_configuration/macro_gestion_espace.pt:468
 msgid "version"
-msgstr ""
+msgstr "Adobe Connect version"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:45
 msgid "vider le cache de votre navigateur"
-msgstr ""
+msgstr "empty your browser's cache"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:211
 msgid "vous allez supprimer ce forum et l'ensemble de ses conversations,"
-msgstr ""
+msgstr "your are about to delete this forum and all the conversations,"
 
 #: ../skins/jalon_theme_forum/macro_forum.pt:212
 msgid "vous allez supprimer cette conversation et l'ensemble de ses messages,"
-msgstr ""
+msgstr "your are about to delete this conversation and all its messages,"
 
 #. Default: "Options avancées"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_classerparpropriete.pt:104
@@ -3084,12 +3096,12 @@ msgstr "Random"
 #. Default: "Pour accepter plusieurs réponses correctes possibles dans un trou \"classique\", séparez chaque bonne réponse par un trait vertical <code class=\"indicateur\">|</code>.<br /> Par exemple, pour placer un trou qui acceptera les bonnes réponses « Premier » ET « Bonaparte », tapez <code class=\"indicateur\">Napoléon ??Premier|Bonaparte?? est mort à Sainte-Hélène</code>."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:30
 msgid "wims_help_synonyms"
-msgstr "To accept multiple good answers in a blank \\\"classique\\\", separate each good answer with a vertical line <code class=\\\"indicator\\\">|</code>.<br /> For example, to place a blank that would accept \"the first\" AND \"Bonapart\" as good answers, enter <code class=\\\"indicator\\\">Napoléon ??The First|Bonaparte?? died in Sainte-Hélène</code>."
+msgstr "To accept multiple good answers in a \\\"classical\\\" blank , separate each good answer with a vertical line <code class=\\\"indicateur\\\">|</code>.<br /> For example, to place a blank that would accept \"the first\" AND \"Bonapart\" as good answers, enter <code class=\\\"indicateur\\\">Napoléon ??The First|Bonaparte?? died in Sainte-Hélène</code>."
 
 #. Default: "Tapez directement votre texte, en entourant chaque \"trou\" avec des doubles points d'interrogation : \"??\". Les balises HTML sont admises.<br /> Le texte peut contenir jusqu'à 20 « trous »."
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:42
 msgid "wims_help_texteatrous_data"
-msgstr "Directly enter your text, cercle each \\\"blank\\\" with double interrogation marks: \\\"??\\\". HTML tags are allowed. <br /> Text can contain up to 20 \"blanks\"."
+msgstr "Directly enter your text, surround each \\\"blank\\\" with double interrogation marks: \\\"??\\\". HTML tags are allowed. <br /> Text can contain up to 20 \"blanks\"."
 
 #. Default: "Le texte à présenter"
 #: ../skins/jalon_theme_my_space_wims_createxo/macro_texteatrous.pt:19
@@ -3104,24 +3116,29 @@ msgstr "Write to students"
 #: ../browser/view_template/my_space/my_adobe_connect_recording_view.pt:70
 #: ../skins/jalon_theme_course/add_course_nominative_registration_form.pt:51
 #: ../skins/jalon_theme_my_courses/check_course_password_form.cpt:21
+#, fuzzy
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../skins/jalon_theme_configuration/gestion_email.pt:72
+#, fuzzy
 msgid "x <a class=\"button tiny right\" href=\"../@@mail-controlpanel\">Voir la configuration pour l'envoi de courriels</a>"
-msgstr ""
+msgstr "x <a class=\"button tiny right\" href=\"../@@mail-controlpanel\">See emailing configuration</a>"
 
 #: ../skins/jalon_theme_configuration/macro_categorie.pt:144
 #: ../skins/jalon_theme_course/add_course_coauthor_form.pt:13
 #: ../skins/jalon_theme_course/add_course_coreader_registration_form.pt:16
+#, fuzzy
 msgid "x <a class=\"close-reveal-modal\"></a>"
-msgstr ""
+msgstr "x <a class=\"close-reveal-modal\"></a>"
 
 #: ../skins/jalon_theme_connexion/connexion.pt:51
+#, fuzzy
 msgid "x <a class=\"has-tip\" data-tooltip target=\"_blank\" href=\"http://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur\" title=\"x\">x</a>. ${DYNAMIC_CONTENT} <a class=\"close\"></a>"
-msgstr ""
+msgstr "x <a class=\"has-tip\" data-tooltip target=\"_blank\" href=\"http://fr.wikipedia.org/wiki/Aide:Purge_du_cache_du_navigateur\" title=\"x\">x</a>. ${DYNAMIC_CONTENT} <a class=\"close\"></a>"
 
 #: ../skins/jalon_theme_course/add_course_announce_form.cpt:134
 #: ../skins/jalon_theme_course/edit_course_announce_form.cpt:127
+#, fuzzy
 msgid "x <div class=\"panel bkgrnd radius text-center\"> <input type=\"checkbox\" id=\"mailAnnounce\" name=\"mailAnnonce\" checked=\"checked\" /> <label for=\"mailAnnounce\">x</label> </div>"
-msgstr ""
+msgstr "x <div class=\"panel bkgrnd radius text-center\"> <input type=\"checkbox\" id=\"mailAnnounce\" name=\"mailAnnonce\" checked=\"checked\" /> <label for=\"mailAnnounce\">x</label> </div>"
