@@ -40,8 +40,8 @@
                 <div class="row">
 
                     <div class="small-12 columns">
-                        <a class="connection-button" href="https://login.unice.fr/login?service=http%3A//jalon.unice.fr/logged_in" target="_blank" i18n:translate="">
-                            <i class="fa fa-paper-plane"></i>Continuer sur Jalon
+                        <a class="connection-button" href="https://login.unice.fr/login?service=http%3A//jalon.unice.fr/logged_in" target="_blank">
+                            <i class="fa fa-paper-plane"></i><tal:block i18n:translate="">Continuer sur Jalon</tal:block>
                         </a>
                     </div>
 

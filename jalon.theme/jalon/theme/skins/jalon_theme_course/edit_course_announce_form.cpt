@@ -117,11 +117,11 @@
             </table>
         </div>
 
-        <div class="panel callout radius" i18n:translate="">
-            <tal:block i18n:translate="">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
+        <div class="panel callout radius">
+            <tal:block i18n:translate="Msg_uncheck_if_dont_want_email.">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
             <div class="panel bkgrnd radius text-center">
                 <input type="checkbox" id="mailAnnounce" name="mailAnnonce" checked="checked" />
-                <label for="mailAnnounce" i18n:translate="">Envoyer également cette annonce par courriel.</label>
+                <label for="mailAnnounce" i18n:translate="Label_send_by_email.">Envoyer également cette annonce par courriel.</label>
             </div>
         </div>
 

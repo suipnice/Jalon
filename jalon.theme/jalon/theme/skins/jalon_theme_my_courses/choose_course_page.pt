@@ -78,20 +78,19 @@
                                 tal:define="etudiants item/getRechercheAcces">
                                 <span tal:define="etudiant python:context.test(len(etudiants) > 0, 'Oui', 'Non')"
                                       tal:attributes="class python:context.test(etudiant == 'Oui', 'indicateur couleur6', 'indicateur couleur4')"
-                                      tal:content="etudiant"
-                                      i18n:attributes="value string:label_${etudiant};"/>
+                                      tal:content="etudiant"/>
                             </td>
                             <td class="acc_ano show-for-medium-up"
                                 tal:define="typeCours item/getAcces">
                                 <span tal:define="etudiant python:context.test(typeCours == 'Public', 'Oui', 'Non')"
                                       tal:attributes="class python:context.test(etudiant == 'Oui', 'indicateur couleur6', 'indicateur couleur4')"
-                                      tal:content="etudiant"
-                                      i18n:attributes="value string:label_${etudiant};"/>
+                                      tal:content="etudiant"/>
                             </td>
                             <td>
                                 <a tal:attributes="href string:${item/absolute_url}/folder_form?macro=macro_mescours&amp;formulaire=dupliquer&amp;manager=1"
                                    title="Dupliquer le cours" class="button small"
-                                   data-reveal-id="reveal-course_create" data-reveal-ajax="true">
+                                   data-reveal-id="reveal-course_create" data-reveal-ajax="true"
+                                   i18n:attributes="title">
                                     <i class="fa fa-code-fork"></i>
                                     <tal:block i18n:translate="">Dupliquer</tal:block>
                                 </a>

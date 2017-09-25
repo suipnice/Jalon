@@ -1,8 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="fr"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -186,8 +185,7 @@
                 tal:condition="my_view/is_personnel_or_wims_activity_visible">
                 <li tal:repeat="onglet my_view/wims_activity_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
-                                       href onglet/href"
-                       i18n:translate="">
+                                       href onglet/href">
                         <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                         <tal:on-error on-error="nothing">
                         <span class="sup" tal:content="onglet/nb"/>

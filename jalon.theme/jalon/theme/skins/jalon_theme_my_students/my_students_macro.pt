@@ -46,7 +46,7 @@
                                 <tal:block i18n:translate="">Code</tal:block>
                             </span>
                         </th>
-                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="number" title="Trier selon l'effectif'" i18n:attributes="title">
+                        <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="number" title="Trier selon l'effectif" i18n:attributes="title">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>

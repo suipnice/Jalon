@@ -38,7 +38,7 @@
             </a>
             <p class="panel callout radius"
                tal:condition="item_adder/item_adder_p">
-                <tal:block i18n:translate="">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
+                <tal:block i18n:translate="Msg_comunicate_url:">Communiquez l'url de votre réunion aux participants que vous souhaitez inviter :</tal:block>
                 <strong tal:content="item_adder/item_adder_p"/>
             </p>
         </nav>
@@ -63,8 +63,7 @@
             <h2>
                 <tal:block i18n:translate="">Actualisation</tal:block>
             </h2>
-            <div class="panel callout radius"
-                 i18n:translate="">
+            <div class="panel callout radius">
                 <tal:block i18n:translate="">Veuillez cliquer sur le bouton ci-dessous pour prendre en compte vos nouveaux enregistrements.</tal:block>
             </div>
             <div class="text-center">

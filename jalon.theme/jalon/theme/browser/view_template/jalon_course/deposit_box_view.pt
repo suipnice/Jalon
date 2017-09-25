@@ -116,8 +116,7 @@
                 tal:condition="my_view/is_personnel_or_deposit_box_visible">
                 <li tal:repeat="onglet my_view/deposit_box_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
-                                       href onglet/href"
-                       i18n:translate="">
+                                       href onglet/href">
                         <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>

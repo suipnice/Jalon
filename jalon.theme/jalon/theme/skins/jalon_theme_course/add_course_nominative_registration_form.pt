@@ -1,8 +1,7 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="fr"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
 <body>
@@ -20,10 +19,10 @@
           tal:condition="is_personnel">
 
         <h3 class="texte_icone icone_recherche"
-            i18n:translate="">Inscrire un(e) étudiant(e) depuis l'annuaire de l'université</h3>
+            i18n:translate="Head_add_student_from_apogee">Inscrire un(e) étudiant(e) depuis l'annuaire de l'université</h3>
 
         <div class="panel callout radius">
-             <tal:block i18n:translate="">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
+             <tal:block i18n:translate="Help_search_student_in_LDAP.">Entrez au moins quatre lettres du nom recherché puis sélectionnez un résultat dans la liste proposée. Vous complèterez ainsi la liste des étudiant(e)s qui seront inscrits au cours lorsque vous cliquerez sur « Enregistrer ».</tal:block>
         </div>
 
         <input type="text" id="input-groupe" name="username"/>
@@ -42,12 +41,11 @@
     <metal:macro define-macro="display_nominative_registration">
     <div id="js-named-insc_list">
         <h3 class="texte_icone icone_users"
-            i18n:translate="">Étudiant(s) de l'Université inscrit(s) nominativement</h3>
+            i18n:translate="Head_university_student_registered_by_name">Étudiant(s) de l'Université inscrit(s) nominativement</h3>
 
         <div class="panel callout radius"
-             tal:condition="not:nominative_registration_list"
-             i18n:translate="">
-             <tal:block i18n:translate="">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) inscrit(e) nominativement</tal:block>
+             tal:condition="not:nominative_registration_list">
+             <tal:block i18n:translate="Msg_no_nominative_registration">Le cours n'est diffusé auprès d'aucun(e) étudiant(e) inscrit(e) nominativement</tal:block>
         </div>
 
         <table class="listing"
@@ -59,10 +57,10 @@
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">Prénom NOM</tal:block>
+                        <tal:block i18n:translate="Firstname_LASTNAME">Prénom NOM</tal:block>
                     </span>
                 </th>
-                <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
+                <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title Sort_by_student_ID">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>

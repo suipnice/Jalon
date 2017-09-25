@@ -121,7 +121,7 @@
                     </div>
                     <hr/>
                     <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
-                    <p i18n:translate="help_wims_marqueruntexte_embraced_randitem">Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonne réponses possibles pour un mot marquable.</p>
+                    <p i18n:translate="help_wims_marqueruntexte_embraced_randitem">Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonnes réponses possibles pour un mot marquable.</p>
                     Par exemple :
                     <code class="indicateur" i18n:translate="help_wims_marqueruntexte_embraced_randitem_sample">Je lui ai montré ??<span class="shuffle">{cept,cette,ces}</span>,cet?? oiseau.</code>
                     <p i18n:translate="help_wims_marqueruntexte_embraced_randitem_sample_2">Si c'est un des mots <span class="sample">"cept", "cette" ou "ces"</span> qui est tiré au hasard, ce sera une réponse à marquer (ici, une faute d'orthographe), et si le dernier mot (<span class="sample">"cet"</span>) est tiré au hasard, il ne sera pas à marquer.</p>
