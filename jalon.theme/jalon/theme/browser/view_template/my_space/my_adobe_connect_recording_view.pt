@@ -29,7 +29,7 @@
 
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
-        <nav class="show-for-medium-up medium-12 columns"
+        <nav class="medium-12 columns"
              tal:define="item_adder my_view/item_adder">
             <a id="connect" class="button expand create" target="_blank"
                tal:attributes="href item_adder/item_adder_link">
