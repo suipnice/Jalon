@@ -73,19 +73,19 @@ class JalonExerciceWims(ATDocumentBase):
         """Fournit le fil d'ariane de l'exercice courant."""
         # LOG.info("----- getBreadcrumbs -----")
         portal_url = self.portal_url.getPortalObject().absolute_url()
-        crumbs_list = [{"title" : _(u"Mes ressources"),
-                        "icon"  : "fa fa-folder-open",
-                        "link" : "%s/mes_ressources" % portal_url},
+        crumbs_list = [{"title": _(u"Mes ressources"),
+                        "icon": "fa fa-folder-open",
+                        "link": "%s/mes_ressources" % portal_url},
                        {"title": _(u"Mes exercices WIMS"),
-                        "icon" : "fa fa-random",
-                        "link" : "%s/mes_ressources/mes_exercices_wims" % portal_url},
+                        "icon": "fa fa-random",
+                        "link": "%s/mes_ressources/mes_exercices_wims" % portal_url},
                        {"title": self.Title(),
-                        "icon" : "fa fa-random",
-                        "link" : "%s/view" % self.absolute_url()}]
+                        "icon": "fa fa-random",
+                        "link": "%s/view" % self.absolute_url()}]
         if edit_mode:
             crumbs_list.append({"title": "édition",
-                                "icon" : "fa fa-edit",
-                                "link" : "%s/edit_wims_exercice_form" % self.absolute_url()})
+                                "icon": "fa fa-edit",
+                                "link": "%s/edit_wims_exercice_form" % self.absolute_url()})
 
         return crumbs_list
 
@@ -636,7 +636,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
     def getExoOEF(self, modele, authMember, requete={}):
         """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
         # LOG.info("----- getExoOEF -----")
-        fichier = self.aq_parent.wims("callJob", {"job": "getexofile", "qclass": "%s_1" % self.aq_parent.getComplement(), "qexo": self.getId(), "code": authMember})
+        fichier = self.aq_parent.wims("callJob", {"job": "getexofile",
+                                                  "qclass": "%s_1" % self.aq_parent.getComplement(),
+                                                  "qexo": self.getId(), "code": authMember})
         try:
             json.loads(fichier)
             # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
@@ -650,7 +652,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                        })
             message = _(u"Impossible d'obtenir cet exercice. Le serveur WIMS semble temporairement inaccessible. Merci de retenter ultérieurement svp.")
             self.plone_utils.addPortalMessage(message, type='error')
-            # [TODO] : ici on pourrait peut-etre renvoyer un dico avec un eventuel code d'erreur pour pouvoir prendr en charge plus de cas.
+            # [TODO] : ici on pourrait peut-etre renvoyer un dico
+            # avec un eventuel code d'erreur pour pouvoir prendr en charge plus de cas.
             return {"request_status": "ERROR", "code_source": None, "error_message": message}
         except:
             # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
@@ -661,7 +664,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # LOG.info("[getExoWims] modele = %s" % modele)
         # Il faudra faire un traitement specifique aux exercices externes ici
         if modele == "externe":
-            if "permalink" in requete :
+            if "permalink" in requete:
                 # Cas où on recharge la page de modification (permalien incorrect).
                 # LOG.info("[getExoWims] PERMALINK = %s" % requete["permalink"])
                 return requete
@@ -717,7 +720,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                "texteatrous": {"type_rep":  "text{type_rep",
                                                "donnees":   "text{data",
                                                "feedback_general": "text{feedback_general",
-                                               "feedback_bon"    : "text{feedback_bon",
+                                               "feedback_bon":     "text{feedback_bon",
                                                "feedback_mauvais": "text{feedback_mauvais",
                                                "credits":          "credits{",
                                                "accolade":         "text{accolade=item\(",
@@ -800,17 +803,17 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                         "hint":             "hint{",
                                                         "help":             "help{",
                                                         },
-                                "qcmsuite": {"instruction"            : "text{instruction",
-                                             "alea"                   : "text{alea",
-                                             "accolade"               : "text{accolade=item\(",
-                                             "nb_questions_max"       : "text{N",
-                                             "nb_etapes"              : "text{MAX",
-                                             "pourcentage_validation" : "text{percent",
-                                             "credits"                : "credits{",
-                                             "columns"                : "text{columns",
-                                             "anstype"                : "text{anstype",
-                                             "answer_given"           : "text{answer_given=item\(",
-                                             }
+                               "qcmsuite": {"instruction":            "text{instruction",
+                                            "alea":                   "text{alea",
+                                            "accolade":               "text{accolade=item\(",
+                                            "nb_questions_max":       "text{N",
+                                            "nb_etapes":              "text{MAX",
+                                            "pourcentage_validation": "text{percent",
+                                            "credits":                "credits{",
+                                            "columns":                "text{columns",
+                                            "anstype":                "text{anstype",
+                                            "answer_given":           "text{answer_given=item\(",
+                                            }
                                }
 
             if modele == "equation":
@@ -840,7 +843,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                 # LOG.info("[getExoWims] variable : %s // valeur : %s" % (key, recherche.group(1)))
                 if recherche is not None:
                     variable = recherche.group(1)
-                    # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
+                    # Au cas ou la chaine "}_ENDLINE_" avait été introduite
+                    #  dans la variable, le nombre d'accolades sera impair.
                     # On continue alors la recherche jusqu'à la prochaine occurence.
                     if key not in ["texte_reponse", "accolade", "answer_given", "list_order"]:
                         variable = self.extendResearch(variable, fichier, recherche.end())
@@ -904,12 +908,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return parsed_exercice
 
     def extendResearch(self, variable, fichier, end_offset):
-        u"""Permet d'etendre une recherche d'expression reguliere dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""
+        u"""Permet d'etendre une recherche d'expression reguliere
+         dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""
         # LOG.info("----- extendResearch -----")
         CountLeft = len(re.findall("\{", variable))
         CountRight = len(re.findall("\}", variable))
         if CountLeft > CountRight:
-            # Au cas ou la chaine "}_ENDLINE_" avait été introduite dans la variable, le nombre d'accolades sera impair.
+            # Au cas ou la chaine "}_ENDLINE_" avait été
+            #  introduite dans la variable, le nombre d'accolades sera impair.
             # On continue alors la recherche jusqu'à la prochaine occurence.
             string = fichier[end_offset:]
             m2 = re.search("}_ENDLINE_", string)
@@ -1010,7 +1016,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # http://ticewims.unice.fr/wims/wims.cgi?module=local/qcmC2i.fr" title="
         # ==> sera remplacé par
         # http://ticewims.unice.fr/wims/wims.cgi?module=local/qcmC2i.fr&cmd=new
-        # strip retire les espace avant/apres, split[0] coupe au premier espace, et split('"') ne prend que ce qui se trouve avant un guillemet
+        # strip retire les espace avant/apres,
+        # split[0] coupe au premier espace,
+        # et split('"') ne prend que ce qui se trouve avant un guillemet
         new_permalink = permalien.strip().split()[0].split('"')[0]
 
         test_string = "http://"
@@ -1065,7 +1073,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             self.reindexObject()
 
     def updateRelatedItems(self):
-        """Update the exercice related items (checks if each related item still exists, and if they are really still connected."""
+        """Update the exercice related items
+         (checks if each related item still exists, and if they are really still connected."""
         # LOG.info("----- updateRelatedItems -----")
         relatedItems = self.getRelatedItems()
         self_id = self.getId()

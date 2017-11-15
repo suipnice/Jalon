@@ -1293,8 +1293,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                 if user["id"] in dico_ETU:
                                     individu = dico_ETU[user["id"]]
                                     user["first_name"] = individu["prenom"]
-                                    user["last_name"]  = individu["nom"]
-                                    user["num_etu"]    = individu["num_etu"]
+                                    user["last_name"] = individu["nom"]
+                                    user["num_etu"] = individu["num_etu"]
                                 # cas des comptes enseignants et invités
                                 else:
                                     # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon

@@ -212,13 +212,13 @@ class JalonActivity(SimpleItem):
     def detachAllDocuments(self):
         # LOG.info("----- detachAllDocuments -----")
         document_properties = self.getDocumentsProperties()
-        #document_dict = document_properties[item_id]
-        #del document_properties[item_id]
-        #self.setDocumentsProperties(document_properties)
+        # document_dict = document_properties[item_id]
+        # del document_properties[item_id]
+        # self.setDocumentsProperties(document_properties)
 
         documents_list = list(self.getListeSujets())
-        #documents_list.remove(item_id)
-        #self.setListeSujets(tuple(documents_list))
+        # documents_list.remove(item_id)
+        # self.setListeSujets(tuple(documents_list))
 
         for item_id in documents_list:
             document_dict = document_properties[item_id]
@@ -228,8 +228,8 @@ class JalonActivity(SimpleItem):
             item_object.setRelatedItems(item_relatedItems)
             item_object.reindexObject()
 
-        #activity_relatedItems = self.getRelatedItems()
-        #activity_relatedItems.remove(item_object)
-        #self.setRelatedItems(activity_relatedItems)
+        # activity_relatedItems = self.getRelatedItems()
+        # activity_relatedItems.remove(item_object)
+        # self.setRelatedItems(activity_relatedItems)
 
         self.reindexObject()
