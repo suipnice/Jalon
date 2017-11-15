@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -28,7 +26,7 @@
            i18n:translate="link_download_student_list">Télécharger cette liste d'étudiants au format XLS</a>
     </div>
 
-    <table id="js-list-students" summary="Liste des étudiants" i18n:attributes="summary table_students_list">
+    <table id="js-list-students" summary="Liste des étudiants" i18n:attributes="summary head_students_list">
         <thead>
             <tr>
                 <th class="sort" data-sort="id" title="Trier selon l'identifiant étudiant" i18n:attributes="title sort_by_student_id"

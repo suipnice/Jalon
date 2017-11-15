@@ -1,12 +1,11 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
     xmlns:tal="http://xml.zope.org/namespaces/tal"
     xmlns:metal="http://xml.zope.org/namespaces/metal"
-    xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    lang="en"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
     metal:use-macro="context/main_template/macros/master"
     i18n:domain="jalon.theme">
-
 <body>
+
 <!--
   wims_activity_special_page.pt (ex cours_activites_pageWIMS.pt)
   Page generique d'affichage de contenus WIMS concernant une activité d'un cours (entrainement ou examen)
@@ -25,7 +24,7 @@
                        quser request/quser | nothing">
     <h2>
         <tal:condition condition="python:pageWIMS == 'user_log'"
-                       i18n:translate="">Détail des connexions</tal:condition>
+                       i18n:translate="head_connections_detail">Détail des connexions</tal:condition>
         <tal:condition condition="python:pageWIMS == 'exam_log'"
                        i18n:translate="">Revoir les examens</tal:condition>
         <a class="close-reveal-modal"></a>
@@ -49,11 +48,9 @@
         <metal:macro use-macro="here/global_statusmessage_macro/macros/portal_message">Message de session</metal:macro>
 
 
-        <h3>
-            <tal:block i18n:translate="">Connexions de</tal:block>
-            <span tal:content="user_logs/fullname"/>
-            <tal:block i18n:translate="">à l'activité</tal:block>
-            "<span tal:content="context/title_or_id"/>"
+        <h3 i18n:translate="head_user_connections_to_activity">
+            Connexions de <span tal:content="user_logs/fullname"/>
+            à l'activité "<span tal:content="context/title_or_id"/>"
         </h3>
 
         <tal:condition condition="connexions">
@@ -97,7 +94,7 @@
                             <i class="fa fa-sort"></i>
                             <i class="fa fa-sort-asc"></i>
                             <i class="fa fa-sort-desc"></i>
-                            <tal:block i18n:translate="">Résultat</tal:block>
+                            <tal:block i18n:translate="th_results">Résultat</tal:block>
                         </span>
                     </th>
                     <th class="sort text-left show-for-medium-up" data-sort="IP" title="Trier selon l'adresse IP" i18n:attributes="title">
@@ -158,7 +155,7 @@
 
 
         <tal:condition condition="not:connexions">
-        <div class="panel" i18n:translate="">Cet étudiant n'a pas encore commencé cette activité.</div>
+        <div class="panel" i18n:translate="msg_no_work_by_this_student">Cet étudiant n'a pas encore commencé cette activité.</div>
         </tal:condition>
 
     </div>

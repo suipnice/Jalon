@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -19,14 +18,14 @@
 
     <tal:condition condition="not:course_data/is_course_owner">
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         vous ne pouvez pas supprimer ce cours car vous n'en êtes pas le créateur.
     </div>
     </tal:condition>
 
     <tal:condition condition="course_data/is_course_owner">
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"

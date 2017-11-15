@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content">
@@ -24,7 +22,7 @@
         </h3>
         <div class="panel warning radius"
              tal:condition="not:diploma/diploma_course_list">
-            <tal:block i18n:translate="">Vous n'êtes inscrit à aucun cours.</tal:block>
+            <tal:block i18n:translate="msg_no_registration_yet">Vous n'êtes inscrit à aucun cours.</tal:block>
         </div>
         <table summary="Liste des cours"
                tal:condition="diploma/diploma_course_list"
@@ -33,7 +31,7 @@
             <tr>
                 <th class="sort has-tip" data-sort="new" data-tooltip
                     title="Trier selon les nouveautés"
-                    i18n:attributes="title">
+                    i18n:attributes="title sort_by_news">
                     <span>
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>

@@ -145,7 +145,7 @@
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="th_firstname">Prénom</tal:block>
+                    <tal:block i18n:translate="label_firstname">Prénom</tal:block>
                 </span>
             </th>
             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="univ"

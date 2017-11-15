@@ -1,18 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
 
     <h2>
         <i class="fa fa-cogs no-pad"></i>
-        <tal:block i18n:translate="">Modifier les options des dépôts</tal:block>
+        <tal:block i18n:translate="head_modify_deposit_options">Modifier les options des dépôts</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -23,7 +21,7 @@
         <fieldset class="panel bkgrnd radius"
              tal:define="correction option/getCorrectionIndividuelle">
 
-            <legend>Corrections des dépôts</legend>
+            <legend i18n:translate="legend_deposit_corrections">Corrections des dépôts</legend>
 
             <tal:comment replace="nothing"><!--
             <div class="switch tiny round">
@@ -48,7 +46,7 @@
                        tal:attributes="checked python:context.test(correction['actif'], '', 'checked')"/>
                 <label for="CorrectionIndividuelle_desactiver"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>
@@ -57,7 +55,7 @@
         <fieldset class="panel bkgrnd radius"
              tal:define="notification option/getNotificationCorrection">
 
-            <legend>Notification des corrections</legend>
+            <legend i18n:translate="">Notification des corrections</legend>
 
             <p i18n:translate="">
                 Une fois cette option activée, lors de l'ajout de la correction d'un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
@@ -75,7 +73,7 @@
                        tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
                 <label for="NotificationCorrection_desactiver"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>
@@ -84,7 +82,7 @@
         <fieldset class="panel bkgrnd radius"
              tal:define="notation option/getNotation">
 
-            <legend>Notation des dépôts</legend>
+            <legend i18n:translate="legend_deposit_notation">Notation des dépôts</legend>
 
             <p i18n:translate="">
                 Une fois cette option activée, vous aurez la possibilité de noter chaque dépôt étudiant à l'aide d'une valeur numérique ou textuelle que l'étudiant pourra consulter (exemples : 12, 12.5/20, 45/100, Très bien, Bien, etc.).
@@ -102,7 +100,7 @@
                        tal:attributes="checked python:context.test(notation['actif'], '', 'checked')"/>
                 <label for="Notation_desactiver"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>
@@ -111,7 +109,7 @@
         <fieldset class="panel bkgrnd radius"
              tal:define="notification option/getNotificationNotation">
 
-            <legend>Notification des notations</legend>
+            <legend i18n:translate="legend_deposit_scores_notification">Notification des notations</legend>
 
             <p i18n:translate="">
                 Une fois cette option activée, lors de l'ajout d'une note à un dépôt, l'étudiant l'ayant déposé sera averti par courriel.
@@ -129,7 +127,7 @@
                        tal:attributes="checked python:context.test(notification['actif'], '', 'checked')"/>
                 <label for="NotificationNotation_desactiver"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>
@@ -138,7 +136,7 @@
         <fieldset class="panel bkgrnd radius"
              tal:define="acces_depot option/getAccesDepots">
 
-            <legend>Visualisation des dépôts entre étudiants</legend>
+            <legend i18n:translate="legend_deposit_view_by_pairs">Visualisation des dépôts entre étudiants</legend>
 
             <p i18n:translate="">
                 Une fois cette option activée, chaque étudiant(e) aura la possibilité de consulter les dépôts de tous les autres étudiants. Si les options avancées « Corrections des dépôts » et « Notation des dépôts » sont activées, chaque étudiant(e) pourra aussi consulter les corrections et les notes de l'ensemble des dépôts.
@@ -156,7 +154,7 @@
                        tal:attributes="checked python:context.test(acces_depot['actif'], '', 'checked')"/>
                 <label for="AccesDepots_desactiver"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>
@@ -181,7 +179,7 @@
                        tal:attributes="checked python:context.test(acces_competences['actif'], '', 'checked')"/>
                 <label for="AccesDepots"
                        class="warning"
-                       i18n:translate="">Désactiver</label>
+                       i18n:translate="label_deactivate">Désactiver</label>
             </div>
 
         </fieldset>

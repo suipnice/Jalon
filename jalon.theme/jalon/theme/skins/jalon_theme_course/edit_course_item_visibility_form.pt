@@ -1,31 +1,28 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="item_id request/item_id;
                         my_form python:context.getDisplayItemForm(item_id)">
-
     <h2>
         <i tal:attributes="class my_form/form_title_icon"></i>
-        <tal:replace replace="my_form/form_title_text" i18n:translate=""/>
+        <tal:replace replace="my_form/form_title_text"/>
         <a class="close-reveal-modal"></a>
     </h2>
 
     <div class="panel warning radius"
          tal:condition="my_form/is_item_parent_title">
-         <i class="fa fa-warning"></i><strong i18n:translate="">Attention :</strong>
+         <i class="fa fa-warning"></i><strong i18n:translate="msg_warning">Attention :</strong>
          <tal:block i18n:translate="">le titre du plan "<strong tal:content="my_form/item_parent_title" />" contenant cet élément est actuellement masqué. Afficher cet élément affichera automatiquement tous les titres le contenant, jusqu'à la racine du plan.</tal:block>
     </div>
 
     <div tal:attributes="class my_form/help_css"
-         tal:content="my_form/help_text"
-         i18n:translate=""/>
+         tal:content="my_form/help_text"/>
 
 <tal:condition condition="my_form/is_display_allowed">
     <div class="panel warning radius"
@@ -54,7 +51,7 @@
             <button type="submit"
                     tal:attributes="class my_form/form_button_css">
                 <i tal:attributes="class my_form/form_title_icon"></i>
-                <tal:replace replace="my_form/form_button_directly_text" i18n:translate=""/>
+                <tal:replace replace="my_form/form_button_directly_text"/>
             </button>
         </div>
     </form>
@@ -85,7 +82,7 @@
             <button type="submit"
                     tal:attributes="class my_form/form_button_css">
                 <i tal:attributes="class my_form/form_title_icon"></i>
-                <tal:replace replace="my_form/form_button_lately_text" i18n:translate=""/>
+                <tal:replace replace="my_form/form_button_lately_text"/>
             </button>
         </div>
 

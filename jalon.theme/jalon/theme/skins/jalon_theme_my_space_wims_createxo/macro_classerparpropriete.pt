@@ -33,7 +33,7 @@
                       tal:content="QCM_parsed/prop"
                       required="required"
                       placeholder="Saisissez une liste de propriétés"
-                      i18n:attributes="placeholder" />
+                      i18n:attributes="placeholder placeholder_type_property_list" />
         </div>
         <div tal:define="error errors/data | nothing;
                          arch_class string:panel ArchetypesStringWidget"

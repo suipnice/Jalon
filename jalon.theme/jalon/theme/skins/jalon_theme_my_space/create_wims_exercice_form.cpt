@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content"
@@ -15,7 +13,7 @@
     </tal:comment>
 
     <h2>
-        <tal:block i18n:translate="">Créer un exercice Wims</tal:block>
+        <tal:block i18n:translate="create_exo_WIMS">Créer un exercice Wims</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -31,9 +29,9 @@
             <label for="title" class="formQuestion">
                 <tal:block i18n:translate="">Titre</tal:block>
                 <span id="title_wims_help" class="formHelp texte_icone icone_information">
-                    <tal:block i18n:translate="">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
-                    <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
-                    <tal:block i18n:translate="">seront supprimés ou remplacés par des espaces.</tal:block>
+                    <tal:block i18n:translate="formHelp_exo_title_limit">Un titre d'exercice est limité à 40 caractères.</tal:block><br />
+                    <tal:block i18n:translate="formHelp_forbidden_special_chars">Attention : les caractères spéciaux (&lt; " &gt; { } ( ) $ &amp; …)
+                    seront supprimés ou remplacés par des espaces.</tal:block>
                 </span>
             </label>
             <div class="fieldErrorBox"
@@ -51,35 +49,35 @@
              tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
 
             <label for="modele" class="formQuestion">
-                <tal:block i18n:translate="">Modèle</tal:block>
+                <tal:block i18n:translate="label_template">Modèle</tal:block>
                 <span id="modele_help" class="formHelp texte_icone icone_information"
-                      i18n:translate="">Chaque modèle permet de composer un exercice complètement différent.</span>
+                      i18n:translate="help_template_wims">Chaque modèle permet de composer un exercice complètement différent.</span>
             </label>
             <div class="fieldErrorBox"
                  tal:condition="error" tal:content="error" />
             <select id="modele" name="modele">
-                <optgroup label="1 Modeles simples">
-                    <option value="qcmsimple">Question simple</option>
-                    <option value="equation">Equation</option>
-                    <option value="texteatrous">Texte a trous</option>
-                    <option value="marqueruntexte">Marquer un texte</option>
-                    <option value="marquerparpropriete">Marquer par propriete</option>
-                    <option value="questiontextuelletolerante">Question textuelle tolerante</option>
-                    <option value="taperlemotassocie">Taper le mot associe</option>
+                <optgroup label="1 Modèles simples" i18n:attributes="label title_model_group_1">
+                    <option value="qcmsimple" i18n:translate="">Question simple</option>
+                    <option value="equation" i18n:translate="title_model_equation">Équation</option>
+                    <option value="texteatrous" i18n:translate="title_model_texteatrous">Texte à trous</option>
+                    <option value="marqueruntexte" i18n:translate="">Marquer un texte</option>
+                    <option value="marquerparpropriete" i18n:translate="title_model_marquerparpropriete">Marquer par propriété</option>
+                    <option value="questiontextuelletolerante" i18n:translate="title_model_questiontextuelletolerante">Question textuelle tolérante</option>
+                    <option value="taperlemotassocie" i18n:translate="title_model_taperlemotassocie">Taper le mot associé</option>
                 </optgroup>
-                <optgroup label="2 : Modeles a base de 'glisser/deposer'">
-                    <option value="reordonner">Reordonner</option>
-                    <option value="correspondance">Correspondance</option>
-                    <option value="classerparpropriete">Classer par propriete</option>
+                <optgroup label="2 : Modèles a base de 'glisser/deposer'" i18n:attributes="label title_model_group_2">
+                    <option value="reordonner" i18n:translate="title_model_reordonner">Réordonner</option>
+                    <option value="correspondance" i18n:translate="">Correspondance</option>
+                    <option value="classerparpropriete" i18n:translate="title_model_classerparpropriete">Classer par propriété</option>
                 </optgroup>
-                <optgroup label="3 : Modeles avances">
-                    <option value="vraifauxmultiples">Vrai / Faux multiples</option>
-                    <option value="texteatrousmultiples">Textes a trous multiples</option>
-                    <option value="exercicelibre">Exercice libre (mode brut)</option>
-                    <option value="qcmsuite">QCM à la suite</option>
+                <optgroup label="3 : Modèles avancés" i18n:attributes="label title_model_group_3">
+                    <option value="vraifauxmultiples" i18n:translate="">Vrai / Faux multiples</option>
+                    <option value="texteatrousmultiples" i18n:translate="title_model_texteatrousmultiples">Textes à trous multiples</option>
+                    <option value="exercicelibre" i18n:translate="">Exercice libre (mode brut)</option>
+                    <option value="qcmsuite" i18n:translate="title_model_qcmsuite">QCM à la suite</option>
                 </optgroup>
-                <optgroup label="4 : Modeles Tiers">
-                    <option value="externe">Exercice de la base WIMS</option>
+                <optgroup label="4 : Modèles Tiers" i18n:attributes="label title_model_group_4">
+                    <option value="externe" i18n:translate="">Exercice de la base WIMS</option>
                 </optgroup>
             </select>
         </div>

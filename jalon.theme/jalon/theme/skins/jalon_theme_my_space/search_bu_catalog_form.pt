@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content"
@@ -21,7 +19,7 @@
           tal:attributes="action string:${context/absolute_url}/search_bu_catalog_form">
 
         <div class="field ArchetypesStringWidget" id="archetypes-fieldname-recherche">
-            <label for="term_search" i18n:translate="">Mot clé ou code :</label>
+            <label for="term_search" i18n:translate="label_keyword">Mot clé ou code :</label>
             <input type="text" size="30" maxlength="255"
                    name="term_search" id="term_search"
                    required="required"
@@ -46,20 +44,20 @@
 
         <div class="panel warning radius"
              tal:condition="not:results_search"
-             i18n:translate="">
+             i18n:translate="no_search_result">
             La recherche n'a donné aucun résultat.
         </div>
 
         <tal:listing condition="results_search">
-        <h2 class="texte_icone icone_liste">Les 10 premiers résultats dans le catalogue de la BU</h2>
-        <table summary="Liste des ressources BU">
+        <h2 class="texte_icone icone_liste" i18n:translate="head_first_BU_results">Les 10 premiers résultats dans le catalogue de la BU</h2>
+        <table summary="Liste des ressources BU" i18n:attributes="summary">
             <thead>
                 <tr>
                     <th class="checkall show-for-medium-up">
                         <div class="switch tiny round">
                             <input type="checkbox" id="switch_reveal-all" name="checkall" role="recordsid:list" />
-                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
-                                   i18n:attributes="title"></label>
+                            <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                                   i18n:attributes="title batch_select_all"></label>
                         </div>
                     </th>
                     <th i18n:translate="">Image</th>
@@ -78,13 +76,13 @@
                 <tr>
                     <td class="show-for-medium-up">
                         <div class="switch tiny round">
-                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
+                            <input type="checkbox" name="recordsid:list" title="Action par lot : sélectionner / désélectionner"
                                    tal:attributes="id string:switch_reveal-${repeat/item/index};
                                                    value item/recordid"
-                                   i18n:attributes="title" />
-                            <label title="Action par lot : sélectionner / désélectionner"
+                                   i18n:attributes="title batch_select_deselect" />
+                            <label title="Action par lot : sélectionner / désélectionner"
                                    tal:attributes="for string:switch_reveal-${repeat/item/index}"
-                                   i18n:attributes="title"></label>
+                                   i18n:attributes="title batch_select_deselect"></label>
                         </div>
                     </td>
                     <td>
@@ -114,12 +112,12 @@
         <a class="button tiny expand success radius" target="_blank"
            tal:attributes="href python:context.searchBUCatalog(term_search, 'BU')">
             <i class="fa fa-search-plus"></i>
-            <tal:block i18n:translate="">Consulter plus de résultats sur le catalogue de la BU</tal:block>
+            <tal:block i18n:translate="link_more_results_on_BU">Consulter plus de résultats sur le catalogue de la BU</tal:block>
         </a>
         <a class="button tiny expand secondary radius" target="_blank"
            tal:attributes="href python:context.searchBUCatalog(term_search, 'suggestion')">
             <i class="fa fa-asterisk"></i>
-            <tal:block i18n:translate="">Suggestions d’acquisitions</tal:block>
+            <tal:block i18n:translate="link_BU_suggestions">Suggestions d’acquisitions</tal:block>
         </a>
 
         <input type="hidden" name="member_id" tal:attributes="value user/getId"/>
@@ -128,7 +126,7 @@
             <button type="submit" class="button small create"
                     name="form.button.save">
                 <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
 

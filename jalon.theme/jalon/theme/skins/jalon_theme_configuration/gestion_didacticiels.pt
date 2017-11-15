@@ -1,11 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="main">
@@ -73,13 +72,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(didacticiels['activer_aide'], 'checked', '')" />
                             <label for="activer_aide" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_aide" id="desactiver_aide" value="0"
                                    tal:attributes="checked python:context.test(not didacticiels['activer_aide'], 'checked', '')" />
                             <label for="desactiver_aide" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -104,13 +103,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(didacticiels['activer_aide_plan'], 'checked', '')" />
                             <label for="activer_aide_plan" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_aide_plan" id="desactiver_aide_plan" value="0"
                                    tal:attributes="checked python:context.test(not didacticiels['activer_aide_plan'], 'checked', '')" />
                             <label for="desactiver_aide_plan" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -133,13 +132,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(didacticiels['activer_guide_anti_spam'], 'checked', '')" />
                             <label for="activer_guide_anti_spam" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_guide_anti_spam" id="desactiver_guide_anti_spam" value="0"
                                    tal:attributes="checked python:context.test(not didacticiels['activer_guide_anti_spam'], 'checked', '')" />
                             <label for="desactiver_guide_anti_spam" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>

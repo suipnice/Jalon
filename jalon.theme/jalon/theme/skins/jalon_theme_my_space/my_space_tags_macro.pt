@@ -18,7 +18,7 @@
            class="right">
             <i class="fa fa-plus-circle fa-lg success"></i>
         </a>
-        <h2 class="texte_icone icone_tags" i18n:translate="">Étiquettes</h2>
+        <h2 class="texte_icone icone_tags" i18n:translate="head_labels">Étiquettes</h2>
         <ul id="js-tag_filter"
             tal:define="tags_list my_view/tags_list">
             <metal:macro use-macro="context/my_space_tags_macro/macros/tags_list">
@@ -51,8 +51,7 @@
 
     <tal:block condition="is_one_tag">
 
-        <div class="panel callout radius">
-            <tal:block i18n:translate="">Il n'y a aucune ressource avec l'étiquette</tal:block>
+        <div class="panel callout radius" i18n:translate="msg_no_content_with_tag">Il n'y a aucune ressource avec l'étiquette
             « <strong tal:content="one_tag/tag_title" /> ».
         </div>
 
@@ -65,7 +64,7 @@
             <input type="hidden" name="tag_id" tal:attributes="value one_tag/tag_id" />
             <button type="submit" class="button expand alert radius">
                 <i class="fa fa-trash-o"></i>
-                <tal:block i18n:translate="">Supprimer l'étiquette</tal:block>
+                <tal:block i18n:translate="button_delete_tag">Supprimer l'étiquette</tal:block>
                 « <strong tal:content="python:context.getShortText(one_tag['tag_title'], 20)" /> »
             </button>
         </form>
@@ -86,7 +85,7 @@
     <tal:block condition="not:is_one_tag">
         <div class="panel callout radius"
              tal:condition="not:is_no_items"
-             i18n:translate="">
+             i18n:translate="msg_no_content_with_tags">
             Il n'y a aucune ressource avec cette association d'étiquettes.
         </div>
     </tal:block>

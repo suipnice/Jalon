@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -42,7 +41,7 @@
         <div id="description"
              tal:define="error errors/description | nothing;"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
-            <label for="description" i18n:translate="">Définition</label>
+            <label for="description" i18n:translate="label_definition">Définition</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <textarea id="description" name="description" required="required" placeholder="Saisie obligatoire" cols="40" rows="5"></textarea>
         </div>

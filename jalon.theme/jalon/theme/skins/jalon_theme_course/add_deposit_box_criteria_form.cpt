@@ -1,16 +1,15 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing;">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Ajouter un critère d'évaluation</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
@@ -32,7 +31,7 @@
 
         <div tal:define="error errors/description | nothing;"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
-            <label for="description" i18n:translate="">Description :</label>
+            <label for="description" i18n:translate="head_description">Description :</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <textarea id="description" name="description" rows="5"
                       required="required" placeholder="Saisie obligatoire"

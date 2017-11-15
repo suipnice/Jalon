@@ -1,11 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -33,16 +32,15 @@
     <main class="row" role="main" aria-labelledby="page_title">
 
         <div class="panel warning radius">
-            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_depositbox_beta_stage">Cette fonction est actuellement en phase de test merci de remonter vos difficultés d'utilisation.</tal:block>
         </div>
 
         <section id="boite" class="small-12 columns">
             <ul id="tab_button-group" class="button-group radius">
                 <li tal:repeat="onglet my_view/details_evaluations_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
-                                       href onglet/href"
-                       i18n:translate="">
-                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text" i18n:translate=""/>
+                                       href onglet/href">
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>
                 </li>
@@ -73,7 +71,7 @@
                         </th>
                     <tal:repeat repeat="index my_view/criteria_order">
                         <th tal:define="criteria python:criteria_dict[index]">
-                            <tal:block i18n:translate="">Critère</tal:block> <tal:replace tal:replace="index"/>
+                            <tal:block i18n:translate="th_Criteria">Critère</tal:block> <tal:replace tal:replace="index"/>
                         </th>
                     </tal:repeat>
                         <th class="sort has-tip" data-tooltip data-sort="note"

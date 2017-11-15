@@ -1,23 +1,22 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
 
     <h2>
         <i class="fa fa-trash-o no-pad"></i>
-        <tal:block i18n:translate="">Supprimer les compétences</tal:block>
+        <tal:block i18n:translate="head_delete_skill">Supprimer les compétences</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
     <div class="panel alert radius"
          i18n:translate="">
-        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_definitive_operation">cette opération est définitive.</tal:block>
     </div>
 
     <form tal:attributes="action string:${context/absolute_url}/delete_deposit_box_skill_script"
@@ -26,14 +25,14 @@
           id="js-list_comp_supp"
           method="post">
 
-        <table summary="Liste des compétences">
+        <table summary="Liste des compétences" i18n:attributes="summary skills_list">
 
             <thead>
                 <tr>
                     <th class="checkall show-for-medium-up">
                         <div class="switch tiny round"
-                             title="Action par lot : tout sélectionner / désélectionner"
-                             i18n:attributes="title">
+                             title="Action par lot : tout sélectionner / désélectionner"
+                             i18n:attributes="title batch_select_all">
                             <input type="checkbox" id="switch-all" name="checkall" role="competence_id:list" />
                             <label for="switch-all"></label>
                         </div>
@@ -59,7 +58,7 @@
                     <td class="show-for-medium-up">
                         <div class="switch tiny round"
                              title="Sélectionner / désélectionner"
-                             i18n:attributes="title">
+                             i18n:attributes="title select_deselect">
                             <input type="checkbox" name="competence_id:list"
                                    tal:attributes="id string:switch-${repeat/item/index};
                                                    value item;" />

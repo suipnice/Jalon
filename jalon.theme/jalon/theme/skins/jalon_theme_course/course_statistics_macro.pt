@@ -1,15 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
-
 
 <!--
         Macro de l'onglet Généralité
@@ -17,11 +14,11 @@
 <metal:macro define-macro="indicateurs_generalite">
 
     <h2>
-        <i class="fa fa-calendar"></i>Dates
+        <i class="fa fa-calendar"></i><tal:block i18n:translate="">Dates</tal:block>
     </h2>
     <div class="panel bkgrnd radius">
-        Créé le <tal:replace replace="structure onglet_view/created"/><br/>
-        Modifié le <tal:replace replace="structure onglet_view/modified"/>
+        <tal:block i18n:translate="label_created_on">Créé le</tal:block> <tal:replace replace="structure onglet_view/created"/><br/>
+        <tal:block i18n:translate="label_modified_on">Modifié le</tal:block> <tal:replace replace="structure onglet_view/modified"/>
     </div>
 
     <tal:define define="personnel python:False;
@@ -31,44 +28,44 @@
     </metal:macro>
     </tal:define>
     <h2>
-        <i class="fa fa-sitemap"></i>Composition
+        <i class="fa fa-sitemap"></i><tal:block i18n:translate="">Composition</tal:block>
     </h2>
     <div class="row"
          tal:define="nb_element_by_type onglet_view/nb_element_by_type">
         <div class="small-12 medium-3 columns">
             <h3>
-                <i class="fa fa-list"></i>Éléments organisationels
+                <i class="fa fa-list"></i><tal:block i18n:translate="">Éléments organisationels</tal:block>
             </h3>
-            Titres : <tal:replace replace="nb_element_by_type/Titre"/><br/>
-            Textes libres : <tal:replace replace="nb_element_by_type/TexteLibre"/>
+            <tal:block i18n:translate="">Titres :</tal:block> <tal:replace replace="nb_element_by_type/Titre"/><br/>
+            <tal:block i18n:translate="">Textes libres :</tal:block> <tal:replace replace="nb_element_by_type/TexteLibre"/>
         </div>
         <div class="small-12 medium-3 columns">
             <h3>
-                <i class="fa fa-files-o"></i>Supports pédagogiques
+                <i class="fa fa-files-o"></i><tal:block i18n:translate="">Supports pédagogiques</tal:block>
             </h3>
-            Fichiers : <tal:replace replace="nb_element_by_type/Fichiers"/><br/>
-            Webconférences : <tal:replace replace="nb_element_by_type/Webconference"/><br/>
-            Ressources externes : <tal:replace replace="nb_element_by_type/Externes"/><br/>
-            Présentations sonorisées : <tal:replace replace="nb_element_by_type/Presentations"/><br/>
-            Vidéos : <tal:replace replace="nb_element_by_type/Video"/><br/>
-            VOD : <tal:replace replace="nb_element_by_type/VOD"/><br/>
+            <tal:block i18n:translate="">Fichiers :</tal:block> <tal:replace replace="nb_element_by_type/Fichiers"/><br/>
+            <tal:block i18n:translate="">Webconférences :</tal:block> <tal:replace replace="nb_element_by_type/Webconference"/><br/>
+            <tal:block i18n:translate="">Ressources externes :</tal:block> <tal:replace replace="nb_element_by_type/Externes"/><br/>
+            <tal:block i18n:translate="">Présentations sonorisées :</tal:block> <tal:replace replace="nb_element_by_type/Presentations"/><br/>
+            <tal:block i18n:translate="">Vidéos :</tal:block> <tal:replace replace="nb_element_by_type/Video"/><br/>
+            <tal:block i18n:translate="">VOD :</tal:block> <tal:replace replace="nb_element_by_type/VOD"/><br/>
         </div>
         <div class="small-12 medium-3 columns">
             <h3>
-                <i class="fa fa-random"></i>Activités
+                <i class="fa fa-random"></i><tal:block i18n:translate="head_activities">Activités</tal:block>
             </h3>
-            Boîtes de dépôts : <tal:replace replace="nb_element_by_type/BoiteDepot"/><br/>
-            Auto-évaluations WIMS : <tal:replace replace="nb_element_by_type/AutoEvaluation"/><br/>
-            Examens WIMS : <tal:replace replace="nb_element_by_type/Examen"/><br/>
-            Salles virtuelles : <tal:replace replace="nb_element_by_type/SalleVirtuelle"/>
+            <tal:block i18n:translate="">Boîtes de dépôts :</tal:block> <tal:replace replace="nb_element_by_type/BoiteDepot"/><br/>
+            <tal:block i18n:translate="">Entrainement WIMS :</tal:block> <tal:replace replace="nb_element_by_type/AutoEvaluation"/><br/>
+            <tal:block i18n:translate="">Examens WIMS :</tal:block> <tal:replace replace="nb_element_by_type/Examen"/><br/>
+            <tal:block i18n:translate="">Salles virtuelles :</tal:block> <tal:replace replace="nb_element_by_type/SalleVirtuelle"/>
         </div>
         <div class="small-12 medium-3 columns">
             <h3>
-                <i class="fa fa-external-link"></i>Compléments
+                <i class="fa fa-external-link"></i><tal:block i18n:translate="">Compléments</tal:block>
             </h3>
-            Forums : <tal:replace replace="nb_element_by_type/Forums"/><br/>
-            Termes de Glossaire : <tal:replace replace="nb_element_by_type/TermeGlossaire"/><br/>
-            Éléments de Bibliographie : <tal:replace replace="nb_element_by_type/Bibliographie"/>
+            <tal:block i18n:translate="">Forums :</tal:block> <tal:replace replace="nb_element_by_type/Forums"/><br/>
+            <tal:block i18n:translate="">Termes de Glossaire :</tal:block> <tal:replace replace="nb_element_by_type/TermeGlossaire"/><br/>
+            <tal:block i18n:translate="">Éléments de Bibliographie :</tal:block> <tal:replace replace="nb_element_by_type/Bibliographie"/>
         </div>
     </div>
 
@@ -81,13 +78,13 @@
 
     <h2>
         <i class="fa fa-bar-chart"></i>
-        Fréquentation étudiantes sur les 90 derniers jours
+        <tal:block i18n:translate="">Fréquentation étudiantes sur les 90 derniers jours</tal:block>
     </h2>
     <tal:replace replace="structure onglet_view/frequentation_graph"/>
     <div id="frequentationchartdiv" style="width:100%; height:400px; margin-left:auto; margin-right:auto;"></div>
     <h2>
         <i class="fa fa-bar-chart"></i>
-        Fréquentation étudiantes de l'année universitaire <tal:replace replace="onglet_view/year"/> par mois
+        <tal:block i18n:translate="">Fréquentation étudiantes de l'année universitaire</tal:block> <tal:replace replace="onglet_view/year"/> <tal:block i18n:translate="">par mois</tal:block>
     </h2>
     <tal:replace replace="structure onglet_view/graph"/>
     <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>
@@ -101,7 +98,7 @@
 <metal:macro define-macro="indicateurs_ressources">
 
     <h2>
-        <i class="fa fa-check-square-o "></i>Sélectionner un type de Supports pédagogiques
+        <i class="fa fa-check-square-o "></i><tal:block i18n:translate="">Sélectionner un type de Support pédagogique</tal:block>
     </h2>
     <nav class="small-12 columns"
          tal:define="box_list onglet_view/box_list">
@@ -124,7 +121,7 @@
 <metal:macro define-macro="indicateurs_activites">
 
     <h2>
-        <i class="fa fa-random"></i>Activités
+        <i class="fa fa-random"></i><tal:block i18n:translate="head_activities">Activités</tal:block>
     </h2>
     <nav class="small-12 columns"
          tal:define="box_list onglet_view/box_list">

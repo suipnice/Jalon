@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -17,15 +15,13 @@
 <tal:condition condition="is_ajax">
     <tal:define define="no_return python:context.aq_parent.insererConsultation(user, 'BoiteDepot', context.getId())"/>
     <h2>
-        <tal:replace replace="context/Title"
-                     i18n:translate=""/>
+        <tal:replace replace="context/Title"/>
         <a class="close-reveal-modal"></a>
     </h2>
     <h3 class="texte_icone icone_consignes"
         i18n:translate="">Consigne</h3>
     <div tal:attributes="class my_view/instruction_class"
-         tal:content="my_view/instruction_text"
-         i18n:translate=""/>
+         tal:content="my_view/instruction_text"/>
     <a class="button expand success"
        tal:attributes="href context/absolute_url"
        tal:condition="not:my_view/is_anonymous">
@@ -103,8 +99,7 @@
                 <li tal:repeat="option my_view/deposit_box_edit">
                     <a tal:attributes="href option/href"
                        data-reveal-id="reveal-main" data-reveal-ajax="true">
-                       <i tal:attributes="class string:fa ${option/icon} fa-fw"></i> <tal:block tal:content="option/text"
-                                                                                                i18n:translate=""/>
+                       <i tal:attributes="class string:fa ${option/icon} fa-fw"></i> <tal:block tal:content="option/text"/>
                     </a>
                 </li>
             </ul>
@@ -115,16 +110,14 @@
             </h1>
             <div class="panel alert radius"
                  tal:condition="my_view/is_student_and_deposit_box_hidden">
-                <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cette boîte de dépôts est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+                <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">cette boîte de dépôts est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
             </div>
             <ul id="tab_button-group" class="button-group radius"
                 tal:condition="my_view/is_personnel_or_deposit_box_visible">
                 <li tal:repeat="onglet my_view/deposit_box_tabs">
                     <a tal:attributes="class string:button small${onglet/css_class};
-                                       href onglet/href"
-                       i18n:translate="">
-                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
-                                                                                           i18n:translate=""/>
+                                       href onglet/href">
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                         <span class="sup" tal:content="onglet/nb"/>
                     </a>
                 </li>
@@ -183,8 +176,7 @@
                         <i tal:attributes="class string:fa ${deposit_box_correction_date/icon} fa-fw"></i>
                     </a>
                     <i class="fa fa-clock-o fa-fw no-pad"></i>
-                    <tal:block content="deposit_box_correction_date/text"
-                               i18n:translate=""/>
+                    <tal:block content="deposit_box_correction_date/text"/>
                 </h3>
                 <div class="panel callout radius">
                     <tal:block content="my_view/deposit_box_correction_date/value"/>
@@ -222,8 +214,7 @@
                 <ul>
                     <li tal:repeat="option my_view/deposit_tab_options">
                         <i tal:attributes="class string:fa ${option/icon}"></i>
-                        <tal:block tal:content="option/text"
-                                   i18n:translate=""/>
+                        <tal:block tal:content="option/text"/>
                     </li>
                 </ul>
             </div>
@@ -242,7 +233,7 @@
                         <i class="fa fa-pencil fa-fw"></i>
                     </a>
                     <i tal:attributes="class peer_option/icon"></i>
-                    <tal:replace replace="peer_option/text" i18n:translate=""/>
+                    <tal:replace replace="peer_option/text"/>
                 </h3>
                 <div tal:attributes="class peer_option/class">
                     <tal:replace replace="structure peer_option/value"

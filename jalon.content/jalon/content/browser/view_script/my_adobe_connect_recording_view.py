@@ -26,12 +26,20 @@ class MyAdobeConnectRecordingView(MySpaceView):
                             "mes_webconferences":           "Webconference"}
 
     def getBreadcrumbs(self):
-        return [{"title": _(u"Mes ressources"),
+        context_id = self.context.getId()
+        crumbs_list = [{"title": _(u"Mes ressources"),
                  "icon":  "fa fa-folder-open",
-                 "link":  self.context.aq_parent.absolute_url()},
-                {"title": _(u"Mes présentations sonorisées"),
+                 "link":  self.context.aq_parent.absolute_url()}]
+        if context_id == "mes_webconferences":
+            crumbs_list.append({"title": _(u"Mes Webconférences"),
+                 "icon":  "fa fa-headphones",
+                 "link":  self.context.absolute_url()})
+        else:
+            crumbs_list.append({"title": _(u"Mes présentations sonorisées"),
                  "icon":  "fa fa-microphone",
-                 "link":  self.context.absolute_url()}]
+                 "link":  self.context.absolute_url()})
+
+        return crumbs_list
 
     def getMyAdobeConnectRecordingView(self, user):
         # LOG.info("----- getMyAdobeConnectRecordingView -----")
@@ -48,10 +56,10 @@ class MyAdobeConnectRecordingView(MySpaceView):
         adobe_connect_reunion = self.getAdobeConnectReunion(user, folder, portal_connect)
 
         item_adder_p = adobe_connect_reunion["adobe_connect_reunion_link"]
-        item_adder_name = "Se connecter à votre salle virtuelle"
+        item_adder_name = _(u"Se connecter à votre salle virtuelle")
         if context_id == "mes_presentations_sonorisees":
             item_adder_p = False
-            item_adder_name = "Créer une présentation sonorisée"
+            item_adder_name = _(u"Créer une présentation sonorisée")
 
         item_adder = {"item_adder_link": "%s?session=%s" % (adobe_connect_reunion["adobe_connect_reunion_link"], adobe_connect_session),
                       "item_adder_name": item_adder_name,
@@ -67,11 +75,11 @@ class MyAdobeConnectRecordingView(MySpaceView):
 
         one_and_selected_tag = self.getOneAndSelectedTag(my_adobe_connect_recording_list, selected_tags_list, tags_dict)
 
-        no_items_strong = "Il n'y a aucune webconférence dans votre espace."
-        no_items_button = "Pour en ajouter, connectez vous à votre salle virtuelle en cliquant sur la barre ci-dessus."
+        no_items_strong = _(u"Il n'y a aucune webconférence dans votre espace.")
+        no_items_button = _(u"Pour en ajouter, connectez vous à votre salle virtuelle en cliquant sur la barre ci-dessus.")
         if one_and_selected_tag["is_no_items"] and context_id == "mes_presentations_sonorisees":
-            no_items_strong = "Il n'y a aucune présentation sonorisée dans votre espace."
-            no_items_button = "Pour en ajouter, cliquez sur la barre « Créer une présentation sonorisée » ci-dessus."
+            no_items_strong = _(u"Il n'y a aucune présentation sonorisée dans votre espace.")
+            no_items_button = _(u"Pour en ajouter, cliquez sur la barre « Créer une présentation sonorisée » ci-dessus.")
 
         try:
             nb_display_items = my_adobe_connect_recording_list.length

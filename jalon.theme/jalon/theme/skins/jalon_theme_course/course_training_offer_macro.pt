@@ -41,11 +41,11 @@
          tal:define="search_results python:context.searchTrainingOffer(training_offer_search_text, training_offer_search_type)">
 
         <h3 class="texte_icone icone_resultats"
-            i18n:translate="">Résultats de la recherche</h3>
+            i18n:translate="head_search_result">Résultats de la recherche</h3>
 
         <div class="panel callout radius"
              tal:condition="not:search_results"
-             i18n:translate="">
+             i18n:translate="no_search_result">
             La recherche n'a donné aucun résultat.
         </div>
 
@@ -96,7 +96,7 @@
                                                    value string:${training_offer_search_type}*-*${item/COD_ELP}" />
                             <label title="Sélectionner / désélectionner"
                                    tal:attributes="for string:switch_reveal-${repeat/item/index}"
-                                   i18n:attributes="title"></label>
+                                   i18n:attributes="title select_deselect"></label>
                         </div>
                     </td>
                     <td class="title" tal:content="item/LIB_ELP" />

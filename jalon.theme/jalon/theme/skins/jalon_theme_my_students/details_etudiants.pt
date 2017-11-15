@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="main">
@@ -14,17 +12,17 @@
         Page d'affichage du fil d'ariane
     </metal:macro>
 
-    <h1 i18n:translate="label_listing_etudiant">
-        Détails des connexion des étudiants <tal:replace replace="python:context.jalonBDD('getInfosELP', {'COD_ELP': request['COD_ELP']})['LIB_ELP']"/>
+    <h1>
+        <tal:block i18n:translate="head_student_connections_detail">Détails des connexion des étudiants</tal:block> <tal:replace replace="python:context.jalonBDD('getInfosELP', {'COD_ELP': request['COD_ELP']})['LIB_ELP']"/>
     </h1>
 
     <tal:define define="detailsConnexion python:context.jalonBDD('getConnexionCouranteByELPByIND', {'COD_ELP': request['COD_ELP']})">
     <table  class="listing">
         <thead>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Connexion du mois courant</th>
-            <th>Connexion de l'année en cours</th>
+            <th i18n:translate="">Nom</th>
+            <th i18n:translate="label_firstname">Prénom</th>
+            <th i18n:translate="">Connexion du mois courant</th>
+            <th i18n:translate="th_current_year_connection">Connexion de l'année en cours</th>
         </thead>
         <tbody tal:define="detailsMois detailsConnexion/mois;
                            detailsAnnee detailsConnexion/annee">
