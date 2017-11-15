@@ -1,15 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
-
 
 <!--
         Tableau qui affiche les consultations de toutes les ressources en Supports Pdégogiques
@@ -18,25 +15,23 @@
 
     <h2>
         <i class="fa fa-table"></i>
-        Fréquentation sur l'année universitaire courante
+        <tal:block i18n:translate="head_current_year_attendance">Fréquentation sur l'année universitaire courante</tal:block>
     </h2>
-    <table summary="Consultations du cours pour le mois courant">
+    <table summary="Consultations du cours pour le mois courant" i18n:attributes="summary">
         <thead>
             <th tal:repeat="th onglet_view/thead_th_list"
-                class="sort has-tip" data-tooltip 
+                class="sort has-tip" data-tooltip
                 tal:attributes="data-sort th/data-sort;
-                                title string:Trier selon ${th/th_title}" i18n:attributes="title">
+                                title string:Trier selon ${th/th_title}"
+                i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block tal:replace="th/th_text"
-                               i18n:translate=""/>
+                    <tal:block tal:replace="th/th_text"/>
                 </span>
             </th>
-            <th>
-                Détails
-            </th>
+            <th i18n:translate="th_details">Détails</th>
         </thead>
         <tfoot></tfoot>
         <tbody class="list">
@@ -80,23 +75,22 @@
         <a class="button small right"
            tal:attributes="href onglet_view/box_url">
             <i class="fa fa-arrow-left"></i>
-            Retour à la liste
+            <tal:block i18n:translate="link_back_to_list">Retour à la liste</tal:block>
         </a>
         <i class="fa fa-table"></i>
-        Consultations sur l'année universitaire courante par public : <tal:replace replace="onglet_view/element_title"/>
+        <tal:block i18n:translate="current_year_consultations_by_audience">Consultations sur l'année universitaire courante par public :</tal:block> <tal:replace replace="onglet_view/element_title"/>
     </h2>
     <table summary="Consultations du cours pour le mois courant">
         <thead>
             <th tal:repeat="th onglet_view/thead_th_list"
-                class="sort has-tip" data-tooltip 
+                class="sort has-tip" data-tooltip
                 tal:attributes="data-sort th/data-sort;
                                 title string:Trier selon ${th/th_title}" i18n:attributes="title">
                 <span>
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block tal:replace="th/th_text"
-                               i18n:translate=""/>
+                    <tal:block tal:replace="th/th_text"/>
                 </span>
             </th>
         </thead>
@@ -118,7 +112,7 @@
 
     <h2>
         <i class="fa fa-bar-chart"></i>
-        Graphique des consultations de l'année universitaire en cours : <tal:replace replace="onglet_view/element_title"/>
+        <tal:block i18n:translate="current_year_consultations_graph">Graphique des consultations de l'année universitaire en cours :</tal:block> <tal:replace replace="onglet_view/element_title"/>
     </h2>
     <tal:replace replace="structure onglet_view/graph"/>
     <div id="chartdiv" style="width:95%; height:400px; margin-left:auto; margin-right:auto;"></div>

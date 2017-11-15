@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
@@ -31,14 +29,14 @@
                     <label for="activer_fichiers"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_fichiers" id="desactiver_fichiers" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_fichiers'], 'checked', '')" />
                     <label for="desactiver_fichiers"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -53,7 +51,7 @@
                 <tal:condition condition="not:isConnect/module">
                     <div class="panel warning radius"
                          tal:content="isConnect/message"
-                         i18n:translate=""/>
+                        />
                 </tal:condition>
                 <tal:condition condition="isConnect/module">
                     <input type="radio" name="activer_presentations_sonorisees" id="activer_presentations_sonorisees" value="1"
@@ -61,14 +59,14 @@
                     <label for="activer_presentations_sonorisees"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_presentations_sonorisees" id="desactiver_presentations_sonorisees" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_presentations_sonorisees'], 'checked', '')" />
                     <label for="desactiver_presentations_sonorisees"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </tal:condition>
                 </div>
@@ -84,7 +82,7 @@
                 <tal:condition condition="not:isWims/module">
                     <div class="panel warning radius"
                          tal:content="isWims/message"
-                         i18n:translate=""/>
+                        />
                 </tal:condition>
                 <tal:condition condition="isWims/module">
                     <input type="radio" name="activer_exercices_wims" id="activer_exercices_wims" value="1"
@@ -92,14 +90,14 @@
                     <label for="activer_exercices_wims"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_exercices_wims" id="desactiver_exercices_wims" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_exercices_wims'], 'checked', '')" />
                     <label for="desactiver_exercices_wims"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </tal:condition>
                 </div>
@@ -118,14 +116,14 @@
                         <label for="activer_liens"
                                class="activer">
                             <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
+                            <tal:block i18n:translate="label_enabled">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_liens" id="desactiver_liens" value="0"
                                tal:attributes="checked python:context.test(not mes_ressources['activer_liens'], 'checked', '')" />
                         <label for="desactiver_liens"
                                class="desactiver">
                             <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
+                            <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                         </label>
                     </p>
                 </div>
@@ -142,14 +140,14 @@
                         <label for="activer_liens_catalogue_bu"
                                class="activer">
                             <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
+                            <tal:block i18n:translate="label_enabled">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_liens_catalogue_bu" id="desactiver_liens_catalogue_bu" value="0"
                                tal:attributes="checked python:context.test(not mes_ressources['activer_liens_catalogue_bu'], 'checked', '')" />
                         <label for="desactiver_liens_catalogue_bu"
                                class="desactiver">
                             <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
+                            <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                         </label>
                     </p>
                 </div>
@@ -158,7 +156,7 @@
                  tal:condition="not:isPrimo/module">
                 <div class="panel warning radius"
                      tal:content="isPrimo/message"
-                     i18n:translate=""/>
+                    />
             </div>
             <tal:replace replace="nothing">
             <!--
@@ -174,14 +172,14 @@
                         <label for="activer_tags_catalogue_bu"
                                class="activer">
                             <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
+                            <tal:block i18n:translate="label_enabled">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_tags_catalogue_bu" id="desactiver_tags_catalogue_bu" value="0"
                                tal:attributes="checked python:context.test(not mes_ressources['activer_tags_catalogue_bu'], 'checked', '')" />
                         <label for="desactiver_tags_catalogue_bu"
                                class="desactiver">
                             <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
+                            <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                         </label>
                     </p>
                 </div>
@@ -200,14 +198,14 @@
                     <label for="activer_termes_glossaire"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_termes_glossaire" id="desactiver_termes_glossaire" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_termes_glossaire'], 'checked', '')" />
                     <label for="desactiver_termes_glossaire"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -222,7 +220,7 @@
                 <tal:condition condition="not:isConnect/module">
                     <div class="panel warning radius"
                          tal:content="isConnect/message"
-                         i18n:translate=""/>
+                        />
                 </tal:condition>
                 <tal:condition condition="isConnect/module">
                     <input type="radio" name="activer_webconferences" id="activer_webconferences" value="1"
@@ -230,14 +228,14 @@
                     <label for="activer_webconferences"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_webconferences" id="desactiver_webconferences" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_webconferences'], 'checked', '')" />
                     <label for="desactiver_webconferences"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </tal:condition>
                 </div>
@@ -258,7 +256,7 @@
                         <label for="activer_lille1pod"
                                class="activer">
                             <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
+                            <tal:block i18n:translate="label_enabled">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_lille1pod" id="desactiver_lille1pod"
                                value="0"
@@ -266,7 +264,7 @@
                         <label for="desactiver_lille1pod"
                                class="desactiver">
                             <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
+                            <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                         </label>
                     </p>
                 </div>
@@ -275,7 +273,7 @@
                  tal:condition="not:isElasticsearch/module">
                 <div class="panel warning radius"
                      tal:content="isElasticsearch/message"
-                     i18n:translate=""/>
+                    />
             </div>
         </div>
         <div class="row"
@@ -293,7 +291,7 @@
                         <label for="activer_vod"
                                class="activer">
                             <i class="fa fa-check"></i>
-                            <tal:block i18n:translate="">Activé</tal:block>
+                            <tal:block i18n:translate="label_enabled">Activé</tal:block>
                         </label>
                         <input type="radio" name="activer_vod" id="desactiver_vod"
                                value="0"
@@ -301,7 +299,7 @@
                         <label for="desactiver_vod"
                                class="desactiver">
                             <i class="fa fa-times"></i>
-                            <tal:block i18n:translate="">Désactivé</tal:block>
+                            <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                         </label>
                     </p>
                 </div>
@@ -310,7 +308,7 @@
                  tal:condition="not:isVOD/module">
                 <div class="panel warning radius"
                      tal:content="isVOD/message"
-                     i18n:translate=""/>
+                    />
             </div>
         </div>
         <div class="row">
@@ -324,14 +322,14 @@
                     <label for="activer_lien_intracursus"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_lien_intracursus" id="desactiver_lien_intracursus" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_lien_intracursus'], 'checked', '')" />
                     <label for="desactiver_lien_intracursus"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -357,14 +355,14 @@
                     <label for="activer_lien_assistance"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_lien_assistance" id="desactiver_lien_assistance" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_lien_assistance'], 'checked', '')" />
                     <label for="desactiver_lien_assistance"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -383,14 +381,14 @@
                     <label for="activer_video"
                            class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_video" id="desactiver_video" value="0"
                            tal:attributes="checked python:context.test(not mes_ressources['activer_video'], 'checked', '')" />
                     <label for="desactiver_video"
                            class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>

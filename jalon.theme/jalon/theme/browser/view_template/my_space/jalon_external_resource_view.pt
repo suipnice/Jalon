@@ -6,7 +6,6 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -29,7 +28,7 @@
     --></tal:comment>
     <div class="panel radius"
          tal:condition="not:context/Description"
-         i18n:translate="">
+         i18n:translate="msg_no_desc">
          Description non renseignée…
     </div>
 

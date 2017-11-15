@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -24,7 +23,7 @@
 
     <div class="panel warning radius"
           tal:condition="not:my_form/is_visible_item">
-        <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">cet élément du plan est actuellement masqué, vous ne pouvez pas le jalonner.</tal:block>
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">cet élément du plan est actuellement masqué, vous ne pouvez pas le jalonner.</tal:block>
     </div>
 
     <form tal:attributes="action string:${context/absolute_url}/mark_out_course_map_item_script"
@@ -46,7 +45,7 @@
         </div>
 
         <div class="panel warning radius">
-            <strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">vous ne pouvez jalonner qu'un seul élément du plan. Si un élément du plan est déjà jalonné, vous allez le remplacer.</tal:block>
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">vous ne pouvez jalonner qu'un seul élément du plan. Si un élément du plan est déjà jalonné, vous allez le remplacer.</tal:block>
         </div>
 
         <input type="hidden" name="mark_out_item_id" tal:attributes="value request/item_id" />

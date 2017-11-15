@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -17,9 +15,8 @@
     </h2>
 
     <div class="panel warning radius"
-         tal:condition="not:listeAcces"
-         i18n:translate="">
-        <strong>Attention :</strong> votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.
+         tal:condition="not:listeAcces">
+         <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_course_not_visible">votre cours n'est accessible à aucun étudiant, vous ne pouvez pas créer d'annonce.</tal:block>
     </div>
 
     <form id="js-createAnnounce" method="POST"
@@ -38,7 +35,7 @@
 
         <div tal:define="error errors/description | nothing;"
              tal:attributes="class python:context.test(error, 'field error', 'field')">
-            <label for="description" i18n:translate="">Description :</label>
+            <label for="description" i18n:translate="head_description">Description :</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <textarea id="description" name="description" rows="5"
                       required="required" placeholder="Saisie obligatoire"
@@ -107,7 +104,7 @@
                 <tr tal:repeat="acces listeAcces">
                     <td>
                         <div class="switch tiny round" title="Sélectionner / désélectionner"
-                             i18n:attributes="title">
+                             i18n:attributes="title select_deselect">
                             <input type="checkbox" name="publicsElement:list" checked="checked"
                                    tal:attributes="id string:switch-${repeat/acces/index};
                                                    value python:'%s*-*%s' % (acces[-1], acces[1])" />
@@ -127,11 +124,11 @@
             </table>
         </div>
 
-        <div class="panel callout radius" i18n:translate="">
-            <tal:block i18n:translate="">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
+        <div class="panel callout radius">
+            <tal:block i18n:translate="Msg_uncheck_if_dont_want_email.">Si vous avez défini une audience et ne souhaitez pas lui envoyer cette annonce par courriel, décochez la case ci-dessous.</tal:block>
             <div class="panel bkgrnd radius text-center">
                 <input type="checkbox" id="mailAnnounce" name="mailAnnonce" checked="checked" />
-                <label for="mailAnnounce" i18n:translate="">Envoyer également cette annonce par courriel.</label>
+                <label for="mailAnnounce" i18n:translate="Label_send_by_email.">Envoyer également cette annonce par courriel.</label>
             </div>
         </div>
 

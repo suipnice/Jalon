@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
@@ -20,17 +18,17 @@
           tal:attributes="action string:${context/absolute_url}/delete_course_nominative_registration_script">
 
         <h3 class="texte_icone icone_users"
-            i18n:translate="">Étudiant(s) inscrit(s) nominativement</h3>
+            i18n:translate="head_student_registered_by_name">Étudiant(s) inscrit(s) nominativement</h3>
 
         <div class="panel callout radius"
              tal:condition="not:nominative_registration_list"
-             i18n:translate="">
+             i18n:translate="msg_no_student_registered">
             Le cours n'est diffusé à aucun étudiant.
         </div>
 
         <tal:condition condition="nominative_registration_list">
         <div class="panel callout radius">
-            <tal:block i18n:translate="">Désélectionnez les étudiant(e)s que vous souhaitez désinscrire, puis cliquez sur « Enregistrer ».</tal:block>
+            <tal:block i18n:translate="help_unregister_student">Désélectionnez les étudiant(e)s que vous souhaitez désinscrire du cours, puis cliquez sur « Enregistrer ».</tal:block>
         </div>
 
         <table>
@@ -39,8 +37,8 @@
                 <th class="checkall show-for-medium-up">
                     <div class="switch tiny round">
                         <input type="checkbox" id="switch_reveal-all" name="checkall" role="etu_groupe:list" checked="checked" />
-                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
-                               i18n:attributes="title"></label>
+                        <label for="switch_reveal-all" title="Action par lot : tout sélectionner / désélectionner"
+                               i18n:attributes="title batch_select_all"></label>
                     </div>
                 </th>
                 <th class="sort" data-sort="name" title="Trier selon le nom" i18n:attributes="title">
@@ -48,7 +46,7 @@
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">NOM Prénom</tal:block>
+                        <tal:block i18n:translate="th_LASTNAME_firstname">NOM Prénom</tal:block>
                     </span>
                 </th>
                 <th class="sort" data-sort="code" title="Trier selon l'identifiant étudiant" i18n:attributes="title">
@@ -56,7 +54,7 @@
                         <i class="fa fa-sort"></i>
                         <i class="fa fa-sort-asc"></i>
                         <i class="fa fa-sort-desc"></i>
-                        <tal:block i18n:translate="">ID étu.</tal:block>
+                        <tal:block i18n:translate="th_student_ID">ID étu.</tal:block>
                     </span>
                 </th>
                 <th class="sort" data-sort="email" title="Trier selon l'adresse de courriel" i18n:attributes="title">
@@ -78,7 +76,7 @@
                                                value nominative_registration/sesame" />
                         <label title="Sélectionner / désélectionner"
                                tal:attributes="for string:switch_reveal-${repeat/nominative_registration/index}"
-                               i18n:attributes="title"></label>
+                               i18n:attributes="title select_deselect"></label>
                     </div>
                 </td>
                 <td class="name">

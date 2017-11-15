@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -12,10 +11,9 @@
                         activity_type request/activity_type | string:1;
                         my_form python:context.getCourseAddActivityForm(activity_type);
                         course_map_form context/getCourseMapForm">
-
     <h2>
         <i class="fa fa-plus-circle no-pad"></i>
-        <tal:block i18n:translate="">Créer une activité pédagogique</tal:block> (<tal:replace replace="my_form" i18n:translate=""/>)
+        <tal:block i18n:translate="head_create_learning_activity">Créer une activité pédagogique</tal:block> (<tal:replace replace="my_form"/>)
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -37,7 +35,7 @@
         <div id="archetypes-fieldname-description"
              tal:define="error errors/description | nothing"
              tal:attributes="class python:context.test(error, 'error field', 'field')">
-            <label for="description">Consigne</label>
+            <label for="description" i18n:translate="">Consigne</label>
             <textarea name="description" id="description" rows="5"><tal:block replace="request/description | nothing"/></textarea>
         </div>
 
@@ -52,7 +50,7 @@
             <button type="submit" class="button small create"
                     name="form.button.save">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer</tal:block>
+                <tal:block i18n:translate="button_create">Créer</tal:block>
             </button>
         </div>
     </form>

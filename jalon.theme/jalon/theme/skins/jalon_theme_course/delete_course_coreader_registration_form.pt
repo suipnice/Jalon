@@ -1,18 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="mode_etudiant request/mode_etudiant | nothing;
                         is_personnel python:context.isPersonnel(user, mode_etudiant)">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Supprimer des lecteurs enseignants</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
@@ -30,7 +28,7 @@
         <tal:condition condition="course_reader_list">
 
         <div class="panel callout radius">
-            <tal:block i18n:translate="">Désélectionnez les lecteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
+            <tal:block i18n:translate="msg_howto_remove_coreader">Désélectionnez les lecteurs dont vous souhaitez supprimer l'accès au cours, puis cliquez sur « Enregistrer ».</tal:block>
         </div>
 
         <table>
@@ -42,7 +40,7 @@
                                                value course_reader/id" />
                         <label title="Sélectionner / désélectionner"
                                tal:attributes="for string:switch_reveal-${repeat/course_reader/index}"
-                               i18n:attributes="title"></label>
+                               i18n:attributes="title select_deselect"></label>
                     </div>
                 </td>
                 <td class="text-left" tal:content="course_reader/fullname" />

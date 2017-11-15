@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="here/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core metal:fill-slot="content"
@@ -47,7 +46,7 @@
                tal:condition="add_forum_perm"
                tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-forum">
                 <i class="fa fa-plus-circle"></i>
-                <tal:block i18n:translate="">Créer un forum dans ce cours</tal:block>
+                <tal:block i18n:translate="label_create_forum">Créer un forum dans ce cours</tal:block>
             </a>
         </nav>
 
@@ -83,7 +82,7 @@
                             </span>
                         </th>
                         <th data-sort="number" class="sort has-tip" data-tooltip title="Trier selon le nombre de conversations"
-                            i18n:attributes="title">
+                            i18n:attributes="title title_sort_by_conversation">
                             <span>
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
@@ -97,7 +96,7 @@
                                 <i class="fa fa-sort"></i>
                                 <i class="fa fa-sort-asc"></i>
                                 <i class="fa fa-sort-desc"></i>
-                                <tal:block i18n:translate="">Activité récente</tal:block>
+                                <tal:block i18n:translate="th_recent_activity">Activité récente</tal:block>
                             </span>
                         </th>
                         <th i18n:translate="actions"
@@ -204,7 +203,7 @@
     <tal:isNotForums condition="not:keyedforums">
 
             <div class="panel callout radius">
-                <tal:block i18n:translate="">Vous pouvez ajouter un forum à ce cours en utilisant le bouton « Créer un forum dans ce cours » ci-dessus.</tal:block>
+                <tal:block i18n:translate="help_add_forum">Vous pouvez ajouter un forum à ce cours en utilisant le bouton « Créer un forum dans ce cours » ci-dessus.</tal:block>
             </div>
 
     </tal:isNotForums condition="not:keyedforums">

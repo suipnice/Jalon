@@ -570,7 +570,7 @@
         <form name="suppressionELP-form"
               tal:attributes="action string:${context/absolute_url}/supprimerELP_script" method="post">
             <div class="panel alert radius">
-                <strong i18n:translate="">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
+                <strong i18n:translate="msg_warning">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
             </div>
             <input type="hidden" name="TYP_ELP" tal:attributes="value infosELP/TYP_ELP"/>
             <input type="hidden" name="LIB_ELP" tal:attributes="value infosELP/LIB_ELP"/>

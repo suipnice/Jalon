@@ -1,17 +1,16 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content">
 
 <metal:macro define-macro="is_object_attached">
     <div class="panel radius callout">
-        La ressource "<tal:replace replace="context/Title" />" est attachée à :
+        <tal:block i18n:translate="">La ressource "<tal:replace replace="context/Title" />" est attachée à :</tal:block>
         <ul>
             <li tal:repeat="item context/getRelatedItems">
                 <a tal:attributes="href item/getURL|item/absolute_url">
@@ -26,8 +25,8 @@
 
 <metal:macro define-macro="isnt_object_attached">
     <div class="panel alert radius">
-        <strong i18n:translate="">Attention :</strong>
-        <tal:block i18n:translate="">cette opération est définitive.</tal:block>
+        <strong i18n:translate="msg_warning">Attention :</strong>
+        <tal:block i18n:translate="msg_definitive_operation">cette opération est définitive.</tal:block>
     </div>
     <form id="js-itemSuppressor" method="POST"
           tal:attributes="action string:${context/aq_parent/absolute_url}/delete_object_script;

@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
     xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
     xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
     metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
@@ -100,10 +100,10 @@
                         <div class="medium-4 columns">
                             <div class="panel">
                                 <label class="input_label" for="option_split">
-                                    <input id="option_split" type="checkbox" name="options:list" value="split"
-                                  tal:define="option QCM_parsed/options_split"
-                                  tal:attributes="checked python:context.test(option==1, 'checked', None)"
-                                  i18n:translate=""/>Note partielle</label>
+                                    <input id="option_split" type="checkbox" name="options:list"       value="split"
+                                           tal:define="option QCM_parsed/options_split"
+                                           tal:attributes="checked python:context.test(option==1, 'checked', None)"
+                                           /><tal:block i18n:translate="">Note partielle</tal:block></label>
                                 <div class="formHelp texte_icone icone_information" i18n:translate="help_wims_marqueruntexte_option_split">Donner une note partielle aux réponses partiellement correctes.</div>
                                 <br class="visualClear" />
                             </div>
@@ -121,7 +121,7 @@
                     </div>
                     <hr/>
                     <metal:macro use-macro="context/macro_commune/macros/embraced_randitem"/>
-                    <p i18n:translate="help_wims_marqueruntexte_embraced_randitem">Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonne réponses possibles pour un mot marquable.</p>
+                    <p i18n:translate="help_wims_marqueruntexte_embraced_randitem">Ceci devient particulièrement utile avec ce modèle d'exercice, car c'est le seul moyen de définir plusieurs bonnes réponses possibles pour un mot marquable.</p>
                     Par exemple :
                     <code class="indicateur" i18n:translate="help_wims_marqueruntexte_embraced_randitem_sample">Je lui ai montré ??<span class="shuffle">{cept,cette,ces}</span>,cet?? oiseau.</code>
                     <p i18n:translate="help_wims_marqueruntexte_embraced_randitem_sample_2">Si c'est un des mots <span class="sample">"cept", "cette" ou "ces"</span> qui est tiré au hasard, ce sera une réponse à marquer (ici, une faute d'orthographe), et si le dernier mot (<span class="sample">"cet"</span>) est tiré au hasard, il ne sera pas à marquer.</p>

@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
@@ -50,7 +49,7 @@
             <input type="radio" name="course_public_access" id="acces_etudiants" value="Aux étudiants"
                    tal:attributes="checked not:is_public" />
             <label for="acces_etudiants" class="warning"
-                   i18n:translate="">Désactiver</label>
+                   i18n:translate="label_deactivate">Désactiver</label>
 
         </div>
 

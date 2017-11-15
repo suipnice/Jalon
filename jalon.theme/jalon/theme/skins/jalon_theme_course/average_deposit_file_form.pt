@@ -1,22 +1,21 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="is_finish_evaluation context/isFinishEvaluation">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Calculer les moyennes</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel warning radius"
          tal:condition="not:is_finish_evaluation">
-        <strong>Attention :</strong> les moyennes ne peuvent être calculées qu'une fois la date limite d'évaluation dépassée.
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_average_can_be_calculated_after_date_reached">les moyennes ne peuvent être calculées qu'une fois la date limite d'évaluation dépassée.</tal:block>
     </div>
     <form id="js-modifDepot" method="post"
           tal:attributes="action string:${context/absolute_url}/average_deposit_file_script"
@@ -24,15 +23,15 @@
 
         <fieldset class="panel bkgrnd radius">
 
-            <legend>Calculer les moyennes des évaluations</legend>
+            <legend i18n:translate="legend_calculate_averages">Calculer les moyennes des évaluations</legend>
 
-            <p class="text-justify" i18n:translate="">
+            <p class="text-justify" i18n:translate="help_average_can_be_calculated_after_date_reached">
                 Cette opération n'est réalisable qu'une fois la "date limite d'évaluation" dépassée. Pour chaque étudiant, une moyenne sera calculée pour chaque critère et une note sur 20. Lors du calcul de la moyenne d'un critère, la meilleure note que l'étudiant(e) a obtenu sur le critère sera comparée à la moins bonne note qu'il/elle aura obtenu sur ce même critère. Si l'écart entre ces deux note est supérieur ou égal à la marge du critère, l'évaluation de cet étudiant(e) vous sera signalé "<i class="fa fa-exclamation-triangle alert"></i> à vérifier"
             </p>
 
         </fieldset>
 
-        <div class="panel radius callout">
+        <div class="panel radius callout" i18n:translate="help_click_average_to_calculate">
             Pour réaliser le calcul des moyennes, cliquez sur <strong>"Moyenne"</strong>. Ce calcul n'est possible qu'une seule fois. Il sera automatiquement refait en cas de modification du coefficient d'un critère.
         </div>
 

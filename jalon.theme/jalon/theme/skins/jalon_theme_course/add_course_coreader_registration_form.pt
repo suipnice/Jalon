@@ -2,17 +2,16 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="is_personnel python:context.isPersonnel(user);
                         course_reader_list context/getCourseReader">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Lecteur(s) enseignant(s)</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>

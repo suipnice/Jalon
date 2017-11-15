@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -14,7 +13,6 @@
                         body_class python:plone_view.bodyClass(template, view);
                         anonymous python:user.has_role('Anonymous');
                         infos_connexion context/getConnexionRequire;">
-
 
     <metal:macro use-macro="plone_view/context/@@firstpage_view/macros/connexion">
         Connexion

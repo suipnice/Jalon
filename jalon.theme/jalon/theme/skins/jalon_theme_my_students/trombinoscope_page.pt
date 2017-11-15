@@ -1,12 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="en"
-      lang="en"
+      xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="main"
@@ -37,7 +35,7 @@
         <tal:condition condition="python:context.getJalonProperty('activer_stockage_photo')">
             <h2>
                 <i class="fa fa-users"></i>
-                <tal:block i18n:translate="label_listing_etudiant">Liste des étudiants</tal:block>
+                <tal:block i18n:translate="head_students_list">Liste des étudiants</tal:block>
                 <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]"/>
                 <a class="button tiny radius"
                    data-reveal-id="reveal-upload_photo" data-reveal-ajax="true"
@@ -51,7 +49,7 @@
         <tal:condition condition="not:python:context.getJalonProperty('activer_stockage_photo')">
             <h2>
                 <i class="fa fa-users"></i>
-                <tal:block i18n:translate="label_listing_etudiant">Liste des étudiants</tal:block>
+                <tal:block i18n:translate="head_students_list">Liste des étudiants</tal:block>
                 <tal:replace replace="python:context.getInfosApogee(request['code'], request['type'])[0]"/>
             </h2>
         </tal:condition>
