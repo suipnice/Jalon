@@ -14,6 +14,8 @@ from random import shuffle
 import string
 import lxml
 
+from jalon.content import contentMessageFactory as _
+
 from logging import getLogger
 LOG = getLogger('jalonExportsWims')
 """
@@ -109,7 +111,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
             exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
 
         # Format Moodle XML
-        elif formatXML == "Moodle_XML":
+        elif formatXML == "Moodle":
             if modele == "qcmsimple":
                 exoXML = __qcmsimple_to_moodleXML(parsed_exo)
 
@@ -567,60 +569,100 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
 
 
 def __qcmsimple_to_moodleXML(parsed_exo):
-    """Modele "QCM Simple" vers moodle XML."""
+    """Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
+
+    # Ici choisir le type en fonction de l'option "checkbox"
     exoXML = ET.Element("question", attrib={"type": "multichoice"})
 
+    # Nom de question
     elementXML = ET.SubElement(exoXML, "name")
     elementXML = ET.SubElement(elementXML, "text")
-    elementXML.text = parsed_exo["titre"]
+    elementXML.text = parsed_exo["titre"].decode("utf-8")
 
+    # Texte de la question // enonce
     elementXML = ET.SubElement(exoXML, "questiontext", attrib={"format": "html"})
     elementXML = ET.SubElement(elementXML, "text")
-    chaine = "<![CDATA[%s]]>" % parsed_exo["enonce"]
-    elementXML.append(ET.fromstring(chaine))
+    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["enonce"].decode("utf-8")
 
-    """
-    <question type="multichoice">
-        <name>
-          <text>MULTIPLE CHOICE</text>
-        </name>
-        <questiontext format="html">
-          <text><![CDATA[<p>Couleur du cheval ?</p>]]></text>
-        </questiontext>
-        <generalfeedback format="html">
-          <text><![CDATA[<p>BRAVO !!</p>]]></text>
-        </generalfeedback>
-        <defaultgrade>1.0000000</defaultgrade>
-        <penalty>0.3333333</penalty>
-        <hidden>0</hidden>
-        <single>true</single>
-        <shuffleanswers>true</shuffleanswers>
-        <answernumbering>abc</answernumbering>
-        <correctfeedback format="html">
-          <text>Your answer is correct.</text>
-        </correctfeedback>
-        <partiallycorrectfeedback format="html">
-          <text>Your answer is partially correct.</text>
-        </partiallycorrectfeedback>
-        <incorrectfeedback format="html">
-          <text>Your answer is incorrect.</text>
-        </incorrectfeedback>
-        <shownumcorrect/>
-        <answer fraction="0" format="html">
-          <text><![CDATA[<p>Bleu</p>]]></text>
-          <feedback format="html">
-            <text></text>
-          </feedback>
-        </answer>
-        <answer fraction="100" format="html">
-          <text><![CDATA[<p>Blanc</p>]]></text>
-          <feedback format="html">
-            <text></text>
-          </feedback>
-        </answer>
-    </question>
+    # Note par défaut
+    elementXML = ET.SubElement(exoXML, "defaultgrade")
+    elementXML.text = "10.000000"
 
-    """
+    # Feedback général // feedback_general
+    elementXML = ET.SubElement(exoXML, "generalfeedback", attrib={"format": "html"})
+    elementXML = ET.SubElement(elementXML, "text")
+    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["feedback_general"].decode("utf-8")
+
+    # Feedback pour toute réponse correcte  // feedback_bon
+    elementXML = ET.SubElement(exoXML, "correctfeedback", attrib={"format": "html"})
+    elementXML = ET.SubElement(elementXML, "text")
+    #elementXML.text = "<![CDATA[<p>%s</p>%s]]>" % (_(u"Votre réponse est correcte."), parsed_exo["feedback_bon"].decode("utf-8"))
+
+    # Feedback pour toute réponse partiellement correcte
+    elementXML = ET.SubElement(exoXML, "partiallycorrectfeedback", attrib={"format": "html"})
+    elementXML = ET.SubElement(elementXML, "text")
+    #elementXML.text = "<![CDATA[<p>%s</p>]]>" % _(u"Votre réponse est partiellement correcte.")
+
+    # Feedback pour toutes réponses correctes  // feedback_mauvais
+    elementXML = ET.SubElement(exoXML, "incorrectfeedback", attrib={"format": "html"})
+    elementXML = ET.SubElement(elementXML, "text")
+    #elementXML.text = "<![CDATA[<p>%s</p>%s]]>" % (_(u"Votre réponse est incorrecte."), parsed_exo["feedback_mauvais"].decode("utf-8"))
+
+    # Une seule ou plusieurs réponses
+    elementXML = ET.SubElement(exoXML, "single")
+    if parsed_exo["options_checkbox"] == 1:
+        elementXML.text = "false"
+    else:
+        elementXML.text = "true"
+
+    # Mélanger les réponses possibles
+    elementXML = ET.SubElement(exoXML, "shuffleanswers")
+    elementXML.text = "true"
+
+    # Numéroter les choix
+    elementXML = ET.SubElement(exoXML, "answernumbering")
+    elementXML.text = "ABCD"
+
+
+
+    # Pénalité pour tout essai incorrect (en cas de tentatives multiples)
+    # on peut décider de prendre en compte la severité (option_eqweight)
+    elementXML = ET.SubElement(exoXML, "penalty")
+    if parsed_exo["options_eqweight"] == 1:
+        elementXML.text = "0.25"
+    else:
+        elementXML.text = "0.3333333"
+
+    # hidden ??
+    elementXML = ET.SubElement(exoXML, "hidden")
+    elementXML.text = "0"
+
+    # Réponses
+    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
+    nb_bons = sum(not ligne.isspace() for ligne in liste_bons)
+
+    for ligne in liste_bons:
+        rep = ligne.strip()
+        if rep != "":
+            fraction = (1/nb_bons) * 100
+            elementXML = ET.SubElement(exoXML, "answer", attrib={"fraction":fraction, "format":"html"})
+            elementXML.text = "<![CDATA[%s]]>" % rep
+
+    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
+    for ligne in liste_mauvais:
+        rep = ligne.strip()
+        if rep != "":
+            elementXML = ET.SubElement(exoXML, "answer", attrib={"fraction":0, "format":"html"})
+            elementXML.text = "<![CDATA[%s]]>" % rep
+
+    # param restants :
+    # options_split
+    # accolade
+    # credits
+    # hint
+    # help
+
+    return exoXML
 
 
 def __qcmsimple_to_FlowXML(exoXML, parsed_exo):

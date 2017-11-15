@@ -946,7 +946,7 @@ class Wims(SimpleItem):
 
             if "jalon_URL" in params:
                 mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"],
-                                                                                                                                                                                                                     params["jalon_URL"])
+                                                                                                                                                                                                                    params["jalon_URL"])
             mail_erreur["message"] = "%s <h2>Fonction appelante :</h2><p>%s</p>" % (mail_erreur["message"], fonction)
 
             if requete != "":

@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
     <metal:main fill-slot="content">
 
@@ -29,6 +28,20 @@
 
         <dl id="js-accordion_export-WIMS" class="accordion"
             data-accordion="export-WIMS">
+            <dd class="accordion-navigation" tal:condition="python:'Moodle_XML' in listeExports">
+                <a href="#Moodle">Moodle (XML) <span class="label" i18n:translate="">Utilisable dans le LMS Moodle</span></a>
+                <div id="Moodle" class="content">
+                    <ul>
+                        <li>
+                            <input type="radio" id="Moodle_default" value="3.3" name="version"/>
+                            <label for="Moodle_default">
+                                version 3.3.x
+                                <span class="label secondary" i18n:translate="">Utilisable sur un serveur Moodle 3.3</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </dd>
             <dd class="accordion-navigation" tal:condition="python:'QTI' in listeExports">
                 <a href="#QTI">QTI <span class="label" i18n:translate="">Utilisable dans divers LMS et outils tiers</span></a>
                 <div id="QTI" class="content">
