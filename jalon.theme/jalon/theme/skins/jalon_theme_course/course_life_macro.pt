@@ -220,6 +220,12 @@
                    tal:condition="my_view/is_personnel">
                     <i class="fa fa-cog fa-lg"></i>
                 </a>
+                <a data-reveal-id="reveal-main-large" data-reveal-ajax="true"
+                   class="button small right"
+                   tal:attributes="href string:${context/absolute_url}/forum_form?macro=macro_forum&amp;formulaire=ajout-forum"
+                   tal:condition="python:test(not my_view['is_personnel'] and context.getAddForumPermission())">
+                    <i class="fa fa-plus-circle fa-fw"></i><tal:block i18n:translate="">Créer un forum</tal:block>
+                </a>
                 <i class="fa fa-comments"></i><tal:block i18n:translate="">Forums</tal:block>
             </h3>
             <tal:condition condition="my_view/is_personnel">

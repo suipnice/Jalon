@@ -264,6 +264,7 @@ class JalonCours(ATFolder):
                                   "Video":                   "Video",
                                   "VOD":                     "VOD",
                                   "Sonorisation":            "Sonorisation",
+                                  "Presentationssonorisees": "Sonorisation",
                                   "Webconference":           "Webconference",
                                   "TermeGlossaire":          "Glossaire"}
 
