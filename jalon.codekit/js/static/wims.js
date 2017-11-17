@@ -169,6 +169,113 @@ function setWimsGroupCreator( ) {
 }
 
 
+/***************************************************************************************************
+
+        Export d'une selection d'exercices
+
+*/
+
+function setWimsExport( ) {
+
+    $( document ).on( 'open.fndtn.reveal', '#export_wims_sel', function ( ) {
+
+        Foundation.utils.S( '#groupPanelMessage' ).remove( );
+        Foundation.utils.S( '#noGroupPanelMessage' ).remove( );
+
+        var $groupForm = Foundation.utils.S( '#js-wimsExporter' );
+        var $input;
+
+        var groupMessage = "";
+        var noGroupMessage = "";
+        var nGroup = 0;
+        var nNoGroup = 0;
+
+        // Creation des elements selectionnes
+        Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
+
+            if ( !$( this ).data( 'no_export' ) ) {
+
+                $input = $( "<input>", {
+                    'type': "hidden",
+                    'value': $( this ).val( ),
+                } ).attr( 'name', "paths:list" );
+
+                $groupForm.append( $input );
+
+                groupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
+                nGroup++;
+
+            } else {
+
+                noGroupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
+                nNoGroup++;
+
+            }
+
+        } );
+
+        // Messages d'information
+        if ( nGroup ) {
+
+            $groupForm.find( '.field' ).show( );
+            //$groupForm.find( '[type="submit"]' ).removeAttr( 'disabled' ).show( );
+            $groupForm.find( '[type="submit"]' ).prop( 'disabled', false ).show( );
+
+            if ( nNoGroup ) {
+                if ( nNoGroup > 1 ) {
+                    noGroupMessage = $groupForm.data( 'p_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
+                } else {
+                    noGroupMessage = $groupForm.data( 's_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
+                }
+                $groupForm.prepend(
+                    $( "<div>", {
+                        'id': "noGroupPanelMessage",
+                        'class': "panel warning radius",
+                        'html': noGroupMessage
+                    } )
+                );
+            }
+
+            if ( nGroup > 1 ) {
+                groupMessage = $groupForm.data( 'p_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
+            } else {
+                groupMessage = $groupForm.data( 's_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
+            }
+
+            $groupForm.prepend(
+                $( "<div>", {
+                    'id': "groupPanelMessage",
+                    'class': "panel callout radius",
+                    'html': groupMessage
+                } )
+            );
+
+        } else {
+
+            $groupForm.find( '.field' ).hide( );
+            $groupForm.find( '[type="submit"]' ).prop( 'disabled', true ).hide( );
+
+            noGroupMessage = $groupForm.data( 'all_no_msg' );
+
+            if ( nNoGroup > 1 ) {
+                noGroupMessage += " " + $groupForm.data( 'p_all_no_msg' );
+            } else {
+                noGroupMessage += " " + $groupForm.data( 's_all_no_msg' );
+            }
+
+            $groupForm.prepend(
+                $( "<div>", {
+                    'id': "groupPanelMessage",
+                    'class': "panel warning radius",
+                    'html': noGroupMessage
+                } )
+            );
+        }
+
+    } );
+
+}
+
 
 /***************************************************************************************************
 

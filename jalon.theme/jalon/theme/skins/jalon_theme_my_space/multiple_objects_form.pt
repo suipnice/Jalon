@@ -209,6 +209,53 @@
         </div>
     </metal:macro>
 
+    <!--
+            Exporter une selection d'exercices Wims
+            (TODO : il faudrait reprendre une partie de export_wims_exercice_form)
+    -->
+    <metal:macro define-macro="export_wims_exercices">
+
+        <!-- L'attribut data-options permet d'éviter un bug à la fermeture du popup dans certaines conditions non vraiment définies… -->
+        <div id="export_wims_sel" class="reveal-modal medium"
+             data-reveal="data-reveal" data-options="close_on_background_click: true;">
+
+            <h2>
+                <tal:block i18n:translate="">Exporter les exercices selectionnés</tal:block>
+                <a class="close-reveal-modal"></a>
+            </h2>
+
+            <div i18n:translate="">L'export d'exercices multiples est une fonctionalité expérimentale. Pour le moment seul le format "Moodle XML" est disponible, pour certains modèles d'exercices uniquement.</div>
+            <div i18n:translate="">Vous trouverez plus de possibilités via l'export d'un exercice individuel.</div>
+
+            <form id="js-wimsExporter" method="POST"
+                  tal:attributes="action string:${context/absolute_url};
+                                  data-success_msg string:L'export d'exercices Wims a été généré.;
+                                  data-all_no_msg string:Création d'un export impossible :;
+                                  data-s_all_no_msg string:le modèle de l'exercice sélectionné n'est pas exportable pour le moment.;
+                                  data-p_all_no_msg string:les modèles des exercices sélectionnés ne sont pas exportables pour le moment.;
+                                  data-s_yes_msg string:L'exercice suivant fera partie de l'export :;
+                                  data-p_yes_msg string:Les exercices suivants feront partie de l'export :;
+                                  data-s_no_msg string:L'exercice suivant ne peut pas (encore) être exporté :;
+                                  data-p_no_msg string:Les exercices suivants ne peuvent pas (encore) être exportés :"
+                  i18n:attributes="data-success_msg; data-all_no_msg; data-s_all_no_msg; data-p_all_no_msg; data-s_yes_msg; data-s_no_msg; data-p_yes_msg; data-p_no_msg">
+
+                <input type="hidden" name="authMember" tal:attributes="value user/getId" />
+                <input type="hidden" name="form.submitted" value="1" />
+
+                <input type="hidden" name="export_wims_exercices_script:method" />
+
+                <div class="formControls">
+                    <button type="submit" class="button small create radius"
+                            name="export_wims_exercices_script:method">
+                        <i class="fa fa-download"></i>
+                        <tal:block i18n:translate="">Télécharger</tal:block>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </metal:macro>
+
 </metal:main>
 
 </body>

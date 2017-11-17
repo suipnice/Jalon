@@ -6,7 +6,6 @@
 ##parameters=
 ##title=
 ##
-#import OEF_to_OLX
 
 u"""  Script (Python) "export_wims_exercice_script".
 
