@@ -2,6 +2,7 @@
 u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS dans différents formats."""
 
 import xml.etree.ElementTree as ET
+import xml.dom.minidom as minidom
 # import HTMLParser
 
 import jalon_utils
@@ -112,8 +113,15 @@ def getExoXML(context, formatXML="OLX", version="latest"):
 
         # Format Moodle XML
         elif formatXML == "Moodle":
+
+            # Ici on utilise minidom plutot qu'ElementTree : bien qu'il necessite
+            #  150% de code en plus, il permet l'integration de CDATA
+            newdoc = minidom.Document()
+            exoXML = newdoc.createElement("quiz")
+            newdoc.appendChild(exoXML)
+
             if modele == "qcmsimple":
-                exoXML = __qcmsimple_to_moodleXML(parsed_exo)
+                exoXML = __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo)
 
         # Format QTI
         elif formatXML == "QTI":
@@ -204,7 +212,13 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         else:
             exoXML = ET.Element("error")
             exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
-        return ET.tostring(exoXML, encoding="utf-8")
+
+        if formatXML != "Moodle":
+            # librairie elementTree
+            return ET.tostring(exoXML, encoding="utf-8")
+        else:
+            # librairie minidom
+            return exoXML.toxml()
 
     else:
         return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
@@ -568,101 +582,150 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     return exoXML
 
 
-def __qcmsimple_to_moodleXML(parsed_exo):
+def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo):
     """Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
+    encoding = "utf-8"
 
-    # Ici choisir le type en fonction de l'option "checkbox"
-    exoXML = ET.Element("question", attrib={"type": "multichoice"})
+    racine = newdoc.createElement("question")
+    # Ici, choisir le type en fonction de l'option "checkbox"
+    racine.setAttribute("type", "multichoice")
+    exoXML.appendChild(racine)
 
     # Nom de question
-    elementXML = ET.SubElement(exoXML, "name")
-    elementXML = ET.SubElement(elementXML, "text")
-    elementXML.text = parsed_exo["titre"].decode("utf-8")
+    branche = newdoc.createElement("name")
+    racine.appendChild(branche)
+    elementXML = newdoc.createElement("text")
+    branche.appendChild(elementXML)
+    elementXML.appendChild(newdoc.createTextNode(parsed_exo["titre"]))
 
     # Texte de la question // enonce
-    elementXML = ET.SubElement(exoXML, "questiontext", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["enonce"].decode("utf-8")
+    branche = newdoc.createElement("questiontext")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    elementXML = newdoc.createElement("text")
+    branche.appendChild(elementXML)
+    if parsed_exo["credits"]:
+        _cdata = newdoc.createCDATASection("%s<p style='text-align: right;''><em>%s</em></p>" % (parsed_exo["enonce"].decode(encoding), parsed_exo["credits"].decode(encoding)))
+    else:
+        _cdata = newdoc.createCDATASection(parsed_exo["enonce"].decode(encoding))
+    elementXML.appendChild(_cdata)
 
     # Note par défaut
-    elementXML = ET.SubElement(exoXML, "defaultgrade")
-    elementXML.text = "10.000000"
+    branche = newdoc.createElement("defaultgrade")
+    branche.appendChild(newdoc.createTextNode("10.000000"))
 
     # Feedback général // feedback_general
-    elementXML = ET.SubElement(exoXML, "generalfeedback", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["feedback_general"].decode("utf-8")
+    if parsed_exo["feedback_general"]:
+        branche = newdoc.createElement("generalfeedback")
+        branche.setAttribute("format", "html")
+        racine.appendChild(branche)
+        elementXML = newdoc.createElement("text")
+        branche.appendChild(elementXML)
+        _cdata = newdoc.createCDATASection(parsed_exo["feedback_general"].decode(encoding))
+        elementXML.appendChild(_cdata)
 
     # Feedback pour toute réponse correcte  // feedback_bon
-    elementXML = ET.SubElement(exoXML, "correctfeedback", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    #elementXML.text = "<![CDATA[<p>%s</p>%s]]>" % (_(u"Votre réponse est correcte."), parsed_exo["feedback_bon"].decode("utf-8"))
+    branche = newdoc.createElement("correctfeedback")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    elementXML = newdoc.createElement("text")
+    branche.appendChild(elementXML)
+    _cdata = newdoc.createCDATASection("<p>%s</p>%s" % (_(u"Votre réponse est correcte."), parsed_exo["feedback_bon"].decode(encoding)))
+    elementXML.appendChild(_cdata)
 
     # Feedback pour toute réponse partiellement correcte
-    elementXML = ET.SubElement(exoXML, "partiallycorrectfeedback", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    #elementXML.text = "<![CDATA[<p>%s</p>]]>" % _(u"Votre réponse est partiellement correcte.")
+    branche = newdoc.createElement("partiallycorrectfeedback")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    elementXML = newdoc.createElement("text")
+    branche.appendChild(elementXML)
+    _cdata = newdoc.createCDATASection("<p>%s</p>" % _(u"Votre réponse est partiellement correcte."))
+    elementXML.appendChild(_cdata)
 
-    # Feedback pour toutes réponses correctes  // feedback_mauvais
-    elementXML = ET.SubElement(exoXML, "incorrectfeedback", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    #elementXML.text = "<![CDATA[<p>%s</p>%s]]>" % (_(u"Votre réponse est incorrecte."), parsed_exo["feedback_mauvais"].decode("utf-8"))
+    # Feedback pour toute réponse incorrecte  // feedback_mauvais
+    branche = newdoc.createElement("incorrectfeedback")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    elementXML = newdoc.createElement("text")
+    branche.appendChild(elementXML)
+    _cdata = newdoc.createCDATASection("<p>%s</p>%s" % (_(u"Votre réponse est incorrecte."), parsed_exo["feedback_mauvais"].decode("utf-8")))
+    elementXML.appendChild(_cdata)
 
     # Une seule ou plusieurs réponses
-    elementXML = ET.SubElement(exoXML, "single")
+    branche = newdoc.createElement("single")
+    racine.appendChild(branche)
     if parsed_exo["options_checkbox"] == 1:
-        elementXML.text = "false"
+        branche.appendChild(newdoc.createTextNode("false"))
     else:
-        elementXML.text = "true"
+        branche.appendChild(newdoc.createTextNode("true"))
 
     # Mélanger les réponses possibles
-    elementXML = ET.SubElement(exoXML, "shuffleanswers")
-    elementXML.text = "true"
+    branche = newdoc.createElement("shuffleanswers")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode("true"))
 
     # Numéroter les choix
-    elementXML = ET.SubElement(exoXML, "answernumbering")
-    elementXML.text = "ABCD"
-
-
+    branche = newdoc.createElement("answernumbering")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode("ABCD"))
 
     # Pénalité pour tout essai incorrect (en cas de tentatives multiples)
     # on peut décider de prendre en compte la severité (option_eqweight)
-    elementXML = ET.SubElement(exoXML, "penalty")
+    branche = newdoc.createElement("penalty")
+    racine.appendChild(branche)
     if parsed_exo["options_eqweight"] == 1:
-        elementXML.text = "0.25"
+        branche.appendChild(newdoc.createTextNode("0.25"))
     else:
-        elementXML.text = "0.3333333"
+        branche.appendChild(newdoc.createTextNode("0.3333333"))
 
     # hidden ??
-    elementXML = ET.SubElement(exoXML, "hidden")
-    elementXML.text = "0"
+    branche = newdoc.createElement("hidden")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode("0"))
 
     # Réponses
-    liste_bons = parsed_exo["bonnesrep"].decode("utf-8").split("\n")
-    nb_bons = sum(not ligne.isspace() for ligne in liste_bons)
+    liste_bons = parsed_exo["bonnesrep"].decode(encoding).split("\n")
+    nb_bons = sum(len(ligne.strip()) > 0 for ligne in liste_bons)
 
     for ligne in liste_bons:
         rep = ligne.strip()
         if rep != "":
-            fraction = (1/nb_bons) * 100
-            elementXML = ET.SubElement(exoXML, "answer", attrib={"fraction":fraction, "format":"html"})
-            elementXML.text = "<![CDATA[%s]]>" % rep
+            fraction = 100.0 / nb_bons
+            branche = newdoc.createElement("answer")
+            branche.setAttribute("fraction", str(fraction))
+            branche.setAttribute("format", "html")
+            racine.appendChild(branche)
+            elementXML = newdoc.createElement("text")
+            branche.appendChild(elementXML)
+            elementXML.appendChild(newdoc.createCDATASection(rep))
 
-    liste_mauvais = parsed_exo["mauvaisesrep"].decode("utf-8").split("\n")
+    liste_mauvais = parsed_exo["mauvaisesrep"].decode(encoding).split("\n")
     for ligne in liste_mauvais:
         rep = ligne.strip()
         if rep != "":
-            elementXML = ET.SubElement(exoXML, "answer", attrib={"fraction":0, "format":"html"})
-            elementXML.text = "<![CDATA[%s]]>" % rep
+            branche = newdoc.createElement("answer")
+            branche.setAttribute("fraction", "0")
+            branche.setAttribute("format", "html")
+            racine.appendChild(branche)
+            elementXML = newdoc.createElement("text")
+            branche.appendChild(elementXML)
+            elementXML.appendChild(newdoc.createCDATASection(rep))
+
+    branche = newdoc.createElement("hint")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createCDATASection(parsed_exo["hint"]))
+
+    branche = newdoc.createElement("hint")
+    branche.setAttribute("format", "html")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createCDATASection(parsed_exo["help"]))
 
     # param restants :
-    # options_split
-    # accolade
-    # credits
-    # hint
-    # help
+    #  * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction
+    #  * accolade aléatoires : non pris en charge par Moodle
 
-    return exoXML
+    return newdoc
 
 
 def __qcmsimple_to_FlowXML(exoXML, parsed_exo):

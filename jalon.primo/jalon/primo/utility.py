@@ -130,7 +130,7 @@ class Primo(SimpleItem):
             return xml.findall(xpath)
         return None
 
-    #plus d'info concernant un element
+    # Plus d'info concernant un element
     def searchBUCatalog(self, termeRecherche):
         params = {"institution": self.getGenerique("etablissement"),
                     "onCampus": "false",
@@ -142,7 +142,7 @@ class Primo(SimpleItem):
                     }
         return self.requete("search/brief", params)
 
-    #Ajoute un nouveau tag à la ressource
+    # Ajoute un nouveau tag à la ressource
     def tagBU(self, ressource, tag, action):
         url_connexion = self.url_connexion
         detailRessource = ressource.split("-")
@@ -152,7 +152,7 @@ class Primo(SimpleItem):
         #return rep
         return url
 
-    #recupere les tags sur la ressource
+    # Recupere les tags sur la ressource
     def recupTagBU(self, ressource):
         url_connexion = self.url_connexion
         detailRessource = ressource.split("-")
@@ -165,13 +165,13 @@ class Primo(SimpleItem):
             retour.append(node.firstChild.data)
         return retour
 
-    #renvoi sur le site de la BU
+    # Renvoi sur le site de la BU
     def BUResult(self, termeRecherche):
         termeRecherche = self.supprimerAccent(termeRecherche)
         url_recherche = "".join([self.url_catalogue, "/primo_library/libweb/action/search.do?dscnt=0&vl%2814793452UI1%29=all_items&frbg=&scp.scps=&tab=default_tab&srt=rank&ct=search&mode=Basic&dum=true&indx=1&vl%289521613UI0%29=any&vl%28freeText0%29=", termeRecherche, "&fn=search&vid=", self.getGenerique("etablissement")])
         return url_recherche
 
-    #Suggestions d’acquisitions
+    # Suggestions d’acquisitions
     def BUacquisition(self):
         url_acquisition = self.url_acquisition
         return url_acquisition
