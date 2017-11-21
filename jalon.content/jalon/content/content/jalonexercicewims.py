@@ -287,7 +287,7 @@ Pendant la Seconde Guerre Mondiale, l'Espagne sous ??Francisco Franco|[F.|Franci
                                  "hint"             : "",
                                  "help"             : "",
                                  },
-                             "qcmsuite":
+                            "qcmsuite":
                                 {"list_id_questions": "data1 data2",
                                  "instruction"                : "Instruction globale : Répondez à chaque question d'une première série, validez, puis répondez aux questions de la seconde série.",
                                  "alea"                       : "yes",
@@ -566,11 +566,11 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         rep_wims = self.aq_parent.wims("callJob", dico)
         return self.aq_parent.wims("verifierRetourWims", {"rep": rep_wims, "fonction": "jalonexercicewims.py/lister_modules_wims", "message": "demande une Liste de modules wims publiés ", "requete": dico})
 
-    def getExoXML(self, formatXML="OLX", version="latest"):
+    def getExoXML(self, formatXML="OLX", version="latest", xml_file=None, cat_list=[]):
         """Appelle la fonction getExoXML de jalonexportswims."""
         # LOG.info("----- getExoXML -----")
-        import jalonexportswims
-        return jalonexportswims.getExoXML(context=self, formatXML=formatXML, version=version)
+        from jalonexportswims import getExoXML
+        return getExoXML(context=self, formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
 
     def getExoZIP(self, filename_path, exo_donnees):
         """Appelle la fonction getExoXML de jalonexportswims."""

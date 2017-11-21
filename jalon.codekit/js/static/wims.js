@@ -271,6 +271,8 @@ function setWimsExport( ) {
                 } )
             );
         }
+        // prepare la fermeture du popup au telechargement.
+        closeDownloadModal('js-wimsExporter');
 
     } );
 

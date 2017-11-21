@@ -15,8 +15,6 @@ form = context.REQUEST.form
 
 
 user_id = context.supprimerCaractereSpeciaux(form["authMember"])
-wims_exercice_folder = context.getMySubSpaceFolder(user_id, "Wims")
-
 
 # TODO : voir le code de "export_wims_exercice_script" pour l'appliquer ici
 
@@ -24,18 +22,16 @@ if "paths" in form:
     listeIdsExos = []
     for path in form["paths"]:
         if "groupe-" not in path:
-            object_id = path.split("/")[-1]
-            listeIdsExos.append(object_id)
-            obj = getattr(wims_exercice_folder, object_id)
-            # TODO : ici il faut réussir à combiner plusieurs exos dans un fichier, et non écraser le précédent !
-            file_content = obj.getExoXML("Moodle", "latest")
+            listeIdsExos.append(path.split("/")[-1])
+    file_content = context.exportExercicesWIMS(listeIdsExos, user_id, "Moodle", "latest")
     context.plone_utils.addPortalMessage(_(u"Votre export d'exercices a bien été généré."), 'success')
 else:
-    context.plone_utils.addPortalMessage(_(u"Aucun exercice selectionné"), 'failure')
+    message = _(u"Aucun exercice selectionné")
+    file_content = "<error>%s</error>" % message
+    context.plone_utils.addPortalMessage(message, 'failure')
 
 filename = "export_WIMS_%s.xml" % user_id
 context.REQUEST.RESPONSE.setHeader('content-type', "application/xml")
 context.REQUEST.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
 
-# Ici, context doit etre un jalonexercicewims
 return file_content

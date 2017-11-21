@@ -9,11 +9,11 @@
 <metal:content-core fill-slot="content"
                     tal:define="errors options/state/getErrors | nothing">
     <tal:comment replace="nothing">
-        <!-- import_wims_exercice_form.cpt : formulaire d'import d'exercice(s) WIMS depuis un fichier (Moodle) -->
+        <!-- import_wims_exercice_form.cpt : formulaire d'import d'exercice WIMS depuis un fichier (Moodle) -->
     </tal:comment>
 
     <h2>
-        <tal:block i18n:translate="">Importer un(des) exercice(s) WIMS</tal:block>
+        <tal:block i18n:translate="">Importer un·des exercice·s WIMS</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -21,13 +21,15 @@
           enctype="multipart/form-data" method="post">
 
         <div class="field">
-            <h3 i18n:translate="">Choisissez le format de votre fichier d'exercice(s) :</h3>
+            <h3 i18n:translate="">Choisissez le format de votre fichier d'exercice·s :</h3>
+
             <dl id="js-accordion_import-WIMS" class="accordion"
-                data-accordion="import-WIMS">
+                data-accordion="import-WIMS"
+                role="tablist">
 
                 <dd class="accordion-navigation">
-                    <a href="#WIMS"><tal:block i18n:translate="">Format WIMS</tal:block></a>
-                    <div id="WIMS" class="content">
+                    <a href="#import_WIMS" role="tab" id="import_WIMS_heading"><tal:block i18n:translate="">Format WIMS</tal:block></a>
+                    <div id="import_WIMS" class="content" role="tabpanel" aria-labelledby="import_WIMS_heading">
                         <ul>
                             <li>
                                 <input type="radio" id="OEF" value="oef" name="type" disabled="disabled" />
@@ -40,8 +42,8 @@
                 </dd>
 
                 <dd class="accordion-navigation">
-                <a href="#Moodle"><tal:block i18n:translate="">Format Moodle</tal:block> <span class="label" i18n:translate="">Un fichier généré depuis un quiz Moodle</span></a>
-                    <div id="Moodle" class="content active">
+                <a href="#import_Moodle" role="tab" id="import_Moodle_heading"><tal:block i18n:translate="">Format Moodle</tal:block> <span class="label" i18n:translate="">Un fichier généré depuis un quiz Moodle</span></a>
+                    <div id="import_Moodle" class="content active" role="tabpanel" aria-labelledby="import_Moodle_heading">
                         <ul>
                             <li>
                                 <input type="radio" id="MoodleXML" value="MoodleXML" name="type" checked="checked"/>
@@ -97,6 +99,9 @@
 
     </form>
     <div class="panel" i18n:translate="msg_import_WIMS_in_beta">L'import d'exercices WIMS est actuellement en phase "Bêta". Assurez-vous de vérifier qu'il n'y a pas eu de souci lors de l'import, et n'hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
+
+    <script charset="UTF-8"
+        tal:content="structure string:$$(document).foundation('accordion', 'reflow')"></script>
 
 </metal:content-core>
 

@@ -59,12 +59,13 @@ def getExoZIP(filename_path, exo_donnees):
     return {"length": str(os.stat(path)[6]), "data": data}
 
 
-def getExoXML(context, formatXML="OLX", version="latest"):
+def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_list=[]):
     """Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+    cat_list contient une liste de mot-clés à ajouter aux métadonnées de l'exo
 
     # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
     # Plus d'infos sur le format IMS QTI : https://webapps.ph.ed.ac.uk/qtiworks
-    # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/30/en/Moodle_XML_format
+    # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/34/en/Moodle_XML_format
     # Plus d'infos sur le format "Flow Lesson Builder 2" (.fll) : impossible de trouver des infos sur ce format... :/ - http://www.turningtechnologies.eu/downloads/
 
     """
@@ -115,14 +116,20 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         elif formatXML == "Moodle":
 
             # Ici on utilise minidom plutot qu'ElementTree : bien qu'il necessite
-            #  150% de code en plus, il permet l'integration de CDATA
-            newdoc = minidom.Document()
-            exoXML = newdoc.createElement("quiz")
-            newdoc.appendChild(exoXML)
+            #  50% de code en plus, il permet l'integration de CDATA
+            if not xml_file:
+                newdoc = minidom.Document()
+                racineXML = newdoc.createElement("quiz")
+                newdoc.appendChild(racineXML)
+            else:
+                racineXML = xml_file.childNodes[0]
+                newdoc = xml_file
 
             if modele == "qcmsimple":
-                exoXML = __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo)
+                exoXML = __qcmsimple_to_moodleXML(newdoc, racineXML, parsed_exo)
 
+            if not xml_file:
+                exoXML = exoXML.toxml()
         # Format QTI
         elif formatXML == "QTI":
             if version == "1.1":
@@ -218,7 +225,7 @@ def getExoXML(context, formatXML="OLX", version="latest"):
             return ET.tostring(exoXML, encoding="utf-8")
         else:
             # librairie minidom
-            return exoXML.toxml()
+            return exoXML
 
     else:
         return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
@@ -582,7 +589,7 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     return exoXML
 
 
-def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo):
+def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, cat_list=[]):
     """Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
     encoding = "utf-8"
 
@@ -711,15 +718,17 @@ def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo):
             branche.appendChild(elementXML)
             elementXML.appendChild(newdoc.createCDATASection(rep))
 
-    branche = newdoc.createElement("hint")
-    branche.setAttribute("format", "html")
-    racine.appendChild(branche)
-    branche.appendChild(newdoc.createCDATASection(parsed_exo["hint"]))
+    if parsed_exo["hint"] != "":
+        branche = newdoc.createElement("hint")
+        branche.setAttribute("format", "html")
+        racine.appendChild(branche)
+        branche.appendChild(newdoc.createCDATASection(parsed_exo["hint"]))
 
-    branche = newdoc.createElement("hint")
-    branche.setAttribute("format", "html")
-    racine.appendChild(branche)
-    branche.appendChild(newdoc.createCDATASection(parsed_exo["help"]))
+    if parsed_exo["help"] != "":
+        branche = newdoc.createElement("hint")
+        branche.setAttribute("format", "html")
+        racine.appendChild(branche)
+        branche.appendChild(newdoc.createCDATASection(parsed_exo["help"]))
 
     # param restants :
     #  * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction

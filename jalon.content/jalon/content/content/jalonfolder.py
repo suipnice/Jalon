@@ -229,7 +229,7 @@ class JalonFolder(ATFolder):
     def getDataCourseWimsActivity(self, user_id, course_id):
         # LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        #course_object = getattr(course_user_folder, course_id)
+        # course_object = getattr(course_user_folder, course_id)
         course = self.getCourseObject(course_user_folder, course_id)
         return course.getDataCourseWimsActivity(user_id, course_id)
 
@@ -264,21 +264,21 @@ class JalonFolder(ATFolder):
                         retour = bdd.getInfosEtape(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour ce diplôme." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     if type in ["ue", "uel"]:
                         retour = bdd.getInfosELP2(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour cette UE / UEL." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     if type == "groupe":
                         retour = bdd.getInfosGPE(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour ce groupe." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     nbSeances = 0
@@ -315,12 +315,12 @@ class JalonFolder(ATFolder):
         public_cons = "Anonymous"
         if user.has_role("Personnel"):
             public_cons = "Personnel"
-            #username = user.getId()
-            #if self.isAuteur(username):
+            # username = user.getId()
+            # if self.isAuteur(username):
             #    public_cons = "Auteur"
-            #if username in self.coAuteurs:
+            # if username in self.coAuteurs:
             #    public_cons = "Co-auteur"
-            #if username in self.coLecteurs:
+            # if username in self.coLecteurs:
             #    public_cons = "Lecteur"
         if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
             public_cons = "Etudiant"
@@ -354,7 +354,7 @@ class JalonFolder(ATFolder):
             return list(retour)
 
     # getInfosMembre recupere les infos sur les personnes.
-    #def getInfosMembre(self, username):
+    # def getInfosMembre(self, username):
     #    # self.plone_log("getInfosMembre")
     #    return jalon_utils.getInfosMembre(username)
 
@@ -486,7 +486,7 @@ class JalonFolder(ATFolder):
         return defaut
 
     def ajouterTag(self, tag):
-        if not tag in self.Subject():
+        if tag not in self.Subject():
             tags = list(self.Subject())
             tags.append(tag)
             self.setSubject(tuple(tags))
@@ -496,7 +496,7 @@ class JalonFolder(ATFolder):
     #  NEW TAG                          #
     # --------------------------------- #
     def getSubjectsDict(self, key=None):
-        """Fournit le dictionnaire des étiquettes du dossier."""
+        u"""Fournit le dictionnaire des étiquettes du dossier."""
         # LOG.info.info("----- getSubjectsDict -----")
         # LOG.info("***** item_id : %s" % key)
         # LOG.info.info("self._subjects_dict : %s" % self._subjects_dict)
@@ -505,7 +505,7 @@ class JalonFolder(ATFolder):
         return copy.deepcopy(self._subjects_dict)
 
     def setSubjectsDict(self, subjects_dict):
-        """Définit le dictionnaire des étiquettes du dossier."""
+        u"""Définit le dictionnaire des étiquettes du dossier."""
         # LOG.info("----- setSubjectsDict -----")
         if type(self._subjects_dict).__name__ != "PersistentMapping":
             self._subjects_dict = PersistentDict(subjects_dict)
@@ -513,7 +513,7 @@ class JalonFolder(ATFolder):
             self._subjects_dict = subjects_dict
 
     def getDisplaySubjects(self):
-        """Affichage des étiquettes sur le formulaire étiquettage."""
+        u"""Affichage des étiquettes sur le formulaire étiquetage."""
         # LOG.info("----- getDisplaySubjects -----")
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
@@ -1102,6 +1102,33 @@ class JalonFolder(ATFolder):
         else:
             message = _(u"Ce format d'import d'exercices n'est pas permis.")
             self.plone_utils.addPortalMessage(message, type='warning')
+
+    def exportExercicesWIMS(self, listeIdsExos, member_auth, formatXML="OLX", version="latest"):
+        u"""Genere un export XML à partir d'une selection de plusieurs exercices."""
+        # LOG.info("----- exportExercicesWIMS -----")
+        import xml.dom.minidom as minidom
+
+        if self.getId() != "mes_exercices_wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        portal = self.portal_url.getPortalObject()
+        folder = getattr(portal.Members, member_auth).Wims
+
+        xml_file = minidom.Document()
+        xml_file.appendChild(xml_file.createElement("quiz"))
+        cat_list = []
+
+        # liste des etiquettes du dossier : getDisplaySubjects
+
+        for object_id in listeIdsExos:
+            obj = getattr(folder, object_id)
+            # etiquettes de l'objet : context/Subject
+            cat_list = obj.Subject()
+            obj.getExoXML(formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
+
+        return xml_file.toxml()
 
     def transfererExosWIMS(self, user_source):
         u"""Transfert des exercices WIMS d'un prof "user_source" vers le jalonfolder courant.

@@ -12,6 +12,7 @@ u"""  Script (Python) "export_wims_exercice_script".
 Fournit un fichier telechargeable de l'exo WIMS courant, selon le format demandé (QTI, EDX, OEF...)
 
 """
+# Ici, context doit etre un jalonexercicewims
 # context = context
 request = context.REQUEST
 modele  = context.getModele()
@@ -38,7 +39,6 @@ if file_format == "QTI":
     request.RESPONSE.setHeader('content-type', "application/zip")
     request.RESPONSE.setHeader('content-length', zipfile["length"])
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    # Ici, context doit etre un jalonexercicewims
     return zipfile["data"]
 
 elif file_format == "OEF":
@@ -51,16 +51,11 @@ elif file_format == "OEF":
     else:
         return exo_file["error_message"]
 
-elif file_format == "FLL":
-    filename = "%s.fll" % context.getId()
-    request.RESPONSE.setHeader('content-type', "application/xml")
-    request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    # Ici, context doit etre un jalonexercicewims
-    return context.getExoXML(file_format, version)
-
 else:
-    filename = "%s_WIMS_%s.xml" % (modele, file_format)
+    if file_format == "FLL":
+        filename = "%s.fll" % context.getId()
+    else:
+        filename = "%s_WIMS_%s.xml" % (modele, file_format)
     request.RESPONSE.setHeader('content-type', "application/xml")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    # Ici, context doit etre un jalonexercicewims
     return context.getExoXML(file_format, version)
