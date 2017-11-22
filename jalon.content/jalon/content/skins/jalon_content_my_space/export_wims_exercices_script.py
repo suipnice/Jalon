@@ -22,7 +22,9 @@ if "paths" in form:
     listeIdsExos = []
     for path in form["paths"]:
         if "groupe-" not in path:
-            listeIdsExos.append(path.split("/")[-1])
+            id_exo = path.split("/")[-1]
+            if id_exo not in listeIdsExos:
+                listeIdsExos.append(id_exo)
     file_content = context.exportExercicesWIMS(listeIdsExos, user_id, "Moodle", "latest")
     context.plone_utils.addPortalMessage(_(u"Votre export d'exercices a bien été généré."), 'success')
 else:

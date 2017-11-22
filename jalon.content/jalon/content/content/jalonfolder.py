@@ -1120,12 +1120,20 @@ class JalonFolder(ATFolder):
         xml_file.appendChild(xml_file.createElement("quiz"))
         cat_list = []
 
-        # liste des etiquettes du dossier : getDisplaySubjects
-
+        # liste des etiquettes du dossier
+        folder_subjects = self.getDisplaySubjects()
+        # LOG.info("getDisplaySubjects= '%s'" % folder_subjects)
         for object_id in listeIdsExos:
+            # TODO : trier les exos par étiquette ?
             obj = getattr(folder, object_id)
-            # etiquettes de l'objet : context/Subject
-            cat_list = obj.Subject()
+            # id des etiquettes de l'objet
+            cat_ids = obj.Subject()
+            cat_list = []
+            if len(cat_ids) > 0:
+                for subject in folder_subjects:
+                    if subject['tag_id'] in cat_ids:
+                        cat_list.append(subject['tag_title'])
+
             obj.getExoXML(formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
 
         return xml_file.toxml()

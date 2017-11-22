@@ -267,7 +267,8 @@
                                         </label>
                                     </li>
                                 </ul>
-                                <p class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, évitez d'exporter plus de 64 exercices à la fois.</p>
+                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, évitez d'exporter plus de 20 exercices à la fois.</div>
+                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Les étiquettes de vos exercices deviendront des catégories de questions, mais attention : Moodle ne permet qu'une catégorie par question.</div>
                             </div>
                         </dd>
                     </dl>

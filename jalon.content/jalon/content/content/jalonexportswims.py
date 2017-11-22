@@ -60,7 +60,8 @@ def getExoZIP(filename_path, exo_donnees):
 
 
 def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_list=[]):
-    """Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+    u"""Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+
     cat_list contient une liste de mot-clés à ajouter aux métadonnées de l'exo
 
     # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
@@ -125,8 +126,21 @@ def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_lis
                 racineXML = xml_file.childNodes[0]
                 newdoc = xml_file
 
+            # les categories sous moodle sont des questions fictives permettant de classer
+            # attention cependant : une question ne peut appartenir qu'à une catégorie.
+            # Ici, on se sert des etiquettes Jalon à la fois comme categorie de question et "tags" sur Moodle
+            for cat in cat_list:
+                racine = newdoc.createElement("question")
+                racine.setAttribute("type", "category")
+                racineXML.appendChild(racine)
+                branche = newdoc.createElement("category")
+                racine.appendChild(branche)
+                elementXML = newdoc.createElement("text")
+                branche.appendChild(elementXML)
+                elementXML.appendChild(newdoc.createTextNode("$course$/%s" % cat.decode("utf-8")))
+
             if modele == "qcmsimple":
-                exoXML = __qcmsimple_to_moodleXML(newdoc, racineXML, parsed_exo)
+                exoXML = __qcmsimple_to_moodleXML(newdoc, racineXML, parsed_exo, cat_list)
 
             if not xml_file:
                 exoXML = exoXML.toxml()
@@ -589,14 +603,25 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     return exoXML
 
 
-def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, cat_list=[]):
-    """Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
+def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
     encoding = "utf-8"
 
     racine = newdoc.createElement("question")
     # Ici, choisir le type en fonction de l'option "checkbox"
     racine.setAttribute("type", "multichoice")
     exoXML.appendChild(racine)
+
+    # Mots-clés
+    if len(tag_list) > 0:
+        branche = newdoc.createElement("tags")
+        racine.appendChild(branche)
+        for tag in tag_list:
+            tag_xml = newdoc.createElement("tag")
+            branche.appendChild(tag_xml)
+            elementXML = newdoc.createElement("text")
+            tag_xml.appendChild(elementXML)
+            elementXML.appendChild(newdoc.createTextNode(tag.decode(encoding)))
 
     # Nom de question
     branche = newdoc.createElement("name")
