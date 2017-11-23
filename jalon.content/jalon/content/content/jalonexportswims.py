@@ -126,7 +126,7 @@ def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_lis
                 racineXML = xml_file.childNodes[0]
                 newdoc = xml_file
 
-            # les categories sous moodle sont des questions fictives permettant de classer
+            # les categories sous Moodle sont des questions fictives permettant de classer
             # attention cependant : une question ne peut appartenir qu'à une catégorie.
             # Ici, on se sert des etiquettes Jalon à la fois comme categorie de question et "tags" sur Moodle
             for cat in cat_list:

@@ -52,10 +52,22 @@ elif file_format == "OEF":
         return exo_file["error_message"]
 
 else:
+
+    # liste des etiquettes du dossier
+    folder_subjects = context.aq_parent.getDisplaySubjects()
+
+    # id des etiquettes de l'exercice
+    cat_ids = context.Subject()
+    cat_list = []
+    if len(cat_ids) > 0:
+        for subject in folder_subjects:
+            if subject['tag_id'] in cat_ids:
+                cat_list.append(subject['tag_title'])
+
     if file_format == "FLL":
         filename = "%s.fll" % context.getId()
     else:
         filename = "%s_WIMS_%s.xml" % (modele, file_format)
     request.RESPONSE.setHeader('content-type', "application/xml")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    return context.getExoXML(file_format, version)
+    return context.getExoXML(formatXML=file_format, version=version, xml_file=None, cat_list=cat_list)
