@@ -220,7 +220,7 @@
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
 
             <h2>
-                <tal:block i18n:translate="">Exporter les exercices selectionnés</tal:block>
+                <tal:block i18n:translate="">Exporter les exercices sélectionnés</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
 
@@ -263,7 +263,7 @@
                                         <input type="radio" id="MoodleXML" value="MoodleXML" name="type" checked="checked"/>
                                         <label for="MoodleXML">
                                             Moodle XML
-                                            <span class="label secondary" i18n:translate="">Pour le moment, le format "Moodle XML" est disponible pour certains modèles d'exercices uniquement.</span>
+                                            <span class="label secondary" i18n:translate="">Le format "Moodle XML" est disponible pour certains modèles d'exercices uniquement.</span>
                                         </label>
                                     </li>
                                 </ul>

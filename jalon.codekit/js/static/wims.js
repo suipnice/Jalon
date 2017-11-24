@@ -47,13 +47,18 @@ function closeDownloadModal( formID ) {
 
 /***************************************************************************************************
 
-        Creation d'un groupe d'exercices
-
+    Filtre une selection d'exercices en 2 groupes :
+        * les compatibles avec l'action suivante qui seront vraiment sélectionnés
+        * les autres, qui seront indiqués comme incompatibles à l'utilisateur.
+        l'attribut "filter" permet de savoir si l'exercice est compatible.
+    Utilisé pour la création de groupe d'exos (un groupe n'inclue pas un autre groupe ni un exo externe)
+    et pour l'export d'exos multiples (seuls certains modèles sont exportables)
 */
 
-function setWimsGroupCreator( ) {
+function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
 
-    $( document ).on( 'open.fndtn.reveal', '#group_create', function ( ) {
+    $( document ).on( 'open.fndtn.reveal', reveal_id, function ( ) {
+
         /*
         var qNum = Foundation.utils.S( '#js-update_target tbody input[type="checkbox"][name="paths:list"]:checked' ).length;
         var $qNum = Foundation.utils.S( '#qnum' );
@@ -62,217 +67,100 @@ function setWimsGroupCreator( ) {
         for ( i = 1 ; i <= qNum; i++ ) { $qNum.append( $( '<option>', { value : i, text : i } ) ); }
         */
 
-        Foundation.utils.S( '#groupPanelMessage' ).remove( );
-        Foundation.utils.S( '#noGroupPanelMessage' ).remove( );
+        Foundation.utils.S( '#includedPanelMessage' ).remove( );
+        Foundation.utils.S( '#excludedPanelMessage' ).remove( );
 
-        var $groupForm = Foundation.utils.S( '#js-wimsGroupCreator' );
+        var $selectionForm = Foundation.utils.S( "#"+selectionForm_id );
         var $input;
 
-        var groupMessage = "";
-        var noGroupMessage = "";
-        var nGroup = 0;
-        var nNoGroup = 0;
+        var includedMessage = "";
+        var excludedMessage = "";
+        var nIncluded = 0;
+        var nExcluded = 0;
 
         // Creation des elements selectionnes
         Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
 
-            if ( !$( this ).data( 'no_group' ) ) {
-
-                $input = $( "<input>", {
-                    'type': "hidden",
-                    'value': $( this ).val( ),
-                } ).attr( 'name', "paths:list" );
-                /*
-                $input = $( "<input>", {
-                    'type': "checkbox",
-                    //'name': "paths:list",
-                    'value': $( this ).val( ),
-                    'checked': true,
-                    'css': { 'display': 'none' },
-                } ).attr( 'name', "paths:list" );
-                */
-                $groupForm.append( $input );
-
-                groupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
-                nGroup++;
-
-            } else {
-
-                noGroupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
-                nNoGroup++;
-
-            }
-
-        } );
-
-        // Messages d'information
-        if ( nGroup ) {
-
-            $groupForm.find( '.field' ).show( );
-            //$groupForm.find( '[type="submit"]' ).removeAttr( 'disabled' ).show( );
-            $groupForm.find( '[type="submit"]' ).prop( 'disabled', false ).show( );
-
-            if ( nNoGroup ) {
-                if ( nNoGroup > 1 ) {
-                    noGroupMessage = $groupForm.data( 'p_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
-                } else {
-                    noGroupMessage = $groupForm.data( 's_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
-                }
-                $groupForm.prepend(
-                    $( "<div>", {
-                        'id': "noGroupPanelMessage",
-                        'class': "panel warning radius",
-                        'html': noGroupMessage
-                    } )
-                );
-            }
-
-            if ( nGroup > 1 ) {
-                groupMessage = $groupForm.data( 'p_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
-            } else {
-                groupMessage = $groupForm.data( 's_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
-            }
-
-            $groupForm.prepend(
-                $( "<div>", {
-                    'id': "groupPanelMessage",
-                    'class': "panel callout radius",
-                    'html': groupMessage
-                } )
-            );
-
-        } else {
-
-            $groupForm.find( '.field' ).hide( );
-            //$groupForm.find( '[type="submit"]' ).attr( 'disabled', "disabled" ).hide( );
-            $groupForm.find( '[type="submit"]' ).prop( 'disabled', true ).hide( );
-
-            noGroupMessage = $groupForm.data( 'all_no_msg' );
-
-            if ( nNoGroup > 1 ) {
-                noGroupMessage += " " + $groupForm.data( 'p_all_no_msg' );
-            } else {
-                noGroupMessage += " " + $groupForm.data( 's_all_no_msg' );
-            }
-
-            $groupForm.prepend(
-                $( "<div>", {
-                    'id': "groupPanelMessage",
-                    'class': "panel warning radius",
-                    'html': noGroupMessage
-                } )
-            );
-        }
-
-    } );
-
-}
-
-
-/***************************************************************************************************
-
-        Export d'une selection d'exercices
-
-*/
-
-function setWimsExport( ) {
-
-    $( document ).on( 'open.fndtn.reveal', '#export_wims_sel', function ( ) {
-
-        Foundation.utils.S( '#groupPanelMessage' ).remove( );
-        Foundation.utils.S( '#noGroupPanelMessage' ).remove( );
-
-        var $groupForm = Foundation.utils.S( '#js-wimsExporter' );
-        var $input;
-
-        var groupMessage = "";
-        var noGroupMessage = "";
-        var nGroup = 0;
-        var nNoGroup = 0;
-
-        // Creation des elements selectionnes
-        Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
-
-            if ( !$( this ).data( 'no_export' ) ) {
+            if ( !$( this ).data( filter ) ) {
 
                 $input = $( "<input>", {
                     'type': "hidden",
                     'value': $( this ).val( ),
                 } ).attr( 'name', "paths:list" );
 
-                $groupForm.append( $input );
+                $selectionForm.append( $input );
 
-                groupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
-                nGroup++;
+                includedMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
+                nIncluded++;
 
             } else {
 
-                noGroupMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
-                nNoGroup++;
+                excludedMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
+                nExcluded++;
 
             }
 
         } );
 
         // Messages d'information
-        if ( nGroup ) {
+        if ( nIncluded ) {
 
-            $groupForm.find( '.field' ).show( );
-            //$groupForm.find( '[type="submit"]' ).removeAttr( 'disabled' ).show( );
-            $groupForm.find( '[type="submit"]' ).prop( 'disabled', false ).show( );
+            $selectionForm.find( '.field' ).show( );
+            //$selectionForm.find( '[type="submit"]' ).removeAttr( 'disabled' ).show( );
+            $selectionForm.find( '[type="submit"]' ).prop( 'disabled', false ).show( );
 
-            if ( nNoGroup ) {
-                if ( nNoGroup > 1 ) {
-                    noGroupMessage = $groupForm.data( 'p_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
+            if ( nExcluded ) {
+                if ( nExcluded > 1 ) {
+                    excludedMessage = $selectionForm.data( 'p_no_msg' ) + '<ul>' + excludedMessage + '</ul>';
                 } else {
-                    noGroupMessage = $groupForm.data( 's_no_msg' ) + '<ul>' + noGroupMessage + '</ul>';
+                    excludedMessage = $selectionForm.data( 's_no_msg' ) + '<ul>' + excludedMessage + '</ul>';
                 }
-                $groupForm.prepend(
+                $selectionForm.prepend(
                     $( "<div>", {
-                        'id': "noGroupPanelMessage",
+                        'id': "excludedPanelMessage",
                         'class': "panel warning radius",
-                        'html': noGroupMessage
+                        'html': excludedMessage
                     } )
                 );
             }
 
-            if ( nGroup > 1 ) {
-                groupMessage = $groupForm.data( 'p_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
+            if ( nIncluded > 1 ) {
+                includedMessage = $selectionForm.data( 'p_yes_msg' ) + '<ul>' + includedMessage + '</ul>';
             } else {
-                groupMessage = $groupForm.data( 's_yes_msg' ) + '<ul>' + groupMessage + '</ul>';
+                includedMessage = $selectionForm.data( 's_yes_msg' ) + '<ul>' + includedMessage + '</ul>';
             }
 
-            $groupForm.prepend(
+            $selectionForm.prepend(
                 $( "<div>", {
-                    'id': "groupPanelMessage",
+                    'id': "includedPanelMessage",
                     'class': "panel callout radius",
-                    'html': groupMessage
+                    'html': includedMessage
                 } )
             );
 
         } else {
 
-            $groupForm.find( '.field' ).hide( );
-            $groupForm.find( '[type="submit"]' ).prop( 'disabled', true ).hide( );
+            $selectionForm.find( '.field' ).hide( );
+            $selectionForm.find( '[type="submit"]' ).prop( 'disabled', true ).hide( );
 
-            noGroupMessage = $groupForm.data( 'all_no_msg' );
+            excludedMessage = $selectionForm.data( 'all_no_msg' );
 
-            if ( nNoGroup > 1 ) {
-                noGroupMessage += " " + $groupForm.data( 'p_all_no_msg' );
+            if ( nExcluded > 1 ) {
+                excludedMessage += " " + $selectionForm.data( 'p_all_no_msg' );
             } else {
-                noGroupMessage += " " + $groupForm.data( 's_all_no_msg' );
+                excludedMessage += " " + $selectionForm.data( 's_all_no_msg' );
             }
 
-            $groupForm.prepend(
+            $selectionForm.prepend(
                 $( "<div>", {
-                    'id': "groupPanelMessage",
+                    'id': "includedPanelMessage",
                     'class': "panel warning radius",
-                    'html': noGroupMessage
+                    'html': excludedMessage
                 } )
             );
         }
         // prepare la fermeture du popup au telechargement.
-        closeDownloadModal('js-wimsExporter');
+        closeDownloadModal(selectionForm_id);
 
     } );
 

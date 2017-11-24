@@ -104,17 +104,17 @@
     <tbody class="list"
            tal:define="wims_exercice_model_list my_view/wims_exercice_model_list">
     <tal:entry repeat="item my_view/my_items_list">
-        <tr>
+        <tr tal:define="exo_model item/getModele">
             <td class="show-for-medium-up">
                 <div class="noSwitch" title="Action par lot : sélectionner / désélectionner"
                      i18n:attributes="title batch_select_deselect">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
                                            value string:${my_view/folder_path}/${item/getId};
-                                           data-res_name python:context.getShortText(item['Title']);
+                                           data-res_name python:'%s [%s]' % (context.getShortText(item['Title']),wims_exercice_model_list[exo_model]);
                                            data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '');
-                                           data-no_group python:context.test(item.getModele == 'externe' or item.getModele == 'groupe', '1', '');
-                                           data-no_export python:context.test(item.getModele != 'qcmsimple', '1', '')" />
+                                           data-no_group python:context.test(item.getModele in  ['externe', 'groupe'], '1', '');
+                                           data-no_export python:context.test(item.getModele not in ['qcmsimple', 'texteatrous'], '1', '')" />
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
             </td>
@@ -122,8 +122,7 @@
                 <span class="hide" tal:content="python:context.getLocaleDate(item['ModificationDate'], '%Y%m%d%H%M%S')" />
                 <span tal:content="python:context.getLocaleDate(item['ModificationDate'])" />
             </td>
-            <td class="model"
-                tal:define="exo_model item/getModele">
+            <td class="model">
                 <span class="label bkgrnd"
                       tal:define="model python:wims_exercice_model_list[exo_model]"
                       tal:content="model | string:modele inconnu"
@@ -185,7 +184,7 @@
     </metal:macro>
 
     <metal:macro use-macro="context/multiple_objects_form/macros/export_wims_exercices">
-        Formulaire d'export d'exercices Wims selectionnés
+        Formulaire d'export d'exercices Wims sélectionnés
     </metal:macro>
 
     <metal:macro use-macro="context/multiple_objects_form/macros/add_tags_objects">
@@ -204,8 +203,8 @@
                         script1 string:setActionBatch();
                         script2 string:setBatchSelect('js-update_target');
                         script3 string:setSortableList('js-list-ressource',['date','model','title'],'date','desc');
-                        script4 string:setWimsGroupCreator();
-                        script5 string:setWimsExport()">
+                        script4 string:setWimsSelectionFilter('js-wimsGroupCreator','#group_create','no_group');
+                        script5 string:setWimsSelectionFilter('js-wimsExporter','#export_wims_sel','no_export')">
         <tal:condition condition="not:is_ajax">
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script0)" />
             <tal:jsBuffer define="addJsContent python:jsBuffer.addJS(script1)" />
