@@ -583,7 +583,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # LOG.info("----- getListeExports -----")
         liste_formats = {"qcmsimple":                  ["Moodle_XML", "QTI", "OLX", "OEF", "FLL"],
                          "equation":                   ["OEF"],
-                         "texteatrous":                ["OEF"],
+                         "texteatrous":                ["Moodle_XML", "OEF"],
                          "marqueruntexte":             ["OEF"],
                          "marquerparpropriete":        ["OEF"],
                          "questiontextuelletolerante": ["OEF"],

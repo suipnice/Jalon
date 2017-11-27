@@ -645,8 +645,8 @@ class Wims(SimpleItem):
         return questions_list
 
     def importMoodleQuizXML(self, params):
-        u"""import d'exercices Moodle (quiz) dans une activité WIMS d'un cours."""
-        # See "https://docs.moodle.org/2x/fr/Format_XML_Moodle"
+        u"""Import d'exercices Moodle (quiz) dans une activité WIMS d'un cours."""
+        # See "https://docs.moodle.org/3x/fr/Format_XML_Moodle"
         # params must be : {folder, member_auth, import_file}
         import re
         LOG.info("----- importMoodleQuizXML -----")
@@ -732,12 +732,12 @@ class Wims(SimpleItem):
                 question_dict = {"title": question.find('name').find('text').text.strip()}
 
                 if question_type == "cloze":
-                    LOG.info("----- Nouvelle question de type 'cloze' (%s) -----" % question_dict["title"])
+                    # LOG.info("----- Nouvelle question de type 'cloze' (%s) -----" % question_dict["title"])
                     modele_wims = "texteatrous"
 
                     donnees = question.find('questiontext').find('text').text
 
-                    # Il faut maintenant parser les donner à la recherches de codes du style :
+                    # Il faut maintenant parser les donnees à la recherches de codes du style :
                     # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
 
                     pattern_trous = r"{(.+?)}"
