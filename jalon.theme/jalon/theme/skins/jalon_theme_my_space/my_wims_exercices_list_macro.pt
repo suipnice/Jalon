@@ -114,7 +114,7 @@
                                            data-res_name python:'%s [%s]' % (context.getShortText(item['Title']),wims_exercice_model_list[exo_model]);
                                            data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '');
                                            data-no_group python:context.test(item.getModele in  ['externe', 'groupe'], '1', '');
-                                           data-no_export python:context.test(item.getModele not in ['qcmsimple', 'texteatrous'], '1', '')" />
+                                           data-no_export python:context.test(item.getModele not in ['qcmsimple', 'texteatrous', 'texteatrousmultiples'], '1', '')" />
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
             </td>

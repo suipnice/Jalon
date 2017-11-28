@@ -461,12 +461,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             # iso-8859-1 ne permet pas d'encoder certains caracteres speciaux comme œ ou €
             # attention : cela ajoute des ";" qui peuvent nuire à certains modèle d'exos (QCM suite par exemple)
             # pour ces derniers, on pourrait convertir chaque champ compatible ?
+            # notez que le "texteatrousmultiples" ne comprend pas les html entities comme un séparateur, bien qu'utilisant le ;...
             if modele not in ["qcmsuite"]:
                 source = jalon_utils.convertUTF8ToHTMLEntities(source)
 
             # try:
             # on ne peux pas empecher la creation d'un exercice pour une erreur d'encodage. on ignore donc les caracteres non reconnus.
             source = source.decode("utf-8").encode("iso-8859-1", "ignore")
+            # source = source.decode("utf-8").encode("iso-8859-1", "xmlcharrefreplace")
             # except:
             #   print "Caractere non reconnu dans creerExercice WIMS (utility.py)"
             #  pass
@@ -592,7 +594,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                          "correspondance":             ["OEF"],
                          "classerparpropriete":        ["OEF"],
                          "vraifauxmultiples":          ["OEF"],
-                         "texteatrousmultiples":       ["OEF"],
+                         "texteatrousmultiples":       ["Moodle_XML", "OEF"],
                          "qcmsuite":                   ["QTI", "OEF"]
                          }
         if self.modele in liste_formats:

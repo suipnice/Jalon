@@ -3,7 +3,7 @@ u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS d
 
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
-# import HTMLParser
+from HTMLParser import HTMLParser
 
 import jalon_utils
 
@@ -119,34 +119,35 @@ def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_lis
             # Ici on utilise minidom plutot qu'ElementTree : bien qu'il necessite
             #  50% de code en plus, il permet l'integration de CDATA
             if not xml_file:
-                newdoc = minidom.Document()
-                racineXML = newdoc.createElement("quiz")
-                newdoc.appendChild(racineXML)
+                exoXML = minidom.Document()
+                racineXML = exoXML.createElement("quiz")
+                exoXML.appendChild(racineXML)
             else:
                 racineXML = xml_file.childNodes[0]
-                newdoc = xml_file
+                exoXML = xml_file
 
             # les categories sous Moodle sont des questions fictives permettant de classer
             # attention cependant : une question ne peut appartenir qu'à une catégorie.
             # Ici, on se sert des etiquettes Jalon à la fois comme categorie de question et "tags" sur Moodle
             for cat in cat_list:
-                racine = newdoc.createElement("question")
+                racine = exoXML.createElement("question")
                 racine.setAttribute("type", "category")
                 racineXML.appendChild(racine)
-                branche = newdoc.createElement("category")
+                branche = exoXML.createElement("category")
                 racine.appendChild(branche)
-                elementXML = newdoc.createElement("text")
+                elementXML = exoXML.createElement("text")
                 branche.appendChild(elementXML)
-                elementXML.appendChild(newdoc.createTextNode("$course$/%s" % cat.decode("utf-8")))
+                elementXML.appendChild(exoXML.createTextNode("$course$/%s" % cat.decode("utf-8")))
 
             if modele == "qcmsimple":
-                __qcmsimple_to_moodleXML(newdoc, racineXML, parsed_exo, cat_list)
+                __qcmsimple_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
             elif modele == "texteatrous":
-                __texteatrous_to_moodleXML(newdoc, racineXML, parsed_exo, cat_list)
-
+                __texteatrous_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "texteatrousmultiples":
+                __texteatrousmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
             # Si le fichier xml n'était pas fournit (export unique), on le convertit en chaine
             if not xml_file:
-                exoXML = newdoc.toxml()
+                exoXML = exoXML.toxml()
         # Format QTI
         elif formatXML == "QTI":
             if version == "1.1":
@@ -606,7 +607,7 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     return exoXML
 
 
-def __create_moodleXML_root(newdoc, exoXML, modele, title, feedback_general, tag_list=[]):
+def __create_moodleXML_root(newdoc, exoXML, modele, title, feedback_general, tag_list=[], exo_hint="", exo_help=""):
     encoding = "utf-8"
     racine = newdoc.createElement("question")
     racine.setAttribute("type", modele)
@@ -640,7 +641,162 @@ def __create_moodleXML_root(newdoc, exoXML, modele, title, feedback_general, tag
         _cdata = newdoc.createCDATASection(feedback_general.decode(encoding))
         elementXML.appendChild(_cdata)
 
+    if exo_hint:
+        branche = newdoc.createElement("hint")
+        branche.setAttribute("format", "html")
+        racine.appendChild(branche)
+        elementXML = newdoc.createElement("text")
+        branche.appendChild(elementXML)
+        elementXML.appendChild(newdoc.createCDATASection(exo_hint))
+
+    if exo_help:
+        branche = newdoc.createElement("hint")
+        branche.setAttribute("format", "html")
+        racine.appendChild(branche)
+        elementXML = newdoc.createElement("text")
+        branche.appendChild(elementXML)
+        elementXML.appendChild(newdoc.createCDATASection(exo_help))
+
     return racine
+
+
+def __texteatrousmultiples_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "Texte à trous Multiples" vers moodle XML (Multiples "Cloze").
+
+    A noter :
+        * Les accolades aléatoires ne le seront plus sur Moodle
+        * Le niveau de tolérance "atext" n'existe pas sur Moodle : seule la casse sera tolérée.
+    """
+    encoding = "utf-8"
+    parser = HTMLParser()
+
+    preambule = ""
+    if parsed_exo["pre"]:
+        preambule = "<p class=\"pre_tat\">%s</p>" % parsed_exo["pre"].decode(encoding)
+
+    postface = ""
+    if parsed_exo["post"]:
+        postface = "<p class=\"post_tat\">%s</p>" % parsed_exo["post"].decode(encoding)
+
+    credits = ""
+    if parsed_exo["credits"]:
+        credits = "<p style=\"text-align: right;\"><em>%s</em></p>" % parsed_exo["credits"].decode(encoding)
+
+    # via unescape, on convertit les html entities en unicode
+    # pour éviter des éventuels point-virgules indésirables
+    textes = parser.unescape(parsed_exo["data"].decode(encoding))
+
+    textes = textes.split(";")
+
+    if len(textes) > 1:
+        # on crée une "sous-categorie" de question qui contiendra
+        # l'ensemble des textes de cet exo (s'il en contient plus d'un).
+        racine = newdoc.createElement("question")
+        racine.setAttribute("type", "category")
+        exoXML.appendChild(racine)
+        branche = newdoc.createElement("category")
+        racine.appendChild(branche)
+        elementXML = newdoc.createElement("text")
+        branche.appendChild(elementXML)
+        elementXML.appendChild(newdoc.createTextNode("$course$/%s/%s" % (tag_list[-1].decode(encoding), parsed_exo["titre"])))
+
+    for t_num, texte in enumerate(textes):
+        # on ne prend en compte que les textes non vides
+        if texte.strip():
+            if len(textes) > 1:
+                titre = "%s (%s)" % (parsed_exo["titre"] , t_num + 1)
+            else:
+                titre = parsed_exo["titre"]
+            racine = __create_moodleXML_root(newdoc,
+                                             exoXML,
+                                             "cloze",
+                                             titre,
+                                             parsed_exo["feedback_general"],
+                                             tag_list,
+                                             parsed_exo["hint"],
+                                             parsed_exo["help"]
+                                             )
+
+            # On parse les donnees à la recherches de codes du style :
+            # ??good_rep[,BAD_REP1,BAD_REP2,...]??
+            # ... pour les transformer en :
+            # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
+            pattern_trous = r"\?\?(.+?)\?\?"
+            matches = re.finditer(pattern_trous, texte)
+            for match in matches:
+                trou = match.group(1)
+                reponses = []
+
+                good_accolade = False
+                trou = trou.split(",")
+
+                if len(trou) > 1:
+                    # le trou s'affiche sous forme de liste de choix
+                    # if parsed_exo["list_order"] == "2":
+                    #    # Les réponses sont mélangées
+                    #   type_trou = "MULTICHOICE_S"
+                    # else:
+                    type_trou = "MULTICHOICE"
+
+                    good_reps = []
+                    for index in range(len(trou)):
+                        rep = trou[index].strip()
+
+                        if index == 0 or good_accolade:
+                            if "{" in rep:
+                                good_accolade = True
+                                rep = rep[1:]
+                            if good_accolade:
+                                if "}" in rep:
+                                    good_accolade = False
+                                    rep = rep[:-1]
+                            good_reps.append(rep)
+                            reponses.append(rep)
+                        else:
+                            rep = rep.replace("{", "").replace("}", "")
+                            reponses.append(rep)
+                    # Dans ce cas, on trie les réponses par ordre alphabétique
+                    # if parsed_exo["list_order"] == "1":
+                    reponses.sort()
+
+                    for index in range(len(reponses)):
+                        if reponses[index] in good_reps:
+                            # On ajoute "=" pour indiquer que c'est une bonne réponse
+                            reponses[index] = "=%s" % (reponses[index])
+                else:
+                    # TODO : ici on pourrait tester si la réponse est un nombre, et utiliser le type "NUMERICAL"
+                    # Cas "SHORTANSWER"
+                    if parsed_exo["type_rep"] == "case":
+                        # sensible à la casse
+                        type_trou = "SHORTANSWER_C"
+                    else:
+                        type_trou = "SHORTANSWER"
+                    rep = trou[0].strip()
+                    # Convertit les éventuels synonymes en réponses
+                    reps = rep.split("|")
+
+                    for rep in reps:
+                        reponses.append("=" + rep)
+
+                reponses = "~".join(reponses)
+                # Le "1" représente le nombre de points accordé par cette réponse.
+                texte = texte.replace(match.group(), "{1:%s:%s}" % (type_trou, reponses))
+
+            # Texte de la question // enonce
+            branche = newdoc.createElement("questiontext")
+            branche.setAttribute("format", "html")
+            racine.appendChild(branche)
+            elementXML = newdoc.createElement("text")
+            branche.appendChild(elementXML)
+            if preambule:
+                texte = preambule + texte
+            if postface:
+                texte = texte + postface
+            if credits:
+                texte = texte + credits
+
+            _cdata = newdoc.createCDATASection(texte)
+            elementXML.appendChild(_cdata)
 
 
 def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
@@ -651,7 +807,13 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
         * Le niveau de tolérance "atext" n'existe pas sur Moodle : seule la casse sera tolérée.
     """
     encoding = "utf-8"
-    racine = __create_moodleXML_root(newdoc, exoXML, "cloze", parsed_exo["titre"], parsed_exo["feedback_general"], tag_list)
+    racine = __create_moodleXML_root(newdoc,
+                                     exoXML,
+                                     "cloze",
+                                     parsed_exo["titre"],
+                                     parsed_exo["feedback_general"],
+                                     tag_list
+                                     )
 
     # Il faut maintenant parser les donnees à la recherches de codes du style :
     # ??good_rep[,BAD_REP1,BAD_REP2,...]??
@@ -666,6 +828,14 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
 
         good_accolade = False
         trou = trou.split(",")
+
+        feedback_bon = parsed_exo["feedback_bon"].decode(encoding)
+        if feedback_bon:
+            feedback_bon = "#" + feedback_bon
+        feedback_mauvais = parsed_exo["feedback_mauvais"].decode(encoding)
+        if feedback_mauvais:
+            feedback_mauvais = "#" + feedback_mauvais
+
         if len(trou) > 1:
             # le trou s'affiche sous forme de liste de choix
             if parsed_exo["list_order"] == "2":
@@ -699,10 +869,10 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
             for index in range(len(reponses)):
                 if reponses[index] in good_reps:
                     # On ajoute "=" pour indiquer que c'est une bonne réponse
-                    reponses[index] = "=%s#%s" % (reponses[index], parsed_exo["feedback_bon"].decode(encoding))
+                    reponses[index] = "=%s%s" % (reponses[index], feedback_bon)
                 else:
                     # On ajoute le feedback des mauvaises réponses (Moodle n'a pas de feedback général dans ce cas)
-                    reponses[index] = "%s#%s" % (reponses[index], parsed_exo["feedback_mauvais"].decode(encoding))
+                    reponses[index] = "%s%s" % (reponses[index], feedback_mauvais)
         else:
             # TODO : ici on pourrait tester si la réponse est un nombre, et utiliser le type "NUMERICAL"
             # Cas "SHORTANSWER"
@@ -715,9 +885,10 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
             # Convertit les éventuels synonymes en réponses
             reps = rep.split("|")
             for rep in reps:
-                reponses.append("=%s#%s" % (rep, parsed_exo["feedback_bon"].decode(encoding)))
+                reponses.append("=%s%s" % (rep, feedback_bon))
             # pour toutes les autres réponses, on affiche le feedback_mauvais
-            reponses.append("*#%s" % parsed_exo["feedback_mauvais"].decode(encoding))
+            if feedback_mauvais:
+                reponses.append("*%s" % feedback_mauvais)
 
         reponses = "~".join(reponses)
         # Le "1" représente le nombre de points accordé par cette réponse.
@@ -740,7 +911,15 @@ def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
     u"""Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
     encoding = "utf-8"
     # Ici, choisir le type en fonction de l'option "checkbox" ?
-    racine = __create_moodleXML_root(newdoc, exoXML, "multichoice", parsed_exo["titre"], parsed_exo["feedback_general"], tag_list)
+    racine = __create_moodleXML_root(newdoc,
+                                     exoXML,
+                                     "multichoice",
+                                     parsed_exo["titre"],
+                                     parsed_exo["feedback_general"],
+                                     tag_list,
+                                     parsed_exo["hint"],
+                                     parsed_exo["help"]
+                                     )
 
     # Texte de la question // enonce
     branche = newdoc.createElement("questiontext")
@@ -844,18 +1023,6 @@ def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
             elementXML = newdoc.createElement("text")
             branche.appendChild(elementXML)
             elementXML.appendChild(newdoc.createCDATASection(rep))
-
-    if parsed_exo["hint"] != "":
-        branche = newdoc.createElement("hint")
-        branche.setAttribute("format", "html")
-        racine.appendChild(branche)
-        branche.appendChild(newdoc.createCDATASection(parsed_exo["hint"]))
-
-    if parsed_exo["help"] != "":
-        branche = newdoc.createElement("hint")
-        branche.setAttribute("format", "html")
-        racine.appendChild(branche)
-        branche.appendChild(newdoc.createCDATASection(parsed_exo["help"]))
 
     # param restants :
     #  * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction

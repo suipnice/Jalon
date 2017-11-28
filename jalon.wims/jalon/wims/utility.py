@@ -570,7 +570,7 @@ class Wims(SimpleItem):
         return retour
 
     def importHotPotatoes(self, folder, member_auth, import_file):
-        u"""import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
+        u"""Import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
         # LOG.info("----- importHotPotatoes -----")
 
         h = HTMLParser.HTMLParser()
