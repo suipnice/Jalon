@@ -496,7 +496,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return "*-*text{data%s=asis(%s\n%s\n%s)}" % (str(id_question), enonce, feedback , reponses)
 
     def ajouterSerie(self, author):
-        """Ajoute un groupe d'exercices wims."""
+        """Ajoute un groupe d'exercices WIMS."""
         # LOG.info("----- ajouterSerie -----")
         liste_exos = self.getListeIdsExos()
         if len(liste_exos) > 0:
@@ -516,7 +516,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return {"status": "ERROR", "err_code": "NO_EXERCICE", "message": _(u"Aucun exercice selectionné")}
 
     def supprimerSerie(self):
-        """Supprime un groupe d'exercices wims."""
+        """Supprime un groupe d'exercices WIMS."""
         # LOG.info("----- supprimerSerie -----")
         liste_exos = self.getListeIdsExos()
         if len(liste_exos) > 0:
@@ -530,12 +530,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return {"status": "ERROR", "code": "NO_EXERCICE"}
 
     def ajouterTag(self, tag):
-        """ajoute Tag."""
+        """Ajoute Tag."""
         # LOG.info("----- ajouterTag -----")
         return jalon_utils.setTag(self, tag)
 
     def authUser(self, quser=None, qclass=None, request=None):
-        """AuthUser WIMS : permet d'authentifier "quser" dans une classe wims "qclass"."""
+        """Permet d'authentifier "quser" dans une classe WIMS "qclass"."""
         # LOG.info("----- authUser -----")
         return jalon_utils.authUser(self.aq_parent, quser, qclass, request)
 
@@ -595,7 +595,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                          "classerparpropriete":        ["OEF"],
                          "vraifauxmultiples":          ["OEF"],
                          "texteatrousmultiples":       ["Moodle_XML", "OEF"],
-                         "qcmsuite":                   ["QTI", "OEF"]
+                         "qcmsuite":                   ["Moodle_XML", "QTI", "OEF"]
                          }
         if self.modele in liste_formats:
             return liste_formats[self.modele]
@@ -603,7 +603,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return []
 
     def getModule(self, authMember, module_path):
-        """retourne toutes les infos disponibles pour le module "module_path"."""
+        """Retourne toutes les infos disponibles pour le module "module_path"."""
         # LOG.info("----- getModule -----")
         dico = {"job": "getmodule", "option": module_path, "code": authMember}
         rep_wims = self.aq_parent.wims("callJob", dico)
@@ -618,7 +618,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return "Exercice"
 
     def cleanData(self, input_data):
-        """clean Data."""
+        """Clean Data."""
         # Il faut verifier quelques points à l'interieur des parametres :
         # 1/ attention aux caracteres speciaux
         # 2/ attention aux }\n qui pourraient etre contenus.
@@ -636,7 +636,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return input_data
 
     def getExoOEF(self, modele, authMember, requete={}):
-        """permet d'obtenir le code source brut (OEF) d'un exercice WIMS."""
+        """Fournit le code source brut (OEF) d'un exercice WIMS."""
         # LOG.info("----- getExoOEF -----")
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile",
                                                   "qclass": "%s_1" % self.aq_parent.getComplement(),
@@ -910,8 +910,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return parsed_exercice
 
     def extendResearch(self, variable, fichier, end_offset):
-        u"""Permet d'etendre une recherche d'expression reguliere
-         dans le cas ou le caractere d'arret aurait été imbriqué dans la variable."""
+        u"""Etend une recherche d'expression reguliere.
+
+        Dans le cas où le caractere d'arret aurait été imbriqué dans la variable.
+        """
         # LOG.info("----- extendResearch -----")
         CountLeft = len(re.findall("\{", variable))
         CountRight = len(re.findall("\}", variable))
@@ -929,7 +931,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return variable
 
     def getParamListeExos(self, exo_params, mode="autoeval"):
-        u"""permet d'obtenir des parametres par défaut pour visualiser un exo en dehors d'une feuille."""
+        u"""Fournit des parametres par défaut pour visualiser un exo en dehors d'une feuille."""
         # LOG.info("----- getParamListeExos -----")
         if exo_params:
             exo = exo_params.replace("*-*", "&")
@@ -961,17 +963,17 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return "exo=%s&qnum=%s&qcmlevel=1&intro_qcmpresent=4&intro_presentsol=1&intro_check=%s&intro_expert=yes&scoredelay=0&module=classes/fr" % (exo, self.getQnum(), intro_check)
 
     def convertLangToWIMS(self, portal_lang):
-        """Permet d'obtenir le code de langue WIMS a partir du code de langue de Plone."""
+        """Founrit le code de langue WIMS a partir du code de langue de Plone."""
         # LOG.info("----- convertLangToWIMS -----")
         return jalon_utils.convertLangToWIMS(portal_lang)
 
     def test(self, condition, valeurVrai, valeurFaux):
-        """permet de tester une condition, puis de renvoyer une valeur en fonction."""
+        """Teste une condition, puis renvoie une valeur en fonction."""
         # LOG.info("----- test condition (%s) -----" % condition)
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 
     def getUrlServeur(self):
-        """fournit l'URL du serveur WIMS."""
+        """Fournit l'URL du serveur WIMS."""
         # LOG.info("----- getUrlServeur -----")
         return self.aq_parent.wims("getAttribut", "url_connexion")
 
@@ -1075,8 +1077,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             self.reindexObject()
 
     def updateRelatedItems(self):
-        """Update the exercice related items
-         (checks if each related item still exists, and if they are really still connected."""
+        """Update the exercice related items.
+
+        (checks if each related item still exists, and if they are really still connected.
+        """
         # LOG.info("----- updateRelatedItems -----")
         relatedItems = self.getRelatedItems()
         self_id = self.getId()
