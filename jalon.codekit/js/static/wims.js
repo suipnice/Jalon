@@ -31,7 +31,7 @@ function setWimsExportAccordionRadio( accordionID ) {
 }
 
 /* Permet a la fois de fermer une fenetre modale lors d'un téléchargement,
-   et d'afficher le message indiqué dans l'attribiut "data-success_msg" du formulaire. */
+   et d'afficher le message indiqué dans l'attribut "data-success_msg" du formulaire. */
 function closeDownloadModal( formID ) {
 
     var $form= Foundation.utils.S( '#' + formID );
@@ -69,6 +69,7 @@ function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
 
         Foundation.utils.S( '#includedPanelMessage' ).remove( );
         Foundation.utils.S( '#excludedPanelMessage' ).remove( );
+        Foundation.utils.S( '#paths_list' ).remove( );
 
         var $selectionForm = Foundation.utils.S( "#"+selectionForm_id );
         var $input;
@@ -77,6 +78,13 @@ function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
         var excludedMessage = "";
         var nIncluded = 0;
         var nExcluded = 0;
+
+        $selectionForm.append(
+            $( "<div>", {
+                'id': "paths_list"
+            } )
+        );
+        var $paths_list =Foundation.utils.S( '#paths_list' );
 
         // Creation des elements selectionnes
         Foundation.utils.S( '#js-update_target tbody input[name="paths:list"]:checked' ).each( function( index ) {
@@ -88,7 +96,7 @@ function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
                     'value': $( this ).val( ),
                 } ).attr( 'name', "paths:list" );
 
-                $selectionForm.append( $input );
+                $paths_list.append( $input );
 
                 includedMessage += '<li>' + $( this ).data( 'res_name' ) + '</li>';
                 nIncluded++;
@@ -159,11 +167,10 @@ function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
                 } )
             );
         }
-        // prepare la fermeture du popup au telechargement.
-        closeDownloadModal(selectionForm_id);
 
     } );
-
+    // prepare la fermeture du popup au telechargement.
+    closeDownloadModal(selectionForm_id);
 }
 
 
