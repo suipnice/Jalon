@@ -79,43 +79,42 @@ Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabé
 \text{field=}
 
 \for{i=1 to \qs}{
- \text{f=\data[2*\i;]}
- \integer{test=items(\f)}
+  \text{f=\data[2*\i;]}
+  \integer{test=items(\f)}
 
- \if{\test>1}{
-  \text{g=\f[1]}
-  \if{\list_order issametext alpha}{
-    \text{f=wims(sort items \f)}
-  }
-  {
-    \text{f=shuffle(\f,,)}
-  }
-  \text{g=positionof(\g,\f)}
-  \text{good=\good\g;,}
-  \text{field=\field\f;}
-  \text{types=\types[]menu,}
-  \text{lengths=\lengths,}
- }{
-  \text{good=\good\f,}
-  \integer{c=wims(charcnt \f)}
-  \text{field=\field;}
-  \real{test=\f}
-
-  \if{\test issametext NaN}{
-   \text{test=wims(translate internal | to , in \f)}
-   \integer{c=wims(charcnt \test[1])}
-   \integer{c=min(50,max(6,\c+6))}
-   \text{lengths=\lengths\c,}
-   \text{types=\types[]\type_rep,}
-   \text{options=| isin \f?\options[]symtext}
+  \if{\test>1}{
+    \text{g=\f[1]}
+    \if{\list_order issametext alpha}{
+      \text{f=wims(sort items \f)}
+    }{
+      \text{f=shuffle(\f,,)}
+    }
+    \text{g=positionof(\g,\f)}
+    \text{good=\good\g;,}
+    \text{field=\field\f;}
+    \text{types=\types[]menu,}
+    \text{lengths=\lengths,}
   }{
-   \integer{c=max(5,\c+2)}
-   \text{f1=wims(nospace \f)}
-   \text{test=wims(text select -0123456789 in \f)}
-   \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}
+    \text{good=\good\f,}
+    \integer{c=wims(charcnt \f)}
+    \text{field=\field;}
+    \real{test=\f}
+
+    \if{\test issametext NaN}{
+      \text{test=wims(translate internal | to , in \f)}
+      \integer{c=wims(charcnt \test[1])}
+      \integer{c=min(50,max(6,\c+6))}
+      \text{lengths=\lengths\c,}
+      \text{types=\types[]\type_rep,}
+      \text{options=| isin \f?\options[]symtext}
+    }{
+      \integer{c=max(5,\c+2)}
+      \text{f1=wims(nospace \f)}
+      \text{test=wims(text select -0123456789 in \f)}
+      \text{types=\test issametext \f1 and abs(\f)<4000?\types[]numexp,:\types[]number,}
+    }
   }
- }
- \text{options=\options,}
+  \text{options=\options,}
 }
 \text{pre=wims(embraced randitem \pre)}
 \text{post=wims(embraced randitem \post)}
@@ -125,17 +124,17 @@ Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabé
 :%%%%%%%%%%%%% Maintenant l'énoncé en code html. %%%%%%%%%%%%%%%%%%%%
 ::Vous n'avez pas besoin de modifier ceci en général.
 \statement{
-    \data[1;]
-    \for{k=1 to \qs}{
-        \if{\types[\k] notsametext menu}{
-            \embed{r \k,\lengths[\k]
-                autocomplete='off'}
-        }
-        {
-            \embed{r \k,\lengths[\k]}
-        }
-        \data[2*\k+1;]
+  \data[1;]
+  \for{k=1 to \qs}{
+    \if{\types[\k] notsametext menu}{
+      \embed{r \k,\lengths[\k]
+          autocomplete='off'}
     }
+    {
+      \embed{r \k,\lengths[\k]}
+    }
+    \data[2*\k+1;]
+  }
 }
 
 :%%%%%%%%%%%%% Rien à modifier ci-après. %%%%%%%%%%%%%%%%%5
@@ -168,7 +167,7 @@ Les listes de choix peuvent s'afficher en ordre aléatoire (shuffle) ou alphabé
 \sc_reply40}
 
 \for{idtrou=1 to \qs}{
-    \integer{score_total=wims(\score_total+\screply[\idtrou])}
+  \integer{score_total=wims(\score_total+\screply[\idtrou])}
 }
 
 \feedback{1=1}{\feedback_general}
