@@ -11,6 +11,7 @@ from jalon.content.config import PROJECTNAME
 from jalon.content.interfaces import IJalonExerciceWims
 
 from urlparse import urlparse
+from HTMLParser import HTMLParser
 
 import jalon_utils
 import re
@@ -692,6 +693,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     requete["options_checkbox"] = 1
             return requete
 
+        parser = HTMLParser()
         parsed_exercice = self.getExoOEF(modele, authMember, requete)
         fichier = parsed_exercice["code_source"]
 
@@ -868,6 +870,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                         parsed_exercice["%s_eqweight" % key] = 0
                 else:
                     variable = variable.replace("_ENDLINE_", "\n")
+
                     # when variable = asis(variable)
                     if variable.startswith("asis("):
                         parsed_exercice[key] = variable[5:-1]
@@ -876,7 +879,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     # On détecte un eventuel souci dans le modèle (cas ou variable = $$key$$)
                     if parsed_exercice[key] == ("&#36;&#36;%s&#36;&#36;" % key):
                         parsed_exercice[key] = self.getVariablesDefaut(modele)[key]
-                        # parsed_exercice[key] = variable.decode("iso-8859-1").encode("utf-8")
+
+                    # Pour certains modèles, on convertit les html entities en unicode
+                    # On ne le fait que pour les modèle pù on s'est assuré que cela
+                    # ne perturbe pas le fonctionement de l'exo.
+                    if modele in ["texteatrous", "texteatrousmultiples"]:
+                        variable = parser.unescape(variable.decode("utf-8")).encode("utf-8")
 
             if modele == "qcmsuite":
                 i = 0
