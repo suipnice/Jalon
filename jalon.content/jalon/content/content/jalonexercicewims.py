@@ -594,7 +594,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                          "reordonner":                 ["OEF"],
                          "correspondance":             ["OEF"],
                          "classerparpropriete":        ["OEF"],
-                         "vraifauxmultiples":          ["OEF"],
+                         "vraifauxmultiples":          ["Moodle_XML", "OEF"],
                          "texteatrousmultiples":       ["Moodle_XML", "OEF"],
                          "qcmsuite":                   ["Moodle_XML", "QTI", "OEF"]
                          }
@@ -883,8 +883,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                     # Pour certains modèles, on convertit les html entities en unicode
                     # On ne le fait que pour les modèle pù on s'est assuré que cela
                     # ne perturbe pas le fonctionement de l'exo.
-                    if modele in ["texteatrous", "texteatrousmultiples"]:
-                        variable = parser.unescape(variable.decode("utf-8")).encode("utf-8")
+                    if modele in ["texteatrous", "texteatrousmultiples", "vraifauxmultiples"]:
+                        parsed_exercice[key] = parser.unescape(parsed_exercice[key].decode("utf-8")).encode("utf-8")
 
             if modele == "qcmsuite":
                 i = 0

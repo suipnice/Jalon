@@ -111,10 +111,10 @@
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
                                            value string:${my_view/folder_path}/${item/getId};
-                                           data-res_name python:'%s [%s]' % (context.getShortText(item['Title']),wims_exercice_model_list[exo_model]);
+                                           data-res_name python:'%s <span class=\'label backgrnd\'>[%s]</span>' % (context.getShortText(item['Title']),wims_exercice_model_list[exo_model]);
                                            data-attached python:context.test(len(item.getRawRelatedItems) > 0, '1', '');
                                            data-no_group python:context.test(item.getModele in  ['externe', 'groupe'], '1', '');
-                                           data-no_export python:context.test(item.getModele not in ['qcmsimple', 'texteatrous', 'texteatrousmultiples', 'qcmsuite'], '1', '')" />
+                                           data-no_export python:context.test(item.getModele not in ['qcmsimple', 'texteatrous', 'texteatrousmultiples', 'qcmsuite', 'vraifauxmultiples'], '1', '')" />
                     <label tal:attributes="for string:switch-${repeat/item/index}"></label>
                 </div>
             </td>

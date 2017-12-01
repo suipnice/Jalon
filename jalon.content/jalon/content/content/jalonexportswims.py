@@ -147,6 +147,8 @@ def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_lis
                 __texteatrousmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
             elif modele == "qcmsuite":
                 __qcmsuite_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "vraifauxmultiples":
+                __vraifauxmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
 
             # Si le fichier xml n'était pas fournit (export unique), on le convertit en chaine
             if not xml_file:
@@ -1013,8 +1015,32 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
     __add_moodleXML_tag(newdoc, racine, "questiontext", texte)
 
 
-def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
-    u"""Modele "QCM Simple" vers moodle XML (Question à choix multiple)."""
+def __vraifauxmultiples_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "Vrai/faux multiples" vers moodle XML (plusieurs questions à choix multiple).
+
+    Elements de ce modèle incompatible avec l'export Moodle :
+        * Accolades aléatoires
+        * tirage aléatoire des phrases vraies (1 parmi N)
+        * options_split : non pris en charge par Moodle. les bonnes réponses sont obligatoirement exprimées en fraction
+
+    """
+    parsed_exo["bonnesrep"] = parsed_exo["datatrue"]
+    parsed_exo["mauvaisesrep"] = parsed_exo["datafalse"]
+    parsed_exo["enonce"] = parsed_exo["explain"]
+    parsed_exo["feedback_bon"] = ""
+    parsed_exo["feedback_mauvais"] = ""
+    parsed_exo["options_checkbox"] = 1
+
+    __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list, "123")
+
+
+def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[], puces="ABCD"):
+    u"""Modele "QCM Simple" vers moodle XML (Question à choix multiple).
+
+    Elements de ce modèle incompatible avec l'export Moodle :
+        * Accolades aléatoires
+        * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction
+    """
     encoding = "utf-8"
     # Ici, choisir le type en fonction de l'option "checkbox" ?
     racine = __create_moodleXML_root(newdoc,
@@ -1060,10 +1086,10 @@ def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
     racine.appendChild(branche)
     branche.appendChild(newdoc.createTextNode("true"))
 
-    # Numéroter les choix
+    # Numéroter les choix ('none', 'abc', 'ABCD' ou '123')
     branche = newdoc.createElement("answernumbering")
     racine.appendChild(branche)
-    branche.appendChild(newdoc.createTextNode("ABCD"))
+    branche.appendChild(newdoc.createTextNode(puces))
 
     # Pénalité pour tout essai incorrect (en cas de tentatives multiples)
     # on peut décider de prendre en compte la severité (option_eqweight)
@@ -1096,10 +1122,6 @@ def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
         if rep != "":
             branche = __add_moodleXML_tag(newdoc, racine, "answer", rep)
             branche.setAttribute("fraction", "0")
-
-    # param restants :
-    #  * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction
-    #  * accolade aléatoires : non pris en charge par Moodle
 
 
 def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
