@@ -1,6 +1,7 @@
 type=datalist
 modele_jalon=VraiFauxM
-textarea='datatrue datafalse explain'
+textarea='datatrue datafalse explain feedback_general'
+asis="datatrue datafalse explain feedback_general"
 
 :Choisir les phrases vraies parmi une liste proposée.
 Un certain nombre de phrases sont proposées dans une liste. Il faut repérer et noter celles qui sont vraies.<br/>
@@ -37,11 +38,11 @@ Sinon l'exercice risque de ne pas pouvoir repasser sous Createxo.
 
 :Les phrases vraies. Une phrase par ligne, point-virgule non-admis.
 Evitez les phrases trop longues !
-\matrix{datatrue=$$datatrue$$}
+\matrix{datatrue=asis($$datatrue$$)}
 
 :Les phrases fausses. Une phrase par ligne, point-virgule non-admis.
 Evitez les phrases trop longues !
-\matrix{datafalse=$$datafalse$$}
+\matrix{datafalse=asis($$datafalse$$)}
 
 :Mots d'option.
 Ajoutez le mot <span class="tt wims_code_words">'split'</span> à la définition si vous voulez donner une note
@@ -50,14 +51,14 @@ partielle pour des réponses partiellement correctes.
 
 :Le texte qui explique ce qu'il faut faire.
 
-\text{explain=$$explain$$}
+\text{explain=asis($$explain$$)}
 
 :Mise en aléatoire par des accolades emboitables
 $embraced_randitem
 \text{accolade=item($$accolade$$,1 oui,2 non)}
 
 :Feedback General
-\text{feedback_general=$$feedback_general$$}
+\text{feedback_general=asis($$feedback_general$$)}
 
 :%%%%%%%%%%%%%% Rien à modifier avant l'énoncé %%%%%%%%%%%%%%%%
 \if{\feedback_general notsametext }{
