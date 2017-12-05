@@ -236,6 +236,7 @@ class Wims(SimpleItem):
         """Creation d'un exercice WIMS."""
         # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
         # dans la classe, mais seulement dans un bac à sable pour compilation.
+        # la source de l'exercice (param["source"]) doit être encodée en "iso-8859-1"
         # LOG.info("---- creerExercice ----")
         # data = self.getAttribut(param["modele"])
         result_dict = {"fonction": "jalon.wims/utility.py/creerExercice"}
@@ -271,7 +272,7 @@ class Wims(SimpleItem):
         return result
 
     def creerFeuille(self, param):
-        u"""ajoute une feuille d'entrainement à une classe Wims."""
+        u"""Ajoute une feuille d'entrainement à une classe Wims."""
         if param["qclass"] and param["qclass"] is not None:
             donnees_feuille = self.formaterDonnees(param)
             # modele = "expiration=%s\ntitle=%s\ndescription=%s"

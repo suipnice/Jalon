@@ -424,6 +424,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         if modele == "exercicelibre":
             try:
                 dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1")
+            except UnicodeEncodeError:
+                # si on tombe sur des caracteres speciaux comme "’", la fonction "encode" plante
+                dico["source"] = jalon_utils.convertUTF8ToHTMLEntities(param["exercicelibre"])
+                dico["source"] = dico["source"].decode("utf-8").encode("iso-8859-1")
             except:
                 dico["source"] = param["exercicelibre"]
 
