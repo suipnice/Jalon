@@ -423,11 +423,9 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # wims = getToolByName(self, "portal_wims")
         if modele == "exercicelibre":
             try:
-                dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1")
-            except UnicodeEncodeError:
-                # si on tombe sur des caracteres speciaux comme "’", la fonction "encode" plante
-                dico["source"] = jalon_utils.convertUTF8ToHTMLEntities(param["exercicelibre"])
-                dico["source"] = dico["source"].decode("utf-8").encode("iso-8859-1")
+                # si on tombe sur des caracteres speciaux comme "’", la fonction "encode" plante.
+                # On utilise donc "replace" pour les remplacer par des "?"
+                dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1", "replace")
             except:
                 dico["source"] = param["exercicelibre"]
 
