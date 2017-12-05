@@ -1103,9 +1103,9 @@ class JalonFolder(ATFolder):
             message = _(u"Ce format d'import d'exercices n'est pas permis.")
             self.plone_utils.addPortalMessage(message, type='warning')
 
-    def exportExercicesWIMS(self, listeIdsExos, member_auth, formatXML="OLX", version="latest"):
+    def exportExercicesWIMS_XML(self, listeIdsExos, member_auth, formatXML="OLX", version="latest"):
         u"""Genere un export XML à partir d'une selection de plusieurs exercices."""
-        # LOG.info("----- exportExercicesWIMS -----")
+        # LOG.info("----- exportExercicesWIMS_XML -----")
         import xml.dom.minidom as minidom
 
         if self.getId() != "mes_exercices_wims":
@@ -1137,6 +1137,40 @@ class JalonFolder(ATFolder):
             obj.getExoXML(formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
 
         return xml_file.toxml()
+
+    def exportExercicesWIMS_zip(self, listeIdsExos, member_auth):
+        u"""Genere une archive ZIP à partir d'une selection de plusieurs exercices."""
+        # LOG.info("----- exportExercicesWIMS_zip -----")
+
+        if self.getId() != "mes_exercices_wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        from tempfile import mkstemp
+        fd, path = mkstemp('.zipfiletransport')
+        os.close(fd)
+
+        from zipfile import ZipFile, ZIP_DEFLATED
+        zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
+
+        portal = self.portal_url.getPortalObject()
+        folder = getattr(portal.Members, member_auth).Wims
+
+        zipFile.writestr("class/serial", "%s/1" % folder.getComplement())
+        zipFile.writestr("class/version", "4")
+
+        for object_id in listeIdsExos:
+            obj = getattr(folder, object_id)
+            file_content = obj.getExoOEF(member_auth)
+            zipFile.writestr("class/src/%s.oef" % object_id, file_content["code_source"].decode("utf-8").encode("iso-8859-1"))
+
+        zipFile.close()
+
+        fp = open(path, 'rb')
+        data = fp.read()
+        fp.close()
+        return {"length": str(os.stat(path)[6]), "data": data}
 
     def transfererExosWIMS(self, user_source):
         u"""Transfert des exercices WIMS d'un prof "user_source" vers le jalonfolder courant.

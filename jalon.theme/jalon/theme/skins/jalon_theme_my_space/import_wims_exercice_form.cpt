@@ -21,7 +21,7 @@
           enctype="multipart/form-data" method="post">
 
         <div class="field">
-            <h3 i18n:translate="">Choisissez le format de votre fichier d'exercice·s :</h3>
+            <h3 i18n:translate="">Choisissez le format de votre fichier d’exercice·s :</h3>
 
             <dl id="js-accordion_import-WIMS" class="accordion"
                 data-accordion="import-WIMS"
@@ -46,8 +46,8 @@
                     <div id="import_Moodle" class="content active" role="tabpanel" aria-labelledby="import_Moodle_heading">
                         <ul>
                             <li>
-                                <input type="radio" id="MoodleXML" value="MoodleXML" name="type" checked="checked"/>
-                                <label for="MoodleXML">
+                                <input type="radio" id="import_Moodle_default" value="MoodleXML" name="type" checked="checked"/>
+                                <label for="import_Moodle_default">
                                     Moodle XML
                                     <span class="label secondary" i18n:translate="">Le fichier doit être au format ".xml"</span>
                                 </label>
@@ -56,14 +56,14 @@
                         <p class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, vous ne pouvez pas importer plus de 64 exercices par fichier.</p>
 
                         <div>
-                            <label for="model_filter" i18n:translate="label_exo_template">Modèle d'exercices</label>
+                            <label for="model_filter" i18n:translate="label_exo_template">Modèle d’exercices</label>
                             <select id="model_filter" name="model_filter">
                                 <option value="all" i18n:translate="option_all_exo_templates">Tous les modèles compatibles</option>
                                 <option value="cloze" i18n:translate="option_cloze_template">Textes à trous (cloze)</option>
                                 <option value="multichoice" disabled="disabled" i18n:translate="">questions simples (multichoice) -  bientôt disponible</option>
                                 <option value="matching" disabled="disabled" i18n:translate="">matching - bientôt disponible</option>
                             </select>
-                            <p class="formHelp" i18n:translate="formHelp_model_filter">Jalon n'importera que les exercices de ce modèle.</p>
+                            <p class="formHelp" i18n:translate="formHelp_model_filter">Jalon n’importera que les exercices de ce modèle.</p>
                         </div>
                     </div>
                 </dd>
@@ -98,7 +98,7 @@
         </div>
 
     </form>
-    <div class="panel" i18n:translate="msg_import_WIMS_in_beta">L'import d'exercices WIMS est actuellement en phase "Bêta". Assurez-vous de vérifier qu'il n'y a pas eu de souci lors de l'import, et n'hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
+    <div class="panel" i18n:translate="msg_import_WIMS_in_beta">L’import d’exercices WIMS est actuellement en phase "Bêta". Assurez-vous de vérifier qu’il n’y a pas eu de souci lors de l’import, et n’hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
 
     <script charset="UTF-8"
         tal:content="structure string:$$(document).foundation('accordion', 'reflow')"></script>

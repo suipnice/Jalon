@@ -71,8 +71,8 @@
    <element value="classerparpropriete*-*Classer par propriete*-*2 : Modeles a base de 'glisser/deposer'"/>
    <element value="vraifauxmultiples*-*Vrai / Faux multiples*-*3 : Modeles avances"/>
    <element value="texteatrousmultiples*-*Textes a trous multiples*-*3 : Modeles avances"/>
-   <element value="exercicelibre*-*Exercice libre (mode brut)*-*3 : Modeles avances"/>
    <element value="qcmsuite*-*QCM a la suite*-*3 : Modeles avances"/>
+   <element value="exercicelibre*-*Exercice libre (mode brut)*-*3 : Modeles avances"/>
    <element value="externe*-*Exercice de la base WIMS*-*4 : Modeles Tiers"/>
   </property>
   <property name="activer_externes" type="boolean">True</property>

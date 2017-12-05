@@ -13,17 +13,17 @@
              data-reveal="data-reveal" data-options="close_on_background_click: true;"
              tal:define="is_tags python:context.test(len(my_view['tags_list']) > 1, 1, 0)">
             <h2>
-                <tal:block i18n:translate="head_tag_all_selected">Étiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <tal:block i18n:translate="head_tag_all_selected">Étiqueter l’ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
             <div class="panel callout radius"
                  tal:condition="not:is_tags"
                  i18n:translate="">
-                Il n'y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
+                Il n’y a actuellement aucune étiquette de crée. Pour créer une étiquette cliquez sur le "+" en bout de la ligne des étiquettes.
             </div>
             <form method="POST"
                   tal:attributes="action string:${context/absolute_url}/add_tags_objects_script;
-                                  data-success_msg string:L'ensemble sélectionné a été étiqueté.;
+                                  data-success_msg string:L’ensemble sélectionné a été étiqueté.;
                                   data-s_tag_msg string:Choisissez une ou plusieurs étiquettes à associer à la ressource sélectionnée :;
                                   data-p_tag_msg string:Choisissez une ou plusieurs étiquettes à associer aux ressources sélectionnées :"
                   tal:condition="is_tags"
@@ -59,7 +59,7 @@
         <div id="untag_sel" class="reveal-modal medium"
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
             <h2>
-                <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <tal:block i18n:translate="">Désétiqueter l’ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
 
@@ -75,14 +75,14 @@
         <div id="untag_sel" class="reveal-modal medium"
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
             <h2>
-                <tal:block i18n:translate="">Désétiqueter l'ensemble des ressources sélectionnées</tal:block>
+                <tal:block i18n:translate="">Désétiqueter l’ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
 
             <form method="POST"
                   tal:attributes="action string:${context/absolute_url}/remove_tags_objects_script;
                                   data-success_msg string:Le désétiquetage demandé a été effectué.;
-                                  data-untag_msg string:L'ensemble des étiquettes actives :;
+                                  data-untag_msg string:L’ensemble des étiquettes actives :;
                                   data-s_untag_msg string:… ne sera plus associé à la ressource sélectionnée :;
                                   data-p_untag_msg string:… ne sera plus associé aux ressources sélectionnées :"
                   i18n:attributes="data-success_msg; data-untag_msg; data-s_untag_msg; data-p_untag_msg">
@@ -103,7 +103,7 @@
         <div id="del_sel" class="reveal-modal medium"
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
             <h2>
-                <tal:block i18n:translate="">Supprimer l'ensemble des ressources sélectionnées</tal:block>
+                <tal:block i18n:translate="">Supprimer l’ensemble des ressources sélectionnées</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
 
@@ -112,7 +112,7 @@
                                   data-success_msg string:La suppression demandée a été effectuée.;
                                   data-all_att_msg string:Suppression impossible :;
                                   data-s_all_att_msg string:la ressource sélectionnée est attachée à un ou plusieurs cours.;
-                                  data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs éléments (cours, activité ou groupe d'exercices WIMS).;
+                                  data-p_all_att_msg string:les ressources sélectionnées sont attachées à un ou plusieurs éléments (cours, activité ou groupe d’exercices WIMS).;
                                   data-s_supp_msg string:La ressource suivante va être supprimée :;
                                   data-p_supp_msg string:Les ressources suivantes vont être supprimées :;
                                   data-s_att_msg string:La ressource suivante, attachée à un ou plusieurs cours, ne sera pas supprimée :;
@@ -145,27 +145,27 @@
              data-reveal="data-reveal" data-options="close_on_background_click: true;">
 
             <h2>
-                <tal:block i18n:translate="">Créer un groupe d'exercices</tal:block>
+                <tal:block i18n:translate="">Créer un groupe d’exercices</tal:block>
                 <a class="close-reveal-modal"></a>
             </h2>
 
             <form id="js-wimsGroupCreator" method="POST"
                   tal:attributes="action string:${context/absolute_url};
-                                  data-success_msg string:Le groupe d'exercices Wims a été crée.;
+                                  data-success_msg string:Le groupe d’exercices Wims a été crée.;
                                   data-all_no_msg string:Création de groupe impossible :;
-                                  data-s_all_no_msg string:l'exercice sélectionné est un groupe ou un exercice externe.;
+                                  data-s_all_no_msg string:l’exercice sélectionné est un groupe ou un exercice externe.;
                                   data-p_all_no_msg string:les exercices sélectionnés sont des groupes ou des exercices externes.;
-                                  data-s_yes_msg string:L'exercice suivant fera partie du groupe :;
+                                  data-s_yes_msg string:L’exercice suivant fera partie du groupe :;
                                   data-p_yes_msg string:Les exercices suivants feront partie du groupe :;
-                                  data-s_no_msg string:L'exercice suivant est un groupe ou un exercice externe, et ne peut pas être inclus dans un groupe :;
+                                  data-s_no_msg string:L’exercice suivant est un groupe ou un exercice externe, et ne peut pas être inclus dans un groupe :;
                                   data-p_no_msg string:Les exercices suivants sont des groupes ou des exercices externes, et ne peuvent pas être inclus dans un groupe :"
                   i18n:attributes="data-success_msg; data-all_no_msg; data-s_all_no_msg; data-p_all_no_msg; data-s_yes_msg; data-s_no_msg; data-p_yes_msg; data-p_no_msg">
 
                 <div id="archetypes-fieldname-title" class="field ArchetypesStringWidget">
                     <label for="title" class="formQuestion">
-                        Titre du groupe d'exercices
+                        Titre du groupe d’exercices
                         <span id="title_wims_help" class="formHelp">
-                            <tal:block i18n:translate="">Un titre de groupe, comme un titre d'exercice, est limité à 40 caractères.</tal:block><br />
+                            <tal:block i18n:translate="">Un titre de groupe, comme un titre d’exercice, est limité à 40 caractères.</tal:block><br />
                             <tal:block i18n:translate="">Attention : les caractères spéciaux</tal:block> (&lt; " &gt; { } ( ) $ &amp; …)
                             <tal:block i18n:translate="">sont interdits.</tal:block>
                         </span>
@@ -179,9 +179,9 @@
 
                 <div id="archetypes-fieldname-qnum" class="field ArchetypesStringWidget">
                     <label for="qnum" class="formQuestion" i18n:translate="">
-                        Nombre d'exercices de ce groupe auxquels l'étudiant devra répondre
+                        Nombre d’exercices de ce groupe auxquels l’étudiant devra répondre
                     </label>
-                    <span class="formHelp">Une note ne sera attribuée qu'une fois la totalité des exercices terminés.</span>
+                    <span class="formHelp">Une note ne sera attribuée qu’une fois la totalité des exercices terminés.</span>
                     <div class="fieldErrorBox"></div>
                     <select name="qnum" id="qnum">
                 <tal:block repeat="val python:range(1,10)">
@@ -226,49 +226,50 @@
 
             <form id="js-wimsExporter" method="POST"
                   tal:attributes="action string:${context/absolute_url};
-                                  data-success_msg string:Génération du fichier d'export en cours…;
-                                  data-all_no_msg string:Création d'un export impossible :;
-                                  data-s_all_no_msg string:le modèle de l'exercice sélectionné n'est pas exportable pour le moment.;
+                                  data-success_msg string:Génération du fichier d’export en cours…;
+                                  data-all_no_msg string:Création d’un export impossible :;
+                                  data-s_all_no_msg string:le modèle de l’exercice sélectionné n’est pas exportable pour le moment.;
                                   data-p_all_no_msg string:les modèles des exercices sélectionnés ne sont pas exportables pour le moment.;
-                                  data-s_yes_msg string:L'exercice suivant fera partie de l'export :;
-                                  data-p_yes_msg string:Les exercices suivants feront partie de l'export :;
-                                  data-s_no_msg string:L'exercice suivant ne peut pas (encore) être exporté :;
-                                  data-p_no_msg string:Les exercices suivants ne peuvent pas (encore) être exportés :"
+                                  data-s_yes_msg string:L’exercice suivant fera partie de l’export :;
+                                  data-p_yes_msg string:Les exercices suivants feront partie de l’export :;
+                                  data-s_no_msg string:L’exercice suivant ne peut pas être exporté :;
+                                  data-p_no_msg string:Les exercices suivants ne peuvent pas être exportés :"
                   i18n:attributes="data-success_msg; data-all_no_msg; data-s_all_no_msg; data-p_all_no_msg; data-s_yes_msg; data-s_no_msg; data-p_yes_msg; data-p_no_msg">
 
                 <div class="field">
-                    <h3 i18n:translate="">Choisissez un format d'export :</h3>
-                    <dl id="js-accordion_export-WIMS" class="accordion"
+                    <h3 i18n:translate="">Choisissez un format d’export :</h3>
+                    <input type="hidden" name="format" id="js-exports_format" value="OEF" />
+                    <dl id="js-accordion_exports-WIMS" class="accordion"
                         data-accordion="export-WIMS" role="tablist">
 
-                        <!--dd class="accordion-navigation">
+                        <dd class="accordion-navigation">
                             <a href="#export_WIMS" role="tab" id="export_WIMS_heading"><tal:block i18n:translate="">Format WIMS</tal:block></a>
                             <div id="export_WIMS" class="content" role="tabpanel" aria-labelledby="export_WIMS_heading">
                                 <ul>
                                     <li>
-                                        <input type="radio" id="OEF" value="oef" name="type" disabled="disabled" />
-                                        <label for="OEF"><del i18n:translate="">Format OEF</del></label>
+                                        <input type="radio" id="export_WIMS_default" value="oef" name="type" />
+                                        <label for="export_WIMS_default" i18n:translate="">Format OEF</label>
                                         <span class="label secondary" i18n:translate="">Format natif de WIMS. </span>
-                                        <p class="formHelp texte_icone icone_information" i18n:translate=""> Ce format sera bientôt disponible. Revenez nous voir plus tard ;).</p>
+                                        <p class="formHelp texte_icone icone_information" i18n:translate="">Ce format vous permet d’exporter des exercices WIMS sans aucune perte de fonctionalité, pour les importer dans un autre serveur WIMS par exemple.</p>
                                     </li>
                                 </ul>
                             </div>
-                        </dd-->
+                        </dd>
 
                         <dd class="accordion-navigation">
-                        <a href="#export_Moodle" role="tab" id="export_Moodle_heading"><tal:block i18n:translate="">Format Moodle</tal:block> <span class="label" i18n:translate="">Vous permet d'importer vos exercices dans Moodle</span></a>
-                            <div id="export_Moodle" class="content active" role="tabpanel" aria-labelledby="export_Moodle_heading">
+                        <a href="#MoodleXML" role="tab" id="export_Moodle_heading"><tal:block i18n:translate="">Format Moodle</tal:block> <span class="label" i18n:translate="">Vous permet d’importer vos exercices dans Moodle</span></a>
+                            <div id="MoodleXML" class="content active" role="tabpanel" aria-labelledby="export_Moodle_heading">
                                 <ul>
                                     <li>
-                                        <input type="radio" id="MoodleXML" value="MoodleXML" name="type" checked="checked"/>
-                                        <label for="MoodleXML">
+                                        <input type="radio" id="MoodleXML_default" value="Moodle" name="type" checked="checked"/>
+                                        <label for="MoodleXML_default">
                                             Moodle XML
-                                            <span class="label secondary" i18n:translate="">Le format "Moodle XML" est disponible pour certains modèles d'exercices uniquement.</span>
+                                            <span class="label secondary" i18n:translate="">Le format "Moodle XML" est disponible pour certains modèles d’exercices uniquement.</span>
                                         </label>
                                     </li>
                                 </ul>
-                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, évitez d'exporter plus de 20 exercices à la fois.</div>
-                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Les étiquettes de vos exercices deviendront des catégories de questions, mais attention : Moodle ne permet qu'une catégorie par question.</div>
+                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Pour éviter des traitements trop longs, évitez d’exporter plus de 20 exercices à la fois.</div>
+                                <div class="formHelp texte_icone icone_information" i18n:translate=""> Les étiquettes de vos exercices deviendront des catégories de questions, mais attention : Moodle ne permet qu’une catégorie par question.</div>
                             </div>
                         </dd>
                     </dl>
@@ -289,9 +290,9 @@
 
             </form>
             <div class="panel">
-                <div i18n:translate="msg_export_WIMS_in_beta">L'export d'exercices multiples est une fonctionalité expérimentale actuellement en phase "Bêta".</div>
-                <div i18n:translate="msg_export_WIMS_check">Assurez-vous de vérifier qu'il n'y a pas eu de souci lors de l'import, et n'hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
-                <div i18n:translate="">nb : Vous trouverez plus de formats disponibles via l'export d'un exercice individuel.</div>
+                <div i18n:translate="msg_export_WIMS_in_beta">L’export d’exercices multiples est une fonctionalité expérimentale actuellement en phase "Bêta".</div>
+                <div i18n:translate="msg_export_WIMS_check">Assurez-vous de vérifier qu’il n’y a pas eu de souci lors de l’import, et n’hésitez-pas à nous faire des retours sur cette fonctionalité !</div>
+                <div i18n:translate="">nb : Vous trouverez plus de formats disponibles via l’export d’un exercice individuel.</div>
             </div>
         </div>
     </metal:macro>

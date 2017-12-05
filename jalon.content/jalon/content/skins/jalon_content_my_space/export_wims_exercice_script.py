@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Python Script "export_wims_exercice_script"."""
 ##bind container=container
 ##bind context=context
 ##bind namespace=
 ##bind script=script
 ##bind subpath=traverse_subpath
 ##parameters=
-##title=
+##title=Export d'un exercices WIMS au format demandé
 ##
 
 u"""  Script (Python) "export_wims_exercice_script".
@@ -45,7 +47,7 @@ elif file_format == "OEF":
     filename = "%s.oef" % context.getId()
     request.RESPONSE.setHeader('content-type', "text/plain")
     request.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
-    exo_file = context.getExoOEF(modele, authMember, request)
+    exo_file = context.getExoOEF(authMember, request)
     if exo_file["request_status"] == "OK":
         return exo_file["code_source"]
     else:

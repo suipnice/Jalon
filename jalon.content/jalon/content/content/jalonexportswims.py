@@ -149,6 +149,19 @@ def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_lis
                 __qcmsuite_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
             elif modele == "vraifauxmultiples":
                 __vraifauxmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            else:
+                racine = __create_moodleXML_root(exoXML,
+                                                 racineXML,
+                                                 "description",
+                                                 parsed_exo["titre"],
+                                                 "",
+                                                 cat_list,
+                                                 "",
+                                                 ""
+                                                 )
+                # Texte de la "question"
+                enonce = _(u"Cet exercice WIMS n'a pas pu être exporté car le modèle sur lequel il se base n'a pas encore fait l'objet d'un script de conversion, ou tout simplement parce qu'il n'existe aucun modèle équivalent sur Moodle.")
+                __add_moodleXML_tag(exoXML, racine, "questiontext", enonce)
 
             # Si le fichier xml n'était pas fournit (export unique), on le convertit en chaine
             if not xml_file:

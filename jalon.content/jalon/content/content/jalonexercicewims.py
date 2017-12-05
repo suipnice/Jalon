@@ -638,7 +638,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
 
         return input_data
 
-    def getExoOEF(self, modele, authMember, requete={}):
+    def getExoOEF(self, authMember, requete={}):
         """Fournit le code source brut (OEF) d'un exercice WIMS."""
         # LOG.info("----- getExoOEF -----")
         fichier = self.aq_parent.wims("callJob", {"job": "getexofile",
@@ -646,8 +646,14 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
                                                   "qexo": self.getId(), "code": authMember})
         try:
             json.loads(fichier)
+        except ValueError:
+            # No JSON object could be decoded
+            # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
+            return {"request_status": "OK", "code_source": fichier}
+        else:
             # LOG.error("[getExoOEF] ERREUR WIMS / retour = %s" % retour)
-            # Si json arrive a parser la reponse, c'est une erreur. WIMS doit être indisponible (ou mal configuré).
+            # Si json arrive a parser la reponse, c'est une erreur.
+            # WIMS doit être indisponible (ou mal configuré).
             # autre erreur possible : l'exercice demandé a disparu de WIMS ?
 
             self.aq_parent.wims("verifierRetourWims", {"rep": fichier,
@@ -658,11 +664,8 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             message = _(u"Impossible d'obtenir cet exercice. Le serveur WIMS semble temporairement inaccessible. Merci de retenter ultérieurement svp.")
             self.plone_utils.addPortalMessage(message, type='error')
             # [TODO] : ici on pourrait peut-etre renvoyer un dico
-            # avec un eventuel code d'erreur pour pouvoir prendr en charge plus de cas.
+            # avec un eventuel code d'erreur pour pouvoir prendre en charge plus de cas.
             return {"request_status": "ERROR", "code_source": None, "error_message": message}
-        except:
-            # Si "fichier" n'est pas un JSON correct, ce doit bien etre un OEF.
-            return {"request_status": "OK", "code_source": fichier}
 
     def getExoWims(self, modele, authMember, requete={}):
         """Permet de parser le code source d'un exercice WIMS."""
@@ -696,7 +699,7 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
             return requete
 
         parser = HTMLParser()
-        parsed_exercice = self.getExoOEF(modele, authMember, requete)
+        parsed_exercice = self.getExoOEF(authMember, requete)
         fichier = parsed_exercice["code_source"]
 
         if fichier is None or modele == "exercicelibre":

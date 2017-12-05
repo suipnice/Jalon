@@ -10,7 +10,7 @@
 
 */
 
-function setWimsExportAccordionRadio( accordionID ) {
+function setWimsExportAccordionRadio( accordionID, input_id ) {
 
     var $accordion = Foundation.utils.S( '#' + accordionID );
     var $form = $accordion.parent( 'form' );
@@ -22,7 +22,7 @@ function setWimsExportAccordionRadio( accordionID ) {
 
         if ( targetID !== undefined ) {
             switchButtonEnabledState( $submitButton, true );
-            Foundation.utils.S( '#js-export_format' ).prop( 'value', targetID );
+            Foundation.utils.S( input_id ).prop( 'value', targetID );
             Foundation.utils.S( '#' + targetID + '_default' ).prop( 'checked', true );
         } else {
             switchButtonEnabledState( $submitButton, false );
@@ -51,21 +51,14 @@ function closeDownloadModal( formID ) {
         * les compatibles avec l'action suivante qui seront vraiment sélectionnés
         * les autres, qui seront indiqués comme incompatibles à l'utilisateur.
         l'attribut "filter" permet de savoir si l'exercice est compatible.
-    Utilisé pour la création de groupe d'exos (un groupe n'inclue pas un autre groupe ni un exo externe)
-    et pour l'export d'exos multiples (seuls certains modèles sont exportables)
+    Utilisé pour :
+    * la création de groupe d'exos (un groupe n'inclue pas un autre groupe ni un exo externe)
+    * l'export d'exos multiples (seuls certains modèles sont exportables)
 */
 
 function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
 
     $( document ).on( 'open.fndtn.reveal', reveal_id, function ( ) {
-
-        /*
-        var qNum = Foundation.utils.S( '#js-update_target tbody input[type="checkbox"][name="paths:list"]:checked' ).length;
-        var $qNum = Foundation.utils.S( '#qnum' );
-        if ( qNum > 9 ) { qNum = 9; }
-        $( 'option', $qNum ).remove( );
-        for ( i = 1 ; i <= qNum; i++ ) { $qNum.append( $( '<option>', { value : i, text : i } ) ); }
-        */
 
         Foundation.utils.S( '#includedPanelMessage' ).remove( );
         Foundation.utils.S( '#excludedPanelMessage' ).remove( );
@@ -171,6 +164,7 @@ function setWimsSelectionFilter( selectionForm_id, reveal_id, filter ) {
     } );
     // prepare la fermeture du popup au telechargement.
     closeDownloadModal(selectionForm_id);
+    setWimsExportAccordionRadio('js-accordion_exports-WIMS', '#js-exports_format');
 }
 
 
