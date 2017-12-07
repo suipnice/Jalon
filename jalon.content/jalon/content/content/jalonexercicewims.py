@@ -582,10 +582,10 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         return getExoXML(context=self, formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
 
     def getExoZIP(self, filename_path, exo_donnees):
-        """Appelle la fonction getExoXML de jalonexportswims."""
+        """Appelle la fonction getExoZIP de jalonexportswims."""
         # LOG.info("----- getExoZIP -----")
-        import jalonexportswims
-        return jalonexportswims.getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
+        from jalonexportswims import getExoZIP
+        return getExoZIP(filename_path=filename_path, exo_donnees=exo_donnees)
 
     def getListeExports(self):
         u"""Fournit la liste des formats exportables a partir du modèle courant."""

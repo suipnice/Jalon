@@ -1166,7 +1166,10 @@ class JalonFolder(ATFolder):
         if file_type == "import_Moodle":
             self.wims("importMoodleQuizXML", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
         elif file_type == "import_WIMS":
-            self.wims("importExoOEF", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
+            if file_format == "oef":
+                self.wims("importExoOEF", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
+            elif file_format == "zip":
+                self.wims("importExoZIP", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
         else:
             message = _(u"Ce format d'import d'exercices (%s) n'est pas permis." % file_type)
             self.plone_utils.addPortalMessage(message, type='error')

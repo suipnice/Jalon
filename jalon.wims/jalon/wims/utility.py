@@ -647,13 +647,13 @@ class Wims(SimpleItem):
 
     def importExoOEF(self, params):
         u"""Import d'exercice WIMS dans mon espace."""
-        # params must be : {folder, member_auth, import_file}
+        # params must be : {folder, member_auth, file}
 
         # LOG.info("----- importExoOEF -----")
         import_file = params["file"]
         user_id = params["member_auth"]
         folder = params["folder"]
-        member_wims_class = params["folder"].getComplement()
+        member_wims_class = folder.getComplement()
         file_name = import_file.filename
 
         # on verifie que le fichier envoyé est au format ".oef"
@@ -697,6 +697,63 @@ class Wims(SimpleItem):
         else:
             message = _(u"Votre fichier n'est pas au format OEF. Assurez-vous de sélectionner un fichier « .oef ».")
             folder.plone_utils.addPortalMessage(message, type='error')
+
+    def importExoZIP(self, params):
+        u"""Import d'exercices WIMS dans mon espace."""
+        # params must be : {folder, member_auth, file}
+
+        # LOG.info("----- importExoZIP -----")
+        max_exos = 20
+        """
+        # TODO : Si un dossier d'images existe dans l'archive, il faudrait le transferer également.
+        """
+        import_file = params["file"]
+        user_id = params["member_auth"]
+        folder = params["folder"]
+        member_wims_class = folder.getComplement()
+
+        # Liste des exercices deja presents sur Jalon
+        jalon_wims_exercices = folder.objectIds()
+        jalon_wims_exercices = [elem for elem in jalon_wims_exercices if not(elem.startswith("groupe-") or elem.startswith("externe-"))]
+
+        from zipfile import ZipFile
+        zip_file = ZipFile(import_file)
+        nb_exos = 0
+        for name in zip_file.namelist():
+            # LOG.info(" importExoZIP : %s" % name)
+            if nb_exos < max_exos :
+                if name.startswith("class/src/") and name.endswith(".oef"):
+                    file_name = name[10:-4]
+                    # Cet id d'exercice existe déjà
+                    if file_name in jalon_wims_exercices:
+                        file_name = file_name.split("-")
+                        if file_name[-1].isdigit():
+                            file_name[-1] = DateTime().strftime("%Y%m%d%H%M%S")
+                            file_name = "-".join(file_name)
+                        else:
+                            file_name = "%s-%s-%s" % ("import", user_id, DateTime().strftime("%Y%m%d%H%M%S"))
+
+                    dico = {"job":    "addexo",
+                            "code":   user_id,
+                            "data1":  zip_file.read(name),
+                            "qexo":   file_name,
+                            "qclass": "%s_1" % member_wims_class}
+                    rep = json.loads(self.callJob(dico))
+                    # rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/importExoZIP", "requete": params})
+                    if rep["status"] == "OK":
+                        nb_exos += 1
+            else:
+                message = _(u"Attention : vous ne pouvez importer plus de %s exercices dans une seule archive. Certains exercices n'ont pas été importées." % max_exos)
+                folder.plone_utils.addPortalMessage(message, type='warning')
+                break
+        if nb_exos > 0:
+            folder.updateJalonExercicesWims(user_id, member_wims_class, self)
+            message = _(u"Votre archive a bien été envoyée. %s exercices importés." % nb_exos)
+            folder.plone_utils.addPortalMessage(message, type='success')
+        else:
+            message = _(u"Votre archive ne contenait aucun exercice au format OEF valide.")
+            folder.plone_utils.addPortalMessage(message, type='error')
+
     def importMoodleQuizXML(self, params):
         u"""Import d'exercices Moodle (quiz) dans mon espace."""
         # See "https://docs.moodle.org/3x/fr/Format_XML_Moodle"
@@ -960,9 +1017,9 @@ class Wims(SimpleItem):
                     else:
                         # L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
                         if wims_response["status"] == "OK":
-                            LOG.info("qnum = %s | last = %s)" % (qnum, last_question))
+                            # LOG.info("qnum = %s | last = %s)" % (qnum, last_question))
                             nb_exos = nb_exos + 1
-                            LOG.info("nb_exos = %s | max_exos = %s)" % (nb_exos, max_exos))
+                            # LOG.info("nb_exos = %s | max_exos = %s)" % (nb_exos, max_exos))
                             obj_created.setProperties({"Title": question_dict["title"],
                                                        "Modele": modele_wims,
                                                        })

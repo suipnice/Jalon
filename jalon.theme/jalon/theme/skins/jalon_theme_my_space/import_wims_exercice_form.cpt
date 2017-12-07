@@ -33,6 +33,12 @@
                     <div id="import_WIMS" class="content active" role="tabpanel" aria-labelledby="import_WIMS_heading">
                         <ul>
                             <li>
+                                <input type="radio" id="import_WIMS_zip" value="zip" name="format" />
+                                <label for="import_WIMS_zip" i18n:translate="">Archive ZIP</label>
+                                <span class="label secondary" i18n:translate="">Sauvegarde d'un ensemble d'exercices</span>
+                                <p class="formHelp texte_icone icone_information" i18n:translate="">Permet d'importer plusieurs exercices à la fois, via une archive créée depuis WIMS ou Jalon.</p>
+                            </li>
+                            <li>
                                 <input type="radio" id="import_WIMS_default" value="oef" name="format" checked="checked"/>
                                 <label for="import_WIMS_default" i18n:translate="">Format OEF</label>
                                 <span class="label secondary" i18n:translate="">Exercice exporté directement depuis WIMS</span>
