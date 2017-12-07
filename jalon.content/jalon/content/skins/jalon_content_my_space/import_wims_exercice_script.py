@@ -14,6 +14,6 @@
 REQUEST = context.REQUEST
 form = context.REQUEST.form
 
-context.importExercicesWIMS(form["type"], form["member_auth"], form["file"], form["model_filter"])
+context.importExercicesWIMS(form["type"], form["format"], form["member_auth"], form["file"], form["model_filter"])
 
 REQUEST.RESPONSE.redirect(context.absolute_url())

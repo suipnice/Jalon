@@ -248,7 +248,7 @@
                                 <ul>
                                     <li>
                                         <input type="radio" id="export_WIMS_default" value="oef" name="type" />
-                                        <label for="export_WIMS_default" i18n:translate="">Format OEF</label>
+                                        <label for="export_WIMS_default" i18n:translate="">Archive ZIP d'exercices au format OEF</label>
                                         <span class="label secondary" i18n:translate="">Format natif de WIMS. </span>
                                         <p class="formHelp texte_icone icone_information" i18n:translate="">Ce format vous permet d’exporter des exercices WIMS sans aucune perte de fonctionalité, pour les importer dans un autre serveur WIMS par exemple.</p>
                                     </li>

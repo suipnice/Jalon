@@ -866,10 +866,8 @@ def __texteatrousmultiples_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[])
 
                 if len(trou) > 1:
                     # le trou s'affiche sous forme de liste de choix
-                    # if parsed_exo["list_order"] == "2":
-                    #    # Les réponses sont mélangées
-                    #   type_trou = "MULTICHOICE_S"
-                    # else:
+                    # Si un jour on ajoute une option pour melanger les réponses, on pourra utiliser ceci :
+                    # type_trou = "MULTICHOICE_S"
                     type_trou = "MULTICHOICE"
 
                     good_reps = []
@@ -1020,6 +1018,16 @@ def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
         reponses = "~".join(reponses)
         # Le "1" représente le nombre de points accordé par cette réponse.
         texte = texte.replace(match.group(), "{1:%s:%s}" % (type_trou, reponses))
+
+    """
+    # Mélanger les réponses possibles (redondant avec MULTICHOICE_S)
+    branche = newdoc.createElement("shuffleanswers")
+    racine.appendChild(branche)
+    if parsed_exo["list_order"] == "2":
+        branche.appendChild(newdoc.createTextNode("true"))
+    else:
+        branche.appendChild(newdoc.createTextNode("false"))
+    """
 
     # Texte de la question // enonce
     if parsed_exo["credits"]:

@@ -423,8 +423,12 @@ Marignan fut la première victoire du jeune roi François Ier, la première ann�
         # wims = getToolByName(self, "portal_wims")
         if modele == "exercicelibre":
             try:
+                dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1")
+            except UnicodeEncodeError:
                 # si on tombe sur des caracteres speciaux comme "’", la fonction "encode" plante.
                 # On utilise donc "replace" pour les remplacer par des "?"
+                message = _(u"Attention : Certains caractères spéciaux de votre exercice ont été remplacés par des points d'interrogation")
+                self.plone_utils.addPortalMessage(message, type='warning')
                 dico["source"] = param["exercicelibre"].decode("utf-8").encode("iso-8859-1", "replace")
             except:
                 dico["source"] = param["exercicelibre"]

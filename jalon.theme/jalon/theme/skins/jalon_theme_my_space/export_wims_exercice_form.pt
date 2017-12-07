@@ -35,8 +35,8 @@
                         <li>
                             <input type="radio" id="Moodle_default" value="3.3" name="version"/>
                             <label for="Moodle_default">
-                                version 3.3.x
-                                <span class="label secondary" i18n:translate="">Utilisable sur un serveur Moodle 3.3</span>
+                                version 3.x
+                                <span class="label secondary" i18n:translate="">Utilisable sur un serveur Moodle 3</span>
                             </label>
                         </li>
                     </ul>

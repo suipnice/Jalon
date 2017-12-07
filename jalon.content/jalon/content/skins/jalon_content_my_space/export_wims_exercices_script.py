@@ -56,7 +56,7 @@ else:
     file_content = "<error>%s</error>" % message
     context.plone_utils.addPortalMessage(message, 'failure')
 
-filename = "export_WIMS_%s.xml" % user_id
+filename = "%s_WIMS_%s.xml" % (file_format, user_id)
 context.REQUEST.RESPONSE.setHeader('content-type', "application/xml")
 context.REQUEST.RESPONSE.setHeader('Content-Disposition', 'attachment; filename=%s' % filename)
 
