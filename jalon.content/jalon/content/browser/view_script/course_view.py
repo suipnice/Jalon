@@ -245,7 +245,7 @@ class CourseView(BrowserView):
                                                  "tab_icon":   "fa fa-bullhorn fa-2x",
                                                  "tab_name":   "Annonces"})
 
-        my_view["course_forums"] = self.context.getDicoForums()
+        my_view["course_forums"] = self.context.getDicoForums(anonymous=self.isAnonymous())
         my_view["course_life_tabs_list"].append({"tab_link":   "#course_life-forum",
                                                  "tab_number": my_view["course_forums"]["nbForums"],
                                                  "tab_icon":   "fa fa-comments fa-2x",

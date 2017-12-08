@@ -2741,7 +2741,7 @@ class JalonCours(ATFolder):
             return {"nbActu":    0,
                     "listeActu": []}
 
-        infos_elements = self.getCourseItemProperties()
+        infos_elements = dict(self.getCourseItemProperties())
 
         for actualite in listeActualites:
             if DateTime() > actualite["dateActivation"]:
@@ -2853,9 +2853,9 @@ class JalonCours(ATFolder):
         """Return time formatted for Ploneboard."""
         return toPloneboardTime(context, request, time_)
 
-    def getDicoForums(self, all=None):
+    def getDicoForums(self, all=None, anonymous=False):
         # LOG.info("----- getDicoForums -----")
-        if self.getAcces() == "Public":
+        if self.getAcces() == "Public" and anonymous:
             return {"nbForums":    0,
                     "listeForums": []}
 
