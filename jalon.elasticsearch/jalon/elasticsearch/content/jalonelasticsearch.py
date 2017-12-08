@@ -43,7 +43,7 @@ class JalonElasticsearch(SimpleItem):
         if not type_search or type_search == "mes_videos":
             portal_membership = getToolByName(self, 'portal_membership')
             authMember = portal_membership.getAuthenticatedMember()
-            body = {"from": start, "size": 12, "sort": [{"date_added": "desc"}], "query": {"filtered": {"filter": {"term": {"owner": authMember.getId()}}}}}
+            body = {"from": start, "size": 50, "sort": [{"date_added": "desc"}], "query": {"filtered": {"filter": {"term": {"owner": authMember.getId()}}}}}
             if term_search:
                 body["query"]["filtered"]["query"] = {"match": {"title": term_search}}
             result = elasticsearch.search(body=body, size=12)
