@@ -45,11 +45,11 @@ Mettez les mots reconnus dans la liste. Toute réponse contenant un mot en dehor
 Si ce champ est vide, toute réponse non-reconnue est jugée fausse. Ce qui doit être le cas en général pour les applications linguistiques.
 \text{words=$$words$$}
 
-:Texte affiché avant la question. Balises html admises. Peut être vide.
- $embraced_randitem
+:Texte affiché avant la question. Balises HTML admises. Peut être vide.
+$embraced_randitem
 \text{pre=$$pre$$}
 
-:Texte affiché après la question. Balises html admises. Peut être vide.
+:Texte affiché après la question. Balises HTML admises. Peut être vide.
 $embraced_randitem
 \text{post=$$post$$}
 
@@ -69,8 +69,11 @@ $embraced_randitem
     \integer{nb_quest_in_resp=floor(rows(\resp)/2)}
     \for{j=1 to \nb_quest_in_resp}{
       \text{new_word=\resp[2*\j;]}
-      \if{\new_word notwordof \words}
-        {\text{words=\words \new_word}}
+      \if{
+        \new_word notwordof \words
+      }{
+        \text{words=\words \new_word}
+      }
     }
   }
 }
@@ -80,7 +83,7 @@ $embraced_randitem
 \text{data=slib(text/cutchoice2 \data)}
 \integer{qs=floor(rows(\data)/2)}
 
-:: qlist contient la liste des reponses attendues
+::qlist contient la liste des reponses attendues
 \text{qlist=wims(makelist reply x for x=1 to \qs)}
 \steps{\qlist}
 

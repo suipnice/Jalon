@@ -229,7 +229,7 @@ class JalonFolder(ATFolder):
     def getDataCourseWimsActivity(self, user_id, course_id):
         # LOG.info("----- getDataCourseWimsActivity -----")
         course_user_folder = jalon_utils.getCourseUserFolder(self, user_id)
-        #course_object = getattr(course_user_folder, course_id)
+        # course_object = getattr(course_user_folder, course_id)
         course = self.getCourseObject(course_user_folder, course_id)
         return course.getDataCourseWimsActivity(user_id, course_id)
 
@@ -264,21 +264,21 @@ class JalonFolder(ATFolder):
                         retour = bdd.getInfosEtape(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour ce diplôme." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     if type in ["ue", "uel"]:
                         retour = bdd.getInfosELP2(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour cette UE / UEL." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     if type == "groupe":
                         retour = bdd.getInfosGPE(code)
                         if not retour:
                             elem = ["Le code %s n'est plus valide pour ce groupe." %
-                                code, code, "0"]
+                                    code, code, "0"]
                         else:
                             elem = list(retour)
                     nbSeances = 0
@@ -315,12 +315,12 @@ class JalonFolder(ATFolder):
         public_cons = "Anonymous"
         if user.has_role("Personnel"):
             public_cons = "Personnel"
-            #username = user.getId()
-            #if self.isAuteur(username):
+            # username = user.getId()
+            # if self.isAuteur(username):
             #    public_cons = "Auteur"
-            #if username in self.coAuteurs:
+            # if username in self.coAuteurs:
             #    public_cons = "Co-auteur"
-            #if username in self.coLecteurs:
+            # if username in self.coLecteurs:
             #    public_cons = "Lecteur"
         if user.has_role("EtudiantJalon") or user.has_role("Etudiant"):
             public_cons = "Etudiant"
@@ -354,7 +354,7 @@ class JalonFolder(ATFolder):
             return list(retour)
 
     # getInfosMembre recupere les infos sur les personnes.
-    #def getInfosMembre(self, username):
+    # def getInfosMembre(self, username):
     #    # self.plone_log("getInfosMembre")
     #    return jalon_utils.getInfosMembre(username)
 
@@ -486,7 +486,7 @@ class JalonFolder(ATFolder):
         return defaut
 
     def ajouterTag(self, tag):
-        if not tag in self.Subject():
+        if tag not in self.Subject():
             tags = list(self.Subject())
             tags.append(tag)
             self.setSubject(tuple(tags))
@@ -496,7 +496,7 @@ class JalonFolder(ATFolder):
     #  NEW TAG                          #
     # --------------------------------- #
     def getSubjectsDict(self, key=None):
-        """Fournit le dictionnaire des étiquettes du dossier."""
+        u"""Fournit le dictionnaire des étiquettes du dossier."""
         # LOG.info.info("----- getSubjectsDict -----")
         # LOG.info("***** item_id : %s" % key)
         # LOG.info.info("self._subjects_dict : %s" % self._subjects_dict)
@@ -505,7 +505,7 @@ class JalonFolder(ATFolder):
         return copy.deepcopy(self._subjects_dict)
 
     def setSubjectsDict(self, subjects_dict):
-        """Définit le dictionnaire des étiquettes du dossier."""
+        u"""Définit le dictionnaire des étiquettes du dossier."""
         # LOG.info("----- setSubjectsDict -----")
         if type(self._subjects_dict).__name__ != "PersistentMapping":
             self._subjects_dict = PersistentDict(subjects_dict)
@@ -513,7 +513,7 @@ class JalonFolder(ATFolder):
             self._subjects_dict = subjects_dict
 
     def getDisplaySubjects(self):
-        """Affichage des étiquettes sur le formulaire étiquettage."""
+        u"""Affichage des étiquettes sur le formulaire étiquetage."""
         # LOG.info("----- getDisplaySubjects -----")
 
         folder_dict = {"mes_fichiers":                 "Fichiers",
@@ -876,6 +876,12 @@ class JalonFolder(ATFolder):
                     duplicata.invokeFactory(type_name="JalonCoursWims", id=key)
                     duplicataObjet = getattr(duplicata, key)
                     dico_Properties = activite.getDicoProperties()
+
+                    # ici il faudrait (pour deverrouiller les Examens) :
+                    # * supprimer l'attribut "idExam" de dico_Properties
+                    # * rendre l'examen 'masqué'
+                    # * prévenir l'utilisateur que les examens sont désactivés.
+
                     duplicataObjet.setJalonProperties(dico_Properties)
 
                     # Met a jour les relatedItems des documents et exercices.
@@ -1088,7 +1094,73 @@ class JalonFolder(ATFolder):
                          "requete": params})
         # LOG.info("----- compilExosWIMS END %s -----" % DateTime().strftime("%d/%m/%Y - %H:%M:%S"))
 
-    def importExercicesWIMS(self, file_format, member_auth, file, model_filter):
+    def updateJalonExercicesWims(self, user_id, member_wims_class, portal_wims):
+        u"""Met a jour la liste des exos de l'utilisateur user_id."""
+        # LOG.info("----- updateJalonExercicesWims -----")
+
+        # L'utilisateur courant dispose bien d'une classe. on liste ses exercices.
+        exercices = portal_wims.getExercicesWims({"authMember": user_id,
+                                                  "qclass":     "%s_1" % member_wims_class,
+                                                  "jalon_URL":   self.absolute_url()})
+        if exercices["status"] == "ERROR":
+            # en cas d'indisponibilite, WIMS donne un code d'erreur 450 ("HTTPError")
+            if "type" in exercices:
+                return {"status": "ERROR", "message": "wims_unavailable"}
+            else:
+                return {"status": "ERROR", "message": "wims_bad_conf"}
+        # except:
+        #   mail_body = "*****    WIMS indisponible ou Mauvais parametrage de La connexion WIMS  *****\n"
+        #   mail_body += "[my_wims_exercices.py/updateJalonExercicesWims] getExercicesWims\n"
+        # mail_body += "#2e  cas : l'utilisateur courant dispose deja d'une classe. on liste ses exercices.\n\n"
+        #   mail_body += " authMember : %s \n" % authMember
+        #   mail_body += " qclass : %s_1 \n" % self.getComplement()
+        #   mail_body += "*****                                                                   *****\n"
+        #   print mail_body
+        #   mail_erreur["message"] = mail_body
+        #   self.envoyerMailErreur(mail_erreur)
+        #   Si getExercicesWIMS plante, c'est :
+        #   soit une mauvaise configuration de WIMS  par l'admin (elle a du etre changee entre temps, puisqu'il dispose d'une classe ici)
+        #   soit que wims est actuellement indisponible. (cas un peu plus probable que le 1er)
+        #   return {"erreur" : "wims_unavailable" }
+
+        # On ne liste que les exos qui ne sont pas des groupes ou des exo externes
+        jalon_wims_exercices = self.objectIds()
+        jalon_wims_exercices = [elem for elem in jalon_wims_exercices if not(elem.startswith("groupe-") or elem.startswith("externe-"))]
+        # jalon_wims_exercices = [elem for elem in jalon_wims_exercices if elem.startswith("groupe-")]
+        # return {"erreur": "wims_unavailable"}
+
+        if "exocount" in exercices:
+            if exercices["exocount"] == 0:
+                wims_exercices = []
+            else:
+                wims_exercices = exercices["exotitlelist"]
+            if len(jalon_wims_exercices) < len(wims_exercices):
+                # Il y a plus d'exos sur WIMS (%s) que sur Jalon (%s) " % (len(wims_exercices), len(jalon_wims_exercices)))
+                model_list = portal_wims.getWimsProperty("modele_wims")
+                # On recupere les exos de wims pour les créer sur jalon
+                for wims_exercice in wims_exercices:
+                    wims_exercice_check = False
+                    for exo_jalon in jalon_wims_exercices:
+                        if wims_exercice["id"] == exo_jalon:
+                            wims_exercice_check = True
+                    if not wims_exercice_check:
+                        model = wims_exercice["id"].split("-")[0]
+                        if model not in model_list:
+                            model = "exercicelibre"
+                        # LOG.info("CREATION de l'exercice %s sur Jalon " % wims_exercice["id"])
+                        object_id = self.invokeFactory(type_name='JalonExerciceWims', id=wims_exercice["id"])
+                        object_created = getattr(self, object_id)
+                        object_created.setProperties({"Title":  wims_exercice["title"],
+                                                      "Modele": model})
+        else:
+            # *****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
+            # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
+            LOG.info("*****    Mauvais parametrage de votre connexion WIMS  *****")
+            LOG.info("[jalonfolder.py] getExercicesWims : %s" % exercices)
+            LOG.info("*****                                                *****")
+            return {"erreur": "wims_unavailable"}
+
+    def importExercicesWIMS(self, file_type, file_format, member_auth, file, model_filter):
         """Import d'exercices WIMS via un fichier."""
         if self.getId() != "mes_exercices_wims":
             message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
@@ -1097,11 +1169,85 @@ class JalonFolder(ATFolder):
 
         portal = self.portal_url.getPortalObject()
         folder = getattr(portal.Members, member_auth).Wims
-        if file_format == "MoodleXML":
+        if file_type == "import_Moodle":
             self.wims("importMoodleQuizXML", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
+        elif file_type == "import_WIMS":
+            if file_format == "oef":
+                self.wims("importExoOEF", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
+            elif file_format == "zip":
+                self.wims("importExoZIP", {"context": self, "folder": folder, "member_auth": member_auth, "file": file, "model_filter": model_filter})
         else:
-            message = _(u"Ce format d'import d'exercices n'est pas permis.")
+            message = _(u"Ce format d'import d'exercices (%s) n'est pas permis." % file_type)
+            self.plone_utils.addPortalMessage(message, type='error')
+
+    def exportExercicesWIMS_XML(self, listeIdsExos, member_auth, formatXML="OLX", version="latest"):
+        u"""Genere un export XML à partir d'une selection de plusieurs exercices."""
+        # LOG.info("----- exportExercicesWIMS_XML -----")
+        import xml.dom.minidom as minidom
+
+        if self.getId() != "mes_exercices_wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
             self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        portal = self.portal_url.getPortalObject()
+        folder = getattr(portal.Members, member_auth).Wims
+
+        xml_file = minidom.Document()
+        xml_file.appendChild(xml_file.createElement("quiz"))
+        cat_list = []
+
+        # liste des etiquettes du dossier
+        folder_subjects = self.getDisplaySubjects()
+        # LOG.info("getDisplaySubjects= '%s'" % folder_subjects)
+        for object_id in listeIdsExos:
+            # TODO : trier les exos par étiquette ?
+            obj = getattr(folder, object_id)
+            # id des etiquettes de l'objet
+            cat_ids = obj.Subject()
+            cat_list = []
+            if len(cat_ids) > 0:
+                for subject in folder_subjects:
+                    if subject['tag_id'] in cat_ids:
+                        cat_list.append(subject['tag_title'])
+
+            obj.getExoXML(formatXML=formatXML, version=version, xml_file=xml_file, cat_list=cat_list)
+
+        return xml_file.toxml()
+
+    def exportExercicesWIMS_zip(self, listeIdsExos, member_auth):
+        u"""Genere une archive ZIP à partir d'une selection de plusieurs exercices."""
+        # LOG.info("----- exportExercicesWIMS_zip -----")
+
+        if self.getId() != "mes_exercices_wims":
+            message = _(u"Cette fonction doit etre appelee depuis un dossier WIMS !")
+            self.plone_utils.addPortalMessage(message, type='warning')
+            return None
+
+        from tempfile import mkstemp
+        fd, path = mkstemp('.zipfiletransport')
+        os.close(fd)
+
+        from zipfile import ZipFile, ZIP_DEFLATED
+        zipFile = ZipFile(path, 'w', ZIP_DEFLATED)
+
+        portal = self.portal_url.getPortalObject()
+        folder = getattr(portal.Members, member_auth).Wims
+
+        zipFile.writestr("class/serial", "%s/1" % folder.getComplement())
+        zipFile.writestr("class/version", "4")
+
+        for object_id in listeIdsExos:
+            obj = getattr(folder, object_id)
+            file_content = obj.getExoOEF(member_auth)
+            zipFile.writestr("class/src/%s.oef" % object_id, file_content["code_source"].decode("utf-8").encode("iso-8859-1"))
+
+        zipFile.close()
+
+        fp = open(path, 'rb')
+        data = fp.read()
+        fp.close()
+        return {"length": str(os.stat(path)[6]), "data": data}
 
     def transfererExosWIMS(self, user_source):
         u"""Transfert des exercices WIMS d'un prof "user_source" vers le jalonfolder courant.

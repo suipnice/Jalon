@@ -17,7 +17,7 @@
     </h2>
 
     <div class="panel warning radius">
-        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</talblock>
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</tal:block>
     </div>
 
     <div class="panel warning radius"

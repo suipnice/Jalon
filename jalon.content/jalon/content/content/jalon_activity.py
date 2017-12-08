@@ -25,7 +25,7 @@ class JalonActivity(SimpleItem):
     # Fonctions onglet Documents #
     # -------------------------- #
     def isChecked(self, idElement, formulaire, listeElement=None):
-        """check if idElement is checked."""
+        """Check if idElement is checked."""
         # LOG.info("----- isChecked -----")
         if formulaire == "ajout-sujets":
             if idElement in list(self.getListeSujets()):
@@ -60,7 +60,7 @@ class JalonActivity(SimpleItem):
             self.setDocumentsProperties(self._infos_element)
 
     def addMySpaceItem(self, folder_object, item_id, item_type, user_id, display_item, map_position, display_in_plan, portal_workflow):
-        """Met a jour les related Items de l'activité et de l'element de Mes ressources qu'on lui ajoute."""
+        u"""Met a jour les related Items de l'activité et de l'element de Mes ressources qu'on lui ajoute."""
         # LOG.info("----- addMySpaceItem -----")
         item_id_no_dot = item_id.replace(".", "*-*")
 
@@ -91,7 +91,7 @@ class JalonActivity(SimpleItem):
         # self.addItemProperty(item_id_no_dot, item_type, item_object.Title(), user_id, display_item, complement_element)
 
     def addItemProperty(self, item_id, item_type, item_title, item_creator, display_item, complement_element):
-        """Ajoute un element à la liste des sujets d'une activité."""
+        u"""Ajoute un element à la liste des sujets d'une activité."""
         # LOG.info("----- addItemProperty -----")
 
         items_properties = self.getDocumentsProperties()
@@ -113,7 +113,7 @@ class JalonActivity(SimpleItem):
             self.plone_utils.addPortalMessage(message, type='success')
 
     def displayDocumentsList(self, is_personnel, portal):
-        """Fournit la liste des documents à afficher."""
+        u"""Fournit la liste des documents à afficher."""
         # LOG.info("----- displayDocumentsList -----")
         course_parent = self.aq_parent
 
@@ -144,7 +144,7 @@ class JalonActivity(SimpleItem):
         return self.getDocumentsProperties(key)
 
     def getItemActions(self, course_parent, item_properties, is_display_item_bool):
-        """Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
+        u"""Fournit la liste des actions possibles pour un sous-element "item_properties" de l'activité."""
         # LOG.info("----- getItemActions -----")
         item_actions = course_parent._item_actions[:]
 
@@ -163,7 +163,7 @@ class JalonActivity(SimpleItem):
         return item_actions
 
     def getDisplayItemForm(self, item_id):
-        """Fournit les infos du formulaire d'affichage/masquage de l'activité."""
+        u"""Fournit les infos du formulaire d'affichage/masquage de l'activité."""
         # LOG.info("----- getDisplayItemForm -----")
         if self.getId() == item_id:
             # Pour l'affichage de l'activité elle-même, on fait appel à la fonction getDisplayItemForm() du cours.
@@ -176,7 +176,7 @@ class JalonActivity(SimpleItem):
         return form_properties
 
     def getDocumentsProperties(self, key=None):
-        """get Properties for one or all Documents."""
+        """Get Properties for one or all Documents."""
         # LOG.info("----- getDocumentsProperties (%s) -----" % self.getId())
         if key:
             return self._infos_element.get(key, None)
@@ -212,13 +212,13 @@ class JalonActivity(SimpleItem):
     def detachAllDocuments(self):
         # LOG.info("----- detachAllDocuments -----")
         document_properties = self.getDocumentsProperties()
-        #document_dict = document_properties[item_id]
-        #del document_properties[item_id]
-        #self.setDocumentsProperties(document_properties)
+        # document_dict = document_properties[item_id]
+        # del document_properties[item_id]
+        # self.setDocumentsProperties(document_properties)
 
         documents_list = list(self.getListeSujets())
-        #documents_list.remove(item_id)
-        #self.setListeSujets(tuple(documents_list))
+        # documents_list.remove(item_id)
+        # self.setListeSujets(tuple(documents_list))
 
         for item_id in documents_list:
             document_dict = document_properties[item_id]
@@ -228,8 +228,8 @@ class JalonActivity(SimpleItem):
             item_object.setRelatedItems(item_relatedItems)
             item_object.reindexObject()
 
-        #activity_relatedItems = self.getRelatedItems()
-        #activity_relatedItems.remove(item_object)
-        #self.setRelatedItems(activity_relatedItems)
+        # activity_relatedItems = self.getRelatedItems()
+        # activity_relatedItems.remove(item_object)
+        # self.setRelatedItems(activity_relatedItems)
 
         self.reindexObject()

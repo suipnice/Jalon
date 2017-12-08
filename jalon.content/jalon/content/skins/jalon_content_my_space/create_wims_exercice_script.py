@@ -17,7 +17,7 @@ from Products.CMFPlone import PloneMessageFactory as _
                             -> create_wims_exercice_form.cpt -> validate_my_space
                                 -> create_wims_exercice_script -> javascript:setRevealFormNewPage() -> $page_url """
 # Le contexte est un jalonfolder
-#context = context
+# context = context
 REQUEST = context.REQUEST
 form = REQUEST.form
 

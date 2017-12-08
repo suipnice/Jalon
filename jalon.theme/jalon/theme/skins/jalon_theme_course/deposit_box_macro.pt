@@ -146,7 +146,7 @@
 -->
 <metal:macro define-macro="peers-list">
     <div class="panel warning radius">
-        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</talblock>
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</tal:block>
     </div>
 
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);

@@ -24,7 +24,7 @@
     <form tal:attributes="action string:${context/absolute_url}/course_delete_item_script"
           method="POST">
 
-        <div tal:condition="python:res_props['typeElement'] == 'Exercice Wims'" class="panel warning radius">
+        <div tal:condition="python:'Wims' in res_props['typeElement']" class="panel warning radius">
             <strong i18n:translate="msg_warning">Attention :</strong>
             <tal:block i18n:translate="">en détachant un exercice d'une activité, vous allez également supprimer toutes les notes obtenues par les étudiants à cette activité.</tal:block>
             <input type="hidden" name="item_order" tal:attributes="value request/item_order"/>

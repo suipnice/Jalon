@@ -147,7 +147,7 @@ def convertLangToWIMS(portal_lang):
 
 
 def encodeUTF8(itemAEncoder):
-    """encode itemAEncoder en UTF8."""
+    """Encode itemAEncoder en UTF8."""
     try:
         return [str(encoder).encode("utf-8") for encoder in itemAEncoder]
     except:
@@ -171,7 +171,7 @@ def convertHTMLEntitiesToUTF8(source):
 
 
 def envoyerMail(form):
-    u"""envoie un email selon les parametres spécifiés."""
+    u"""Envoie un email selon les parametres spécifiés."""
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
@@ -205,8 +205,8 @@ def envoyerMail(form):
 
 
 def envoyerMailErreur(form):
+    u"""Envoie un email de signalement d'erreur à l'administrateur."""
     # LOG.info("----- envoyerMailErreur -----")
-    u"""envoie un email de signalement d'erreur à l'administrateur."""
     portal = getUtility(IPloneSiteRoot)
     jalon_properties = getToolByName(portal, "portal_jalon_properties")
     mail_properties = jalon_properties.getPropertiesCourriels()
@@ -288,7 +288,7 @@ def getJalonProperty(key):
 
 
 def flatten(lst):
-    """ flatten. """
+    """Flatten."""
     for elem in lst:
         if type(elem) in (tuple, list):
             for i in flatten(elem):
@@ -298,14 +298,14 @@ def flatten(lst):
 
 
 def getClefsDico(dico):
-    """get Clefs Dico."""
+    """Get Clefs Dico."""
     clefs = dico.keys()
     clefs.sort()
     return clefs
 
 
 def getIndividu(sesame, type=None, portal=None):
-    u"""getIndividu renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
+    u"""Renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour un sesame (login) en entree.
 
     # Si l'individu n'existe pas dans la base, il ne sera pas renvoyé.
     # si type="dict", les infos sont retraitées sous forme de dico.
@@ -343,7 +343,7 @@ def getIndividu(sesame, type=None, portal=None):
 
 def getIndividus(listeSesames, type=None, portal=None):
     u"""
-    # getIndividus renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour la liste des sesames (logins) en entree.
+    # Renvoie l'ensemble des infos disponibles (nom, prenom, mail, etc...) pour la liste des sesames (logins) en entree.
 
     # Si un individu n'existe pas dans la base, il ne sera pas renvoyé.
     # si type="dict", les infos sont retraitées sous forme de dico.
@@ -423,7 +423,7 @@ def getPhotoTrombi(login):
 
 
 def getBaseAnnuaire():
-    """get Base Annuaire."""
+    """Get Base Annuaire."""
     portal = getUtility(IPloneSiteRoot)
     portal_jalon_properties = getToolByName(portal, 'portal_jalon_properties')
     fiche_ldap = portal_jalon_properties.getPropertiesDonneesUtilisateurs("fiche_ldap")
@@ -514,7 +514,7 @@ def getCourseUserFolder(context, user_id):
 
 
 def rechercherUtilisateur(username, typeUser, match=False, isJson=True):
-    u"""recherche des utilisateurs du type 'typeUser' correspondant au critère 'username'."""
+    u"""Recherche des utilisateurs du type 'typeUser' correspondant au critère 'username'."""
     portal = getUtility(IPloneSiteRoot)
     retour = []
 
@@ -642,7 +642,7 @@ def supprimerMarquageHTML(chaine):
 
 
 def remplaceChaine(chaine, elements):
-    """Remplacement d'éléments dans une chaîne."""
+    u"""Remplacement d'éléments dans une chaîne."""
     for prev, new in elements.iteritems():
         chaine = chaine.replace(prev, new)
     return chaine

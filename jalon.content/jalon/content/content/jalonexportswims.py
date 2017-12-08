@@ -2,7 +2,8 @@
 u"""jalonexportswims : librairie de scripts permettant d'exporter des EXO WIMS dans différents formats."""
 
 import xml.etree.ElementTree as ET
-# import HTMLParser
+import xml.dom.minidom as minidom
+from HTMLParser import HTMLParser
 
 import jalon_utils
 
@@ -13,6 +14,9 @@ from random import shuffle
 
 import string
 import lxml
+import re
+
+from jalon.content import contentMessageFactory as _
 
 from logging import getLogger
 LOG = getLogger('jalonExportsWims')
@@ -56,14 +60,15 @@ def getExoZIP(filename_path, exo_donnees):
     return {"length": str(os.stat(path)[6]), "data": data}
 
 
-def getExoXML(context, formatXML="OLX", version="latest"):
-    """Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+def getExoXML(context, formatXML="OLX", version="latest", xml_file=None, cat_list=[]):
+    u"""Permet de renvoyer un exo WIMS au format XML (QTI, OLX, Moodle, ...).
+
+    cat_list contient une liste de mot-clés à ajouter aux métadonnées de l'exo
 
     # Plus d'infos sur le format OLX (format XML d'EDX) : http://edx-open-learning-xml.readthedocs.org/en/latest/problem-xml/index.html
     # Plus d'infos sur le format IMS QTI : https://webapps.ph.ed.ac.uk/qtiworks
-    # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/30/en/Moodle_XML_format
+    # Plus d'infos sur le format Moodle XML : https://docs.moodle.org/3x/fr/Format_XML_Moodle
     # Plus d'infos sur le format "Flow Lesson Builder 2" (.fll) : impossible de trouver des infos sur ce format... :/ - http://www.turningtechnologies.eu/downloads/
-
     """
     """
     Imports supportés par TurningPoint 5.3 :
@@ -109,10 +114,58 @@ def getExoXML(context, formatXML="OLX", version="latest"):
             exoXML = __qcmsimple_to_olx(exoXML, parsed_exo)
 
         # Format Moodle XML
-        elif formatXML == "Moodle_XML":
-            if modele == "qcmsimple":
-                exoXML = __qcmsimple_to_moodleXML(parsed_exo)
+        elif formatXML == "Moodle":
 
+            # Ici on utilise minidom plutot qu'ElementTree : bien qu'il necessite
+            #  50% de code en plus, il permet l'integration de CDATA
+            if not xml_file:
+                exoXML = minidom.Document()
+                racineXML = exoXML.createElement("quiz")
+                exoXML.appendChild(racineXML)
+            else:
+                racineXML = xml_file.childNodes[0]
+                exoXML = xml_file
+
+            # les categories sous Moodle sont des questions fictives permettant de classer
+            # attention cependant : une question ne peut appartenir qu'à une catégorie.
+            # Ici, on se sert des etiquettes Jalon à la fois comme categorie de question et "tags" sur Moodle
+            for cat in cat_list:
+                racine = exoXML.createElement("question")
+                racine.setAttribute("type", "category")
+                racineXML.appendChild(racine)
+                branche = exoXML.createElement("category")
+                racine.appendChild(branche)
+                elementXML = exoXML.createElement("text")
+                branche.appendChild(elementXML)
+                elementXML.appendChild(exoXML.createTextNode("$course$/%s" % cat.decode("utf-8")))
+
+            if modele == "qcmsimple":
+                __qcmsimple_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "texteatrous":
+                __texteatrous_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "texteatrousmultiples":
+                __texteatrousmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "qcmsuite":
+                __qcmsuite_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            elif modele == "vraifauxmultiples":
+                __vraifauxmultiples_to_moodleXML(exoXML, racineXML, parsed_exo, cat_list)
+            else:
+                racine = __create_moodleXML_root(exoXML,
+                                                 racineXML,
+                                                 "description",
+                                                 parsed_exo["titre"],
+                                                 "",
+                                                 cat_list,
+                                                 "",
+                                                 ""
+                                                 )
+                # Texte de la "question"
+                enonce = _(u"Cet exercice WIMS n'a pas pu être exporté car le modèle sur lequel il se base n'a pas encore fait l'objet d'un script de conversion, ou tout simplement parce qu'il n'existe aucun modèle équivalent sur Moodle.")
+                __add_moodleXML_tag(exoXML, racine, "questiontext", enonce)
+
+            # Si le fichier xml n'était pas fournit (export unique), on le convertit en chaine
+            if not xml_file:
+                exoXML = exoXML.toxml()
         # Format QTI
         elif formatXML == "QTI":
             if version == "1.1":
@@ -202,7 +255,13 @@ def getExoXML(context, formatXML="OLX", version="latest"):
         else:
             exoXML = ET.Element("error")
             exoXML.text = u"Le format '%s' n'est pas pris en charge." % formatXML
-        return ET.tostring(exoXML, encoding="utf-8")
+
+        if formatXML != "Moodle":
+            # librairie elementTree
+            return ET.tostring(exoXML, encoding="utf-8")
+        else:
+            # librairie minidom
+            return exoXML
 
     else:
         return "<error>Vous n'avez pas le droit de télécharger ce fichier. Vous devez vous identifier en tant qu'enseignant d'abord.</error>"
@@ -566,61 +625,524 @@ def __qcmsimple_to_qti_21(exoXML, parsed_exo):
     return exoXML
 
 
-def __qcmsimple_to_moodleXML(parsed_exo):
-    """Modele "QCM Simple" vers moodle XML."""
-    exoXML = ET.Element("question", attrib={"type": "multichoice"})
+def __add_moodleXML_tag(xml_doc, parent, tag, content, format="html"):
+    u"""Ajoute un element de type "tag" au format Moodle XML dans le document "xml_doc" sous "parent"."""
+    branche = xml_doc.createElement(tag)
+    parent.appendChild(branche)
+    elementXML = xml_doc.createElement("text")
+    branche.appendChild(elementXML)
+    if format == "html":
+        branche.setAttribute("format", "html")
+        content = xml_doc.createCDATASection(content)
+    else:
+        content = xml_doc.createTextNode(content)
+    elementXML.appendChild(content)
+    return branche
 
-    elementXML = ET.SubElement(exoXML, "name")
-    elementXML = ET.SubElement(elementXML, "text")
-    elementXML.text = parsed_exo["titre"]
 
-    elementXML = ET.SubElement(exoXML, "questiontext", attrib={"format": "html"})
-    elementXML = ET.SubElement(elementXML, "text")
-    chaine = "<![CDATA[%s]]>" % parsed_exo["enonce"]
-    elementXML.append(ET.fromstring(chaine))
+def __create_moodleXML_root(newdoc, exoXML, modele, title, feedback_general, tag_list=[], exo_hint="", exo_help=""):
+    encoding = "utf-8"
+    racine = newdoc.createElement("question")
+    racine.setAttribute("type", modele)
+    exoXML.appendChild(racine)
+
+    # Mots-clés
+    if len(tag_list) > 0:
+        branche = newdoc.createElement("tags")
+        racine.appendChild(branche)
+        for tag in tag_list:
+            __add_moodleXML_tag(newdoc, branche, "tag", tag.decode(encoding), None)
+
+    # Nom de question
+    __add_moodleXML_tag(newdoc, racine, "name", title, None)
+
+    # Feedback général
+    if feedback_general:
+        __add_moodleXML_tag(newdoc, racine, "generalfeedback", feedback_general.decode(encoding))
+
+    # Indication
+    if exo_hint:
+        __add_moodleXML_tag(newdoc, racine, "hint", exo_hint)
+
+    # Aide (autre indication sur Moodle)
+    if exo_help:
+        __add_moodleXML_tag(newdoc, racine, "hint", exo_help)
+
+    return racine
+
+
+def __qcmsuite_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "QCM à la suite" vers moodle XML (plusieurs questions).
+
+    Elements de ce modèle incompatible avec l'export Moodle :
+        * Accolades aléatoires
+        * Nb de questions par page
+        * Nb de pages
+        * Pourcentage de réussite pour passer à la page suivante
+        * Nb de colonnes affichées
+        * Afficher les bonnes réponses
+    """
+    encoding = "utf-8"
+
+    preambule = ""
+    if parsed_exo["instruction"]:
+        preambule = "<div class=\"instructions\">%s</div>" % parsed_exo["instruction"].decode(encoding)
+
+    credits = ""
+    if parsed_exo["credits"]:
+        credits = "<p style=\"text-align: right;\"><em>%s</em></p>" % parsed_exo["credits"].decode(encoding)
+
+    questions_list = parsed_exo["list_id_questions"]
+    if len(questions_list) > 1:
+        # on crée une "sous-categorie" de questions qui contiendra
+        # l'ensemble des textes de cet exo (s'il en contient plus d'un).
+        racine = newdoc.createElement("question")
+        racine.setAttribute("type", "category")
+        exoXML.appendChild(racine)
+
+        if len(tag_list) > 0:
+            cat_name = "$course$/%s/%s" % (tag_list[-1].decode(encoding), parsed_exo["titre"])
+        else:
+            cat_name = "$course$/%s" % parsed_exo["titre"]
+        __add_moodleXML_tag(newdoc, racine, "category", cat_name, None)
+
+    for index, id_question in enumerate(questions_list):
+        if len(questions_list) > 1:
+            titre = "%s (%s)" % (parsed_exo["titre"] , str(index + 1))
+        else:
+            titre = parsed_exo["titre"]
+
+        racine = __create_moodleXML_root(newdoc,
+                                         exoXML,
+                                         "multichoice",
+                                         titre,
+                                         parsed_exo["feedback%s" % str(index)],
+                                         tag_list,
+                                         None,
+                                         None
+                                         )
+
+        # Texte de la question // enonce
+        enonce = parsed_exo["enonce%s" % str(index)].decode(encoding)
+        if preambule:
+            enonce = preambule + enonce
+        if credits:
+            enonce = enonce + credits
+        __add_moodleXML_tag(newdoc, racine, "questiontext", enonce)
+
+        # Note par défaut
+        branche = newdoc.createElement("defaultgrade")
+        branche.appendChild(newdoc.createTextNode("10.000000"))
+
+        # Feedback pour toute réponse correcte  // feedback_bon
+        __add_moodleXML_tag(newdoc, racine, "correctfeedback", "<p>%s</p>" % _(u"Votre réponse est correcte."))
+
+        # Feedback pour toute réponse partiellement correcte
+        __add_moodleXML_tag(newdoc, racine, "partiallycorrectfeedback", "<p>%s</p>" % _(u"Votre réponse est partiellement correcte."))
+
+        # Feedback pour toute réponse incorrecte  // feedback_mauvais
+        __add_moodleXML_tag(newdoc, racine, "incorrectfeedback", "<p>%s</p>" % _(u"Votre réponse est incorrecte."))
+
+        # Une seule ou plusieurs réponses
+        branche = newdoc.createElement("single")
+        racine.appendChild(branche)
+        if parsed_exo["anstype"] == "checkbox":
+            branche.appendChild(newdoc.createTextNode("false"))
+        else:
+            branche.appendChild(newdoc.createTextNode("true"))
+
+        # Mélanger les réponses possibles
+        branche = newdoc.createElement("shuffleanswers")
+        racine.appendChild(branche)
+        if parsed_exo["alea"] == "yes":
+            branche.appendChild(newdoc.createTextNode("true"))
+        else:
+            branche.appendChild(newdoc.createTextNode("false"))
+
+        # Numéroter les choix
+        branche = newdoc.createElement("answernumbering")
+        racine.appendChild(branche)
+        branche.appendChild(newdoc.createTextNode("ABCD"))
+
+        # Pénalité pour tout essai incorrect (en cas de tentatives multiples)
+        # on peut décider de prendre en compte la severité (option_eqweight)
+        branche = newdoc.createElement("penalty")
+        racine.appendChild(branche)
+        branche.appendChild(newdoc.createTextNode("0.3333333"))
+
+        # hidden ??
+        branche = newdoc.createElement("hidden")
+        racine.appendChild(branche)
+        branche.appendChild(newdoc.createTextNode("0"))
+
+        # Réponses
+        liste_reponses = parsed_exo["reponses%s" % index].decode(encoding).split("\n")
+        for num_ligne, ligne in enumerate(liste_reponses):
+            if num_ligne == 0:
+                # la premiere ligne indique les numéros des bonnes réponses
+                bonnes_reps = ligne.split(",")
+                fraction = 100.0 / len(bonnes_reps)
+            else:
+                # les lignes suivantes contiennent les réponses
+                ligne = ligne.strip()
+                if ligne:
+                    branche = __add_moodleXML_tag(newdoc, racine, "answer", ligne)
+                    if str(num_ligne) in bonnes_reps:
+                        branche.setAttribute("fraction", str(fraction))
+                    else:
+                        branche.setAttribute("fraction", "0")
+
+
+def __texteatrousmultiples_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "Texte à trous Multiples" vers moodle XML (Multiples "Cloze").
+
+    A noter :
+        * Les accolades aléatoires ne le seront plus sur Moodle
+        * Le niveau de tolérance "atext" n'existe pas sur Moodle : seule la casse sera tolérée.
+    """
+    encoding = "utf-8"
+    parser = HTMLParser()
+
+    preambule = ""
+    if parsed_exo["pre"]:
+        preambule = "<p class=\"pre_tat\">%s</p>" % parsed_exo["pre"].decode(encoding)
+
+    postface = ""
+    if parsed_exo["post"]:
+        postface = "<p class=\"post_tat\">%s</p>" % parsed_exo["post"].decode(encoding)
+
+    credits = ""
+    if parsed_exo["credits"]:
+        credits = "<p style=\"text-align: right;\"><em>%s</em></p>" % parsed_exo["credits"].decode(encoding)
+
+    # via unescape, on convertit les html entities en unicode
+    # pour éviter des éventuels point-virgules indésirables
+    textes = parser.unescape(parsed_exo["data"].decode(encoding))
+
+    textes = textes.split(";")
+
+    if len(textes) > 1:
+        # on crée une "sous-categorie" de question qui contiendra
+        # l'ensemble des textes de cet exo (s'il en contient plus d'un).
+        racine = newdoc.createElement("question")
+        racine.setAttribute("type", "category")
+        exoXML.appendChild(racine)
+
+        if len(tag_list) > 0:
+            cat_name = "$course$/%s/%s" % (tag_list[-1].decode(encoding), parsed_exo["titre"])
+        else:
+            cat_name = "$course$/%s" % parsed_exo["titre"]
+        __add_moodleXML_tag(newdoc, racine, "category", cat_name, None)
+
+    for t_num, texte in enumerate(textes):
+        # on ne prend en compte que les textes non vides
+        if texte.strip():
+            if len(textes) > 1:
+                titre = "%s (%s)" % (parsed_exo["titre"] , t_num + 1)
+            else:
+                titre = parsed_exo["titre"]
+            racine = __create_moodleXML_root(newdoc,
+                                             exoXML,
+                                             "cloze",
+                                             titre,
+                                             parsed_exo["feedback_general"],
+                                             tag_list,
+                                             parsed_exo["hint"],
+                                             parsed_exo["help"]
+                                             )
+
+            # On parse les donnees à la recherches de codes du style :
+            # ??good_rep[,BAD_REP1,BAD_REP2,...]??
+            # ... pour les transformer en :
+            # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
+            pattern_trous = r"\?\?(.+?)\?\?"
+            matches = re.finditer(pattern_trous, texte)
+            for match in matches:
+                trou = match.group(1)
+                reponses = []
+
+                good_accolade = False
+                trou = trou.split(",")
+
+                if len(trou) > 1:
+                    # le trou s'affiche sous forme de liste de choix
+                    # Si un jour on ajoute une option pour melanger les réponses, on pourra utiliser ceci :
+                    # type_trou = "MULTICHOICE_S"
+                    type_trou = "MULTICHOICE"
+
+                    good_reps = []
+                    for index in range(len(trou)):
+                        rep = trou[index].strip()
+
+                        if index == 0 or good_accolade:
+                            if "{" in rep:
+                                good_accolade = True
+                                rep = rep[1:]
+                            if good_accolade:
+                                if "}" in rep:
+                                    good_accolade = False
+                                    rep = rep[:-1]
+                            good_reps.append(rep)
+                            reponses.append(rep)
+                        else:
+                            rep = rep.replace("{", "").replace("}", "")
+                            reponses.append(rep)
+                    # Dans ce cas, on trie les réponses par ordre alphabétique
+                    # if parsed_exo["list_order"] == "1":
+                    reponses.sort()
+
+                    for index in range(len(reponses)):
+                        if reponses[index] in good_reps:
+                            # On ajoute "=" pour indiquer que c'est une bonne réponse
+                            reponses[index] = "=%s" % (reponses[index])
+                else:
+                    # TODO : ici on pourrait tester si la réponse est un nombre, et utiliser le type "NUMERICAL"
+                    # Cas "SHORTANSWER"
+                    if parsed_exo["type_rep"] == "case":
+                        # sensible à la casse
+                        type_trou = "SHORTANSWER_C"
+                    else:
+                        type_trou = "SHORTANSWER"
+                    rep = trou[0].strip()
+                    # Convertit les éventuels synonymes en réponses
+                    reps = rep.split("|")
+
+                    for rep in reps:
+                        reponses.append("=" + rep)
+
+                reponses = "~".join(reponses)
+                # Le "1" représente le nombre de points accordé par cette réponse.
+                texte = texte.replace(match.group(), "{1:%s:%s}" % (type_trou, reponses))
+
+            # Texte de la question // enonce
+            if preambule:
+                texte = preambule + texte
+            if postface:
+                texte = texte + postface
+            if credits:
+                texte = texte + credits
+            __add_moodleXML_tag(newdoc, racine, "questiontext", texte)
+
+
+def __texteatrous_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "Texte à trous" vers moodle XML (Cloze).
+
+    A noter :
+        * Les accolades aléatoires ne le seront plus sur Moodle
+        * Le niveau de tolérance "atext" n'existe pas sur Moodle : seule la casse sera tolérée.
+    """
+    encoding = "utf-8"
+    racine = __create_moodleXML_root(newdoc,
+                                     exoXML,
+                                     "cloze",
+                                     parsed_exo["titre"],
+                                     parsed_exo["feedback_general"],
+                                     tag_list
+                                     )
+
+    # Il faut maintenant parser les donnees à la recherches de codes du style :
+    # ??good_rep[,BAD_REP1,BAD_REP2,...]??
+    # et les transformer en :
+    # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
+    texte = parsed_exo["donnees"].decode(encoding)
+    pattern_trous = r"\?\?(.+?)\?\?"
+    matches = re.finditer(pattern_trous, texte)
+    for match in matches:
+        trou = match.group(1)
+        reponses = []
+
+        good_accolade = False
+        trou = trou.split(",")
+
+        feedback_bon = parsed_exo["feedback_bon"].decode(encoding)
+        if feedback_bon:
+            feedback_bon = "#" + feedback_bon
+        feedback_mauvais = parsed_exo["feedback_mauvais"].decode(encoding)
+        if feedback_mauvais:
+            feedback_mauvais = "#" + feedback_mauvais
+
+        if len(trou) > 1:
+            # le trou s'affiche sous forme de liste de choix
+            if parsed_exo["list_order"] == "2":
+                # Les réponses sont mélangées
+                type_trou = "MULTICHOICE_S"
+            else:
+                type_trou = "MULTICHOICE"
+
+            good_reps = []
+            for index in range(len(trou)):
+                rep = trou[index].strip()
+
+                if index == 0 or good_accolade:
+                    if parsed_exo["accolade"] and "{" in rep:
+                        good_accolade = True
+                        rep = rep[1:]
+                    if good_accolade:
+                        if "}" in rep:
+                            good_accolade = False
+                            rep = rep[:-1]
+                    good_reps.append(rep)
+                    reponses.append(rep)
+                else:
+                    if parsed_exo["accolade"]:
+                        rep = rep.replace("{", "").replace("}", "")
+                    reponses.append(rep)
+            # Dans ce cas, on trie les réponses par ordre alphabétique
+            if parsed_exo["list_order"] == "1":
+                reponses.sort()
+
+            for index in range(len(reponses)):
+                if reponses[index] in good_reps:
+                    # On ajoute "=" pour indiquer que c'est une bonne réponse
+                    reponses[index] = "=%s%s" % (reponses[index], feedback_bon)
+                else:
+                    # On ajoute le feedback des mauvaises réponses (Moodle n'a pas de feedback général dans ce cas)
+                    reponses[index] = "%s%s" % (reponses[index], feedback_mauvais)
+        else:
+            # TODO : ici on pourrait tester si la réponse est un nombre, et utiliser le type "NUMERICAL"
+            # Cas "SHORTANSWER"
+            if parsed_exo["type_rep"] == "case":
+                # sensible à la casse
+                type_trou = "SHORTANSWER_C"
+            else:
+                type_trou = "SHORTANSWER"
+            rep = trou[0].strip()
+            # Convertit les éventuels synonymes en réponses
+            reps = rep.split("|")
+            for rep in reps:
+                reponses.append("=%s%s" % (rep, feedback_bon))
+            # pour toutes les autres réponses, on affiche le feedback_mauvais
+            if feedback_mauvais:
+                reponses.append("*%s" % feedback_mauvais)
+
+        reponses = "~".join(reponses)
+        # Le "1" représente le nombre de points accordé par cette réponse.
+        texte = texte.replace(match.group(), "{1:%s:%s}" % (type_trou, reponses))
 
     """
-    <question type="multichoice">
-        <name>
-          <text>MULTIPLE CHOICE</text>
-        </name>
-        <questiontext format="html">
-          <text><![CDATA[<p>Couleur du cheval ?</p>]]></text>
-        </questiontext>
-        <generalfeedback format="html">
-          <text><![CDATA[<p>BRAVO !!</p>]]></text>
-        </generalfeedback>
-        <defaultgrade>1.0000000</defaultgrade>
-        <penalty>0.3333333</penalty>
-        <hidden>0</hidden>
-        <single>true</single>
-        <shuffleanswers>true</shuffleanswers>
-        <answernumbering>abc</answernumbering>
-        <correctfeedback format="html">
-          <text>Your answer is correct.</text>
-        </correctfeedback>
-        <partiallycorrectfeedback format="html">
-          <text>Your answer is partially correct.</text>
-        </partiallycorrectfeedback>
-        <incorrectfeedback format="html">
-          <text>Your answer is incorrect.</text>
-        </incorrectfeedback>
-        <shownumcorrect/>
-        <answer fraction="0" format="html">
-          <text><![CDATA[<p>Bleu</p>]]></text>
-          <feedback format="html">
-            <text></text>
-          </feedback>
-        </answer>
-        <answer fraction="100" format="html">
-          <text><![CDATA[<p>Blanc</p>]]></text>
-          <feedback format="html">
-            <text></text>
-          </feedback>
-        </answer>
-    </question>
+    # Mélanger les réponses possibles (redondant avec MULTICHOICE_S)
+    branche = newdoc.createElement("shuffleanswers")
+    racine.appendChild(branche)
+    if parsed_exo["list_order"] == "2":
+        branche.appendChild(newdoc.createTextNode("true"))
+    else:
+        branche.appendChild(newdoc.createTextNode("false"))
+    """
+
+    # Texte de la question // enonce
+    if parsed_exo["credits"]:
+        texte = "%s<p style='text-align: right;'><em>%s</em></p>" % (texte, parsed_exo["credits"].decode(encoding))
+
+    __add_moodleXML_tag(newdoc, racine, "questiontext", texte)
+
+
+def __vraifauxmultiples_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[]):
+    u"""Modele "Vrai/faux multiples" vers moodle XML (plusieurs questions à choix multiple).
+
+    Elements de ce modèle incompatible avec l'export Moodle :
+        * Accolades aléatoires
+        * tirage aléatoire des phrases vraies (1 parmi N)
+        * options_split : non pris en charge par Moodle. les bonnes réponses sont obligatoirement exprimées en fraction
 
     """
+    parsed_exo["bonnesrep"] = parsed_exo["datatrue"]
+    parsed_exo["mauvaisesrep"] = parsed_exo["datafalse"]
+    parsed_exo["enonce"] = parsed_exo["explain"]
+    parsed_exo["feedback_bon"] = ""
+    parsed_exo["feedback_mauvais"] = ""
+    parsed_exo["options_checkbox"] = 1
+
+    __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list, "123")
+
+
+def __qcmsimple_to_moodleXML(newdoc, exoXML, parsed_exo, tag_list=[], puces="ABCD"):
+    u"""Modele "QCM Simple" vers moodle XML (Question à choix multiple).
+
+    Elements de ce modèle incompatible avec l'export Moodle :
+        * Accolades aléatoires
+        * options_split : non pris en charge par moodle. les bonnes réponses sont obligatoirement exprimées en fraction
+    """
+    encoding = "utf-8"
+    # Ici, choisir le type en fonction de l'option "checkbox" ?
+    racine = __create_moodleXML_root(newdoc,
+                                     exoXML,
+                                     "multichoice",
+                                     parsed_exo["titre"],
+                                     parsed_exo["feedback_general"],
+                                     tag_list,
+                                     parsed_exo["hint"],
+                                     parsed_exo["help"]
+                                     )
+
+    # Texte de la question // enonce
+    if parsed_exo["credits"]:
+        texte = "%s<p style='text-align: right;'><em>%s</em></p>" % (parsed_exo["enonce"].decode(encoding), parsed_exo["credits"].decode(encoding))
+    else:
+        texte = parsed_exo["enonce"].decode(encoding)
+    __add_moodleXML_tag(newdoc, racine, "questiontext", texte)
+
+    # Note par défaut
+    branche = newdoc.createElement("defaultgrade")
+    branche.appendChild(newdoc.createTextNode("10.000000"))
+
+    # Feedback pour toute réponse correcte  // feedback_bon
+    __add_moodleXML_tag(newdoc, racine, "correctfeedback", "<p>%s</p>%s" % (_(u"Votre réponse est correcte."), parsed_exo["feedback_bon"].decode(encoding)))
+
+    # Feedback pour toute réponse partiellement correcte
+    __add_moodleXML_tag(newdoc, racine, "partiallycorrectfeedback", "<p>%s</p>" % _(u"Votre réponse est partiellement correcte."))
+
+    # Feedback pour toute réponse incorrecte  // feedback_mauvais
+    __add_moodleXML_tag(newdoc, racine, "incorrectfeedback", "<p>%s</p>%s" % (_(u"Votre réponse est incorrecte."), parsed_exo["feedback_mauvais"].decode(encoding)))
+
+    # Une seule ou plusieurs réponses
+    branche = newdoc.createElement("single")
+    racine.appendChild(branche)
+    if parsed_exo["options_checkbox"] == 1:
+        branche.appendChild(newdoc.createTextNode("false"))
+    else:
+        branche.appendChild(newdoc.createTextNode("true"))
+
+    # Mélanger les réponses possibles
+    branche = newdoc.createElement("shuffleanswers")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode("true"))
+
+    # Numéroter les choix ('none', 'abc', 'ABCD' ou '123')
+    branche = newdoc.createElement("answernumbering")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode(puces))
+
+    # Pénalité pour tout essai incorrect (en cas de tentatives multiples)
+    # on peut décider de prendre en compte la severité (option_eqweight)
+    branche = newdoc.createElement("penalty")
+    racine.appendChild(branche)
+    if parsed_exo["options_eqweight"] == 1:
+        branche.appendChild(newdoc.createTextNode("0.25"))
+    else:
+        branche.appendChild(newdoc.createTextNode("0.3333333"))
+
+    # hidden ??
+    branche = newdoc.createElement("hidden")
+    racine.appendChild(branche)
+    branche.appendChild(newdoc.createTextNode("0"))
+
+    # Réponses
+    liste_bons = parsed_exo["bonnesrep"].decode(encoding).split("\n")
+    nb_bons = sum(len(ligne.strip()) > 0 for ligne in liste_bons)
+
+    for ligne in liste_bons:
+        rep = ligne.strip()
+        if rep != "":
+            fraction = 100.0 / nb_bons
+            branche = __add_moodleXML_tag(newdoc, racine, "answer", rep)
+            branche.setAttribute("fraction", str(fraction))
+
+    liste_mauvais = parsed_exo["mauvaisesrep"].decode(encoding).split("\n")
+    for ligne in liste_mauvais:
+        rep = ligne.strip()
+        if rep != "":
+            branche = __add_moodleXML_tag(newdoc, racine, "answer", rep)
+            branche.setAttribute("fraction", "0")
 
 
 def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
@@ -635,7 +1157,7 @@ def __qcmsimple_to_FlowXML(exoXML, parsed_exo):
     elementXML.text = parsed_exo["id"]
 
     elementXML = ET.SubElement(element_question, "qname")
-    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["titre"].decode("utf-8")
+    elementXML.text = "<![CDATA[%s]]>" % parsed_exo["titre"]
 
     elementXML = ET.SubElement(element_question, "questionMaxTime")
     elementXML.text = "30"

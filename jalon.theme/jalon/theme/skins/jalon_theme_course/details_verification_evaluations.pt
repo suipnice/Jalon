@@ -20,7 +20,7 @@
     <main class="row" role="main" aria-labelledby="page_title">
 
         <div class="panel warning radius">
-            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</talblock>
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</tal:block>
         </div>
 
         <section id="evaluate_deposit_file" class="small-12 columns">

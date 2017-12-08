@@ -1293,8 +1293,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
                                 if user["id"] in dico_ETU:
                                     individu = dico_ETU[user["id"]]
                                     user["first_name"] = individu["prenom"]
-                                    user["last_name"]  = individu["nom"]
-                                    user["num_etu"]    = individu["num_etu"]
+                                    user["last_name"] = individu["nom"]
+                                    user["num_etu"] = individu["num_etu"]
                                 # cas des comptes enseignants et invités
                                 else:
                                     # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon
@@ -1371,9 +1371,9 @@ class JalonCoursWims(JalonActivity, ATDocument):
                 rep = json.loads(self.wims("callJob", {"job": "getexamscores", "code": quser, "qclass": param["qclass"], "qexam": self.getIdExam()}))
                 # Si on obtient des notes, c'est qu'il y a au moins un étudiant dans cette classe
                 if rep["status"] == "OK":
-                    rep["score_max"]  = (float(rep["score_max"]) * float(self.getNoteMax())) / 10
+                    rep["score_max"] = (float(rep["score_max"]) * float(self.getNoteMax())) / 10
                     rep["score_mean"] = (float(rep["score_mean"]) * float(self.getNoteMax())) / 10
-                    rep["score_max"]  = "%.2f" % rep["score_max"]
+                    rep["score_max"] = "%.2f" % rep["score_max"]
                     rep["score_mean"] = "%.2f" % rep["score_mean"]
 
                     if site_lang == "fr":
@@ -1386,8 +1386,8 @@ class JalonCoursWims(JalonActivity, ATDocument):
                         if user["id"] in dico_ETU:
                             individu = dico_ETU[user["id"]]
                             user["first_name"] = individu["prenom"]
-                            user["last_name"]  = individu["nom"]
-                            user["num_etu"]    = dico_ETU[user["id"]]["num_etu"]
+                            user["last_name"] = individu["nom"]
+                            user["num_etu"] = dico_ETU[user["id"]]["num_etu"]
                         # cas des comptes enseignants et invités
                         else:
                             # attention : il est possible que le user_id de wims ne corresponde pas exactement a un user_id jalon
@@ -1475,7 +1475,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
 
         for etudiant in listeEtudiant["data_scores"]:
             num_etu = '"%s"' % etudiant["num_etu"]
-            id_etu  = '"%s"' % etudiant["id"]
+            id_etu = '"%s"' % etudiant["id"]
             if self.idExam:
                 score = '"%s"' % etudiant["score"]
                 # if sep == ",":
@@ -1523,10 +1523,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info("----- getUserLog -----")
         param = {}
         if (isProf or quser == authUser):
-            param["job"]    = "getlog"
+            param["job"] = "getlog"
             param["qclass"] = self.getClasse()
-            param["quser"]  = quser
-            param["code"]   = authUser
+            param["quser"] = quser
+            param["code"] = authUser
             if self.idExam:
                 param["qexam"] = self.getIdExam()
                 option = "exams"
@@ -1603,10 +1603,10 @@ class JalonCoursWims(JalonActivity, ATDocument):
         # LOG.info("----- modifierExoFeuille -----")
 
         param = {}
-        param["qexo"]   = int(form["qexo"]) + 1
+        param["qexo"] = int(form["qexo"]) + 1
         param["qclass"] = self.getClasse()
         param["qsheet"] = self.getIdFeuille()
-        param["title"]  = form["titreElement"].decode("utf-8")
+        param["title"] = form["titreElement"].decode("utf-8")
         param["weight"] = form["weight"]
 
         # On vérifie que l'utilisateur connecté a bien le droit de modifier l'activité.
@@ -1615,7 +1615,7 @@ class JalonCoursWims(JalonActivity, ATDocument):
         if not self.checkRoles(user=authMember, function="modifierExoFeuille"):
             return None
 
-        param["authMember"]  = authMember.getId()
+        param["authMember"] = authMember.getId()
 
         resp = self.wims("modifierExoFeuille", param)
         if resp["status"] == "OK":
@@ -1800,16 +1800,16 @@ class JalonCoursWims(JalonActivity, ATDocument):
             proprietes["qclass"] = self.getClasse()
             proprietes["qsheet"] = self.idFeuille
 
-            proprietes["authMember"]  = auteur
+            proprietes["authMember"] = auteur
             proprietes["description"] = self.Description()
             if self.typeWims == "Examen":
                 proprietes["title"] = "Feuille dediée à l'examen '%s'" % self.Title()
                 self.wims("modifierFeuille", proprietes)
 
-                proprietes["title"]     = self.Title()
+                proprietes["title"] = self.Title()
                 # LOG.info("proprietes['title']=%s" % proprietes["title"])
-                proprietes["duration"]  = self.duree
-                proprietes["attempts"]  = self.attempts
+                proprietes["duration"] = self.duree
+                proprietes["attempts"] = self.attempts
                 proprietes["cut_hours"] = self.cut_hours
 
                 # si l'examen existe deja, on lui applique les modifications

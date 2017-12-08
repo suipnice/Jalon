@@ -236,6 +236,7 @@ class Wims(SimpleItem):
         """Creation d'un exercice WIMS."""
         # Lorsque le parametre "sandbox" est activé, l'exercice n'est pas injecté
         # dans la classe, mais seulement dans un bac à sable pour compilation.
+        # la source de l'exercice (param["source"]) doit être encodée en "iso-8859-1"
         # LOG.info("---- creerExercice ----")
         # data = self.getAttribut(param["modele"])
         result_dict = {"fonction": "jalon.wims/utility.py/creerExercice"}
@@ -271,7 +272,7 @@ class Wims(SimpleItem):
         return result
 
     def creerFeuille(self, param):
-        u"""ajoute une feuille d'entrainement à une classe Wims."""
+        u"""Ajoute une feuille d'entrainement à une classe Wims."""
         if param["qclass"] and param["qclass"] is not None:
             donnees_feuille = self.formaterDonnees(param)
             # modele = "expiration=%s\ntitle=%s\ndescription=%s"
@@ -570,7 +571,7 @@ class Wims(SimpleItem):
         return retour
 
     def importHotPotatoes(self, folder, member_auth, import_file):
-        u"""import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
+        u"""Import d'exercices Hotpotatoes dans une activité WIMS d'un cours.."""
         # LOG.info("----- importHotPotatoes -----")
 
         h = HTMLParser.HTMLParser()
@@ -644,12 +645,121 @@ class Wims(SimpleItem):
 
         return questions_list
 
+    def importExoOEF(self, params):
+        u"""Import d'exercice WIMS dans mon espace."""
+        # params must be : {folder, member_auth, file}
+
+        # LOG.info("----- importExoOEF -----")
+        import_file = params["file"]
+        user_id = params["member_auth"]
+        folder = params["folder"]
+        member_wims_class = folder.getComplement()
+        file_name = import_file.filename
+
+        # on verifie que le fichier envoyé est au format ".oef"
+        # file_name = context.get_id_from_filename(form["file_file"].filename, context)
+        file_name = file_name.split(".")
+        file_extension = file_name[-1]
+        file_name = file_name[0]
+
+        if file_extension == "oef":
+
+            # On vérifie que l'exercice n'existe pas déja
+            jalon_wims_exercices = folder.objectIds()
+            jalon_wims_exercices = [elem for elem in jalon_wims_exercices if not(elem.startswith("groupe-") or elem.startswith("externe-"))]
+            if file_name in jalon_wims_exercices:
+                # file_name = "%s-%s-%s" % ("import", user_id, DateTime().strftime("%Y%m%d%H%M%S"))
+                file_name = file_name.split("-")
+                if file_name[-1].isdigit():
+                    file_name[-1] = DateTime().strftime("%Y%m%d%H%M%S")
+                    file_name = "-".join(file_name)
+                else:
+                    file_name = "%s-%s-%s" % ("import", user_id, DateTime().strftime("%Y%m%d%H%M%S"))
+
+            # On s'assure que le curseur de lecture est au début du fichier.
+            import_file.seek(0)
+
+            # que faire des exercices deja présents ? on les ecrase ?
+            # import_file.name correspond a un nom de fichier temporaire, du genre "/tmp/tmpBH2jPQ"
+            dico = {"job":    "addexo",
+                    "code":   user_id,
+                    "data1":  import_file.read(),
+                    "qexo":   file_name,
+                    "qclass": "%s_1" % member_wims_class}
+            LOG.info("[importExoOEF] import de l'exo %s dans la classe %s" % (file_name, folder.getComplement()))
+            rep = self.callJob(dico)
+            rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/importExoOEF", "requete": params})
+            if rep["status"] == "OK":
+                folder.updateJalonExercicesWims(user_id, member_wims_class, self)
+            else:
+                message = _(u"Votre fichier n'a pas pu être importé. Assurez-vous de sélectionner un fichier au format OEF valide.")
+                folder.plone_utils.addPortalMessage(message, type='error')
+        else:
+            message = _(u"Votre fichier n'est pas au format OEF. Assurez-vous de sélectionner un fichier « .oef ».")
+            folder.plone_utils.addPortalMessage(message, type='error')
+
+    def importExoZIP(self, params):
+        u"""Import d'exercices WIMS dans mon espace."""
+        # params must be : {folder, member_auth, file}
+
+        # LOG.info("----- importExoZIP -----")
+        max_exos = 20
+        """
+        # TODO : Si un dossier d'images existe dans l'archive, il faudrait le transferer également.
+        """
+        import_file = params["file"]
+        user_id = params["member_auth"]
+        folder = params["folder"]
+        member_wims_class = folder.getComplement()
+
+        # Liste des exercices deja presents sur Jalon
+        jalon_wims_exercices = folder.objectIds()
+        jalon_wims_exercices = [elem for elem in jalon_wims_exercices if not(elem.startswith("groupe-") or elem.startswith("externe-"))]
+
+        from zipfile import ZipFile
+        zip_file = ZipFile(import_file)
+        nb_exos = 0
+        for name in zip_file.namelist():
+            # LOG.info(" importExoZIP : %s" % name)
+            if nb_exos < max_exos :
+                if name.startswith("class/src/") and name.endswith(".oef"):
+                    file_name = name[10:-4]
+                    # Cet id d'exercice existe déjà
+                    if file_name in jalon_wims_exercices:
+                        file_name = file_name.split("-")
+                        if file_name[-1].isdigit():
+                            file_name[-1] = DateTime().strftime("%Y%m%d%H%M%S")
+                            file_name = "-".join(file_name)
+                        else:
+                            file_name = "%s-%s-%s" % ("import", user_id, DateTime().strftime("%Y%m%d%H%M%S"))
+
+                    dico = {"job":    "addexo",
+                            "code":   user_id,
+                            "data1":  zip_file.read(name),
+                            "qexo":   file_name,
+                            "qclass": "%s_1" % member_wims_class}
+                    rep = json.loads(self.callJob(dico))
+                    # rep = self.verifierRetourWims({"rep": rep, "fonction": "jalon.wims/utility.py/importExoZIP", "requete": params})
+                    if rep["status"] == "OK":
+                        nb_exos += 1
+            else:
+                message = _(u"Attention : vous ne pouvez importer plus de %s exercices dans une seule archive. Certains exercices n'ont pas été importées." % max_exos)
+                folder.plone_utils.addPortalMessage(message, type='warning')
+                break
+        if nb_exos > 0:
+            folder.updateJalonExercicesWims(user_id, member_wims_class, self)
+            message = _(u"Votre archive a bien été envoyée. %s exercices importés." % nb_exos)
+            folder.plone_utils.addPortalMessage(message, type='success')
+        else:
+            message = _(u"Votre archive ne contenait aucun exercice au format OEF valide.")
+            folder.plone_utils.addPortalMessage(message, type='error')
+
     def importMoodleQuizXML(self, params):
-        u"""import d'exercices Moodle (quiz) dans une activité WIMS d'un cours."""
-        # See "https://docs.moodle.org/2x/fr/Format_XML_Moodle"
+        u"""Import d'exercices Moodle (quiz) dans mon espace."""
+        # See "https://docs.moodle.org/3x/fr/Format_XML_Moodle"
         # params must be : {folder, member_auth, import_file}
         import re
-        LOG.info("----- importMoodleQuizXML -----")
+        # LOG.info("----- importMoodleQuizXML -----")
 
         # from Products.CMFCore.utils import getToolByName
         # putils = getToolByName(object, 'plone_utils')
@@ -703,42 +813,45 @@ class Wims(SimpleItem):
                 cat_structure = cat_structure.encode("utf-8")
                 cat_structure = cat_structure.split('/')
                 for tag_title in cat_structure:
-                    # si on a pas encore créé cette catégorie
-                    if tag_title not in new_tags:
-                        # Si l'etiquette existe deja, on demande son ID
-                        if tag_title in folder_subjects.values():
-                            for subj_key in folder_subjects:
-                                if folder_subjects[subj_key] == tag_title:
-                                    tag_id = subj_key
-                                    break
-                        # Si elle n'existe pas, on l'ajoute aux etiquettes du jalonfolder
-                        else:
-                            tag_id = "%s" % params["context"].getNewTagId()
-                            folder_subjects[tag_id] = tag_title
+                    # Si on a pas encore créé cette catégorie
+                    # sur Moodle, la categorie "$course$" est un mot réservé qui fait référence au cours courant.
+                    if tag_title != "$course$":
+                        if tag_title not in new_tags:
+                            # Si l'etiquette existe deja, on demande son ID
+                            if tag_title in folder_subjects.values():
+                                for subj_key in folder_subjects:
+                                    if folder_subjects[subj_key] == tag_title:
+                                        tag_id = subj_key
+                                        break
+                            # Si elle n'existe pas, on l'ajoute aux etiquettes du jalonfolder
+                            else:
+                                tag_id = "%s" % params["context"].getNewTagId()
+                                folder_subjects[tag_id] = tag_title
 
-                            LOG.info("On ajoute l'etiquette #%s : %s" % (tag_id, tag_title))
-                            folder.setSubjectsDict(folder_subjects)
-                            tags = list(folder.Subject())
-                            tags.append(tag_id)
-                            folder.setSubject(tuple(tags))
-                        new_tags[tag_title] = tag_id
+                                # LOG.info("On ajoute l'etiquette #%s : %s" % (tag_id, tag_title))
+                                folder.setSubjectsDict(folder_subjects)
+                                tags = list(folder.Subject())
+                                tags.append(tag_id)
+                                folder.setSubject(tuple(tags))
+                            new_tags[tag_title] = tag_id
 
-                    # On l'ajoute aux tags du prochain exercice si elle n'y est pas déjà.
-                    if new_tags[tag_title] not in tags_list:
-                        tags_list.append(new_tags[tag_title])
+                        # On l'ajoute aux tags du prochain exercice si elle n'y est pas déjà.
+                        if new_tags[tag_title] not in tags_list:
+                            tags_list.append(new_tags[tag_title])
             # Si le type de question fait partie des modeles à importer
             elif question_type in params["model_filter"]:
                 # TODO : ici il faudrait s'assurer que le titre ne dépasse pas 40 chars...
                 question_dict = {"title": question.find('name').find('text').text.strip()}
 
                 if question_type == "cloze":
-                    LOG.info("----- Nouvelle question de type 'cloze' (%s) -----" % question_dict["title"])
+                    # Plus d'infos sur ce type ici : https://docs.moodle.org/3x/fr/Question_cloze_%C3%A0_r%C3%A9ponses_int%C3%A9gr%C3%A9es
+                    # LOG.info("----- Nouvelle question de type 'cloze' (%s) -----" % question_dict["title"])
                     modele_wims = "texteatrous"
 
                     donnees = question.find('questiontext').find('text').text
-
-                    # Il faut maintenant parser les donner à la recherches de codes du style :
-                    # {1:MULTICHOICE:BAD_REP1~%100%GOOD_REP1~BAD_REP2~BAD_REP3}
+                    feedbacks = {"good_reps": [], "bad_reps": []}
+                    # Il faut maintenant parser les donnees à la recherches de codes du style :
+                    # {1:MULTICHOICE:BAD_REP1#fdbk1~%100%GOOD_REP1#fdbk2~BAD_REP2#fdbk3~BAD_REP3#fdbk4}
 
                     pattern_trous = r"{(.+?)}"
                     pattern_percent = re.compile(r"%([0-9]*?)%")
@@ -747,20 +860,38 @@ class Wims(SimpleItem):
                         trou = match.group(1)
                         good_reps = []
                         bad_reps = []
-                        if trou.startswith("1:MULTICHOICE:"):
-                            trou = trou.replace("1:MULTICHOICE:", "")
-                            trou = trou.split("~")
+                        parsed_trou = trou.split(":", 3)
+                        # nb_points = parsed_trou[0]
+                        type_trou = parsed_trou[1]
+                        trou = parsed_trou[2].split("~")
+                        if "MULTICHOICE" in type_trou or "MC" in type_trou:
+                            # exemple : {1:MC:Mauvaise rép.#Rétroaction pour cette rép.~Autre mauvaise rép.#Rétroaction pour cette autre mauvaise réponse~=Bonne rép.#Rétroaction pour la bonne rép.~%50%Réponse partiellement juste#Rétroaction pour cette rép.}
                             for rep in trou:
+                                rep_group = "bad"
                                 fraction = pattern_percent.search(rep)
                                 if fraction is not None:
                                     fraction = fraction.group(1)
                                     if fraction != "100":
                                         LOG.info("----- ATTENTION : cloze with fraction != 100 !! (%s) -----" % fraction)
                                     rep = pattern_percent.sub('', rep)
-                                    good_reps.append(rep)
-                                else:
-                                    bad_reps.append(rep)
+                                    rep_group = "good"
+                                elif rep.startswith("="):
+                                    # on retire le "=" indiquant la bonne réponse
+                                    rep = rep[1:]
+                                    rep_group = "good"
+
+                                # On sépare la réponse de son feedback
+                                rep = rep.split("#")
+                                if rep_group == "bad":
                                     # LOG.info("----- Mauvaise -----(%s)" % rep)
+                                    if len(rep) > 1:
+                                        feedbacks["bad_reps"].append(rep[1])
+                                    bad_reps.append(rep[0])
+                                else:
+                                    if len(rep) > 1:
+                                        feedbacks["good_reps"].append(rep[1])
+                                    good_reps.append(rep[0])
+
                             good_rep = ",".join(good_reps)
                             if len(good_reps) > 1:
                                 # On utilise les accolades aléatoires (une des bonnes réponses sera piochée au hasard)
@@ -769,15 +900,24 @@ class Wims(SimpleItem):
                             bad_reps = ",".join(bad_reps)
                             trou = "%s,%s" % (good_rep, bad_reps)
 
-                        elif trou.startswith("1:SHORTANSWER:="):
-                            trou = trou.replace("1:SHORTANSWER:=", "")
+                        elif "SHORTANSWER" in type_trou or "SA" in type_trou:
+                            # exemple : {1:SHORTANSWER:=réponse attendue#bonne réponse~*#rétroaction pour toute autre réponse}
+                            for rep in trou:
+                                rep = rep.split("#")
+                                if rep[0].startswith("="):
+                                    # on retire le "=" indiquant la seule bonne réponse
+                                    trou = rep[0][1:]
+                                    if len(rep) > 1:
+                                        feedbacks["good_reps"].append(rep[1])
+                                elif len(rep) > 1:
+                                        feedbacks["bad_reps"].append(rep[1])
+
                         else:
                             LOG.info("----- ATTENTION : cloze with no unrecognized TYPE!! (%s) -----" % trou)
                             message = _(u"----- ATTENTION : cloze with unrecognized TYPE! (%s) -----" % trou)
                             folder.plone_utils.addPortalMessage(message, type='warning')
                         donnees = donnees.replace(match.group(), "??%s??" % trou)
 
-                    feedbacks = {}
                     for feedback_type in ['generalfeedback', 'correctfeedback', 'incorrectfeedback', 'partiallycorrectfeedback']:
                         match = question.find(feedback_type)
                         if match is not None:
@@ -788,18 +928,29 @@ class Wims(SimpleItem):
                             feedbacks[feedback_type] = ""
 
                     # Todo : partiallycorrectfeedback
+                    shuffleanswers = question.find('shuffleanswers')
+                    if shuffleanswers is not None:
+                        # attention : <shuffleanswers> est parfois noté 0/1, et parfois true/false
+                        list_order = int(shuffleanswers.text) + 1
+                    else:
+                        list_order = 1
 
-                    list_order = int(question.find('shuffleanswers').text) + 1
+                    feedback_bon = feedbacks['correctfeedback']
+                    if len(feedbacks["good_reps"]) > 0:
+                        feedback_bon = "%s<div>indications spécifiques:%s</div>" % (feedback_bon, "<br/>".join(feedbacks["good_reps"]))
+                    feedback_mauvais = feedbacks['incorrectfeedback']
+                    if len(feedbacks["bad_reps"]) > 0:
+                        feedback_mauvais = "%s<div>indications spécifiques:%s</div>" % (feedback_mauvais, "<br/>".join(feedbacks["bad_reps"]))
 
                     param_wims = {"title": question_dict["title"].encode("utf-8"),
                                   "type_rep"     : "atext",
                                   "donnees"      : donnees.encode("utf-8"),
                                   "feedback_general": feedbacks['generalfeedback'].encode("utf-8"),
-                                  "feedback_bon"    : feedbacks['correctfeedback'].encode("utf-8"),
-                                  "feedback_mauvais": feedbacks['incorrectfeedback'].encode("utf-8"),
+                                  "feedback_bon"    : feedback_bon.encode("utf-8"),
+                                  "feedback_mauvais": feedback_mauvais.encode("utf-8"),
                                   "credits"         : "",
                                   "accolade"        : "1",
-                                  "list_order"      : "%s" % list_order
+                                  "list_order"      : str(list_order)
                                   }
 
                 elif question_type == "multichoice":
@@ -866,9 +1017,9 @@ class Wims(SimpleItem):
                     else:
                         # L'appel à WIMS s'est bien passé, on applique les modifications à l'objet Jalon
                         if wims_response["status"] == "OK":
-                            LOG.info("qnum = %s | last = %s)" % (qnum, last_question))
+                            # LOG.info("qnum = %s | last = %s)" % (qnum, last_question))
                             nb_exos = nb_exos + 1
-                            LOG.info("nb_exos = %s | max_exos = %s)" % (nb_exos, max_exos))
+                            # LOG.info("nb_exos = %s | max_exos = %s)" % (nb_exos, max_exos))
                             obj_created.setProperties({"Title": question_dict["title"],
                                                        "Modele": modele_wims,
                                                        })
@@ -877,7 +1028,7 @@ class Wims(SimpleItem):
                             if len(tags_list) > 0:
                                 obj_created.setSubject(tuple(tags_list))
                                 obj_created.reindexObject()
-                                LOG.info("On etiquette cet exercice (%s)" % tags_list)
+                                # LOG.info("On etiquette cet exercice (%s)" % tags_list)
                     if nb_exos > max_exos:
                         message = _(u"Attention : vous ne pouvez importer plus de %s exercices dans un seul fichier. Certaines questions n'ont pas été importées." % max_exos)
                         folder.plone_utils.addPortalMessage(message, type='warning')
@@ -887,6 +1038,9 @@ class Wims(SimpleItem):
             # Etant donné que les exos ont tous été ajoutés sans compilation,
             # on lance une compilation globale :
             folder.compilExosWIMS(member_auth)
+        else:
+            message = _(u"Aucun exercice compatible détecté dans votre fichier.")
+            folder.plone_utils.addPortalMessage(message, type='warning')
 
         if len(unrecognized_list.keys()) > 0:
             message = _(u"Attention : Certaines questions utilisaient un modèle non reconnu et n'ont pas été importées. (%s)" % unrecognized_list)
@@ -895,7 +1049,7 @@ class Wims(SimpleItem):
         return questions_list
 
     def verifierRetourWims(self, params):
-        """verifie le bon retour d'un appel WIMS, et envoie un mail d'erreur si besoin."""
+        """Verifie le bon retour d'un appel WIMS, et envoie un mail d'erreur si besoin."""
         # params["rep"] doit etre une chaine de caracteres au format json.
         if "fonction" in params:
             fonction = params["fonction"]
@@ -946,7 +1100,7 @@ class Wims(SimpleItem):
 
             if "jalon_URL" in params:
                 mail_erreur["message"] = "%s <h2>Objet Jalon concern&eacute;&nbsp;:</h2><p>%s<br/><em>nb : la page de l'erreur peut etre diff&eacute;rente. Voir le REQUEST complet pour plus d'infos.</em></p>" % (mail_erreur["message"],
-                                                                                                                                                                                                                     params["jalon_URL"])
+                                                                                                                                                                                                                    params["jalon_URL"])
             mail_erreur["message"] = "%s <h2>Fonction appelante :</h2><p>%s</p>" % (mail_erreur["message"], fonction)
 
             if requete != "":
