@@ -1149,6 +1149,9 @@ class JalonBDD(SimpleItem):
         # LOG.info("----- getConsultationByCoursByUniversityYear -----")
         if not DATE_CONS_YEAR or DATE_CONS_YEAR == '0':
             DATE_CONS_YEAR = DateTime().year()
+            month = DateTime().month()
+            if month > 8:
+                DATE_CONS_YEAR = DATE_CONS_YEAR - 1
         session = self.getSessionMySQL()
         consultationCours = jalon_mysql.getConsultationByCoursByUniversityYearByDate(session, ID_COURS, DATE_CONS_YEAR, FILTER_DATE, PUBLIC_CONS)
         return consultationCours
@@ -1199,11 +1202,8 @@ class JalonBDD(SimpleItem):
         if not year or year == '0':
             year = DateTime().year()
 
-        if monthPrec == 0:
-            monthPrec = 12
-            yearPrec = year - 1
-        else:
-            yearPrec = year
+        if month > 8:
+            year = year + 1
 
         session = self.getSessionMySQL()
         elements_consultation = jalon_mysql.getConsultationByElementsByCoursByUniversityYear(session, ID_COURS, year, elements_list)
@@ -1218,6 +1218,15 @@ class JalonBDD(SimpleItem):
             # except:
             #    pass
         # LOG.info(consultation_dict)
+
+        if monthPrec == 0:
+            monthPrec = 12
+            yearPrec = year - 1
+        elif month > 8:
+            year = year - 1
+            yearPrec = year
+        else:
+            yearPrec = year
 
         elements_consultation_month_before = jalon_mysql.getConsultationByElementsByCoursByMonth(session, ID_COURS, monthPrec, yearPrec, elements_list)
         for ligne in elements_consultation_month_before.all():
@@ -1257,14 +1266,12 @@ class JalonBDD(SimpleItem):
         if not month or month == '0':
             month = DateTime().month()
         monthPrec = month - 1
+
         if not year or year == '0':
             year = DateTime().year()
 
-        if monthPrec == 0:
-            monthPrec = 12
-            yearPrec = year - 1
-        else:
-            yearPrec = year
+        if month > 8:
+            year = year + 1
 
         if self._use_mysql:
             session = self.getSessionMySQL()
@@ -1279,6 +1286,15 @@ class JalonBDD(SimpleItem):
                 except:
                     pass
             # LOG.info(consultation_dict)
+
+            if monthPrec == 0:
+                monthPrec = 12
+                yearPrec = year - 1
+            elif month > 8:
+                year = year - 1
+                yearPrec = year
+            else:
+                yearPrec = year
 
             consultation_element = jalon_mysql.getConsultationByElementByCoursByMonth(session, ID_COURS, ID_CONS, monthPrec, yearPrec)
             for ligne in consultation_element.all():
@@ -1313,6 +1329,9 @@ class JalonBDD(SimpleItem):
         # LOG.info("----- getConsultationByElementByCoursByUniversityYearForGraph -----")
         if not year or year == '0':
             year = DateTime().year()
+            month = DateTime().month()
+            if month > 8:
+                year = year + 1
         session = self.getSessionMySQL()
         consultationCours = jalon_mysql.getConsultationByElementByCoursByUniversityYearForGraph(session, ID_COURS, ID_CONS, year)
         return consultationCours

@@ -1487,6 +1487,10 @@ class JalonFolder(ATFolder):
         context = aq_inner(self)
         return context.restrictedTraverse('@@quick_upload_init')(for_id=self.uploader_id)
 
+    def load_my_courses_view(self):
+        context = aq_inner(self)
+        return context.restrictedTraverse('@@mes_cours_view')
+
     def test(self, condition, valeurVrai, valeurFaux):
         return jalon_utils.test(condition, valeurVrai, valeurFaux)
 

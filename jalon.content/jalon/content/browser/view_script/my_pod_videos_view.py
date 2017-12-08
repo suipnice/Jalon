@@ -67,7 +67,8 @@ class MyPodVideosView(MySpaceView):
         if selected_tags_list == ["last"]:
             self.updateJalonVideos(folder, portal, member_id)
         content_filter = {"portal_type": ["JalonRessourceExterne"]}
-        return self.getItemsList(folder, selected_tags_list, content_filter)
+        #return self.getItemsList(folder, selected_tags_list, content_filter)
+        return self.getItemsList(folder, [], content_filter)
 
     def updateJalonVideos(self, folder, portal, member_id):
         # LOG.info("----- updateJalonVideos -----")

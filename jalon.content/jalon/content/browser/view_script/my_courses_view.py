@@ -4,6 +4,7 @@ from zope.component import getMultiAdapter
 from Products.Five.browser import BrowserView
 from Products.CMFCore.utils import getToolByName
 
+
 from jalon.content import contentMessageFactory as _
 from jalon.content.content import jalon_utils
 
