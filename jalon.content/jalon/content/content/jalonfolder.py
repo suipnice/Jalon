@@ -876,6 +876,12 @@ class JalonFolder(ATFolder):
                     duplicata.invokeFactory(type_name="JalonCoursWims", id=key)
                     duplicataObjet = getattr(duplicata, key)
                     dico_Properties = activite.getDicoProperties()
+
+                    # ici il faudrait (pour deverrouiller les Examens) :
+                    # * supprimer l'attribut "idExam" de dico_Properties
+                    # * rendre l'examen 'masqué'
+                    # * prévenir l'utilisateur que les examens sont désactivés.
+
                     duplicataObjet.setJalonProperties(dico_Properties)
 
                     # Met a jour les relatedItems des documents et exercices.
