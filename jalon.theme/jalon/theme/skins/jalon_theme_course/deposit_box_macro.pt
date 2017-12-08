@@ -17,7 +17,7 @@
             <a tal:attributes="href menu/href"
                data-reveal-id="reveal-main" data-reveal-ajax="true">
                 <i tal:attributes="class string:fa ${menu/icon} fa-fw"></i>
-                <tal:block replace="menu/text" i18n:translate=""/>
+                <tal:block replace="menu/text"/>
             </a>
         </li>
     </ul>
@@ -40,13 +40,13 @@
     </tal:condition>
     <h2>
         <i class="fa fa-download"></i>
-        <tal:block replace="dico_depots/table_title" i18n:translate=""/>
+        <tal:block replace="dico_depots/table_title"/>
     </h2>
 
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <strong>Attention :</strong>
-        <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
+        <strong i18n:translate="msg_warning">Attention :</strong>
+        <tal:block replace="my_view/is_authorized_deposit_text"/>
     </div>
 
     <div tal:define="infos_depots dico_depots/infos_depots"
@@ -56,7 +56,7 @@
 
     <div class="panel callout radius"
          tal:condition="not:liste_depots"
-         i18n:translate="">
+         i18n:translate="msg_no_deposit">
         Aucun dépôt n'a été effectué pour l'instant.
     </div>
 
@@ -146,7 +146,7 @@
 -->
 <metal:macro define-macro="peers-list">
     <div class="panel warning radius">
-        <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</talblock>
     </div>
 
     <tal:define define="evaluation_by_peers_dict python:context.getEvaluationByPeers(user, my_view['is_personnel']);
@@ -180,15 +180,13 @@
         <li tal:repeat="option evaluation_by_peers_dict/options">
             <a tal:attributes="href option/link"
                data-reveal-id="reveal-main" data-reveal-ajax="true">
-                <i tal:attributes="class string:fa ${option/icon} fa-fw"></i><tal:block replace="option/text"
-                                                                                      i18n:translate=""/>
+                <i tal:attributes="class string:fa ${option/icon} fa-fw"></i><tal:block replace="option/text"/>
             </a>
         </li>
     </ul>
     </tal:condition>
     <h2>
-        <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"
-                                                 i18n:translate=""/>
+        <i class="fa fa-users"></i><tal:block replace="evaluation_by_peers_dict/table_title"/>
     </h2>
 
     <tal:on-error on-error="nothing">
@@ -199,8 +197,8 @@
     </tal:on-error>
     <div tal:attributes="class string:panel ${my_view/class_limit_date} radius"
          tal:on-error="nothing">
-        <strong>Attention :</strong>
-        <tal:block replace="my_view/is_authorized_deposit_text" i18n:translate=""/>
+        <strong i18n:translate="msg_warning">Attention :</strong>
+        <tal:block replace="my_view/is_authorized_deposit_text"/>
     </div>
 
     <tal:condition condition="not:criteria_dict">
@@ -600,7 +598,7 @@
     <tal:condition condition="python:not is_personnel and not afficher_comp">
         <div class="panel alert radius"
              i18n:translate="">
-            <strong>Attention :</strong> l'affichage des compétences n'est pas permis aux étudiants sur cette boîte.
+            <strong i18n:translate="msg_warning">Attention :</strong> l'affichage des compétences n'est pas permis aux étudiants sur cette boîte.
         </div>
     </tal:condition>
     </tal:define>

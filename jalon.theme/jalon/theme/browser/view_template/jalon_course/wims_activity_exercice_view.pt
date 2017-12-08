@@ -1,11 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 <!--
         wims_activity_exercice_view.pt (ex cours_autoevaluation_view.pt)
@@ -61,7 +60,7 @@
             <!-- Version étudiant -->
             <section tal:condition="not:affElement/val" class="small-12 columns">
                 <div class="panel alert radius">
-                     <i class="fa fa-warning"></i><strong i18n:translate="">Attention :</strong> <tal:block i18n:translate="">Cette activité est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
+                     <i class="fa fa-warning"></i><strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="">Cette activité est masquée, vous n'avez pas le droit d'y accéder.</tal:block>
                 </div>
             </section>
 

@@ -1,15 +1,13 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="res_name python:context.getShortText(context.getCourseItemProperties(request['item_id'])['titreElement'], 80)">
-
     <h2>
         <tal:block i18n:translate="">Détacher l'élément de « Mes ressources » :</tal:block>
         « <tal:content content="res_name" /> »
@@ -17,7 +15,7 @@
     </h2>
 
     <div class="panel warning radius">
-        <strong i18n:translate="">Attention :</strong>
+        <strong i18n:translate="msg_warning">Attention :</strong>
         <tal:block i18n:translate="">les étudiants n'auront plus accès à cet élément de bibliographie.</tal:block>
     </div>
 
@@ -30,7 +28,7 @@
             <button type="submit" class="button small warning"
                     name="detacher">
                 <i class="fa fa-chain-broken"></i>
-                <tal:block i18n:translate="">Détacher</tal:block>
+                <tal:block i18n:translate="button_unlink">Détacher</tal:block>
             </button>
         </div>
 

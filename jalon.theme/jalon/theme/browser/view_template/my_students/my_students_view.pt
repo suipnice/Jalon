@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -17,7 +16,7 @@
 </metal:macro>
 </tal:define>
 
-<div id="reveal-main" class="reveal-modal medium" 
+<div id="reveal-main" class="reveal-modal medium"
      data-reveal="data-reveal" data-options="close_on_background_click: true;"></div>
 
 <main role="main" class="row" aria-labelledby="page_title">

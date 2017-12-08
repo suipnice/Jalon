@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -17,7 +15,7 @@
         <a class="close-reveal-modal"></a>
     </h2>
     <div class="panel callout radius"
-         tal:condition="not:hasAnnounce">
+         tal:condition="not:hasAnnounce" i18n:translate="">
         Il n'y a actuellement aucune annonce dans ce cours.
     </div>
     <form id="js-supp-annonce" method="POST"
@@ -25,8 +23,8 @@
           tal:condition="hasAnnounce">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong>
-            <tal:block i18n:translate="">Vous allez supprimer toutes les annonces du cours, cette opération est définitive.</tal:block>
+            <strong i18n:translate="msg_warning">Attention :</strong>
+            <tal:block i18n:translate="msg_delete_all_announces">Vous allez supprimer toutes les annonces du cours, cette opération est définitive.</tal:block>
         </div>
 
         <div class="formControls">

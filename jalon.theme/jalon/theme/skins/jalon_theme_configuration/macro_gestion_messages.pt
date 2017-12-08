@@ -1,15 +1,12 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
-
 
 <!--
         Blocs de messages sur la page d'accueil des utilisateurs
@@ -32,13 +29,13 @@
                            tal:attributes="checked python:context.test(bie['is_message_general'], 'checked', '')" />
                     <label for="activer_message_general" class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_message_general" id="desactiver_message_general" value="0"
                            tal:attributes="checked python:context.test(not bie['is_message_general'], 'checked', '')" />
                     <label for="desactiver_message_general" class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -64,13 +61,13 @@
                            tal:attributes="checked python:context.test(bie['is_message_student'], 'checked', '')" />
                     <label for="activer_bie" class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_bie" id="desactiver_bie" value="0"
                            tal:attributes="checked python:context.test(not bie['is_message_student'], 'checked', '')" />
                     <label for="desactiver_bie" class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>
@@ -94,13 +91,13 @@
                            tal:attributes="checked python:context.test(bie['is_message_teacher'], 'checked', '')" />
                     <label for="activer_message_enseignant" class="activer">
                         <i class="fa fa-check"></i>
-                        <tal:block i18n:translate="">Activé</tal:block>
+                        <tal:block i18n:translate="label_enabled">Activé</tal:block>
                     </label>
                     <input type="radio" name="activer_message_enseignant" id="desactiver_message_enseignant" value="0"
                            tal:attributes="checked python:context.test(not bie['is_message_teacher'], 'checked', '')" />
                     <label for="desactiver_message_enseignant" class="desactiver">
                         <i class="fa fa-times"></i>
-                        <tal:block i18n:translate="">Désactivé</tal:block>
+                        <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                     </label>
                 </div>
             </div>

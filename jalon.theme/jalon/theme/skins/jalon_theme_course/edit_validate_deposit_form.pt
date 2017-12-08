@@ -1,10 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -15,9 +14,8 @@
     </h2>
 
     <div class="panel warning radius"
-         tal:condition="is_not_standard"
-         i18n:translate="">
-        <strong>Attention :</strong> dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez valider ou invalider un dépôt. Ajouter un nouveau dépôt invalidera automatiquement le précédent.
+         tal:condition="is_not_standard">
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_cant_valid_deposit">dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez valider ou invalider un dépôt. Ajouter un nouveau dépôt invalidera automatiquement le précédent.</tal:block>
     </div>
 
     <form method="post"
@@ -26,7 +24,7 @@
 
         <fieldset class="panel bkgrnd radius"
                   tal:define="actif context/getActif">
-            <legend>État du fichier déposé</legend>
+            <legend i18n:translate="legend_file_state">État du fichier déposé</legend>
 
             <p i18n:translate="">
                 Sélectionner « Invalide » pour indiquer à votre enseignant que ce fichier n'est pas à évaluer.

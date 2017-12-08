@@ -46,7 +46,7 @@
             <a tal:attributes="href menu_adder_item/item_link"
                data-reveal-id="reveal-main" data-reveal-ajax="true">
                 <i tal:attributes="class menu_adder_item/item_icon"></i>
-                <tal:replace replace="menu_adder_item/item_name" i18n:translate=""/>
+                <tal:replace replace="menu_adder_item/item_name"/>
             </a>
         </li>
     </ul>
@@ -75,7 +75,7 @@
                        tal:define="home_link my_view/deposit_box_link | my_view/activity_link"
                        tal:attributes="href string:${home_link}/${document_action/item_action_id}?item_id=${document/document_id}">
                         <i tal:attributes="class document_action/item_action_icon"></i>
-                        <tal:replace tal:replace="document_action/item_action_name" i18n:translate=""/>
+                        <tal:replace tal:replace="document_action/item_action_name"/>
                     </a>
                 </li>
             </ul>

@@ -2,10 +2,9 @@
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -33,7 +32,7 @@
                                     <i class="fa fa-sort"></i>
                                     <i class="fa fa-sort-asc"></i>
                                     <i class="fa fa-sort-desc"></i>
-                                    <tal:block i18n:translate="">NOM Prénom</tal:block>
+                                    <tal:block i18n:translate="th_LASTNAME_firstname">NOM Prénom</tal:block>
                                 </span>
                             </th>
                             <th class="sort show-for-medium-up has-tip" data-tooltip data-sort="type"

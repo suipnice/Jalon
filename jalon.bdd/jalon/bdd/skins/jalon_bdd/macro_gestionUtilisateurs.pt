@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.content">
-
 <body>
 
 <metal:content-core fill-slot="content-core">
@@ -15,8 +13,8 @@
 -->
 <metal:macro define-macro="creationUtilisateur-form">
 
-    <h2 i18n:translate="">
-        <tal:block i18n:translate="">Créer un utilisateur</tal:block>
+    <h2>
+        <tal:block i18n:translate="head_create_user">Créer un utilisateur</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
@@ -94,7 +92,7 @@
                 </div>
                 <div class="columns small-4">
                     <label for="LIB_PR1_IND"
-                           i18n:translate="">Prénom</label>
+                           i18n:translate="label_firstname">Prénom</label>
                     <input type="text" name="LIB_PR1_IND" id="LIB_PR1_IND"
                            required="required"
                            placeholder="Saisie obligatoire" />
@@ -279,7 +277,7 @@
                 </div>
                 <div class="columns small-4">
                     <label for="LIB_PR1_IND"
-                           i18n:translate="">Prénom</label>
+                           i18n:translate="label_firstname">Prénom</label>
                     <input type="text" name="LIB_PR1_IND" id="LIB_PR1_IND"
                            tal:attributes="value infosUtil/LIB_PR1_IND"
                            required="required"
@@ -384,7 +382,7 @@
     <form name="suppressionUtilisateur-form"
           tal:attributes="action string:${context/absolute_url}/supprimerUtilisateur_script" method="post">
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
+            <strong i18n:translate="msg_warning">Attention :</strong> cette opération est définitive, pour confirmer votre choix cliquez sur 'Supprimer'.
         </div>
         <input type="hidden" id="SESAME_ETU" name="SESAME_ETU"
                 tal:attributes="value sesame"/>
@@ -410,7 +408,7 @@
     <form name="suppressionUtilisateur-form"
           tal:attributes="action string:${context/absolute_url}/demanderSuppressionUtilisateur_script" method="post">
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong> cette opération n'est possible que par un administrateur. Pour demander la suppression de cet utilisateur à un administrateur, cliquez sur "Demander la suppression".
+            <strong i18n:translate="msg_warning">Attention :</strong> cette opération n'est possible que par un administrateur. Pour demander la suppression de cet utilisateur à un administrateur, cliquez sur "Demander la suppression".
         </div>
         <input type="hidden" name="redirection"
                tal:attributes="value string:${context/absolute_url}/gestion_utilisateurs"/>
@@ -445,7 +443,7 @@
           tal:attributes="action string:${context/absolute_url}/bloquerUtilisateur_script" method="post">
 
         <div class="panel alert radius">
-            <strong i18n:translate="">Attention :</strong> vous allez interdire l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Bloquer'.
+            <strong i18n:translate="msg_warning">Attention :</strong> vous allez interdire l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Bloquer'.
         </div>
         <input type="hidden" name="SESAME_ETU"
                tal:attributes="value sesame"/>
@@ -477,7 +475,7 @@
     <form name="activerUtilisateur-form"
           tal:attributes="action string:${context/absolute_url}/activerUtilisateur_script" method="post">
         <div class="panel callout radius">
-            <strong i18n:translate="">Attention :</strong> vous allez autoriser l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Activer'.
+            <strong i18n:translate="msg_warning">Attention :</strong> vous allez autoriser l'accès à cet utilisateur, pour confirmer votre choix cliquez sur 'Activer'.
         </div>
         <input type="hidden" id="SESAME_ETU" name="SESAME_ETU"
                tal:attributes="value sesame"/>

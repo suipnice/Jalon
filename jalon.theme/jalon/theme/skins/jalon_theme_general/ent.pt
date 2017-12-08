@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="ent_body">
@@ -14,8 +12,8 @@
 
             <div class="jumbotron" role="banner" aria-labelledby="page_title">
 
-                <h1>Jalon</h1>
-                <h2>
+                <h1 i18n:translate="">Jalon</h1>
+                <h2 i18n:translate="">
                     Ergonomie<span class="show-for-medium-up">&nbsp;• </span><br class="show-for-small-only">
                     Simplicité<span class="show-for-medium-up">&nbsp;• </span><br class="show-for-small-only">
                     Intégration
@@ -43,7 +41,7 @@
 
                     <div class="small-12 columns">
                         <a class="connection-button" href="https://login.unice.fr/login?service=http%3A//jalon.unice.fr/logged_in" target="_blank">
-                            <i class="fa fa-paper-plane"></i>Continuer sur Jalon
+                            <i class="fa fa-paper-plane"></i><tal:block i18n:translate="">Continuer sur Jalon</tal:block>
                         </a>
                     </div>
 

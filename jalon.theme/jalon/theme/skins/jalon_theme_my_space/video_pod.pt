@@ -1,12 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-     xml:lang="en"
-     lang="en"
+      xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
@@ -19,12 +17,12 @@
     </h2>
 
     <h4>
-        <strong>Auteur :</strong> <tal:block replace="video/owner_full_name"/>
+        <strong i18n:translate="">Auteur :</strong> <tal:block replace="video/owner_full_name"/>
     </h4>
 
     <div class="panel radius"
          tal:condition="not:video/text"
-         i18n:translate="">
+         i18n:translate="msg_no_desc">
          Description non renseignée…
     </div>
 

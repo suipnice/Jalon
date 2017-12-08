@@ -3,12 +3,12 @@
     <tal:no_items condition="my_view/is_no_items">
         <div class="panel callout radius">
             <strong i18n:translate="">Il n'y a aucune ressource de type « Enregistrement Adobe Connect » dans vos ressources.</strong><br />
-            <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title" i18n:translate=""/>" pour ajouter une nouvelle ressource.</tal:block>
+            <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title"/>" pour ajouter une nouvelle ressource.</tal:block>
         </div>
         <div class="text-center">
             <a class="button radius"
                tal:attributes="href my_view/folder_link">
-               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+               <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title"/>
             </a>
         </div>
     </tal:no_items>
@@ -35,8 +35,8 @@
     <thead>
         <tr>
             <th class="checkall show-for-medium-up">
-                <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
-                     i18n:attributes="title">
+                <div class="switch tiny round" title="Action par lot : tout sélectionner / désélectionner"
+                     i18n:attributes="title batch_select_all">
                     <input type="checkbox" id="switch-all" name="checkall" role="paths:list" />
                     <label for="switch-all"></label>
                 </div>
@@ -65,7 +65,7 @@
                     <i class="fa fa-sort"></i>
                     <i class="fa fa-sort-asc"></i>
                     <i class="fa fa-sort-desc"></i>
-                    <tal:block i18n:translate="">Durée</tal:block>
+                    <tal:block i18n:translate="th_duration">Durée</tal:block>
                 </span>
             </th>
         </tr>
@@ -76,9 +76,9 @@
             <tal:define define="item_title python:here.getShortText(item['Title'])">
             <td class="show-for-medium-up"
                 tal:define="attached python:context.test(item['getId'].replace('.', '*-*') in my_view['course_map'], 1, 0)">
-                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
+                <div class="switch tiny round" title="Action par lot : sélectionner / désélectionner"
                      tal:condition="not:attached"
-                     i18n:attributes="title">
+                     i18n:attributes="title batch_select_deselect">
                     <input type="checkbox" name="paths:list"
                            tal:attributes="id string:switch-${repeat/item/index};
                                            value string:${item/getId}/${my_view/folder_id};
@@ -118,12 +118,12 @@
 
 <metal:macro define-macro="add_new_resource">
     <div class="panel callout radius">
-        <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title" i18n:translate=""/>" pour ajouter une nouvelle ressource.</tal:block>
+        <tal:block i18n:translate="">Rendez-vous dans "Mes ressources > <tal:replace replace="context/Title"/>" pour ajouter une nouvelle ressource.</tal:block>
     </div>
     <div class="text-center">
         <a class="button radius"
            tal:attributes="href my_view/folder_link">
-           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title" i18n:translate=""/>
+           <i tal:attributes="class my_view/course_add_list_icon"></i><tal:replace replace="context/Title"/>
         </a>
     </div>
 </metal:macro>

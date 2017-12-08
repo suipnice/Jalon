@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -46,7 +44,7 @@
         <section id="js-list-ressource" class="small-12 columns">
 
             <h2 id="js-update_title">
-                <i class="fa fa fa-font"></i><tal:replace replace="context/Title" i18n:translate=""/>
+                <i class="fa fa fa-font"></i><tal:replace replace="context/Title"/>
             </h2>
             <div id="js-update_target"
                  tal:attributes="data-href string:${context/absolute_url}">

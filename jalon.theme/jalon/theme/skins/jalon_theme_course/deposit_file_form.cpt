@@ -1,23 +1,22 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
             tal:define="errors options/state/getErrors | nothing">
 
     <h2>
-        <tal:block i18n:translate="">Déposer votre fichier</tal:block>
+        <tal:block i18n:translate="head_upload_your_file">Déposer votre fichier</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
 
     <div class="panel warning radius"
          tal:condition="context/isNotStandard">
-        <strong>Attention :</strong> dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.
+        <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_only_one_deposit_allowed">dans le profil "<tal:replace replace="context/getDisplayProfile"/>" vous ne pouvez avoir qu'un seul dépôt actif. Déposer un fichier invalidera le fichier précédent.</tal:block>
     </div>
 
     <form id="js-deposit_file_form" method="post"
@@ -27,7 +26,7 @@
         <div id="archetypes-fieldname-title" class="field"
             tal:define="error errors/title | nothing"
             tal:attributes="class python:context.test(error, 'field error ', 'field')">
-            <label for="title">Titre</label>
+            <label for="title" i18n:translate="">Titre</label>
             <div class="fieldErrorBox"
                 tal:condition="error"
                 tal:content="error" />
@@ -38,7 +37,7 @@
         </div>
 
         <div id="archetypes-fieldname-description" class="field">
-            <label for="description">Commentaire</label>
+            <label for="description" i18n:translate="">Commentaire</label>
             <textarea id="description" name="description" rows="5"></textarea>
         </div>
 
@@ -46,7 +45,7 @@
             tal:define="error errors/file | nothing;
                         arch_class string:field;"
             tal:attributes="class python:context.test(error, 'error %s' % arch_class, arch_class)">
-            <label for="file_file">Fichier</label>
+            <label for="file_file" i18n:translate="">Fichier</label>
             <div class="fieldErrorBox" tal:condition="error" tal:content="error" />
             <input type="file" id="file_file" name="file_file" size="30"
                    required="required" placeholder="Saisie obligatoire"
@@ -61,7 +60,7 @@
             <button type="submit" class="button small"
                     name="Save">
                 <i class="fa fa-check-circle"></i>
-                <tal:block i18n:translate="">Déposer</tal:block>
+                <tal:block i18n:translate="button_deposit">Déposer</tal:block>
             </button>
         </div>
 

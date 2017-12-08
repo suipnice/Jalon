@@ -1,18 +1,17 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content">
 
     <h2>
         <i class="fa fa-users no-pad"></i>
-        <tal:block i18n:translate="">Étudiants inscrits nomminativement :</tal:block>
+        <tal:block i18n:translate="head_students_registered_by_name">Étudiants inscrits nominativement :</tal:block>
     </h2>
 
     <tal:define define="nominative_registration_list context/getNominativeRegistration;

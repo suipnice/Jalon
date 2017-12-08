@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="main">
@@ -73,13 +71,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(infos['activer_etablissement'], 'checked', '')" />
                             <label for="activer_etablissement" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_etablissement" id="desactiver_etablissement" value="0"
                                    tal:attributes="checked python:context.test(not infos['activer_etablissement'], 'checked', '')" />
                             <label for="desactiver_etablissement" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -114,13 +112,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(infos['activer_lien_sesame'], 'checked', '')" />
                             <label for="activer_lien_sesame" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_lien_sesame" id="desactiver_lien_sesame" value="0"
                                    tal:attributes="checked python:context.test(not infos['activer_lien_sesame'], 'checked', '')" />
                             <label for="desactiver_lien_sesame" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -145,13 +143,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(infos['activer_lien_contact'], 'checked', '')" />
                             <label for="activer_lien_contact" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_lien_contact" id="desactiver_lien_contact" value="0"
                                    tal:attributes="checked python:context.test(not infos['activer_lien_contact'], 'checked', '')" />
                             <label for="desactiver_lien_contact" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -176,13 +174,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(infos['activer_lien_mention'], 'checked', '')" />
                             <label for="activer_lien_mention" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_lien_mention" id="desactiver_lien_mention" value="0"
                                    tal:attributes="checked python:context.test(not infos['activer_lien_mention'], 'checked', '')" />
                             <label for="desactiver_lien_mention" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>
@@ -207,13 +205,13 @@ div.panel label{
                                    tal:attributes="checked python:context.test(infos['activer_lien_credit'], 'checked', '')" />
                             <label for="activer_lien_credit" class="activer">
                                 <i class="fa fa-check"></i>
-                                <tal:block i18n:translate="">Activé</tal:block>
+                                <tal:block i18n:translate="label_enabled">Activé</tal:block>
                             </label>
                             <input type="radio" name="activer_lien_credit" id="desactiver_lien_credit" value="0"
                                    tal:attributes="checked python:context.test(not infos['activer_lien_credit'], 'checked', '')" />
                             <label for="desactiver_lien_credit" class="desactiver">
                                 <i class="fa fa-times"></i>
-                                <tal:block i18n:translate="">Désactivé</tal:block>
+                                <tal:block i18n:translate="label_disabled">Désactivé</tal:block>
                             </label>
                         </div>
                     </div>

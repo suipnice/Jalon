@@ -1,9 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
-      xmlns:tal="http://xml.zope.org/namespaces/tal" xmlns:metal="http://xml.zope.org/namespaces/metal"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
-      metal:use-macro="context/main_template/macros/master" i18n:domain="jalon.theme">
-
-    <body>
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="jalon.theme">
+  <body>
     <metal:content-core fill-slot="content-core">
 
     <!-- embraced_randitem : Message commun concernant la mise en aléatoire par des accolades emboitables. -->
@@ -216,7 +217,7 @@
         </div>
     </metal:macro>
 
-    <!-- cannot_view : affichage d'un avertissement dans le cas ou l'utilisateur connecté n'as pas de droits d'acces à la page. -->
+    <!-- cannot_view : affichage d'un avertissement dans le cas ou l'utilisateur connecté n'a pas de droits d'acces à la page. -->
     <metal:macro define-macro="cannot_view">
         <div class="panel radius alert">
             <h1><i class="fa fa-lock fa-lg"></i><tal:block i18n:translate="head_access_denied">Accès Interdit</tal:block></h1>
@@ -226,7 +227,7 @@
                                     object_title here/Title;
                                     abs_url here/absolute_url;">
                     <a i18n:translate="contact_site_admin"
-                       tal:attributes="href string:${contact_link/contact_link}?subject=[${contact_link/portal_title}] Accès non autorisé&amp;body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
+                       tal:attributes="href string:${contact_link/contact_link}?subject=[${contact_link/portal_title}] Accès non autorisé&body=URL : ${abs_url}%0D%0DDécrivez précisément votre souci svp:%0D"><i class="fa fa-envelope-o"></i>contacter l'administrateur du site</a></strong>
                 en décrivant au maximum votre souci, si vous pensez que c'est une erreur.
             </p>
         </div>

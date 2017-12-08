@@ -1,13 +1,10 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
-
 
 <metal:main fill-slot="content">
 
@@ -32,7 +29,7 @@
 
             <input type="radio" id="course_map_display-false" name="course_map_display" value="False"
                    tal:attributes="checked python:context.test(course_map_display, '', 'checked')" />
-            <label for="course_map_display-false" class="warning" i18n:translate="">Désactiver</label>
+            <label for="course_map_display-false" class="warning" i18n:translate="label_deactivate">Désactiver</label>
 
         </div>
 

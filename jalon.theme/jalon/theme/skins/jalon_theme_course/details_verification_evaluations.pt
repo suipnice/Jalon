@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -22,7 +20,7 @@
     <main class="row" role="main" aria-labelledby="page_title">
 
         <div class="panel warning radius">
-            <strong>Attention :</strong> cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.
+            <strong i18n:translate="msg_warning">Attention :</strong> <tal:block i18n:translate="msg_test_phase">cette fonction est actuellement en phase de test : merci de signaler vos difficultés d'utilisation.</talblock>
         </div>
 
         <section id="evaluate_deposit_file" class="small-12 columns">

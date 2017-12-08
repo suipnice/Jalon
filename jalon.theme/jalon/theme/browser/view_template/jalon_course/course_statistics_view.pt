@@ -1,11 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:core fill-slot="content"
@@ -55,10 +53,8 @@
             <ul id="tab_button-group" class="button-group radius">
                 <li tal:repeat="onglet my_view/onglets">
                     <a tal:attributes="class string:button small${onglet/css_class};
-                                       href onglet/href"
-                       i18n:translate="">
-                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"
-                                                                                           i18n:translate=""/>
+                                       href onglet/href">
+                        <i tal:attributes="class string:fa ${onglet/icon}"></i><tal:block tal:content="onglet/text"/>
                     </a>
                 </li>
             </ul>

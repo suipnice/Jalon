@@ -1,12 +1,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-     xml:lang="en"
-     lang="en"
+      xml:lang="fr-FR" lang="fr"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:main fill-slot="content"
@@ -22,7 +20,7 @@
     </h2>
 
     <div class="panel radius callout">
-        <strong i18n:translate="">Durée :</strong> <tal:replace replace="context/getDuree"/>
+        <strong i18n:translate="label_duration">Durée :</strong> <tal:replace replace="context/getDuree"/>
     </div>
 
     <a class="button expand success" target="_blank"

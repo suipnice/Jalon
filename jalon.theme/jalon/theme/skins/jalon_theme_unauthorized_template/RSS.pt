@@ -4,8 +4,7 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
-<body>
+ <body>
     <metal:main fill-slot="main">
       <div id="content-core">
         <metal:macro use-macro="context/interdiction_macro/macros/non_permis">
@@ -13,6 +12,5 @@
         </metal:macro>
       </div>
     </metal:main>
-</body>
-
+ </body>
 </html>

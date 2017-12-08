@@ -1,17 +1,15 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr-FR"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
       xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      lang="en"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" lang="fr"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="jalon.theme">
-
 <body>
 
 <metal:content-core fill-slot="content"
                     tal:define="errors options/state/getErrors | nothing">
 
-    <h2 i18n:translate="">
+    <h2>
         <tal:block i18n:translate="">Modifier le lien vers la ressource externe</tal:block>
         <a class="close-reveal-modal"></a>
     </h2>
@@ -33,7 +31,7 @@
                     </tal:block>
                 </div>
                 <div class="panel radius">
-                    <strong>Éditeur :</strong>
+                    <strong i18n:translate="">Éditeur :</strong>
                     <tal:block replace="ressource/publisher"/>
                     <tal:block content="ressource/creationdate"/>
                 </div>
