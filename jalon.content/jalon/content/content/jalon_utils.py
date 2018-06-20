@@ -32,10 +32,10 @@ import copy
 
 
 def authUser(context, quser=None, qclass=None, request=None, session_keep=False):
-    u"""AuthUser WIMS : permet d'authentifier "quser" dans une classe wims "qclass".
+    u"""Permet d'authentifier "quser" dans une classe WIMS "qclass".
 
     # request représente les parametres envoyés à la page (GET/POST)
-    # session_keep permet de définir si on réutilise une eventuelle session wims existante ou pas.
+    # session_keep permet de définir si on réutilise une eventuelle session WIMS existante ou pas.
 
     """
     # LOG.info("----- authUser -----")

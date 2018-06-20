@@ -1110,9 +1110,13 @@ class JalonCoursWims(JalonActivity, ATDocument):
         return len(self.getListeExercices())
 
     def getListeAttribut(self, attribut):
-        """get Liste Attribut."""
+        """Renvoit la Liste 'attribut'."""
         # LOG.info("----- getListeAttribut -----")
-        return self.__getattribute__("liste%s" % attribut.capitalize())
+        try:
+            return self.__getattribute__("liste%s" % attribut.capitalize())
+        except AttributeError:
+            # si l'objet liste n'existe pas, on renvoit une liste vide
+            return []
 
     def getNotes(self, quser, actif, isProf, detailed=False, site_lang="", request=None):
         u"""getNotes.

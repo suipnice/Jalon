@@ -1155,9 +1155,9 @@ class JalonFolder(ATFolder):
         else:
             # *****serveur WIMS indisponible ou mauvaise configuration de l'acces WIMS"
             # Si WIMS est indisponible, on ignore simplement sa liste d'exercices et on affiche celle de Jalon uniquement.
-            LOG.info("*****    Mauvais parametrage de votre connexion WIMS  *****")
-            LOG.info("[jalonfolder.py] getExercicesWims : %s" % exercices)
-            LOG.info("*****                                                *****")
+            # LOG.info("*****    Mauvais parametrage de votre connexion WIMS  *****")
+            # LOG.info("[jalonfolder.py] getExercicesWims : %s" % exercices)
+            # LOG.info("*****                                                 *****")
             return {"erreur": "wims_unavailable"}
 
     def importExercicesWIMS(self, file_type, file_format, member_auth, file, model_filter):
@@ -1273,13 +1273,37 @@ class JalonFolder(ATFolder):
         # TODO : Si un dossier d'images existe sur WIMS, il faudrait le transferer également.
         """
 
-        listeSubject = list(self.Subject())
-        etiquette = jalon_utils.getIndividu(user_source, "dict")["fullname"]
+        # On ajoute une etiquette du nom de l'auteur initial à tous les exos importés
+        folder_subjects = self.getSubjectsDict()
+        tag_title = jalon_utils.getIndividu(user_source, "dict")["fullname"]
+
+        # Si l'etiquette existe deja, on demande son ID
+        if tag_title in folder_subjects.values():
+            for subj_key in folder_subjects:
+                if folder_subjects[subj_key] == tag_title:
+                    tag_id = subj_key
+                    break
+        # Si elle n'existe pas, on l'ajoute aux etiquettes du jalonfolder
+        else:
+            tag_id_list = folder_subjects.keys()
+            if len(tag_id_list) > 0:
+                tag_id_list.sort(lambda x, y: cmp(int(x), int(y)))
+                tag_id = "%s" % (int(tag_id_list[-1]) + 1)
+            else:
+                tag_id = "1"
+
+            folder_subjects[tag_id] = tag_title
+
+            # LOG.info("On ajoute l'etiquette #%s : %s" % (tag_id, tag_title))
+            self.setSubjectsDict(folder_subjects)
+            tags = list(self.Subject())
+            tags.append(tag_id)
+            self.setSubject(tuple(tags))
 
         authMember = self.aq_parent.getId()
         nbExos = 0
         listeSeries = []
-        # Une fois le groupement existant, on peut alors y ajouter les exercices.
+        # On ajoute les exercices.
         for exercice in listeExos:
             idExo = exercice.getId()
             modele = exercice.getModele()
@@ -1312,21 +1336,18 @@ class JalonFolder(ATFolder):
                 except:
                     pass
                 fichierWims = fichierWims.decode("utf-8").encode("iso-8859-1")
-                dico = {"job":    "addexo",
-                        "code":   authMember,
-                        "data1":  fichierWims,
-                        "qexo":   idExo,
+                dico = {"job":     "addexo",
+                        "code":    authMember,
+                        "data1":   fichierWims,
+                        "qexo":    idExo,
+                        "option": "no_build",
                         "qclass": "%s_1" % self.getComplement()}
                 json.loads(self.wims("callJob", dico))
 
-            # self.setTagDefaut(newExo)
             subject = list(newExo.Subject())
-            subject.append(urllib.quote(etiquette))
+            subject.append(tag_id)
             newExo.setSubject(subject)
 
-            # Mise à jour des étiquettes du parent
-            if etiquette not in listeSubject:
-                listeSubject.append(etiquette)
             newExo.reindexObject()
 
             nbExos = nbExos + 1
@@ -1346,7 +1367,6 @@ class JalonFolder(ATFolder):
                         exo.setRelatedItems(relatedItems)
                         exo.reindexObject()
 
-        self.setSubject(tuple(listeSubject))
         self.reindexObject()
 
         return {"status": "OK", "message": "import reussi", "nbExos": nbExos, "user_source": user_source, "user_dest": authMember}
