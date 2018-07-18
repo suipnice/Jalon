@@ -795,7 +795,10 @@ class Wims(SimpleItem):
         # Liste d'exercice non reconnus (qui ne seront pas importés)
         unrecognized_list = {}
 
-        last_question = len(root)
+        # last_question = len(root)
+
+        # liste des id des etiquettes à ajouter a l'exo courant
+        tags_list = []
 
         if params["model_filter"] == "all":
             # params["model_filter"] = ["cloze", "multichoice", "matching"]
@@ -806,7 +809,7 @@ class Wims(SimpleItem):
             question_type = question.get('type')
 
             if question_type == "category":
-                # liste des id des etiquettes à ajouter a l'exo courant
+                # nouvelle categorie : on reset la liste
                 tags_list = []
                 cat_structure = question.find('category').find('text').text.strip()
                 # On s'assure que les accents sont bien en unicode.
