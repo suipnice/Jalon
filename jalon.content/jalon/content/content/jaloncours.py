@@ -3017,7 +3017,7 @@ class JalonCours(ATFolder):
                 info_element["idElement"] = idElement
                 lettre = info_element["titreElement"][0].upper()
                 info_element["urlElement"] = "%s/Members/%s/%s/%s/view" % (portal_link, info_element["createurElement"], folder_id, idElement)
-                if not lettre in dicoLettres:
+                if lettre not in dicoLettres:
                     dicoLettres[lettre] = [info_element]
                 else:
                     dicoLettres[lettre].append(info_element)
@@ -3029,8 +3029,8 @@ class JalonCours(ATFolder):
     def insererConsultation(self, user, type_cons, id_cons):
         # LOG.info("----- insererConsultation -----")
         public_cons = "Anonymous"
+        username = user.getId()
         if user.has_role("Personnel"):
-            username = user.getId()
             if self.isAuteur(username):
                 public_cons = "Auteur"
             if username in self.coAuteurs:
@@ -3044,7 +3044,21 @@ class JalonCours(ATFolder):
         if user.has_role("Secretaire"):
             public_cons = "Secretaire"
         portal = self.portal_url.getPortalObject()
-        portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=user.getId(), ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
+        try:
+            portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=username, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
+        # IntegrityError (1452, 'Cannot add or update a child row: a foreign key constraint fails)
+        # Cas où l'utilisateur n'a pas encore été créé
+        except IntegrityError:
+            infos_user = portal.portal_jalon_bdd.getIndividuLITE(username)
+            portal.portal_jalon_bdd.creerUtilisateurMySQL({"SESAME_ETU":      username,
+                                                           "DATE_NAI_IND":    "",
+                                                           "LIB_NOM_PAT_IND": infos_user["LIB_NOM_PAT_IND"],
+                                                           "LIB_NOM_USU_IND": "Non renseignée",
+                                                           "LIB_PR1_IND":     infos_user["LIB_PR1_IND"],
+                                                           "TYPE_IND":        infos_user["TYPE_IND"],
+                                                           "COD_ETU":         infos_user["COD_ETU"],
+                                                           "EMAIL_ETU":       infos_user["EMAIL_ETU"]})
+            portal.portal_jalon_bdd.insererConsultation(SESAME_ETU=username, ID_COURS=self.getId(), TYPE_CONS=type_cons, ID_CONS=id_cons, PUBLIC_CONS=public_cons)
 
     def getConsultation(self):
         # LOG.info("----- getConsultation -----")
