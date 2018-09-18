@@ -3435,7 +3435,7 @@ msgstr ""
 msgid "msg_no_diploma_subscription"
 msgstr ""
 
-#. Default: "Vous n'êtes inscrit à aucun cours."
+#. Default: "Les enseignants de ce diplôme n'ont publié aucun cours sur Jalon pour le moment. Contactez-les pour en savoir plus."
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:25
 msgid "msg_no_registration_yet"
 msgstr ""

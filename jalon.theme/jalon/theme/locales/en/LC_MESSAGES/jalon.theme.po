@@ -3445,10 +3445,10 @@ msgstr ""
 msgid "msg_no_diploma_subscription"
 msgstr "You are not registered in any diploma."
 
-#. Default: "Vous n'êtes inscrit à aucun cours."
+#. Default: "Les enseignants de ce diplôme n'ont publié aucun cours sur Jalon pour le moment. Contactez-les pour en savoir plus."
 #: ../skins/jalon_theme_my_courses/my_courses_list_student_macro.pt:25
 msgid "msg_no_registration_yet"
-msgstr ""
+msgstr "The teachers in this degree haven't published any courses on Jalon at this time. Contact them to find out more."
 
 #. Default: "Le cours n'est diffusé à aucun étudiant."
 #: ../skins/jalon_theme_course/delete_course_email_registration_form.pt:22
